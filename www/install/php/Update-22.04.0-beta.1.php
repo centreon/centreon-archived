@@ -26,15 +26,12 @@ $centreonLog = new CentreonLog();
 $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 try {
-    // Add custom_configuration to provider configurations
-    $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
-    $pearDB->query(
-        "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
-    );
-
+    /**
+     * Create Tables
+     */
     $errorMessage = "Unable to create 'password_expiration_excluded_users' table";
     $pearDB->query(
-        "CREATE TABLE `password_expiration_excluded_users` (
+        "CREATE TABLE IF NOT EXISTS `password_expiration_excluded_users` (
         `provider_configuration_id` int(11) NOT NULL,
         `user_id` int(11) NOT NULL,
         CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk`
@@ -46,34 +43,9 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
     );
 
-    // Insert default Security Policy
-    $errorMessage = "Unable to insert default local security policy configuration";
-    $localProviderConfiguration = json_encode([
-        "password_security_policy" => [
-            "password_length" => 12,
-            "has_uppercase_characters" => true,
-            "has_lowercase_characters" => true,
-            "has_numbers" => true,
-            "has_special_characters" => true,
-            "attempts" => 5,
-            "blocking_duration" => 900,
-            "password_expiration_delay" => 7776000,
-            "delay_before_new_password" => 3600,
-            "can_reuse_passwords" => false,
-        ],
-    ]);
-    $statement = $pearDB->prepare(
-        "UPDATE `provider_configuration`
-        SET `custom_configuration` = :localProviderConfiguration
-        WHERE `name` = 'local'"
-    );
-    $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
-    $statement->execute();
-
-    // Move old password from contact to contact_password
     $errorMessage = "Unable to create table 'contact_password'";
     $pearDB->query(
-        "CREATE TABLE `contact_password` (
+        "CREATE TABLE IF NOT EXISTS `contact_password` (
         `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
         `password` varchar(255) NOT NULL,
         `contact_id` int(11) NOT NULL,
@@ -85,19 +57,31 @@ try {
         REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
     );
 
+    // Add custom_configuration to provider configurations
+    if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
+        $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
+        $pearDB->query(
+            "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
+        );
+    }
+
+    /**
+     * Transactional queries
+     */
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to select existing passwords from 'contact' table";
-    $dbResult = $pearDB->query(
+    $getPasswordResult = $pearDB->query(
         "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
     );
+
+    // Move old password from contact to contact_password
+    $errorMessage = "Unable to insert password in 'contact_password' table";
     $statement = $pearDB->prepare(
         "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
         VALUES (:password, :contactId, :creationDate)"
     );
-
-    $errorMessage = "Unable to insert password in 'contact_password' table";
-    while ($row = $dbResult->fetch()) {
+    while ($row = $getPasswordResult->fetch()) {
         $statement->bindValue(':password', $row['contact_passwd'], \PDO::PARAM_STR);
         $statement->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
@@ -109,6 +93,8 @@ try {
     insertOpenIdConfiguration($pearDB);
     $errorMessage = "Impossible to add default WebSSO provider configuration";
     insertWebSSOConfiguration($pearDB);
+    $errorMessage = "Unable to insert default local security policy configuration";
+    updateSecurityPolicyConfiguration($pearDB);
 
     /**
      * Add new UnifiedSQl broker output
@@ -126,40 +112,28 @@ try {
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
 
-    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
-    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    $pearDB->commit();
 
-    // Add JS Effect to contact
-    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
-    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
+    /**
+     * Alter Tables
+     */
+    if (
+        $pearDB->isColumnExist('contact', 'login_attempts') !== 1
+        && $pearDB->isColumnExist('contact', 'blocking_time') !== 1
+    ) {
+        // Add login blocking mechanism to contact
+        $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
         $pearDB->query(
             "ALTER TABLE `contact`
-            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
-            AFTER `contact_comment`"
+            ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+            ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
         );
     }
 
-    // Update Broker information
-    $errorMessage = 'Unable to update the description in cb_field';
-    $statement = $pearDB->query("
-        UPDATE cb_field
-        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
-        WHERE `cb_field_id` = 31
-    ");
-
-    $errorMessage = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
-    $errorMessage = 'Unable to delete old logger configuration';
-    $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
-
-    // Add login blocking mechanism to contact
-    $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
-    $pearDB->query(
-        "ALTER TABLE `contact`
-        ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
-        ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
-    );
+    if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
+        $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
+        $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    }
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
@@ -440,4 +414,34 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
         $stmt->bindValue($key, $value, PDO::PARAM_INT);
     }
     $stmt->execute();
+}
+
+/**
+ * Insert security policy configuration into local provider custom configuration
+ *
+ * @param CentreonDB $pearDB
+ */
+function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
+{
+    $localProviderConfiguration = json_encode([
+        "password_security_policy" => [
+            "password_length" => 12,
+            "has_uppercase_characters" => true,
+            "has_lowercase_characters" => true,
+            "has_numbers" => true,
+            "has_special_characters" => true,
+            "attempts" => 5,
+            "blocking_duration" => 900,
+            "password_expiration_delay" => 7776000,
+            "delay_before_new_password" => 3600,
+            "can_reuse_passwords" => false,
+        ],
+    ]);
+    $statement = $pearDB->prepare(
+        "UPDATE `provider_configuration`
+        SET `custom_configuration` = :localProviderConfiguration
+        WHERE `name` = 'local'"
+    );
+    $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
+    $statement->execute();
 }
