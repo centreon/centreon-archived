@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
   },
   loginBackground: {
     alignItems: 'center',
-    backdropFilter: 'brightness(1)',
     backgroundColor: 'transparent',
     display: 'flex',
+    filter: 'brightness(1)',
     flexDirection: 'column',
     height: '100vh',
     justifyContent: 'center',
