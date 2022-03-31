@@ -1,4 +1,6 @@
 /* eslint-disable class-methods-use-this */
+import * as React from 'react';
+
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
 import { equals, isNil, not } from 'ramda';
@@ -10,7 +12,13 @@ import { userAtom } from '@centreon/ui-context';
 interface UseDateTimePickerAdapterProps {
   Adapter;
   formatKeyboardValue: (value?: string) => string | undefined;
-  getLocalAndConfiguredTimezoneOffset: (props) => number;
+  getLocalAndConfiguredTimezoneOffset: () => number;
+}
+
+enum DSTState {
+  SUMMER,
+  WINTER,
+  UNKNOWN,
 }
 
 const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
@@ -19,17 +27,12 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
 
   const normalizedLocale = locale.substring(0, 2);
 
-  const getLocalAndConfiguredTimezoneOffset = ({
-    currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
-    destinationTimezone = timezone,
-  }): number => {
+  const getLocalAndConfiguredTimezoneOffset = (): number => {
     const now = new Date();
-    const currentTimezoneDate = new Date(
-      now.toLocaleString('en-US', { timeZone: currentTimezone }),
-    );
+    const currentTimezoneDate = new Date(now.toLocaleString('en-US'));
     const destinationTimezoneDate = new Date(
       now.toLocaleString('en-US', {
-        timeZone: destinationTimezone,
+        timeZone: timezone,
       }),
     );
 
@@ -41,12 +44,35 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     );
   };
 
-  const itIsSummerTimeBaby = equals(
-    getLocalAndConfiguredTimezoneOffset({ destinationTimezone: 'UTC' }),
-    2,
-  );
+  const hasDST = React.useCallback(
+    (date: dayjs.Dayjs = dayjs()): DSTState => {
+      const currentYear = new Date(
+        new Date().toLocaleDateString('en-US', { timeZone: timezone }),
+      ).getFullYear();
+      const january = new Date(
+        new Date(currentYear, 0, 1).toLocaleDateString('en-US', {
+          timeZone: timezone,
+        }),
+      ).getTimezoneOffset();
+      const july = new Date(
+        new Date(currentYear, 6, 1).toLocaleDateString('en-US', {
+          timeZone: timezone,
+        }),
+      ).getTimezoneOffset();
 
-  console.log('summer ? ', itIsSummerTimeBaby);
+      if (equals(january, july)) {
+        return DSTState.UNKNOWN;
+      }
+
+      return Math.max(january, july) !==
+        new Date(
+          date.toDate().toLocaleDateString('en-US', { timeZone: timezone }),
+        ).getTimezoneOffset()
+        ? DSTState.SUMMER
+        : DSTState.WINTER;
+    },
+    [timezone],
+  );
 
   const formatKeyboardValue = (value?: string): string | undefined => {
     if (equals(normalizedLocale, 'en') || isNil(value)) {
@@ -82,13 +108,13 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
 
     public setHours = (date: dayjs.Dayjs, count: number): dayjs.Dayjs => {
       if (
-        (equals(getLocalAndConfiguredTimezoneOffset({}), 1) &&
-          not(itIsSummerTimeBaby)) ||
+        (equals(getLocalAndConfiguredTimezoneOffset(), 1) &&
+          not(equals(hasDST(date), DSTState.SUMMER))) ||
         equals(timezone, 'UTC')
       ) {
         return date
           .tz(timezone)
-          .set('hour', count - getLocalAndConfiguredTimezoneOffset({}));
+          .set('hour', count - getLocalAndConfiguredTimezoneOffset());
       }
 
       return date.tz(timezone).set('hour', count);
@@ -102,9 +128,12 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     };
 
     public isSameDay = (date: dayjs.Dayjs, comparing: dayjs.Dayjs): boolean => {
-      return equals(
-        this.startOfDay(date).get('date'),
-        this.startOfDay(comparing).get('date'),
+      const isSameMonth = this.isSameYear(date, comparing)
+        ? this.isSameMonth(date, comparing)
+        : false;
+
+      return (
+        isSameMonth && date.tz(timezone).isSame(comparing.tz(timezone), 'day')
       );
     };
 
@@ -154,20 +183,39 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
       const dateWithTimezone = date.tz(timezone);
       const timeWithTimezone = time.tz(timezone);
 
-      if (equals(timezone, 'UTC') && itIsSummerTimeBaby) {
+      if (
+        equals(timezone, 'UTC') &&
+        not(equals(hasDST(dateWithTimezone), DSTState.WINTER))
+      ) {
         return dateWithTimezone
-          .hour(
-            timeWithTimezone.hour() - getLocalAndConfiguredTimezoneOffset({}),
+          .add(
+            timeWithTimezone.hour() -
+              (equals(hasDST(), DSTState.UNKNOWN) ? 0 : 1),
+            'hour',
           )
           .add(timeWithTimezone.minute(), 'minute')
           .add(timeWithTimezone.second(), 'second');
       }
 
-      if (itIsSummerTimeBaby) {
+      if (not(equals(hasDST(dateWithTimezone), DSTState.WINTER))) {
         return dateWithTimezone
           .hour(timeWithTimezone.hour())
           .minute(timeWithTimezone.minute())
           .second(timeWithTimezone.second());
+      }
+
+      if (hasDST() !== hasDST(dateWithTimezone)) {
+        const offset =
+          new Date(
+            dateWithTimezone.toDate().toLocaleDateString('en-US', {
+              timeZone: timezone,
+            }),
+          ).getTimezoneOffset() / 60;
+
+        return dateWithTimezone
+          .add(timeWithTimezone.hour() + (offset - 1), 'hour')
+          .add(timeWithTimezone.minute(), 'minute')
+          .add(timeWithTimezone.second(), 'second');
       }
 
       return dateWithTimezone
