@@ -64,7 +64,7 @@ CentreonSession::start();
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = &$_SESSION["centreon"];
-    header('Location: index.html');
+    include __DIR__ . '/../../../index.html';
 }
 
 /*

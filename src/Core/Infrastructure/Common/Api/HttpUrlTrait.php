@@ -70,7 +70,7 @@ trait HttpUrlTrait
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+)\/(' . implode('|', $routeSuffixPatterns) . ')/',
+                '/^(.+?)\/(' . implode('|', $routeSuffixPatterns) . ')/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )

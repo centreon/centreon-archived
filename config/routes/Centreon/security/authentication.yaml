@@ -22,3 +22,8 @@ centreon_security__renew_user_password:
     methods: PUT
     path: /authentication/users/{alias}/password
     controller: 'Core\Infrastructure\Security\Api\RenewPassword\RenewPasswordController'
+
+centreon_security_authentication_websso_login:
+    methods: GET
+    path: /authentication/providers/configurations/web-sso
+    controller: 'Core\Infrastructure\Security\Api\LoginWebSSOSession\LoginWebSSOSessionController'

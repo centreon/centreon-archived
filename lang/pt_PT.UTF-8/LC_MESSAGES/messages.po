@@ -15342,7 +15342,7 @@ msgstr ""
 # msgid "Invalid URL"
 # msgstr ""
 
-# msgid "Invalid IP Address or domain name"
+# msgid "Invalid IP Address"
 # msgstr ""
 
 # msgid "Failed to save OpenID Connect configuration"
@@ -15433,6 +15433,18 @@ msgstr ""
 # msgstr ""
 
 # msgid "Password has expired"
+# msgstr ""
+
+# msgid "Choose letter cases"
+# msgstr ""
+
+# msgid "Activation"
+# msgstr ""
+
+# msgid "Identity provider"
+# msgstr ""
+
+# msgid "Client addresses"
 # msgstr ""
 
 # msgid "Login with"

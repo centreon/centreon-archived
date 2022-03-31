@@ -6,6 +6,10 @@ import {
   OpenidConfiguration,
   OpenidConfigurationToAPI,
 } from '../Openid/models';
+import {
+  WebSSOConfiguration,
+  WebSSOConfigurationToAPI,
+} from '../WebSSO/models';
 
 export const adaptPasswordSecurityPolicyFromAPI = (
   securityPolicy: PasswordSecurityPolicy,
@@ -96,4 +100,22 @@ export const adaptOpenidConfigurationToAPI = ({
   trusted_client_addresses: trustedClientAddresses,
   userinfo_endpoint: userinfoEndpoint,
   verify_peer: verifyPeer,
+});
+
+export const adaptWebSSOConfigurationToAPI = ({
+  loginHeaderAttribute,
+  patternMatchingLogin,
+  patternReplaceLogin,
+  blacklistClientAddresses,
+  isActive,
+  isForced,
+  trustedClientAddresses,
+}: WebSSOConfiguration): WebSSOConfigurationToAPI => ({
+  blacklist_client_addresses: blacklistClientAddresses,
+  is_active: isActive,
+  is_forced: isForced,
+  login_header_attribute: loginHeaderAttribute,
+  pattern_matching_login: patternMatchingLogin,
+  pattern_replace_login: patternReplaceLogin,
+  trusted_client_addresses: trustedClientAddresses,
 });

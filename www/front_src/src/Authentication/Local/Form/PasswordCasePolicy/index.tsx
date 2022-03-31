@@ -20,12 +20,13 @@ const passwordMinLengthFieldName = 'passwordMinLength';
 
 const useStyles = makeStyles((theme) => ({
   fields: {
-    alignItems: 'top',
-    columnGap: theme.spacing(2),
+    alignItems: 'center',
     display: 'grid',
-    gridTemplateColumns: '0.9fr 1fr',
+    gridTemplateColumns: 'repeat(2, 1fr)',
     marginTop: theme.spacing(1),
-    width: theme.spacing(60),
+  },
+  passwordLengthInput: {
+    width: '75%',
   },
 }));
 
@@ -50,8 +51,8 @@ const PasswordCasePolicy = (): JSX.Element => {
         <Typography variant="h5">{t(labelPasswordCasePolicy)}</Typography>
         <div className={classes.fields}>
           <TextField
-            fullWidth
             required
+            className={classes.passwordLengthInput}
             error={passwordLengthError}
             helperText={passwordLengthError}
             inputProps={{
