@@ -939,7 +939,7 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
-        // clean multiple parameters load with broker js hook
+        // exclude multiple parameters load with broker js hook
         $keepLuaParameters = false;
         if (isset($values['output'])) {
             foreach ($values['output'] as $key => $output) {
@@ -1182,8 +1182,7 @@ class CentreonConfigCentreonBroker
 
                 if ($suffix === 'type' && $row['config_value'] === 'password') {
                     $isTypePassword = true;
-                }
-                if ($isTypePassword && $suffix === 'value') {
+                } elseif ($isTypePassword && $suffix === 'value') {
                     $isTypePassword = false;
                 }
             } else {
@@ -1194,12 +1193,14 @@ class CentreonConfigCentreonBroker
                         );
                     }
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] =
-                        $row['config_key'] ==='db_password' ? PASSWORD_REPLACEMENT_VALUE : $row['config_value'];
+                        $row['config_key'] === 'db_password' ? PASSWORD_REPLACEMENT_VALUE : $row['config_value'];
                 } else {
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname] =
-                        $row['config_key'] ==='db_password' ? PASSWORD_REPLACEMENT_VALUE : $row['config_value'];
+                        $row['config_key'] === 'db_password' ? PASSWORD_REPLACEMENT_VALUE : $row['config_value'];
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] =
-                        $row['config_key'] ==='db_password' ? PASSWORD_REPLACEMENT_VALUE : $row['config_value']; // Radio button
+                        $row['config_key'] === 'db_password'
+                        ? PASSWORD_REPLACEMENT_VALUE
+                        : $row['config_value']; // Radio button
                 }
                 if ($row['config_key'] == 'blockId') {
                     $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
