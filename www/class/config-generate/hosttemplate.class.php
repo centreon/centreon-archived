@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -205,7 +206,7 @@ class HostTemplate extends AbstractHost
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);
-        $this->getHostCategories($this->hosts[$host_id]);
+        $this->addHostToHostCategoryMembers($this->hosts[$host_id]);
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);
@@ -222,8 +223,9 @@ class HostTemplate extends AbstractHost
 
     /**
      * @param array<string,mixed> $host
+     * @return self
      */
-    private function getHostCategories(array &$host): void
+    private function addHostToHostCategoryMembers(array &$host): self
     {
         if (!isset($host['hc'])) {
             $stmt = $this->backend_instance->db->prepare(
@@ -240,5 +242,7 @@ class HostTemplate extends AbstractHost
         foreach ($host['hc'] as $hostCategoryId) {
             $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
         }
+
+        return $this;
     }
 }

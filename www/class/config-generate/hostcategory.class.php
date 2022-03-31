@@ -57,8 +57,9 @@ class HostCategory extends AbstractObject
 
     /**
      * @param int $hostCategoryId
+     * @return self
      */
-    private function addHostCategoryToList(int $hostCategoryId): void
+    private function addHostCategoryToList(int $hostCategoryId): self
     {
         $stmt = $this->backend_instance->db->prepare(
             "SELECT {$this->attributesSelect}
@@ -73,6 +74,8 @@ class HostCategory extends AbstractObject
             $this->hostCategories[$hostCategoryId] = $row;
             $this->hostCategories[$hostCategoryId]['members'] = [];
         }
+
+        return $this;
     }
 
     /**
@@ -81,20 +84,21 @@ class HostCategory extends AbstractObject
      * @param int $hostCategoryId
      * @param int $hostId
      * @param string $hostName
+     * @return self
      */
-    public function addHostToHostCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): void
+    public function addHostToHostCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): self
     {
         if (!isset($this->hostCategories[$hostCategoryId])) {
             $this->addHostCategoryToList($hostCategoryId);
         }
         if (
-            ! isset($this->hostCategories[$hostCategoryId])
-            || isset($this->hostCategories[$hostCategoryId]['members'][$hostId])
+            isset($this->hostCategories[$hostCategoryId])
+            && ! isset($this->hostCategories[$hostCategoryId]['members'][$hostId])
         ) {
-            return;
+            $this->hostCategories[$hostCategoryId]['members'][$hostId] = $hostName;
         }
 
-        $this->hostCategories[$hostCategoryId]['members'][$hostId] = $hostName;
+        return $this;
     }
 
     /**

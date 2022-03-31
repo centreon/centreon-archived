@@ -75,8 +75,6 @@ class ServiceCategory extends AbstractObject
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->serviceCategoriesRelationsCache[(int) $value['service_service_id']][] = (int) $value['sc_id'];
         }
-
-        $this->doneCache = 1;
     }
 
     /**
@@ -98,9 +96,9 @@ class ServiceCategory extends AbstractObject
      * Retrieve a categorie from its id
      *
      * @param int $serviceCategoryId
-     * @return void
+     * @return self
      */
-    private function addServiceCategoryToList(int $serviceCategoryId): void
+    private function addServiceCategoryToList(int $serviceCategoryId): self
     {
         $stmt = $this->backend_instance->db->prepare(
             "SELECT {$this->attributesSelect}
@@ -109,12 +107,12 @@ class ServiceCategory extends AbstractObject
         );
         $stmt->bindParam(':serviceCategoryId', $serviceCategoryId, PDO::PARAM_INT);
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->serviceCategories[$serviceCategoryId] = array_pop($results);
-        if (is_null($this->serviceCategories[$serviceCategoryId])) {
-            return;
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $this->serviceCategories[$serviceCategoryId] = $row;
+            $this->serviceCategories[$serviceCategoryId]['members'] = [];
         }
-        $this->serviceCategories[$serviceCategoryId]['members'] = array();
+
+        return $this;
     }
 
     /**
@@ -123,23 +121,24 @@ class ServiceCategory extends AbstractObject
      * @param int $serviceCategoryId
      * @param int $serviceId
      * @param string $serviceDescription
+     * @return self
      */
     public function addServiceToServiceCategoryMembers(
         int $serviceCategoryId,
         int $serviceId,
         string $serviceDescription
-    ): void {
+    ): self {
         if (! isset($this->serviceCategories[$serviceCategoryId])) {
             $this->addServiceCategoryToList($serviceCategoryId);
         }
         if (
-            ! isset($this->serviceCategories[$serviceCategoryId])
-            || isset($this->serviceCategories[$serviceCategoryId]['members'][$serviceId])
+            isset($this->serviceCategories[$serviceCategoryId])
+            && ! isset($this->serviceCategories[$serviceCategoryId]['members'][$serviceId])
         ) {
-            return;
+            $this->serviceCategories[$serviceCategoryId]['members'][$serviceId] = $serviceDescription;
         }
 
-        $this->serviceCategories[$serviceCategoryId]['members'][$serviceId] = $serviceDescription;
+        return $this;
     }
 
     /**
@@ -167,7 +166,7 @@ class ServiceCategory extends AbstractObject
         parent::reset();
         foreach ($this->serviceCategories as &$value) {
             if (! is_null($value)) {
-                $value['members'] = array();
+                $value['members'] = [];
             }
         }
     }
