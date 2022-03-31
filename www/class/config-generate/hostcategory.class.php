@@ -88,7 +88,7 @@ class HostCategory extends AbstractObject
      */
     public function addHostToHostCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): self
     {
-        if (!isset($this->hostCategories[$hostCategoryId])) {
+        if (! isset($this->hostCategories[$hostCategoryId])) {
             $this->addHostCategoryToList($hostCategoryId);
         }
         if (
