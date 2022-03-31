@@ -483,7 +483,7 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
-        $this->getHostCategories($host);
+        $this->addHostToHostCategoryMembers($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
 
@@ -591,8 +591,9 @@ class Host extends AbstractHost
 
     /**
      * @param array<string,mixed> $host
+     * @return self
      */
-    private function getHostCategories(array &$host): void
+    private function addHostToHostCategoryMembers(array &$host): self
     {
         if (!isset($host['hc'])) {
             $stmt = $this->backend_instance->db->prepare(
@@ -609,5 +610,7 @@ class Host extends AbstractHost
         foreach ($host['hc'] as $hostCategoryId) {
             $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['host_name']);
         }
+
+        return $this;
     }
 }
