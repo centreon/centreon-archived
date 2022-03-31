@@ -120,9 +120,6 @@ try {
 
     $pearDB->commit();
 
-    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
-    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-
     /**
      * Alter Tables
      */
@@ -156,8 +153,6 @@ try {
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -526,7 +521,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
             throw new Exception("Cannot find config group ids in cfg_centreonbroker_info table");
         }
 
-        // Build unified sql output config from outputs to replace and insert it
+        // Build unified sql output config from outputs to replace
         $unifiedSqlOutput = [];
         foreach ($configGroupIds as $configGroupId) {
             $dbResult = $pearDB->query(
@@ -586,7 +581,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         }
         $stmt->execute();
 
-        // Delete former outputs
+        // Delete deprecated outputs
         $bindedValues = [];
         foreach ($configGroupIds as $index => $configGroupId) {
             $bindedValues[':id_' . $index] = $configGroupId;
