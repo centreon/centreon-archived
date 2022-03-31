@@ -24,9 +24,12 @@ declare(strict_types=1);
 namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-class WebSSOConfiguration
+class WebSSOConfiguration implements ProviderConfigurationInterface
 {
+    public const NAME = 'web-sso';
+
     /**
      * @var int|null
      */
