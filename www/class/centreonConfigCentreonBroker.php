@@ -880,12 +880,6 @@ class CentreonConfigCentreonBroker
                         "lua_parameter__value",
                         $matches[1]
                     );
-                    if ($originalPassword === null) {
-                        throw new Exception(
-                            'Cannot retrieve lua original password for lua parameter: '
-                            . $output["lua_parameter__name_{$matches[1]}"]
-                        );
-                    }
                     $output["lua_parameter__value_{$matches[1]}"] = $originalPassword;
                 }
             }
@@ -1008,7 +1002,8 @@ class CentreonConfigCentreonBroker
                         $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
-                            foreach ($fieldvalue as $index => $value) {
+                            $index = 0;
+                            foreach ($fieldvalue as $key => $value) {
                                 if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
                                     $value = $value[$fieldname];
                                 }
@@ -1042,6 +1037,7 @@ class CentreonConfigCentreonBroker
                                     $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
                                     $stmt->execute();
                                 }
+                                $index++;
                             }
                             continue;
                         }
