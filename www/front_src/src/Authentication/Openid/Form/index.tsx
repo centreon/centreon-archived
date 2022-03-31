@@ -12,15 +12,19 @@ import {
   labelFailedToSaveOpenidConfiguration,
   labelOpenIDConnectConfigurationSaved,
 } from '../translatedLabels';
-import { putOpenidConfiguration } from '../../api';
-import { OpenidConfiguration } from '../models';
+import { putProviderConfiguration } from '../../api';
+import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
+import Inputs from '../../FormInputs';
+import { categories } from '../..';
+import { Provider } from '../../models';
+import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
 
-import Inputs from './Inputs';
+import { inputs } from './inputs';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    margin: theme.spacing(2, 1, 1),
+    margin: theme.spacing(2, 0, 0),
   },
 }));
 
@@ -38,7 +42,10 @@ const Form = ({
 
   const { sendRequest } = useRequest({
     defaultFailureMessage: t(labelFailedToSaveOpenidConfiguration),
-    request: putOpenidConfiguration,
+    request: putProviderConfiguration<
+      OpenidConfiguration,
+      OpenidConfigurationToAPI
+    >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid }),
   });
   const { showSuccessMessage } = useSnackbar();
 
@@ -65,7 +72,7 @@ const Form = ({
       onSubmit={submit}
     >
       <div className={classes.formContainer}>
-        <Inputs />
+        <Inputs categories={categories} inputs={inputs} />
         <FormButtons />
       </div>
     </Formik>

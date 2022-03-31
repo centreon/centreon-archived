@@ -143,4 +143,14 @@ class SSOAuthenticationException extends \Exception
     {
         return new self(_('No refresh token has been found'));
     }
+
+    /**
+     * Exception thrown when the username can't be extract with matching regexp
+     *
+     * @return self
+     */
+    public static function unableToRetrieveUsernameFromLoginClaim(): self
+    {
+        return new self(_('Can\'t resolve username from login claim using configured regular expression'));
+    }
 }

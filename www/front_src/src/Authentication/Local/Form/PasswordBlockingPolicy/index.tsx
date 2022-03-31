@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     marginTop: theme.spacing(1),
-    rowGap: theme.spacing(1.5),
+    rowGap: theme.spacing(2),
   },
 }));
 

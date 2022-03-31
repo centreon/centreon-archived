@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { useRequest } from '@centreon/ui';
 
-import { getOpenidConfiguration } from '../api';
+import { getProviderConfiguration } from '../api';
 import { openidConfigurationDecoder } from '../api/decoders';
+import { Provider } from '../models';
 
 import { OpenidConfiguration } from './models';
 
@@ -18,7 +19,7 @@ const useOpenid = (): UseOpenidState => {
     React.useState<OpenidConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<OpenidConfiguration>({
     decoder: openidConfigurationDecoder,
-    request: getOpenidConfiguration,
+    request: getProviderConfiguration<OpenidConfiguration>(Provider.Openid),
   });
 
   const loadOpenidConfiguration = (): void => {
