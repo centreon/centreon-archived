@@ -1404,4 +1404,11 @@ VALUES (
   '{"trusted_client_addresses":[],"blacklist_client_addresses":[],"base_url":null,"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true}',
   false,
   false
+),
+(
+  'web-sso',
+  'web-sso',
+  '{"trusted_client_addresses": [], "blacklist_client_addresses": [], "login_header_attribute": "HTTP_AUTH_USER", "pattern_matching_login": null, "pattern_replace_login": null}',
+  false,
+  false
 );

@@ -8,16 +8,9 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import { Provider } from '../models';
-import {
-  OpenidConfiguration,
-  OpenidConfigurationToAPI,
-} from '../Openid/models';
 
 import { authenticationProvidersEndpoint } from './endpoints';
-import {
-  adaptOpenidConfigurationToAPI,
-  adaptPasswordSecurityPolicyToAPI,
-} from './adapters';
+import { adaptPasswordSecurityPolicyToAPI } from './adapters';
 
 export const getPasswordPasswordSecurityPolicy =
   (cancelToken: CancelToken) => (): Promise<PasswordSecurityPolicy> =>
@@ -36,16 +29,27 @@ export const putPasswordPasswordSecurityPolicy =
       endpoint: authenticationProvidersEndpoint(Provider.Local),
     });
 
-export const getOpenidConfiguration =
-  (cancelToken: CancelToken) => (): Promise<OpenidConfiguration> =>
-    getData<OpenidConfiguration>(cancelToken)({
-      endpoint: authenticationProvidersEndpoint(Provider.Openid),
+export const getProviderConfiguration =
+  <Configuration>(type: Provider) =>
+  (cancelToken: CancelToken) =>
+  (): Promise<Configuration> =>
+    getData<Configuration>(cancelToken)({
+      endpoint: authenticationProvidersEndpoint(type),
     });
 
-export const putOpenidConfiguration =
+interface PutProviderConfiguration<Configuration, ConfigurationToAPI> {
+  adapter: (configuration: Configuration) => ConfigurationToAPI;
+  type: Provider;
+}
+
+export const putProviderConfiguration =
+  <Configuration, ConfigurationToAPI>({
+    type,
+    adapter,
+  }: PutProviderConfiguration<Configuration, ConfigurationToAPI>) =>
   (cancelToken: CancelToken) =>
-  (openidConfiguration: OpenidConfiguration): Promise<unknown> =>
-    putData<OpenidConfigurationToAPI, unknown>(cancelToken)({
-      data: adaptOpenidConfigurationToAPI(openidConfiguration),
-      endpoint: authenticationProvidersEndpoint(Provider.Openid),
+  (configuration: Configuration): Promise<unknown> =>
+    putData<ConfigurationToAPI, unknown>(cancelToken)({
+      data: adapter(configuration),
+      endpoint: authenticationProvidersEndpoint(type),
     });
