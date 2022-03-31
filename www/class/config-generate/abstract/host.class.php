@@ -139,6 +139,7 @@ abstract class AbstractHost extends AbstractObject
     protected $attributes_array = array(
         'use',
         'parents',
+        'category_tags',
     );
     protected $attributes_hash = array(
         'macros'
@@ -433,5 +434,7 @@ abstract class AbstractHost extends AbstractObject
                 $host['name'] ?? $host['host_name']
             );
         }
+
+        $host['category_tags'] = $hostCategory->getHostCategoryIdsForHost($host['host_id']);
     }
 }

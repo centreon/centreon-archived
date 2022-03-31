@@ -127,7 +127,8 @@ class HostTemplate extends AbstractHost
         'acknowledgement_timeout'
     );
     protected $attributes_array = array(
-        'use'
+        'use',
+        'category_tags'
     );
 
     /**
