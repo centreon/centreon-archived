@@ -139,6 +139,7 @@ abstract class AbstractHost extends AbstractObject
     protected $attributes_array = array(
         'use',
         'parents',
+        'category_tags',
     );
     protected $attributes_hash = array(
         'macros'
@@ -193,7 +194,7 @@ abstract class AbstractHost extends AbstractObject
         }
 
         if (is_null($this->stmt_macro)) {
-            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT
               host_macro_name, host_macro_value
             FROM on_demand_macro_host
             WHERE host_host_id = :host_id

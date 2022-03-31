@@ -611,6 +611,8 @@ class Host extends AbstractHost
             $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['host_name']);
         }
 
+        $host['category_tags'] = $hostCategory->getHostCategoryIdsForHost($host['host_id']);
+
         return $this;
     }
 }

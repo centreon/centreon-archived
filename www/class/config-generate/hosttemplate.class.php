@@ -127,7 +127,8 @@ class HostTemplate extends AbstractHost
         'acknowledgement_timeout'
     );
     protected $attributes_array = array(
-        'use'
+        'use',
+        'category_tags'
     );
 
     /**
@@ -242,6 +243,8 @@ class HostTemplate extends AbstractHost
         foreach ($host['hc'] as $hostCategoryId) {
             $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
         }
+
+        $host['category_tags'] = $hostCategory->getHostCategoryIdsForHost($host['host_id']);
 
         return $this;
     }
