@@ -167,8 +167,6 @@ try {
 
     $errorMessage = "Unable to add 'bbdo_version' column to 'cfg_centreonbroker' table";
     $statement->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
