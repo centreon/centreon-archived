@@ -25,7 +25,7 @@ import {
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
   labelIntrospectionTokenEndpoint,
-  labelInvalidIPAddressOrDomainName,
+  labelInvalidIPAddress,
   labelInvalidURL,
   labelLoginClaimValue,
   labelMixed,
@@ -40,6 +40,8 @@ import {
 import OpenidConfigurationForm from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('../logos/providerPadlock.svg');
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
@@ -142,47 +144,6 @@ describe('Openid configuration form', () => {
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
   });
 
-  it('disables all the fields when the OpenID configuration is disabled', async () => {
-    renderOpenidConfigurationForm();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
-      );
-    });
-
-    userEvent.click(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
-    );
-
-    expect(screen.getByLabelText(labelOpenIDConnectOnly)).toBeDisabled();
-    expect(screen.getByLabelText(labelMixed)).toBeDisabled();
-    expect(screen.getByLabelText(labelTrustedClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBlacklistClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBaseUrl)).toBeDisabled();
-    expect(screen.getByLabelText(labelAuthorizationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelTokenEndpoint)).toBeDisabled();
-    expect(
-      screen.getByLabelText(labelIntrospectionTokenEndpoint),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelUserInformationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelEndSessionEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelScopes)).toBeDisabled();
-    expect(screen.getByLabelText(labelLoginClaimValue)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientID)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientSecret)).toBeDisabled();
-    expect(
-      screen.getByLabelText(
-        labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-      ),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelDisableVerifyPeer)).toBeDisabled();
-
-    expect(screen.getByText(labelSave)).not.toBeDisabled();
-    expect(screen.getByText(labelReset)).not.toBeDisabled();
-  });
-
   it('displays an error message when fields are not correctly formatted', async () => {
     renderOpenidConfigurationForm();
 
@@ -211,9 +172,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          `invalid domain: ${labelInvalidIPAddressOrDomainName}`,
-        ),
+        screen.getByText(`invalid domain: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 
@@ -225,7 +184,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddressOrDomainName}`),
+        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 

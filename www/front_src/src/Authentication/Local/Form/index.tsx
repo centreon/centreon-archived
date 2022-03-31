@@ -28,11 +28,11 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    margin: theme.spacing(2, 1, 1),
+    margin: theme.spacing(2, 0, 0),
   },
   formGroup: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -84,7 +84,7 @@ const Form = ({
             <PasswordBlockingPolicy />
           </div>
           <Divider />
-          <div className={classes.formGroup}>
+          <div>
             <FormButtons />
           </div>
         </div>

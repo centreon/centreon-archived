@@ -104,61 +104,16 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
+
+    //Insert default providers configurations
     $errorMessage = "Impossible to add default OpenID provider configuration";
     insertOpenIdConfiguration($pearDB);
+    $errorMessage = "Impossible to add default WebSSO provider configuration";
+    insertWebSSOConfiguration($pearDB);
 
-    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
-    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-
-    // Add JS Effect to contact
-    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
-    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
-            AFTER `contact_comment`"
-        );
-    }
-
-    $errorMessage = 'Impossible to add "contact_theme" column to "contact" table';
-    $pearDB->query(
-        "ALTER TABLE `contact`
-        ADD COLUMN `contact_theme` enum('light','dark') DEFAULT 'light'
-        AFTER `contact_js_effects`"
-    );
-
-    $errorMessage = 'Impossible to delete "template" value in "options" table';
-    $pearDB->query("DELETE FROM `options` WHERE `key` = 'template'");
-
-    // Update Broker information
-    $errorMessage = 'Unable to update the description in cb_field';
-    $statement = $pearDB->query("
-        UPDATE cb_field
-        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
-        WHERE `cb_field_id` = 31
-    ");
-
-    $errorMessage = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
-    $errorMessage = 'Unable to delete old logger configuration';
-    $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
-
-    // Add login blocking mechanism to contact
-    $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
-    $pearDB->query(
-        "ALTER TABLE `contact`
-        ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
-        ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
-    );
-
-    $errorMessage = "Unable to alter table security_token";
-    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
     /**
      * Add new UnifiedSQl broker output
      */
-    $pearDB->beginTransaction();
-
     $errorMessage = 'Unable to update cb_type table ';
     $pearDB->query(
         "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
@@ -172,7 +127,19 @@ try {
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
 
-    $pearDB->commit();
+    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
+    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+
+    // Add login blocking mechanism to contact
+    $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
+    $pearDB->query(
+        "ALTER TABLE `contact`
+        ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+        ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
+    );
+
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -187,6 +154,73 @@ try {
     );
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * Insert SSO configuration
+ *
+ * @param CentreonDB $pearDB
+ * @return void
+ */
+function insertWebSSOConfiguration(CentreonDB $pearDB): void
+{
+    $customConfiguration = [
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "login_header_attribute" => null,
+        "pattern_matching_login" => null,
+        "pattern_replace_login" => null
+    ];
+    $isActive = false;
+    $isForced = false;
+    $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'sso_%'");
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    if (!empty($result)) {
+        foreach ($result as $configLine) {
+            switch ($configLine['key']) {
+                case 'sso_enable':
+                    $isActive = $configLine['value'] === '1';
+                    break;
+                case 'sso_mode':
+                    $isForced = $configLine['value'] === '0'; //'0' SSO Only, '1' Mixed
+                    break;
+                case 'sso_trusted_clients':
+                    $customConfiguration['trusted_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'sso_blacklist_clients':
+                    $customConfiguration['blacklist_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'sso_header_username':
+                    $customConfiguration['login_header_attribute'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'sso_username_pattern':
+                    $customConfiguration['pattern_matching_login'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'sso_username_replace':
+                    $customConfiguration['pattern_replace_login'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+            }
+        }
+        $pearDB->query("DELETE FROM options WHERE `key` LIKE 'sso_%'");
+    }
+    $insertStatement = $pearDB->prepare(
+        "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
+        VALUES ('web-sso','web-sso', :customConfiguration, :isActive, :isForced)"
+    );
+    $insertStatement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->execute();
 }
 
 /**

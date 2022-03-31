@@ -21,11 +21,11 @@ import StrengthProgress from '../../StrengthProgress';
 
 export const attemptsFieldName = 'attempts';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   input: {
-    width: '65%',
+    maxWidth: theme.spacing(43),
   },
-});
+}));
 
 const Attempts = (): JSX.Element => {
   const classes = useStyles();
