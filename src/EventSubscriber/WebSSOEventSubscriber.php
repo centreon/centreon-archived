@@ -80,11 +80,19 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [
-            KernelEvents::REQUEST => [
-                ['loginWebSSOUser', 34]
-            ],
-        ];
+        $event = [];
+        //Register this event only if its not an upgrade or fresh install
+        if (
+            file_exists(_CENTREON_ETC_ . DIRECTORY_SEPARATOR . 'centreon.conf.php')
+            && ! is_dir(_CENTREON_PATH_ . DIRECTORY_SEPARATOR . 'www'  . DIRECTORY_SEPARATOR . 'install'))
+        {
+            $event = [
+                KernelEvents::REQUEST => [
+                    ['loginWebSSOUser', 34]
+                ],
+            ];
+        }
+        return $event;
     }
 
     /**
