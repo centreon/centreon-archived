@@ -356,6 +356,10 @@ services:
         class: Core\Domain\Security\Provider\OpenIdProvider
         tags: ['authentication.providers']
 
+    Security\Domain\Authentication\Interfaces\WebSSOProviderInterface:
+        class: Core\Domain\Security\Provider\WebSSOProvider
+        tags: ['authentication.providers']
+
     Centreon\Domain\Authentication\UseCase\AuthenticateApi:
         public: true
 
