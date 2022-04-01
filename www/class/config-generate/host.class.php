@@ -404,9 +404,11 @@ class Host extends AbstractHost
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity'])) {
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] =
-                $this->hosts[$host_id_arg]['severity']['level'];
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
+            $this->hosts[$host_id_arg]['macros']= [
+                '_CRITICALITY_LEVEL' => $this->hosts[$host_id_arg]['severity']['level'],
+                '_CRITICALITY_ID' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+                'severity' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+            ];
         }
 
         $hosts_tpl = &HostTemplate::getInstance($this->dependencyInjector)->hosts;
@@ -416,7 +418,7 @@ class Host extends AbstractHost
                 continue;
             }
             $loop[$host_id] = 1;
-            if (isset($hosts_tpl[$host_id]['severity_id']) && !is_null($hosts_tpl[$host_id]['severity_id'])) {
+            if (isset($hosts_tpl[$host_id]['severity_id'])) {
                 $severity_id = $hosts_tpl[$host_id]['severity_id'];
                 break;
             }
@@ -431,9 +433,7 @@ class Host extends AbstractHost
                     continue;
                 }
                 $loop[$host_id2] = 1;
-                if (isset($hosts_tpl[$host_id2]['severity_id']) && !is_null($hosts_tpl[$host_id2]['severity_id'])) {
-                    $severity_id = $hosts_tpl[$host_id2]['severity_id'];
-                }
+
                 if (isset($hosts_tpl[$host_id2]['severity_id'])) {
                     $severity_id = $hosts_tpl[$host_id2]['severity_id'];
                     break;
