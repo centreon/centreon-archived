@@ -30,6 +30,8 @@ import LocalAuthentication from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+jest.mock('../logos/passwordPadlock.svg');
+
 const cancelTokenRequestParam = { cancelToken: {} };
 
 const cancelTokenPutParams = {

@@ -59,7 +59,10 @@ services:
     Pimple\Container:
         factory: ['Centreon\LegacyContainer', 'getInstance']
 
-    Centreon\Application\Controller\Router:
+    Centreon\Infrastructure\CentreonLegacyDB\StatementCollector:
+        shared: false
+
+    Core\Infrastructure\Common\Api\Router:
         decorates: router
         arguments: ['@.inner']
 

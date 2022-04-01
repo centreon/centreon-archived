@@ -64,7 +64,7 @@ CentreonSession::start();
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = &$_SESSION["centreon"];
-    header('Location: index.html');
+    include __DIR__ . '/../../../index.html';
 }
 
 /*
@@ -86,12 +86,6 @@ if (version_compare(phpversion(), '8.0') < 0) {
             isset($_POST["autologin"]) && $_POST["autologin"]
             && isset($generalOptions["enable_autologin"])
             && $generalOptions["enable_autologin"])
-        || (
-            !isset($generalOptions['sso_enable'])
-            || $generalOptions['sso_enable'] == 1)
-        || (
-            !isset($generalOptions['openid_connect_enable'])
-            || $generalOptions['openid_connect_enable'] == 1)
     ) {
         $argP = filter_var(
             $_POST['p'] ?? $_GET["p"] ?? null,

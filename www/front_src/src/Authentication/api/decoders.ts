@@ -2,6 +2,7 @@ import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 import { OpenidConfiguration } from '../Openid/models';
+import { WebSSOConfiguration } from '../WebSSO/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
   {
@@ -89,5 +90,40 @@ export const openidConfigurationDecoder =
       trustedClientAddresses: 'trusted_client_addresses',
       userinfoEndpoint: 'userinfo_endpoint',
       verifyPeer: 'verify_peer',
+    },
+  );
+
+export const webSSOConfigurationDecoder =
+  JsonDecoder.object<WebSSOConfiguration>(
+    {
+      blacklistClientAddresses: JsonDecoder.array(
+        JsonDecoder.string,
+        'blacklist client addresses',
+      ),
+      isActive: JsonDecoder.boolean,
+      isForced: JsonDecoder.boolean,
+      loginHeaderAttribute: JsonDecoder.optional(
+        JsonDecoder.nullable(JsonDecoder.string),
+      ),
+      patternMatchingLogin: JsonDecoder.optional(
+        JsonDecoder.nullable(JsonDecoder.string),
+      ),
+      patternReplaceLogin: JsonDecoder.optional(
+        JsonDecoder.nullable(JsonDecoder.string),
+      ),
+      trustedClientAddresses: JsonDecoder.array(
+        JsonDecoder.string,
+        'trusted client addresses',
+      ),
+    },
+    'Web SSO Configuration',
+    {
+      blacklistClientAddresses: 'blacklist_client_addresses',
+      isActive: 'is_active',
+      isForced: 'is_forced',
+      loginHeaderAttribute: 'login_header_attribute',
+      patternMatchingLogin: 'pattern_matching_login',
+      patternReplaceLogin: 'pattern_replace_login',
+      trustedClientAddresses: 'trusted_client_addresses',
     },
   );
