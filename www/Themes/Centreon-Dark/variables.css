@@ -120,4 +120,9 @@
     --graph-title-background-color: var(--body-background);
     --header-text-font-color: var(--body-color);
     --row-disabled-background-color: var(--body-background);
+    --list-table-small-arg-anchor-font-color: var(--list-header-font-color);
+    --list-lvl-2-font-color: var(--color-white);
+    --list-lvl-1-font-color: var(--color-white);
+    --c3-path-stroke-color: var(--color-white);
+    --c3-text-fill-color: var(--color-white);
 }

@@ -4,8 +4,8 @@
     border-color: var(--list-table-border-color);
     border-radius: 5px;
 }
-.list_lvl_1 { background-color:var(--list-lvl-1-background-color); }
-.list_lvl_2 { background-color:var(--list-lvl-2-background-color); }
+.list_lvl_1 { background-color:var(--list-lvl-1-background-color); color: var(--list-lvl-1-font-color)}
+.list_lvl_2 { background-color:var(--list-lvl-2-background-color); color: var(--list-lvl-2-font-color)}
 
 .ListHeader     { background:var(--list-header-background); }
 .ListSubHeader  {
@@ -13,7 +13,7 @@
     font-weight:bold;
     background-position:top left;
 }
-
+>
 .list_lvl_2 td, .list_lvl_1 td {
     border-top-color: var(--list-lvls-td-top-border-color);
     border-left-color: var(--list-lvls-td-left-border-color);
