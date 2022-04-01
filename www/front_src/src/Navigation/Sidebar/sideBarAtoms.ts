@@ -9,10 +9,9 @@ export const selectedNavigationItemsAtom = atomWithStorage<Record<
   Page
 > | null>('selectedNavigationItems', null);
 
-export const hoveredNavigationItemsAtom = atomWithStorage<Record<
-  string,
-  Page
-> | null>('hoveredNavigationItems', null);
+export const hoveredNavigationItemsAtom = atom<Record<string, Page> | null>(
+  null,
+);
 
 export const hoveredNavigationItemsDerivedAtom = atom(
   null,
