@@ -117,6 +117,13 @@ paths:
       tags:
         - Authentication
       summary: "Update user password"
+      parameters:
+      - name: alias
+        in: path
+        description: "Alias of the user"
+        required: true
+        schema:
+          type: string
       requestBody:
         required: true
         content:
@@ -755,7 +762,7 @@ paths:
     get:
       tags:
       - User
-      summary: get configured users
+      summary: Get configured users
       description: |
         Get list of configured users
 
@@ -840,6 +847,47 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/users/{user}/parameters:
+    patch:
+      tags:
+      - User
+      summary: Update a user
+      description: |
+        Update a user
+        
+        The available parameters to be updated are :
+        
+        * theme
+      parameters:
+      - name: user
+        in: path
+        description: "ID of the user or current"
+        required: true
+        schema:
+          type: string
+        example: |
+
+          * current: for current user
+          * numerical value corresponding to the user id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                theme:
+                  type: string
+                  description: Theme
+                  enum: [ light, dark ]
+                  example: light
+      responses:
+        204:
+          description: "Command Sent"
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
           $ref: '#/components/responses/InternalServerError'
   /configuration/contact-template:
     get:

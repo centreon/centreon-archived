@@ -15,3 +15,12 @@ centreon_application_configuration_users:
   path: /configuration/users
   controller: 'Core\Infrastructure\Configuration\User\Api\FindUsers\FindUsersController'
   condition: "request.attributes.get('version') >= 22.04"
+
+centreon_application_patch_users:
+  methods: PATCH
+  path: /configuration/users/{user}/parameters
+  requirements:
+    user: '\d+|current'
+  controller: 'Core\Infrastructure\Configuration\User\Api\PatchUser\PatchUserController'
+  condition: "request.attributes.get('version') >= 22.04"
+
