@@ -46,7 +46,7 @@ const MaterialUISwitch = styled(Switch, {
     margin: 0,
     position: 'absolute',
     top: '50%',
-    transform: 'translate(0px,-50%)',
+    transform: 'translate(-0.5px,-50%)',
   },
   '& .MuiSwitch-thumb': {
     '&:before': {
@@ -70,8 +70,8 @@ const MaterialUISwitch = styled(Switch, {
     opacity: 1,
   },
   height: theme.spacing(32 / 8),
-  padding: theme.spacing(11 / 8),
-  width: theme.spacing(56 / 8),
+  padding: theme.spacing(11 / 8, 4 / 8, 11 / 8, 9 / 8),
+  width: theme.spacing(50 / 8),
 }));
 
 const useStyles = makeStyles((theme) => ({
