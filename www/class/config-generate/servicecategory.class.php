@@ -170,4 +170,19 @@ class ServiceCategory extends AbstractObject
             }
         }
     }
+
+    public function getServiceCategoryIdsForService(int $serviceId): array
+    {
+        $serviceCategoryIds = [];
+        foreach ($this->serviceCategories as $id => &$value) {
+            if (! isset($value['members']) || count($value['members']) === 0) {
+                continue;
+            }
+            if (in_array($serviceId, array_keys($value['members']))) {
+                $serviceCategoryIds[] = (int) $id;
+            }
+        }
+
+        return $serviceCategoryIds;
+    }
 }
