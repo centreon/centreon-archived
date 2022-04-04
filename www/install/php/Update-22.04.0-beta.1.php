@@ -484,10 +484,10 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         throw new \Exception("Cannot find 'sql' and 'storage' in cb_type table");
     }
 
-    $blockIdsList = "";
+    $blockIds = "";
     foreach ($typeIds as $key => $typeId) {
-        $blockIdsList .= ! empty($blockIdsList) ? "," : "";
-        $blockIdsList .= "'1_$typeId'";
+        $blockIds .= ! empty($blockIds) ? "," : "";
+        $blockIds .= "'1_$typeId'";
     }
 
     // Retrieve unified_sql type id
@@ -514,7 +514,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         $dbResult = $pearDB->query(
             "SELECT config_group_id FROM cfg_centreonbroker_info
             WHERE config_id = $configId AND config_key = 'blockId'
-            AND config_value IN ($blockIdsList)"
+            AND config_value IN ($blockIds)"
         );
         $configGroupIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
         if (empty($configGroupIds)) {
@@ -546,40 +546,36 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         $unifiedSqlOutput['blockId']['config_value'] = "1_$unifiedSqlTypeId";
 
         // Insert new output
-        $query = "";
-        $queryGlue = "";
+        $queryRows = [];
         $bindedValues = [];
+        $columnsName = null;
         foreach ($unifiedSqlOutput as $configKey => $row) {
-            if ($query === '') {
-                $columns_name = implode(", ", array_keys($row));
-                $query = "INSERT INTO cfg_centreonbroker_info ($columns_name) VALUES ";
-            }
+            $columnsName = $columnsName ?? implode(", ", array_keys($row));
 
-            $glue = '';
-            $query .= $queryGlue . "(";
-
+            $queryKeys = [];
             foreach ($row as $key => $value) {
-                $query .= $glue;
-                $query .= ":" . $configKey . '_' . $key;
-                $glue = ", ";
-
-                $bindedValues[':' . $configKey . '_' . $key] = $value;
-            }
-            $query .= ")";
-            $queryGlue = ', ';
-        }
-
-        $stmt = $pearDB->prepare($query);
-        foreach ($unifiedSqlOutput as $configKey => $row) {
-            foreach ($row as $key => $value) {
+                $queryKeys[] = ":" . $configKey . '_' . $key;
                 if (in_array($key, ['config_key', 'config_value', 'config_group'])) {
-                    $stmt->bindValue(':' . $configKey . '_' . $key, $value, \PDO::PARAM_STR);
+                    $bindedValues[':' . $configKey . '_' . $key] = ['value' => $value, 'type' => \PDO::PARAM_STR];
                 } else {
-                    $stmt->bindValue(':' . $configKey . '_' . $key, $value, \PDO::PARAM_INT);
+                    $bindedValues[':' . $configKey . '_' . $key] = ['value' => $value, 'type' => \PDO::PARAM_INT];
                 }
             }
+            if (! empty($queryKeys)) {
+                $queryRows[] = '(' . implode(', ', $queryKeys) . ')';
+            }
         }
-        $stmt->execute();
+
+        if (! empty($queryRows)) {
+            $query = "INSERT INTO cfg_centreonbroker_info ($columnsName) VALUES ";
+            $query .= implode(', ', $queryRows);
+
+            $stmt = $pearDB->prepare($query);
+            foreach ($bindedValues as $key => $value) {
+                $stmt->bindValue($key, $value['value'], $value['type']);
+            }
+            $stmt->execute();
+        }
 
         // Delete deprecated outputs
         $bindedValues = [];
