@@ -12,7 +12,9 @@ import { userAtom } from '@centreon/ui-context';
 interface UseDateTimePickerAdapterProps {
   Adapter;
   formatKeyboardValue: (value?: string) => string | undefined;
-  getLocalAndConfiguredTimezoneOffset: (destinationTimezone?: string) => number;
+  getDestinationAndConfiguredTimezoneOffset: (
+    destinationTimezone?: string,
+  ) => number;
 }
 
 enum DSTState {
@@ -220,8 +222,7 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
   return {
     Adapter,
     formatKeyboardValue,
-    getLocalAndConfiguredTimezoneOffset:
-      getDestinationAndConfiguredTimezoneOffset,
+    getDestinationAndConfiguredTimezoneOffset,
   };
 };
 
