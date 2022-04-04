@@ -1846,37 +1846,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $downtimes;
         }
 
-        $sql = 'SELECT
-            d.downtime_id,
-            d.entry_time,
-            d.host_id,
-            d.service_id,
-            d.author,
-            d.cancelled,
-            `cmts`.data AS `comment_data`,
-            d.deletion_time,
-            d.duration,
-            d.end_time,
-            d.fixed,
-            d.instance_id,
-            d.internal_id,
-            d.start_time,
-            d.actual_start_time,
-            d.actual_end_time,
-            d.started,
-            d.triggered_by,
-            d.type,
-            c.contact_id AS `author_id`
-        FROM `:dbstg`.`downtimes`  AS `d`
-        LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author
-        LEFT JOIN `:dbstg`.`comments` AS `cmts`
-            ON `cmts`.host_id = d.host_id AND `cmts`.service_id = d.service_id
-            AND `cmts`.deletion_time IS NULL
-        WHERE d.host_id = :hostId AND d.service_id = :serviceId
-            AND d.deletion_time IS NULL AND d.cancelled = 0 AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time)
-            AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time)
-            AND d.actual_end_time IS NULL)))
-        ORDER BY d.entry_time DESC';
+        $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
+            . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
+            . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND d.actual_end_time IS NULL))) '
+            . 'ORDER BY d.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
@@ -1905,28 +1881,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $acks;
         }
 
-        $sql = 'SELECT
-            a.acknowledgement_id,
-            a.entry_time,
-            a.host_id,
-            a.service_id,
-            a.author,
-            `cmts`.data AS `comment_data`,
-            a.deletion_time,
-            a.instance_id,
-            a.notify_contacts,
-            a.persistent_comment,
-            a.state,
-            a.sticky,
-            a.type,
-            c.contact_id AS `author_id`
-            FROM `:dbstg`.`acknowledgements` AS `a`
-            LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author
-            LEFT JOIN `:dbstg`.`comments` AS `cmts`
-                ON `cmts`.host_id = a.host_id AND `cmts`.service_id = a.service_id
-                AND `cmts`.deletion_time IS NULL
-            WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL
-            ORDER BY a.entry_time DESC';
+        $sql = 'SELECT a.*, c.contact_id AS `author_id` FROM `:dbstg`.`acknowledgements` AS `a` '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
+            . 'WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL '
+            . 'ORDER BY a.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
