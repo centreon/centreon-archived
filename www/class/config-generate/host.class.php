@@ -404,7 +404,7 @@ class Host extends AbstractHost
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity'])) {
-            $this->hosts[$host_id_arg]['macros']= [
+            $this->hosts[$host_id_arg]['macros'] = [
                 '_CRITICALITY_LEVEL' => $this->hosts[$host_id_arg]['severity']['level'],
                 '_CRITICALITY_ID' => $this->hosts[$host_id_arg]['severity']['hc_id'],
                 'severity' => $this->hosts[$host_id_arg]['severity']['hc_id'],
