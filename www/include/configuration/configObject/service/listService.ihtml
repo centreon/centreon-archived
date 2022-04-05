@@ -31,7 +31,7 @@
 				<td>
                     <h4>
                         <div class="md-checkbox md-checkbox-inline">
-                            <input type="checkbox" id="statusHostFilter" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}
+                            <input type="checkbox" id="statusHostFilter" name='statusHostFilter' {$hostStatusChecked}/>&nbsp;{$HostStatus}
                             <label class="empty-label" for="statusHostFilter"></label>
                         </div>
                     </h4>
