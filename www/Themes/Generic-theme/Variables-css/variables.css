@@ -459,7 +459,7 @@
     --ajax-option-border-top-color: var(--ajax-option-border-bottom-color);
     --ajax-option-tr-first-child-background-color: var(--color-white);
     --ajax-option-tr-first-child-font-color: var(--color-grey-chateau);
-    --ajax-option-h4-font-color: var(--color-surfie-green);
+    --ajax-option-h4-font-color: var(--body-color);
     /* ------ END : Log options variables -----*/
 
     /* ------ START : Tactical overview variables -----*/
@@ -776,6 +776,7 @@
     --actionbar-background-color: var(--color-white-rgba-6);
     --ppm-orange-button-background-color: var(--color-primary-dark);
     --switch-button-label-before-background-color: var(--color-primary-dark);
+    --switch-title-font-color: var(--body-color);
     /* ------ END : Plugin pack variables -----*/
 }
 ²
