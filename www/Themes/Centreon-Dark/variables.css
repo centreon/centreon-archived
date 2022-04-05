@@ -135,4 +135,5 @@
     --ppm-orange-button-background-color: var(--color-primary-light);
     --md-preview-background-color: var(--body-color);
     --switch-button-label-before-background-color: var(--color-primary-light);
+    --switch-title-font-color: var(--body-color);
 }
