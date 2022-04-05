@@ -30,7 +30,7 @@ const InitializationPage = (): JSX.Element => {
   };
 
   React.useEffect(() => {
-    if (isNil(platformInstallationStatus) || isNil(areUserParametersLoaded)) {
+    if (isNil(platformInstallationStatus)) {
       return;
     }
 
@@ -48,6 +48,10 @@ const InitializationPage = (): JSX.Element => {
     if (canUpgrade) {
       navigateTo(reactRoutes.upgrade);
 
+      return;
+    }
+
+    if (isNil(areUserParametersLoaded)) {
       return;
     }
 
