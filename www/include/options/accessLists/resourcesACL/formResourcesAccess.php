@@ -62,6 +62,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_host_relations_index_query
+        ON acl_resources_host_relations(host_host_id)"
+    );
     $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -72,6 +76,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts exludes relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_hostex_relations_index_query
+        ON acl_resources_hostex_relations(host_host_id)"
+    );
     $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -82,6 +90,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts Groups relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_hg_relations_index_query
+        ON acl_resources_hg_relations(hg_hg_id)"
+    );
     $statement = $pearDB->prepare("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -92,6 +104,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Groups relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_res_group_relations_index_query
+        ON acl_res_group_relations(acl_group_id)"
+    );
     $statement = $pearDB->prepare(
         "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :aclId"
     );
@@ -104,6 +120,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Service Categories relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_sc_relations_index_query
+        ON acl_resources_sc_relations(sc_id)"
+    );
     $statement = $pearDB->prepare("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -114,6 +134,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Host Categories
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_hc_relations_index_query
+        ON acl_resources_hc_relations(hc_id)"
+    );
     $statement = $pearDB->prepare("SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -124,6 +148,10 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Service Groups relations
      */
+    $pearDB->query(
+        "CREATE INDEX IF NOT EXISTS acl_resources_sg_relations_index_query
+        ON acl_resources_sg_relations(sg_id)"
+    );
     $statement = $pearDB->prepare("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -144,7 +172,8 @@ if ($o === 'c' || $o === 'w') {
     }
 }
 
-$groups = array();
+$groups = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS acl_groups_index_query ON acl_groups(acl_group_id, acl_group_name)");
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 while ($group = $DBRESULT->fetch()) {
     $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
@@ -154,56 +183,61 @@ while ($group = $DBRESULT->fetch()) {
 }
 $DBRESULT->closeCursor();
 
-$pollers = array();
+$pollers = [];
 $DBRESULT = $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
 while ($poller = $DBRESULT->fetch()) {
     $pollers[$poller["id"]] = $poller["name"];
 }
 $DBRESULT->closeCursor();
 
-$hosts = array();
+$hosts = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS host_index_query ON host(host_id, host_name)");
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 while ($host = $DBRESULT->fetch()) {
     $hosts[$host["host_id"]] = $host["host_name"];
 }
 $DBRESULT->closeCursor();
 
-$hosttoexcludes = array();
+$hosttoexcludes = [];
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 while ($host = $DBRESULT->fetchRow()) {
     $hosttoexcludes[$host["host_id"]] = $host["host_name"];
 }
 $DBRESULT->closeCursor();
 
-$hostgroups = array();
+$hostgroups = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS hg_index_query ON hostgroup(hg_id, hg_name)");
 $DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 while ($hg = $DBRESULT->fetchRow()) {
     $hostgroups[$hg["hg_id"]] = $hg["hg_name"];
 }
 $DBRESULT->closeCursor();
 
-$service_categories = array();
+$service_categories = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS service_categories_index_query ON service_categories(sc_id, sc_name)");
 $DBRESULT = $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
 while ($sc = $DBRESULT->fetchRow()) {
     $service_categories[$sc["sc_id"]] = $sc["sc_name"];
 }
 $DBRESULT->closeCursor();
 
-$host_categories = array();
+$host_categories = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS hostcategories_index_query ON hostcategories(hc_id, hc_name)");
 $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
 while ($hc = $DBRESULT->fetchRow()) {
     $host_categories[$hc["hc_id"]] = $hc["hc_name"];
 }
 $DBRESULT->closeCursor();
 
-$service_groups = array();
+$service_groups = [];
+$pearDB->query("CREATE INDEX IF NOT EXISTS servicegroup_index_query ON servicegroup(sg_id, sg_name)");
 $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 while ($sg = $DBRESULT->fetchRow()) {
     $service_groups[$sg["sg_id"]] = $sg["sg_name"];
 }
 $DBRESULT->closeCursor();
 
-$meta_services = array();
+$meta_services = [];
 $DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 while ($ms = $DBRESULT->fetchRow()) {
     $meta_services[$ms["meta_id"]] = $ms["meta_name"];
