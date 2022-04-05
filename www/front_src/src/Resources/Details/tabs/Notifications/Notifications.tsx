@@ -5,22 +5,19 @@ import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
 import {
+  Box,
+  Divider,
   Paper,
   Stack,
-  Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationIconOff from '@mui/icons-material/NotificationsOff';
 import NotificationIconActive from '@mui/icons-material/NotificationsActive';
 import PersonIcon from '@mui/icons-material/Person';
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupIcon from '@mui/icons-material/Group';
 
-import { getData, useRequest } from '@centreon/ui';
+import { getData, useRequest, IconButton } from '@centreon/ui';
 
 import { detailsAtom } from '../../detailsAtoms';
 import {
@@ -33,10 +30,10 @@ import {
   labelNotificationStatus,
 } from '../../../translatedLabels';
 
-import { Contact, ContactGroup } from './models';
+import { Contact, ContactGroups } from './models';
 
 interface NotificationContacts {
-  contact_groups: Array<ContactGroup> | null;
+  contact_groups: Array<ContactGroups> | null;
   contacts: Array<Contact> | null;
   is_notification_enabled: boolean;
 }
@@ -55,16 +52,18 @@ const Notification = (): JSX.Element => {
   const endpoint = path(['links', 'endpoints', 'notification_policy'], details);
 
   const loadContactNotifs = (): void => {
-    sendRequest({ endpoint })
-      .then((retrievedNotificationContacts) => {
-        setNotificationContacts(retrievedNotificationContacts);
-      })
-      .catch(() => undefined);
+    sendRequest({ endpoint }).then((retrievedNotificationContacts) => {
+      setNotificationContacts(retrievedNotificationContacts);
+    });
   };
 
   React.useEffect(() => {
     loadContactNotifs();
   }, []);
+
+  const goToUri = (uri: string): void => {
+    window.location.href = uri;
+  };
 
   return (
     <Stack spacing={2}>
@@ -75,7 +74,9 @@ const Notification = (): JSX.Element => {
           justifyContent="space-between"
           padding={1}
         >
-          <Typography>{t(labelNotificationStatus)}</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {t(labelNotificationStatus)}
+          </Typography>
           {notificationContacts?.is_notification_enabled ? (
             <NotificationIconActive color="primary" />
           ) : (
@@ -83,73 +84,96 @@ const Notification = (): JSX.Element => {
           )}
         </Stack>
       </Paper>
-      <Stack alignItems="center" direction="row" padding={0.5} spacing={1}>
-        <PersonIcon color="primary" />
-        <Typography>{t(labelContacts)}</Typography>
+      <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+        <PersonIcon color="primary" fontSize="large" />
+        <Typography sx={{ fontWeight: 'bold' }}>{t(labelContacts)}</Typography>
       </Stack>
-      <Table sx={{ minWidth: 400 }}>
-        <TableContainer component={Paper}>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t(labelName)}</TableCell>
-              <TableCell>{t(labelAlias)}</TableCell>
-              <TableCell>{t(labelEmail)}</TableCell>
-              <TableCell align="right" sx={{ minWidth: 180 }}>
-                {t(labelConfiguration)}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          {notificationContacts?.contacts?.map(
-            ({ id, name, alias, email, configuration_uri }) => {
-              return (
-                <TableRow key={id}>
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{alias}</TableCell>
-                  <TableCell>{email}</TableCell>
-                  <TableCell align="right">
-                    <SettingsIcon color="primary" href={configuration_uri} />
-                  </TableCell>
-                </TableRow>
-              );
-            },
-          )}
-        </TableContainer>
-      </Table>
+      <Box
+        component={Paper}
+        display="grid"
+        sx={{
+          alignItems: 'center',
+          gap: 1,
+          gridTemplateColumns: '1fr 1fr 1fr auto',
+          justifyContent: 'center',
+          py: 1,
+        }}
+      >
+        <>
+          <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
+            {t(labelName)}
+          </Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
+          <span />
 
-      <Stack alignItems="center" direction="row" padding={0.5} spacing={1}>
-        <GroupsIcon color="primary" />
-        <Typography>{t(labelContactGroups)}</Typography>
-      </Stack>
-
-      <Table sx={{ minWidth: 400 }}>
-        <TableContainer component={Paper}>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t(labelName)}</TableCell>
-              <TableCell>{t(labelAlias)}</TableCell>
-              <TableCell align="right" sx={{ minWidth: 250 }}>
-                {t(labelConfiguration)}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          {notificationContacts?.contact_groups?.map(
-            ({ id, name, alias, configuration_uri }) => {
-              return (
-                <TableRow
-                  key={id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          <Divider sx={{ gridColumn: '1 / -1' }} />
+        </>
+        {notificationContacts?.contacts?.map(
+          ({ name, alias, email, configuration_uri }) => {
+            return (
+              <>
+                <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
+                <Typography>{alias}</Typography>
+                <Typography>{email}</Typography>
+                <IconButton
+                  size="small"
+                  sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
+                  title={t(labelConfiguration)}
+                  onClick={(): void => goToUri(configuration_uri)}
                 >
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{alias}</TableCell>
-                  <TableCell align="right">
-                    <SettingsIcon color="primary" href={configuration_uri} />
-                  </TableCell>
-                </TableRow>
-              );
-            },
-          )}
-        </TableContainer>
-      </Table>
+                  <SettingsIcon color="primary" fontSize="small" />
+                </IconButton>
+              </>
+            );
+          },
+        )}
+      </Box>
+      <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+        <GroupIcon color="primary" fontSize="large" />
+        <Typography sx={{ fontWeight: 'bold' }}>
+          {t(labelContactGroups)}
+        </Typography>
+      </Stack>
+      <Box
+        component={Paper}
+        display="grid"
+        sx={{
+          alignItems: 'center',
+          gap: 1,
+          gridTemplateColumns: '1fr 1fr auto',
+          justifyContent: 'center',
+          py: 1,
+        }}
+      >
+        <>
+          <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
+            {t(labelName)}
+          </Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
+          <span />
+
+          <Divider sx={{ gridColumn: '1 / -1' }} />
+        </>
+        {notificationContacts?.contact_groups?.map(
+          ({ name, alias, configuration_uri }) => {
+            return (
+              <>
+                <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
+                <Typography>{alias}</Typography>
+                <IconButton
+                  size="small"
+                  sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
+                  title={t(labelConfiguration)}
+                  onClick={(): void => goToUri(configuration_uri)}
+                >
+                  <SettingsIcon color="primary" fontSize="small" />
+                </IconButton>
+              </>
+            );
+          },
+        )}
+      </Box>
     </Stack>
   );
 };
