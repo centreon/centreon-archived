@@ -155,12 +155,15 @@
     --color-sherpa-blue-light: #002c3c;
     --color-cod-grey :#2B2E30 ;
     --color-grey-wan-white :#e8e6e38a;
+    --color-myrtle-green: #21766f;
     --color-white-rgba-8 :rgba(240, 240, 240, 0.8);
     --color-white-rgba-5 :rgba(255, 255, 255, 0.5);
+    --color-white-rgba-6 :rgba(255, 255, 255, 0.6);
     --color-black-rgba-54 :rgba(0, 0, 0, 0.54);
     --color-black-rgba-1 :rgba(0, 0, 0, 0.1);
     --color-black-rgba-26: rgba(0, 0, 0, 0.26);
     --color-black-rgba-07: rgba(0, 0, 0, 0.07);
+    --color-black-rgba-6: rgba(0, 0, 0, 0.6);
     --color-astral-rgb: rgb(51, 122, 183);
     --color-pistachio-rgba: rgba(158, 199, 0, 0.49);
     --color-gallery-rgba: rgba(239,239,239, 0.8);

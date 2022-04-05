@@ -177,7 +177,7 @@
     /***********/
 
     /** States **/
-    --default-badge-background-color: var(--color-persian-green);
+    --default-badge-background-color: var(--color-primary-dark);
     --host-down-danger-service-critical-background-color : var(--color-danger);
     --host-unreachable-unknown-background-color: var(--color-aluminium);
     --host-downtime-background-color : var(--color-mauve);
@@ -763,4 +763,14 @@
     --ui-state-processing-anchor-background-color: none;
     --ui-state-processing-background-color: none;
     /* ------ END : JQuery UI variables -----*/
+    /* ------ START : Plugin pack variables -----*/
+    --pluginpack-block-h2-font-color: var(--body-color);
+    --pp-can-be-installed-border-color: var(--color-ghost);
+    --pp-bottom-name-font-color: var(--body-color);
+    --pp-deny-after-background-color: var(--color-white-rgba-6);
+    --actionbar-background-color: var(--color-white-rgba-6);
+    --ppm-orange-button-background-color: var(--color-primary-dark);
+    --switch-button-label-before-background-color: var(--color-primary-dark);
+    /* ------ END : Plugin pack variables -----*/
 }
+²

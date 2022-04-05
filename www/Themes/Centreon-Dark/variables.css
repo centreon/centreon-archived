@@ -125,4 +125,14 @@
     --list-lvl-1-font-color: var(--color-white);
     --c3-path-stroke-color: var(--color-white);
     --c3-text-fill-color: var(--color-white);
+    --pluginpack-block-h2-font-color: var(--body-color);
+    --pp-can-be-installed-border-color: var(--body-color);
+    --pp-bottom-border-top-color: var(--pp-can-be-installed-border-color);
+    --pp-bottom-name-font-color: var(--color-white);
+    --default-badge-background-color: var(--color-primary-light);
+    --pp-deny-after-background-color: var(--color-black-rgba-6);
+    --actionbar-background-color: var(--color-black-rgba-6);
+    --ppm-orange-button-background-color: var(--color-primary-light);
+    --md-preview-background-color: var(--body-color);
+    --switch-button-label-before-background-color: var(--color-primary-light);
 }
