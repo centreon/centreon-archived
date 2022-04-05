@@ -33,8 +33,6 @@ class FindContactTemplatesResponse
     public array $contactTemplates;
 
     /**
-     * Undocumented function
-     *
      * @param array<ContactTemplate> $contactTemplates
      */
     public function __construct(array $contactTemplates)
@@ -43,8 +41,6 @@ class FindContactTemplatesResponse
     }
 
     /**
-     * Undocumented function
-     *
      * @param array<ContactTemplate> $contactTemplates
      * @return array<array<string,string|int>>
      */
