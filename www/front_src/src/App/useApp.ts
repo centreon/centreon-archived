@@ -74,11 +74,12 @@ const useApp = (): UseAppState => {
   const { getExternalComponents } = useExternalComponents();
 
   const logout = (): void => {
+    setAreUserParametersLoaded(false);
     logoutRequest({
       data: {},
       endpoint: logoutEndpoint,
     }).then(() => {
-      setAreUserParametersLoaded(false);
+      showErrorMessage(t(labelYouAreDisconnected));
       navigate(reactRoutes.login);
     });
   };
@@ -141,10 +142,8 @@ const useApp = (): UseAppState => {
         return;
       }
       logout();
-      showErrorMessage(t(labelYouAreDisconnected));
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
-      navigate(reactRoutes.login);
     });
   };
 
