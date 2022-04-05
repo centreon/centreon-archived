@@ -1,21 +1,18 @@
 import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { isNil, not, or, pathEq, propOr } from 'ramda';
+import { isNil } from 'ramda';
 
 import { User, userAtom } from '@centreon/ui-context';
 import { useRequest, getData } from '@centreon/ui';
 
 import { userDecoder } from '../api/decoders';
 import { userEndpoint } from '../api/endpoint';
-import { PlatformInstallationStatus } from '../api/models';
 
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
 const useUser = (
   changeLanguage?: (locale: string) => void,
-): ((
-  webVersions: PlatformInstallationStatus | null,
-) => null | Promise<void>) => {
+): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
     httpCodesBypassErrorSnackbar: [403, 401, 500],
@@ -27,9 +24,7 @@ const useUser = (
   );
   const setUser = useUpdateAtom(userAtom);
 
-  const loadUser = (
-    webVersions: PlatformInstallationStatus | null,
-  ): null | Promise<void> => {
+  const loadUser = (): null | Promise<void> => {
     if (areUserParametersLoaded) {
       return null;
     }
