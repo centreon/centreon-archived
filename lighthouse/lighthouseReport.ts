@@ -6,6 +6,7 @@ import { startFlow } from 'lighthouse/lighthouse-core/fraggle-rock/api';
 import { generateReportForLoginPage } from './pages/login';
 import { generateReportForResourceStatusPage } from './pages/resourceStatus';
 import { baseConfigContext } from './defaults';
+import { generateReportForAuthenticationPage } from './pages/authentication';
 
 const createReportFile = (report): void => {
   const lighthouseFolderExists = fs.existsSync('report');
@@ -31,6 +32,8 @@ const captureReport = async (): Promise<void> => {
   await generateReportForLoginPage({ flow, page });
 
   await generateReportForResourceStatusPage({ flow, page });
+
+  await generateReportForAuthenticationPage({ flow, page });
 
   await browser.close();
 

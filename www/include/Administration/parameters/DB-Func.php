@@ -34,20 +34,23 @@
  *
  */
 
+ /**
+ * Used to update fields in the 'centreon.options' table
+ *
+ * @param \CentreonDB $pearDB : database connection
+ * @param string $key : name of the row
+ * @param string $value : value of the row
+ */
 function updateOption($pearDB, $key, $value)
 {
-    /*
-     * Purge
-     */
-    $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $stmt = $pearDB->prepare("DELETE FROM `options` WHERE `key` = :key");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->execute();
 
-    /*
-     * Add
-     */
-    if (!is_null($value) && $value != 'NULL') {
-        $value = "'$value'";
-    }
-    $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $stmt = $pearDB->prepare("INSERT INTO `options` (`key`, `value`) VALUES (:key, :value)");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 /**
@@ -527,19 +530,19 @@ function updateGeneralConfigData($gopt_id = null)
         $pearDB,
         "oreon_path",
         isset($ret["oreon_path"]) && $ret["oreon_path"] != null
-            ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "oreon_web_path",
         isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != null
-            ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "oreon_refresh",
         isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != null
-            ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
@@ -552,43 +555,43 @@ function updateGeneralConfigData($gopt_id = null)
         $pearDB,
         "session_expire",
         isset($ret["session_expire"]) && $ret["session_expire"] != null
-            ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "maxViewMonitoring",
         isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != null
-            ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "maxViewConfiguration",
         isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != null
-            ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "maxGraphPerformances",
         isset($ret["maxGraphPerformances"]) && $ret["maxGraphPerformances"] != null
-            ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "selectPaginationSize",
         isset($ret["selectPaginationSize"]) && $ret["selectPaginationSize"] != null
-            ? htmlentities($ret["selectPaginationSize"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["selectPaginationSize"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "AjaxTimeReloadMonitoring",
         isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != null
-            ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "AjaxTimeReloadStatistic",
         isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != null
-            ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
@@ -599,55 +602,55 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "gmt",
-        isset($ret["gmt"]) && $ret["gmt"] != null ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8") : "NULL"
+        isset($ret["gmt"]) && $ret["gmt"] != null ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "global_sort_type",
         isset($ret["global_sort_type"]) && $ret["global_sort_type"] != null
-            ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "global_sort_order",
         isset($ret["global_sort_order"]) && $ret["global_sort_order"] != null
-            ? htmlentities($ret["global_sort_order"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["global_sort_order"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "problem_sort_type",
         isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != null
-            ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         "problem_sort_order",
         isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != null
-            ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         'proxy_url',
         isset($ret["proxy_url"]) && $ret["proxy_url"] != null
-            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         'proxy_port',
         isset($ret["proxy_port"]) && $ret["proxy_port"] != null
-            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
         'proxy_user',
         isset($ret["proxy_user"]) && $ret["proxy_user"] != null
-            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8") : null
     );
     if (isset($ret["proxy_password"]) && $ret['proxy_password'] != CentreonAuth::PWS_OCCULTATION) {
         updateOption(
             $pearDB,
             'proxy_password',
-            $ret["proxy_password"] != null ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8") : "NULL"
+            $ret["proxy_password"] != null ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8") : null
         );
     }
     updateOption(
@@ -676,159 +679,9 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "sso_enable",
-        isset($ret["sso_enable"]["yes"]) && $ret["sso_enable"]["yes"] != null ? 1 : 0
-    );
-    updateOption(
-        $pearDB,
-        "sso_mode",
-        isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != null
-            ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1
-    );
-    updateOption(
-        $pearDB,
-        "sso_trusted_clients",
-        isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != null
-            ? $pearDB->escape($ret["sso_trusted_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_blacklist_clients",
-        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != null
-            ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_header_username",
-        isset($ret["sso_header_username"]) && $ret["sso_header_username"] != null
-            ? $pearDB->escape($ret["sso_header_username"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_username_pattern",
-        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != null
-            ? $pearDB->escape($ret["sso_username_pattern"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_username_replace",
-        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != null
-            ? $pearDB->escape($ret["sso_username_replace"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_enable",
-        isset($ret["openid_connect_enable"]["yes"]) && $ret["openid_connect_enable"]["yes"] != null ? 1 : 0
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_mode",
-        (int) $ret["openid_connect_mode"]["openid_connect_mode"]
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_trusted_clients",
-        isset($ret["openid_connect_trusted_clients"]) && $ret["openid_connect_trusted_clients"] != null
-            ? $pearDB->escape($ret["openid_connect_trusted_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_blacklist_clients",
-        isset($ret["openid_connect_blacklist_clients"]) && $ret["openid_connect_blacklist_clients"] != null
-            ? $pearDB->escape($ret["openid_connect_blacklist_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_base_url",
-        isset($ret["openid_connect_base_url"]) && $ret["openid_connect_base_url"] != null
-            ? $pearDB->escape($ret["openid_connect_base_url"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_authorization_endpoint",
-        isset($ret["openid_connect_authorization_endpoint"]) && $ret["openid_connect_authorization_endpoint"] != null
-            ? $pearDB->escape($ret["openid_connect_authorization_endpoint"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_token_endpoint",
-        isset($ret["openid_connect_token_endpoint"]) && $ret["openid_connect_token_endpoint"] != null
-            ? $pearDB->escape($ret["openid_connect_token_endpoint"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_introspection_endpoint",
-        isset($ret["openid_connect_introspection_endpoint"]) && $ret["openid_connect_introspection_endpoint"] != null
-            ? $pearDB->escape($ret["openid_connect_introspection_endpoint"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_userinfo_endpoint",
-        isset($ret["openid_connect_userinfo_endpoint"]) && $ret["openid_connect_userinfo_endpoint"] != null
-            ? $pearDB->escape($ret["openid_connect_userinfo_endpoint"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_end_session_endpoint",
-        isset($ret["openid_connect_end_session_endpoint"]) && $ret["openid_connect_end_session_endpoint"] != null
-            ? $pearDB->escape($ret["openid_connect_end_session_endpoint"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_scope",
-        isset($ret["openid_connect_scope"]) && $ret["openid_connect_scope"] != null
-            ? $pearDB->escape($ret["openid_connect_scope"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_login_claim",
-        isset($ret["openid_connect_login_claim"]) ? $pearDB->escape($ret["openid_connect_login_claim"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_redirect_url",
-        isset($ret["openid_connect_redirect_url"]) && $ret["openid_connect_redirect_url"] != null
-            ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""
-    );
-
-    if (
-        isset($ret["openid_connect_client_id"])
-        && $ret["openid_connect_client_id"] !== CentreonAuth::PWS_OCCULTATION
-    ) {
-        updateOption(
-            $pearDB,
-            "openid_connect_client_id",
-            $pearDB->escape($ret["openid_connect_client_id"])
-        );
-    }
-
-    if (
-        isset($ret["openid_connect_client_secret"])
-        && $ret["openid_connect_client_secret"] !== CentreonAuth::PWS_OCCULTATION
-    ) {
-        updateOption(
-            $pearDB,
-            "openid_connect_client_secret",
-            $pearDB->escape($ret["openid_connect_client_secret"])
-        );
-    }
-
-    updateOption(
-        $pearDB,
-        "openid_connect_client_basic_auth",
-        isset($ret["openid_connect_client_basic_auth"]["yes"])
-            && $ret["openid_connect_client_basic_auth"]["yes"] != null ? 1 : 0
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_verify_peer",
-        isset($ret["openid_connect_verify_peer"]["yes"]) && $ret["openid_connect_verify_peer"]["yes"] != null ? 1 : 0
-    );
-    updateOption(
-        $pearDB,
         "centreon_support_email",
         isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != null
-            ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8") : "NULL"
+            ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8") : null
     );
     updateOption(
         $pearDB,
@@ -1040,12 +893,17 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])) {
+
+    if (!isset($ret['kb_wiki_certificate']) || !filter_var($ret["kb_wiki_certificate"], FILTER_VALIDATE_INT)) {
         $ret['kb_wiki_certificate'] = 0;
     }
 
     if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
         unset($ret["kb_wiki_password"]);
+    }
+
+    if (isset($ret["kb_wiki_url"]) && !filter_var($ret["kb_wiki_url"], FILTER_VALIDATE_URL)) {
+        unset($ret["kb_wiki_url"]);
     }
 
     foreach ($ret as $key => $value) {

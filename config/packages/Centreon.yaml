@@ -221,9 +221,23 @@ services:
                   arguments: ['@sqlRequestTranslator']
         Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
             tags: ['realtime.api.hypermedia']
+        Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
+            tags: ['authentication.provider.repositories']
+        Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface:
+            tags: ['authentication.provider.responses']
+        Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
+            tags: ['authentication.provider.presenters']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
+
+    Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurations:
+            arguments:
+              - !tagged_iterator 'authentication.provider.repositories'
+              - !tagged_iterator 'authentication.provider.responses'
+
+    Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
+        arguments: [!tagged_iterator 'authentication.provider.presenters']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
@@ -333,6 +347,18 @@ services:
     Core\Application\Security\UseCase\LoginSession\LoginSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
+
+    Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSession:
+        arguments: [ "%redirect_default_page%" ]
+        public: true
+
+    Security\Domain\Authentication\Interfaces\OpenIdProviderInterface:
+        class: Core\Domain\Security\Provider\OpenIdProvider
+        tags: ['authentication.providers']
+
+    Security\Domain\Authentication\Interfaces\WebSSOProviderInterface:
+        class: Core\Domain\Security\Provider\WebSSOProvider
+        tags: ['authentication.providers']
 
     Centreon\Domain\Authentication\UseCase\AuthenticateApi:
         public: true

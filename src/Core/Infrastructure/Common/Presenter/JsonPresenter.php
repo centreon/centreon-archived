@@ -28,7 +28,10 @@ use Core\Application\Common\UseCase\BodyResponseInterface;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\InvalidArgumentResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Core\Application\Common\UseCase\PaymentRequiredResponse;
+use Core\Application\Common\UseCase\ForbiddenResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
@@ -92,11 +95,32 @@ class JsonPresenter implements PresenterFormatterInterface
                     JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                     $this->responseHeaders,
                 );
+            case is_a($this->data, InvalidArgumentResponse::class, false):
+                $this->debug('Invalid argument. Generating an error response');
+                return new JsonResponse(
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_BAD_REQUEST),
+                    JsonResponse::HTTP_BAD_REQUEST,
+                    $this->responseHeaders,
+                );
             case is_a($this->data, UnauthorizedResponse::class, false):
                 $this->debug('Unauthorized. Generating an error response');
                 return new JsonResponse(
                     $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
                     JsonResponse::HTTP_UNAUTHORIZED,
+                    $this->responseHeaders,
+                );
+            case is_a($this->data, PaymentRequiredResponse::class, false):
+                $this->debug('Payment required. Generating an error response');
+                return new JsonResponse(
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_PAYMENT_REQUIRED),
+                    JsonResponse::HTTP_PAYMENT_REQUIRED,
+                    $this->responseHeaders,
+                );
+            case is_a($this->data, ForbiddenResponse::class, false):
+                $this->debug('Forbidden. Generating an error response');
+                return new JsonResponse(
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_FORBIDDEN),
+                    JsonResponse::HTTP_FORBIDDEN,
                     $this->responseHeaders,
                 );
             case is_a($this->data, CreatedResponse::class, false):

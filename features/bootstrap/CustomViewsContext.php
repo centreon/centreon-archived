@@ -67,8 +67,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2, true);
-        $page->addWidget('First widget', 'Host Monitoring');
-        $page->addWidget('Second widget', 'Service Monitoring');
     }
 
     /**
@@ -79,8 +77,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
-        $page->addWidget('First widget', 'Host Monitoring');
-        $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView(null, $this->user);
     }
 
@@ -92,8 +88,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
-        $page->addWidget('First widget', 'Host Monitoring');
-        $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView(null, null, null, $this->cgname);
     }
 
@@ -127,8 +121,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
-        $page->addWidget('First widget', 'Host Monitoring');
-        $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView($this->user);
     }
 
@@ -140,8 +132,6 @@ class CustomViewsContext extends CentreonContext
         $page = new CustomViewsPage($this);
         $page->showEditBar(true);
         $page->createNewView($this->customViewName, 2);
-        $page->addWidget('First widget', 'Host Monitoring');
-        $page->addWidget('Second widget', 'Service Monitoring');
         $page->shareView(null, null, $this->cgname);
     }
 

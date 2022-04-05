@@ -230,6 +230,24 @@ class AssertionException extends \InvalidArgumentException
     }
 
     /**
+     * Exception when the value does not respect ip format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function ipOrDomain(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value "%s" was expected to be a valid ip address or domain name'),
+                $propertyPath,
+                $value
+            )
+        );
+    }
+
+    /**
      * Exception when the value doesn't match a regex.
      *
      * @param string $value
@@ -245,6 +263,24 @@ class AssertionException extends \InvalidArgumentException
                 $propertyPath,
                 $value,
                 $pattern
+            )
+        );
+    }
+
+    /**
+     * Exception when the value does not respect ip format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function ipAddressNotValid(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value \'%s\' was expected to be a valid ip address'),
+                $propertyPath,
+                $value
             )
         );
     }

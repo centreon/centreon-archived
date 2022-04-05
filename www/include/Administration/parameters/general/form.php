@@ -48,10 +48,6 @@ define("SESSION_DURATION_LIMIT", (int)(ini_get('session.gc_maxlifetime') / 60));
 $transcoKey = array(
     "enable_autologin" => "yes",
     "display_autologin_shortcut" => "yes",
-    "sso_enable" => "yes",
-    "openid_connect_enable" => "yes",
-    "openid_connect_client_basic_auth" => "yes",
-    "openid_connect_verify_peer" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
     'display_downtime_chart' => 'yes',
@@ -226,106 +222,8 @@ $form->addGroup(
     '&nbsp;&nbsp;'
 );
 
-/*
- * SSO
- */
-$alertMessage = _("Are you sure you want to change this parameter? Please read the help before.");
-$sso_enable[] = $form->createElement(
-    'checkbox',
-    'yes',
-    '&nbsp;',
-    '',
-    array(
-        "onchange" => "javascript:confirm('" . $alertMessage . "')",
-    )
-);
-$form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
-
-$sso_mode = array();
-$sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("SSO only"), '0');
-$sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("Mixed"), '1');
-$form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
-$form->setDefaults(array('sso_mode' => '1'));
-
-$form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
-$form->addElement('text', 'sso_blacklist_clients', _('SSO blacklist client addresses'), array('size' => 50));
-$form->addElement('text', 'sso_username_pattern', _('SSO pattern matching login'), array('size' => 50));
-$form->addElement('text', 'sso_username_replace', _('SSO pattern replace login'), array('size' => 50));
-$form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
-$form->setDefaults(array('sso_header_username' => 'HTTP_AUTH_USER'));
-
 $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
-
-/*
- * OpenId Connect
- */
-$openIdConnectEnable[] = $form->createElement(
-    'checkbox',
-    'yes',
-    '&nbsp;',
-    '',
-    array(
-        "onchange" => "javascript:confirm("
-            . "'Are you sure you want to change this parameter ? Please read the help before.')"
-    )
-);
-$form->addGroup(
-    $openIdConnectEnable,
-    'openid_connect_enable',
-    _("Enable OpenId Connect authentication"),
-    '&nbsp;&nbsp;'
-);
-
-$openIdConnectMode = array();
-$openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null, _("OpenId Connect only"), '0');
-$openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null, _("Mixed"), '1');
-$form->addGroup($openIdConnectMode, 'openid_connect_mode', _("Authentication mode"), '&nbsp;');
-$form->setDefaults(array('openid_connect_mode' => '1'));
-
-$form->addElement('text', 'openid_connect_trusted_clients', _('Trusted client addresses'), array('size' => 50));
-$form->addElement('text', 'openid_connect_blacklist_clients', _('Blacklist client addresses'), array('size' => 50));
-$form->addElement('text', 'openid_connect_base_url', _('Base Url'), array('size' => 80));
-$form->addElement('text', 'openid_connect_authorization_endpoint', _('Authorization Endpoint'), array('size' => 50));
-$form->addElement('text', 'openid_connect_token_endpoint', _('Token Endpoint'), array('size' => 50));
-$form->addElement(
-    'text',
-    'openid_connect_introspection_endpoint',
-    _('Introspection Token Endpoint'),
-    array('size' => 50)
-);
-$form->addElement('text', 'openid_connect_userinfo_endpoint', _('User Information Endpoint'), array('size' => 50));
-$form->addElement('text', 'openid_connect_end_session_endpoint', _('End Session Endpoint'), array('size' => 50));
-$form->addElement('text', 'openid_connect_scope', _('Scope'), array('size' => 50));
-$form->addElement('text', 'openid_connect_login_claim', _('Login claim value'), array('size' => 50));
-$form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
-$form->addElement('password', 'openid_connect_client_id', _('Client ID'), array('size' => 50, 'autocomplete' => 'off'));
-$form->addElement(
-    'password',
-    'openid_connect_client_secret',
-    _('Client Secret'),
-    array('size' => 50, 'autocomplete' => 'off')
-);
-
-$openIdConnectClientBasicAuth[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup(
-    $openIdConnectClientBasicAuth,
-    'openid_connect_client_basic_auth',
-    _("Use Basic Auth for Token Endpoint Authentication"),
-    '&nbsp;&nbsp;'
-);
-
-$openIdConnectVerifyPeer[] = $form->createElement(
-    'checkbox',
-    'yes',
-    '&nbsp;',
-    '',
-    array(
-        "onchange" => "javascript:confirm("
-            . "'Are you sure you want to change this parameter ? Should not be activated in production.')"
-    )
-);
-$form->addGroup($openIdConnectVerifyPeer, 'openid_connect_verify_peer', _("Disable SSL verify peer"), '&nbsp;&nbsp;');
 
 /*
  * Support Email
@@ -375,12 +273,6 @@ $form->addRule(
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path . 'general/', $tpl);
 
-if (!empty($gopt['openid_connect_client_id'])) {
-    $gopt['openid_connect_client_id'] = CentreonAuth::PWS_OCCULTATION;
-}
-if (!empty($gopt['openid_connect_client_secret'])) {
-    $gopt['openid_connect_client_secret'] = CentreonAuth::PWS_OCCULTATION;
-}
 $form->setDefaults($gopt);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
@@ -434,7 +326,6 @@ $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
-$tpl->assign("genOpt_openid_connect", _("Authentication by OpenId Connect"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('statistics', _("Statistics"));
 $tpl->assign('valid', $valid);
