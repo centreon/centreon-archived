@@ -64,19 +64,7 @@ const useUser = (
         changeLanguage?.((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
       })
-      .catch((error) => {
-        const isDbInitialized = propOr(false, 'isInstalled', webVersions);
-        const isUserAllowed = not(
-          or(
-            pathEq(['response', 'status'], 403)(error),
-            pathEq(['response', 'status'], 401)(error),
-          ),
-        );
-
-        if (isUserAllowed && isDbInitialized) {
-          return;
-        }
-
+      .catch(() => {
         setAreUserParametersLoaded(false);
       });
   };
