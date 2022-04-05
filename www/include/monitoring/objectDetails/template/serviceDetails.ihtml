@@ -397,12 +397,12 @@
                                     {$m_mon_services_en_check_active}
                                 </td>
                                 <td>
-                                    {if isset($service_data.active_checks_enabled)}
+                                    {if !is_null($service_data.active_checks_enabled)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.active_checks_enabled]};'>{$en_disable[$service_data.active_checks_enabled]}</span>
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup" id="service_checks">
-                                {if isset($service_data.active_checks_enabled) && ($aclAct.service_checks || $admin == true)}
+                                {if !is_null($service_data.active_checks_enabled) && ($aclAct.service_checks || $admin == true)}
                                     <a href="#" onClick="send_command('service_checks', '{$en_inv[$service_data.active_checks_enabled]}');" title="{$en_inv_text[$service_data.active_checks_enabled]}">
                                     <img class="ico-16" src={$img_en[$service_data.active_checks_enabled]} />
 
@@ -413,12 +413,12 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_check_passif}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.passive_checks_enabled)}
+                                    {if !is_null($service_data.passive_checks_enabled)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.passive_checks_enabled]};'>{$en_disable[$service_data.passive_checks_enabled]}</span>
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup" id="service_passive_checks">
-                                    {if isset($service_data.passive_checks_enabled) && ( $aclAct.service_passive_checks || $admin == true)}
+                                    {if !is_null($service_data.passive_checks_enabled) && ( $aclAct.service_passive_checks || $admin == true)}
                                     <a href="#" onClick="send_command('service_passive_checks', '{$en_inv[$service_data.passive_checks_enabled]}');" title='{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}'>
                                     <img class="ico-16" src={$img_en[$service_data.passive_checks_enabled]}
                                     alt="{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}" />
@@ -429,12 +429,12 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_notification}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.notifications_enabled)}
+                                    {if !is_null($service_data.notifications_enabled)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.notifications_enabled]};'>{$en_disable[$service_data.notifications_enabled]}</span>
                                     {/if}
                                 </td>
                                     <td class="ListColRight ColPopup" id="service_notifications">
-                                    {if isset($service_data.notifications_enabled) && ($aclAct.service_notifications || $admin == true)}
+                                    {if !is_null($service_data.notifications_enabled) && ($aclAct.service_notifications || $admin == true)}
                                         <a href="#" onClick="send_command('service_notifications', '{$en_inv[$service_data.notifications_enabled]}');" title='{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}'>
                                         <img class="ico-16" src={$img_en[$service_data.notifications_enabled]}
                                         alt="{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}" />
@@ -445,12 +445,12 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_event_handler}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.event_handler_enabled)}
+                                    {if !is_null($service_data.event_handler_enabled)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>{$en_disable[$service_data.event_handler_enabled]}</span>
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup" id="service_event_handler">
-                                {if isset($service_data.event_handler_enabled) && ($aclAct.service_event_handler || $admin == true)}
+                                {if !is_null($service_data.event_handler_enabled) && ($aclAct.service_event_handler || $admin == true)}
                                     <a href="#" onClick="send_command('service_event_handler', '{$en_inv[$service_data.event_handler_enabled]}');" title='{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}'>
                                     <img class="ico-16" src={$img_en[$service_data.event_handler_enabled]}
                                     alt="{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}" />
@@ -461,12 +461,12 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_flap}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.flap_detection_enabled)}
+                                    {if !is_null($service_data.flap_detection_enabled)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.flap_detection_enabled]};'>{$en_disable[$service_data.flap_detection_enabled]}</span>
                                     {/if}
                                 </td>
                                     <td class="ListColRight ColPopup" id="service_flap_detection">
-                                    {if isset($service_data.flap_detection_enabled) && ($aclAct.service_flap_detection || $admin == true)}
+                                    {if !is_null($service_data.flap_detection_enabled) && ($aclAct.service_flap_detection || $admin == true)}
                                         <a href="#" onClick="send_command('service_flap_detection', '{$en_inv[$service_data.flap_detection_enabled]}');" title='{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}'>
                                         <img class="ico-16" src={$img_en[$service_data.flap_detection_enabled]}
                                         alt="{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}" />
@@ -478,12 +478,12 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_obsessing}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.obsess_over_service)}
+                                    {if !is_null($service_data.obsess_over_service)}
                                         <span class="badge" style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>{$en_disable[$service_data.obsess_over_service]}</span>
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup" id="service_obsess">
-                                {if isset($service_data.obsess_over_service) && ($aclAct.service_obsess || $admin == true)}
+                                {if !is_null($service_data.obsess_over_service) && ($aclAct.service_obsess || $admin == true)}
                                     <a href="#" onClick="send_command('service_obsess', '{$en_inv[$service_data.obsess_over_service]}');" title='{$en_inv_text[$service_data.obsess_over_service]} {$m_mon_obsessing}'>
                                     <img class="ico-16" src={$img_en[$service_data.obsess_over_service]}
                                     alt="{$en_inv_text[$service_data.obsess_over_service]} {$m_mon_obsessing}" />
@@ -495,15 +495,15 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_acknowledge}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if isset($service_data.problem_has_been_acknowledged)}
+                                    {if !is_null($service_data.problem_has_been_acknowledged)}
                                         <span class="badge" style="background-color:{$color_onoff[$service_data.problem_has_been_acknowledged]};">{$en[$service_data.problem_has_been_acknowledged]}</span>
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup">
                                     {if
-                                        ($aclAct.service_acknowledgement && isset($service_data.problem_has_been_acknowledged))
-                                        || ($aclAct.service_disacknowledgement && isset($service_data.problem_has_been_acknowledged))
-                                        || ($admin == true && isset($service_data.problem_has_been_acknowledged))
+                                        ($aclAct.service_acknowledgement && !is_null($service_data.problem_has_been_acknowledged))
+                                        || ($aclAct.service_disacknowledgement && !is_null($service_data.problem_has_been_acknowledged))
+                                        || ($admin == true && !is_null($service_data.problem_has_been_acknowledged))
                                     }
                                         <a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name|urlencode}&service_description={$svc_description|urlencode}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}' title='{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}'>
                                             <img class="ico-16" src={$img_en[$service_data.problem_has_been_acknowledged]} alt="{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}" />
