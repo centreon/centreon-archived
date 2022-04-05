@@ -177,7 +177,7 @@
     /***********/
 
     /** States **/
-    --default-badge-background-color: var(--color-persian-green);
+    --default-badge-background-color: var(--color-primary-dark);
     --host-down-danger-service-critical-background-color : var(--color-danger);
     --host-unreachable-unknown-background-color: var(--color-aluminium);
     --host-downtime-background-color : var(--color-mauve);
@@ -768,4 +768,14 @@
     --icons-fill-color: var(--color-primary-dark);
     --icons-disabled-fill-color: var(--color-teal-blue);
     /* ------ END : New Icons variables -----*/
+    /* ------ START : Plugin pack variables -----*/
+    --pluginpack-block-h2-font-color: var(--body-color);
+    --pp-can-be-installed-border-color: var(--color-ghost);
+    --pp-bottom-name-font-color: var(--body-color);
+    --pp-deny-after-background-color: var(--color-white-rgba-6);
+    --actionbar-background-color: var(--color-white-rgba-6);
+    --ppm-orange-button-background-color: var(--color-primary-dark);
+    --switch-button-label-before-background-color: var(--color-primary-dark);
+    /* ------ END : Plugin pack variables -----*/
 }
+²
