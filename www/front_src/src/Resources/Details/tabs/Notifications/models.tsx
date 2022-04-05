@@ -10,7 +10,7 @@ export interface Contact {
   name: string;
 }
 
-export interface ContactGroup {
+export interface ContactGroups {
   alias: string;
   configuration_uri: string;
   id: number;
@@ -21,6 +21,6 @@ export interface ContactsResult {
   contacts: Array<Contact>;
 }
 
-export interface ContactGroupResult {
-  contactsGroup: Array<ContactGroup>;
+export interface ContactGroupsResult {
+  contact_groups: Array<ContactGroups>;
 }

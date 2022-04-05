@@ -1,10 +1,10 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import {
-  ContactGroup,
+  ContactGroups,
   Contact,
   ContactsResult,
-  ContactGroupResult,
+  ContactGroupsResult,
 } from '../models';
 
 const contactDecoder = JsonDecoder.object<Contact>(
@@ -23,28 +23,28 @@ export const contactsResultDecoder = JsonDecoder.object<ContactsResult>(
   {
     contacts: listContactsDecoder,
   },
-  'contact result',
+  'contacts result',
 );
 
-const contactGroupDecoder = JsonDecoder.object<ContactGroup>(
+const contactGroupsDecoder = JsonDecoder.object<ContactGroups>(
   {
     alias: JsonDecoder.string,
     configuration_uri: JsonDecoder.string,
     id: JsonDecoder.number,
     name: JsonDecoder.string,
   },
-  'contactGroup',
+  'contactGroups',
 );
 
-const listContactsGroupDecoder = JsonDecoder.array(
-  contactGroupDecoder,
-  'list contact group',
+const listContactGroupsDecoder = JsonDecoder.array(
+  contactGroupsDecoder,
+  'list contact groups',
 );
 
-export const contactsGroupResultDecoder =
-  JsonDecoder.object<ContactGroupResult>(
+export const contactGroupsResultDecoder =
+  JsonDecoder.object<ContactGroupsResult>(
     {
-      contactsGroup: listContactsGroupDecoder,
+      contact_groups: listContactGroupsDecoder,
     },
-    'contact group result',
+    'contact groups result',
   );
