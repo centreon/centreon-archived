@@ -779,6 +779,8 @@
     --legend-header-background-color: var(--color-white);
     --legend-header-font-color: var(--body-color);
     --legend-body-background-color: var(--body-background);
+    --action-bar-icon-background-color: var(--body-background);
+    --ajax-option-h4-disabled-font-color: var(--color-grey-chateau);
     /* ------ END : Plugin pack variables -----*/
 }
 ²
