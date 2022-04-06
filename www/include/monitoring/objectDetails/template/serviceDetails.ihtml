@@ -495,7 +495,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_acknowledge}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if !is_null($service_data.problem_has_been_acknowledged)}
+                                    {if isset($service_data.problem_has_been_acknowledged) && in_array($service_data.problem_has_been_acknowledged, ['0', '1'])}
                                         <span class="badge" style="background-color:{$color_onoff[$service_data.problem_has_been_acknowledged]};">{$en[$service_data.problem_has_been_acknowledged]}</span>
                                     {/if}
                                 </td>
