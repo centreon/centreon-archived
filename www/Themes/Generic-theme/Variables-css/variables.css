@@ -771,12 +771,16 @@
     /* ------ START : Plugin pack variables -----*/
     --pluginpack-block-h2-font-color: var(--body-color);
     --pp-can-be-installed-border-color: var(--color-ghost);
-    --pp-bottom-name-font-color: var(--body-color);
+    --pp-bottom-name-font-color: var(--color-black);
     --pp-deny-after-background-color: var(--color-white-rgba-6);
-    --actionbar-background-color: var(--color-white-rgba-6);
+    --actionbar-background-color: var(--color-light-gray-rgba-6);
     --ppm-orange-button-background-color: var(--color-primary-dark);
     --switch-button-label-before-background-color: var(--color-primary-dark);
     --switch-title-font-color: var(--body-color);
+    --pluginpack-entry-border-color: var(--color-ghost);
+    --pp-bottom-border-top-color: var(--color-white-lilac);
+    --pp-description-background-color: var(--body-background);
+    --status-badge-2-background-color: var(--color-primary-dark);
     /* ------ END : Plugin pack variables -----*/
 }
 ²
