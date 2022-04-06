@@ -108,9 +108,16 @@ const useApp = (): UseAppState => {
         );
         setAcl({ actions: retrievedAcl });
         setAcknowledgement({
-          persistent:
+          default_acknowledgement_force_active_checks:
+            retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
+          default_acknowledgement_notify:
+            retrievedParameters.monitoring_default_acknowledgement_notify,
+          default_acknowledgement_persistent:
             retrievedParameters.monitoring_default_acknowledgement_persistent,
-          sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
+          default_acknowledgement_sticky:
+            retrievedParameters.monitoring_default_acknowledgement_sticky,
+          default_acknowledgement_with_services:
+            retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
 
         setDataLoaded(true);
