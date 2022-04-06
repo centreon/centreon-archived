@@ -138,8 +138,15 @@ try {
         $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
     }
 
-    $errorMessage= "Unable to remove unique_index from security_token";
-    $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
+    $errorMessage = "Unable to find constraint unique_index from security_token";
+    $constraintExistStatement = $pearDB->query(
+        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
+    );
+    if($constraintExistStatement->fetch() !== false) {
+        $errorMessage = "Unable to remove unique_index from security_token";
+        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
+    }
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
