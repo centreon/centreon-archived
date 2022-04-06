@@ -143,7 +143,7 @@ try {
         'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
          WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
     );
-    if($constraintExistStatement->fetch() !== false) {
+    if ($constraintExistStatement->fetch() !== false) {
         $errorMessage = "Unable to remove unique_index from security_token";
         $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
     }
