@@ -82,7 +82,7 @@ $checkMysqlVersion = "SHOW VARIABLES WHERE Variable_name LIKE 'version%'";
 
 // creating the user - mandatory for MySQL DB
 $alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
+$query = "GRANT ALL PRIVILEGES ON %s.* TO '" . $parameters['db_user'] . "'@'" . $host . "'";
 $flushQuery = "FLUSH PRIVILEGES";
 
 try {
