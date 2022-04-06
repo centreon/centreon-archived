@@ -100,7 +100,7 @@
     "@mui/styles": "^5.3.0",
     "@visx/visx": "2.9.0",
     "axios": "^0.25.0",
-    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#Add-new-props-to-ack",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",

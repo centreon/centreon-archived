@@ -20,6 +20,7 @@ import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  force_active_checks: Yup.boolean(),
   is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
   persistent: Yup.boolean(),
@@ -34,6 +35,7 @@ interface Props {
 export interface AcknowledgeFormValues {
   acknowledgeAttachedResources: boolean;
   comment?: string;
+  forceActiveChecks: boolean;
   isSticky: boolean;
   notify: boolean;
   persistent: boolean;
@@ -61,6 +63,7 @@ const AcknowledgeForm = ({
     initialValues: {
       acknowledgeAttachedResources: false,
       comment: undefined,
+      forceActiveChecks: false,
       isSticky: acknowledgement.sticky,
       notify: false,
       persistent: acknowledgement.persistent,

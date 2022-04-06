@@ -22,6 +22,7 @@ import {
   labelAcknowledgeServices,
   labelPersistent,
   labelSticky,
+  labelForceActiveChecks,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
@@ -146,6 +147,20 @@ const DialogAcknowledge = ({
                 inputProps={{ 'aria-label': t(labelSticky) }}
                 size="small"
                 onChange={handleChange('isSticky')}
+              />
+            }
+            label={t(labelSticky) as string}
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.forceActiveChecks}
+                color="primary"
+                inputProps={{ 'aria-label': t(labelForceActiveChecks) }}
+                size="small"
+                onChange={handleChange('forceActiveChecks')}
               />
             }
             label={t(labelSticky) as string}
