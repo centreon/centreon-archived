@@ -1,13 +1,15 @@
 import * as React from 'react';
 
 import { equals } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useLocation } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { userAtom, ThemeMode } from '@centreon/ui-context';
+import { patchData, useRequest } from '@centreon/ui';
 
 interface StyleProps {
   darkModeSvg?: string;
@@ -85,11 +87,40 @@ const useStyles = makeStyles((theme) => ({
 export default (): JSX.Element => {
   const props = { darkModeSvg: svgMoon, lightModeSvg: svgSun };
   const classes = useStyles();
-  const { themeMode } = useAtomValue(userAtom);
-  const isDarkMode = equals(themeMode, ThemeMode.dark);
+  const { pathname } = useLocation();
+
+  const { sendRequest } = useRequest({
+    request: patchData,
+  });
+  const [user, setUser] = useAtom(userAtom);
+
+  const isDarkMode = equals(user.themeMode, ThemeMode.dark);
+  const switchEndPoint = './api/latest/configuration/users/current';
+
+  const updateTheme = (theme: ThemeMode): Promise<{ theme: ThemeMode }> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (equals(theme, ThemeMode.dark)) {
+          return resolve({ theme: ThemeMode.dark });
+        }
+
+        return resolve({ theme: ThemeMode.light });
+      }, 300);
+    });
+  };
 
   const handleModeOfTheme = (): void => {
-    // console.log('handleModeOfTheme', themeMode);
+    // sendRequest({ endpoint: switchEndPoint }).then((data) => {
+    //   console.log('data', data);
+    // });
+    updateTheme(isDarkMode ? ThemeMode.light : ThemeMode.dark).then((data) => {
+      if (pathname.includes('php')) {
+        window.location.reload();
+
+        return;
+      }
+      setUser({ ...user, themeMode: data.theme });
+    });
   };
 
   return (
@@ -97,7 +128,6 @@ export default (): JSX.Element => {
       <MaterialUISwitch
         checked={isDarkMode}
         {...props}
-        value={isDarkMode}
         onChange={handleModeOfTheme}
       />
     </div>
