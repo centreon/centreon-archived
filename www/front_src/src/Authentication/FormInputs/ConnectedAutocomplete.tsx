@@ -41,6 +41,8 @@ const ConnectedAutocomplete = ({
     setFieldTouched(fieldName, true);
   };
 
+  const blur = (): void => setFieldTouched(fieldName, true);
+
   const isOptionEqualToValue = (option, value): boolean => {
     return isEmpty(value) ? false : equals(option.name, value.name);
   };
@@ -66,7 +68,7 @@ const ConnectedAutocomplete = ({
         name={fieldName}
         required={isRequired}
         value={value}
-        onBlur={(): void => setFieldTouched(fieldName, true)}
+        onBlur={blur}
         onChange={change}
       />
     ),

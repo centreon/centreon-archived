@@ -15,6 +15,7 @@ import {
 } from '../Local/translatedLabels';
 
 import {
+  labelAliasAttributeToBind,
   labelAuthorizationEndpoint,
   labelBaseUrl,
   labelBlacklistClientAddresses,
@@ -22,8 +23,11 @@ import {
   labelClientSecret,
   labelDefineOpenIDConnectConfiguration,
   labelDisableVerifyPeer,
+  labelEmailAttributeToBind,
+  labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
+  labelFullnameAttributeToBind,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
   labelInvalidURL,
@@ -36,6 +40,7 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from './translatedLabels';
+import { OpenidConfigurationToAPI } from './models';
 
 import OpenidConfigurationForm from '.';
 
@@ -55,15 +60,23 @@ const cancelTokenPutParams = {
 const renderOpenidConfigurationForm = (): RenderResult =>
   render(<OpenidConfigurationForm />);
 
-const retrievedOpenidConfiguration = {
+const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
+  alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
+  auto_import: true,
   base_url: 'https://localhost:8080',
   blacklist_client_addresses: ['127.0.0.1'],
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
+  contact_template: {
+    id: 1,
+    name: 'Contant template',
+  },
+  email_bind_attribute: 'email',
   endsession_endpoint: '/logout',
+  fullname_bind_attribute: 'lastname',
   introspection_token_endpoint: '/introspect',
   is_active: true,
   is_forced: false,
@@ -142,6 +155,16 @@ describe('Openid configuration form', () => {
       ),
     ).toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
+    expect(screen.getByLabelText(labelEnableAutoImport)).toBeChecked();
+    expect(screen.getByLabelText(labelEmailAttributeToBind)).toHaveValue(
+      'email',
+    );
+    expect(screen.getByLabelText(labelAliasAttributeToBind)).toHaveValue(
+      'firstname',
+    );
+    expect(screen.getByLabelText(labelFullnameAttributeToBind)).toHaveValue(
+      'lastname',
+    );
   });
 
   it('displays an error message when fields are not correctly formatted', async () => {
@@ -267,6 +290,29 @@ describe('Openid configuration form', () => {
       expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
         'https://localhost:8080',
       );
+    });
+  });
+
+  it('enables the "Save" button when an "Auto import" text field is cleared and the "Enable auto import" switch is unchecked', async () => {
+    renderOpenidConfigurationForm();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.type(screen.getByLabelText(labelEmailAttributeToBind), '');
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).toBeDisabled();
+    });
+
+    userEvent.click(screen.getByLabelText(labelEnableAutoImport));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
     });
   });
 });
