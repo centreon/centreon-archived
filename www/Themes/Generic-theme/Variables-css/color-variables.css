@@ -167,5 +167,7 @@
     --color-astral-rgb: rgb(51, 122, 183);
     --color-pistachio-rgba: rgba(158, 199, 0, 0.49);
     --color-gallery-rgba: rgba(239,239,239, 0.8);
+    --color-light-gray-rgba-6: rgba(211, 211, 211, 0.6);
+    --color-dark-gray-rgba-6: rgba(90, 90, 90, 0.6);
     /******************/
 }
