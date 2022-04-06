@@ -10,7 +10,7 @@ import { makeStyles } from '@mui/styles';
 import { ThemeMode, userAtom } from '@centreon/ui-context';
 
 import logoCentreon from '../assets/centreon.png';
-import logoDark from '../assets/Centreon_Logo_Blanc.svg';
+import logoDark from '../assets/centreon-logo-white.svg';
 
 import { labelCentreonLogo } from './translatedLabels';
 
