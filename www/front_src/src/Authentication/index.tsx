@@ -17,6 +17,7 @@ import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
+  labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
@@ -57,6 +58,10 @@ export const categories: Array<Category> = [
   },
   {
     name: labelClientAddresses,
+    order: 3,
+  },
+  {
+    name: labelAutoImport,
     order: 3,
   },
 ];

@@ -25,6 +25,7 @@ import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
+import ConnectedAutocomplete from './ConnectedAutocomplete';
 
 export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
@@ -35,6 +36,10 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
     always(MultipleInput),
   ],
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
+  [
+    equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
+    always(ConnectedAutocomplete),
+  ],
 ]);
 
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +115,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   change,
                   getChecked,
                   required,
+                  getDisabled,
+                  getRequired,
                 }) => {
                   const Input = getInput(type);
 
@@ -118,6 +125,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                     change,
                     fieldName,
                     getChecked,
+                    getDisabled,
+                    getRequired,
                     label,
                     options,
                     required,

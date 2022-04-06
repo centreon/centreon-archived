@@ -1,16 +1,22 @@
+import { FormikValues } from 'formik';
+
 export enum InputType {
   Switch,
   Radio,
   Text,
   Multiple,
   Password,
+  ConnectedAutocomplete,
 }
 
 export interface InputProps {
   category: string;
   change?: ({ setFieldValue, value }) => void;
+  endpoint?: string;
   fieldName: string;
   getChecked?: (value) => boolean;
+  getDisabled?: (values: FormikValues) => boolean;
+  getRequired?: (values: FormikValues) => boolean;
   label: string;
   options?: Array<{
     isChecked: (value) => boolean;

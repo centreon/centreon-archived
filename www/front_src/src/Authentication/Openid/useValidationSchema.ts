@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { OpenidConfiguration } from './models';
+import { OpenidConfiguration, ContactTemplate } from './models';
 import {
   labelRequired,
   labelInvalidURL,
@@ -15,9 +15,23 @@ const urlRegexp = /https?:\/\/(\S+)/;
 const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   const { t } = useTranslation();
 
-  return Yup.object().shape({
+  const contactTemplateSchema: Yup.SchemaOf<ContactTemplate> = Yup.object({
+    id: Yup.number().required(),
+    name: Yup.string().required(),
+  });
+
+  return Yup.object({
+    aliasBindAttribute: Yup.string().when(
+      'autoImport',
+      (autoImport, schema) => {
+        return autoImport
+          ? schema.nullable().required(t(labelRequired))
+          : schema.nullable();
+      },
+    ),
     authenticationType: Yup.string().required(t(labelRequired)),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
+    autoImport: Yup.boolean().required(t(labelRequired)),
     baseUrl: Yup.string()
       .matches(urlRegexp, t(labelInvalidURL))
       .nullable()
@@ -30,7 +44,30 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     clientId: Yup.string().nullable().required(t(labelRequired)),
     clientSecret: Yup.string().nullable().required(t(labelRequired)),
     connectionScopes: Yup.array().of(Yup.string().required(t(labelRequired))),
+    contactTemplate: contactTemplateSchema
+      .when('autoImport', (autoImport, schema) => {
+        return autoImport
+          ? schema.nullable().required(t(labelRequired))
+          : schema.nullable();
+      })
+      .defined(),
+    emailBindAttribute: Yup.string().when(
+      'autoImport',
+      (autoImport, schema) => {
+        return autoImport
+          ? schema.nullable().required(t(labelRequired))
+          : schema.nullable();
+      },
+    ),
     endSessionEndpoint: Yup.string().nullable(),
+    fullnameBindAttribute: Yup.string().when(
+      'autoImport',
+      (autoImport, schema) => {
+        return autoImport
+          ? schema.nullable().required(t(labelRequired))
+          : schema.nullable();
+      },
+    ),
     introspectionTokenEndpoint: Yup.string()
       .nullable()
       .required(t(labelRequired)),

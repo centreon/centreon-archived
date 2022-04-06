@@ -1,15 +1,20 @@
-import { equals } from 'ramda';
+import { equals, not, prop } from 'ramda';
+import { FormikValues } from 'formik';
 
 import {
+  labelAliasAttributeToBind,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactTemplate,
   labelDisableVerifyPeer,
+  labelEmailAttributeToBind,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
+  labelFullnameAttributeToBind,
   labelIntrospectionTokenEndpoint,
   labelLoginClaimValue,
   labelMixed,
@@ -24,9 +29,15 @@ import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
+  labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from '../../translatedLabels';
+
+const isAutoImportDisabled = (values: FormikValues): boolean =>
+  not(prop('autoImport', values));
+const isAutoImportEnabled = (values: FormikValues): boolean =>
+  prop('autoImport', values);
 
 export const inputs: Array<InputProps> = [
   {
@@ -151,5 +162,43 @@ export const inputs: Array<InputProps> = [
     fieldName: 'verifyPeer',
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'autoImport',
+    label: labelAutoImport,
+    type: InputType.Switch,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'contactTemplate',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelContactTemplate,
+    type: InputType.ConnectedAutocomplete,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'emailBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelEmailAttributeToBind,
+    type: InputType.Text,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'aliasBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelAliasAttributeToBind,
+    type: InputType.Text,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'fullnameBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelFullnameAttributeToBind,
+    type: InputType.Text,
   },
 ];

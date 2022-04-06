@@ -14,7 +14,13 @@ import {
 
 import { InputProps } from './models';
 
-const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
+const Multiple = ({
+  fieldName,
+  label,
+  required,
+  getDisabled,
+  getRequired,
+}: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
@@ -53,6 +59,9 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
 
   const inputErrors = getError();
 
+  const disabled = getDisabled?.(values) || false;
+  const isRequired = required || getRequired?.(values) || false;
+
   return useMemoComponent({
     Component: (
       <div>
@@ -60,6 +69,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           clearOnBlur
           freeSolo
           handleHomeEndKeys
+          disabled={disabled}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
@@ -67,7 +77,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           open={false}
           options={[]}
           popupIcon={null}
-          required={required}
+          required={isRequired}
           value={normalizedValues}
           onChange={change}
         />
@@ -82,7 +92,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors],
+    memoProps: [normalizedValues, inputErrors, isRequired, disabled],
   });
 };
 

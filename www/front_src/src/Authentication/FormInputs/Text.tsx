@@ -15,6 +15,8 @@ const Text = ({
   fieldName,
   type,
   required,
+  getDisabled,
+  getRequired,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -49,21 +51,25 @@ const Text = ({
   const inputType =
     equals(type, InputType.Password) && not(isVisible) ? 'password' : 'text';
 
+  const disabled = getDisabled?.(values) || false;
+  const isRequired = required || getRequired?.(values) || false;
+
   return useMemoComponent({
     Component: (
       <TextField
         EndAdornment={passwordEndAdornment}
         ariaLabel={t(label)}
+        disabled={disabled}
         error={error as string | undefined}
         label={t(label)}
-        required={required}
+        required={isRequired}
         type={inputType}
         value={value || ''}
         onBlur={handleBlur(fieldName)}
         onChange={change}
       />
     ),
-    memoProps: [error, value, isVisible],
+    memoProps: [error, value, isVisible, disabled, isRequired],
   });
 };
 

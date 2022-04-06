@@ -16,7 +16,12 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { InputProps } from './models';
 
-const Radio = ({ fieldName, label, options }: InputProps): JSX.Element => {
+const Radio = ({
+  fieldName,
+  label,
+  options,
+  getDisabled,
+}: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
@@ -29,7 +34,10 @@ const Radio = ({ fieldName, label, options }: InputProps): JSX.Element => {
     }
     setFieldValue(fieldName, value);
   };
+
   const value = prop(fieldName, values);
+
+  const disabled = getDisabled?.(values) || false;
 
   return useMemoComponent({
     Component: (
@@ -39,7 +47,10 @@ const Radio = ({ fieldName, label, options }: InputProps): JSX.Element => {
           {options?.map(({ value: optionValue, label: optionLabel }) => (
             <FormControlLabel
               control={
-                <MUIRadio inputProps={{ 'aria-label': t(optionLabel) }} />
+                <MUIRadio
+                  disabled={disabled}
+                  inputProps={{ 'aria-label': t(optionLabel) }}
+                />
               }
               key={optionLabel}
               label={t(optionLabel) as string}
@@ -49,7 +60,7 @@ const Radio = ({ fieldName, label, options }: InputProps): JSX.Element => {
         </RadioGroup>
       </FormGroup>
     ),
-    memoProps: [value],
+    memoProps: [value, disabled],
   });
 };
 
