@@ -40,7 +40,12 @@
 		</tr>
 		{section name=elem loop=$list}
                 <tr class="{cycle values='list_one,list_two'}">
-			<td class="ListColPicker"><input type='checkbox' name='select[{$list[elem].ar_id}]' value='{$list[elem].ar_id}' /></td>
+			<td class="ListColPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type='checkbox' id="{$list[elem].ar_id}" name='select[{$list[elem].ar_id}]' value='{$list[elem].ar_id}' />
+                    <label class="empty-label" for="{$list[elem].ar_id}"></label>
+                </div>
+            </td>
 			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_name}</a></td>
 			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_description}</a></td>
 			<td class="ListColLeft">

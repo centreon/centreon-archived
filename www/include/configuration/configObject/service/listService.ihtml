@@ -28,7 +28,14 @@
 			<td>{$form.template.html}</td>
 			<td>{$form.status.html}</td>
 			{if (! isset($hostgroupsFilter))}
-				<td><h4><input type="checkbox" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}</h4></td>
+				<td>
+                    <h4>
+                        <div class="md-checkbox md-checkbox-inline">
+                            <input type="checkbox" id="statusHostFilter" name='statusHostFilter' {$hostStatusChecked}/>&nbsp;{$HostStatus}
+                            <label class="empty-label" for="statusHostFilter"></label>
+                        </div>
+                    </h4>
+                </td>
 			{/if}
 			<td>{$form.Search.html}</td>
         </tr>

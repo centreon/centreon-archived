@@ -3,7 +3,7 @@
 	<div id="popupDowntime" align=center>
 		 <table class="table">
 			<tr>
-				<td colspan='2' class="FormHeader"><h3 style="color: #00bfb3;">{$form.header.title}</h3></td>
+				<td colspan='2' class="FormHeader"><h3 class="header-text">{$form.header.title}</h3></td>
 			</tr>
 			<tr>
                 <td colspan=2>{$form.timezone_warning.label}</td>
