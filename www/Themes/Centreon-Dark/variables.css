@@ -139,4 +139,7 @@
     --pluginpack-entry-border-color: var(--pp-can-be-installed-border-color);
     --pp-description-background-color: var(--body-background);
     --status-badge-2-background-color: var(--color-primary-light);
+    --legend-header-background-color: var(--color-cinder);
+    --legend-header-font-color: var(--body-color);
+    --legend-body-background-color: var(--body-background);
 }
