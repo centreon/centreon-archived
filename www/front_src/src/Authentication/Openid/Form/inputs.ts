@@ -12,6 +12,7 @@ import {
   labelContactTemplate,
   labelDisableVerifyPeer,
   labelEmailAttributeToBind,
+  labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
   labelFullnameAttributeToBind,
@@ -166,7 +167,7 @@ export const inputs: Array<InputProps> = [
   {
     category: labelAutoImport,
     fieldName: 'autoImport',
-    label: labelAutoImport,
+    label: labelEnableAutoImport,
     type: InputType.Switch,
   },
   {
