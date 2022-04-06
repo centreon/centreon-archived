@@ -3,12 +3,14 @@ import * as React from 'react';
 import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import { Page } from '../../models';
 import {
@@ -28,7 +30,6 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   icon: {
-    color: theme.palette.text.primary,
     fontSize: 26,
   },
   list: {
@@ -60,6 +61,8 @@ const NavigationMenu = ({
   const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
     hoveredNavigationItemsAtom,
   );
+  const user = useAtomValue(userAtom);
+
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -280,6 +283,7 @@ const NavigationMenu = ({
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
       selectedNavigationItems,
+      user,
       hoveredNavigationItems,
     ],
   });

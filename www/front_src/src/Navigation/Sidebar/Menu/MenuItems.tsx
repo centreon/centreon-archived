@@ -1,6 +1,7 @@
 import React from 'react';
 
 import clsx from 'clsx';
+import { useAtomValue } from 'jotai/utils';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -8,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import { Page } from '../../models';
 
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   containerIcon: {
     alignItems: 'center',
+    color: theme.palette.text.primary,
     minWidth: theme.spacing(5.75),
   },
   icon: {
@@ -76,6 +79,7 @@ const MenuItems = ({
   isRoot,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
+  const user = useAtomValue(userAtom);
 
   return useMemoComponent({
     Component: (
@@ -117,7 +121,7 @@ const MenuItems = ({
         )}
       </ListItemButton>
     ),
-    memoProps: [hover, isOpen, isRoot, isDrawerOpen],
+    memoProps: [hover, isOpen, isRoot, isDrawerOpen, user],
   });
 };
 
