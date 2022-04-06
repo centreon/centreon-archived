@@ -1,6 +1,9 @@
 :root {
     /** Main colors **/
-    --color-primary-light: #2196F3;
+    --color-primary-light: #64B5F6;
+    --color-primary-body-dark : #b2aca2;
+    --color-primary-body-background-dark:#212121;
+    --color-primary-success-dark : #84bd00;
     --color-primary-dark: #10069F;
     --color-success : #88b917 ;
     --color-warning : #ff9a13 ;
@@ -147,6 +150,11 @@
     --color-mariner: #3875d7;
     --color-shark: #2a2d2f;
     --color-pablo: #776E62;
+    --color-cinder: #181A1B;
+    --color-sherpa-blue: #002737;
+    --color-sherpa-blue-light: #002c3c;
+    --color-cod-grey :#2B2E30 ;
+    --color-grey-wan-white :#e8e6e38a;
     --color-white-rgba-8 :rgba(240, 240, 240, 0.8);
     --color-white-rgba-5 :rgba(255, 255, 255, 0.5);
     --color-black-rgba-54 :rgba(0, 0, 0, 0.54);
