@@ -72,7 +72,7 @@ try {
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to select existing passwords from 'contact' table";
-    if ($pearDB->isColumnExist('contact', 'contact_passord') === 1) {
+    if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
         $getPasswordResult = $pearDB->query(
             "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
         );
