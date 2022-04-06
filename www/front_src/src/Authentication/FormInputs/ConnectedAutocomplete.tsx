@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
-import { prop } from 'ramda';
+import { equals, isEmpty, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -32,9 +32,17 @@ const ConnectedAutocomplete = ({
       parameters,
     });
 
-  const change = (value): void => {
-    setFieldTouched(fieldName);
+  const change = (_, value): void => {
     setFieldValue(fieldName, value);
+
+    if (prop(fieldName, touched)) {
+      return;
+    }
+    setFieldTouched(fieldName, true);
+  };
+
+  const isOptionEqualToValue = (option, value): boolean => {
+    return isEmpty(value) ? false : equals(option.name, value.name);
   };
 
   const value = prop(fieldName, values);
@@ -53,10 +61,12 @@ const ConnectedAutocomplete = ({
         field="name"
         getEndpoint={getEndpoint}
         initialPage={1}
+        isOptionEqualToValue={isOptionEqualToValue}
         label={t(label)}
         name={fieldName}
         required={isRequired}
         value={value}
+        onBlur={(): void => setFieldTouched(fieldName, true)}
         onChange={change}
       />
     ),
