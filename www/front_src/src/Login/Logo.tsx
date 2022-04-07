@@ -7,6 +7,7 @@ import clsx from 'clsx';
 
 import { makeStyles } from '@mui/styles';
 
+import { useMemoComponent } from '@centreon/ui';
 import { ThemeMode, userAtom } from '@centreon/ui-context';
 
 import logoCentreon from '../assets/centreon.png';
@@ -32,16 +33,19 @@ const Logo = (): JSX.Element => {
   const logo = equals(themeMode, ThemeMode.light) ? logoCentreon : logoDark;
   const isDarkMode = equals(themeMode, ThemeMode.dark);
 
-  return (
-    <img
-      alt={t(labelCentreonLogo)}
-      aria-label={t(labelCentreonLogo)}
-      className={clsx(classes.centreonLogo, {
-        [classes.centreonLogoDark]: isDarkMode,
-      })}
-      src={logo}
-    />
-  );
+  return useMemoComponent({
+    Component: (
+      <img
+        alt={t(labelCentreonLogo)}
+        aria-label={t(labelCentreonLogo)}
+        className={clsx(classes.centreonLogo, {
+          [classes.centreonLogoDark]: isDarkMode,
+        })}
+        src={logo}
+      />
+    ),
+    memoProps: [isDarkMode],
+  });
 };
 
 export default Logo;
