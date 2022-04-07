@@ -262,6 +262,10 @@ class OpenIdProvider implements OpenIdProviderInterface
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            $this->logExceptionInLoginLogFile(
+                "Unable to get Rfresh Token Information: %s, message: %s",
+                SSOAuthenticationException::requestForRefreshTokenFail()
+            );
             throw SSOAuthenticationException::requestForRefreshTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
@@ -332,6 +336,10 @@ class OpenIdProvider implements OpenIdProviderInterface
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            $this->logExceptionInLoginLogFile(
+                "Unable to get Token Access Information: %s, message: %s",
+                SSOAuthenticationException::requestForConnectionTokenFail()
+            );
             throw SSOAuthenticationException::requestForConnectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
@@ -406,6 +414,10 @@ class OpenIdProvider implements OpenIdProviderInterface
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            $this->logExceptionInLoginLogFile(
+                "Unable to get Introspection Information: %s, message: %s",
+                SSOAuthenticationException::requestForIntrospectionTokenFail()
+            );
             throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
@@ -446,6 +458,10 @@ class OpenIdProvider implements OpenIdProviderInterface
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            $this->logExceptionInLoginLogFile(
+                "Unable to get User Information: %s, message: %s",
+                SSOAuthenticationException::requestForUserInformationFail()
+            );
             throw SSOAuthenticationException::requestForUserInformationFail();
         }
         $content = json_decode($response->getContent(false), true);
