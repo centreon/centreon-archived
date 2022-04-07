@@ -14,6 +14,7 @@ export interface InputProps {
   change?: ({ setFieldValue, value }) => void;
   endpoint?: string;
   fieldName: string;
+  filterKey?: string;
   getChecked?: (value) => boolean;
   getDisabled?: (values: FormikValues) => boolean;
   getRequired?: (values: FormikValues) => boolean;

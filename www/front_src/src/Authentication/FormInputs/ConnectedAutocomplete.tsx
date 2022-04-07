@@ -20,6 +20,7 @@ const ConnectedAutocomplete = ({
   getRequired,
   fieldName,
   label,
+  filterKey = 'name',
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -31,7 +32,7 @@ const ConnectedAutocomplete = ({
       baseEndpoint: contactTemplatesEndpoint,
       parameters: {
         ...parameters,
-        sort: { name: 'ASC' },
+        sort: { [filterKey]: 'ASC' },
       },
     });
 
@@ -47,7 +48,7 @@ const ConnectedAutocomplete = ({
   const blur = (): void => setFieldTouched(fieldName, true);
 
   const isOptionEqualToValue = (option, value): boolean => {
-    return isEmpty(value) ? false : equals(option.name, value.name);
+    return isEmpty(value) ? false : equals(option[filterKey], value[filterKey]);
   };
 
   const value = prop(fieldName, values);
@@ -63,7 +64,7 @@ const ConnectedAutocomplete = ({
         disableClearable={false}
         disabled={disabled}
         error={error}
-        field="name"
+        field={filterKey}
         getEndpoint={getEndpoint}
         initialPage={1}
         isOptionEqualToValue={isOptionEqualToValue}
