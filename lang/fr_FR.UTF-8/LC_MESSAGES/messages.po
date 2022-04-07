@@ -16418,7 +16418,7 @@ msgid "Second"
 msgstr "Seconde"
 
 msgid "Last 3 passwords can be reused"
-msgstr "Les 3 derniers mot de passe peuvent être réutilisé"
+msgstr "Les 3 derniers mot de passe peuvent être réutilisés"
 
 msgid "Minimum time between password changes"
 msgstr "Durée minimum entre chaque changement de mot de passe"
