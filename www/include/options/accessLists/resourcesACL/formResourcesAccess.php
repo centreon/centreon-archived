@@ -162,7 +162,6 @@ while ($poller = $DBRESULT->fetch()) {
 $DBRESULT->closeCursor();
 
 $service_categories = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS service_categories_index_query ON service_categories(sc_id, sc_name)");
 $DBRESULT = $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
 while ($sc = $DBRESULT->fetchRow()) {
     $service_categories[$sc["sc_id"]] = $sc["sc_name"];
