@@ -15354,7 +15354,7 @@ msgstr ""
 # msgid "Invalid URL"
 # msgstr ""
 
-# msgid "Invalid IP Address or domain name"
+# msgid "Invalid IP Address"
 # msgstr ""
 
 # msgid "Failed to save OpenID Connect configuration"
@@ -15447,58 +15447,16 @@ msgstr ""
 # msgid "Password has expired"
 # msgstr ""
 
-# msgid "Export generation timeout"
+# msgid "Choose letter cases"
 # msgstr ""
 
-# msgid "Add advanced server configuration"
+# msgid "Activation"
 # msgstr ""
 
-# msgid "Create new Poller"
+# msgid "Identity provider"
 # msgstr ""
 
-# msgid "Select a Poller"
-# msgstr ""
-
-# msgid "Select Pending Poller IP"
-# msgstr ""
-
-# msgid "Do not check SSL certificate validation"
-# msgstr ""
-
-# msgid "Types"
-# msgstr ""
-
-# msgid "Uninstalled"
-# msgstr ""
-
-# msgid "Outdated"
-# msgstr ""
-
-# msgid "Up to date"
-# msgstr ""
-
-# msgid "Module"
-# msgstr ""
-
-# msgid "Install all"
-# msgstr ""
-
-# msgid "Update all"
-# msgstr ""
-
-# msgid "Install"
-# msgstr ""
-
-# msgid "Update"
-# msgstr ""
-
-# msgid "License required"
-# msgstr ""
-
-# msgid "License expires"
-# msgstr ""
-
-# msgid "License not valid"
+# msgid "Client addresses"
 # msgstr ""
 
 # msgid "Login with"
