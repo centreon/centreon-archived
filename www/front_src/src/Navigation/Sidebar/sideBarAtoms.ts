@@ -13,7 +13,7 @@ export const hoveredNavigationItemsAtom = atom<Record<string, Page> | null>(
   null,
 );
 
-export const hoveredNavigationItemsDerivedAtom = atom(
+export const setHoveredNavigationItemsDerivedAtom = atom(
   null,
   (get, set, { levelName, currentPage }) => {
     const navigationKeysToRemove = keys(get(hoveredNavigationItemsAtom)).filter(
