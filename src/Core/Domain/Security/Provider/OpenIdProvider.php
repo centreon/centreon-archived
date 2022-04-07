@@ -405,12 +405,12 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
-        $this->logAuthenticationInfoInLoginLogFile('Token Introspection Information: ', $content);
         if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorInLoginLogFile('Introspection Token Info: ', $content);
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
+        $this->logAuthenticationInfoInLoginLogFile('Token Introspection Information: ', $content);
         $this->info('Introspection token information found');
         $this->userInformations = $content;
     }
