@@ -62,10 +62,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_host_relations_index_query
-        ON acl_resources_host_relations(host_host_id)"
-    );
     $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -76,10 +72,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts exludes relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_hostex_relations_index_query
-        ON acl_resources_hostex_relations(host_host_id)"
-    );
     $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -90,10 +82,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts Groups relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_hg_relations_index_query
-        ON acl_resources_hg_relations(hg_hg_id)"
-    );
     $statement = $pearDB->prepare("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -104,10 +92,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Groups relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_res_group_relations_index_query
-        ON acl_res_group_relations(acl_group_id)"
-    );
     $statement = $pearDB->prepare(
         "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :aclId"
     );
@@ -120,10 +104,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Service Categories relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_sc_relations_index_query
-        ON acl_resources_sc_relations(sc_id)"
-    );
     $statement = $pearDB->prepare("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -134,10 +114,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Host Categories
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_hc_relations_index_query
-        ON acl_resources_hc_relations(hc_id)"
-    );
     $statement = $pearDB->prepare("SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -148,10 +124,6 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Service Groups relations
      */
-    $pearDB->query(
-        "CREATE INDEX IF NOT EXISTS acl_resources_sg_relations_index_query
-        ON acl_resources_sg_relations(sg_id)"
-    );
     $statement = $pearDB->prepare("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
@@ -173,7 +145,6 @@ if ($o === 'c' || $o === 'w') {
 }
 
 $groups = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS acl_groups_index_query ON acl_groups(acl_group_id, acl_group_name)");
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 while ($group = $DBRESULT->fetch()) {
     $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
@@ -190,29 +161,6 @@ while ($poller = $DBRESULT->fetch()) {
 }
 $DBRESULT->closeCursor();
 
-$hosts = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS host_index_query ON host(host_id, host_name)");
-$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-while ($host = $DBRESULT->fetch()) {
-    $hosts[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->closeCursor();
-
-$hosttoexcludes = [];
-$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
-    $hosttoexcludes[$host["host_id"]] = $host["host_name"];
-}
-$DBRESULT->closeCursor();
-
-$hostgroups = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS hg_index_query ON hostgroup(hg_id, hg_name)");
-$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-while ($hg = $DBRESULT->fetchRow()) {
-    $hostgroups[$hg["hg_id"]] = $hg["hg_name"];
-}
-$DBRESULT->closeCursor();
-
 $service_categories = [];
 $pearDB->query("CREATE INDEX IF NOT EXISTS service_categories_index_query ON service_categories(sc_id, sc_name)");
 $DBRESULT = $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
@@ -222,7 +170,6 @@ while ($sc = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 $host_categories = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS hostcategories_index_query ON hostcategories(hc_id, hc_name)");
 $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
 while ($hc = $DBRESULT->fetchRow()) {
     $host_categories[$hc["hc_id"]] = $hc["hc_name"];
@@ -230,7 +177,6 @@ while ($hc = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 $service_groups = [];
-$pearDB->query("CREATE INDEX IF NOT EXISTS servicegroup_index_query ON servicegroup(sg_id, sg_name)");
 $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 while ($sg = $DBRESULT->fetchRow()) {
     $service_groups[$sg["sg_id"]] = $sg["sg_name"];
@@ -373,51 +319,52 @@ echo $ams0->getElementJs(false);
 /*
  * Hosts
  */
-$attrsAdvSelect['id'] = 'hostAdvancedSelect';
-$ams2 = $form->addElement(
-    'advmultiselect',
-    'acl_hosts',
-    array(_("Hosts"), _("Available"), _("Selected")),
-    $hosts,
-    $attrsAdvSelect,
-    SORT_ASC
+$hostRoute = './api/internal.php?object=centreon_configuration_host&action=list';
+$attrHosts = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostRoute,
+    'multiple' => true,
+    'linkedObject' => 'centreonHost'
 );
-$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);
+$attrsAdvSelect['id'] = 'hostAdvancedSelect';
+$form->addElement(
+    'select2',
+    'acl_hosts',
+    _("Hosts"),
+    [],
+    $attrHosts,
+);
 
 /*
  * Host Groups
  */
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostgroupsRoute,
+    'multiple' => true,
+    'linkedObject' => 'centreonHostgroups'
+);
 $attrsAdvSelect['id'] = 'hostgroupAdvancedSelect';
 $ams2 = $form->addElement(
-    'advmultiselect',
+    'select2',
     'acl_hostgroup',
-    array(_("Host Groups"), _("Available"), _("Selected")),
-    $hostgroups,
-    $attrsAdvSelect,
-    SORT_ASC
+    _("Host Groups"),
+    [],
+    $attrHostgroups,
 );
-$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);
 
 unset($attrsAdvSelect['id']);
 
-$ams2 = $form->addElement(
-    'advmultiselect',
+
+$form->addElement(
+    'select2',
     'acl_hostexclude',
-    array(_("Exclude hosts from selected host groups"), _("Available"), _("Selected")),
-    $hosttoexcludes,
-    $attrsAdvSelect,
-    SORT_ASC
+    _("Exclude hosts from selected host groups"),
+    [],
+    $attrHosts,
 );
-$ams2->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
-$ams2->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
-$ams2->setElementTemplate($eTemplate);
-echo $ams2->getElementJs(false);
+
 
 /*
  * Service Filters

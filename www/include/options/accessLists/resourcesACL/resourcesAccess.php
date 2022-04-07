@@ -59,10 +59,10 @@ require_once "./include/common/common-Func.php";
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     if ($_POST["o1"] != "") {
-        $o = $_POST["o1"];
+        $o = filter_var($_POST["o1"], FILTER_SANITIZE_STRING);
     }
     if ($_POST["o2"] != "") {
-        $o = $_POST["o2"];
+        $o = filter_var($_POST["o2"], FILTER_SANITIZE_STRING);
     }
 }
 
