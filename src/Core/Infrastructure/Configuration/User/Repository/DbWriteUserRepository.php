@@ -41,7 +41,7 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
     /**
      * @inheritDoc
      */
-    public function updateUser(User $user): void
+    public function update(User $user): void
     {
         $statement = $this->db->prepare(
             $this->translateDbName(

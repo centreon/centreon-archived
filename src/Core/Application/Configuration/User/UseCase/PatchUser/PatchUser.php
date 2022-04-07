@@ -56,7 +56,7 @@ final class PatchUser
         try {
             try {
                 $this->debug('Find user', ['user_id' => $request->userId]);
-                $user = $this->readUserRepository->findUserById($request->userId);
+                $user = $this->readUserRepository->findById($request->userId);
                 if ($user === null) {
                     $this->userNotFound($request->userId, $presenter);
 
@@ -86,7 +86,7 @@ final class PatchUser
             try {
                 $this->debug('New theme', ['theme' => $request->theme]);
                 $user->setTheme($request->theme);
-                $this->writeUserRepository->updateUser($user);
+                $this->writeUserRepository->update($user);
             } catch (\Throwable $ex) {
                 throw UserException::errorWhenUpdatingUserTheme($ex);
             }

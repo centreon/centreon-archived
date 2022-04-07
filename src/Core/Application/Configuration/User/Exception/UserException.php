@@ -31,7 +31,7 @@ class UserException extends \Exception
      */
     public static function errorOnUpdatingUser(\Throwable $ex): self
     {
-        return new self(sprintf(_('Error on updating a user'), $ex->getMessage()), 0, $ex);
+        return new self(sprintf(_('Error on updating an user'), $ex->getMessage()), 0, $ex);
     }
 
     /**

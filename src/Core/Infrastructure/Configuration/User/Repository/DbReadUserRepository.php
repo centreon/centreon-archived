@@ -113,7 +113,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
     /**
      * @inheritDoc
      */
-    public function findUserById(int $userId): ?User
+    public function findById(int $userId): ?User
     {
         $statement = $this->db->prepare(
             $this->translateDbName('SELECT * FROM `:db`.contact WHERE contact_id = :contact_id')

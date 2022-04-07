@@ -36,8 +36,8 @@ final class PatchUserController extends AbstractController
 
     /**
      * @param Request $request
-     * @param mixed $user
      * @param PatchUser $useCase
+     * @param mixed $user
      * @param PatchUserPresenterInterface $presenter
      * @return object
      */

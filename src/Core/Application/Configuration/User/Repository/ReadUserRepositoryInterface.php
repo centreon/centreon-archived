@@ -50,7 +50,7 @@ interface ReadUserRepositoryInterface
      * @return User|null
      * @throws AssertionFailedException
      */
-    public function findUserById(int $userId): ?User;
+    public function findById(int $userId): ?User;
 
     /**
      * Find all available themes.

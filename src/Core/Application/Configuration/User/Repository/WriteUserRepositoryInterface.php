@@ -32,5 +32,5 @@ interface WriteUserRepositoryInterface
      *
      * @param User $user
      */
-    public function updateUser(User $user): void;
+    public function update(User $user): void;
 }
