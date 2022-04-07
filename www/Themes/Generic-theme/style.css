@@ -186,22 +186,22 @@ input[type="checkbox"]  {
         box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0);
     }
 }
-.md-radio {
+.md-radio, .md-radio-modified {
     vertical-align: bottom;
 }
-.md-radio.md-radio-inline {
+.md-radio.md-radio-inline, .md-radio-modified.md-radio-inline {
     display: inline-block;
 }
-.md-radio input[type="radio"] {
+.md-radio input[type="radio"], .md-radio-modified input[type="radio"] {
     display: none;
 }
-.md-radio input[type="radio"]:checked + label:before {
+.md-radio input[type="radio"]:checked + label:before, .md-radio-modified input[type="radio"]:checked + label:before {
     border-color: var(--md-radio-checked-backgroud-color);
 }
-.md-radio input[type="radio"]:checked + label:after {
+.md-radio input[type="radio"]:checked + label:after, .md-radio-modified input[type="radio"]:checked + label:after {
     transform: scale(1);
 }
-.md-radio label {
+.md-radio label, .md-radio-modified label {
     display: inline-block;
     height: 16px;
     position: relative;
@@ -210,7 +210,7 @@ input[type="checkbox"]  {
     cursor: pointer;
     vertical-align: bottom;
 }
-.md-radio label:before, .md-radio label:after {
+.md-radio label:before, .md-radio label:after, .md-radio-modified label:before, .md-radio-modified label:after {
     position: absolute;
     box-sizing: border-box;
     content: '';
@@ -218,14 +218,14 @@ input[type="checkbox"]  {
     transition: all .3s ease;
     transition-property: transform, border-color;
 }
-.md-radio label:before {
+.md-radio label:before, .md-radio-modified label:before {
     left: 0;
     top: 0;
     width: 15px;
     height: 15px;
     border: 2px solid var(--md-radio-label-before-border-color);
 }
-.md-radio label:after {
+.md-radio label:after, .md-radio-modified label:after {
     top: 4px;
     left: 4px;
     width: 7px;
@@ -233,7 +233,10 @@ input[type="checkbox"]  {
     transform: scale(0);
     background: var(--md-radio-label-after-background);
 }
-
+.md-radio-modified label {
+    padding: 4px 0px 0 18px;
+    height: 17px;
+}
 
 input[type="radio"] {
     vertical-align: middle;

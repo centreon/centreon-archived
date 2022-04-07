@@ -679,47 +679,6 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "sso_enable",
-        isset($ret["sso_enable"]["yes"]) && $ret["sso_enable"]["yes"] != null ? 1 : 0
-    );
-    updateOption(
-        $pearDB,
-        "sso_mode",
-        isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != null
-            ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1
-    );
-    updateOption(
-        $pearDB,
-        "sso_trusted_clients",
-        isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != null
-            ? $pearDB->escape($ret["sso_trusted_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_blacklist_clients",
-        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != null
-            ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_header_username",
-        isset($ret["sso_header_username"]) && $ret["sso_header_username"] != null
-            ? $pearDB->escape($ret["sso_header_username"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_username_pattern",
-        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != null
-            ? $pearDB->escape($ret["sso_username_pattern"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "sso_username_replace",
-        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != null
-            ? $pearDB->escape($ret["sso_username_replace"]) : ""
-    );
-    updateOption(
-        $pearDB,
         "centreon_support_email",
         isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != null
             ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8") : null

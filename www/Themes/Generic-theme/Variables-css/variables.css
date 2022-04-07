@@ -27,7 +27,7 @@
     --select-background: var(--color-white);
     --select-color : var(--color-charcoal);
     --option-color: var(--color-charcoal);
-    --input-select-background-color: #fff;
+    --input-select-background-color: var(--color-white);
     /******************/
 
     /** Input checkbox **/
@@ -202,11 +202,11 @@
     --bt-danger-background-color: var(--color-primary-dark);
     --bt-info-background-color : var(--color-primary-dark);
     --bt-warning-background-color :var(--color-primary-dark);
-    --bt-action-color-background-color : var(--color-robins-egg-blue);
+    --bt-action-color-background-color : var(--color-primary-dark);
     --bt-action-color :var(--color-white);
-    --bt-action-border-color :var(--color-persian-green);
-    --bt-action-hover-background-color: var(--color-persian-green);
-    --bt-action-hover-border-color: var(--color-surfie-green);
+    --bt-action-border-color: var(--color-primary-dark);
+    --bt-action-hover-background-color: var(--color-primary-dark);
+    --bt-action-hover-border-color: var(--color-primary-dark);
     --bt-default-ui-state-hover-background-color : var(--color-oslo-gray);
     --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color: var(--color-christi);
@@ -268,6 +268,8 @@
     --list-table-border-color: var(--color-periwinkle);
     --list-lvl-1-background-color: var(--color-botticeli);
     --list-lvl-2-background-color: var(--color-periwinkle-gray);
+    --list-lvl-2-font-color: var(--color-black);
+    --list-lvl-1-font-color: var(--color-black);
     --list-header-background: var(--color-periwinkle-gray);
     --list-sub-header-background-color: var(--color-perano);
     --list-one-background-color: var(--color-twilight-blue);
@@ -315,7 +317,7 @@
     --list-header-font-color: var(--body-color);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
-    --input-button-hover-background-color: var(--color-primary-dark);
+    --input-button-hover-background-color: var(--color-primary-light);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
@@ -335,6 +337,7 @@
     --menu3-background-color: var(--color-white);
     --date-font-color: var(--color-ghost);
     --detail-chart-title-background-color:var(--color-periwinkle-gray);
+    --header-text-font-color: var(--body-color);
 
     /* ------ START : info box variables -----*/
     --info-box-border-color: var(--color-iron);
@@ -366,7 +369,7 @@
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
     --global-view-ui-active-tabs-border-bottom-color: none;
     --view-body-portlet-border-color: var(--color-iron);
-    --view-body-ui-widget-header-font-color: var(--color-armadillo);
+    --view-body-ui-widget-header-font-color: var(--color-white-lilac);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
@@ -609,6 +612,11 @@
     --chart-legend-font-color: var(--color-martar);
     --ico-col-active-border-color: var(--color-maya-blue);
     /* ------ END : Views performance variables -----*/
+
+    /* ------ START : Platform status variables -----*/
+    --c3-path-stroke-color: var(--color-black);
+    --c3-text-fill-color: var(--color-black);
+    /* ------ END : Platform status variables -----*/
 
     /* ------ START : Refresh component for chart variables -----*/
     --refresh-border-color: var(--color-aluminium);
