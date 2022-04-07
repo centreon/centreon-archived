@@ -597,7 +597,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log error in login.log file
      *
      * @param string $message
-     * @param array $content
+     * @param array<string,string> $content
      */
     private function logErrorInLoginLogFile(string $message, array $content): void
     {
@@ -613,7 +613,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication informations in login.log file
      *
      * @param string $message
-     * @param array $content
+     * @param array<string,string> $content
      */
     private function logAuthenticationInfoInLoginLogFile(string $message, array $content): void
     {
