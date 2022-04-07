@@ -23,9 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\User\Repository;
 
-use Core\Domain\Configuration\User\Model\User as ConfigurationUser;
 use Core\Domain\Security\User\Model\User;
-use Core\Infrastructure\Security\User\Repository\DbWriteUserRepository;
 
 interface WriteUserRepositoryInterface
 {

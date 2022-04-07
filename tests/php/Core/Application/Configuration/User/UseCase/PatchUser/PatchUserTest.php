@@ -49,7 +49,8 @@ it('tests the error message when user is not found', function () {
         ->willReturn(null);
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(new NotFoundResponse('User'), $this->presenter->getResponseStatus());
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(new NotFoundResponse('User'));
 });
 
 it('tests the exception while searching for the user', function () {
@@ -59,10 +60,10 @@ it('tests the exception while searching for the user', function () {
         ->willThrowException(new UserException());
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(
-        new ErrorResponse(UserException::errorWhileSearchingForUser(new \Exception())->getMessage()),
-        $this->presenter->getResponseStatus()
-    );
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(
+            new ErrorResponse(UserException::errorWhileSearchingForUser(new \Exception())->getMessage())
+        );
 });
 
 it('tests the error message when there are no available themes', function () {
@@ -78,10 +79,8 @@ it('tests the error message when there are no available themes', function () {
         ->willReturn([]);
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(
-        new ErrorResponse('Abnormally empty list of themes'),
-        $this->presenter->getResponseStatus()
-    );
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(new ErrorResponse('Abnormally empty list of themes'));
 });
 
 it('tests the error message when the given theme is not in the list of available themes', function () {
@@ -96,10 +95,8 @@ it('tests the error message when the given theme is not in the list of available
         ->willReturn(['blue', 'green']);
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(
-        new ErrorResponse('Requested theme not found'),
-        $this->presenter->getResponseStatus()
-    );
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(new ErrorResponse('Requested theme not found'));
 });
 
 it('tests the exception while searching for available themes', function () {
@@ -114,10 +111,10 @@ it('tests the exception while searching for available themes', function () {
         ->willThrowException(new UserException());
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(
-        new ErrorResponse(UserException::errorInReadingUserThemes(new \Exception())->getMessage()),
-        $this->presenter->getResponseStatus()
-    );
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(
+            new ErrorResponse(UserException::errorInReadingUserThemes(new \Exception())->getMessage())
+        );
 });
 
 it('tests the exception while updating the theme of user', function () {
@@ -139,10 +136,10 @@ it('tests the exception while updating the theme of user', function () {
 
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
-    $this->assertEquals(
-        new ErrorResponse(
-            UserException::errorWhenUpdatingUserTheme(new \Exception())->getMessage()
-        ),
-        $this->presenter->getResponseStatus()
-    );
+    expect($this->presenter->getResponseStatus())
+        ->toEqual(
+            new ErrorResponse(
+                UserException::errorWhenUpdatingUserTheme(new \Exception())->getMessage()
+            )
+        );
 });

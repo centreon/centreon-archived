@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\User\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Domain\Configuration\User\Model\User as ConfigurationUser;
 use Core\Domain\Security\User\Model\User;
 use Core\Domain\Security\User\Model\UserPassword;
 use Centreon\Infrastructure\DatabaseConnection;
