@@ -144,7 +144,7 @@ const CollapsibleItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
-  const [, hoveredNavigationItemsDerived] = useAtom(
+  const setHoveredNavigationItems = useUpdateAtom(
     hoveredNavigationItemsDerivedAtom,
   );
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
