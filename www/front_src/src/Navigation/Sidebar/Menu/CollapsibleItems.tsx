@@ -145,7 +145,7 @@ const CollapsibleItems = ({
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
   const setHoveredNavigationItems = useUpdateAtom(
-    hoveredNavigationItemsDerivedAtom,
+    setHoveredNavigationItemsDerivedAtom,
   );
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
