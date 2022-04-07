@@ -285,7 +285,6 @@ class OpenIdProvider implements OpenIdProviderInterface
             [
                 'provider_token' => $resultForDebug['access_token'],
                 'refresh_token' => $resultForDebug['refresh_token'],
-                'id_token' => $resultForDebug['id_token']
             ]
         );
         $creationDate = new \DateTime();
