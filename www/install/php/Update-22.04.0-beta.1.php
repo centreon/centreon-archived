@@ -165,7 +165,7 @@ function insertWebSSOConfiguration(CentreonDB $pearDB): void
     $customConfiguration = [
         "trusted_client_addresses" => [],
         "blacklist_client_addresses" => [],
-        "login_header_attribute" => null,
+        "login_header_attribute" => "HTTP_AUTH_USER",
         "pattern_matching_login" => null,
         "pattern_replace_login" => null
     ];
