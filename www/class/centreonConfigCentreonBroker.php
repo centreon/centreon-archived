@@ -726,6 +726,101 @@ class CentreonConfigCentreonBroker
     }
 
     /**
+     * Find a broker config original value based on fieldIndex
+     *
+     * @param int $configId
+     * @param string $configKey
+     * @param int $fieldIndex
+     * @return string|null
+     */
+    private function findOriginalValueWithFieldIndex(int $configId, string $configKey, int $fieldIndex): ?string
+    {
+        $stmt = $this->db->prepare(
+            'SELECT config_value FROM cfg_centreonbroker_info
+            WHERE config_id = :configId
+            AND config_key = :configKey
+            AND fieldIndex = :fieldIndex'
+        );
+        $stmt->bindValue(':configId', $configId, \PDO::PARAM_INT);
+        $stmt->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
+        $stmt->bindValue(':fieldIndex', $fieldIndex, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['config_value'] ?? null;
+    }
+
+    /**
+     * Retrieve lua original password if it hasn't change
+     *
+     * @param int $configId
+     * @param array<string,mixed> $values
+     */
+    private function revealLuaPasswords(int $configId, array &$values): void
+    {
+        foreach ($values['output'] as &$output) {
+            foreach (array_keys($output) as $key) {
+                if (
+                    preg_match('/^lua_parameter__value_(\\d+)$/', (string) $key, $matches)
+                    && $output["lua_parameter__value_{$matches[1]}"] === \CentreonAuth::PWS_OCCULTATION
+                ) {
+                    $originalPassword = $this->findOriginalValueWithFieldIndex(
+                        $configId,
+                        "lua_parameter__value",
+                        $matches[1]
+                    );
+                    $output["lua_parameter__value_{$matches[1]}"] = $originalPassword;
+                }
+            }
+        }
+    }
+
+    /**
+     * Find a broker config original value based on group id
+     *
+     * @param int $configId
+     * @param int $groupId
+     * @param string $configKey
+     * @return string|null
+     */
+    private function findOriginalValueWithGroupId(int $configId, int $groupId, string $configKey): ?string
+    {
+        $stmt = $this->db->prepare(
+            'SELECT config_value FROM cfg_centreonbroker_info
+            WHERE config_id = :configId
+            AND config_key = :configKey
+            AND config_group_id = :groupId'
+        );
+        $stmt->bindValue(':configId', $configId, \PDO::PARAM_INT);
+        $stmt->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
+        $stmt->bindValue(':groupId', $groupId, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['config_value'] ?? null;
+    }
+
+    /**
+     * Retrieve original db_password if it hasn't change
+     *
+     * @param int $configId
+     * @param array<string,mixed> $values
+     */
+    private function revealPasswords(int $configId, array &$values): void
+    {
+        if (isset($values['output'])) {
+            foreach ($values['output'] as $key => &$output) {
+                if (isset($output['db_password']) && $output['db_password'] === \CentreonAuth::PWS_OCCULTATION) {
+                    $originalPassword = $this->findOriginalValueWithGroupId($configId, $key, 'db_password');
+                    $output['db_password'] = $originalPassword;
+                }
+            }
+        }
+    }
+
+    /**
      * Update the information for a configuration
      *
      * @param int $id The configuration id
@@ -747,6 +842,10 @@ class CentreonConfigCentreonBroker
                 }
             }
         }
+
+        $this->revealLuaPasswords($id, $values);
+        $this->revealPasswords($id, $values);
+
         // Clean the informations for this id
         $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
             . (int) $id
@@ -794,7 +893,8 @@ class CentreonConfigCentreonBroker
                         $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
-                            foreach ($fieldvalue as $index => $value) {
+                            $index = 0;
+                            foreach ($fieldvalue as $key => $value) {
                                 if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
                                     $value = $value[$fieldname];
                                 }
@@ -828,6 +928,7 @@ class CentreonConfigCentreonBroker
                                     $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
                                     $stmt->execute();
                                 }
+                                $index++;
                             }
                             continue;
                         }
@@ -953,6 +1054,7 @@ class CentreonConfigCentreonBroker
         }
         $formsInfos = array();
         $arrayMultipleValues = array();
+        $isTypePassword = false;
         while ($row = $res->fetch()) {
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
                 $this->getConfigFieldName($config_id, $tag, $row) . ']';
@@ -966,7 +1068,14 @@ class CentreonConfigCentreonBroker
                     $suffix = '';
                 }
                 $arrayMultipleValues[$fieldname]['suffix'] = $suffix;
-                $arrayMultipleValues[$fieldname]['values'][] = $row['config_value'];
+                $arrayMultipleValues[$fieldname]['values'][] =
+                    $isTypePassword && $suffix === 'value' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
+
+                if ($suffix === 'type' && $row['config_value'] === 'password') {
+                    $isTypePassword = true;
+                } elseif ($isTypePassword && $suffix === 'value') {
+                    $isTypePassword = false;
+                }
             } else {
                 if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
                     if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
@@ -974,11 +1083,15 @@ class CentreonConfigCentreonBroker
                             $formsInfos[$row['config_group_id']]['defaults'][$fieldname]
                         );
                     }
-                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] =
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                 } else {
-                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] =
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] =
-                        $row['config_value']; // Radio button
+                        $row['config_key'] === 'db_password'
+                        ? \CentreonAuth::PWS_OCCULTATION
+                        : $row['config_value']; // Radio button
                 }
                 if ($row['config_key'] == 'blockId') {
                     $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
