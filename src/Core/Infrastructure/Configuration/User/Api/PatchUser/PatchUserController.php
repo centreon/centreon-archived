@@ -37,14 +37,12 @@ final class PatchUserController extends AbstractController
     /**
      * @param Request $request
      * @param PatchUser $useCase
-     * @param mixed $user
      * @param PatchUserPresenterInterface $presenter
      * @return object
      */
     public function __invoke(
         Request $request,
         PatchUser $useCase,
-        mixed $user,
         PatchUserPresenterInterface $presenter
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
@@ -54,11 +52,7 @@ final class PatchUserController extends AbstractController
          * @var Contact $currentUser
          */
         $currentUser = $this->getUser();
-        $userId = is_numeric($user)
-            ? (int) $user
-            : $currentUser->getId();
-
-        $useCase($this->createRequest($request, $userId), $presenter);
+        $useCase($this->createRequest($request, $currentUser->getId()), $presenter);
 
         return $presenter->show();
     }

@@ -18,9 +18,7 @@ centreon_application_configuration_users:
 
 centreon_application_patch_users:
   methods: PATCH
-  path: /configuration/users/{user}/parameters
-  requirements:
-    user: '\d+|current'
+  path: /configuration/users/current/parameters
   controller: 'Core\Infrastructure\Configuration\User\Api\PatchUser\PatchUserController'
   condition: "request.attributes.get('version') >= 22.04"
 

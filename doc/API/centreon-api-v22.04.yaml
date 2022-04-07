@@ -848,7 +848,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /configuration/users/{user}/parameters:
     patch:
       tags:
       - User
@@ -859,17 +858,6 @@ paths:
         The available parameters to be updated are :
         
         * theme
-      parameters:
-      - name: user
-        in: path
-        description: "ID of the user or current"
-        required: true
-        schema:
-          type: string
-        example: |
-
-          * current: for current user
-          * numerical value corresponding to the user id
       requestBody:
         required: true
         content:
@@ -884,7 +872,7 @@ paths:
                   example: light
       responses:
         204:
-          description: "Command Sent"
+          description: "User updated"
         403:
           $ref: '#/components/responses/Forbidden'
         500:
