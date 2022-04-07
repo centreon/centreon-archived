@@ -6,7 +6,10 @@ import axios from 'axios';
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { Provider } from '../models';
-import { authenticationProvidersEndpoint } from '../api/endpoints';
+import {
+  authenticationProvidersEndpoint,
+  contactTemplatesEndpoint,
+} from '../api/endpoints';
 import {
   labelDoYouWantToResetTheForm,
   labelReset,
@@ -21,6 +24,7 @@ import {
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
   labelDisableVerifyPeer,
   labelEmailAttributeToBind,
@@ -313,6 +317,56 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(screen.getByText(labelSave)).not.toBeDisabled();
+    });
+  });
+
+  it('updates the contact template field when an contact template is selected from the retrieved options', async () => {
+    renderOpenidConfigurationForm();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        meta: {
+          limit: 10,
+          page: 1,
+          total: 30,
+        },
+        result: [
+          {
+            id: 1,
+            name: 'Contact Template 1',
+          },
+          {
+            id: 2,
+            name: 'Contact Template 2',
+          },
+        ],
+      },
+    });
+
+    userEvent.click(screen.getByLabelText(labelContactTemplate));
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${contactTemplatesEndpoint}?page=1&sort_by=${encodeURIComponent(
+          '{"name":"ASC"}',
+        )}&search=${encodeURIComponent('{"$and":[{"id":{"$ni":[1]}}]}')}`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.click(screen.getByText('Contact Template 2'));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelContactTemplate)).toHaveValue(
+        'Contact Template 2',
+      );
     });
   });
 });

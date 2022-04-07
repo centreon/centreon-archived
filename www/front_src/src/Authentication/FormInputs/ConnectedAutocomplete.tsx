@@ -29,7 +29,10 @@ const ConnectedAutocomplete = ({
   const getEndpoint = (parameters): string =>
     buildListingEndpoint({
       baseEndpoint: contactTemplatesEndpoint,
-      parameters,
+      parameters: {
+        ...parameters,
+        sort: { name: 'ASC' },
+      },
     });
 
   const change = (_, value): void => {
