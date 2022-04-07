@@ -177,7 +177,9 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws SSOAuthenticationException
+     * @throws OpenIdConfigurationException
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void
     {
@@ -306,6 +308,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Get Connection Token from OpenId Provider.
      *
      * @param string $authorizationCode
+     * @throws SSOAuthenticationException
      */
     private function sendRequestForConnectionTokenOrFail(string $authorizationCode): void
     {
@@ -366,6 +369,7 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get introspection token information.
+     * @throws SSOAuthenticationException
      */
     private function sendRequestForIntrospectionTokenOrFail(): void
     {
@@ -417,6 +421,7 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get user information.
+     * @throws SSOAuthenticationException
      */
     private function sendRequestForUserInformationOrFail(): void
     {
@@ -435,13 +440,13 @@ class OpenIdProvider implements OpenIdProviderInterface
                 ]
             );
         } catch (\Exception $ex) {
-            throw SSoAuthenticationException::requestForUserInformationFail();
+            throw SSOAuthenticationException::requestForUserInformationFail();
         }
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
-            throw SSoAuthenticationException::requestForUserInformationFail();
+            throw SSOAuthenticationException::requestForUserInformationFail();
         }
         $content = json_decode($response->getContent(false), true);
         if (empty($content) || array_key_exists('error', $content)) {
@@ -457,6 +462,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Validate that Client IP is allowed to connect to external provider.
      *
      * @param string $clientIp
+     * @throws SSOAuthenticationException
      */
     private function verifyThatClientIsAllowedToConnectOrFail(string $clientIp): void
     {
@@ -464,7 +470,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         foreach ($this->configuration->getBlacklistClientAddresses() as $blackListedAddress) {
             if ($blackListedAddress !== "" && preg_match('/' . $blackListedAddress . '/', $clientIp)) {
                 $this->error('IP Blacklisted', [ 'ip' => '...' . substr($clientIp, -5)]);
-                throw SSoAuthenticationException::blackListedClient();
+                throw SSOAuthenticationException::blackListedClient();
             }
         }
 
@@ -474,7 +480,7 @@ class OpenIdProvider implements OpenIdProviderInterface
                 && preg_match('/' . $trustedClientAddress . '/', $clientIp)
             ) {
                 $this->error('IP not  Whitelisted', [ 'ip' => '...' . substr($clientIp, -5)]);
-                throw SSoAuthenticationException::notWhiteListedClient();
+                throw SSOAuthenticationException::notWhiteListedClient();
             }
         }
     }
@@ -483,6 +489,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Return username from login claim.
      *
      * @return string
+     * @throws SSOAuthenticationException
      */
     private function getUsernameFromLoginClaim(): string
     {
@@ -511,6 +518,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @param array<string,mixed> $data
      * @return ResponseInterface
+     * @throws SSOAuthenticationException
      */
     private function sendRequestToTokenEndpoint(array $data): ResponseInterface
     {
@@ -602,6 +610,8 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * Log Authentication informations in login.log file
+     *
      * @param string $message
      * @param array $content
      */
@@ -622,6 +632,12 @@ class OpenIdProvider implements OpenIdProviderInterface
         );
     }
 
+    /**
+     * Log Exception in login.log file
+     *
+     * @param string $message
+     * @param \Exception $e
+     */
     private function logExceptionInLoginLogFile(string $message, \Exception $e): void
     {
         $this->centreonLog->insertLog(
