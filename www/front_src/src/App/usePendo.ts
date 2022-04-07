@@ -82,11 +82,11 @@ const usePendo = (): void => {
     }
   };
 
-  const online = (): void => {
+  const goOnline = (): void => {
     sendCeipInfo(true);
   };
 
-  const offline = (): void => {
+  const goOffline = (): void => {
     sendCeipInfo(false);
   };
 
@@ -99,14 +99,14 @@ const usePendo = (): void => {
   }, []);
 
   React.useEffect(() => {
-    window.addEventListener('online', online);
-    window.addEventListener('offline', offline);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
 
     sendCeipInfo(window.navigator.onLine);
 
     return (): void => {
-      window.removeEventListener('online', online);
-      window.removeEventListener('offline', offline);
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
     };
   }, [isCeipEnabled]);
 };
