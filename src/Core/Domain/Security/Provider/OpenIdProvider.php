@@ -263,7 +263,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if ($statusCode !== Response::HTTP_OK) {
             $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
             $this->logExceptionInLoginLogFile(
-                "Unable to get Rfresh Token Information: %s, message: %s",
+                "Unable to get Refresh Token Information: %s, message: %s",
                 SSOAuthenticationException::requestForRefreshTokenFail()
             );
             throw SSOAuthenticationException::requestForRefreshTokenFail();
