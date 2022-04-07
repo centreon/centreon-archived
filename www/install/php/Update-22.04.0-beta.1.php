@@ -167,7 +167,7 @@ try {
 
     if ($pearDB->isColumnExist('cfg_centreonbroker', 'bbdo_version') !== 1) {
         $errorMessage = "Unable to add 'bbdo_version' column to 'cfg_centreonbroker' table";
-        $statement->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
+        $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
     }
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
