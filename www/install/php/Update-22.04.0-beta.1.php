@@ -466,6 +466,7 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
  * Migrate broker outputs 'sql' and 'storage' to a unique output 'unified_sql'
  *
  * @param CentreonDB $pearDB
+ * @throws \Exception
  * @return void
  */
 function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
@@ -548,9 +549,9 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         // Insert new output
         $queryRows = [];
         $bindedValues = [];
-        $columnsName = null;
+        $columnNames = null;
         foreach ($unifiedSqlOutput as $configKey => $row) {
-            $columnsName = $columnsName ?? implode(", ", array_keys($row));
+            $columnNames = $columnNames ?? implode(", ", array_keys($row));
 
             $queryKeys = [];
             foreach ($row as $key => $value) {
@@ -566,8 +567,8 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
             }
         }
 
-        if (! empty($queryRows)) {
-            $query = "INSERT INTO cfg_centreonbroker_info ($columnsName) VALUES ";
+        if (! empty($queryRows) && $columnNames !== null) {
+            $query = "INSERT INTO cfg_centreonbroker_info ($columnNames) VALUES ";
             $query .= implode(', ', $queryRows);
 
             $stmt = $pearDB->prepare($query);
