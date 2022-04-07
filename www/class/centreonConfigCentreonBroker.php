@@ -156,9 +156,6 @@ class CentreonConfigCentreonBroker
         <td><div class="ams">{label_3}</div>{selected}</td>
         </tr></table>{javascript}';
 
-    /** @var string */
-    private $passwordReplacementValue = '**********';
-
     /**
      * Construtor
      *
@@ -876,7 +873,7 @@ class CentreonConfigCentreonBroker
             foreach (array_keys($output) as $key) {
                 if (
                     preg_match('/^lua_parameter__value_(\\d+)$/', (string) $key, $matches)
-                    && $output["lua_parameter__value_{$matches[1]}"] === $this->passwordReplacementValue
+                    && $output["lua_parameter__value_{$matches[1]}"] === \CentreonAuth::PWS_OCCULTATION
                 ) {
                     $originalPassword = $this->findOriginalValueWithFieldIndex(
                         $configId,
@@ -925,7 +922,7 @@ class CentreonConfigCentreonBroker
     {
         if (isset($values['output'])) {
             foreach ($values['output'] as $key => &$output) {
-                if (isset($output['db_password']) && $output['db_password'] === $this->passwordReplacementValue) {
+                if (isset($output['db_password']) && $output['db_password'] === \CentreonAuth::PWS_OCCULTATION) {
                     $originalPassword = $this->findOriginalValueWithGroupId($configId, $key, 'db_password');
                     $output['db_password'] = $originalPassword;
                 }
@@ -1181,7 +1178,7 @@ class CentreonConfigCentreonBroker
                 }
                 $arrayMultipleValues[$fieldname]['suffix'] = $suffix;
                 $arrayMultipleValues[$fieldname]['values'][] =
-                    $isTypePassword && $suffix === 'value' ? $this->passwordReplacementValue : $row['config_value'];
+                    $isTypePassword && $suffix === 'value' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
 
                 if ($suffix === 'type' && $row['config_value'] === 'password') {
                     $isTypePassword = true;
@@ -1196,13 +1193,13 @@ class CentreonConfigCentreonBroker
                         );
                     }
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] =
-                        $row['config_key'] === 'db_password' ? $this->passwordReplacementValue : $row['config_value'];
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                 } else {
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname] =
-                        $row['config_key'] === 'db_password' ? $this->passwordReplacementValue : $row['config_value'];
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] =
                         $row['config_key'] === 'db_password'
-                        ? $this->passwordReplacementValue
+                        ? \CentreonAuth::PWS_OCCULTATION
                         : $row['config_value']; // Radio button
                 }
                 if ($row['config_key'] == 'blockId') {
