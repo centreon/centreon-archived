@@ -102,7 +102,7 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser(platformInstallationStatus)?.then(() => navigate(redirectUri));
+        loadUser()?.then(() => navigate(redirectUri));
       })
       .catch((error) =>
         checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
