@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { equals } from 'ramda';
 import clsx from 'clsx';
-import { useAtomValue, useAtom } from 'jotai';
+import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -15,7 +15,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
-  hoveredNavigationItemsDerivedAtom,
+  setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 
 import MenuItems from './MenuItems';
@@ -144,11 +144,11 @@ const CollapsibleItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
+  const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
+  const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
   const setHoveredNavigationItems = useUpdateAtom(
     setHoveredNavigationItemsDerivedAtom,
   );
-  const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
-  const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
   const levelName = `level_${level}`;
   const itemWidth = currentWidth + collapseWidth;

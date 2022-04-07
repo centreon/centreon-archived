@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { equals, flatten, isEmpty, isNil, keys, omit } from 'ramda';
+import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -14,7 +15,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
-  hoveredNavigationItemsDerivedAtom,
+  setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
@@ -62,8 +63,8 @@ const NavigationMenu = ({
     hoveredNavigationItemsAtom,
   );
 
-  const [, hoveredNavigationItemsDerived] = useAtom(
-    hoveredNavigationItemsDerivedAtom,
+  const setHoveredNavigationItemsDerived = useUpdateAtom(
+    setHoveredNavigationItemsDerivedAtom,
   );
 
   const levelName = 'level_0';
@@ -88,7 +89,7 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
-    hoveredNavigationItemsDerived({ currentPage, levelName });
+    setHoveredNavigationItemsDerived({ currentPage, levelName });
   };
 
   const handleLeave = (): void => {
