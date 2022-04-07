@@ -247,10 +247,10 @@ class ServiceTemplate extends AbstractService
         $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
         $this->service_cache[$serviceId]['sc'] = $serviceCategory->getServiceCategoriesForServiceTemplate($serviceId);
 
-        foreach ($this->service_cache[$serviceId]['sc'] as &$value) {
-            if (! is_null($value)) {
+        foreach ($this->service_cache[$serviceId]['sc'] as &$serviceCategoryId) {
+            if (! is_null($serviceCategoryId)) {
                 $serviceCategory->addServiceToServiceCategoryMembers(
-                    $value,
+                    $serviceCategoryId,
                     $serviceId,
                     $this->service_cache[$serviceId]['service_description']
                 );
