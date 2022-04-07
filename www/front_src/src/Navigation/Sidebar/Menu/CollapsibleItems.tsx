@@ -159,7 +159,7 @@ const CollapsibleItems = ({
     const { top } = rect;
     setItemTop(top);
     setHoveredIndex(index);
-    hoveredNavigationItemsDerived({ currentPage, levelName });
+    setHoveredNavigationItems({ currentPage, levelName });
   };
 
   const isItemHovered = ({
