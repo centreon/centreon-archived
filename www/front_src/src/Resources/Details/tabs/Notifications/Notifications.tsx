@@ -1,12 +1,10 @@
 import * as React from 'react';
 
-import { path } from 'ramda';
+import { omit, path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Box,
-  Divider,
   Paper,
   Stack,
   Typography,
@@ -22,7 +20,6 @@ import { getData, useRequest, IconButton } from '@centreon/ui';
 import { detailsAtom } from '../../detailsAtoms';
 import {
   labelAlias,
-  labelConfiguration,
   labelContactGroups,
   labelContacts,
   labelEmail,
@@ -30,13 +27,9 @@ import {
   labelNotificationStatus,
 } from '../../../translatedLabels';
 
-import { Contact, ContactGroups } from './models';
+import {  NotificationContacts } from './models';
+import Contacts from './Contacts';
 
-interface NotificationContacts {
-  contact_groups: Array<ContactGroups> | null;
-  contacts: Array<Contact> | null;
-  is_notification_enabled: boolean;
-}
 
 const Notification = (): JSX.Element => {
   const { t } = useTranslation();
@@ -51,18 +44,39 @@ const Notification = (): JSX.Element => {
 
   const endpoint = path(['links', 'endpoints', 'notification_policy'], details);
 
-  const loadContactNotifs = (): void => {
+  const loadNotificationContacts = (): void => {
     sendRequest({ endpoint }).then((retrievedNotificationContacts) => {
       setNotificationContacts(retrievedNotificationContacts);
     });
   };
 
   React.useEffect(() => {
-    loadContactNotifs();
+    loadNotificationContacts();
   }, []);
 
-  const goToUri = (uri: string): void => {
-    window.location.href = uri;
+
+  const columns = {
+    name: {
+      header: (<Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
+      {t(labelName)}
+    </Typography>),
+    cell:  (<Typography sx={{ paddingLeft: 1 }}>{Name}</Typography>)
+    },
+    alias: {
+      header: <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>,
+      cell: ( <Typography>{Alias}</Typography>
+        ),
+
+    }, 
+     email: {
+       heade: <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>,
+       cell : (<Typography>{Email}</Typography>
+       ),
+     },
+    configuration_uri: {
+      header: (<span/>),
+      cell: ({<SettingsIcon />}),
+    },
   };
 
   return (
@@ -88,92 +102,14 @@ const Notification = (): JSX.Element => {
         <PersonIcon color="primary" fontSize="large" />
         <Typography sx={{ fontWeight: 'bold' }}>{t(labelContacts)}</Typography>
       </Stack>
-      <Box
-        component={Paper}
-        display="grid"
-        sx={{
-          alignItems: 'center',
-          gap: 1,
-          gridTemplateColumns: '1fr 1fr 1fr auto',
-          justifyContent: 'center',
-          py: 1,
-        }}
-      >
-        <>
-          <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
-            {t(labelName)}
-          </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
-          <span />
-
-          <Divider sx={{ gridColumn: '1 / -1' }} />
-        </>
-        {notificationContacts?.contacts?.map(
-          ({ name, alias, email, configuration_uri }) => {
-            return (
-              <>
-                <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
-                <Typography>{alias}</Typography>
-                <Typography>{email}</Typography>
-                <IconButton
-                  size="small"
-                  sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
-                  title={t(labelConfiguration)}
-                  onClick={(): void => goToUri(configuration_uri)}
-                >
-                  <SettingsIcon color="primary" fontSize="small" />
-                </IconButton>
-              </>
-            );
-          },
-        )}
-      </Box>
+     <Contacts contacts={notificationContacts?.contacts || []} templateColumns={columns}/>
       <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
         <GroupIcon color="primary" fontSize="large" />
         <Typography sx={{ fontWeight: 'bold' }}>
           {t(labelContactGroups)}
         </Typography>
       </Stack>
-      <Box
-        component={Paper}
-        display="grid"
-        sx={{
-          alignItems: 'center',
-          gap: 1,
-          gridTemplateColumns: '1fr 1fr auto',
-          justifyContent: 'center',
-          py: 1,
-        }}
-      >
-        <>
-          <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
-            {t(labelName)}
-          </Typography>
-          <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
-          <span />
-
-          <Divider sx={{ gridColumn: '1 / -1' }} />
-        </>
-        {notificationContacts?.contact_groups?.map(
-          ({ name, alias, configuration_uri }) => {
-            return (
-              <>
-                <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
-                <Typography>{alias}</Typography>
-                <IconButton
-                  size="small"
-                  sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
-                  title={t(labelConfiguration)}
-                  onClick={(): void => goToUri(configuration_uri)}
-                >
-                  <SettingsIcon color="primary" fontSize="small" />
-                </IconButton>
-              </>
-            );
-          },
-        )}
-      </Box>
+      <Contacts contacts={notificationContacts?.contact_groups || []} templateColumns={omit(['email'], {columns})}/>
     </Stack>
   );
 };
