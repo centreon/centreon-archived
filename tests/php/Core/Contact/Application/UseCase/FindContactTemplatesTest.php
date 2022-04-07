@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Contact\Application\UseCase;
+namespace Tests\Core\Contact\Application\UseCase;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;

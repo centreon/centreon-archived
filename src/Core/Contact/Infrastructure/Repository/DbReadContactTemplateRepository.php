@@ -38,6 +38,7 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
 
     /**
      * @param DatabaseConnection $db
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
      */
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
