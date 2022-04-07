@@ -46,6 +46,10 @@ final class PatchUser
     ) {
     }
 
+    /**
+     * @param PatchUserRequest $request
+     * @param PatchUserPresenterInterface $presenter
+     */
     public function __invoke(PatchUserRequest $request, PatchUserPresenterInterface $presenter): void
     {
         $this->info('Update user');
