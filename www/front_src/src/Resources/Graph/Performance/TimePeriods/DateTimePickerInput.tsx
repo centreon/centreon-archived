@@ -45,7 +45,7 @@ const DateTimePickerInput = ({
   setDate,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocalAndConfiguredTimezoneOffset, formatKeyboardValue } =
+  const { getDestinationAndConfiguredTimezoneOffset, formatKeyboardValue } =
     useDateTimePickerAdapter();
 
   const changeTime = (
@@ -58,7 +58,9 @@ const DateTimePickerInput = ({
       return;
     }
     const value = dayjs(formatKeyboardValue(keyBoardValue))
-      .add(dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }))
+      .add(
+        dayjs.duration({ hours: getDestinationAndConfiguredTimezoneOffset() }),
+      )
       .toDate();
 
     setDate(value);
