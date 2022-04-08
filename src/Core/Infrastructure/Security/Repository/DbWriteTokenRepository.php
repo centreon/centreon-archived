@@ -25,9 +25,12 @@ namespace Core\Infrastructure\Security\Repository;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
+use Centreon\Domain\Log\LoggerTrait;
 
 class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteTokenRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -41,9 +44,49 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
      */
     public function deleteExpiredSecurityTokens(): void
     {
+        $this->deleteExpiredProviderRefreshTokens();
+        $this->deleteExpiredProviderTokens();
+    }
+
+    /**
+     * Delete expired provider refresh tokens.
+     */
+    private function deleteExpiredProviderRefreshTokens(): void
+    {
+        $this->debug('Deleting expired refresh tokens');
+
         $this->db->query(
             $this->translateDbName(
-                "DELETE FROM `:db`.security_token WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
+                "DELETE st FROM `centreon`.security_token st
+                WHERE st.expiration_date < UNIX_TIMESTAMP(NOW())
+                AND EXISTS (
+                    SELECT 1
+                    FROM `centreon`.security_authentication_tokens sat
+                    WHERE sat.provider_token_refresh_id = st.id
+                    LIMIT 1
+                )"
+            )
+        );
+    }
+
+    /**
+     * Delete provider refresh tokens which are not linked to a refresh token.
+     */
+    private function deleteExpiredProviderTokens(): void
+    {
+        $this->debug('Deleting expired tokens which are not linked to a refresh token');
+
+        $this->db->query(
+            $this->translateDbName(
+                "DELETE st FROM `centreon`.security_token st
+                WHERE st.expiration_date < UNIX_TIMESTAMP(NOW())
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM `centreon`.security_authentication_tokens sat
+                    WHERE sat.provider_token_id = st.id
+                    AND sat.provider_token_refresh_id IS NOT NULL
+                    LIMIT 1
+                )"
             )
         );
     }
