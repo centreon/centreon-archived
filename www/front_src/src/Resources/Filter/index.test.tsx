@@ -50,6 +50,7 @@ import {
 } from '../testUtils';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
+import { limitAtom } from '../Listing/listingAtoms';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
@@ -293,7 +294,7 @@ describe(Filter, () => {
     window.history.pushState({}, '', window.location.pathname);
   });
 
-  it('executes a listing request with "Unhandled problems" filter by default', async () => {
+  it.only('executes a listing request with "Unhandled problems" filter by default', async () => {
     renderFilter();
 
     await waitFor(() =>
