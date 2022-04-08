@@ -33,6 +33,11 @@ class Icon
     public const SERIALIZER_GROUP_MAIN = 'icon_main';
 
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var string|null
      */
     private $name;
@@ -41,6 +46,24 @@ class Icon
      * @var string|null
      */
     private $url;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * @return string|null
