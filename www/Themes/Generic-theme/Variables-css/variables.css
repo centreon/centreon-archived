@@ -12,7 +12,7 @@
     /*****************/
 
     /** Body color **/
-    --body-background: var(--color-white);
+    --body-background: var(--color-gallery-2);
     --body-color:var(--color-martar);
     /*****************/
 
@@ -365,10 +365,10 @@
     --global-view-ui-border-color: none;
     --ui-background-color: var(--color-primary-dark);
     --ui-state-active-font-color: var(--color-white);
-    --ui-anchor-state-default-font-color: var(--color-white);
-    --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
-    --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
-    --global-view-ui-active-tabs-border-bottom-color: none;
+    --ui-anchor-state-default-font-color: var(--color-black-rgba-54);
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
+    --global-view-ui-active-tabs-border-color: none;
+    --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
     --view-body-portlet-border-color: var(--color-iron);
     --view-body-ui-widget-header-font-color: var(--color-white-lilac);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
@@ -434,7 +434,7 @@
     --update-error-border-color: var(--color-silver-chalice-2);
     --update-read-me-output-background-color: var(--color-white);
     --update-read-me-output-border-color: var(--color-silver-chalice-2);
-    --up-to-date-color:var(--color-white);
+    --up-to-date-color: none;
     /* ------ END : Warning variables -----*/
 
     /* ------ START : Arbo ACL variables -----*/
@@ -562,7 +562,7 @@
     --tabs-periods-border-color: var(--color-white-lilac);
     --ui-widget-content-background-color: transparent;
     --ui-widget-header-background-color: var(--color-white);
-    --ui-widget-header-border-bottom-color: var(--color-white-lilac);
+    --ui-widget-header-border-bottom-color: var(--color-iron);
     /* ------ END : JQuery tabs variables -----*/
 
     /* ------ START : JQuery datepicker variables -----*/
@@ -761,7 +761,7 @@
     /* Portlet style variables */
     --ui-sortable-placeholder-border-color: var(--color-black);
     --ui-button-focus-font-color: var(--color-white);
-    --ui-tabs-nav-li-anchor-background-color: var(--color-pasific-bleu);
+    --ui-tabs-nav-li-anchor-background-color: none;
     --ui-tabs-nav-li-background-color: var(--ui-tabs-nav-li-anchor-background-color);
     --ui-state-processing-anchor-background-color: none;
     --ui-state-processing-background-color: none;
