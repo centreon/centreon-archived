@@ -111,14 +111,6 @@ class CentreonEngineCfg extends CentreonObject
             'host_check_timeout' => '10',
             'event_handler_timeout' => '30',
             'notification_timeout' => '30',
-            'ocsp_timeout' => '5',
-            'ochp_timeout' => '5',
-            'perfdata_timeout' => '5',
-            'obsess_over_services' => '0',
-            'obsess_over_hosts' => '2',
-            'process_performance_data' => '0',
-            'host_perfdata_file_mode' => '2',
-            'service_perfdata_file_mode' => '2',
             'check_for_orphaned_services' => '0',
             'check_for_orphaned_hosts' => '0',
             'check_service_freshness' => '2',
@@ -204,13 +196,7 @@ class CentreonEngineCfg extends CentreonObject
         if ($objectId != 0) {
             $commandColumns = array(
                 'global_host_event_handler',
-                'global_service_event_handler',
-                'host_perfdata_command',
-                'service_perfdata_command',
-                'host_perfdata_file_processing_command',
-                'service_perfdata_file_processing_command',
-                'ocsp_command',
-                'ochp_command'
+                'global_service_event_handler'
             );
             if ($params[1] == "instance" || $params[1] == "nagios_server_id") {
                 $params[1] = "nagios_server_id";
@@ -319,15 +305,7 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler'
-                        || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command'
-                        || $parameter == 'service_perfdata_command'
-                        || $parameter == 'host_perfdata_file_processing_command'
-                        || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command'
-                        || $parameter == 'ocsp_command'
-                    ) {
+                    if ($parameter == 'global_host_event_handler' || $parameter == 'global_service_event_handler') {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
                     } elseif ($parameter == 'illegal_object_name_chars'

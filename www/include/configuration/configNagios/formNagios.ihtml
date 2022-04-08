@@ -47,10 +47,10 @@
 
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
-          <h4>{$Folders}</h4>
+          <h4>{$ConfigFolders}</h4>
         </td>
       </tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
       <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_file" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
 
 			<tr class="list_lvl_1">
@@ -181,9 +181,9 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_service_retries">&nbsp;{$form.log_service_retries.label}</td><td class="FormRowValue">{$form.log_service_retries.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_host_retries">&nbsp;{$form.log_host_retries.label}</td><td class="FormRowValue">{$form.log_host_retries.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_event_handlers">&nbsp;{$form.log_event_handlers.label}</td><td class="FormRowValue">{$form.log_event_handlers.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_external_commands">&nbsp;{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_passive_checks">&nbsp;{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_external_commands">&nbsp;{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_passive_checks">&nbsp;{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
 
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
@@ -353,7 +353,7 @@
       </tr>
 			<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="instance_heartbeat_interval">&nbsp;{$form.instance_heartbeat_interval.label}</td><td class="FormRowValue">{$form.instance_heartbeat_interval.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="illegal_object_name_chars">&nbsp;{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="illegal_macro_output_chars">&nbsp;{$form.illegal_macro_output_chars.label}</td><td class="FormRowValue">{$form.illegal_macro_output_chars.html}</td></tr>

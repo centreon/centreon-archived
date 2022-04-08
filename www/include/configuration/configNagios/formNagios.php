@@ -767,8 +767,8 @@ if ($valid) {
     $tpl->assign('sort6', _("Admin"));
     $tpl->assign('sort7', _("Debug"));
     $tpl->assign('Status', _("Status"));
-    $tpl->assign('Folders', _("Folders"));
-    $tpl->assign('Files', _("Files"));
+    $tpl->assign('ConfigFolders', _("Configuration Folders"));
+    $tpl->assign('Files', _("Status and log files"));
     $tpl->assign('ExternalCommandes', _("External Commands"));
     $tpl->assign('HostCheckOptions', _("Host Check Options"));
     $tpl->assign('ServiceCheckOptions', _("Service Check Options"));
