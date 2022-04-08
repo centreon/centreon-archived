@@ -12,7 +12,7 @@ import {
   labelName,
 } from '../../../translatedLabels';
 
-const Contacts = ({ contacts, templateColumns }): JSX.Element => {
+const Contacts = ({ contacts, templateColumns, columns }): JSX.Element => {
   const { t } = useTranslation();
 
   const goToUri = (uri: string): void => {
