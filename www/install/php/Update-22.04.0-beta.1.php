@@ -72,21 +72,23 @@ try {
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to select existing passwords from 'contact' table";
-    $getPasswordResult = $pearDB->query(
-        "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
-    );
+    if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
+        $getPasswordResult = $pearDB->query(
+            "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
+        );
 
-    // Move old password from contact to contact_password
-    $errorMessage = "Unable to insert password in 'contact_password' table";
-    $statement = $pearDB->prepare(
-        "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
-        VALUES (:password, :contactId, :creationDate)"
-    );
-    while ($row = $getPasswordResult->fetch()) {
-        $statement->bindValue(':password', $row['contact_passwd'], \PDO::PARAM_STR);
-        $statement->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
-        $statement->execute();
+        // Move old password from contact to contact_password
+        $errorMessage = "Unable to insert password in 'contact_password' table";
+        $statement = $pearDB->prepare(
+            "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+            VALUES (:password, :contactId, :creationDate)"
+        );
+        while ($row = $getPasswordResult->fetch()) {
+            $statement->bindValue(':password', $row['contact_passwd'], \PDO::PARAM_STR);
+            $statement->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
+            $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     //Insert default providers configurations
@@ -134,6 +136,16 @@ try {
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
         $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
         $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    }
+
+    $errorMessage = "Unable to find constraint unique_index from security_token";
+    $constraintExistStatement = $pearDB->query(
+        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
+    );
+    if ($constraintExistStatement->fetch() !== false) {
+        $errorMessage = "Unable to remove unique_index from security_token";
+        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
     }
 
     $errorMessage = "Unable to alter table security_token";
