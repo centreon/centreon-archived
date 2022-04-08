@@ -50,7 +50,6 @@ import {
 } from '../testUtils';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
-import { limitAtom } from '../Listing/listingAtoms';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';

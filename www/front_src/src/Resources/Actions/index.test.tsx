@@ -36,7 +36,6 @@ import {
   labelNotify,
   labelFixed,
   labelCheck,
-  labelServicesDenied,
   labelHostsDenied,
   labelMoreActions,
   labelDisacknowledge,
