@@ -103,7 +103,7 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
         ?string $paginationRequest = null
     ): array {
         $request = $this->translateDbName('
-            SELECT vi.*, vid.dir_name AS `img_dir`
+            SELECT SQL_CALC_FOUND_ROWS vi.*, vid.dir_name AS `img_dir`
             FROM `view_img` AS `vi`
             LEFT JOIN `:db`.`view_img_dir_relation` AS `vidr` ON vi.img_id = vidr.img_img_id
             LEFT JOIN `:db`.`view_img_dir` AS `vid` ON vid.dir_id = vidr.dir_dir_parent_id
@@ -126,6 +126,11 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
         }
 
         $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
 
         $icons = [];
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
