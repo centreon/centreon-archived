@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { omit, head, prop } from 'ramda';
-import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 import { Provider } from 'jotai';
 
 import { RenderResult, render, waitFor, fireEvent, act } from '@centreon/ui';
@@ -184,40 +183,6 @@ describe(EditFilterPanel, () => {
       );
       expect(mockedAxios.delete).toHaveBeenCalledWith(
         `${filterEndpoint}/${firstFilter.id}`,
-        expect.anything(),
-      );
-    });
-  });
-
-  it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
-    const [firstFilter] = retrievedCustomFilters.result;
-
-    const { container } = renderEditFilterPanel();
-
-    act(() => {
-      filterState.loadCustomFilters();
-      filterState.setEditPanelOpen(true);
-    });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    const firstFilterDraggable = container.querySelector(
-      `[data-rbd-drag-handle-draggable-id="${firstFilter.id}"]`,
-    );
-
-    await makeDnd({
-      direction: DND_DIRECTION_DOWN,
-      getDragElement: () => firstFilterDraggable,
-      positions: 1,
-    });
-
-    await waitFor(() => {
-      expect(filterState.customFilters.map(prop('id'))).toEqual([1, 0]);
-      expect(mockedAxios.patch).toHaveBeenCalledWith(
-        `${filterEndpoint}/${firstFilter.id}`,
-        { order: 1 },
         expect.anything(),
       );
     });

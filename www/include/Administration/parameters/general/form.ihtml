@@ -95,13 +95,6 @@
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_autologin">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_autologin_shortcut">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">{$form.sso_enable.label}</td><td class="FormRowValue">{$form.sso_enable.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">{$form.sso_mode.label}</td><td class="FormRowValue">{$form.sso_mode.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">{$form.sso_trusted_clients.label}</td><td class="FormRowValue">{$form.sso_trusted_clients.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_blacklist_clients">{$form.sso_blacklist_clients.label}</td><td class="FormRowValue">{$form.sso_blacklist_clients.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_username_pattern">{$form.sso_username_pattern.label}</td><td class="FormRowValue">{$form.sso_username_pattern.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_replace">{$form.sso_username_replace.label}</td><td class="FormRowValue">{$form.sso_username_replace.html}</td></tr>
 
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">

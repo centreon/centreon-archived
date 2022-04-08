@@ -12,13 +12,9 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import { InputProps } from '../models';
+import { InputProps } from './models';
 
-const Multiple = ({
-  fieldName,
-  label,
-  getDisabled,
-}: InputProps): JSX.Element => {
+const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
@@ -56,7 +52,6 @@ const Multiple = ({
   }));
 
   const inputErrors = getError();
-  const disabled = getDisabled?.(values);
 
   return useMemoComponent({
     Component: (
@@ -65,7 +60,6 @@ const Multiple = ({
           clearOnBlur
           freeSolo
           handleHomeEndKeys
-          disabled={getDisabled?.(values)}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
@@ -73,6 +67,7 @@ const Multiple = ({
           open={false}
           options={[]}
           popupIcon={null}
+          required={required}
           value={normalizedValues}
           onChange={change}
         />
@@ -87,7 +82,7 @@ const Multiple = ({
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors, disabled],
+    memoProps: [normalizedValues, inputErrors],
   });
 };
 
