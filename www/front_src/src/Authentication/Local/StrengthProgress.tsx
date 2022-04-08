@@ -69,6 +69,7 @@ const StrengthProgress = ({
   return (
     <div className={classes.progressContainer}>
       <LinearProgress
+        aria-label={t(label)}
         classes={{
           bar: classes.linear,
           root: classes.linearBackground,

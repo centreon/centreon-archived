@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Get Web SSO provider configuration",
+    "type": "object",
+    "required": [
+        "trusted_client_addresses",
+        "blacklist_client_addresses",
+        "login_header_attribute",
+        "pattern_matching_login",
+        "pattern_replace_login"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "trusted_client_addresses": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "blacklist_client_addresses": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "login_header_attribute": {
+            "type": ["string", "null"]
+        },
+        "pattern_matching_login": {
+            "type": ["string", "null"]
+        },
+        "pattern_replace_login": {
+            "type": ["string", "null"]
+        }
+    }
+}

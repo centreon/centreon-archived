@@ -16558,8 +16558,8 @@ msgstr "Définir la configuration OpenID Connect"
 msgid "Invalid URL"
 msgstr "URL invalide"
 
-msgid "Invalid IP Address or domain name"
-msgstr "Adresse IP ou nom de domaine invalide"
+msgid "Invalid IP Address"
+msgstr "Adresse IP invalide"
 
 msgid "Failed to save OpenID Connect configuration"
 msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
@@ -16651,6 +16651,21 @@ msgstr "Votre mot de passe expirera dans"
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
 
+msgid "The value '%s' was expected to be a valid ip address"
+msgstr "La valeur '%s' devait être une adresse ip valide"
+
+msgid "Choose letter cases"
+msgstr "Choisir les casses d'écriture"
+
+msgid "Activation"
+msgstr "Activation"
+
+msgid "Identity provider"
+msgstr "Fournisseur d'identité"
+
+msgid "Client addresses"
+msgstr "Adresses de client"
+
 msgid "No provider presenters could be found"
 msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
 
@@ -16701,3 +16716,6 @@ msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur 
 
 msgid "Login with"
 msgstr "Se connecter avec"
+
+msgid "Can't resolve username from login claim using configured regular expression"
+msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
