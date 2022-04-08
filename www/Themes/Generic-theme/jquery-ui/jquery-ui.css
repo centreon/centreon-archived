@@ -459,6 +459,8 @@ button.ui-button::-moz-focus-inner {
 	font-size: .9em;
 	border-collapse: collapse;
 	margin: 0 0 .4em;
+    background-color: var(--ui-datepicker-table-background-color);
+    color: var(--ui-datepicker-table-font-color);
 }
 .ui-datepicker th {
 	padding: .7em .3em;
@@ -953,8 +955,8 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid var(--ui-button-state-hover-focus-border-color);
-	background: var(--ui-button-state-hover-focus-background-color);
+	border: 1px solid var(--ui-button-state-hover-focus-border-color) !important;
+	background: var(--ui-button-state-hover-focus-background-color) !important;
 	font-weight: normal;
 	color: var(--ui-button-state-hover-focus-font-color);
 }
@@ -982,7 +984,7 @@ a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
 	border: 1px solid var(--ui-button-anchor-state-active-hover-border-color);
-	background: var(--ui-button-anchor-state-active-hover-background-color);
+	background: var(--ui-button-anchor-state-active-hover-background-color) !important;
 	font-weight: normal;
 	color: var(--ui-button-anchor-state-active-hover-font-color);
 }

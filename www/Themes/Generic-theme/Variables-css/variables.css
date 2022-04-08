@@ -363,7 +363,8 @@
     --global-view-ui-widget-content-border-color: none;
     --global-view-ui-widget-content-background-color: none;
     --global-view-ui-border-color: none;
-    --ui-background-color: var(--color-white);
+    --ui-background-color: var(--color-primary-dark);
+    --ui-state-active-font-color: var(--color-white);
     --ui-anchor-state-default-font-color: var(--color-white);
     --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
@@ -566,15 +567,17 @@
 
     /* ------ START : JQuery datepicker variables -----*/
     --ui-date-time-picker-background-color: var(--color-white);
-    --ui-datepicker-title-font-color: var(--color-orient);
-    --ui-td-date-time-picker-anchor-span-border-color: var(--color-iron);
-    --ui-td-date-time-picker-anchor-span-background-color: var(--color-athens-gray-5);
-    --ui-td-date-time-picker-anchor-span-font-color: var(--color-pasific-bleu);
+    --ui-datepicker-title-font-color: var(--body-color);
+    --ui-td-date-time-picker-anchor-span-border-color: var(--color-white);
+    --ui-td-date-time-picker-anchor-span-background-color: none;
+    --ui-td-date-time-picker-anchor-span-font-color: var(--body-color);
     --ui-timepicker-minute-cell-border-color: var(--color-french-gray);
     --ui-timepicker-minute-cell-background-color: var(--color-french-gray-2);
     --ui-timepicker-minute-cell-font-color: var(--color-pasific-bleu);
     --ui-datepicker-time-next-prev-state-disabled-hover-background-color: var(--color-aluminium);
-    --ui-datepicker-time-next-prev-state-hover-background-color: var(--color-maya-blue);
+    --ui-datepicker-time-next-prev-state-hover-background-color: var(--color-white);
+    --ui-datepicker-table-background-color: var(--color-white);
+    --ui-datepicker-table-font-color: var(--body-color);
     /* ------ END : JQuery datepicker variables -----*/
 
     /* ------ START : Bloc element variables -----*/
@@ -621,7 +624,7 @@
     /* ------ START : Refresh component for chart variables -----*/
     --refresh-border-color: var(--color-aluminium);
     --refresh-list-border-color: var(--refresh-border-color);
-    --refresh-list-background-color: var(--refresh-border-color);
+    --refresh-list-background-color: var(--color-alabaster);
     --refresh-list-li-hover-background-color: var(--color-cornflower-blue);
     --broker-stats-lv2-title-background-color: var(--color-white-lilac);
     --broker-stats-lv2-title-hover-background-color: var(--color-iron);
@@ -728,13 +731,13 @@
     --ui-button-state-disabled-hovered-active-background-color: var(--color-wild-sand-2);
     --ui-button-state-disabled-hovered-active-font-color: var(--color-tundora);
     --ui-button-anchor-visited-font-color: var(--ui-button-state-disabled-hovered-active-font-color);
-    --ui-button-state-hover-focus-border-color: var(--color-very-light-grey);
-    --ui-button-state-hover-focus-background-color: var(--color-gallery-2);
+    --ui-button-state-hover-focus-border-color: var(--color-white);
+    --ui-button-state-hover-focus-background-color: var(--body-background);
     --ui-button-state-hover-focus-font-color: var(--color-mine-shaft-2);
     --ui-button-anchor-state-hover-focus-font-color: var(--ui-button-state-hover-focus-font-color);
     --ui-visual-focus-box-shadow-color: var(--color-danube-2);
     --ui-button-anchor-state-active-hover-border-color: var(--color-blue-ribon);
-    --ui-button-anchor-state-active-hover-background-color: var(--color-azure-radiance);
+    --ui-button-anchor-state-active-hover-background-color: var(--color-primary-dark);
     --ui-button-anchor-state-active-hover-font-color: var(--color-white);
     --jquery-ui-icon-background-color: var(--color-white);
     --jquery-ui-icon-border-color: var(--color-blue-ribon);

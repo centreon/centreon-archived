@@ -1204,7 +1204,8 @@ table-form-header-h3 {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    background: var(--ui-background-color) !important;
+    background-color: var(--ui-background-color) !important;
+    color: var(--ui-state-active-font-color) !important;
 }
 
 .ui-state-default a {
@@ -2165,6 +2166,7 @@ div#tabs_periods {
     background: var(--ui-td-date-time-picker-anchor-span-background-color) !important;
     font-weight: bold !important;
     color: var(--ui-td-date-time-picker-anchor-span-font-color) !important;
+    border-radius: 40%;
 }
 
 td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{

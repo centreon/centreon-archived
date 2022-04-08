@@ -12,7 +12,7 @@
     --ui-anchor-state-default-font-color: var(--color-grey-wan-white);
     --ui-anchor-state-active-visited-font-color: var(--color-cornflower-blue);;
     --global-view-ui-border-color: none;
-    --ui-background-color: none;
+    --ui-background-color: var(--color-primary-light);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
     --bt-success-background-color: var(--color-primary-light);
@@ -153,4 +153,16 @@
     --legend-body-background-color: var(--body-background);
     --action-bar-icon-background-color: var(--body-background);
     --ajax-option-h4-disabled-font-color: var(--color-grey-chateau-rgba-4);
+    --refresh-list-background-color: var(--color-cinder);
+    --ui-datepicker-title-font-color: var(--color-white);
+    --ui-datepicker-table-background-color: var(--body-background);
+    --ui-datepicker-table-font-color: var(--color-white);
+    --ui-td-date-time-picker-anchor-span-font-color: var(--color-white);
+    --ui-td-date-time-picker-anchor-span-background-color: var(--color-cinder);
+    --ui-td-date-time-picker-anchor-span-border-color: var(--color-cinder);
+    --ui-datepicker-time-next-prev-state-hover-background-color: var(--body-background);
+    --ui-datepicker-time-next-prev-state-disabled-hover-background-color: var(--body-background);
+    --ui-button-state-hover-focus-background-color: var(--body-background);
+    --ui-button-state-hover-focus-border-color: var(--ui-button-state-hover-focus-background-color);
+    --ui-date-time-picker-background-color: var(--ui-datepicker-table-background-color);
 }
