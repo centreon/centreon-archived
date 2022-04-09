@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router';
 import { putData, useRequest, useSnackbar } from '@centreon/ui';
 
 import useUser from '../Main/useUser';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import useLogin from '../Login/useLogin';
 import { labelLoginSucceeded } from '../Login/translatedLabels';
 
@@ -47,9 +46,6 @@ const useResetPassword = (): UseResetPasswordState => {
     request: putData,
   });
 
-  const platformInstallationStatus = useAtomValue(
-    platformInstallationStatusAtom,
-  );
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
 
   const loadUser = useUser(i18n.changeLanguage);
@@ -75,9 +71,7 @@ const useResetPassword = (): UseResetPasswordState => {
           password: values.newPassword,
         }).then(({ redirectUri }) => {
           showSuccessMessage(t(labelLoginSucceeded));
-          loadUser(platformInstallationStatus)?.then(() =>
-            navigate(redirectUri),
-          );
+          loadUser()?.then(() => navigate(redirectUri));
         });
       })
       .catch(() => {
