@@ -14,7 +14,6 @@ import {
   render,
   RenderResult,
   act,
-  screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
