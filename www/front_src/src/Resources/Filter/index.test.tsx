@@ -293,7 +293,7 @@ describe(Filter, () => {
     window.history.pushState({}, '', window.location.pathname);
   });
 
-  it.only('executes a listing request with "Unhandled problems" filter by default', async () => {
+  it('executes a listing request with "Unhandled problems" filter by default', async () => {
     renderFilter();
 
     await waitFor(() =>
