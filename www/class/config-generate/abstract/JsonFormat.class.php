@@ -43,6 +43,9 @@ abstract class JsonFormat
      */
     protected mixed $cacheData = null;
 
+    /**
+     * @var string|null
+     */
     protected ?string $filePath = null;
 
     /**
