@@ -559,11 +559,11 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         $queryRows = [];
         $bindedValues = [];
         $columnNames = null;
-        foreach ($unifiedSqlOutput as $configKey => $row) {
-            $columnNames = $columnNames ?? implode(", ", array_keys($row));
+        foreach ($unifiedSqlOutput as $configKey => $configInput) {
+            $columnNames = $columnNames ?? implode(", ", array_keys($configInput));
 
             $queryKeys = [];
-            foreach ($row as $key => $value) {
+            foreach ($configInput as $key => $value) {
                 $queryKeys[] = ":" . $configKey . '_' . $key;
                 if (in_array($key, ['config_key', 'config_value', 'config_group'])) {
                     $bindedValues[':' . $configKey . '_' . $key] = ['value' => $value, 'type' => \PDO::PARAM_STR];
