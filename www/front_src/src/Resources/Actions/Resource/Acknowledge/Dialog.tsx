@@ -22,6 +22,8 @@ import {
   labelAcknowledgeServices,
   labelPersistent,
   labelSticky,
+  labelForceActiveChecks,
+  labelAcknowledgeWithSerivces,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
