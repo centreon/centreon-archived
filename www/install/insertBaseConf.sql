@@ -1437,3 +1437,7 @@ VALUES (
   false,
   false
 );
+
+-- Exclude centreon-gorgone user from password policy
+INSERT INTO `password_expiration_excluded_users` (provider_configuration_id, user_id)
+VALUES (1, 4);
