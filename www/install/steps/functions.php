@@ -316,18 +316,18 @@ function generatePassword(): string
     $allRuleSets = implode('', $ruleSets);
     $passwordLength = 12;
 
-	$password = '';
-	foreach ($ruleSets as $ruleSet) {
-		$password .= $ruleSet[random_int(0, strlen($ruleSet) - 1)];
-	}
-
-	for ($i = 0; $i < ($passwordLength - count($ruleSets)); $i++) {
-		$password .= $allRuleSets[random_int(0, strlen($allRuleSets) - 1)];
+    $password = '';
+    foreach ($ruleSets as $ruleSet) {
+        $password .= $ruleSet[random_int(0, strlen($ruleSet) - 1)];
     }
 
-	$password = str_shuffle($password);
+    for ($i = 0; $i < ($passwordLength - count($ruleSets)); $i++) {
+        $password .= $allRuleSets[random_int(0, strlen($allRuleSets) - 1)];
+    }
 
-	return $password;
+    $password = str_shuffle($password);
+
+    return $password;
 }
 
 /**
