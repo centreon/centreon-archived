@@ -335,15 +335,15 @@ function generatePassword(): string
  *
  * @param string $gorgoneEtcPath
  * @return array{
- *     @GORGONE_USER@: string
- *     @GORGONE_PASSWORD@: string
+ *     GORGONE_USER: string
+ *     GORGONE_PASSWORD: string
  * }
  */
 function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
 {
     $macros = [
-        '@GORGONE_USER@' => 'centreon-gorgone',
-        '@GORGONE_PASSWORD@' => '',
+        'GORGONE_USER' => 'centreon-gorgone',
+        'GORGONE_PASSWORD' => '',
     ];
 
     $apiConfigurationFile = $gorgoneEtcPath . '/config.d/31-centreon-api.yaml';
