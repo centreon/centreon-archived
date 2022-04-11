@@ -97,29 +97,28 @@ export default (): JSX.Element => {
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
   const switchEndPoint = './api/latest/configuration/users/current';
 
-  const updateTheme = (theme: ThemeMode): Promise<{ theme: ThemeMode }> => {
+  const updateTheme = (): Promise<{ description: 'User updated' }> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (equals(theme, ThemeMode.dark)) {
-          return resolve({ theme: ThemeMode.dark });
-        }
-
-        return resolve({ theme: ThemeMode.light });
+        return resolve({ description: 'User updated' });
       }, 300);
     });
   };
 
   const handleModeOfTheme = (): void => {
-    // sendRequest({ endpoint: switchEndPoint }).then((data) => {
+    // sendRequest({ endpoint: switchEndPoint ,data: {isDarkMode ? ThemeMode.light : ThemeMode.dark} }).then((data) => {
     //   console.log('data', data);
     // });
-    updateTheme(isDarkMode ? ThemeMode.light : ThemeMode.dark).then((data) => {
+    updateTheme().then(() => {
       if (pathname.includes('php')) {
         window.location.reload();
 
         return;
       }
-      setUser({ ...user, themeMode: data.theme });
+      setUser({
+        ...user,
+        themeMode: isDarkMode ? ThemeMode.light : ThemeMode.dark,
+      });
     });
   };
 
