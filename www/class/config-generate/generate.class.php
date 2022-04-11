@@ -350,7 +350,7 @@ class Generate
                     $externalModule instanceof ExternalModuleGenerationInterface
                     && (
                         ($type == 1 && $externalModule->isEngineObject() === true)
-                        || ($type == 2 && $externalModule->isBrokerObject() == true)
+                        || ($type == 2 && $externalModule->isBrokerObject() === true)
                     )
                 ) {
                     $externalModule->generateFromPollerId(
