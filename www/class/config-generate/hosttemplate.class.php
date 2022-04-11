@@ -206,7 +206,7 @@ class HostTemplate extends AbstractHost
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);
-        $this->addHostToHostCategoryMembers($this->hosts[$host_id]);
+        $this->insertHostInHostCategoryMembers($this->hosts[$host_id]);
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);
@@ -219,30 +219,5 @@ class HostTemplate extends AbstractHost
     {
         $this->loop_htpl = array();
         parent::reset();
-    }
-
-    /**
-     * @param array<string,mixed> $host
-     * @return self
-     */
-    private function addHostToHostCategoryMembers(array &$host): self
-    {
-        if (!isset($host['hc'])) {
-            $stmt = $this->backend_instance->db->prepare(
-                "SELECT hostcategories_hc_id
-                FROM hostcategories_relation
-                WHERE host_host_id = :host_id"
-            );
-            $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-            $stmt->execute();
-            $host['hc'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
-        foreach ($host['hc'] as $hostCategoryId) {
-            $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
-        }
-
-        return $this;
     }
 }

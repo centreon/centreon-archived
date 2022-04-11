@@ -34,29 +34,30 @@
  *
  */
 
-class ServiceCategory extends AbstractObject
+final class ServiceCategory extends AbstractObject
 {
+    private const TAG_TYPE = 'servicecategory';
+
     /** @var array<int,mixed> */
-    private $serviceCategories = [];
+    private array $serviceCategories = [];
     /** @var array<int,int[]>|null */
-    private $serviceCategoriesRelationsCache = null;
+    private array|null $serviceCategoriesRelationsCache = null;
+    /** @var string */
+    protected string $object_name = 'tag';
 
-    /** @var string */
-    protected $generate_filename = 'tags.cfg';
-    /** @var string */
-    protected $object_name = 'tag';
-    /** @var string */
-    protected $attributesSelect = '
-        sc_id as id,
-        sc_name as name
-    ';
-    /** @var string[] */
-    protected $attributes_write = [
-        'id',
-        'name',
-        'type',
-    ];
-
+    /**
+     * @param \Pimple\Container $dependencyInjector
+     */
+    protected function __construct(\Pimple\Container $dependencyInjector)
+    {
+        parent::__construct($dependencyInjector);
+        $this->generate_filename = 'tags.cfg';
+        $this->attributes_write =  [
+            'id',
+            'name',
+            'type',
+        ];
+    }
     /**
      * Build cache for service categories
      */
@@ -78,12 +79,12 @@ class ServiceCategory extends AbstractObject
     }
 
     /**
-     * Get categories linked to service template
+     * Get service categories linked to service
      *
      * @param int $serviceId
      * @return int[]
      */
-    public function getServiceCategoriesForServiceTemplate(int $serviceId): array
+    public function getServiceCategoriesByServiceId(int $serviceId): array
     {
         if ($this->serviceCategoriesRelationsCache === null) {
             $this->buildCache();
@@ -101,7 +102,7 @@ class ServiceCategory extends AbstractObject
     private function addServiceCategoryToList(int $serviceCategoryId): self
     {
         $stmt = $this->backend_instance->db->prepare(
-            "SELECT {$this->attributesSelect}
+            "SELECT sc_id as id, sc_name as name
             FROM service_categories
             WHERE sc_id = :serviceCategoryId AND level IS NULL AND sc_activate = '1'"
         );
@@ -121,13 +122,12 @@ class ServiceCategory extends AbstractObject
      * @param int $serviceCategoryId
      * @param int $serviceId
      * @param string $serviceDescription
-     * @return self
      */
-    public function addServiceToServiceCategoryMembers(
+    public function insertServiceToServiceCategoryMembers(
         int $serviceCategoryId,
         int $serviceId,
         string $serviceDescription
-    ): self {
+    ): void {
         if (! isset($this->serviceCategories[$serviceCategoryId])) {
             $this->addServiceCategoryToList($serviceCategoryId);
         }
@@ -137,8 +137,6 @@ class ServiceCategory extends AbstractObject
         ) {
             $this->serviceCategories[$serviceCategoryId]['members'][$serviceId] = $serviceDescription;
         }
-
-        return $this;
     }
 
     /**
@@ -152,7 +150,7 @@ class ServiceCategory extends AbstractObject
                 continue;
             }
 
-            $value['type'] = 'servicecategory';
+            $value['type'] = self::TAG_TYPE;
 
             $this->generateObjectInFile($value, $id);
         }

@@ -193,7 +193,7 @@ abstract class AbstractHost extends AbstractObject
         }
 
         if (is_null($this->stmt_macro)) {
-            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT
               host_macro_name, host_macro_value
             FROM on_demand_macro_host
             WHERE host_host_id = :host_id
@@ -394,5 +394,40 @@ abstract class AbstractHost extends AbstractObject
             return $this->hosts[$host_id][$attr];
         }
         return null;
+    }
+
+    /**
+     * @param array<string,mixed> $host
+     * @return array<string,mixed>
+     */
+    private function getHostCategoriesByHost(array $host): array
+    {
+        if (!isset($host['hostCategories'])) {
+            $stmt = $this->backend_instance->db->prepare(
+                "SELECT hostcategories_hc_id
+                FROM hostcategories_relation
+                WHERE host_host_id = :host_id"
+            );
+            $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            $hostCategories = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } else {
+            $hostCategories = $host['hostCategories'];
+        }
+
+        return $hostCategories ?? null;
+    }
+
+    /**
+     * @param array<string,mixed> $host
+     */
+    public function insertHostInHostCategoryMembers(array &$host): void
+    {
+        $host['hostCategories'] = $this->getHostCategoriesByHost($host);
+
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        foreach ($host['hostCategories'] as $hostCategoryId) {
+            $hostCategory->insertHostToCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
+        }
     }
 }

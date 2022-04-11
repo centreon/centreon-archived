@@ -34,26 +34,29 @@
  *
  */
 
-class HostCategory extends AbstractObject
+final class HostCategory extends AbstractObject
 {
+    private const TAG_TYPE = 'hostcategory';
+
     /** @var array<int,mixed> */
-    private $hostCategories = [];
+    private array $hostCategories = [];
 
     /** @var string */
-    protected $generate_filename = 'tags.cfg';
-    /** @var string */
-    protected $object_name = 'tag';
-    /** @var string */
-    protected $attributesSelect = '
-        hc_id as id,
-        hc_name as name
-    ';
-    /** @var string[] */
-    protected $attributes_write = [
-        'id',
-        'name',
-        'type',
-    ];
+    protected string $object_name = 'tag';
+
+    /**
+     * @param \Pimple\Container $dependencyInjector
+     */
+    protected function __construct(\Pimple\Container $dependencyInjector)
+    {
+        parent::__construct($dependencyInjector);
+        $this->generate_filename = 'tags.cfg';
+        $this->attributes_write =  [
+            'id',
+            'name',
+            'type',
+        ];
+    }
 
     /**
      * @param int $hostCategoryId
@@ -62,7 +65,7 @@ class HostCategory extends AbstractObject
     private function addHostCategoryToList(int $hostCategoryId): self
     {
         $stmt = $this->backend_instance->db->prepare(
-            "SELECT {$this->attributesSelect}
+            "SELECT hc_id as id, hc_name as name
             FROM hostcategories
             WHERE hc_id = :hc_id
             AND level IS NULL
@@ -84,9 +87,8 @@ class HostCategory extends AbstractObject
      * @param int $hostCategoryId
      * @param int $hostId
      * @param string $hostName
-     * @return self
      */
-    public function addHostToHostCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): self
+    public function insertHostToCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): void
     {
         if (! isset($this->hostCategories[$hostCategoryId])) {
             $this->addHostCategoryToList($hostCategoryId);
@@ -97,8 +99,6 @@ class HostCategory extends AbstractObject
         ) {
             $this->hostCategories[$hostCategoryId]['members'][$hostId] = $hostName;
         }
-
-        return $this;
     }
 
     /**
@@ -111,7 +111,7 @@ class HostCategory extends AbstractObject
             if (! isset($value['members']) || count($value['members']) === 0) {
                 continue;
             }
-            $value['type'] = 'hostcategory';
+            $value['type'] = self::TAG_TYPE;
 
             $this->generateObjectInFile($value, $id);
         }
