@@ -75,7 +75,7 @@ abstract class AbstractStep implements StepInterface
      */
     public function getBaseConfiguration()
     {
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/configuration.json');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/configuration.json');
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class AbstractStep implements StepInterface
             'db_password_confirm' => ''
         ];
 
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/database.json', $configuration);
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/database.json', $configuration);
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractStep implements StepInterface
             'email' => ''
         ];
 
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/admin.json', $configuration);
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/admin.json', $configuration);
     }
 
     /**
@@ -125,7 +125,7 @@ abstract class AbstractStep implements StepInterface
      */
     public function getEngineConfiguration()
     {
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/engine.json');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/engine.json');
     }
 
     /**
@@ -135,7 +135,7 @@ abstract class AbstractStep implements StepInterface
      */
     public function getBrokerConfiguration()
     {
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/broker.json');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/broker.json');
     }
 
     /**
@@ -145,6 +145,6 @@ abstract class AbstractStep implements StepInterface
      */
     public function getVersion()
     {
-        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/version.json', '1.0.0');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR . '/version.json', '1.0.0');
     }
 }
