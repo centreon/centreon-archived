@@ -427,7 +427,10 @@ abstract class AbstractHost extends AbstractObject
 
         $hostCategory = HostCategory::getInstance($this->dependencyInjector);
         foreach ($host['hostCategories'] as $hostCategoryId) {
-            $hostCategory->insertHostToCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
+            $hostCategory->insertHostToCategoryMembers(
+                $hostCategoryId,
+                $host['host_id'],
+                $host['name'] ?: $host['host_name']);
         }
     }
 }
