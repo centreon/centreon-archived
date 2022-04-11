@@ -129,7 +129,7 @@ class Command extends AbstractObject
      * @return array{
      *     command_name: string,
      *     command_line_base: string,
-     *     connector: string,
+     *     connector: string|null,
      *     enable_shell: string
      *  }|null
      */
