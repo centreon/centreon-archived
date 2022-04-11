@@ -17,14 +17,14 @@ import { useMemoComponent } from '@centreon/ui';
 
 import {
   labelChooseLetterCases,
-  labelForceToUseLowerCase,
-  labelForceToUseNumbers,
-  labelForceToUseSpecialCharacters,
-  labelForceToUseUpperCase,
+  labelPasswordMustContainLowerCase,
+  labelPasswordMustContainNumbers,
+  labelPasswordMustContainSpecialCharacters,
+  labelPasswordMustContainUpperCase,
   labelGood,
   labelLowerCase,
   labelNumber,
-  labelPasswordCases,
+  labelPasswordExpiresAfter,
   labelSpecialCharacters,
   labelStrong,
   labelUpperCase,
@@ -100,9 +100,13 @@ const CaseButtons = (): JSX.Element => {
     Component: (
       <div className={classes.caseButtonsContainer}>
         <Typography variant="caption">{t(labelChooseLetterCases)}</Typography>
-        <Stack aria-label={t(labelPasswordCases)} direction="row" spacing={1}>
+        <Stack
+          aria-label={t(labelPasswordExpiresAfter)}
+          direction="row"
+          spacing={1}
+        >
           <Button
-            aria-label={t(labelForceToUseLowerCase)}
+            aria-label={t(labelPasswordMustContainLowerCase)}
             className={clsx(classes.lowerCaseButton, classes.button)}
             color="primary"
             size="small"
@@ -112,11 +116,11 @@ const CaseButtons = (): JSX.Element => {
           >
             <LabelWithTooltip
               label={labelLowerCase}
-              tooltipLabel={labelForceToUseLowerCase}
+              tooltipLabel={labelPasswordMustContainLowerCase}
             />
           </Button>
           <Button
-            aria-label={t(labelForceToUseUpperCase)}
+            aria-label={t(labelPasswordMustContainUpperCase)}
             className={classes.button}
             color="primary"
             size="small"
@@ -126,11 +130,11 @@ const CaseButtons = (): JSX.Element => {
           >
             <LabelWithTooltip
               label={labelUpperCase}
-              tooltipLabel={labelForceToUseUpperCase}
+              tooltipLabel={labelPasswordMustContainUpperCase}
             />
           </Button>
           <Button
-            aria-label={t(labelForceToUseNumbers)}
+            aria-label={t(labelPasswordMustContainNumbers)}
             className={classes.button}
             color="primary"
             size="small"
@@ -140,11 +144,11 @@ const CaseButtons = (): JSX.Element => {
           >
             <LabelWithTooltip
               label={labelNumber}
-              tooltipLabel={labelForceToUseNumbers}
+              tooltipLabel={labelPasswordMustContainNumbers}
             />
           </Button>
           <Button
-            aria-label={t(labelForceToUseSpecialCharacters)}
+            aria-label={t(labelPasswordMustContainSpecialCharacters)}
             className={classes.button}
             color="primary"
             size="small"
@@ -154,7 +158,7 @@ const CaseButtons = (): JSX.Element => {
           >
             <LabelWithTooltip
               label={labelSpecialCharacters}
-              tooltipLabel={labelForceToUseSpecialCharacters}
+              tooltipLabel={labelPasswordMustContainSpecialCharacters}
             />
           </Button>
         </Stack>
