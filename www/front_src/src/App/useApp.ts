@@ -96,27 +96,25 @@ const useApp = (): UseAppState => {
     ])
       .then(([retrievedParameters, retrievedAcl]) => {
         setDowntime({
-          default_duration: parseInt(
+          duration: parseInt(
             retrievedParameters.monitoring_default_downtime_duration,
             10,
           ),
-          default_fixed: false,
-          default_with_services: false,
+          fixed: false,
+          with_services: false,
         });
         setRefreshInterval(
           parseInt(retrievedParameters.monitoring_default_refresh_interval, 10),
         );
         setAcl({ actions: retrievedAcl });
         setAcknowledgement({
-          default_acknowledgement_force_active_checks:
+          force_active_checks:
             retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
-          default_acknowledgement_notify:
-            retrievedParameters.monitoring_default_acknowledgement_notify,
-          default_acknowledgement_persistent:
+          notify: retrievedParameters.monitoring_default_acknowledgement_notify,
+          persistent:
             retrievedParameters.monitoring_default_acknowledgement_persistent,
-          default_acknowledgement_sticky:
-            retrievedParameters.monitoring_default_acknowledgement_sticky,
-          default_acknowledgement_with_services:
+          sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
+          with_services:
             retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
 
