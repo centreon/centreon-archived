@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,40 +36,56 @@
 
 namespace CentreonLegacy\Core\Install\Step;
 
+use Pimple\Container;
+
 abstract class AbstractStep implements StepInterface
 {
-    protected $dependencyInjector;
+    protected const TMP_INSTALL_DIR = __DIR__ . '/../../../../../www/install/tmp';
 
-    public function __construct($dependencyInjector)
+    /**
+     * @param Container $dependencyInjector
+     */
+    public function __construct(protected Container $dependencyInjector)
     {
-        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
-     * @param $file
-     * @param array $configuration
-     * @return array|string
+     * Get configuration from json file
+     *
+     * @param string $file
+     * @param array|string $configuration
+     * @return array<int|string,string>
      */
-    private function getConfiguration($file, $configuration = array())
+    protected function getConfiguration($file, $configuration = []): array
     {
         if ($this->dependencyInjector['filesystem']->exists($file)) {
             $configuration = json_decode(file_get_contents($file), true);
             foreach ($configuration as $key => $configurationValue) {
-                $configuration[$key] = filter_var($configurationValue, FILTER_SANITIZE_STRING, ENT_QUOTES);
+                $configuration[$key] = htmlspecialchars($configurationValue, ENT_QUOTES);
             }
         }
 
         return $configuration;
     }
 
+    /**
+     * Get base configuration (paths)
+     *
+     * @return array<string,string>
+     */
     public function getBaseConfiguration()
     {
-        return $this->getConfiguration(__DIR__ . '/../../../../../www/install/tmp/configuration.json');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/configuration.json');
     }
 
+    /**
+     * Get database access configuration
+     *
+     * @return array<string,string>
+     */
     public function getDatabaseConfiguration()
     {
-        $configuration = array(
+        $configuration = [
             'address' => '',
             'port' => '',
             'root_user' => 'root',
@@ -78,36 +95,56 @@ abstract class AbstractStep implements StepInterface
             'db_user' => 'centreon',
             'db_password' => '',
             'db_password_confirm' => ''
-        );
+        ];
 
-        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/database.json", $configuration);
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/database.json', $configuration);
     }
 
+    /**
+     * Get admin user configuration
+     *
+     * @return array<string,string>
+     */
     public function getAdminConfiguration()
     {
-        $configuration = array(
+        $configuration = [
             'admin_password' => '',
             'confirm_password' => '',
             'firstname' => '',
             'lastname' => '',
             'email' => ''
-        );
+        ];
 
-        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/admin.json", $configuration);
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/admin.json', $configuration);
     }
 
+    /**
+     * Get centreon-engine configuration
+     *
+     * @return array<string,string>
+     */
     public function getEngineConfiguration()
     {
-        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/engine.json");
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/engine.json');
     }
 
+    /**
+     * Get centreon-broker configuration
+     *
+     * @return array<string,string>
+     */
     public function getBrokerConfiguration()
     {
-        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/broker.json");
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/broker.json');
     }
 
+    /**
+     * Get centreon version
+     *
+     * @return array<string,string>
+     */
     public function getVersion()
     {
-        return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/version.json", '1.0.0');
+        return $this->getConfiguration(self::TMP_INSTALL_DIR. '/version.json', '1.0.0');
     }
 }

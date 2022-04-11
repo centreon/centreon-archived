@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,6 +38,8 @@ namespace CentreonLegacy\Core\Install\Step;
 
 class Step7 extends AbstractStep
 {
+    private const GORGONE_CONFIGURATION_FILE = self::TMP_INSTALL_DIR. '/gorgone.json';
+
     public function getContent()
     {
         $installDir = __DIR__ . '/../../../../../www/install';
@@ -49,5 +52,28 @@ class Step7 extends AbstractStep
         $template->assign('step', 7);
         $template->assign('parameters', $parameters);
         return $template->fetch('content.tpl');
+    }
+
+    /**
+     * Store gorgone configuration in json file
+     *
+     * @param array array<string,string>
+     */
+    public function setGorgoneConfiguration(array $configuration): void
+    {
+        file_put_contents(
+            self::GORGONE_CONFIGURATION_FILE,
+            json_encode($configuration)
+        );
+    }
+
+    /**
+     * Get gorgone configuration from json file
+     *
+     * @return array<int|string,string>
+     */
+    public function getGorgoneConfiguration(): array
+    {
+        return $this->getConfiguration(self::GORGONE_CONFIGURATION_FILE);
     }
 }
