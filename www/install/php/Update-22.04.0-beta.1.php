@@ -469,27 +469,35 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
  * @throws \Exception
  * @return void
  */
+
 function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 {
-    // Retrieve all broker config ids
-    $dbResult = $pearDB->query("SELECT config_id FROM cfg_centreonbroker WHERE config_name LIKE '%broker%'");
-    $configIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
-    if (empty($configIds)) {
-        throw new \Exception("Cannot find config ids in cfg_centreonbroker table");
-    }
+    $outputTag = 1;
 
     // Determine blockIds for output of type sql and storage
     $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('sql', 'storage')");
     $typeIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
-    if (empty($typeIds)) {
-        throw new \Exception("Cannot find 'sql' and 'storage' in cb_type table");
+    if (empty($typeIds) || count($typeIds) !== 2) {
+        throw new \Exception("Error while retrieving 'sql' and 'storage' in cb_type table");
     }
+    $blockIds = array_map(fn ($typeId) => "{$outputTag}_{$typeId}", $typeIds);
 
-    $blockIds = "";
-    foreach ($typeIds as $key => $typeId) {
-        $blockIds .= ! empty($blockIds) ? "," : "";
-        // 1_ = "output"
-        $blockIds .= "'1_$typeId'";
+    // Retrieve broker config ids to migrate
+    $subqueries = [];
+    $bindedValues = [];
+    foreach ($blockIds as $key => $blockId) {
+        $subqueries[] = "SELECT DISTINCT(config_id) FROM cfg_centreonbroker_info
+            WHERE config_group = 'output' AND config_key = 'blockId' AND config_value = :blockId_{$key}";
+        $bindedValues[":blockId_{$key}"] = $blockId;
+    }
+    $stmt = $pearDB->prepare(implode(' INTERSECT ', $subqueries));
+    foreach ($bindedValues as $param => $value) {
+        $stmt->bindValue($param, $value, \PDO::PARAM_STR);
+    }
+    $stmt->execute();
+    $configIds = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+    if (empty($configIds)) {
+        throw new \Exception("Cannot find broker config ids to migrate");
     }
 
     // Retrieve unified_sql type id
@@ -516,7 +524,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         $dbResult = $pearDB->query(
             "SELECT config_group_id FROM cfg_centreonbroker_info
             WHERE config_id = $configId AND config_key = 'blockId'
-            AND config_value IN ($blockIds)"
+            AND config_value IN ('" . implode('\', \'', $blockIds) . "')"
         );
         $configGroupIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
         if (empty($configGroupIds)) {
@@ -545,7 +553,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
             $unifiedSqlOutput['name']['config_value']
         );
         $unifiedSqlOutput['type']['config_value'] = 'unified_sql';
-        $unifiedSqlOutput['blockId']['config_value'] = "1_$unifiedSqlTypeId";
+        $unifiedSqlOutput['blockId']['config_value'] = "{$outputTag}_{$unifiedSqlTypeId}";
 
         // Insert new output
         $queryRows = [];
