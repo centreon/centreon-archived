@@ -61,11 +61,11 @@ const AcknowledgeForm = ({
 
   const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
-      acknowledgeAttachedResources: true,
+      acknowledgeAttachedResources: acknowledgement.with_services,
       comment: undefined,
       forceActiveChecks: acknowledgement.force_active_checks,
       isSticky: acknowledgement.sticky,
-      notify: true,
+      notify: acknowledgement.notify,
       persistent: acknowledgement.persistent,
     },
     onSubmit: (values): void => {
