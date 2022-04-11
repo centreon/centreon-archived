@@ -5,7 +5,7 @@ ignore: {}
 
 exclude:
    code:
-     - "tests/**/.php"
+     - "tests/**/*"
      - "**/index.test.tsx"
      - tests/php/**/*
      - www/install/step_upgrade/**/*
