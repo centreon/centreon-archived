@@ -296,6 +296,7 @@ try {
         dir('centreon') {
           checkout scm
         }
+        sh 'ls -lart'
         sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -v "$PWD:/src" -e DISTRIB="Debian11" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
         stash name: 'Debian11', includes: 'Debian11/*.deb'
         archiveArtifacts artifacts: "Debian11/*"

@@ -6,11 +6,11 @@ if [ -z "$VERSION" -o -z "$RELEASE" -o -z "$DISTRIB" ] ; then
   exit 1
 fi
 
-echo "################################################## PACKAGING COLLECT ##################################################"
+echo "################################################## PACKAGING WEB ##################################################"
 
 AUTHOR="Luiz Costa"
 AUTHOR_EMAIL="me@luizgustavo.pro.br"
-
+ls -lart
 tar czpf centreon-$VERSION.tar.gz centreon
 cd centreon/
 cp -rf ci/debian .
