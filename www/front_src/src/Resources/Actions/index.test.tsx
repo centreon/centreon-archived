@@ -58,6 +58,9 @@ import {
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
   labelStartTime,
+  labelSticky,
+  labelForceActiveChecks,
+  labelAcknowledgeWithSerivces,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -316,9 +319,18 @@ describe(Actions, () => {
 
     const notifyCheckbox = await findByLabelText(labelNotify);
     const persistentCheckbox = await findByLabelText(labelPersistent);
+    const stickyCheckbox = await findByLabelText(labelSticky);
+    const forceActiveChecks = await findByLabelText(labelForceActiveChecks);
+    const acknowledgeAttachedResources = await findByLabelText(
+      labelAcknowledgeWithSerivces,
+    );
 
     fireEvent.click(notifyCheckbox);
     fireEvent.click(persistentCheckbox);
+    fireEvent.click(stickyCheckbox);
+    fireEvent.click(forceActiveChecks);
+    fireEvent.click(acknowledgeAttachedResources);
+
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -332,6 +344,7 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
+            force_active_checks: false,
             is_notify_contacts: true,
             is_persistent_comment: false,
             is_sticky: false,
