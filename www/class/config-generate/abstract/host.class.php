@@ -430,7 +430,8 @@ abstract class AbstractHost extends AbstractObject
             $hostCategory->insertHostToCategoryMembers(
                 $hostCategoryId,
                 $host['host_id'],
-                $host['name'] ?: $host['host_name']);
+                $host['name'] ?: $host['host_name']
+            );
         }
     }
 }
