@@ -488,6 +488,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
     $blockIds = "";
     foreach ($typeIds as $key => $typeId) {
         $blockIds .= ! empty($blockIds) ? "," : "";
+        // 1_ = "output"
         $blockIds .= "'1_$typeId'";
     }
 
