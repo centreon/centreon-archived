@@ -199,7 +199,7 @@ try {
 
   stage("$DELIVERY_STAGE") {
     node {
-      checkoutCentreonBuild(buildBranch)    
+      checkoutCentreonBuild(buildBranch)
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
@@ -211,7 +211,7 @@ try {
       error('Delivery stage failure');
     }
   }
-  
+
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
@@ -230,6 +230,9 @@ try {
     //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
     //  }
     //}
+
+    parallel parallelSteps
+
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
