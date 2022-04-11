@@ -11,7 +11,7 @@ import { TextField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelGood,
-  labelNumberOfAttemptsBeforeBlockingNewAttempts,
+  labelNumberOfAttemptsBeforeUserIsBlocked,
   labelStrong,
   labelUnknown,
   labelWeak,
@@ -81,10 +81,10 @@ const Attempts = (): JSX.Element => {
           error={attemptsError}
           helperText={attemptsError}
           inputProps={{
-            'aria-label': t(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+            'aria-label': t(labelNumberOfAttemptsBeforeUserIsBlocked),
             min: 1,
           }}
-          label={t(labelNumberOfAttemptsBeforeBlockingNewAttempts)}
+          label={t(labelNumberOfAttemptsBeforeUserIsBlocked)}
           name={attemptsFieldName}
           type="number"
           value={attemptsValue || ''}
