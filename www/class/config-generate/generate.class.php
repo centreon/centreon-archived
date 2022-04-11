@@ -70,6 +70,9 @@ require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate
 {
+    private const GENERATION_FOR_ENGINE = 1;
+    private const GENERATION_FOR_BROKER = 2;
+
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
@@ -256,13 +259,13 @@ class Generate
             $this->current_poller['id'],
             $this->current_poller['localhost']
         );
-        $this->generateModuleObjects(1);
+        $this->generateModuleObjects(self::GENERATION_FOR_ENGINE);
 
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
-        $this->generateModuleObjects(2);
+        $this->generateModuleObjects(self::GENERATION_FOR_BROKER);
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
@@ -338,7 +341,11 @@ class Generate
         }
     }
 
-    public function generateModuleObjects($type = 1): void
+    /**
+     * @param int $type (1: engine, 2: broker)
+     * @return void
+     */
+    public function generateModuleObjects(int $type = self::GENERATION_FOR_ENGINE): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
@@ -349,8 +356,8 @@ class Generate
                 if (
                     $externalModule instanceof ExternalModuleGenerationInterface
                     && (
-                        ($type == 1 && $externalModule->isEngineObject() === true)
-                        || ($type == 2 && $externalModule->isBrokerObject() === true)
+                        ($type === self::GENERATION_FOR_ENGINE && $externalModule->isEngineObject() === true)
+                        || ($type === self::GENERATION_FOR_BROKER && $externalModule->isBrokerObject() === true)
                     )
                 ) {
                     $externalModule->generateFromPollerId(

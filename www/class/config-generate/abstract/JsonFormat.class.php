@@ -69,20 +69,42 @@ abstract class JsonFormat
     /**
      * Writes the content of the cache only if it is not empty.
      *
-     * @return int|bool Number of bytes written or false on failure
+     * @return int Number of bytes written
      * @throws Exception
      */
-    public function flushContent(): int|bool
+    public function flushContent(): int
     {
-        if ($this->filePath === null) {
+        if (empty($this->filePath)) {
             throw new Exception('No file path defined');
         }
         if (! empty($this->cacheData)) {
             $data = json_encode($this->cacheData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
             $this->cacheData = null;
 
-            return file_put_contents($this->filePath, $data);
+            $writtenBytes = file_put_contents($this->filePath, $data);
+            if ($writtenBytes === false) {
+                $file = $this->retrieveLastDirectory() . DIRECTORY_SEPARATOR . pathinfo($this->filePath)['basename'];
+                throw new Exception(
+                    sprintf('Error while writing the \'%s\' file ', $file)
+                );
+            }
+            return $writtenBytes;
         }
         return 0;
+    }
+
+    /**
+     * Retrieve the last directory.
+     * (ex: /var/log/centreon/file.log => centreon)
+     *
+     * @return string
+     */
+    private function retrieveLastDirectory(): string
+    {
+        if ($this->filePath === null) {
+            return '';
+        }
+        $directories = explode('/', pathinfo($this->filePath)['dirname']);
+        return array_pop($directories);
     }
 }
