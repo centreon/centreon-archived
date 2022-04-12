@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Www\Install\Steps;
 
-require_once __DIR__ . '/../../../../../www/install/steps/functions.php';
+require_once __DIR__ . '/../../../../www/install/functions.php';
 
 it('generates random password with lowercase, uppercase, number and special character', function () {
     $password = generatePassword();
