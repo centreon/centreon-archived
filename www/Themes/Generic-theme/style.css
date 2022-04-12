@@ -579,7 +579,7 @@ p.description a, p.description a:visited {
 .host_downtime      {background-color: var(--host-downtime-background-color);}
 
 .service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);
-color:var(--status-success-color)}
+    color:var(--status-success-color)}
 .service_warning, .warning  {background-color: var(--service-warning-background-color);}
 .pending    {background-color: var(--pending-background-color);}
 .service_unknown    {background-color: var(--service-unknown-background-color);}
@@ -1204,7 +1204,7 @@ table-form-header-h3 {
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     background-color: var(--ui-background-color) !important;
-    color: var(--ui-state-active-font-color) !important;
+    border: 1px solid var(--ui-state-active-border-color) !important;
 }
 
 .ui-state-default a {
@@ -1225,7 +1225,7 @@ table-form-header-h3 {
     margin-bottom: -1px;
     padding-bottom: 0;
     border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color);
+    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color) !important;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }

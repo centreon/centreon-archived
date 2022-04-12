@@ -363,8 +363,8 @@
     --global-view-ui-widget-content-border-color: none;
     --global-view-ui-widget-content-background-color: none;
     --global-view-ui-border-color: none;
-    --ui-background-color: var(--color-primary-dark);
-    --ui-state-active-font-color: var(--color-white);
+    --ui-background-color: none;
+    --ui-state-active-border-color: var(--ui-background-color);
     --ui-anchor-state-default-font-color: var(--color-black-rgba-54);
     --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
     --global-view-ui-active-tabs-border-color: none;
@@ -561,15 +561,15 @@
     --tabs-periods-background-color: var(--color-white);
     --tabs-periods-border-color: var(--color-white-lilac);
     --ui-widget-content-background-color: transparent;
-    --ui-widget-header-background-color: var(--color-white);
+    --ui-widget-header-background-color: var(--body-background);
     --ui-widget-header-border-bottom-color: var(--color-iron);
     /* ------ END : JQuery tabs variables -----*/
 
     /* ------ START : JQuery datepicker variables -----*/
     --ui-date-time-picker-background-color: var(--color-white);
     --ui-datepicker-title-font-color: var(--body-color);
-    --ui-td-date-time-picker-anchor-span-border-color: var(--color-white);
-    --ui-td-date-time-picker-anchor-span-background-color: none;
+    --ui-td-date-time-picker-anchor-span-border-color: var(--body-background);
+    --ui-td-date-time-picker-anchor-span-background-color: var(--ui-td-date-time-picker-anchor-span-border-color);
     --ui-td-date-time-picker-anchor-span-font-color: var(--body-color);
     --ui-timepicker-minute-cell-border-color: var(--color-french-gray);
     --ui-timepicker-minute-cell-background-color: var(--color-french-gray-2);
@@ -732,19 +732,19 @@
     --ui-button-state-disabled-hovered-active-font-color: var(--color-tundora);
     --ui-button-anchor-visited-font-color: var(--ui-button-state-disabled-hovered-active-font-color);
     --ui-button-state-hover-focus-border-color: var(--color-white);
-    --ui-button-state-hover-focus-background-color: var(--body-background);
+    --ui-button-state-hover-focus-background-color: var(--color-primary-dark);
     --ui-button-state-hover-focus-font-color: var(--color-mine-shaft-2);
     --ui-button-anchor-state-hover-focus-font-color: var(--ui-button-state-hover-focus-font-color);
     --ui-visual-focus-box-shadow-color: var(--color-danube-2);
     --ui-button-anchor-state-active-hover-border-color: var(--color-blue-ribon);
-    --ui-button-anchor-state-active-hover-background-color: var(--color-primary-dark);
+    --ui-button-anchor-state-active-hover-background-color: none;
     --ui-button-anchor-state-active-hover-font-color: var(--color-white);
     --jquery-ui-icon-background-color: var(--color-white);
     --jquery-ui-icon-border-color: var(--color-blue-ribon);
     --ui-state-active-anchor-visited-font-color: var(--color-white);
-    --ui-state-highlight-border-color: var(--color-tacha);
-    --ui-state-highlight-background-color: var(--color-witch-haze);
-    --ui-state-highlight-font-color: var(--color-pacifika);
+    --ui-state-highlight-border-color: var(--color-primary-dark);
+    --ui-state-highlight-background-color: var(--color-primary-dark);
+    --ui-state-highlight-font-color: var(--color-white);
     --ui-state-checked-border-color: var(--color-tacha);
     --ui-state-checked-background-color: var(--color-witch-haze);
     --ui-state-highlight-anchor-font-color: var(--color-pacifika);

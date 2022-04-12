@@ -10,9 +10,10 @@
     --ui-widget-header-border-bottom-color: var(--color-pablo);
     --ui-tabs-nav-li-anchor-background-color: none;
     --ui-anchor-state-default-font-color: var(--color-grey-wan-white);
-    --ui-anchor-state-active-visited-font-color: var(--color-cornflower-blue);;
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
     --global-view-ui-border-color: none;
-    --ui-background-color: var(--color-primary-light);
+    --ui-background-color: var(--body-background);
+    --ui-state-active-border-color: var(--ui-background-color);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
     --bt-success-background-color: var(--color-primary-light);
