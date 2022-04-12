@@ -837,7 +837,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /configuration/contact-template:
+  /configuration/contacts/templates:
     get:
       tags:
       - User

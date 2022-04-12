@@ -75,7 +75,8 @@ try {
         $step->getDatabaseConfiguration(),
         $step->getAdminConfiguration(),
         $step->getEngineConfiguration(),
-        $step->getBrokerConfiguration()
+        $step->getBrokerConfiguration(),
+        getGorgoneApiCredentialMacros(_CENTREON_ETC_ . '/../centreon-gorgone'),
     );
 
     $utils->executeSqlFile(__DIR__ . '/../../insertMacros.sql', $macros);
