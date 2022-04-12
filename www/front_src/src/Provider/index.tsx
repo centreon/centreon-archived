@@ -34,6 +34,7 @@ import {
   parametersEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
+import usePendo from './usePendo';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -60,6 +61,7 @@ const AppProvider = (): JSX.Element | null => {
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
+  usePendo();
 
   const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
     const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
