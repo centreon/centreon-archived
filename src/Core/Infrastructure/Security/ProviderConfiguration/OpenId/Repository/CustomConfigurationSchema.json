@@ -17,7 +17,12 @@
         "client_id",
         "client_secret",
         "authentication_type",
-        "verify_peer"
+        "verify_peer",
+        "auto_import",
+        "contact_template",
+        "email_bind_attribute",
+        "alias_bind_attribute",
+        "fullname_bind_attribute"
     ],
     "properties": {
       "is_active": {
@@ -76,6 +81,29 @@
       },
       "verify_peer": {
         "type": "boolean"
+      },
+      "auto_import": {
+        "type": "boolean"
+      },
+      "contact_template": {
+        "type": ["object", "null"],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "email_bind_attribute": {
+        "type": ["string", "null"]
+      },
+      "alias_bind_attribute": {
+        "type": ["string", "null"]
+      },
+      "fullname_bind_attribute": {
+        "type": ["string", "null"]
       }
     }
 }

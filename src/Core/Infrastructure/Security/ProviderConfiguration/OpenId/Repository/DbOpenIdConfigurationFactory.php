@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Repository;
 
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbOpenIdConfigurationFactory
@@ -50,11 +51,23 @@ class DbOpenIdConfigurationFactory
             $customConfiguration['client_id'],
             $customConfiguration['client_secret'],
             $customConfiguration['authentication_type'],
-            $customConfiguration['verify_peer']
+            $customConfiguration['verify_peer'],
+            $customConfiguration['contact_template'] !== null
+                ? self::createContactTemplate($customConfiguration['contact_template'])
+                : null,
+            $customConfiguration['auto_import'] === '1',
+            $customConfiguration['email_bind_attribute'],
+            $customConfiguration['alias_bind_attribute'],
+            $customConfiguration['fullname_bind_attribute']
         );
 
         $configuration->setId((int) $record['id']);
 
         return $configuration;
+    }
+
+    public static function createContactTemplate(array $contactTemplate): ContactTemplate
+    {
+        return new ContactTemplate((int) $contactTemplate['id'], $contactTemplate['name']);
     }
 }

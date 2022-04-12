@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Core\Contact\Domain\Model\ContactTemplate;
+
 class FindOpenIdConfigurationResponse
 {
     /**
@@ -104,4 +106,41 @@ class FindOpenIdConfigurationResponse
      * @var boolean
      */
     public bool $verifyPeer;
+
+    /**
+     * @var boolean
+     */
+    public bool $isAutoImportEnabled;
+
+    /**
+     * @var array|null
+     */
+    public ?array $contactTemplate;
+
+    /**
+     * @var string|null
+     */
+    public ?string $emailBindAttribute;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userAliasBindAttribute;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userNameBindAttribute;
+
+    /**
+     * @param ContactTemplate $contactTemplate
+     * @return array<string,mixed>
+     */
+    public static function contactTemplateToArray(ContactTemplate $contactTemplate): array
+    {
+        return [
+            "id" => $contactTemplate->getId(),
+            "name" => $contactTemplate->getName(),
+        ];
+    }
 }

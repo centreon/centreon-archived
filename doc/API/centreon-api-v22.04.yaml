@@ -4376,6 +4376,7 @@ components:
               type: string
               description: "Contact template name"
               example: "Default"
+          nullable: true
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
