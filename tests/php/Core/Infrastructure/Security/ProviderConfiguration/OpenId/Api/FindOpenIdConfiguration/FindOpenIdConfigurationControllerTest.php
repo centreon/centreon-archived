@@ -36,7 +36,7 @@ use Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpenIdConf
     FindOpenIdConfigurationController
 };
 
-beforeEach(function() {
+beforeEach(function () {
     $this->presenter = $this->createMock(FindOpenIdConfigurationPresenterInterface::class);
     $this->useCase = $this->createMock(FindOpenIdConfiguration::class);
 
@@ -81,7 +81,7 @@ beforeEach(function() {
         );
 });
 
-it('should execute the use case properly', function() {
+it('should execute the use case properly', function () {
     $controller = new FindOpenIdConfigurationController();
     $controller->setContainer($this->container);
 

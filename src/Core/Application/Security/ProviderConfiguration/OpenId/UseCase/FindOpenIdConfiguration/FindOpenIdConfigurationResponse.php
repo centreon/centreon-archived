@@ -113,7 +113,7 @@ class FindOpenIdConfigurationResponse
     public bool $isAutoImportEnabled;
 
     /**
-     * @var array|null
+     * @var array<string,int|string>|null
      */
     public ?array $contactTemplate;
 
@@ -134,7 +134,7 @@ class FindOpenIdConfigurationResponse
 
     /**
      * @param ContactTemplate $contactTemplate
-     * @return array<string,mixed>
+     * @return array<string,int|string>
      */
     public static function contactTemplateToArray(ContactTemplate $contactTemplate): array
     {

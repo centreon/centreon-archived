@@ -34,12 +34,12 @@ use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
     $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
 });
 
-it('should present a provider configuration', function() {
+it('should present a provider configuration', function () {
         $configuration = new OpenIdConfiguration(
             true,
             true,
@@ -101,7 +101,7 @@ it('should present a provider configuration', function() {
         expect($presenter->response->userNameBindAttribute)->toBeNull();
 });
 
-it('should present a NotFoundReponse when no configuration are found', function() {
+it('should present a NotFoundReponse when no configuration is found', function () {
     $useCase = new FindOpenIdConfiguration($this->repository);
     $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
@@ -116,7 +116,7 @@ it('should present a NotFoundReponse when no configuration are found', function(
     expect($presenter->getResponseStatus()?->getMessage())->toBe('OpenIdConfiguration not found');
 });
 
-it('should present an ErrorResponse when an error occured during the process', function() {
+it('should present an ErrorResponse when an error occured during the process', function () {
     $useCase = new FindOpenIdConfiguration($this->repository);
     $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
