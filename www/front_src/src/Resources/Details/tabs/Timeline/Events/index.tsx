@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as React from 'react';
 
 import { equals, last, not, isEmpty } from 'ramda';

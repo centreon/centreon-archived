@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import ExternalComponents from './models';
 
 export const retrievedExternalComponents: ExternalComponents = {
