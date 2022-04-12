@@ -350,12 +350,12 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
     if (file_exists($apiConfigurationFile)) {
         $configuration = Yaml::parseFile($apiConfigurationFile);
 
-        if (isset($configuration['gorgone']['tpapi']['username'])) {
-            $macros['GORGONE_USER'] = $configuration['gorgone']['tpapi']['username'];
+        if (isset($configuration['gorgone']['tpapi'][0]['username'])) {
+            $macros['GORGONE_USER'] = $configuration['gorgone']['tpapi'][0]['username'];
         }
 
-        if (isset($configuration['gorgone']['tpapi']['password'])) {
-            $macros['GORGONE_PASSWORD'] = $configuration['gorgone']['tpapi']['password'];
+        if (isset($configuration['gorgone']['tpapi'][0]['password'])) {
+            $macros['GORGONE_PASSWORD'] = $configuration['gorgone']['tpapi'][0]['password'];
         }
     }
 

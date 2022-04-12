@@ -19,8 +19,10 @@
  *
  */
 
-
 include_once __DIR__ . "/../../class/centreonLog.class.php";
+
+use Symfony\Component\Yaml\Yaml;
+
 $centreonLog = new CentreonLog();
 
 //error specific content
@@ -40,7 +42,8 @@ try {
           REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
         CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk`
           FOREIGN KEY (`user_id`)
-          REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+          REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
+        UNIQUE KEY `unique_relation` (`provider_configuration_id`, `user_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
     );
 
@@ -114,6 +117,9 @@ try {
 
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
+
+    $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
+    excludeUsersFromPasswordPolicy($pearDB);
 
     $pearDB->commit();
 
@@ -457,4 +463,58 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
     );
     $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
     $statement->execute();
+}
+
+/**
+ * Exclude Gorgone / MBI / MAP users from password policy
+ *
+ * @param CentreonDB $pearDB
+ */
+function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
+{
+    $usersToExclude = [
+        ':bi' => 'centreonBI',
+        ':map' => 'centreon-map'
+    ];
+
+    $gorgoneUser = getGorgoneApiUser();
+    if ($gorgoneUser !== null) {
+        $usersToExclude[':gorgone'] = $gorgoneUser;
+    }
+
+    $statement = $pearDB->prepare(
+        "INSERT INTO `password_expiration_excluded_users` (provider_configuration_id, user_id)
+        SELECT pc.id, c.contact_id
+        FROM `provider_configuration` pc, `contact` c
+        WHERE pc.name = 'local'
+        AND c.contact_alias IN (" . implode(',', array_keys($usersToExclude)) . ")
+        GROUP BY pc.id, c.contact_id
+        ON DUPLICATE KEY UPDATE provider_configuration_id = provider_configuration_id"
+    );
+
+    foreach ($usersToExclude as $userToExcludeParam => $usersToExcludeValue) {
+        $statement->bindValue($userToExcludeParam, $usersToExcludeValue, \PDO::PARAM_STR);
+    }
+
+    $statement->execute();
+}
+
+function getGorgoneApiUser(): ?string
+{
+    $gorgoneUser = null;
+
+    $gorgoneEtcPath = _CENTREON_ETC_ . '/../centreon-gorgone';
+
+    $apiConfigurationFile = $gorgoneEtcPath . '/config.d/31-centreon-api.yaml';
+    if (file_exists($apiConfigurationFile)) {
+        $configuration = Yaml::parseFile($apiConfigurationFile);
+
+        if (isset($configuration['gorgone']['tpapi'][0]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][0]['username'];
+        } elseif (isset($configuration['gorgone']['tpapi'][1]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][1]['username'];
+        }
+    }
+
+    return $gorgoneUser;
 }
