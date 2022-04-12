@@ -1,24 +1,20 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { Box, Divider, Paper } from '@mui/material';
 
-import { Box, Divider, IconButton, Paper, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+interface Props {
+  contacts: JSX.Element;
+  getColumns: () => JSX.Element;
+  headers: JSX.Element;
+  templateColumns: string;
+}
 
-import {
-  labelAlias,
-  labelConfiguration,
-  labelEmail,
-  labelName,
-} from '../../../translatedLabels';
-
-const Contacts = ({ contacts, templateColumns, columns }): JSX.Element => {
-  const { t } = useTranslation();
-
-  const goToUri = (uri: string): void => {
-    window.location.href = uri;
-  };
-
+const Contacts = ({
+  contacts,
+  templateColumns,
+  getColumns,
+  headers,
+}: Props): JSX.Element => {
   return (
     <Box
       component={Paper}
@@ -32,32 +28,12 @@ const Contacts = ({ contacts, templateColumns, columns }): JSX.Element => {
       }}
     >
       <>
-        <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
-          {t(labelName)}
-        </Typography>
-        <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
-        <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
+        {headers}
         <span />
 
         <Divider sx={{ gridColumn: '1 / -1' }} />
       </>
-      {contacts.map(({ name, alias, email, configuration_uri }) => {
-        return (
-          <>
-            <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
-            <Typography>{alias}</Typography>
-            <Typography>{email}</Typography>
-            <IconButton
-              size="small"
-              sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
-              title={t(labelConfiguration)}
-              onClick={(): void => goToUri(configuration_uri)}
-            >
-              <SettingsIcon color="primary" fontSize="small" />
-            </IconButton>
-          </>
-        );
-      })}
+      {getColumns(contacts)}
     </Box>
   );
 };

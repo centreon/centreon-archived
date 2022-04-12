@@ -3,7 +3,6 @@ import * as React from 'react';
 import { path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
-import { alias } from 'yargs';
 
 import { Paper, Stack, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -51,15 +50,34 @@ const Notification = (): JSX.Element => {
     loadNotificationContacts();
   }, []);
 
-  const getContactColumns = ({ name, alias, configuration_uri }) => ({
-    alias: {
-      cell: <Typography>{alias}</Typography>,
-      header: (
-        <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
-      ),
-    },
-    configuration_uri: {
-      cell: (
+  const goToUri = (uri: string): void => {
+    window.location.href = uri;
+  };
+
+  const contactHeaders = (
+    <>
+      <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
+        {t(labelName)}
+      </Typography>
+      <Typography sx={{ fontWeight: 'bold' }}>{t(labelAlias)}</Typography>
+    </>
+  );
+
+  const contactWithEmailHeaders = (
+    <>
+      {contactHeaders}
+      <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
+    </>
+  );
+
+  const getContactColumns = ({
+    name,
+    alias,
+    configuration_uri,
+  }): JSX.Element => {
+    return (
+      <>
+        <Typography>{alias}</Typography>
         <IconButton
           size="small"
           sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
@@ -68,30 +86,18 @@ const Notification = (): JSX.Element => {
         >
           <SettingsIcon color="primary" fontSize="small" />
         </IconButton>
-      ),
-      header: <span />,
-    },
-    name: {
-      cell: <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>,
-      header: (
-        <Typography sx={{ fontWeight: 'bold', paddingLeft: 1 }}>
-          {t(labelName)}
-        </Typography>
-      ),
-    },
-  });
+        <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
+      </>
+    );
+  };
 
-  const getContactWithEmailColumns = ({ email, contacts }) => {
-    ({
-      ...getContactColumns(contacts),
-
-      email: {
-        cell: <Typography sx={{ paddingLeft: 1 }}>{email}</Typography>,
-        header: (
-          <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
-        ),
-      },
-    });
+  const getContactWithEmailColumns = ({ email, contacts }): JSX.Element => {
+    return (
+      <>
+        {getContactColumns(contacts)}
+        <Typography>{email}</Typography>
+      </>
+    );
   };
 
   return (
@@ -118,8 +124,9 @@ const Notification = (): JSX.Element => {
         <Typography sx={{ fontWeight: 'bold' }}>{t(labelContacts)}</Typography>
       </Stack>
       <Contacts
-        columns={getContactWithEmailColumns}
         contacts={notificationContacts?.contacts || []}
+        getColumns={getContactWithEmailColumns}
+        headers={contactWithEmailHeaders}
         templateColumns="1fr 1fr 1fr auto"
       />
       <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
@@ -129,8 +136,9 @@ const Notification = (): JSX.Element => {
         </Typography>
       </Stack>
       <Contacts
-        columns={getContactColumns}
         contacts={notificationContacts?.contact_groups || []}
+        getColumns={getContactColumns}
+        headers={contactHeaders}
         templateColumns="1fr 1fr auto"
       />
     </Stack>
