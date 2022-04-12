@@ -34,6 +34,10 @@
  *
  */
 
+require_once __DIR__ . '/../../bootstrap.php';
+
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+
 /**
  * Generate random password
  * 12 characters length with at least 1 uppercase, 1 lowercase, 1 number and 1 special character
@@ -46,7 +50,7 @@ function generatePassword(): string
         'abcdefghjkmnpqrstuvwxyz',
         'ABCDEFGHJKMNPQRSTUVWXYZ',
         '0123456789',
-        '@$!%*?&',
+        SecurityPolicy::SPECIAL_CHARACTERS_LIST,
     ];
     $allRuleSets = implode('', $ruleSets);
     $passwordLength = 12;
