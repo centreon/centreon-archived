@@ -57,6 +57,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @param string|null $clientSecret
      * @param string|null $authenticationType
      * @param boolean $verifyPeer
+     * @param ContactTemplate|null $contactTemplate
+     * @param boolean $isAutoImportEnabled
+     * @param string|null $emailBindAttribute
+     * @param string|null $userAliasBindAttribute
+     * @param string|null $userNameBindAttribute
      */
     public function __construct(
         private bool $isActive,
