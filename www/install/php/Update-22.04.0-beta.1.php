@@ -19,7 +19,8 @@
  *
  */
 
-include_once __DIR__ . "/../../class/centreonLog.class.php";
+require_once __DIR__ . "/../../../bootstrap.php";
+require_once __DIR__ . "/../../class/centreonLog.class.php";
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -499,6 +500,11 @@ function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
     $statement->execute();
 }
 
+/**
+ * Get centreon-gorgone api user from configuration file
+ *
+ * @return string|null
+ */
 function getGorgoneApiUser(): ?string
 {
     $gorgoneUser = null;
