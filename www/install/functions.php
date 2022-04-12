@@ -47,9 +47,9 @@ use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 function generatePassword(): string
 {
     $ruleSets = [
-        'abcdefghjkmnpqrstuvwxyz',
-        'ABCDEFGHJKMNPQRSTUVWXYZ',
-        '0123456789',
+        implode('', range('a', 'z')),
+        implode('', range('A', 'Z')),
+        implode('', range(0, 9)),
         SecurityPolicy::SPECIAL_CHARACTERS_LIST,
     ];
     $allRuleSets = implode('', $ruleSets);
