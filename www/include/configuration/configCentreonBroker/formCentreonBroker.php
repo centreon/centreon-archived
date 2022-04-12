@@ -59,36 +59,26 @@ if (
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 /**
- * @param array<string,mixed> $data
- * @return array<string,mixed>
+ * @param mixed $data
+ * @return mixed
  */
-function htmlEncodeBrokerInformation(array $data): array
+function htmlEncodeBrokerInformation(mixed $data): mixed
 {
-    $data['name'] = htmlentities($data['name']);
-    $data['filename'] = htmlentities($data['filename']);
-    $data['cache_directory'] = htmlentities($data['cache_directory']);
-    $data['log_directory'] = htmlentities($data['log_directory']);
-    $data['log_filename'] = htmlentities($data['log_filename']);
-    $data['bbdo_version'] = htmlentities($data['bbdo_version']);
-    $data['command_file'] = htmlentities($data['command_file']);
-
+    if (is_string($data)) {
+        $data = htmlentities($data);
+    }
     return $data;
 }
 
 /**
- * @param array<string,mixed> $data
- * @return array<string,mixed>
+ * @param mixed $data
+ * @return mixed
  */
-function htmlDecodeBrokerInformation(array $data): array
+function htmlDecodeBrokerInformation(mixed $data): mixed
 {
-    $data['name'] = html_entity_decode($data['name']);
-    $data['filename'] = html_entity_decode($data['filename']);
-    $data['cache_directory'] = html_entity_decode($data['cache_directory']);
-    $data['log_directory'] = html_entity_decode($data['log_directory']);
-    $data['log_filename'] = html_entity_decode($data['log_filename']);
-    $data['bbdo_version'] = html_entity_decode($data['bbdo_version']);
-    $data['command_file'] = html_entity_decode($data['command_file']);
-
+    if (is_string($data)) {
+        $data = html_entity_decode($data);
+    }
     return $data;
 }
 
@@ -238,7 +228,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
 } elseif ($id !== 0) {
     $tpl->assign('config_id', $id);
     $defaultBrokerInformation = getCentreonBrokerInformation($id);
-    $defaultBrokerInformation = htmlEncodeBrokerInformation($defaultBrokerInformation);
+    $defaultBrokerInformation = array_map('htmlEncodeBrokerInformation', $defaultBrokerInformation);
     if (!isset($defaultBrokerInformation['log_core'])) {
         $defaultBrokerInformation = array_merge(
             $defaultBrokerInformation,
@@ -301,7 +291,7 @@ if ($o == "w") {
 $valid = false;
 if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
-    $data = htmlDecodeBrokerInformation($_POST);
+    $data = array_map('htmlDecodeBrokerInformation', $_POST);
     if ($form->getSubmitValue("submitA")) {
         $cbObj->insertConfig($data);
     } elseif ($form->getSubmitValue("submitC")) {

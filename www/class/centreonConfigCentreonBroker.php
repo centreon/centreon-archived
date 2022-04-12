@@ -675,15 +675,11 @@ class CentreonConfigCentreonBroker
     }
 
     /**
-     * Insert a configuration into the database
-     *
-     * @param array $values The post array
-     * @return bool
+     * @param array<string,mixed> $values
+     * @return string[]
      */
-    public function insertConfig($values)
+    private function getColumnNamesForQuery(array $values): array
     {
-        $objMain = new CentreonMainCfg();
-        // Insert the Centreon Broker configuration
         $columnNames = [
             'config_name',
             'config_filename',
@@ -712,6 +708,21 @@ class CentreonConfigCentreonBroker
         if (isset($values['bbdo_version'])) {
             $columnNames[] = 'bbdo_version';
         }
+
+        return $columnNames;
+    }
+
+    /**
+     * Insert a configuration into the database
+     *
+     * @param array $values The post array
+     * @return bool
+     */
+    public function insertConfig($values): bool
+    {
+        $objMain = new CentreonMainCfg();
+        // Insert the Centreon Broker configuration
+        $columnNames = $this->getColumnNamesForQuery($values);
 
         $query = 'INSERT INTO cfg_centreonbroker ('
             . implode(', ', $columnNames)
