@@ -370,7 +370,7 @@
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
     --view-body-portlet-border-color: var(--color-iron);
-    --view-body-ui-widget-header-font-color: var(--color-white-lilac);
+    --view-body-ui-widget-header-font-color: var(--color-black);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
@@ -571,9 +571,9 @@
     --ui-td-date-time-picker-anchor-span-border-color: var(--body-background);
     --ui-td-date-time-picker-anchor-span-background-color: var(--ui-td-date-time-picker-anchor-span-border-color);
     --ui-td-date-time-picker-anchor-span-font-color: var(--body-color);
-    --ui-timepicker-minute-cell-border-color: var(--color-french-gray);
-    --ui-timepicker-minute-cell-background-color: var(--color-french-gray-2);
-    --ui-timepicker-minute-cell-font-color: var(--color-pasific-bleu);
+    --ui-timepicker-minute-cell-border-color: var(--body-background);
+    --ui-timepicker-minute-cell-background-color: var(--body-background);
+    --ui-timepicker-minute-cell-font-color: var(--body-color);
     --ui-datepicker-time-next-prev-state-disabled-hover-background-color: var(--color-aluminium);
     --ui-datepicker-time-next-prev-state-hover-background-color: var(--color-white);
     --ui-datepicker-table-background-color: var(--color-white);

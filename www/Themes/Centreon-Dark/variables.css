@@ -166,4 +166,11 @@
     --ui-button-state-hover-focus-background-color: var(--body-background);
     --ui-button-state-hover-focus-border-color: var(--ui-button-state-hover-focus-background-color);
     --ui-date-time-picker-background-color: var(--ui-datepicker-table-background-color);
+    --ui-state-highlight-font-color: var(--body-color);
+    --jquery-ui-widget-content-font-color: var(--body-color);
+    --ui-timepicker-minute-cell-background-color: var(--color-cinder);
+    --ui-timepicker-minute-cell-border-color: var(--body-color);
+    --ui-timepicker-minute-cell-font-color: var(--color-white);
+    --jquery-ui-widget-content-background-color: var(--body-color);
+    --view-body-ui-widget-header-font-color: var(--color-white);
 }
