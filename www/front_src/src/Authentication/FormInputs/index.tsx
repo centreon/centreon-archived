@@ -2,11 +2,14 @@ import * as React from 'react';
 
 import {
   always,
+  any,
   ascend,
   cond,
   equals,
+  filter,
   find,
   groupBy,
+  keys,
   last,
   not,
   pluck,
@@ -78,7 +81,12 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
   const sortedCategoryNames = React.useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
-    return pluck('name', sortedCategories);
+    const usedCategories = filter(
+      ({ name }) => any(equals(name), keys(inputsByCategory)),
+      sortedCategories,
+    );
+
+    return pluck('name', usedCategories);
   }, []);
 
   const sortedInputsByCategory = React.useMemo(
@@ -102,8 +110,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
   return (
     <div>
       {toPairs(sortedInputsByCategory).map(([category, categorizedInputs]) => (
-        <>
-          <div className={classes.category} key={category}>
+        <div key={category}>
+          <div className={classes.category}>
             <Typography variant="h5">{t(category)}</Typography>
             <div className={classes.inputs}>
               {categorizedInputs.map(
@@ -139,7 +147,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
             </div>
           </div>
           {not(equals(lastCategory, category)) && <Divider />}
-        </>
+        </div>
       ))}
     </div>
   );
