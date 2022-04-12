@@ -3,9 +3,9 @@
   "compilerOptions": {
     "baseUrl": "..",
     "esModuleInterop": true,
-    "types": ["cypress", "node"],
+    "types": ["cypress", "node"]
   },
   "include": [
     "**/*.ts"
-  ],
+  ]
 }
