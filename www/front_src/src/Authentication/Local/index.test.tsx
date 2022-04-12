@@ -12,11 +12,11 @@ import {
   labelReset,
   labelDefinePasswordPasswordSecurityPolicy,
   labelDoYouWantToResetTheForm,
-  labelNumberOfAttemptsBeforeBlockingNewAttempts,
+  labelNumberOfAttemptsBeforeUserIsBlocked,
   labelPasswordBlockingPolicy,
   labelPasswordCasePolicy,
   labelPasswordExpirationPolicy,
-  labelPasswordLength,
+  labelMinimumPasswordLength,
   labelResetTheForm,
   labelSave,
 } from './translatedLabels';
@@ -85,7 +85,7 @@ describe('Authentication', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelPasswordLength),
+      screen.getByLabelText(labelMinimumPasswordLength),
       '{selectall}{backspace}45',
     );
 
@@ -133,12 +133,12 @@ describe('Authentication', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelPasswordLength),
+      screen.getByLabelText(labelMinimumPasswordLength),
       '{selectall}{backspace}45',
     );
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}8',
     );
 
@@ -157,7 +157,7 @@ describe('Authentication', () => {
     userEvent.click(screen.getAllByText(labelReset)[1]);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(12);
+      expect(screen.getByLabelText(labelMinimumPasswordLength)).toHaveValue(12);
     });
   });
 
@@ -185,7 +185,7 @@ describe('Authentication', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}2',
     );
 
