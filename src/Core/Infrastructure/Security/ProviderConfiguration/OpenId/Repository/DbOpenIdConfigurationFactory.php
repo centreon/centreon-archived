@@ -66,6 +66,12 @@ class DbOpenIdConfigurationFactory
         return $configuration;
     }
 
+    /**
+     * create a Contact Template
+     *
+     * @param array<string,string> $contactTemplate
+     * @return ContactTemplate
+     */
     public static function createContactTemplate(array $contactTemplate): ContactTemplate
     {
         return new ContactTemplate((int) $contactTemplate['id'], $contactTemplate['name']);
