@@ -325,6 +325,7 @@ CREATE TABLE `resources` (
   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0=false, 1=true',
   `last_check_type` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '0=active check, 1=passive check',
   `last_check` bigint(20) unsigned DEFAULT NULL COMMENT 'the last check timestamp',
+  `last_status_change` bigint(20) unsigned DEFAULT NULL COMMENT 'the last status change timestamp',
   `output` text DEFAULT NULL,
   PRIMARY KEY (`resource_id`),
   UNIQUE KEY `resources_id_parent_id_type_uindex` (`id`,`parent_id`,`type`),
