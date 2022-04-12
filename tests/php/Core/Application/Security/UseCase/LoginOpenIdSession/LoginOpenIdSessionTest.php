@@ -88,7 +88,12 @@ beforeEach(function () {
         'client-id',
         'client-secret',
         'client_secret_post',
-        false
+        false,
+        null,
+        false,
+        null,
+        null,
+        null
     ))->setId(1);
 });
 
