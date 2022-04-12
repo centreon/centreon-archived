@@ -106,7 +106,7 @@ const useMain = (): void => {
       return;
     }
 
-    loadUser(webVersions);
+    loadUser();
   }, [webVersions]);
 
   React.useEffect(() => {
