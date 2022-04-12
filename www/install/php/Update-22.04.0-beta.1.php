@@ -120,7 +120,6 @@ try {
 
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
-  
     $errorMessage = "Unable to migrate broker config to unified_sql";
     migrateBrokerConfigOutputsToUnifiedSql($pearDB);
 
