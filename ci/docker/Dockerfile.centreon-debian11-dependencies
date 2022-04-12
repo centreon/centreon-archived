@@ -21,5 +21,14 @@ fakeroot \
 curl \
 python3 \
 python3-pip \
+lsb-release \
+ca-certificates \
+apt-transport-https \
+software-properties-common \
+wget \
+&& echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" |\
+	tee /etc/apt/sources.list.d/sury-php.list \
+&& wget -qO /etc/apt/trusted.gpg.d/sury-php.gpg https://packages.sury.org/php/apt.gpg \
+&& apt-get update -y && apt-get -y install php8.0 && apt-get -y install php8.0-intl php8.0-xml php8.0-curl php8.0-mbstring php8.0-zip php8.0-cli php8.0-common php8.0-fpm php8.0-mysql php8.0-ldap\
 && pip3 install conan \
 && ln -s /usr/local/bin/conan /usr/bin/conan
