@@ -509,7 +509,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function getUsernameFromLoginClaim(): string
     {
-        $loginClaim = !empty($this->configuration->getLoginClaim())
+        $loginClaim = ! empty($this->configuration->getLoginClaim())
             ? $this->configuration->getLoginClaim()
             : OpenIdConfiguration::DEFAULT_LOGIN_GLAIM;
         if (
