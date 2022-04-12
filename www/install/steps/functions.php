@@ -34,6 +34,8 @@
  *
  */
 
+require_once __DIR__ . '/../../class/centreonAuth.class.php';
+
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -300,37 +302,6 @@ function getDatabaseVariable($db, $variable)
 }
 
 /**
- * Generate random password
- * 12 characters length with at least 1 uppercase, 1 lowercase, 1 number and 1 special character
- *
- * @return string
- */
-function generatePassword(): string
-{
-    $ruleSets = [
-        'abcdefghjkmnpqrstuvwxyz',
-        'ABCDEFGHJKMNPQRSTUVWXYZ',
-        '0123456789',
-        '@$!%*?&',
-    ];
-    $allRuleSets = implode('', $ruleSets);
-    $passwordLength = 12;
-
-    $password = '';
-    foreach ($ruleSets as $ruleSet) {
-        $password .= $ruleSet[random_int(0, strlen($ruleSet) - 1)];
-    }
-
-    for ($i = 0; $i < ($passwordLength - count($ruleSets)); $i++) {
-        $password .= $allRuleSets[random_int(0, strlen($allRuleSets) - 1)];
-    }
-
-    $password = str_shuffle($password);
-
-    return $password;
-}
-
-/**
  * Get gorgone api credentials from configuration file
  *
  * @param string $gorgoneEtcPath
@@ -355,7 +326,10 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
         }
 
         if (isset($configuration['gorgone']['tpapi'][0]['password'])) {
-            $macros['GORGONE_PASSWORD'] = $configuration['gorgone']['tpapi'][0]['password'];
+            $macros['GORGONE_PASSWORD'] = password_hash(
+                $configuration['gorgone']['tpapi'][0]['password'],
+                CentreonAuth::PASSWORD_HASH_ALGORITHM
+            );
         }
     }
 
