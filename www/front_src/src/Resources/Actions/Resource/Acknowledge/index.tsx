@@ -35,7 +35,7 @@ interface Props {
 export interface AcknowledgeFormValues {
   acknowledgeAttachedResources: boolean;
   comment?: string;
-  forceActiveChecks: boolean;
+  forceActiveCheck: boolean;
   isSticky: boolean;
   notify: boolean;
   persistent: boolean;
@@ -63,7 +63,7 @@ const AcknowledgeForm = ({
     initialValues: {
       acknowledgeAttachedResources: acknowledgement.with_services,
       comment: undefined,
-      forceActiveChecks: acknowledgement.force_active_checks,
+      forceActiveCheck: acknowledgement.force_active_checks,
       isSticky: acknowledgement.sticky,
       notify: acknowledgement.notify,
       persistent: acknowledgement.persistent,
