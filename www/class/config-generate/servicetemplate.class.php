@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -215,6 +216,7 @@ class ServiceTemplate extends AbstractService
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
         $this->getServiceGroups($service_id);
+        $this->insertServiceInServiceCategoryMembers($service_id);
         $this->getSeverity($service_id);
 
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);
@@ -234,5 +236,28 @@ class ServiceTemplate extends AbstractService
         $this->current_service_id = null;
         $this->loop_stpl = array();
         parent::reset();
+    }
+
+    /**
+     * @param int $serviceId
+     * @return self
+     */
+    protected function insertServiceInServiceCategoryMembers(int $serviceId): self
+    {
+        $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
+        $this->service_cache[$serviceId]['serviceCategories'] =
+            $serviceCategory->getServiceCategoriesByServiceId($serviceId);
+
+        foreach ($this->service_cache[$serviceId]['serviceCategories'] as &$serviceCategoryId) {
+            if (! is_null($serviceCategoryId)) {
+                $serviceCategory->insertServiceToServiceCategoryMembers(
+                    $serviceCategoryId,
+                    $serviceId,
+                    $this->service_cache[$serviceId]['service_description']
+                );
+            }
+        }
+
+        return $this;
     }
 }
