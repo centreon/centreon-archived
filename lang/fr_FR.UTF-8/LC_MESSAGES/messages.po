@@ -16722,3 +16722,18 @@ msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaratio
 
 msgid "Impossible to get contact templates from data storage"
 msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de données"
+
+msgid "Enable auto import"
+msgstr "Activer l'importation automatique"
+
+msgid "Email attribute to bind"
+msgstr "Attribut de mail à lier"
+
+msgid "Alias attribute to bind"
+msgstr "Attribut d'alias à lier"
+
+msgid "Fullname attribute to bind"
+msgstr "Attribut de nom complet à lier"
+
+msgid "Auto import"
+msgstr "Importation automatique"

@@ -15449,3 +15449,18 @@ msgstr ""
 
 # msgid "Login with"
 # msgstr ""
+
+# msgid "Enable auto import"
+# msgstr "Activer l'importation automatique"
+
+# msgid "Email attribute to bind"
+# msgstr ""
+
+# msgid "Alias attribute to bind"
+# msgstr ""
+
+# msgid "Fullname attribute to bind"
+# msgstr ""
+
+# msgid "Auto import"
+# msgstr ""
