@@ -483,6 +483,7 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
+        $this->insertHostInHostCategoryMembers($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
 
@@ -518,6 +519,8 @@ class Host extends AbstractHost
         Escalation::getInstance($this->dependencyInjector)->generateObjects();
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
         Severity::getInstance($this->dependencyInjector)->generateObjects();
+        HostCategory::getInstance($this->dependencyInjector)->generateObjects();
+        ServiceCategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)
