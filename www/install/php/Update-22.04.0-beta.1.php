@@ -40,13 +40,13 @@ try {
         "CREATE TABLE IF NOT EXISTS `password_expiration_excluded_users` (
         `provider_configuration_id` int(11) NOT NULL,
         `user_id` int(11) NOT NULL,
+        PRIMARY KEY (`provider_configuration_id`, `user_id`),
         CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk`
           FOREIGN KEY (`provider_configuration_id`)
           REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
         CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk`
           FOREIGN KEY (`user_id`)
-          REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
-        UNIQUE KEY `unique_relation` (`provider_configuration_id`, `user_id`)
+          REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
     );
 
