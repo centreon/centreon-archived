@@ -63,7 +63,9 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= $searchRequest !== null ? $searchRequest . ' AND contact_register = 0' : ' WHERE contact_register = 0';
+        $request .= $searchRequest !== null
+            ? $searchRequest . ' AND contact_register = 0'
+            : ' WHERE contact_register = 0';
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
