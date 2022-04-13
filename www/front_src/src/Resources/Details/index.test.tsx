@@ -1646,7 +1646,7 @@ describe(Details, () => {
             },
           },
         }),
-        expect.anything(),
+        cancelTokenRequestParam,
       ),
     );
 

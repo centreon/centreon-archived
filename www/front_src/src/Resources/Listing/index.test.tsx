@@ -178,7 +178,7 @@ describe(Listing, () => {
           result: [],
         },
       })
-      .mockResolvedValueOnce({ data: retrievedListing });
+      .mockResolvedValue({ data: retrievedListing });
   });
 
   afterEach(() => {
