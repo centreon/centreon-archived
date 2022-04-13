@@ -20,26 +20,18 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\User\Repository;
+namespace Core\Infrastructure\Configuration\User\Api\PatchUser;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Application\Configuration\User\UseCase\PatchUser\PatchUserPresenterInterface;
 
-class DbUserFactory
+class PatchUserPresenter extends AbstractPresenter implements PatchUserPresenterInterface
 {
     /**
-     * @param array<string, string> $user
-     * @return User
-     * @throws \Assert\AssertionFailedException
+     * @param mixed $data
      */
-    public static function createFromRecord(array $user): User
+    public function present(mixed $data): void
     {
-        return new User(
-            (int) $user['contact_id'],
-            $user['contact_alias'],
-            $user['contact_name'],
-            $user['contact_email'],
-            $user['contact_admin'] === '1',
-            $user['contact_theme']
-        );
+        parent::present($data);
     }
 }
