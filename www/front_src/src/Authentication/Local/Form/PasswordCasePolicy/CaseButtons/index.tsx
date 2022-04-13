@@ -2,21 +2,29 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
+import clsx from 'clsx';
 
-import { Button, ButtonGroup, ButtonProps, useTheme } from '@mui/material';
+import {
+  Button,
+  ButtonProps,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
 import {
-  labelForceToUseLowerCase,
-  labelForceToUseNumbers,
-  labelForceToUseSpecialCharacters,
-  labelForceToUseUpperCase,
+  labelChooseLetterCases,
+  labelPasswordMustContainLowerCase,
+  labelPasswordMustContainNumbers,
+  labelPasswordMustContainSpecialCharacters,
+  labelPasswordMustContainUpperCase,
   labelGood,
   labelLowerCase,
   labelNumber,
-  labelPasswordCases,
+  labelPasswordExpiresAfter,
   labelSpecialCharacters,
   labelStrong,
   labelUpperCase,
@@ -36,10 +44,14 @@ const hasNumberName = 'hasNumber';
 const hasSpecialCharacterName = 'hasSpecialCharacter';
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    minWidth: theme.spacing(4),
+  },
   caseButtonsContainer: {
     display: 'flex',
     flexDirection: 'column',
     rowGap: theme.spacing(0.5),
+    width: 'fit-content',
   },
   lowerCaseButton: {
     textTransform: 'none',
@@ -87,53 +99,69 @@ const CaseButtons = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.caseButtonsContainer}>
-        <ButtonGroup aria-label={t(labelPasswordCases)} size="small">
+        <Typography variant="caption">{t(labelChooseLetterCases)}</Typography>
+        <Stack
+          aria-label={t(labelPasswordExpiresAfter)}
+          direction="row"
+          spacing={1}
+        >
           <Button
-            {...(hasLowerCase && activeButtonProps)}
-            aria-label={t(labelForceToUseLowerCase)}
-            className={classes.lowerCaseButton}
+            aria-label={t(labelPasswordMustContainLowerCase)}
+            className={clsx(classes.lowerCaseButton, classes.button)}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasLowerCaseName)}
+            {...(hasLowerCase && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelLowerCase}
-              tooltipLabel={labelForceToUseLowerCase}
+              tooltipLabel={labelPasswordMustContainLowerCase}
             />
           </Button>
           <Button
-            {...(hasUpperCase && activeButtonProps)}
-            aria-label={t(labelForceToUseUpperCase)}
+            aria-label={t(labelPasswordMustContainUpperCase)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasUpperCaseName)}
+            {...(hasUpperCase && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelUpperCase}
-              tooltipLabel={labelForceToUseUpperCase}
+              tooltipLabel={labelPasswordMustContainUpperCase}
             />
           </Button>
           <Button
-            {...(hasNumber && activeButtonProps)}
-            aria-label={t(labelForceToUseNumbers)}
+            aria-label={t(labelPasswordMustContainNumbers)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasNumberName)}
+            {...(hasNumber && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelNumber}
-              tooltipLabel={labelForceToUseNumbers}
+              tooltipLabel={labelPasswordMustContainNumbers}
             />
           </Button>
           <Button
-            {...(hasSpecialCharacter && activeButtonProps)}
-            aria-label={t(labelForceToUseSpecialCharacters)}
+            aria-label={t(labelPasswordMustContainSpecialCharacters)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasSpecialCharacterName)}
+            {...(hasSpecialCharacter && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelSpecialCharacters}
-              tooltipLabel={labelForceToUseSpecialCharacters}
+              tooltipLabel={labelPasswordMustContainSpecialCharacters}
             />
           </Button>
-        </ButtonGroup>
+        </Stack>
         <StrengthProgress
           max={4}
           thresholds={thresholds}

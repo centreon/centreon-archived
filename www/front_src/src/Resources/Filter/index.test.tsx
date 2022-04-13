@@ -626,6 +626,26 @@ describe(Filter, () => {
               page: 1,
               total: 0,
             },
+            result: [],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
             result: [linuxServersHostGroup],
           },
         })
@@ -650,9 +670,11 @@ describe(Filter, () => {
         findByText,
       } = renderResult;
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(4));
 
-      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
+      await waitFor(() => {
+        expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
+      });
 
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
 
@@ -863,7 +885,7 @@ describe(Filter, () => {
       const { getByDisplayValue, queryByText } = renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(3);
       });
 
       expect(getByDisplayValue('Search me')).toBeInTheDocument();

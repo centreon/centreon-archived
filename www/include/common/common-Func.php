@@ -34,6 +34,28 @@
  *
  */
 
+/**
+ * Displays the SVG file in HTML.
+ *
+ * @param string $svgPath SVG file path from _CENTREON_PATH_
+ * @param string $color Color to be used in SVG image
+ * @param float $height Height of image
+ * @param float $width Width of image
+ * @example <?php displaySvg('www/img/centreon.svg', '#000', 50, 50); ?>
+ */
+function displaySvg(string $svgPath, string $color, float $height, float $width): void
+{
+    $path = pathinfo($svgPath);
+    $svgPath = str_replace('.', '', $path['dirname']) . DIRECTORY_SEPARATOR . $path['basename'];
+    $path = _CENTREON_PATH_ . DIRECTORY_SEPARATOR . $svgPath;
+    if (file_exists($path)) {
+        $data = file_get_contents($path);
+        $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
+        echo "<span style='fill:$color'>" . $data . '</span>';
+    } else {
+        echo 'SVG file not found: ' . $svgPath;
+    }
+}
 
 /*
  * Form Rules

@@ -23,7 +23,7 @@ import {
   securityPolicyWithInvalidPasswordExpiration,
 } from '../defaults';
 import {
-  labelCanReuseLast3Passwords,
+  labelLast3PasswordsCanBeReused,
   labelChooseADurationBetween7DaysAnd12Months,
   labelChooseADurationBetween1HourAnd1Week,
   labelDays,
@@ -31,7 +31,7 @@ import {
   labelMonth,
   labelPasswordExpiration,
   labelPasswordExpirationPolicy,
-  labelTimeBeforeSettingNewPassword,
+  labelMinimumTimeBetweenPasswordChanges,
   labelExcludedUsers,
 } from '../../translatedLabels';
 import { contactsEndpoint } from '../../../api/endpoints';
@@ -128,12 +128,12 @@ describe('Password expiration policy', () => {
     expect(screen.getByText(labelDays)).toBeInTheDocument();
 
     expect(
-      screen.getByText(labelTimeBeforeSettingNewPassword),
+      screen.getByText(labelMinimumTimeBetweenPasswordChanges),
     ).toBeInTheDocument();
 
     expect(
       screen.getByLabelText(
-        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
+        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`,
       ),
     ).toHaveTextContent('1');
 
@@ -172,7 +172,7 @@ describe('Password expiration policy', () => {
       ).toBeInTheDocument();
     });
     expect(
-      screen.getByText(labelTimeBeforeSettingNewPassword),
+      screen.getByText(labelMinimumTimeBetweenPasswordChanges),
     ).toBeInTheDocument();
 
     await waitFor(() => {
@@ -201,12 +201,12 @@ describe('Password expiration policy', () => {
       ).toBeInTheDocument();
     });
     expect(
-      screen.getByText(labelTimeBeforeSettingNewPassword),
+      screen.getByText(labelMinimumTimeBetweenPasswordChanges),
     ).toBeInTheDocument();
 
     userEvent.type(
       screen.getByLabelText(
-        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
+        `${labelMinimumTimeBetweenPasswordChanges} ${labelHour}`,
       ),
       '{selectall}{backspace}',
     );
@@ -226,12 +226,16 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelCanReuseLast3Passwords)).toBeInTheDocument();
+    expect(
+      screen.getByText(labelLast3PasswordsCanBeReused),
+    ).toBeInTheDocument();
 
-    userEvent.click(screen.getByLabelText(labelCanReuseLast3Passwords));
+    userEvent.click(screen.getByLabelText(labelLast3PasswordsCanBeReused));
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelCanReuseLast3Passwords)).toBeChecked();
+      expect(
+        screen.getByLabelText(labelLast3PasswordsCanBeReused),
+      ).toBeChecked();
     });
   });
 

@@ -6,12 +6,13 @@ import { isNil, lte, not } from 'ramda';
 import dayjs from 'dayjs';
 
 import { FormHelperText, FormLabel, useTheme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
 import TimeInputs from '../../TimeInputs';
 import {
-  labelBlockingTimeBeforeNewConnectionAttempt,
+  labelTimeThatMustPassBeforeNewConnection,
   labelGood,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
@@ -31,7 +32,14 @@ import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
 
+const useStyles = makeStyles({
+  passwordBlockingDuration: {
+    maxWidth: 'fit-content',
+  },
+});
+
 const BlockingDuration = (): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -103,11 +111,11 @@ const BlockingDuration = (): JSX.Element => {
 
   return useMemoComponent({
     Component: (
-      <div>
-        <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
+      <div className={classes.passwordBlockingDuration}>
+        <FormLabel>{t(labelTimeThatMustPassBeforeNewConnection)}</FormLabel>
         <TimeInputs
           baseName={blockingDurationFieldName}
-          inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
+          inputLabel={labelTimeThatMustPassBeforeNewConnection}
           maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={blockingDurationValue}

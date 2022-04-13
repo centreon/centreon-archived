@@ -19,10 +19,46 @@
  *
  */
 
+
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
+//error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.10.4: ';
+
+/**
+ * Query with transaction
+ */
+try {
+    $pearDB->beginTransaction();
+    $errorMessage = 'Unable to delete logger entry in cb_tag';
+    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
+    $errorMessage = 'Unable to update the description in cb_field';
+    $statement = $pearDB->query(
+        "UPDATE cb_field
+        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
+        WHERE `cb_field_id` = 31"
+    );
+
+    $errorMessage = 'Cannot purge host macros';
+    $cache = loadHosts($pearDB);
+    foreach ($cache as $hostId => $value) {
+        cleanDuplicateHostMacros($pearDB, $centreonLog, $cache, (int) $hostId);
+    }
+    $pearDB->commit();
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
 
 /**
  * @param CentreonDb $db
@@ -35,7 +71,7 @@ function loadHosts(CentreonDb $db): array
     $cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
     $stmt = $db->prepare(
-        'SELECT host_host_id, host_tpl_id 
+        'SELECT host_host_id, host_tpl_id
          FROM host_template_relation ORDER BY `host_host_id`, `order` ASC'
     );
     $stmt->execute();
@@ -120,30 +156,4 @@ function cleanDuplicateHostMacros(
             );
         }
     }
-}
-
-/**
- * Query with transaction
- */
-try {
-    $errorMessage = 'Cannot purge host macros';
-
-    $cache = loadHosts($pearDB);
-    $pearDB->beginTransaction();
-    foreach ($cache as $hostId => $value) {
-        cleanDuplicateHostMacros($pearDB, $centreonLog, $cache, (int) $hostId);
-    }
-    $pearDB->commit();
-} catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
-        " - Error : " . $e->getMessage() .
-        " - Trace : " . $e->getTraceAsString()
-    );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }

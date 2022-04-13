@@ -15192,7 +15192,7 @@ msgstr ""
 # msgid "Password case policy"
 # msgstr ""
 
-# msgid "Password minimum length"
+# msgid "Minimum password length"
 # msgstr ""
 
 # msgid "Minimum 8 characters"
@@ -15201,16 +15201,16 @@ msgstr ""
 # msgid "Maximum 128 characters"
 # msgstr ""
 
-# msgid "Force to use upper case"
+# msgid "Password must contain upper case"
 # msgstr ""
 
-# msgid "Force to use lower case"
+# msgid "Password must contain lower case"
 # msgstr ""
 
-# msgid "Force to use numbers"
+# msgid "Password must contain numbers"
 # msgstr ""
 
-# msgid "Force to use special characters"
+# msgid "Password must contain special characters"
 # msgstr ""
 
 # msgid "Password cases"
@@ -15228,7 +15228,7 @@ msgstr ""
 # msgid "Password expiration policy"
 # msgstr ""
 
-# msgid "Password expiration"
+# msgid "Password expires after"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 12 months"
@@ -15249,10 +15249,10 @@ msgstr ""
 # msgid "Second"
 # msgstr ""
 
-# msgid "Can reuse last 3 passwords"
+# msgid "Last 3 passwords can be reused"
 # msgstr ""
 
-# msgid "Time before setting a new password"
+# msgid "Minimum time between password changes"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 1 week"
@@ -15261,13 +15261,13 @@ msgstr ""
 # msgid "Password blocking policy"
 # msgstr ""
 
-# msgid "Number of attempts before blocking new attempts"
+# msgid "Number of attempts before user is blocked"
 # msgstr ""
 
 # msgid "Choose a value between 1 and 10"
 # msgstr ""
 
-# msgid "Blocking time before new connection attempt"
+# msgid "Time that must pass before new connection is allowed"
 # msgstr ""
 
 # msgid "Blocking duration must be less than or equal to 7 days"
@@ -15342,7 +15342,7 @@ msgstr ""
 # msgid "Invalid URL"
 # msgstr ""
 
-# msgid "Invalid IP Address or domain name"
+# msgid "Invalid IP Address"
 # msgstr ""
 
 # msgid "Failed to save OpenID Connect configuration"
@@ -15435,58 +15435,16 @@ msgstr ""
 # msgid "Password has expired"
 # msgstr ""
 
-# msgid "Export generation timeout"
+# msgid "Choose letter cases"
 # msgstr ""
 
-# msgid "Add advanced server configuration"
+# msgid "Activation"
 # msgstr ""
 
-# msgid "Create new Poller"
+# msgid "Identity provider"
 # msgstr ""
 
-# msgid "Select a Poller"
-# msgstr ""
-
-# msgid "Select Pending Poller IP"
-# msgstr ""
-
-# msgid "Do not check SSL certificate validation"
-# msgstr ""
-
-# msgid "Types"
-# msgstr ""
-
-# msgid "Uninstalled"
-# msgstr ""
-
-# msgid "Outdated"
-# msgstr ""
-
-# msgid "Up to date"
-# msgstr ""
-
-# msgid "Module"
-# msgstr ""
-
-# msgid "Install all"
-# msgstr ""
-
-# msgid "Update all"
-# msgstr ""
-
-# msgid "Install"
-# msgstr ""
-
-# msgid "Update"
-# msgstr ""
-
-# msgid "License required"
-# msgstr ""
-
-# msgid "License expires"
-# msgstr ""
-
-# msgid "License not valid"
+# msgid "Client addresses"
 # msgstr ""
 
 # msgid "Login with"

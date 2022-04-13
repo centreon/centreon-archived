@@ -10,7 +10,7 @@ import { TextField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelPasswordCasePolicy,
-  labelPasswordLength,
+  labelMinimumPasswordLength,
 } from '../../translatedLabels';
 import { getField } from '../utils';
 
@@ -20,12 +20,13 @@ const passwordMinLengthFieldName = 'passwordMinLength';
 
 const useStyles = makeStyles((theme) => ({
   fields: {
-    alignItems: 'top',
-    columnGap: theme.spacing(2),
+    alignItems: 'center',
     display: 'grid',
-    gridTemplateColumns: '0.9fr 1fr',
+    gridTemplateColumns: 'repeat(2, 1fr)',
     marginTop: theme.spacing(1),
-    width: theme.spacing(60),
+  },
+  passwordLengthInput: {
+    width: '75%',
   },
 }));
 
@@ -50,15 +51,15 @@ const PasswordCasePolicy = (): JSX.Element => {
         <Typography variant="h5">{t(labelPasswordCasePolicy)}</Typography>
         <div className={classes.fields}>
           <TextField
-            fullWidth
             required
+            className={classes.passwordLengthInput}
             error={passwordLengthError}
             helperText={passwordLengthError}
             inputProps={{
-              'aria-label': t(labelPasswordLength),
+              'aria-label': t(labelMinimumPasswordLength),
               min: 0,
             }}
-            label={t(labelPasswordLength)}
+            label={t(labelMinimumPasswordLength)}
             name={passwordMinLengthFieldName}
             type="number"
             value={passwordLengthValue}
