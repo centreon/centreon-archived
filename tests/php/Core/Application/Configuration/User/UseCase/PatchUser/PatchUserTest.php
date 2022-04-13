@@ -45,7 +45,7 @@ beforeEach(function () {
 it('tests the error message when user is not found', function () {
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willReturn(null);
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
@@ -56,7 +56,7 @@ it('tests the error message when user is not found', function () {
 it('tests the exception while searching for the user', function () {
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willThrowException(new UserException());
     $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
     $useCase($this->request, $this->presenter);
@@ -70,7 +70,7 @@ it('tests the error message when there are no available themes', function () {
     $user = new User(1, 'alias', 'name', 'email', true, 'light');
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willReturn($user);
 
     $this->readUserRepository
@@ -87,7 +87,7 @@ it('tests the error message when the given theme is not in the list of available
     $user = new User(1, 'alias', 'name', 'email', true, 'light');
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willReturn($user);
     $this->readUserRepository
         ->expects($this->once())
@@ -103,7 +103,7 @@ it('tests the exception while searching for available themes', function () {
     $user = new User(1, 'alias', 'name', 'email', true, 'light');
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willReturn($user);
     $this->readUserRepository
         ->expects($this->once())
@@ -121,7 +121,7 @@ it('tests the exception while updating the theme of user', function () {
     $user = new User(1, 'alias', 'name', 'email', true, 'light');
     $this->readUserRepository
         ->expects($this->once())
-        ->method('findUserById')
+        ->method('findById')
         ->willReturn($user);
     $this->readUserRepository
         ->expects($this->once())
@@ -130,7 +130,7 @@ it('tests the exception while updating the theme of user', function () {
     $user->setTheme($this->request->theme);
     $this->writeUserRepository
         ->expects($this->once())
-        ->method('updateUser')
+        ->method('update')
         ->with($user)
         ->willThrowException(new UserException());
 
