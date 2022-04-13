@@ -9,9 +9,12 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Core\Infrastructure\Common\Command\CreateCoreArchCommand;
 use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
 class CreateCoreArchCommandService
 {
+    protected RepositoryInterfaceTemplate $repositoryInterfaceTemplate;
+
 
     /**
      * @param string $srcPath
@@ -160,5 +163,49 @@ class CreateCoreArchCommandService
 
         //Create and fill the file.
         file_put_contents($model->filePath, $model->generateModelContent());
+    }
+
+    public function createRepositoryInterfaceTemplateIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $repositoryType
+    ): void {
+        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/Repository/' . $repositoryType .
+        $modelName . 'RepositoryInterface.php';
+        $namespace = 'Core\\Application\\' . $modelName . '\\Repository';
+        if (!file_exists($filePath)) {
+            $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $repositoryType . $modelName . 'RepositoryInterface',
+                false
+            );
+            preg_match('/^(.+).Write' . $modelName . 'RepositoryInterface\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+
+            file_put_contents(
+                $this->repositoryInterfaceTemplate->filePath,
+                $this->repositoryInterfaceTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name
+            );
+        } else {
+            $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $repositoryType . $modelName . 'RepositoryInterface',
+                true
+            );
+            $output->writeln(
+                'Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name
+            );
+        }
     }
 }

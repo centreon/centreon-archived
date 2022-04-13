@@ -3,7 +3,7 @@
 namespace Core\Infrastructure\Common\Command\Model\RepositoryTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
 class WriteRepositoryTemplate extends FileTemplate
 {
@@ -11,7 +11,7 @@ class WriteRepositoryTemplate extends FileTemplate
         public string $filePath,
         public string $namespace,
         public string $name,
-        public WriteRepositoryInterfaceTemplate $writeRepositoryInterface,
+        public RepositoryInterfaceTemplate $writeRepositoryInterface,
         public bool $exists = false
     ) {
     }
