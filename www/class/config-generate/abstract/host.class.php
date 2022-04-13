@@ -435,6 +435,6 @@ abstract class AbstractHost extends AbstractObject
             );
         }
 
-        $host['category_tags'] = $hostCategory->getHostCategoryIdsForHost($host['host_id']);
+        $host['category_tags'] = $hostCategory->getIdsByHostId($host['host_id']);
     }
 }

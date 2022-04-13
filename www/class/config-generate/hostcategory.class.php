@@ -134,10 +134,10 @@ final class HostCategory extends AbstractObject
      * @param int $hostId
      * @return int[]
      */
-    public function getHostCategoryIdsForHost(int $hostId): array
+    public function getIdsByHostId(int $hostId): array
     {
         $hostCategoryIds = [];
-        foreach ($this->hostCategories as $id => &$value) {
+        foreach ($this->hostCategories as $id => $value) {
             if (isset($value['members']) && in_array($hostId, array_keys($value['members']))) {
                 $hostCategoryIds[] = (int) $id;
             }

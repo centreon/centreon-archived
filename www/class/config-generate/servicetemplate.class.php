@@ -259,7 +259,7 @@ class ServiceTemplate extends AbstractService
         }
 
         $this->service_cache[$serviceId]['category_tags'] =
-            $serviceCategory->getServiceCategoryIdsForService($serviceId);
+            $serviceCategory->getIdsByServiceId($serviceId);
 
         return $this;
     }
