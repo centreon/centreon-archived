@@ -546,7 +546,7 @@ const mockedLocalStorageSetItem = jest.fn();
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
 
-describe(Details, async () => {
+describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
     mockedAxios.get.mockResolvedValueOnce(retrievedFilters);

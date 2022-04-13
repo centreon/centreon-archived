@@ -40,9 +40,7 @@ const Notification = (): JSX.Element => {
   const endpoint = path(['links', 'endpoints', 'notification_policy'], details);
 
   const loadNotificationContacts = (): void => {
-    sendRequest({ endpoint }).then((retrievedNotificationContacts) => {
-      setNotificationContacts(retrievedNotificationContacts);
-    });
+    sendRequest({ endpoint }).then(setNotificationContacts);
   };
 
   React.useEffect(() => {

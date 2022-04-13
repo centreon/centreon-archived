@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 
 import { Box, Divider, IconButton, Paper } from '@mui/material';
@@ -22,8 +23,10 @@ const Contacts = ({
   getColumns,
   headers,
 }: Props): JSX.Element => {
+  const navigate = useNavigate();
+
   const goToUri = (uri: string): void => {
-    window.location.href = uri;
+    navigate(uri);
   };
 
   const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
@@ -59,10 +62,10 @@ const Contacts = ({
       </>
       {contacts.map((contact) => {
         return (
-          <>
+          <React.Fragment key={contact.alias}>
             {getColumns(contact)}
             {getConfigurationColumn(contact)}
-          </>
+          </React.Fragment>
         );
       })}
     </Box>
