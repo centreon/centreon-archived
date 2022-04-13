@@ -235,26 +235,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            /**
-             * @var Host $host
-             */
-            $host = EntityCreator::createEntityByArray(Host::class, $record, 'host_');
-            /**
-             * @var ExtendedHost $extendedHost
-             */
-            $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $record, 'ehi_');
-            $host->setExtendedHost($extendedHost);
-            /**
-             * @var MonitoringServer $monitoringServer
-             */
-            $monitoringServer = EntityCreator::createEntityByArray(
-                MonitoringServer::class,
-                $record,
-                'monitoring_server_'
-            );
-            $host->setMonitoringServer($monitoringServer);
-
-            return $host;
+            return $this->createHost($record);
         }
         return null;
     }
@@ -997,6 +978,35 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
+     * @param array<string,mixed> $hostData
+     * @return Host
+     * @throws \Exception
+     */
+    private function createHost(array $hostData): Host
+    {
+        /**
+         * @var Host $host
+         */
+        $host = EntityCreator::createEntityByArray(Host::class, $hostData, 'host_');
+        /**
+         * @var ExtendedHost $extendedHost
+         */
+        $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $hostData, 'ehi_');
+        $host->setExtendedHost($extendedHost);
+        /**
+         * @var MonitoringServer $monitoringServer
+         */
+        $monitoringServer = EntityCreator::createEntityByArray(
+            MonitoringServer::class,
+            $hostData,
+            'monitoring_server_'
+        );
+        $host->setMonitoringServer($monitoringServer);
+
+        return $host;
+    }
+
+    /**
      * @inheritDoc
      */
     public function findHostByName(string $hostName): ?Host
@@ -1021,26 +1031,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            /**
-             * @var Host $host
-             */
-            $host = EntityCreator::createEntityByArray(Host::class, $record, 'host_');
-            /**
-             * @var ExtendedHost $extendedHost
-             */
-            $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $record, 'ehi_');
-            $host->setExtendedHost($extendedHost);
-            /**
-             * @var MonitoringServer $monitoringServer
-             */
-            $monitoringServer = EntityCreator::createEntityByArray(
-                MonitoringServer::class,
-                $record,
-                'monitoring_server_'
-            );
-            $host->setMonitoringServer($monitoringServer);
-
-            return $host;
+            return $this->createHost($record);
         }
         return null;
     }
