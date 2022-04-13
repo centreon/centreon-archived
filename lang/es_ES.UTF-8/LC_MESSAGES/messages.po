@@ -14753,7 +14753,7 @@ msgstr ""
 # msgid "Password case policy"
 # msgstr ""
 
-# msgid "Password minimum length"
+# msgid "Minimum password length"
 # msgstr ""
 
 # msgid "Minimum 8 characters"
@@ -14762,16 +14762,16 @@ msgstr ""
 # msgid "Maximum 128 characters"
 # msgstr ""
 
-# msgid "Force to use upper case"
+# msgid "Password must contain upper case"
 # msgstr ""
 
-# msgid "Force to use lower case"
+# msgid "Password must contain lower case"
 # msgstr ""
 
-# msgid "Force to use numbers"
+# msgid "Password must contain numbers"
 # msgstr ""
 
-# msgid "Force to use special characters"
+# msgid "Password must contain special characters"
 # msgstr ""
 
 # msgid "Password cases"
@@ -14789,7 +14789,7 @@ msgstr ""
 # msgid "Password expiration policy"
 # msgstr ""
 
-# msgid "Password expiration"
+# msgid "Password expires after"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 12 months"
@@ -14810,10 +14810,10 @@ msgstr ""
 # msgid "Second"
 # msgstr ""
 
-# msgid "Can reuse last 3 passwords"
+# msgid "Last 3 passwords can be reused"
 # msgstr ""
 
-# msgid "Time before setting a new password"
+# msgid "Minimum time between password changes"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 1 week"
@@ -14822,13 +14822,13 @@ msgstr ""
 # msgid "Password blocking policy"
 # msgstr ""
 
-# msgid "Number of attempts before blocking new attempts"
+# msgid "Number of attempts before user is blocked"
 # msgstr ""
 
 # msgid "Choose a value between 1 and 10"
 # msgstr ""
 
-# msgid "Blocking time before new connection attempt"
+# msgid "Time that must pass before new connection is allowed"
 # msgstr ""
 
 # msgid "Blocking duration must be less than or equal to 7 days"

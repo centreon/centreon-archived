@@ -12,7 +12,7 @@ import { useMemoComponent } from '@centreon/ui';
 
 import TimeInputs from '../../TimeInputs';
 import {
-  labelBlockingTimeBeforeNewConnectionAttempt,
+  labelTimeThatMustPassBeforeNewConnection,
   labelGood,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
@@ -112,10 +112,10 @@ const BlockingDuration = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.passwordBlockingDuration}>
-        <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
+        <FormLabel>{t(labelTimeThatMustPassBeforeNewConnection)}</FormLabel>
         <TimeInputs
           baseName={blockingDurationFieldName}
-          inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
+          inputLabel={labelTimeThatMustPassBeforeNewConnection}
           maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={blockingDurationValue}
