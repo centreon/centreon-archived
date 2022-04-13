@@ -10,7 +10,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import { Typography } from '@mui/material';
 
@@ -71,20 +71,20 @@ const SelectField = ({
 
   return (
     <div
-      className={classnames(styles['form-group'], styles.select)}
+      className={clsx(styles['form-group'], styles.select)}
       style={styleOverride}
     >
       {label ? (
         <label>
           <Typography>{label}</Typography>
-          <span className={classnames(styles['label-option'], styles.optional)}>
+          <span className={clsx(styles['label-option'], styles.optional)}>
             {topRightLabel || null}
           </span>
         </label>
       ) : null}
 
       <select
-        className={classnames(styles['form-control'], styles['custom-select'])}
+        className={clsx(styles['form-control'], styles['custom-select'])}
         {...prepareInputProps(rest)}
       >
         {defaultOption !== false ? (

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
 import { Link, useNavigate } from 'react-router-dom';
@@ -165,7 +165,7 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, styles['wrap-middle-icon'])}
               data-testid="Hosts Down"
               to={unhandledDownHostsLink}
               onClick={changeFilterAndNavigate({
@@ -179,7 +179,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, styles['wrap-middle-icon'])}
               data-testid="Hosts Unreachable"
               to={unhandledUnreachableHostsLink}
               onClick={changeFilterAndNavigate({
@@ -193,7 +193,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, styles['wrap-middle-icon'])}
               data-testid="Hosts Up"
               to={upHostsLink}
               onClick={changeFilterAndNavigate({
@@ -210,7 +210,7 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(styles['submenu-toggle'], {
+              className={clsx(styles['submenu-toggle'], {
                 [styles['submenu-toggle-active'] as string]: toggled,
               })}
             >

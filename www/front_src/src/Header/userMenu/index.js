@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { withTranslation, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
@@ -167,7 +167,7 @@ class UserMenuContent extends Component {
 
     return (
       <div
-        className={classnames(styles['wrap-right-user'], {
+        className={clsx(styles['wrap-right-user'], {
           [styles['submenu-active']]: toggled,
         })}
       >
@@ -193,17 +193,17 @@ class UserMenuContent extends Component {
               />
             </Badge>
           </Tooltip>
-          <div className={classnames(styles.submenu, styles.profile)}>
+          <div className={clsx(styles.submenu, styles.profile)}>
             <div className={styles['submenu-inner']}>
               <ul
-                className={classnames(
+                className={clsx(
                   styles['submenu-items'],
                   styles['list-unstyled'],
                 )}
               >
                 <li className={styles['submenu-item']}>
                   <div
-                    className={classnames(
+                    className={clsx(
                       styles['submenu-item-link'],
                       classes.nameAliasContainer,
                     )}
@@ -255,7 +255,7 @@ class UserMenuContent extends Component {
               </ul>
               {not(passwordIsNotYetAboutToExpire) && (
                 <div
-                  className={classnames(
+                  className={clsx(
                     styles['submenu-content'],
                     classes.passwordExpiration,
                   )}
@@ -278,7 +278,7 @@ class UserMenuContent extends Component {
                   }}
                 >
                   <button
-                    className={classnames(
+                    className={clsx(
                       styles.btn,
                       styles['btn-small'],
                       styles.logout,

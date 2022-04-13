@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import Hook from '../components/Hook';
 
@@ -16,10 +16,10 @@ const Header = (): JSX.Element => {
   return (
     <header className={styles.header}>
       <div className={styles['header-icons']}>
-        <div className={classnames(styles.wrap, styles['wrap-left'])}>
+        <div className={clsx(styles.wrap, styles['wrap-left'])}>
           <PollerMenu />
         </div>
-        <div className={classnames(styles.wrap, styles['wrap-right'])}>
+        <div className={clsx(styles.wrap, styles['wrap-right'])}>
           <HookComponent path="/header/topCounter" />
           <HostStatusCounter />
           <ServiceStatusCounter />

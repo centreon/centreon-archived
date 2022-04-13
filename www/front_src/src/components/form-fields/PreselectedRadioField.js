@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import { FormControlLabel, Radio, Typography } from '@mui/material';
 
@@ -14,7 +14,7 @@ import fieldHoc from './hoc';
 
 const RadioField = ({ checked, error, label, info, className, ...rest }) => (
   <div
-    className={classnames(
+    className={clsx(
       styles['custom-control'],
       styles['custom-radio'],
       styles['form-group'],

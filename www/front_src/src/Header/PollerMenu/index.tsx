@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
@@ -178,7 +177,7 @@ const PollerMenu = (): JSX.Element | null => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
+            className={clsx(styles['submenu-toggle'], {
               [styles['submenu-toggle-active'] as string]: toggled,
             })}
           >

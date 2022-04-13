@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
 import { Typography, Paper } from '@mui/material';
@@ -19,9 +19,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
     (statusCreating === false || statusGenerating === false) && error;
 
   return (
-    <Paper
-      className={classnames(styles['form-container'], styles.installation)}
-    >
+    <Paper className={clsx(styles['form-container'], styles.installation)}>
       <div className={styles['form-inner']}>
         <div className={styles['form-heading']}>
           <Typography variant="h6">{formTitle}</Typography>
@@ -31,7 +29,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
           <Typography>{t('Creating Export Task')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span
-              className={classnames(
+              className={clsx(
                 styles['form-status'],
                 styles[statusCreating ? 'valid' : 'failed'],
               )}
@@ -50,7 +48,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
           <Typography>{t('Generating Export Files')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span
-              className={classnames(
+              className={clsx(
                 styles['form-status'],
                 styles[statusGenerating ? 'valid' : 'failed'],
               )}

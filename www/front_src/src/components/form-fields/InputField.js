@@ -9,7 +9,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import { Typography } from '@mui/material';
 
@@ -30,18 +30,18 @@ const InputField = ({
 }) => {
   return (
     <div
-      className={classnames(styles['form-group'], {
+      className={clsx(styles['form-group'], {
         [styles['has-danger']]: !!error,
       })}
     >
       <label>
         <Typography variant="body1">{label}</Typography>
-        <span className={classnames(styles['label-option'], styles.required)}>
+        <span className={clsx(styles['label-option'], styles.required)}>
           {topRightLabel || null}
         </span>
       </label>
       <input
-        className={classnames(styles['form-control'], {
+        className={clsx(styles['form-control'], {
           [styles['is-invalid']]: !!error,
         })}
         placeholder={placeholder}

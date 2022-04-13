@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { equals, isNil, replace } from 'ramda';
 
@@ -60,7 +60,7 @@ const LegacyRoute = (): JSX.Element => {
     <>
       {loading && <PageSkeleton />}
       <iframe
-        className={classnames({ [styles.hidden as string]: loading })}
+        className={clsx({ [styles.hidden as string]: loading })}
         frameBorder="0"
         id="main-content"
         scrolling="yes"

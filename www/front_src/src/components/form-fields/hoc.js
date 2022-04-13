@@ -12,7 +12,7 @@
 import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import { Typography } from '@mui/material';
 
@@ -93,7 +93,7 @@ const fieldHoc = (WrapComponent) => {
 
       return (
         <WrapComponent
-          className={classnames(
+          className={clsx(
             styles.field,
             { [styles['has-danger']]: meta.invalid && meta.touched },
             { [styles['has-value']]: this.isInputValue(input.value) },

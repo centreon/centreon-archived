@@ -8,7 +8,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 
@@ -34,12 +34,12 @@ const CheckboxField = ({
   ...rest
 }) => (
   <div
-    className={classnames(styles['form-group'], {
+    className={clsx(styles['form-group'], {
       [styles['has-danger']]: !!error,
     })}
   >
     <div
-      className={classnames(
+      className={clsx(
         styles['custom-control'],
         styles['custom-checkbox orange'],
       )}
