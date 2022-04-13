@@ -1,0 +1,22 @@
+jms_serializer:
+  metadata:
+    directories:
+      CentreonBam:
+        namespace_prefix: "CentreonBam\\Domain"
+        path: '%kernel.project_dir%/config/packages/serializer/CentreonBam'
+
+services:
+  _defaults:
+    public: false
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
+
+  CentreonBam\:
+    resource: '../../../src/CentreonBam/*'
+    exclude:
+      - '../../../src/CentreonBam/Application/Webservice'
+      - '../../../src/CentreonBam/Application/Serializer'
+      - '../../../src/CentreonBam/Domain/Service'
+      - '../../../src/CentreonBam/Infrastructure/Repository'
+
+

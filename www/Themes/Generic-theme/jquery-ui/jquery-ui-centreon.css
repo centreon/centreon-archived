@@ -53,5 +53,5 @@
  .ui-tabs .ui-tabs-nav li a { float: left; padding: .4em 1em 0.4em .4em; text-decoration: none; background: var(--ui-tabs-nav-li-anchor-background-color);}
  .ui-tabs .ui-tabs-nav li { background: var(--ui-tabs-nav-li-background-color); }
  .ui-tabs .ui-tabs-nav li.ui-state-active a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text;  background: var(--ui-state-processing-anchor-background-color); }
- .ui-tabs .ui-tabs-nav li.ui-state-active, .ui-tabs .ui-tabs-nav li.ui-state-disabled, .ui-tabs .ui-tabs-nav li.ui-state-processing { background: var(--ui-state-processing-background-color); }
+ .ui-tabs .ui-tabs-nav li.ui-state-active, .ui-tabs .ui-tabs-nav li.ui-state-disabled, .ui-tabs .ui-tabs-nav li.ui-state-processing { background: var(--ui-state-processing-background-color); border-bottom: 1px solid var(--ui-state-processing-border-bottom-color) !important;}
  #globalView {padding-bottom:10px;}

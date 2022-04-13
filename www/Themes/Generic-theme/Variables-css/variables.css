@@ -765,6 +765,7 @@
     --ui-tabs-nav-li-background-color: var(--ui-tabs-nav-li-anchor-background-color);
     --ui-state-processing-anchor-background-color: none;
     --ui-state-processing-background-color: none;
+    --ui-state-processing-border-bottom-color: var(--body-color);
     /* ------ END : JQuery UI variables -----*/
     /* ------ START : New Icons variables -----*/
     --help-tool-tip-icon-fill-color: var(--color-primary-dark);

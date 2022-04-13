@@ -1480,7 +1480,7 @@ div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.le
 
 div.uptodate    {background-color:var(--up-to-date-background-color);border:1px var(--up-to-date-border-color) solid; color:var(--up-to-date-color)}
 div.updateSecu  {background-color:var(--update-secu-background-color);border:1px var(--update-secu-border-color) solid;color:var(--up-to-date-color)}
-div.update  {background-color:var(--update-background-color);border:1px var(--update-border-color) solid;}
+div.update  {background-color:var(--update-background-color);border:1px var(--update-border-color) solid; color: var(--update-font-color)}
 div.updateError {background-color:var(--update-error-background-color);border:1px var(--update-error-border-color) solid;}
 div.update_readme,div.update_output {background-color:var(--update-read-me-output-background-color);border:1px var(--update-read-me-output-border-color) solid;}
 

@@ -173,4 +173,9 @@
     --ui-timepicker-minute-cell-font-color: var(--color-white);
     --jquery-ui-widget-content-background-color: var(--body-color);
     --view-body-ui-widget-header-font-color: var(--color-white);
+    --update-font-color: var(--color-black);
+    --tabs-periods-background-color: var(--body-background);
+    --ui-state-processing-border-bottom-color: var(--body-color);
+    --popup-volante-background-color: var(--body-background);
+    --image-volante-background-color: var(--popup-volante-background-color);
 }
