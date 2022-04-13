@@ -1,10 +1,17 @@
 import * as React from 'react';
 
-import { Box, Divider, Paper } from '@mui/material';
+import { t } from 'i18next';
+
+import { Box, Divider, IconButton, Paper } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+import { labelConfiguration } from '../../../translatedLabels';
+
+import { ContactGroup, Contact } from './models';
 
 interface Props {
-  contacts: JSX.Element;
-  getColumns: () => JSX.Element;
+  contacts: Array<Contact> | Array<ContactGroup>;
+  getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
   templateColumns: string;
 }
@@ -15,6 +22,23 @@ const Contacts = ({
   getColumns,
   headers,
 }: Props): JSX.Element => {
+  const goToUri = (uri: string): void => {
+    window.location.href = uri;
+  };
+
+  const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
+    return (
+      <IconButton
+        size="small"
+        sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
+        title={t(labelConfiguration)}
+        onClick={(): void => goToUri(configuration_uri)}
+      >
+        <SettingsIcon color="primary" fontSize="small" />
+      </IconButton>
+    );
+  };
+
   return (
     <Box
       component={Paper}
@@ -33,7 +57,14 @@ const Contacts = ({
 
         <Divider sx={{ gridColumn: '1 / -1' }} />
       </>
-      {getColumns(contacts)}
+      {contacts.map((contact) => {
+        return (
+          <>
+            {getColumns(contact)}
+            {getConfigurationColumn(contact)}
+          </>
+        );
+      })}
     </Box>
   );
 };

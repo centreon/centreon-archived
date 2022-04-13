@@ -76,9 +76,6 @@ import {
   labelBeforeLastYear,
   labelLastCheckWithOkStatus,
   labelGraph,
-  labelEmail,
-  labelName,
-  labelNotification,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -1699,54 +1696,4 @@ describe(Details, async () => {
       );
     });
   });
-
-  //       it('display retrieved contact and contact group when the Resource have notification enabled', async () => {
-
-  // //ARRANGE
-  //          const notificationEnabled = true;
-  //          const contact = [{
-
-  //             id: 14,
-  //             name: 'contact 1',
-  //             alias: 'contact1',
-  //             email: 'contact1@localhost',
-  //             configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=14',
-  //         }];
-
-  //           const contactGroup : [{
-  //           id?: 14,
-  //           name?: 'contact group 1',
-  //           alias?: 'contactgroup1',
-  //           configuration_uri?: '/centreon/main.php?p=60301&o=c&cg=1',
-  //         }];
-
-  //         //ACT
-
-  //         mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-
-  //         const { getByText } = renderDetails();
-
-  //         userEvent.click(getByText(labelNotification) as HTMLElement);
-
-  //       await waitFor(() => {
-  //         expect(mockedAxios.get).toHaveBeenCalledWith(
-  //           `${retrievedDetails.links.endpoints.notification_policy}?`,
-  //             cancelTokenRequestParam,
-  //           );
-  //       });
-
-  //       //Assert
-  //
-  //         expect(labelName).toBeInTheDocument();
-  //         expect(getByText('admin')).toBeInTheDocument();
-  //         expect((labelAlias)).toBeInTheDocument();
-  //         expect(getByText('adminAdmin')).toBeInTheDocument();
-  //         expect((labelEmail)).toBeInTheDocument();
-  //         expect(getByText('root@localhost')).toBeInTheDocument();
-  //         expect(labelName).toBeInTheDocument();
-  //         expect(getByText('adminGroup')).toBeInTheDocument();
-  //         expect((labelAlias)).toBeInTheDocument();
-  //         expect(getByText('adminGroup')).toBeInTheDocument();
-  //       });
-  // });
 });

@@ -1,6 +1,6 @@
 export interface NotificationContacts {
-  contact_groups: Array<ContactGroups> | null;
-  contacts: Array<Contact> | null;
+  contact_groups: Array<ContactGroup>;
+  contacts: Array<Contact>;
   is_notification_enabled: boolean;
 }
 export interface Contact {
@@ -11,7 +11,7 @@ export interface Contact {
   name: string;
 }
 
-export interface ContactGroups {
+export interface ContactGroup {
   alias: string;
   configuration_uri: string;
   id: number;
@@ -23,5 +23,5 @@ export interface ContactsResult {
 }
 
 export interface ContactGroupsResult {
-  contact_groups: Array<ContactGroups>;
+  contact_groups: Array<ContactGroup>;
 }

@@ -1,22 +1,20 @@
 import * as React from 'react';
 
-import { path } from 'ramda';
+import { isNil, path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
 import { Paper, Stack, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationIconOff from '@mui/icons-material/NotificationsOff';
 import NotificationIconActive from '@mui/icons-material/NotificationsActive';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 
-import { getData, useRequest, IconButton } from '@centreon/ui';
+import { getData, useRequest } from '@centreon/ui';
 
 import { detailsAtom } from '../../detailsAtoms';
 import {
   labelAlias,
-  labelConfiguration,
   labelContactGroups,
   labelContacts,
   labelEmail,
@@ -24,8 +22,9 @@ import {
   labelNotificationStatus,
 } from '../../../translatedLabels';
 
-import { NotificationContacts } from './models';
+import { Contact, ContactGroup, NotificationContacts } from './models';
 import Contacts from './Contacts';
+import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
 
 const Notification = (): JSX.Element => {
   const { t } = useTranslation();
@@ -33,7 +32,7 @@ const Notification = (): JSX.Element => {
   const [notificationContacts, setNotificationContacts] =
     React.useState<NotificationContacts | null>(null);
 
-  const { sendRequest } = useRequest<NotificationContacts>({
+  const { sendRequest, sending } = useRequest<NotificationContacts>({
     request: getData,
   });
   const details = useAtomValue(detailsAtom);
@@ -49,10 +48,6 @@ const Notification = (): JSX.Element => {
   React.useEffect(() => {
     loadNotificationContacts();
   }, []);
-
-  const goToUri = (uri: string): void => {
-    window.location.href = uri;
-  };
 
   const contactHeaders = (
     <>
@@ -70,35 +65,27 @@ const Notification = (): JSX.Element => {
     </>
   );
 
-  const getContactColumns = ({
-    name,
-    alias,
-    configuration_uri,
-  }): JSX.Element => {
+  const getContactColumns = ({ name, alias }): JSX.Element => {
     return (
       <>
-        <Typography>{alias}</Typography>
-        <IconButton
-          size="small"
-          sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
-          title={t(labelConfiguration)}
-          onClick={(): void => goToUri(configuration_uri)}
-        >
-          <SettingsIcon color="primary" fontSize="small" />
-        </IconButton>
         <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
+        <Typography>{alias}</Typography>
       </>
     );
   };
 
-  const getContactWithEmailColumns = ({ email, contacts }): JSX.Element => {
+  const getContactWithEmailColumns = (contact: Contact): JSX.Element => {
     return (
       <>
-        {getContactColumns(contacts)}
-        <Typography>{email}</Typography>
+        {getContactColumns(contact)}
+        <Typography>{contact.email}</Typography>
       </>
     );
   };
+
+  if (sending || isNil(notificationContacts)) {
+    return <ContactsLoadingSkeleton />;
+  }
 
   return (
     <Stack spacing={2}>
@@ -124,7 +111,7 @@ const Notification = (): JSX.Element => {
         <Typography sx={{ fontWeight: 'bold' }}>{t(labelContacts)}</Typography>
       </Stack>
       <Contacts
-        contacts={notificationContacts?.contacts || []}
+        contacts={notificationContacts?.contacts as Array<Contact>}
         getColumns={getContactWithEmailColumns}
         headers={contactWithEmailHeaders}
         templateColumns="1fr 1fr 1fr auto"
@@ -136,7 +123,7 @@ const Notification = (): JSX.Element => {
         </Typography>
       </Stack>
       <Contacts
-        contacts={notificationContacts?.contact_groups || []}
+        contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
         getColumns={getContactColumns}
         headers={contactHeaders}
         templateColumns="1fr 1fr auto"

@@ -1,7 +1,7 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import {
-  ContactGroups,
+  ContactGroup,
   Contact,
   ContactsResult,
   ContactGroupsResult,
@@ -26,7 +26,7 @@ export const contactsResultDecoder = JsonDecoder.object<ContactsResult>(
   'contacts result',
 );
 
-const contactGroupsDecoder = JsonDecoder.object<ContactGroups>(
+const contactGroupsDecoder = JsonDecoder.object<ContactGroup>(
   {
     alias: JsonDecoder.string,
     configuration_uri: JsonDecoder.string,
