@@ -16310,10 +16310,10 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr "Hard"
+msgstr ""
 
 msgid "Soft"
-msgstr "Soft"
+msgstr ""
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
