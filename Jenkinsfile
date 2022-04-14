@@ -447,7 +447,7 @@ try {
     }
   }
 
-  if (env.BUILD != 'CI') {)
+  if (env.BUILD != 'CI') {
     stage("$DELIVERY_STAGE") {
       node {
         checkoutCentreonBuild()
