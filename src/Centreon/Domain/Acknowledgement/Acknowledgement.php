@@ -124,6 +124,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $withServices = false;
 
     /**
+     * @var bool Indicates if after acknowledgement action the resource should be force checked
+     */
+    private $forceActiveChecks = true;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -439,5 +444,21 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public function setWithServices(bool $withServices): void
     {
         $this->withServices = $withServices;
+    }
+
+    /**
+     * @param bool $forceActiveChecks
+     */
+    public function setForceActiveChecks(bool $forceActiveChecks): void
+    {
+        $this->forceActiveChecks = $forceActiveChecks;
+    }
+
+    /**
+     * @return bool
+     */
+    public function doesForceActiveChecks(): bool
+    {
+        return $this->forceActiveChecks;
     }
 }
