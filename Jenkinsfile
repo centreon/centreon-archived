@@ -302,6 +302,7 @@ try {
         sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="Debian11" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
+        sh 'rm -rf *.deb'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
