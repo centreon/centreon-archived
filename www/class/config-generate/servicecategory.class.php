@@ -168,7 +168,6 @@ final class ServiceCategory extends AbstractObject
             }
         }
     }
- 
     /**
      * @param int $serviceId
      * @return int[]
