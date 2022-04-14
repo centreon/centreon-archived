@@ -15451,7 +15451,7 @@ msgstr ""
 # msgstr ""
 
 # msgid "Enable auto import"
-# msgstr "Activer l'importation automatique"
+# msgstr ""
 
 # msgid "Email attribute to bind"
 # msgstr ""
