@@ -296,7 +296,6 @@ try {
     }
   }
 
-
   stage('Violations to Github') {
     node {
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
@@ -330,21 +329,6 @@ try {
     }
   }
 
-  stage("$DELIVERY_STAGE") {
-    node {
-      checkoutCentreonBuild()
-      sh 'rm -rf output'
-      unstash 'tar-sources'
-      unstash 'api-doc'
-      unstash 'rpms-alma8'
-      unstash 'rpms-centos7'
-      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure');
-    }
-  }
-
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
@@ -353,6 +337,7 @@ try {
       parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild()
+          unstash "rpms-${osBuild}"
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
@@ -463,6 +448,21 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Critical tests stage failure');
       }
+    }
+  }
+
+  stage("$DELIVERY_STAGE") {
+    node {
+      checkoutCentreonBuild()
+      sh 'rm -rf output'
+      unstash 'tar-sources'
+      unstash 'api-doc'
+      unstash 'rpms-alma8'
+      unstash 'rpms-centos7'
+      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure');
     }
   }
 } catch(e) {
