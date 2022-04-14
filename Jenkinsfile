@@ -296,9 +296,9 @@ try {
     }
   }
 
-  stage('Violations to Github') {
-    node {
-      if (env.CHANGE_ID) { // pull request to comment with coding style issues
+  if (env.CHANGE_ID) { // pull request to comment with coding style issues
+    stage('Violations to Github') {
+      node {
         if (hasBackendChanges) {
           unstash 'codestyle-be.xml'
           unstash 'phpstan.xml'
@@ -323,9 +323,10 @@ try {
           ]
         ])
       }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Reports stage failure");
+
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error("Reports stage failure");
+      }
     }
   }
 
