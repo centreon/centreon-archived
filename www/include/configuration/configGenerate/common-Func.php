@@ -97,8 +97,15 @@ function printDebug($xml, array $tabs): int
         );
         $msg_debug[$host['id']] = str_replace("<br />License:", " - License:", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = preg_replace(
+            '/\[\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00\] \[\w+\] \[\w+\] /',
+            '',
+            $msg_debug[$host['id']]
+        );
 
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
+        $lines = array_unique($lines);
+
         $msg_debug[$host['id']] = "";
         $i = 0;
         foreach ($lines as $line) {
