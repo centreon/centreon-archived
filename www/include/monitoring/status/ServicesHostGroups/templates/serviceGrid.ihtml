@@ -46,7 +46,9 @@
                     </a>
                 </span>
                 <span class="consol_button">
-                    {php}displaySvg("www/img/icons/media_play.svg", "var(--icons-gray-fill-color)", 18, 18){/php}
+                    <span id="JS_monitoring_play_gray">
+                        {php}displaySvg("www/img/icons/media_play.svg", "var(--icons-gray-fill-color)", 18, 18){/php}
+                    </span>
                 </span>
                 <span class="consol_button">
                     <a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">
