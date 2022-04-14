@@ -15,8 +15,9 @@ const getPlatformDataFromLocalStorage = (): CeipData | null => {
   if (isNil(itemInStorage)) {
     return null;
   }
+
   return JSON.parse(itemInStorage);
-}
+};
 
 const setPlatformDataToLocalStorage = (platformData: CeipData): void =>
   window.localStorage.setItem(
