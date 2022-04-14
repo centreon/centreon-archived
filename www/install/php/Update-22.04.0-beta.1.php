@@ -605,7 +605,9 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 
         $stmt = $pearDB->prepare(
             "DELETE FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
+            WHERE config_id = $configId
+            AND config_group = 'output'
+            AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
         );
         foreach ($bindedValues as $key => $value) {
             $stmt->bindValue($key, $value, \PDO::PARAM_INT);
