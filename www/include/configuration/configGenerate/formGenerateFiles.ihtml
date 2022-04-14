@@ -13,7 +13,7 @@
           </td>
         </tr>	 	
 		<tr class="list_one">
-          <td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.nhost.label}</td>
+            <td class="FormRowField"><span class="helpTooltip" name="host"></span>&nbsp;{$form.nhost.label}</td>
           <td class="FormRowValue">
               <i id="noSelectedPoller" style="color:red;margin-left:20px;" hidden>{$noPollerSelectedLabel}</i>
               {$form.nhost.html}
@@ -22,12 +22,12 @@
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2"><h4>{t}Actions{/t}</h4></td>
         </tr>	 	
-		<tr class="list_two"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="gen">&nbsp;{$form.gen.html}&nbsp;{$form.gen.label}</td></tr>
-		<tr class="list_one"><td class="FormRowField" colspan="2"><img class="helpTooltip" name="debug">&nbsp;{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
-		<tr class="list_two"><td class="FormRowValue" colspan="2"><img class="helpTooltip" name="move">&nbsp;{$form.move.html}&nbsp;{$form.move.label}</td></tr>
-		<tr class="list_one"><td class="FormRowValue"><img class="helpTooltip" name="restart">&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td>
+		<tr class="list_two"><td class="FormRowField" colspan="2"><span class="helpTooltip" name="gen"></span>&nbsp;{$form.gen.html}&nbsp;{$form.gen.label}</td></tr>
+		<tr class="list_one"><td class="FormRowField" colspan="2"><span class="helpTooltip" name="debug"></span>&nbsp;{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
+		<tr class="list_two"><td class="FormRowValue" colspan="2"><span class="helpTooltip" name="move"></span>&nbsp;{$form.move.html}&nbsp;{$form.move.label}</td></tr>
+		<tr class="list_one"><td class="FormRowValue"><span class="helpTooltip" name="restart"></span>&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td>
 		<td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
-        <tr class="list_two"><td class="FormRowValue" colspan="2"><img class="helpTooltip" name="postcmd">&nbsp;{$form.postcmd.html}&nbsp;{$form.postcmd.label}</td></tr>
+        <tr class="list_two"><td class="FormRowValue" colspan="2"><span class="helpTooltip" name="postcmd"></span>&nbsp;{$form.postcmd.html}&nbsp;{$form.postcmd.label}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<div id='console' style='visibility: hidden;'>

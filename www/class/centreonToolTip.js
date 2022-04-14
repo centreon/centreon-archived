@@ -1,7 +1,7 @@
 function CentreonToolTip()
 {	
 	this._className = 'helpTooltip';
-	this._source = './img/icones/16x16/question_grey.gif';
+	this._source = '';
 	this._title = 'Help';
 	
 	var _self = this;
@@ -19,9 +19,9 @@ function CentreonToolTip()
 	}
 	
 	this.render = function() {
-		jQuery('img.' + _self._className).each(function(index){
+		jQuery('span.' + _self._className).each(function(index){
 			var el = jQuery(this);
-            el.attr('src', _self._source);
+            el.empty().append(_self._source);
             el.css('cursor', 'pointer');
             el.click(function() {
 				TagToTip(
