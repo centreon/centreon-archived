@@ -765,7 +765,7 @@
     /* ------ END : JQuery UI variables -----*/
     /* ------ START : New Icons variables -----*/
     --help-tool-tip-icon-fill-color: var(--color-primary-dark);
-    ---icons-fill-color: var(--color-primary-dark);
+    --icons-fill-color: var(--color-primary-dark);
     --icons-gray-fill-color: var(--color-teal-blue);
     /* ------ END : New Icons variables -----*/
 }

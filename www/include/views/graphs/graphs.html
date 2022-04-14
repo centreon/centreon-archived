@@ -49,11 +49,15 @@
     <div class="graph-options">
         <div class="refresh" id="chart-refresh">
             <div class="icon refresh-icon">
-                <img class="ico-14" src="./img/icons/refresh.png">
+                <span class="ico-14">
+                    {php}displaySvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 14, 14){/php}
+                </span>
             </div>
             <span class="time" style="display: none"></span>
             <div class="icon">
-                <img class="ico-14 timer-icon" src="./img/icons/timer-gray.png">
+                <span class="ico-14 timer-icon">
+                    {php}displaySvg("www/img/icons/timer.svg", "var(--icons-gray-fill-color)", 14, 14){/php}
+                </span>
             </div>
             <ul class="refresh-list">
                 <li data-interval="0">{t}None{/t}</li>
@@ -91,10 +95,15 @@ var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}
 
 var charts = [];
 const templateGraph = ({ graphId, graphType, graphTitle }) => {
+    var closeIcon = "{/literal}{$removeIcon}{literal}";
+    var csvIcon = "{/literal}{$csvIcon}{literal}";
+    var pictureIcon = "{/literal}{$pictureIcon}{literal}";
     return `
         <div id="graph_wrapper_${graphId}" data-graph-id="${graphId}" class="graph">
             <div class="title">
-                <img class="remove ico-18 margin_right" src="./img/icons/circle-cross.png">
+                <span class="remove ico-18 margin_right">
+                    ${closeIcon}
+                </span>
                 <span>${graphTitle}</span>
                 {/literal}
                 {if $topologyAccess.2040101 || $admin == 1}
@@ -109,10 +118,14 @@ const templateGraph = ({ graphId, graphType, graphTitle }) => {
                 {/if}
                 {literal}
                 <a class="actions" data-href="./include/views/graphs/generateGraphs/generateImage.php">
-                    <img alt="Export graph" src="./img/icons/picture.png" class="ico-18 margin_right">
+                    <span class="ico-18 margin_right">
+                        ${pictureIcon}
+                    </span>
                 </a>
                 <a class="actions" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
-                    <img alt="Export CSV" src="./img/icons/csv.png" class="ico-18 margin_right">
+                    <span class="ico-18 margin_right">
+                        ${csvIcon}
+                    </span>
                 </a>
             </div>
             <div class="content">
@@ -178,12 +191,14 @@ function initRefresh() {
       var parseInterval;
       if (interval == 0) {
           $refresh.find('.time').hide().text('');
-          $refresh.find('.timer-icon').attr('src', './img/icons/timer-gray.png');
+          var timerGray = "{/literal}{$timerGray}{literal}";
+          $refresh.find('.timer-icon').empty().append(timerGray);
           jQuery('.chart').centreonGraph('setRefresh', 0);
       } else {
           parseInterval = interval.match(/(\d+)([a-z]+)/i);
           $refresh.find('.time').show().text(text);
-          $refresh.find('.timer-icon').attr('src', './img/icons/timer-blue.png');
+          var timerBlue = "{/literal}{$timerBlue}{literal}";
+          $refresh.find('.timer-icon').empty().append(timerBlue);
           jQuery('.chart').centreonGraph(
               'setRefresh',
               moment.duration(

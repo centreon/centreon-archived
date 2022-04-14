@@ -31,10 +31,10 @@
         <td>
         
         <div class="Toolbar_TDSelectAction_Top">
-          <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">{php}displaySvg("www/img/icons/refresh.svg", "var(---icons-fill-color)", 18, 18){/php}</a></span>
-          <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');">{php}displaySvg("www/img/icons/media_play.svg", "var(---icons-fill-color)", 20, 20){/php}</a></span>
+          <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">{php}displaySvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 18, 18){/php}</a></span>
+          <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');">{php}displaySvg("www/img/icons/media_play.svg", "var(--icons-fill-color)", 20, 20){/php}</a></span>
           <span class="consol_button"><span id="JS_monitoring_play_gray">{php}displaySvg("www/img/icons/media_play.svg", "var(--icons-gray-fill-color)", 18, 18){/php}</span></span>
-          <span class="consol_button"><a id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">{php}displaySvg("www/img/icons/media_pause.svg", "var(---icons-fill-color)", 20, 20){/php}</a></span>
+          <span class="consol_button"><a id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">{php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-fill-color)", 20, 20){/php}</a></span>
           <span class="consol_button"><span id="JS_monitoring_pause_gray" class="cachediv">{php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-gray-fill-color)", 18, 18){/php}</span></span>
         </div>
         </td>

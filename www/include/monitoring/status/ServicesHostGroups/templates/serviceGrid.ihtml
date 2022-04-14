@@ -37,12 +37,12 @@
             <div class="Toolbar_TDSelectAction_Top">
                 <span class="consol_button">
                     <a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">
-                        {php}displaySvg("www/img/icons/refresh.svg", "var(---icons-fill-color)", 18, 18){/php}
+                        {php}displaySvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 18, 18){/php}
                     </a>
                 </span>
                 <span class="consol_button">
                     <a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');">
-                        {php}displaySvg("www/img/icons/media_play.svg", "var(---icons-fill-color)", 20, 20){/php}
+                        {php}displaySvg("www/img/icons/media_play.svg", "var(--icons-fill-color)", 20, 20){/php}
                     </a>
                 </span>
                 <span class="consol_button">
@@ -52,7 +52,7 @@
                 </span>
                 <span class="consol_button">
                     <a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">
-                        {php}displaySvg("www/img/icons/media_pause.svg", "var(---icons-fill-color)", 20, 20){/php}
+                        {php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-fill-color)", 20, 20){/php}
                     </a>
                 </span>
                 <span class="consol_button">
