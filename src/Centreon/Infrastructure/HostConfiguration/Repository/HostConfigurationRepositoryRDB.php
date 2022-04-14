@@ -265,26 +265,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            /**
-             * @var Host $host
-             */
-            $host = EntityCreator::createEntityByArray(Host::class, $record, 'host_');
-            /**
-             * @var ExtendedHost $extendedHost
-             */
-            $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $record, 'ehi_');
-            $host->setExtendedHost($extendedHost);
-            /**
-             * @var MonitoringServer $monitoringServer
-             */
-            $monitoringServer = EntityCreator::createEntityByArray(
-                MonitoringServer::class,
-                $record,
-                'monitoring_server_'
-            );
-            $host->setMonitoringServer($monitoringServer);
-
-            return $host;
+            return $this->createHost($record);
         }
         return null;
     }
@@ -1024,5 +1005,64 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         $this->linkSeverityToHost($host);
+    }
+
+    /**
+     * @param array<string,mixed> $hostData
+     * @return Host
+     * @throws \Exception
+     */
+    private function createHost(array $hostData): Host
+    {
+        /**
+         * @var Host $host
+         */
+        $host = EntityCreator::createEntityByArray(Host::class, $hostData, 'host_');
+        /**
+         * @var ExtendedHost $extendedHost
+         */
+        $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $hostData, 'ehi_');
+        $host->setExtendedHost($extendedHost);
+        /**
+         * @var MonitoringServer $monitoringServer
+         */
+        $monitoringServer = EntityCreator::createEntityByArray(
+            MonitoringServer::class,
+            $hostData,
+            'monitoring_server_'
+        );
+        $host->setMonitoringServer($monitoringServer);
+
+        return $host;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostByName(string $hostName): ?Host
+    {
+        $request = $this->translateDbName(
+            'SELECT host.host_id, host.host_name, host.host_alias, host.display_name AS host_display_name,
+            host.host_address AS host_ip_address, host.host_comment, host.geo_coords AS host_geo_coords,
+            host.host_activate AS host_is_activated, nagios.id AS monitoring_server_id,
+            nagios.name AS monitoring_server_name, ext.*
+            FROM `:db`.host host
+            LEFT JOIN `:db`.extended_host_information ext
+                ON ext.host_host_id = host.host_id
+            INNER JOIN `:db`.ns_host_relation host_server
+                ON host_server.host_host_id = host.host_id
+            INNER JOIN `:db`.nagios_server nagios
+                ON nagios.id = host_server.nagios_server_id
+            WHERE host.host_name = :host_name
+            AND host.host_register = \'1\''
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_name', $hostName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return $this->createHost($record);
+        }
+        return null;
     }
 }

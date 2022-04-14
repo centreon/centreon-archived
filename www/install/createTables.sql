@@ -2394,6 +2394,7 @@ CREATE TABLE `provider_configuration` (
 CREATE TABLE `password_expiration_excluded_users` (
   `provider_configuration_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`provider_configuration_id`, `user_id`),
   CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
@@ -2407,8 +2408,7 @@ CREATE TABLE `security_token` (
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
-  INDEX `expiration_index` (`expiration_date`),
-  UNIQUE KEY `unique_token` (`token`)
+  INDEX `expiration_index` (`expiration_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (

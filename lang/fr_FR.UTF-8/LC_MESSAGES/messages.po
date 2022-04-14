@@ -16369,17 +16369,17 @@ msgstr "8 caractères minimum"
 msgid "Maximum 128 characters"
 msgstr "128 caractères maximum"
 
-msgid "Force to use upper case"
-msgstr "Forcer à utiliser une majuscule"
+msgid "Password must contain upper case"
+msgstr "Le mot de passe doit contenir une majuscule"
 
-msgid "Force to use lower case"
-msgstr "Forcer à utiliser une minuscule"
+msgid "Password must contain lower case"
+msgstr "Le mot de passe doit contenir une minuscule"
 
-msgid "Force to use numbers"
-msgstr "Forcer à utiliser des nombres"
+msgid "Password must contain numbers"
+msgstr "Le mot de passe doit contenir des nombres"
 
-msgid "Force to use special characters"
-msgstr "Forcer à utiliser des caractères spéciaux"
+msgid "Password must contain special characters"
+msgstr "Le mot de passe doit contenir des caractères spéciaux"
 
 msgid "Password cases"
 msgstr "Casses du mot de passe"
@@ -16396,8 +16396,8 @@ msgstr "Fort"
 msgid "Password expiration policy"
 msgstr "Politique d'expiration du mot de passe"
 
-msgid "Password expiration"
-msgstr "Expiration du mot de passe"
+msgid "Password expires after"
+msgstr "Le mot de passe expire après"
 
 msgid "Choose a duration between 1 hour and 12 months"
 msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
@@ -16417,11 +16417,11 @@ msgstr "Minute"
 msgid "Second"
 msgstr "Seconde"
 
-msgid "Can reuse last 3 passwords"
-msgstr "Peut réutiliser les 3 derniers mot de passe"
+msgid "Last 3 passwords can be reused"
+msgstr "Les 3 derniers mot de passe peuvent être réutilisés"
 
-msgid "Time before setting a new password"
-msgstr "Durée avant de définir un nouveau mot de passe"
+msgid "Minimum time between password changes"
+msgstr "Durée minimum entre chaque changement de mot de passe"
 
 msgid "Choose a duration between 1 hour and 1 week"
 msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
@@ -16429,14 +16429,14 @@ msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
 msgid "Password blocking policy"
 msgstr "Politique de blocage du mot de passe"
 
-msgid "Number of attempts before blocking new attempts"
-msgstr "Nombre de tentatives avant le blocage d'une nouvelle tentative"
+msgid "Number of attempts before user is blocked"
+msgstr "Nombre de tentatives avant que l'utilisateur soit bloqué"
 
 msgid "Choose a value between 1 and 10"
 msgstr "Veuillez choisir une valeur entre 1 et 10"
 
-msgid "Blocking time before new connection attempt"
-msgstr "Durée de blocage avant une nouvelle tentative"
+msgid "Time that must pass before new connection is allowed"
+msgstr "Durée de blocage avant qu'une nouvelle connexion ne soit autorisée"
 
 msgid "Blocking duration must be less than or equal to 7 days"
 msgstr "La durée de blocage doit être inférieure ou égale à 7 jours"

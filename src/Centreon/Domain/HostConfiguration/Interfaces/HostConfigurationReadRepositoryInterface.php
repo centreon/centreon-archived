@@ -126,4 +126,13 @@ interface HostConfigurationReadRepositoryInterface
      * @return Host[]
      */
     public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find a host by its name.
+     *
+     * @param string $hostName Host Id to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws \Throwable
+     */
+    public function findHostByName(string $hostName): ?Host;
 }

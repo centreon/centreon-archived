@@ -2,7 +2,7 @@
 
 /*
  * Copyright 2005-2022 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,21 +34,37 @@
  *
  */
 
-namespace CentreonLegacy\Core\Install\Step;
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class Step7 extends AbstractStep
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+
+/**
+ * Generate random password
+ * 12 characters length with at least 1 uppercase, 1 lowercase, 1 number and 1 special character
+ *
+ * @return string
+ */
+function generatePassword(): string
 {
-    public function getContent()
-    {
-        $installDir = __DIR__ . '/../../../../../www/install';
-        require_once $installDir . '/steps/functions.php';
-        $template = getTemplate($installDir . '/steps/templates');
+    $ruleSets = [
+        implode('', range('a', 'z')),
+        implode('', range('A', 'Z')),
+        implode('', range(0, 9)),
+        SecurityPolicy::SPECIAL_CHARACTERS_LIST,
+    ];
+    $allRuleSets = implode('', $ruleSets);
+    $passwordLength = 12;
 
-        $parameters = $this->getDatabaseConfiguration();
-
-        $template->assign('title', _('Installation'));
-        $template->assign('step', 7);
-        $template->assign('parameters', $parameters);
-        return $template->fetch('content.tpl');
+    $password = '';
+    foreach ($ruleSets as $ruleSet) {
+        $password .= $ruleSet[random_int(0, strlen($ruleSet) - 1)];
     }
+
+    for ($i = 0; $i < ($passwordLength - count($ruleSets)); $i++) {
+        $password .= $allRuleSets[random_int(0, strlen($allRuleSets) - 1)];
+    }
+
+    $password = str_shuffle($password);
+
+    return $password;
 }
