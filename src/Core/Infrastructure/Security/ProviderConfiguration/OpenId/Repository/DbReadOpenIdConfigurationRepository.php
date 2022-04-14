@@ -86,7 +86,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 $findContactTemplateStatement->execute();
                 if (
                     $findContactTemplateStatement !== false
-                    && $findContactTemplateStatement = $statement->fetch(\PDO::FETCH_ASSOC)
+                    && $result = $findContactTemplateStatement->fetch(\PDO::FETCH_ASSOC)
                 ) {
                     $customConfiguration['contact_template'] = $result;
                 } else {
