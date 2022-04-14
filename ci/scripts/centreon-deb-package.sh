@@ -17,9 +17,4 @@ cp -rf ci/debian .
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "$RELEASE"
 debuild-pbuilder
 cd ../
-
-if [ -d "$DISTRIB" ] ; then
-  rm -rf "$DISTRIB"
-fi
-mkdir $DISTRIB
-mv *.deb $DISTRIB/
+mv *.deb /src
