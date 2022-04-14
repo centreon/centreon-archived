@@ -95,21 +95,13 @@ export default (): JSX.Element => {
   const [user, setUser] = useAtom(userAtom);
 
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
-  const switchEndPoint = './api/latest/configuration/users/current';
-
-  const updateTheme = (): Promise<{ description: 'User updated' }> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        return resolve({ description: 'User updated' });
-      }, 300);
-    });
-  };
+  const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const handleModeOfTheme = (): void => {
-    // sendRequest({ endpoint: switchEndPoint ,data: {isDarkMode ? ThemeMode.light : ThemeMode.dark} }).then((data) => {
-    //   console.log('data', data);
-    // });
-    updateTheme().then(() => {
+    sendRequest({
+      data: { theme: isDarkMode ? ThemeMode.light : ThemeMode.dark },
+      endpoint: switchEndPoint,
+    }).then(() => {
       if (pathname.includes('php')) {
         window.location.reload();
 
