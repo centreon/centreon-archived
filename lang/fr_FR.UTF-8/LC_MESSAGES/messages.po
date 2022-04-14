@@ -16396,8 +16396,8 @@ msgstr "Fort"
 msgid "Password expiration policy"
 msgstr "Politique d'expiration du mot de passe"
 
-msgid "Password expiration:"
-msgstr "Le mot de passe expire après :"
+msgid "Password expires after"
+msgstr "Le mot de passe expire après"
 
 msgid "Choose a duration between 1 hour and 12 months"
 msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
