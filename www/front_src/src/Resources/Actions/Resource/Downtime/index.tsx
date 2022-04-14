@@ -2,9 +2,10 @@ import * as React from 'react';
 
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
-import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
+import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import {
   labelDowntimeCommandSent,
@@ -14,7 +15,7 @@ import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-import { getValidationSchema, validate } from './validation';
+import { getValidationSchema } from './validation';
 import { formatDateInterval } from './utils';
 
 interface Props {
@@ -69,9 +70,9 @@ const DowntimeForm = ({
   const { alias, downtime } = useUserContext();
 
   const currentDate = new Date();
-
-  const defaultDurationInMs = downtime.default_duration * 1000;
-  const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
+  const defaultEndDate = dayjs(currentDate)
+    .add(dayjs.duration({ seconds: downtime.duration }))
+    .toDate();
 
   const form = useFormik<DowntimeFormValues>({
     initialValues: {
@@ -80,10 +81,10 @@ const DowntimeForm = ({
       dateStart: currentDate,
       duration: {
         unit: 'seconds',
-        value: downtime.default_duration,
+        value: downtime.duration,
       },
-      fixed: downtime.default_fixed,
-      isDowntimeWithServices: downtime.default_with_services,
+      fixed: downtime.fixed,
+      isDowntimeWithServices: downtime.with_services,
       timeEnd: defaultEndDate,
       timeStart: currentDate,
     },
@@ -113,7 +114,6 @@ const DowntimeForm = ({
         onSuccess();
       });
     },
-    validate: (values) => validate({ t, values }),
     validationSchema: getValidationSchema(t),
   });
 

@@ -123,13 +123,12 @@ const AppProvider = (): JSX.Element => {
             use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
-            default_duration: parseInt(
+            duration: parseInt(
               retrievedParameters.monitoring_default_downtime_duration,
               10,
             ),
-            default_fixed:
-              retrievedParameters.monitoring_default_downtime_fixed,
-            default_with_services:
+            fixed: retrievedParameters.monitoring_default_downtime_fixed,
+            with_services:
               retrievedParameters.monitoring_default_downtime_with_services,
           });
           setRefreshInterval(
@@ -140,10 +139,16 @@ const AppProvider = (): JSX.Element => {
           );
           setActionAcl(retrievedAcl);
           setAcknowledgement({
+            force_active_checks:
+              retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
+            notify:
+              retrievedParameters.monitoring_default_acknowledgement_notify,
             persistent:
               retrievedParameters.monitoring_default_acknowledgement_persistent,
             sticky:
               retrievedParameters.monitoring_default_acknowledgement_sticky,
+            with_services:
+              retrievedParameters.monitoring_default_acknowledgement_with_services,
           });
 
           initializeI18n({

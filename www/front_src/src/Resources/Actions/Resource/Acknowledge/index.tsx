@@ -19,6 +19,7 @@ import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  force_active_checks: Yup.boolean(),
   is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
   persistent: Yup.boolean(),
@@ -33,6 +34,7 @@ interface Props {
 export interface AcknowledgeFormValues {
   acknowledgeAttachedResources: boolean;
   comment?: string;
+  forceActiveCheck: boolean;
   isSticky: boolean;
   notify: boolean;
   persistent: boolean;
@@ -57,10 +59,11 @@ const AcknowledgeForm = ({
 
   const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
-      acknowledgeAttachedResources: false,
+      acknowledgeAttachedResources: acknowledgement.with_services,
       comment: undefined,
+      forceActiveCheck: acknowledgement.force_active_checks,
       isSticky: acknowledgement.sticky,
-      notify: false,
+      notify: acknowledgement.notify,
       persistent: acknowledgement.persistent,
     },
     onSubmit: (values): void => {

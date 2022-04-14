@@ -29,6 +29,7 @@ const acknowledgeResources =
       {
         acknowledgement: {
           comment: params.comment,
+          force_active_check: params.forceActiveCheck,
           is_notify_contacts: params.notify,
           is_persistent_comment: params.persistent,
           is_sticky: params.isSticky,
