@@ -718,7 +718,7 @@ class CentreonConfigCentreonBroker
      * @param array $values The post array
      * @return bool
      */
-    public function insertConfig($values): bool
+    public function insertConfig(array $values): bool
     {
         $objMain = new CentreonMainCfg();
         // Insert the Centreon Broker configuration
