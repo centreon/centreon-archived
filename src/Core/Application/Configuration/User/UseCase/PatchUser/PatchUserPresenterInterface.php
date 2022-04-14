@@ -18,28 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\User\Repository;
+namespace Core\Application\Configuration\User\UseCase\PatchUser;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Application\Common\UseCase\PresenterInterface;
 
-class DbUserFactory
+interface PatchUserPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param array<string, string> $user
-     * @return User
-     * @throws \Assert\AssertionFailedException
-     */
-    public static function createFromRecord(array $user): User
-    {
-        return new User(
-            (int) $user['contact_id'],
-            $user['contact_alias'],
-            $user['contact_name'],
-            $user['contact_email'],
-            $user['contact_admin'] === '1',
-            $user['contact_theme']
-        );
-    }
 }
