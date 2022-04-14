@@ -11,6 +11,7 @@ env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
+  env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
   env.DOCKER_STAGE = 'Docker packaging'
 } else if (env.BRANCH_NAME == stableBranch) {
@@ -19,6 +20,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
+  env.REPO = 'unstable'
   env.DELIVERY_STAGE = 'Delivery to unstable'
   env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
@@ -298,8 +300,8 @@ try {
         }
         sh 'ls -lart'
         sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="Debian11" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
-        stash name: 'Debian11', includes: 'Debian11/*.deb'
-        archiveArtifacts artifacts: "Debian11/*"
+        stash name: 'Debian11', includes: '*.deb'
+        archiveArtifacts artifacts: "*"
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -350,6 +352,15 @@ try {
       unstash 'rpms-alma8'
       unstash 'rpms-centos7'
       sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+        checkout scm
+        unstash "Debian11"
+        sh '''for i in $(echo *.deb)
+              do 
+                curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-"${env.REPO}"/
+              done
+           '''    
+      }    
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Delivery stage failure');
