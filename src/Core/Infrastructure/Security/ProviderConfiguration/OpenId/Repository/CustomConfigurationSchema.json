@@ -86,15 +86,7 @@
         "type": "boolean"
       },
       "contact_template": {
-        "type": ["object", "null"],
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
+        "type": ["number", "null"]
       },
       "email_bind_attribute": {
         "type": ["string", "null"]
