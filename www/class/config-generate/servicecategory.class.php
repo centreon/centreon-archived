@@ -168,7 +168,11 @@ final class ServiceCategory extends AbstractObject
             }
         }
     }
-
+ 
+    /**
+     * @param int $serviceId
+     * @return int[]
+     */
     public function getIdsByServiceId(int $serviceId): array
     {
         $serviceCategoryIds = [];
