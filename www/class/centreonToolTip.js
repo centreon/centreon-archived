@@ -1,3 +1,10 @@
+$.fn.replaceWithPush = function(newElement) {
+    var $newElement = $(newElement);
+
+    this.replaceWith($newElement);
+    return $newElement;
+};
+
 function CentreonToolTip()
 {	
 	this._className = 'helpTooltip';
@@ -19,11 +26,13 @@ function CentreonToolTip()
 	}
 	
 	this.render = function() {
-		jQuery('span.' + _self._className).each(function(index){
+		jQuery('img.' + _self._className).each(function(index){
 			var el = jQuery(this);
-            el.empty().append(_self._source);
-            el.css('cursor', 'pointer');
-            el.click(function() {
+			var newElement = el.replaceWithPush(_self._source);
+			newElement.addClass(_self._className);
+            newElement.attr('name', el.attr('name'));
+            newElement.css('cursor', 'pointer');
+            newElement.click(function() {
 				TagToTip(
 					"help:" + el.attr('name'),
 					TITLE, _self._title, CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, '#ffff99',
