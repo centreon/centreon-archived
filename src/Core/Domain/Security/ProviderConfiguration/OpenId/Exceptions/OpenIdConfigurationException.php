@@ -26,7 +26,8 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions;
 class OpenIdConfigurationException extends \Exception
 {
     /**
-     * Exception thrown when token endpoint is needed but missing.
+     * Exception thrown when token endpoint is needed but missing
+     *
      * @return self
      */
     public static function missingTokenEndpoint()
@@ -35,11 +36,23 @@ class OpenIdConfigurationException extends \Exception
     }
 
     /**
-     * Exception thrown when both user information endpoints are missing.
+     * Exception thrown when both user information endpoints are missing
+     *
      * @return self
      */
     public static function missingInformationEndpoint()
     {
         return new self(_('Missing userinfo and introspection token endpoint'));
+    }
+
+    /**
+     * Exception thrown when auto import is enabled but mandatories parameters are missing
+     *
+     * @param string $parameters
+     * @return self
+     */
+    public static function missingMandatoryParametersForAutoImport(string $parameters)
+    {
+        return new self(sprintf(_('Following parameters are missing and mandatory for auto import: %s'), $parameters));
     }
 }

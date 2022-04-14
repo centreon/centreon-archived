@@ -102,4 +102,29 @@ class UpdateOpenIdConfigurationRequest
      * @var boolean
      */
     public bool $verifyPeer;
+
+    /**
+     * @var boolean
+     */
+    public bool $isAutoImportEnabled;
+
+    /**
+     * @var array<string,int|string>|null
+     */
+    public ?array $contactTemplate;
+
+    /**
+     * @var string|null
+     */
+    public ?string $emailBindAttribute;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userAliasBindAttribute;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userNameBindAttribute;
 }

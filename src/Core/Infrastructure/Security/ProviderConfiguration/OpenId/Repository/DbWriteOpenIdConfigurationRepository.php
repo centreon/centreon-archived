@@ -73,6 +73,13 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
      */
     private function buildCustomConfigurationFromOpenIdConfiguration(OpenIdConfiguration $configuration): array
     {
+        $serializedContactTemplate = [];
+        if ($configuration->getContactTemplate() !== null) {
+            $serializedContactTemplate = [
+                "id" => $configuration->getContactTemplate()->getId(),
+                "name" =>  $configuration->getContactTemplate()->getName(),
+            ];
+        }
         return [
             'trusted_client_addresses' => $configuration->getTrustedClientAddresses(),
             'blacklist_client_addresses' => $configuration->getBlacklistClientAddresses(),
@@ -87,7 +94,12 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'client_id' => $configuration->getClientId(),
             'client_secret' => $configuration->getClientSecret(),
             'authentication_type' => $configuration->getAuthenticationType(),
-            'verify_peer' => $configuration->verifyPeer()
+            'verify_peer' => $configuration->verifyPeer(),
+            'contact_template' => !empty($serializedContactTemplate) ? json_encode($serializedContactTemplate) : null,
+            'auto_import' => $configuration->isAutoImportEnabled(),
+            'email_bind_attribute' => $configuration->getEmailBindAttribute(),
+            'alias_bind_attribute' => $configuration->getUserAliasBindAttribute(),
+            'fullname_bind_attribute' => $configuration->getUserNameBindAttribute(),
         ];
     }
 }

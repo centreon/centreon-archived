@@ -26,15 +26,42 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationRequest
 };
+use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfigurationFactory
 {
     /**
      * @param UpdateOpenIdConfigurationRequest $request
      * @return OpenIdConfiguration
+     * @throws OpenIdConfigurationException
      */
     public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
     {
+        if ($request->isAutoImportEnabled === true) {
+            $missingParameters = [];
+            if ($request->contactTemplate === null) {
+                $missingParameters[] = 'contact_template';
+            }
+            if ($request->emailBindAttribute === null) {
+                $missingParameters[] = 'email_bind_attribute';
+            }
+            if ($request->userAliasBindAttribute === null) {
+                $missingParameters[] = 'alias_bind_attribute';
+            }
+            if ($request->userNameBindAttribute === null) {
+                $missingParameters[] = 'fullname_bind_attribute';
+            }
+            if (!empty($missingParameters)) {
+                $parameters = implode(", ", $missingParameters);
+                throw OpenIdConfigurationException::missingMandatoryParametersForAutoImport($parameters);
+            }
+        }
+        $contactTemplate =  null;
+        if($request->contactTemplate !== null) {
+            $contactTemplate = new ContactTemplate($request->contactTemplate['id'], $request->contactTemplate['name']);
+        }
+
         return new OpenIdConfiguration(
             $request->isActive,
             $request->isForced,
@@ -51,7 +78,12 @@ class OpenIdConfigurationFactory
             $request->clientId,
             $request->clientSecret,
             $request->authenticationType,
-            $request->verifyPeer
+            $request->verifyPeer,
+            $contactTemplate,
+            $request->isAutoImportEnabled,
+            $request->emailBindAttribute,
+            $request->userAliasBindAttribute,
+            $request->userNameBindAttribute
         );
     }
 }
