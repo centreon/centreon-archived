@@ -116,11 +116,18 @@ def hasChanges(patterns) {
 
 def checkoutCentreonBuild() {
   dir('centreon-build') {
-    checkout resolveScm(source: [$class: 'GitSCMSource',
-      remote: 'https://github.com/centreon/centreon-build.git',
-      credentialsId: 'technique-ci',
-      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-      targets: [env.BUILD_BRANCH, 'master'])
+    retry(3) {
+      checkout resolveScm(
+        source: [
+          $class: 'GitSCMSource',
+          remote: 'https://github.com/centreon/centreon-build.git',
+          credentialsId: 'technique-ci',
+          traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']],
+          extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true, timeout: 10]]
+        ],
+        targets: [env.BUILD_BRANCH, 'master']
+      )
+    }
   }
 }
 
