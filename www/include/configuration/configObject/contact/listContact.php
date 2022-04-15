@@ -293,15 +293,23 @@ foreach ($contacts as $contact) {
             $isLinkedToLdap = 2;
             $refreshLdapBadge[2] =
                 "<span class='ico-18'>" .
-                    returnSvg("www/img/icons/refresh.svg",
-                              "var(--icons-gray-fill-color)", 18, 18) .
+                returnSvg(
+                    "www/img/icons/refresh.svg",
+                    "var(--icons-gray-fill-color)",
+                    18,
+                    18
+                ) .
                 "</span>";
         } else {
             $isLinkedToLdap = 1;
             $refreshLdapBadge[1] =
                 "<span class='ico-18' onclick='submitSync(" . $p . ", " . $contact['contact_id'] . ")'>" .
-                    returnSvg("www/img/icons/refresh.svg",
-                          "var(--icons-fill-color)", 18, 18) .
+                returnSvg(
+                    "www/img/icons/refresh.svg",
+                    "var(--icons-fill-color)",
+                    18,
+                    18
+                ) .
                 "</span>";
         }
     }
