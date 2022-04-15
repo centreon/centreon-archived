@@ -59,8 +59,6 @@ import {
   labelInvalidFormat,
   labelStartTime,
   labelSticky,
-  labelForceActiveChecks,
-  labelAcknowledgeWithSerivces,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -97,9 +95,9 @@ const mockUser = {
 };
 const mockRefreshInterval = 15;
 const mockDowntime = {
-  default_duration: 7200,
-  default_fixed: true,
-  default_with_services: false,
+  duration: 7200,
+  fixed: true,
+  with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -122,8 +120,11 @@ const mockAcl = {
   },
 };
 const mockAcknowledgement = {
+  force_active_checks: false,
+  notify: false,
   persistent: true,
-  sticky: false,
+  sticky: true,
+  with_services: false,
 };
 
 jest.mock('../icons/Downtime');
@@ -306,8 +307,7 @@ describe(Actions, () => {
   );
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByText, getByLabelText, findByLabelText, getAllByText } =
-      renderActions();
+    const { getByText, findByLabelText, getAllByText } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -320,18 +320,14 @@ describe(Actions, () => {
     const notifyCheckbox = await findByLabelText(labelNotify);
     const persistentCheckbox = await findByLabelText(labelPersistent);
     const stickyCheckbox = await findByLabelText(labelSticky);
-    const forceActiveChecks = await findByLabelText(labelForceActiveChecks);
     const acknowledgeAttachedResources = await findByLabelText(
-      labelAcknowledgeWithSerivces,
+      labelAcknowledgeServices,
     );
 
     fireEvent.click(notifyCheckbox);
     fireEvent.click(persistentCheckbox);
     fireEvent.click(stickyCheckbox);
-    fireEvent.click(forceActiveChecks);
     fireEvent.click(acknowledgeAttachedResources);
-
-    fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
