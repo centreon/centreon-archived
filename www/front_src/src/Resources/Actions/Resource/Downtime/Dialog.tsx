@@ -154,8 +154,8 @@ const DialogDowntime = ({
                   }}
                   ampm={isMeridianFormat(values.timeStart)}
                   aria-label={t(labelStartTime)}
-                  error={errors?.dateStart !== undefined}
-                  helperText={errors?.dateStart}
+                  error={errors?.timeStart !== undefined}
+                  helperText={errors?.timeStart}
                   value={values.timeStart}
                   onChange={changeDate('timeStart')}
                   {...timePickerProps}

@@ -2,10 +2,9 @@ import * as React from 'react';
 
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
 
-import { useUserContext } from '@centreon/ui-context';
 import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelDowntimeCommandSent,
@@ -15,7 +14,7 @@ import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-import { getValidationSchema } from './validation';
+import { getValidationSchema, validate } from './validation';
 import { formatDateInterval } from './utils';
 
 interface Props {
@@ -70,9 +69,9 @@ const DowntimeForm = ({
   const { alias, downtime } = useUserContext();
 
   const currentDate = new Date();
-  const defaultEndDate = dayjs(currentDate)
-    .add(dayjs.duration({ seconds: downtime.duration }))
-    .toDate();
+
+  const defaultDurationInMs = downtime.duration * 1000;
+  const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
 
   const form = useFormik<DowntimeFormValues>({
     initialValues: {
@@ -114,6 +113,7 @@ const DowntimeForm = ({
         onSuccess();
       });
     },
+    validate: (values) => validate({ t, values }),
     validationSchema: getValidationSchema(t),
   });
 
