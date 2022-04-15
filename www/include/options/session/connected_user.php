@@ -137,9 +137,10 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
             }
             $session_data[$cpt]["synchronize"] =
                 "<a href='#'>" .
-                    "<img src='./img/icons/refresh.png' border='0' " .
-                        "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
-                        "onclick='submitSync(" . $currentPage . ", \"" . $r['user_id'] . "\")'>" .
+                    "<span onclick='submitSync(" . $currentPage . ", \"" . $r['user_id'] . "\")' 
+                    title='" . _("Synchronize LDAP") . "'>" .
+                        returnSvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 18, 18) .
+                    "</span>" .
                 "</a>";
         } else {
             // hiding the synchronization option and details
@@ -163,6 +164,8 @@ $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
 $tpl->assign("distant_location", _("IP Address"));
+$tpl->assign("adminIcon", returnSvg("www/img/icons/admin.svg", "var(--icons-fill-color)", 17, 17));
+$tpl->assign("userIcon", returnSvg("www/img/icons/user.svg", "var(--icons-fill-color)", 17, 17));
 $tpl->display("connected_user.ihtml");
 ?>
 
