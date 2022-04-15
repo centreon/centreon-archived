@@ -97,7 +97,7 @@ export default (): JSX.Element => {
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
-  const handleModeOfTheme = (): void => {
+  const switchThemeMode = (): void => {
     sendRequest({
       data: { theme: isDarkMode ? ThemeMode.light : ThemeMode.dark },
       endpoint: switchEndPoint,
