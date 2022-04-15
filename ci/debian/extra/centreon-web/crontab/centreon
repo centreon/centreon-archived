@@ -1,0 +1,36 @@
+# ########################################
+#
+# Cron Configuration for Centreon
+#
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+# rewrite file with new cron line
+CRONTAB_EXEC_USER=""
+
+############################
+# Cron for CentACL
+* * * * * apache /usr/bin/php -q /usr/share/centreon/cron/centAcl.php >> /var/log/centreon/centAcl.log 2>&1
+
+############################
+# Cron for Centreon-Downtime
+*/5 * * * * apache /usr/bin/php -q /usr/share/centreon/cron/downtimeManager.php >> /var/log/centreon/downtimeManager.log 2>&1
+
+############################
+# Cron to build state events
+0 3 * * * centreon /usr/share/centreon/cron/eventReportBuilder --config=/etc/centreon/conf.pm >> /var/log/centreon/eventReportBuilder.log 2>&1
+
+##########################
+# Cron to build reporting
+0 6 * * * centreon /usr/share/centreon/cron/dashboardBuilder --config=/etc/centreon/conf.pm >> /var/log/centreon/dashboardBuilder.log 2>&1
+
+##########################
+# Cron for knowledge base
+*/5 * * * * centreon /usr/bin/php -q /usr/share/centreon/cron/centKnowledgeSynchronizer.php >> /var/log/centreon/knowledgebase.log 2>&1
+
+##########################
+# Cron for statistics
+16 6 * * * centreon /usr/bin/php -q /usr/share/centreon/cron/centreon-send-stats.php >> /var/log/centreon/statistics.log 2>&1
+
+##########################
+# Cron for Centreon-Backup
+30 3 * * * root /usr/share/centreon/cron/centreon-backup.pl >> /var/log/centreon/centreon-backup.log 2>&1
