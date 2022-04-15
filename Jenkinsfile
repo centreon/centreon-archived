@@ -25,7 +25,6 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
-  env.REPO = 'canary'
   env.DELIVERY_STAGE = 'Delivery to canary'
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
