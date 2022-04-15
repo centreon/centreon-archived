@@ -542,7 +542,7 @@ p.description a, p.description a:visited {
     top: -1em !important;
 }
 #WzBoDyI {
-    color: var(--WzBodyI-border-color) !important;
+    color: var(--WzBodyI-font-color) !important;
     text-align: left !important;
     line-height: 16px !important;
 }

@@ -161,10 +161,10 @@
     --WzTtDi-border-color : var(--color-iron);
     --WzTtDi-background-color : var(--color-white);
     --WzTiTl-background-color : var(--color-white);
-    --WzClOsE-color : var(--color-danger);
+    --WzClOsE-color : var(--color-primary-light);
     --WzClOsE-background-color : var(--color-white);
-    --WzClOsE-border-color : var(--color-danger);
-    --WzBodyI-border-color : var(--color-martar);
+    --WzClOsE-border-color : var(--WzClOsE-color);
+    --WzBodyI-font-color : var(--color-black);
     /*************/
 
     /** START : Colors  **/

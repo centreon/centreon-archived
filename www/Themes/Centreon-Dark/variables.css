@@ -127,4 +127,11 @@
     --c3-text-fill-color: var(--color-white);
     --help-tool-tip-icon-fill-color: var(--color-primary-light);
     --icons-fill-color: var(--color-primary-light);
+    --WzTtDi-background-color: var(--body-background);
+    --WzTiTl-background-color : var(--WzTtDi-background-color);
+    --WzBodyI-font-color: var(--color-white);
+    --WzTtDi-border-color: var(--body-color);
+    --WzClOsE-color: var(--color-primary-light);
+    --WzClOsE-border-color : var(--WzClOsE-color);
+    --WzClOsE-background-color : var(--body-background);
 }
