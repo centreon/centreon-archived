@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -54,9 +55,8 @@ if (!isset($gopt["nagios_path_img"])) {
     $gopt["nagios_path_img"] = _CENTREON_PATH_ . 'www/img/media/';
 }
 
-
-$attrsText = array("size"=>"40");
-$attrsText2 = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 // Form begin
@@ -161,7 +161,7 @@ if ($form->validate()) {
         "button",
         "change",
         _("Modify"),
-        array("onClick"=>"javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
     );
     $_SESSION[$sessionKeyFreeze] = true;
     echo '<script>parent.location.href = "main.php?p=' . $p . '&o=engine";</script>';
