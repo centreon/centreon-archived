@@ -78,14 +78,24 @@
 						$elemArr[elem].RowMenu_name != ""
 						&& isset($elemArr[elem].RowMenu_icone)
 						&& $elemArr[elem].RowMenu_icone != ""}
-						<img src="{$elemArr[elem].RowMenu_icone}" class="ico-18" />
+                        {if $elemArr[elem].isHostSvgFile}
+                            <span class="ico-18  margin_right">
+                                {$elemArr[elem].RowMenu_icone}
+                            </span>
+                        {else}
+                            <img src="{$elemArr[elem].RowMenu_icone}" class="ico-18" />
+                        {/if}
 					{/if}
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft resizeTitle">
 					<a href="{$elemArr[elem].RowMenu_link2}">
-						{if $elemArr[elem].RowMenu_sicon != ""}
+						{if $elemArr[elem].RowMenu_sicon != "" && !$elemArr[elem].isServiceSvgFile}
 							<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>
+                        {else}
+                            <span class="ico-14  margin_right">
+                                {$elemArr[elem].RowMenu_sicon}
+                            </span>
 						{/if}{$elemArr[elem].RowMenu_desc}
 					</a>
 				</td>

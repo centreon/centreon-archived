@@ -932,6 +932,8 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->closeCursor();
         $tpl->assign("isRemote", $isRemote);
+        $tpl->assign("chartIcon", returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)",
+                                            18, 18));
 
         $tpl->display("serviceDetails.ihtml");
     }
