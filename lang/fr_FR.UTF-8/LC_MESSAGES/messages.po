@@ -16564,7 +16564,7 @@ msgstr "Politique de sécurité de mot de passe"
 msgid "OpenID Connect Configuration"
 msgstr "Configuration OpenID Connect"
 
-msgid "Define OpenID Connect Configuration"
+msgid "Define OpenID Connect configuration"
 msgstr "Définir la configuration OpenID Connect"
 
 msgid "Invalid URL"

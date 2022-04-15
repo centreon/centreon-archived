@@ -15360,7 +15360,7 @@ msgstr ""
 # msgid "OpenID Connect Configuration"
 # msgstr ""
 
-# msgid "Define OpenID Connect Configuration"
+# msgid "Define OpenID Connect configuration"
 # msgstr ""
 
 # msgid "Invalid URL"
