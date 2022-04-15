@@ -16747,7 +16747,7 @@ msgstr "Web SSO seulement"
 msgid "Pattern match login (regex)"
 msgstr "Correspondance de login (regex)"
 
-msgid "Pattern replace alias (regex)"
+msgid "Pattern replace login (regex)"
 msgstr "Remplacement du login (regex)"
 
 msgid "Login header attribute name"
