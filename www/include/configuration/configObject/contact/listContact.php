@@ -213,9 +213,9 @@ $attrBtnSuccess = array(
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 $contactTypeIcon = array(
-    1 => "./img/icons/admin.png",
-    2 => "./img/icons/user.png",
-    3 => "./img/icons/user_template.png"
+    1 => returnSvg("www/img/icons/admin.svg", "var(--icons-fill-color)", 22, 22),
+    2 => returnSvg("www/img/icons/user.svg", "var(--icons-fill-color)", 22, 22),
+    3 => returnSvg("www/img/icons/user-template.svg", "var(--icons-fill-color)", 22, 22)
 );
 $contactTypeIconTitle = array(
     1 => _("This user is an administrator."),
@@ -292,14 +292,17 @@ foreach ($contacts as $contact) {
         if ($contact['contact_ldap_required_sync'] === '1') {
             $isLinkedToLdap = 2;
             $refreshLdapBadge[2] =
-                "<span>" .
-                    "<img src='img/icons/refresh-gray.png' class='ico-18' alt='" . $refreshLdapHelp[2] . "'>" .
+                "<span class='ico-18'>" .
+                    returnSvg("www/img/icons/refresh.svg",
+                              "var(--icons-gray-fill-color)", 18, 18) .
                 "</span>";
         } else {
             $isLinkedToLdap = 1;
             $refreshLdapBadge[1] =
-                "<img src='img/icons/refresh.png' class='ico-18' alt='" . $refreshLdapHelp[1] . "' " .
-                "onclick='submitSync(" . $p . ", " . $contact['contact_id'] . ")'>";
+                "<span class='ico-18' onclick='submitSync(" . $p . ", " . $contact['contact_id'] . ")'>" .
+                    returnSvg("www/img/icons/refresh.svg",
+                          "var(--icons-fill-color)", 18, 18) .
+                "</span>";
         }
     }
 
@@ -455,7 +458,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchC', $searchContact);
 
-// Apply a template definition
+    // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

@@ -317,7 +317,7 @@
     --list-header-font-color: var(--body-color);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
-    --input-button-hover-background-color: var(--color-primary-light);
+    --input-button-hover-background-color: var(--color-primary-dark);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
