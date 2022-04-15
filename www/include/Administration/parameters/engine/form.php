@@ -172,7 +172,7 @@ if ($form->validate()) {
         "button",
         "change",
         _("Modify"),
-        array("onClick"=>"javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
     );
     $form->freeze();
     $valid = true;
