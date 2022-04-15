@@ -168,4 +168,19 @@ final class ServiceCategory extends AbstractObject
             }
         }
     }
+    /**
+     * @param int $serviceId
+     * @return int[]
+     */
+    public function getIdsByServiceId(int $serviceId): array
+    {
+        $serviceCategoryIds = [];
+        foreach ($this->serviceCategories as $id => $value) {
+            if (isset($value['members']) && in_array($serviceId, array_keys($value['members']))) {
+                $serviceCategoryIds[] = (int) $id;
+            }
+        }
+
+        return $serviceCategoryIds;
+    }
 }
