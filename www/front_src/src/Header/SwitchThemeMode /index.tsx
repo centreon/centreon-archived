@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default (): JSX.Element => {
+const SwitchThemeMode = (): JSX.Element => {
   const props = { darkModeSvg: svgMoon, lightModeSvg: svgSun };
   const classes = useStyles();
   const { pathname } = useLocation();
@@ -119,8 +119,10 @@ export default (): JSX.Element => {
       <MaterialUISwitch
         checked={isDarkMode}
         {...props}
-        onChange={handleModeOfTheme}
+        onChange={switchThemeMode}
       />
     </div>
   );
 };
+
+export default SwitchThemeMode;
