@@ -3,7 +3,7 @@ import * as React from 'react';
 import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -16,6 +16,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
+  setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
@@ -63,6 +64,10 @@ const NavigationMenu = ({
   );
   const user = useAtomValue(userAtom);
 
+  const setHoveredNavigationItemsDerived = useUpdateAtom(
+    setHoveredNavigationItemsDerivedAtom,
+  );
+
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -85,10 +90,7 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
-    setHoveredNavigationItems({
-      ...hoveredNavigationItems,
-      level_0: currentPage,
-    });
+    setHoveredNavigationItemsDerived({ currentPage, levelName });
   };
 
   const handleLeave = (): void => {

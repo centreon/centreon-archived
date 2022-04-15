@@ -12,6 +12,10 @@ import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { Page } from '../../models';
+import {
+  hoveredNavigationItemsAtom,
+  selectedNavigationItemsAtom,
+} from '../sideBarAtoms';
 
 import ArrowIcon from './ArrowIcon';
 
@@ -80,6 +84,8 @@ const MenuItems = ({
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
+  const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
+  const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
   return useMemoComponent({
     Component: (
@@ -121,7 +127,15 @@ const MenuItems = ({
         )}
       </ListItemButton>
     ),
-    memoProps: [hover, isOpen, isRoot, isDrawerOpen, user],
+    memoProps: [
+      hover,
+      isOpen,
+      isRoot,
+      isDrawerOpen,
+      user,
+      hoveredNavigationItems,
+      selectedNavigationItems,
+    ],
   });
 };
 
