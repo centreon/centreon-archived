@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { Provider as ReduxProvider } from 'react-redux';
-import Fullscreen from 'react-fullscreen-crossbrowser';
 import { isNil, not } from 'ramda';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -11,13 +9,8 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import createStore from '../store';
 
 import useApp from './useApp';
-
-const store = createStore();
-
-vide;
 
 const useStyles = makeStyles({
   content: {
@@ -60,13 +53,7 @@ const Navigation = React.lazy(() => import('../Navigation'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
-  const {
-    dataLoaded,
-    hasMinArgument,
-    isFullscreenEnabled,
-    displayInFullScreen,
-    removeFullscreen,
-  } = useApp();
+  const { dataLoaded, hasMinArgument, displayInFullScreen } = useApp();
 
   React.useEffect(() => {
     const bodyElement = document.querySelector('body');
@@ -97,46 +84,39 @@ const App = (): JSX.Element => {
   const min = hasMinArgument();
 
   return (
-    <ReduxProvider store={store}>
-      <React.Suspense fallback={<PageLoader />}>
-        <div className={classes.wrapper}>
+    <React.Suspense fallback={<PageLoader />}>
+      <div className={classes.wrapper}>
+        {not(min) && (
+          <React.Suspense
+            fallback={<LoadingSkeleton height="100%" width={45} />}
+          >
+            <Navigation />
+          </React.Suspense>
+        )}
+        <div className={classes.content} id="content">
           {not(min) && (
             <React.Suspense
-              fallback={<LoadingSkeleton height="100%" width={45} />}
+              fallback={<LoadingSkeleton height={56} width="100%" />}
             >
-              <Navigation />
+              <Header />
             </React.Suspense>
           )}
-          <div className={classes.content} id="content">
-            {not(min) && (
-              <React.Suspense
-                fallback={<LoadingSkeleton height={56} width="100%" />}
-              >
-                <Header />
-              </React.Suspense>
-            )}
-            <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
-              <Fullscreen
-                enabled={isFullscreenEnabled}
-                onClose={removeFullscreen}
-              >
-                <div className={classes.mainContent}>
-                  <MainRouter />
-                </div>
-              </Fullscreen>
+          <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
+            <div className={classes.mainContent}>
+              <MainRouter />
             </div>
           </div>
-          <Fab
-            className={classes.fullscreenButton}
-            color="default"
-            size="small"
-            onClick={displayInFullScreen}
-          >
-            <FullscreenIcon />
-          </Fab>
         </div>
-      </React.Suspense>
-    </ReduxProvider>
+        <Fab
+          className={classes.fullscreenButton}
+          color="default"
+          size="small"
+          onClick={displayInFullScreen}
+        >
+          <FullscreenIcon />
+        </Fab>
+      </div>
+    </React.Suspense>
   );
 };
 

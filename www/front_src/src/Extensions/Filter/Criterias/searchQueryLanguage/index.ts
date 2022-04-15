@@ -26,10 +26,10 @@ import {
   startsWith,
   trim,
   without,
+  compose,
   __,
 } from 'ramda';
 import pluralize from 'pluralize';
-import { compose } from 'redux';
 
 import { SelectEntry } from '@centreon/ui';
 
@@ -107,10 +107,11 @@ const parse = (search: string): Array<Criteria> => {
   const toNames = map(prop('name'));
   const criteriaNames = toNames(criteriasWithSearch);
 
-  const defaultCriterias = reject(
-    compose(isIn(criteriaNames), prop('name')),
-    getDefaultCriterias(),
-  );
+  const isInCriteriaNames = isIn(criteriaNames);
+
+  const nameIsInCriteriaNames = pipe(({ name }) => name, isInCriteriaNames);
+
+  const defaultCriterias = reject(nameIsInCriteriaNames, getDefaultCriterias());
 
   return sortBy(
     ({ name }) => criteriaNameSortOrder[name],
@@ -129,12 +130,12 @@ const build = (criterias: Array<Criteria>): string => {
   const regularCriterias = pipe(rejectSearch, rejectEmpty)(criterias);
 
   const builtCriterias = regularCriterias
-    .filter(compose(not, isNil, prop('value')))
+    .filter(pipe(({ name }) => name, isNil, not))
     .map(({ name, value }): string => {
       const values = value as Array<SelectEntry>;
 
       const formattedValues = values.map(
-        compose(getCriteriaQueryLanguageName, prop('id')),
+        pipe(({ id }) => id as string, getCriteriaQueryLanguageName),
       );
       const criteriaName = compose(
         getCriteriaQueryLanguageName,

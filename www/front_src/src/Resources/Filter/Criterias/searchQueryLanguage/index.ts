@@ -131,12 +131,11 @@ const parse = (search: string): Array<Criteria> => {
   const toNames = map(prop('name'));
   const criteriaNames = toNames(criteriasWithSearch);
 
-  const isInCriteriaNames = isIn(criteriaNames) as (list) => boolean;
+  const isInCriteriaNames = isIn(criteriaNames);
 
-  const defaultCriterias = reject(
-    pipe(({ name }) => name, isInCriteriaNames),
-    getDefaultCriterias(),
-  );
+  const nameIsInCriteriaNames = pipe(({ name }) => name, isInCriteriaNames);
+
+  const defaultCriterias = reject(nameIsInCriteriaNames, getDefaultCriterias());
 
   return sortBy(
     ({ name }) => criteriaNameSortOrder[name],
