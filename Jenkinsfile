@@ -13,20 +13,15 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
-  env.DOCKER_STAGE = 'Docker packaging'
 } else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
   env.DELIVERY_STAGE = 'Delivery to canary'
-  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
   env.REPO = 'unstable'
   env.DELIVERY_STAGE = 'Delivery to unstable'
-  env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
-  env.DELIVERY_STAGE = 'Delivery to canary'
-  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
 env.BUILD_BRANCH = env.BRANCH_NAME
@@ -310,10 +305,9 @@ try {
     }
   }
 
-
-  stage('Violations to Github') {
-    node {
-      if (env.CHANGE_ID) { // pull request to comment with coding style issues
+  if (env.CHANGE_ID) { // pull request to comment with coding style issues
+    stage('Violations to Github') {
+      node {
         if (hasBackendChanges) {
           unstash 'codestyle-be.xml'
           unstash 'phpstan.xml'
@@ -338,37 +332,14 @@ try {
           ]
         ])
       }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Reports stage failure");
+
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error("Reports stage failure");
+      }
     }
   }
 
-  stage("$DELIVERY_STAGE") {
-    node {
-      checkoutCentreonBuild()
-      sh 'rm -rf output'
-      unstash 'tar-sources'
-      unstash 'api-doc'
-      unstash 'rpms-alma8'
-      unstash 'rpms-centos7'
-      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-        checkout scm
-        unstash "Debian11"
-        sh '''for i in $(echo *.deb)
-              do 
-                curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
-              done
-           '''    
-      }    
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure');
-    }
-  }
-
-  stage("$DOCKER_STAGE") {
+  stage('Docker packaging') {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
     for (x in osBuilds) {
@@ -376,6 +347,7 @@ try {
       parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild()
+          unstash "rpms-${osBuild}"
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
@@ -485,6 +457,32 @@ try {
       parallel atparallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Critical tests stage failure');
+      }
+    }
+  }
+
+  if (env.BUILD != 'CI') {
+    stage("$DELIVERY_STAGE") {
+      node {
+        checkoutCentreonBuild()
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-alma8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+          checkout scm
+          unstash "Debian11"
+          sh '''for i in $(echo *.deb)
+                do 
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
+                done
+             '''    
+        }
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
       }
     }
   }
