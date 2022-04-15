@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ $1 -eq 0 ] ; then
+        # Package removal, not upgrade
+        systemctl --no-reload disable --now centreontrapd.service || : &>/dev/null || :
+fi
+postuninstall scriptlet (using /bin/sh):
+
+if [ $1 -ge 1 ] ; then
+        # Package upgrade, not uninstall
+        systemctl try-restart centreontrapd.service || : &>/dev/null || :
+fi

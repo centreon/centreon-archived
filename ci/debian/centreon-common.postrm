@@ -1,0 +1,7 @@
+#!/bin/sh
+
+deluser www-data centreon || true
+deluser centreon || true
+delgroup centreon || true
+
+systemctl --no-reload disable --now centreon.service || : &>/dev/null || :
