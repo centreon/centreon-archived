@@ -125,4 +125,9 @@
     --list-lvl-1-font-color: var(--color-white);
     --c3-path-stroke-color: var(--color-white);
     --c3-text-fill-color: var(--color-white);
+    --list-ack-background-color:var(--color-raw-umber);
+    --list-ack-hover-background-color:var(--color-raw-umber);
+    --list-downtime-background-color:var(--color-persian-indigo);
+    --list-downtime-hover-background-color:var(--color-persian-indigo);
+    --list-two-hover-background-color:var(--list-two-background-color);
 }
