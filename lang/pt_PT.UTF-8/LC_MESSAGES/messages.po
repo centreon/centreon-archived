@@ -15231,7 +15231,19 @@ msgstr ""
 # msgid "Password expires after"
 # msgstr ""
 
+# msgid "Choose a duration between 7 days and 12 months"
+# msgstr ""
+
 # msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Reset the form"
+# msgstr ""
+
+# msgid "Do you want to reset the form?"
+# msgstr ""
+
+# msgid "Excluded users"
 # msgstr ""
 
 # msgid "Month"
@@ -15336,7 +15348,7 @@ msgstr ""
 # msgid "OpenID Connect Configuration"
 # msgstr ""
 
-# msgid "Define OpenID Connect Configuration"
+# msgid "Define OpenID Connect configuration"
 # msgstr ""
 
 # msgid "Invalid URL"
@@ -15351,16 +15363,10 @@ msgstr ""
 # msgid "OpenID Connect configuration saved"
 # msgstr ""
 
-# msgid "Enable OpenID Connect Authentication"
+# msgid "Enable OpenID Connect authentication"
 # msgstr ""
 
 # msgid "Authentication mode"
-# msgstr ""
-
-# msgid "Trusted client addresses"
-# msgstr ""
-
-# msgid "Blacklist client addresses"
 # msgstr ""
 
 # msgid "Base URL"
@@ -15448,4 +15454,46 @@ msgstr ""
 # msgstr ""
 
 # msgid "Login with"
+# msgstr ""
+
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace alias (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
+# msgstr ""
+
+# msgid "Do you want to save the changes?"
+# msgstr ""
+
+# msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+# msgstr ""
+
+# msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+# msgstr ""
+
+# msgid "Discard"
 # msgstr ""
