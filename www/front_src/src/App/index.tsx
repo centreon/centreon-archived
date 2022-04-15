@@ -17,6 +17,8 @@ import useApp from './useApp';
 
 const store = createStore();
 
+vide;
+
 const useStyles = makeStyles({
   content: {
     display: 'flex',

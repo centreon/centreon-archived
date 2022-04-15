@@ -1,10 +1,25 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
+import React from 'react';
+
 import Main from './Main';
+
+declare global {
+  interface Window {
+    CentreonUiContext;
+    Jotai;
+    React;
+    ReactDom;
+    ReactI18Next;
+    ReactRouterDOM;
+    ReactRouterDom;
+  }
+}
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -12,9 +27,6 @@ import Main from './Main';
   window.React = await import(/* webpackChunkName: "external" */ 'react');
   window.ReactDOM = window.ReactDom = await import(
     /* webpackChunkName: "external" */ 'react-dom'
-  );
-  window.PropTypes = window.PropTypes = await import(
-    /* webpackChunkName: "external" */ 'prop-types'
   );
   window.ReactRouterDOM = window.ReactRouterDom = await import(
     /* webpackChunkName: "external" */ 'react-router-dom'

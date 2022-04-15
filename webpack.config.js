@@ -6,7 +6,7 @@ const { merge } = require('webpack-merge');
 const baseConfig = require('centreon-frontend/packages/frontend-config/webpack/base');
 
 module.exports = merge(baseConfig, {
-  entry: ['@babel/polyfill', './www/front_src/src/index.js'],
+  entry: ['./www/front_src/src/index.tsx'],
   module: {
     rules: [
       {
