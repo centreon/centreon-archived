@@ -96,15 +96,17 @@ function printDebug($xml, array $tabs): int
             $msg_debug[$host['id']]
         );
         $msg_debug[$host['id']] = str_replace("<br />License:", " - License:", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
+
+        $msg_debug[$host['id']] = preg_replace('/(\[[0-9]+?\]) \[[0-9]+?\]/', '$1', $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = preg_replace(
-            '/\[\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00\] \[\w+\] \[\w+\] /',
-            '',
+            '/(\[\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00\]) \[\w+\] \[\w+\]/',
+            '$1',
             $msg_debug[$host['id']]
         );
-
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
+        $lines = array_map('unifyDateFormats', $lines);
         $lines = array_unique($lines);
+        $lines = array_map('removeTimestamp', $lines);
 
         $msg_debug[$host['id']] = "";
         $i = 0;
@@ -156,4 +158,32 @@ function printDebug($xml, array $tabs): int
     $xml->text($str);
     $xml->endElement();
     return $returnCode;
+}
+
+/**
+ * @param string $originalLog
+ * @return string
+ */
+function unifyDateFormats(string $originalLog): string
+{
+    $log = null;
+    if (preg_match('/\[(\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00)\]/', $originalLog, $matches)) {
+        $date = new DateTimeImmutable($matches[1]);
+        $log = preg_replace(
+            '/\[(\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00)\]/',
+            '[' . $date->getTimestamp() . ']',
+            $originalLog
+        );
+    }
+
+    return $log ?? $originalLog;
+}
+
+/**
+ * @param string $log
+ * @return string
+ */
+function removeTimestamp(string $log): string
+{
+    return preg_replace('/\[[0-9]+?\] /', '', $log) ?? $log;
 }
