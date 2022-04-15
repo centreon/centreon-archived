@@ -14792,7 +14792,19 @@ msgstr ""
 # msgid "Password expires after"
 # msgstr ""
 
+# msgid "Choose a duration between 7 days and 12 months"
+# msgstr ""
+
 # msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Reset the form"
+# msgstr ""
+
+# msgid "Do you want to reset the form?"
+# msgstr ""
+
+# msgid "Excluded users"
 # msgstr ""
 
 # msgid "Month"
@@ -14912,16 +14924,10 @@ msgstr ""
 # msgid "OpenID Connect configuration saved"
 # msgstr ""
 
-# msgid "Enable OpenID Connect Authentication"
+# msgid "Enable OpenID Connect authentication"
 # msgstr ""
 
 # msgid "Authentication mode"
-# msgstr ""
-
-# msgid "Trusted client addresses"
-# msgstr ""
-
-# msgid "Blacklist client addresses"
 # msgstr ""
 
 # msgid "Base URL"
@@ -15009,4 +15015,34 @@ msgstr ""
 # msgstr ""
 
 # msgid "Login with"
+# msgstr ""
+
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace alias (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
 # msgstr ""
