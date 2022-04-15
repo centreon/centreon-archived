@@ -167,10 +167,11 @@ function printDebug($xml, array $tabs): int
 function unifyDateFormats(string $originalLog): string
 {
     $log = null;
-    if (preg_match('/\[(\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00)\]/', $originalLog, $matches)) {
+    $dateFormatPattern = '/\[(\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00)\]/';
+    if (preg_match($dateFormatPattern, $originalLog, $matches)) {
         $date = new DateTimeImmutable($matches[1]);
         $log = preg_replace(
-            '/\[(\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d.\d{3}\+[0-1]\d:00)\]/',
+            $dateFormatPattern,
             '[' . $date->getTimestamp() . ']',
             $originalLog
         );
