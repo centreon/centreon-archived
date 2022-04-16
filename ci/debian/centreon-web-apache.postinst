@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ] ; then
+
+  if [ -f "/etc/apache2/sites-available/centreon.conf" ]; then
+    a2enconf centreon.conf
+    a2enmod headers
+    a2enmod proxy_fcgi setenvif proxy rewrite
+    a2enmod alias proxy proxy_fcgi
+    a2enconf php8.0-fpm
+    a2dismod php8.0
+    systemctl restart apache2 php8.0-fpm
+  fi
+
+fi
+
+exit 0

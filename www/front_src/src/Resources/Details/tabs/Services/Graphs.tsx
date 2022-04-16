@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spacing(
       40,
-    )}px, auto))`,
+    )}, auto))`,
     rowGap: '8px',
   },
 }));
