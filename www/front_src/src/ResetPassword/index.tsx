@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 import { isNil, not } from 'ramda';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 
 import { Paper, Typography } from '@mui/material';

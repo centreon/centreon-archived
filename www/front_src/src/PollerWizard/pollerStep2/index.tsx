@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { pick } from 'ramda';
 

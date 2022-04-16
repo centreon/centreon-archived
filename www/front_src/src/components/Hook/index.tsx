@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { isNil, propOr } from 'ramda';
-import { useHref } from 'react-router';
+import { useHref } from 'react-router-dom';
 import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent, MenuSkeleton } from '@centreon/ui';
