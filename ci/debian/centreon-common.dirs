@@ -1,0 +1,7 @@
+/etc/centreon/config.d
+/var/cache/centreon
+/var/cache/centreon/backup
+/var/cache/centreon/config
+/var/cache/centreon/config/broker
+/var/cache/centreon/config/engine
+/var/cache/centreon/config/export
