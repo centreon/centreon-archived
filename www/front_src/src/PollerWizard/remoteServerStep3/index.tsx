@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { equals, not } from 'ramda';
 
 import { postData, useRequest } from '@centreon/ui';
