@@ -418,6 +418,10 @@ describe(Filter, () => {
 
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
+      await waitFor(() =>
+        expect(getByText(labelUnhandledProblems)).toBeInTheDocument(),
+      );
+
       userEvent.click(getByText(labelUnhandledProblems));
 
       userEvent.click(getByText(filterGroup));
@@ -487,7 +491,7 @@ describe(Filter, () => {
     'accepts the selected autocomplete suggestion when the beginning of a dynamic criteria is input and the %p key is pressed',
     async (_, keyboardAction) => {
       dynamicCriteriaRequests();
-      const { getByPlaceholderText } = renderFilter();
+      const { getByPlaceholderText, getByText } = renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
@@ -521,10 +525,14 @@ describe(Filter, () => {
         );
       });
 
+      await waitFor(() => expect(getByText('ESX-Servers')).toBeInTheDocument());
+
       keyboardAction();
 
-      expect(getByPlaceholderText(labelSearch)).toHaveValue(
-        'host_group:ESX-Servers',
+      await waitFor(() =>
+        expect(getByPlaceholderText(labelSearch)).toHaveValue(
+          'host_group:ESX-Servers',
+        ),
       );
 
       userEvent.type(getByPlaceholderText(labelSearch), ',');
@@ -551,12 +559,16 @@ describe(Filter, () => {
         );
       });
 
+      await waitFor(() => expect(getByText('Firewall')).toBeInTheDocument());
+
       userEvent.keyboard('{ArrowDown}');
 
       keyboardAction();
 
-      expect(getByPlaceholderText(labelSearch)).toHaveValue(
-        'host_group:ESX-Servers,Firewall',
+      await waitFor(() =>
+        expect(getByPlaceholderText(labelSearch)).toHaveValue(
+          'host_group:ESX-Servers,Firewall',
+        ),
       );
     },
   );
@@ -626,6 +638,16 @@ describe(Filter, () => {
               page: 1,
               total: 0,
             },
+            result: [],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
             result: [linuxServersHostGroup],
           },
         })
@@ -650,7 +672,7 @@ describe(Filter, () => {
         findByText,
       } = renderResult;
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
 
@@ -675,9 +697,7 @@ describe(Filter, () => {
       userEvent.click(getByText(labelStatus));
       expect(getByText(labelOk)).toBeInTheDocument();
 
-      act(() => {
-        userEvent.click(getByText(labelHostGroup));
-      });
+      userEvent.click(getByText(labelHostGroup));
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -791,7 +811,9 @@ describe(Filter, () => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
-      expect(getByText('New filter')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(getByText('New filter')).toBeInTheDocument();
+      });
       expect(
         getByDisplayValue(
           'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
@@ -811,21 +833,25 @@ describe(Filter, () => {
       fireEvent.click(getByText(labelStatus));
       expect(getByText(labelOk)).toBeInTheDocument();
 
-      fireEvent.click(getByText(labelHostGroup));
+      userEvent.click(getByText(labelHostGroup));
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument(),
+      );
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
       });
 
-      fireEvent.click(getByText(labelServiceGroup));
+      userEvent.click(getByText(labelServiceGroup));
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument(),
+      );
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -863,10 +889,12 @@ describe(Filter, () => {
       const { getByDisplayValue, queryByText } = renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(3);
       });
 
-      expect(getByDisplayValue('Search me')).toBeInTheDocument();
+      await waitFor(() =>
+        expect(getByDisplayValue('Search me')).toBeInTheDocument(),
+      );
       expect(queryByText(labelHost)).toBeNull();
       expect(queryByText(labelAcknowledged)).toBeNull();
       expect(queryByText(labelOk)).toBeNull();

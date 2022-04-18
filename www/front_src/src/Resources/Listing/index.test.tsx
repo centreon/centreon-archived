@@ -182,7 +182,7 @@ describe(Listing, () => {
           result: [],
         },
       })
-      .mockResolvedValueOnce({ data: retrievedListing });
+      .mockResolvedValue({ data: retrievedListing });
   });
 
   afterEach(() => {
@@ -190,6 +190,20 @@ describe(Listing, () => {
   });
 
   it('displays first part of information when multiple (split by \n) are available', async () => {
+    mockedAxios.get.mockReset();
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          meta: {
+            limit: 30,
+            page: 1,
+            total: 0,
+          },
+          result: [],
+        },
+      })
+      .mockResolvedValueOnce({ data: retrievedListing });
+
     const { getByText, queryByText } = renderListing();
 
     await waitFor(() => {
@@ -199,6 +213,17 @@ describe(Listing, () => {
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
       where({ information: includes('\n') }),
       retrievedListing.result,
+    );
+
+    await waitFor(() =>
+      expect(
+        getByText(
+          pipe<string, Array<string>, Matcher>(
+            split('\n'),
+            head,
+          )(resourcesWithMultipleLines[0].information as string),
+        ),
+      ).toBeInTheDocument(),
     );
 
     resourcesWithMultipleLines.forEach(({ information }) => {
@@ -295,6 +320,8 @@ describe(Listing, () => {
         meta: { ...retrievedListing.meta, page: 2 },
       },
     });
+
+    await waitFor(() => expect(getByLabelText('Next page')).toBeEnabled());
 
     fireEvent.click(getByLabelText('Next page'));
 
@@ -403,7 +430,7 @@ describe(Listing, () => {
       ),
     );
 
-    expect(getByText('admin')).toBeInTheDocument();
+    await waitFor(() => expect(getByText('admin')).toBeInTheDocument());
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('02/28/2020 9:16 AM')).toBeInTheDocument();
     expect(getByText('02/28/2020 9:18 AM')).toBeInTheDocument();
@@ -448,7 +475,7 @@ describe(Listing, () => {
       ),
     );
 
-    expect(getByText('admin')).toBeInTheDocument();
+    await waitFor(() => expect(getByText('admin')).toBeInTheDocument());
     expect(getByText('02/28/2020 9:16 AM')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();

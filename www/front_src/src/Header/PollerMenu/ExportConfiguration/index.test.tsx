@@ -83,8 +83,11 @@ describe(ExportConfiguration, () => {
     expect(
       screen.getByText(labelExportingAndReloadingTheConfiguration),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(labelConfigurationExportedAndReloaded),
-    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(labelConfigurationExportedAndReloaded),
+      ).toBeInTheDocument();
+    });
   });
 });

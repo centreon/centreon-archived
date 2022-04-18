@@ -1,11 +1,8 @@
 import * as React from 'react';
 
 import { Provider as ReduxProvider } from 'react-redux';
-import Fullscreen from 'react-fullscreen-crossbrowser';
 import { not } from 'ramda';
 
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import { Fab } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
@@ -59,13 +56,7 @@ const Footer = React.lazy(() => import('../Footer'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
-  const {
-    dataLoaded,
-    hasMinArgument,
-    isFullscreenEnabled,
-    displayInFullScreen,
-    removeFullscreen,
-  } = useApp();
+  const { dataLoaded, hasMinArgument } = useApp();
 
   if (!dataLoaded) {
     return <PageLoader />;
@@ -92,15 +83,8 @@ const App = (): JSX.Element => {
                 <Header />
               </React.Suspense>
             )}
-            <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
-              <Fullscreen
-                enabled={isFullscreenEnabled}
-                onClose={removeFullscreen}
-              >
-                <div className={classes.mainContent}>
-                  <MainRouter />
-                </div>
-              </Fullscreen>
+            <div className={classes.mainContent}>
+              <MainRouter />
             </div>
             {not(min) && (
               <React.Suspense
@@ -110,14 +94,6 @@ const App = (): JSX.Element => {
               </React.Suspense>
             )}
           </div>
-          <Fab
-            className={classes.fullscreenButton}
-            color="default"
-            size="small"
-            onClick={displayInFullScreen}
-          >
-            <FullscreenIcon />
-          </Fab>
         </div>
       </React.Suspense>
     </ReduxProvider>

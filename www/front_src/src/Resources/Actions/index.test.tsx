@@ -14,6 +14,7 @@ import {
   fireEvent,
   act,
   SeverityCode,
+  screen,
 } from '@centreon/ui';
 import {
   acknowledgementAtom,
@@ -58,6 +59,7 @@ import {
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
   labelStartTime,
+  labelDuration,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -94,9 +96,9 @@ const mockUser = {
 };
 const mockRefreshInterval = 15;
 const mockDowntime = {
-  default_duration: 7200,
-  default_fixed: true,
-  default_with_services: false,
+  duration: 3600,
+  fixed: true,
+  with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -225,6 +227,7 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
+    onRefresh.mockReset();
   });
 
   afterEach(() => {
@@ -237,17 +240,21 @@ describe(Actions, () => {
   });
 
   it('executes a listing request when the refresh button is clicked', async () => {
-    const { getByLabelText } = renderActions();
+    renderActions();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
-    const refreshButton = getByLabelText(labelRefresh);
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelRefresh)).toBeInTheDocument();
+    });
 
-    await waitFor(() => expect(refreshButton).toBeEnabled());
+    const refreshButton = screen.getByLabelText(labelRefresh);
 
-    fireEvent.click(refreshButton.firstElementChild as HTMLElement);
+    await waitFor(() => expect(refreshButton.firstChild).toBeEnabled());
+
+    userEvent.click(refreshButton.firstChild as HTMLElement);
 
     expect(onRefresh).toHaveBeenCalled();
   });
@@ -411,8 +418,7 @@ describe(Actions, () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-    const { findByText, getAllByText, getByLabelText, getByDisplayValue } =
-      renderActions();
+    const { findByText, getAllByText, getByLabelText } = renderActions();
 
     const selectedResources = [host];
 
@@ -424,8 +430,12 @@ describe(Actions, () => {
 
     await findByText(labelDowntimeByAdmin);
 
+    await waitFor(() => {
+      expect(getByLabelText(labelDuration)).toBeInTheDocument();
+    });
+
     fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('7200'), {
+    fireEvent.change(getByLabelText(labelDuration), {
       target: { value: '' },
     });
 
@@ -532,6 +542,10 @@ describe(Actions, () => {
 
     await findAllByText(labelDowntimeByAdmin);
 
+    await waitFor(() => {
+      expect(last(getAllByText(labelSetDowntime)) as HTMLElement).toBeEnabled();
+    });
+
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await waitFor(() =>
@@ -540,8 +554,8 @@ describe(Actions, () => {
         {
           downtime: {
             comment: labelDowntimeByAdmin,
-            duration: 7200,
-            end_time: '2020-01-01T02:00:00Z',
+            duration: 3600,
+            end_time: '2020-01-01T01:00:00Z',
             is_fixed: true,
             start_time: '2020-01-01T00:00:00Z',
             with_services: false,
@@ -582,7 +596,7 @@ describe(Actions, () => {
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
     mockedAxios.post.mockResolvedValueOnce({});
 
-    const { getByText, getByLabelText } = renderActions();
+    const { getByText, getByLabelText, getAllByText } = renderActions();
 
     act(() => {
       context.setSelectedResources?.([service]);
@@ -646,7 +660,7 @@ describe(Actions, () => {
       getByLabelText(labelMoreActions).firstElementChild as HTMLElement,
     );
 
-    fireEvent.click(getByText(labelSubmitStatus));
+    fireEvent.click(getAllByText(labelSubmitStatus)[1] as HTMLElement);
 
     userEvent.click(getByText(labelUp));
 

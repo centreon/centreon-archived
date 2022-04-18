@@ -13,6 +13,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelActivation } from '../translatedLabels';
 
 import {
   labelAuthorizationEndpoint,
@@ -101,6 +102,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     expect(
       screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
     ).toBeChecked();
@@ -154,6 +159,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
       '{selectall}{backspace}invalid base url',
@@ -202,6 +211,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
       '{selectall}{backspace}http://localhost:8081/login',
@@ -241,6 +254,10 @@ describe('Openid configuration form', () => {
         authenticationProvidersEndpoint(Provider.Openid),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(

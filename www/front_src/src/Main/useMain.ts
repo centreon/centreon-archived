@@ -123,6 +123,8 @@ const useMain = (): void => {
       includes(location.pathname, [reactRoutes.login, '/']),
     );
 
+    console.log(location.pathname, canRedirectToUserDefaultPage);
+
     if (not(canRedirectToUserDefaultPage)) {
       return;
     }

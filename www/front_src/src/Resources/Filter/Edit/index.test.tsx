@@ -134,6 +134,12 @@ describe(EditFilterPanel, () => {
 
     mockedAxios.put.mockResolvedValue({ data: updatedFilter });
 
+    await waitFor(() =>
+      expect(
+        getByLabelText(`${labelFilter}-${firstFilter.id}-${labelName}`),
+      ).toBeInTheDocument(),
+    );
+
     const renameFilterInput = getByLabelText(
       `${labelFilter}-${firstFilter.id}-${labelName}`,
     );
@@ -171,6 +177,8 @@ describe(EditFilterPanel, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
+
+    await waitFor(() => expect(getAllByLabelText(labelDelete)).toHaveLength(2));
 
     fireEvent.click(
       head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,

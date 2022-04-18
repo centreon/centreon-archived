@@ -3,7 +3,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 
-import { render, waitFor, fireEvent } from '@centreon/ui';
+import { render, waitFor, fireEvent, screen } from '@centreon/ui';
 
 import ServiceStatusCounter from '.';
 
@@ -43,6 +43,10 @@ describe(ServiceStatusCounter, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Services')).toBeInTheDocument();
     });
 
     fireEvent.click(getByText('4'));

@@ -155,13 +155,13 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       },
     })
     .mockResolvedValueOnce({
-      data: retrievedUser,
-    })
-    .mockResolvedValueOnce({
       data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -301,7 +301,10 @@ describe('Main', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/login');
-    expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
+    });
   });
 
   it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {
@@ -449,6 +452,7 @@ describe('Main', () => {
     });
 
     await waitFor(() => {
+      console.log(mockedAxios.get.mock.calls);
       expect(mockedAxios.get).toHaveBeenCalledWith(
         aclEndpoint,
         cancelTokenRequestParam,

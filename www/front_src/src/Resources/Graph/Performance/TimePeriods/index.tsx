@@ -36,6 +36,7 @@ interface StylesProps {
 const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   button: {
     fontSize: theme.typography.body2.fontSize,
+    pointerEvents: 'all',
   },
   buttonGroup: {
     alignSelf: 'center',

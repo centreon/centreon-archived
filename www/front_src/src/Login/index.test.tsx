@@ -188,7 +188,9 @@ describe('Login Page', () => {
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
-    expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    });
     expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
       'href',
       '/centreon/authentication/providers/configurations/openid',
@@ -273,7 +275,9 @@ describe('Login Page', () => {
       expect(screen.getByLabelText(labelConnect)).toBeDisabled();
     });
 
-    expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    await waitFor(() => {
+      expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    });
   });
 
   it('displays the password when the corresponding action is clicked', () => {

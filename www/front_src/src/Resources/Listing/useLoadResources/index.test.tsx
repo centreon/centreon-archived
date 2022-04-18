@@ -87,11 +87,13 @@ describe(useLoadResources, () => {
     [
       'sort',
       (): void => context.setCriteria?.({ name: 'sort', value: ['a', 'asc'] }),
+      '2',
     ],
-    ['limit', (): void => context.setLimit?.(20), '20'],
+    ['limit', (): void => context.setLimit?.(20), '2'],
     [
       'search',
       (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
+      '3',
     ],
     [
       'states',
@@ -100,6 +102,7 @@ describe(useLoadResources, () => {
           name: 'states',
           value: [{ id: 'unhandled', name: 'Unhandled problems' }],
         }),
+      '3',
     ],
     [
       'statuses',
@@ -108,6 +111,7 @@ describe(useLoadResources, () => {
           name: 'statuses',
           value: [{ id: 'OK', name: 'Ok' }],
         }),
+      '3',
     ],
     [
       'resourceTypes',
@@ -116,6 +120,7 @@ describe(useLoadResources, () => {
           name: 'resource_types',
           value: [{ id: 'host', name: 'Host' }],
         }),
+      '3',
     ],
     [
       'hostGroups',
@@ -124,6 +129,7 @@ describe(useLoadResources, () => {
           name: 'host_groups',
           value: [{ id: 0, name: 'Linux-servers' }],
         }),
+      '3',
     ],
     [
       'serviceGroups',
@@ -132,16 +138,19 @@ describe(useLoadResources, () => {
           name: 'service_groups',
           value: [{ id: 1, name: 'Web-services' }],
         }),
+      '3',
     ],
   ];
 
   it.each(testCases)(
     'resets the page to 1 when %p is changed and current filter is applied',
-    async (_, setter) => {
+    async (_, setter, calls) => {
       renderLoadResources();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(
+          parseInt(calls as string, 10),
+        );
       });
 
       act(() => {

@@ -149,9 +149,6 @@ const retrievedCustomFilters = {
   result: [getFilter({})],
 };
 
-const getCustomFilter = (): Filter =>
-  context.customFilters.find(propEq('id', filterId));
-
 describe(SaveMenu, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
@@ -187,7 +184,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    const filter = getCustomFilter();
+    const filter = getFilter({});
 
     act(() => {
       context.setCurrentFilter(
@@ -229,7 +226,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    const filter = getCustomFilter();
+    const filter = getFilter({});
 
     const newSearch = 'new search';
 
