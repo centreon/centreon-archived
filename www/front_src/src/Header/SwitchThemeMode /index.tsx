@@ -97,7 +97,7 @@ const SwitchThemeMode = (): JSX.Element => {
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
-    const theme = isDarkMode ? ThemeMode.light : ThemeMode.dark;
+    const themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
     if (!pathname.includes('php')) {
       setUser({
         ...user,
