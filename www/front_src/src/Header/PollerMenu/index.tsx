@@ -217,6 +217,7 @@ const PollerMenu = (): JSX.Element | null => {
             ) : (
               <Typography
                 className={clsx(classes.label, classes.pollerDetailRow)}
+                component="div"
                 variant="body2"
               >
                 <div>{t(labelAllPollers)}</div>
