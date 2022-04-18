@@ -16313,7 +16313,7 @@ msgid "Hard"
 msgstr "Hard"
 
 msgid "Soft"
-msgstr ""
+msgstr "Soft"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
