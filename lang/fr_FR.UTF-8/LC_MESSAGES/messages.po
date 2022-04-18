@@ -16310,7 +16310,7 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr ""
+msgstr "Hard"
 
 msgid "Soft"
 msgstr ""
