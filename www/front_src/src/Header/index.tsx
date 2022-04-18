@@ -8,6 +8,7 @@ import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
+import SwitchMode from './SwitchThemeMode ';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
@@ -38,6 +39,7 @@ const Header = (): JSX.Element => {
           <HookComponent path="/header/topCounter" />
           <HostStatusCounter />
           <ServiceStatusCounter />
+          <SwitchMode />
           <UserMenu />
         </div>
       </div>

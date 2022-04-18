@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    width: theme.spacing(14),
   },
   hiddenInput: {
     height: theme.spacing(0),
@@ -75,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 0, 1, 0.5),
     textDecoration: 'none',
   },
   listUnstyled: {
@@ -131,7 +130,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: theme.spacing(0.75, 2.75, 0.75, 7.6),
+    marginLeft: theme.spacing(0.5),
+    padding: theme.spacing(0.75, 2.75, 0.75, 1.5),
     position: 'relative',
   },
   wrapRightUserItems: {
