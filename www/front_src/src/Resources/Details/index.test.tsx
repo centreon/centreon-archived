@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, reject, path, isNil } from 'ramda';
+import { equals, reject, path } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import userEvent from '@testing-library/user-event';
@@ -674,7 +674,7 @@ describe(Details, () => {
     [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
-    async (period, startIsoString, timelineEventsLimit, periodId) => {
+    async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });

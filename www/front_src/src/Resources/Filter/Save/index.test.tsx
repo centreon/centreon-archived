@@ -2,7 +2,7 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { last, omit, propEq } from 'ramda';
+import { last, omit } from 'ramda';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
