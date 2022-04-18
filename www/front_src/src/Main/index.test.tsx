@@ -452,7 +452,6 @@ describe('Main', () => {
     });
 
     await waitFor(() => {
-      console.log(mockedAxios.get.mock.calls);
       expect(mockedAxios.get).toHaveBeenCalledWith(
         aclEndpoint,
         cancelTokenRequestParam,
