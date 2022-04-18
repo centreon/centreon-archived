@@ -768,7 +768,18 @@ describe(Filter, () => {
         },
       ]);
 
+      mockedAxios.get.mockReset();
       mockedAxios.get
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        })
         .mockResolvedValueOnce({
           data: {
             meta: {
@@ -789,7 +800,7 @@ describe(Filter, () => {
             result: [linuxServersHostGroup],
           },
         })
-        .mockResolvedValueOnce({
+        .mockResolvedValue({
           data: {
             meta: {
               limit: 30,
