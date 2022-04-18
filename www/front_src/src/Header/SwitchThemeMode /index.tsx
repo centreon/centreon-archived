@@ -98,17 +98,16 @@ const SwitchThemeMode = (): JSX.Element => {
 
   const switchThemeMode = (): void => {
     const themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
-    if (!pathname.includes('php')) {
-      setUser({
-        ...user,
-        themeMode: theme,
-      });
-    }
+    const isCurrentPageLegacy = pathname.includes('php');
+    setUser({
+      ...user,
+      themeMode,
+    });
     sendRequest({
-      data: { theme },
+      data: { theme: themeMode },
       endpoint: switchEndPoint,
     }).then(() => {
-      if (pathname.includes('php')) {
+      if (isCurrentPageLegacy) {
         window.location.reload();
       }
     });
