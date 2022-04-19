@@ -129,6 +129,19 @@ def checkoutCentreonBuild() {
               credentialsId: 'technique-ci',
               url: 'https://github.com/centreon/centreon-build.git'
             ]
+          ],
+          extensions: [
+            [
+              $class: 'CleanBeforeCheckout'
+            ],
+            [
+              $class: 'CloneOption',
+              depth: 0,
+              noTags: false,
+              reference: '',
+              shallow: true,
+              timeout: 10
+            ]
           ]
         ]
       )
