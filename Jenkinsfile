@@ -121,7 +121,8 @@ def checkoutCentreonBuild() {
         [
           $class: 'GitSCM',
           branches: [
-            [name: env.BUILD_BRANCH]
+            [name: env.BUILD_BRANCH],
+            [name: 'master']
           ],
           userRemoteConfigs: [
             [
