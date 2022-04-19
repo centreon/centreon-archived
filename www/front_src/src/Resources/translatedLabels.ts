@@ -237,4 +237,3 @@ export const labelSoft = 'Soft';
 export const labelInvalidFormat = 'Invalid format';
 export const labelType = 'Type';
 export const labelForceActiveChecks = 'Force active checks';
-export const labelAcknowledgeWithSerivces = 'Acknowledge with services';
