@@ -107,7 +107,8 @@ class Command extends AbstractObject
 
         Plugins::getInstance($this->dependencyInjector)->addCommand($command_line);
 
-        if (!is_null($this->commands[$command_id]['enable_shell']) &&
+        if (
+            !is_null($this->commands[$command_id]['enable_shell']) &&
             $this->commands[$command_id]['enable_shell'] == 1
         ) {
             $command_line = '/bin/sh -c ' . escapeshellarg($command_line);
