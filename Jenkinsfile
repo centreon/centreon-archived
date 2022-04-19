@@ -129,7 +129,7 @@ def checkoutCentreonBuild() {
               credentialsId: 'technique-ci',
               url: 'https://github.com/centreon/centreon-build.git'
             ]
-          ]
+          ],
           extensions: [
             [
               $class: 'CloneOption',
