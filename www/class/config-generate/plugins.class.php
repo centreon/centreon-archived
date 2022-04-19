@@ -40,6 +40,9 @@ class Plugins extends AbstractObjectJSON
     protected $pluginsCache = null;
     protected $plugins = [];
 
+    /**
+     * store plugin packs and their version in cache
+     */
     private function getPlugins()
     {
         $stmt = $this->backend_instance->db->prepare("
@@ -52,6 +55,9 @@ class Plugins extends AbstractObjectJSON
         $this->pluginsCache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
+    /**
+     * add command to generate
+     */
     public function addCommand(string $commandLine)
     {
         if (is_null($this->pluginsCache)) {
@@ -70,12 +76,18 @@ class Plugins extends AbstractObjectJSON
         $this->plugins[ $this->pluginsCache[$command]['package_name'] ] = $this->pluginsCache[$command]['version'];
     }
 
+    /**
+     * generate file
+     */
     public function generate()
     {
-        $this->content = json_encode($this->plugins, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        $this->content = json_encode($this->plugins, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         $this->writeFile($this->backend_instance->getPath());
     }
 
+    /**
+     * reset cache
+     */
     public function reset()
     {
         $this->plugins = [];
