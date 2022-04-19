@@ -9,7 +9,6 @@ import { createRoot } from 'react-dom/client';
 import Main from './Main';
 
 const container = document.getElementById('root');
-const root = createRoot(container);
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -32,5 +31,5 @@ const root = createRoot(container);
   );
   window.Jotai = await import(/* webpackChunkName: "external" */ 'jotai');
 
-  root.render(<Main />, document.getElementById('root'));
+  createRoot(container).render(<Main />);
 })();

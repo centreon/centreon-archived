@@ -32,6 +32,7 @@ const ThemeModeSwitch = styled(Switch, {
       '& .MuiSwitch-thumb:before': {
         backgroundImage: `url(${darkModeSvg})`,
       },
+      color: 'transparent',
       transform: 'translate(15px,-50%)',
     },
     '&:hover': {
@@ -94,19 +95,19 @@ const SwitchThemeMode = (): JSX.Element => {
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
+    const themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
+    const isCurrentPageLegacy = pathname.includes('php');
+    setUser({
+      ...user,
+      themeMode,
+    });
     sendRequest({
-      data: { theme: isDarkMode ? ThemeMode.light : ThemeMode.dark },
+      data: { theme: themeMode },
       endpoint: switchEndPoint,
     }).then(() => {
-      if (pathname.includes('php')) {
+      if (isCurrentPageLegacy) {
         window.location.reload();
-
-        return;
       }
-      setUser({
-        ...user,
-        themeMode: isDarkMode ? ThemeMode.light : ThemeMode.dark,
-      });
     });
   };
 
