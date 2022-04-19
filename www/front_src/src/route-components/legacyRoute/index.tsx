@@ -14,10 +14,11 @@ const LegacyRoute = (): JSX.Element => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    mainContainerRef.current =
-      window.document.getElementById('fullscreen-wrapper');
-  }, []);
+  const handleHref = (event): void => {
+    const { href } = event.detail;
+
+    window.history.pushState(null, href, href);
+  };
 
   const load = (): void => {
     setLoading(false);
@@ -51,6 +52,17 @@ const LegacyRoute = (): JSX.Element => {
       );
     });
   };
+
+  React.useEffect(() => {
+    mainContainerRef.current =
+      window.document.getElementById('fullscreen-wrapper');
+
+    window.addEventListener('react.href.update', handleHref, false);
+
+    return () => {
+      window.removeEventListener('react.href.update', handleHref);
+    };
+  }, []);
 
   const { search, hash } = location;
 
