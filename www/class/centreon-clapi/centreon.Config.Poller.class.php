@@ -199,7 +199,9 @@ class CentreonConfigPoller
         $syncPlugins = $this->isSyncPlugins();
         exec(
             "echo '" . ($syncPlugins ? 'ENGINERELOAD' : 'RELOAD') . ":" . $host["id"]
-            . "' >> " . $this->centcore_pipe, $stdout, $return_code
+                . "' >> " . $this->centcore_pipe,
+            $stdout,
+            $return_code
         );
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
@@ -271,7 +273,9 @@ class CentreonConfigPoller
         $syncPlugins = $this->isSyncPlugins();
         exec(
             "echo '" . ($syncPlugins ? 'ENGINERESTART' : 'RESTART') . ":" . $host["id"]
-            . "' >> " . $this->centcore_pipe, $stdout, $return_code
+                . "' >> " . $this->centcore_pipe,
+            $stdout,
+            $return_code
         );
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
