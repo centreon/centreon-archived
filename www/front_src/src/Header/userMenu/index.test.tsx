@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'jotai';

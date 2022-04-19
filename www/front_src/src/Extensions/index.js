@@ -8,7 +8,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/destructuring-assignment */
 
-import * as React from 'react';
+import { Component, useCallback } from 'react';
 
 import axios from 'axios';
 
@@ -26,7 +26,7 @@ import ExtensionDeletePopup from './ExtensionDeletePopup';
 import TopFilters from './TopFilters';
 import Wrapper from './Wrapper';
 
-class ExtensionsManager extends React.Component {
+class ExtensionsManager extends Component {
   state = {
     confirmedDeletingEntityId: null,
     deleteToggled: false,
@@ -606,7 +606,7 @@ const ExtensionsRoute = () => {
   const { getNavigation } = useNavigation();
   const { getExternalComponents } = useExternalComponents();
 
-  const reloadNavigation = React.useCallback(() => {
+  const reloadNavigation = useCallback(() => {
     getNavigation();
     getExternalComponents();
   }, []);

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { map, nth, pipe, path, all, not, isNil, prop } from 'ramda';
 import { Shape, Curve } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';

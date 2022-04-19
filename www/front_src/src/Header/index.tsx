@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import classnames from 'classnames';
 
 import Hook from '../components/Hook';

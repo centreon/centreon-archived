@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 
-import React from 'react';
+import { Component } from 'react';
 
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
@@ -23,7 +23,7 @@ import {
   ReleaseNoteSkeleton,
 } from './LoadingSkeleton';
 
-class ExtensionDetailPopup extends React.Component {
+class ExtensionDetailPopup extends Component {
   render() {
     const {
       modalDetails,

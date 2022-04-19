@@ -6,8 +6,6 @@
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React from 'react';
-
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 

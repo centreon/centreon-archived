@@ -1,8 +1,6 @@
 /* eslint-disable hooks/sort */
 // Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
 
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
 

@@ -6,13 +6,13 @@
 /* eslint-disable react/sort-comp */
 /* eslint-disable react/require-default-props */
 
-import * as React from 'react';
+import { Children, Component } from 'react';
 
 import PropTypes from 'prop-types';
 
 import { normalize } from './helpers';
 
-export default class BoundingBox extends React.Component {
+export default class BoundingBox extends Component {
   state = {
     isInViewport: null,
   };
@@ -91,6 +91,6 @@ export default class BoundingBox extends React.Component {
       });
     }
 
-    return React.Children.only(this.props.children);
+    return Children.only(this.props.children);
   }
 }

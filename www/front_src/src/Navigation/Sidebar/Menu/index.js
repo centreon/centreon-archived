@@ -11,7 +11,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
 
-import React, { Component } from 'react';
+import { Fragment, Component } from 'react';
 
 import clsx from 'clsx';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -322,7 +322,7 @@ class NavigationMenu extends Component {
                               style={styleFor3rdLevel}
                             >
                               {secondLevel.groups.map((group) => (
-                                <React.Fragment
+                                <Fragment
                                   key={`thirdLevelFragment-${group.label}`}
                                 >
                                   {secondLevel.groups.length > 1 ? (
@@ -374,7 +374,7 @@ class NavigationMenu extends Component {
                                       </li>
                                     );
                                   })}
-                                </React.Fragment>
+                                </Fragment>
                               ))}
                             </ul>
                           );

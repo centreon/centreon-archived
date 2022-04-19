@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -28,7 +28,7 @@ const FormRemoteServerStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const [remoteServers, setRemoteServers] = React.useState<Record<
+  const [remoteServers, setRemoteServers] = useState<Record<
     string,
     unknown
   > | null>(null);
@@ -66,7 +66,7 @@ const FormRemoteServerStepTwo = ({
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getRemoteServers();
   }, []);
 

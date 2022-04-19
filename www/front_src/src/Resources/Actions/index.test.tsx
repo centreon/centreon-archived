@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { last, pick, map, head } from 'ramda';

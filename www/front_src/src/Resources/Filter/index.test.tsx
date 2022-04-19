@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import * as React from 'react';
-
 import axios from 'axios';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';

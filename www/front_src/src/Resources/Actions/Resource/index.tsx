@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -64,9 +64,9 @@ const ResourceActions = (): JSX.Element => {
   const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
   const [resourceToSubmitStatus, setResourceToSubmitStatus] =
-    React.useState<Resource | null>();
+    useState<Resource | null>();
   const [resourceToComment, setResourceToComment] =
-    React.useState<Resource | null>();
+    useState<Resource | null>();
 
   const [selectedResources, setSelectedResources] = useAtom(
     selectedResourcesAtom,
@@ -103,7 +103,7 @@ const ResourceActions = (): JSX.Element => {
     setResourceToComment(null);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!hasResourcesToCheck) {
       return;
     }
@@ -119,7 +119,7 @@ const ResourceActions = (): JSX.Element => {
       .catch(() => showErrorMessage(t(labelSomethingWentWrong)));
   }, [resourcesToCheck]);
 
-  React.useEffect(() => (): void => cancel(), []);
+  useEffect(() => (): void => cancel(), []);
 
   const prepareToAcknowledge = (): void => {
     setResourcesToAcknowledge(selectedResources);

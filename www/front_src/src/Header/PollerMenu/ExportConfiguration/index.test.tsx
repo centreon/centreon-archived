@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';

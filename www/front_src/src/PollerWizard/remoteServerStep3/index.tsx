@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { useTranslation, withTranslation } from 'react-i18next';
@@ -20,8 +20,8 @@ const exportTaskEndpoint =
 const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const [error, setError] = React.useState<string | null>(null);
-  const [generateStatus, setGenerateStatus] = React.useState<boolean | null>(
+  const [error, setError] = useState<string | null>(null);
+  const [generateStatus, setGenerateStatus] = useState<boolean | null>(
     null,
   );
 
@@ -34,9 +34,9 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const generationTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const generationTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const remainingGenerationTimeoutRef = React.useRef<number>(30);
+  const remainingGenerationTimeoutRef = useRef<number>(30);
 
   const refreshGeneration = (): void => {
     const { taskId } = pollerData;
@@ -79,7 +79,7 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
     setGenerateStatus(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setGenerationTimeout();
   }, []);
 

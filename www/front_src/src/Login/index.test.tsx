@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Provider } from 'jotai';
 import mockDate from 'mockdate';
 import { BrowserRouter } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -26,7 +26,7 @@ const FormPollerStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const [pollers, setPollers] = React.useState<Array<unknown>>([]);
+  const [pollers, setPollers] = useState<Array<unknown>>([]);
 
   const { sendRequest: getPollersRequest } = useRequest<Array<unknown>>({
     request: postData,
@@ -45,7 +45,7 @@ const FormPollerStepTwo = ({
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getPollers();
   }, []);
 

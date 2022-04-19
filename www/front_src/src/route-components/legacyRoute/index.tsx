@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import classnames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,12 +9,12 @@ import { PageSkeleton } from '@centreon/ui';
 import styles from '../../Header/header.scss';
 
 const LegacyRoute = (): JSX.Element => {
-  const [loading, setLoading] = React.useState(true);
-  const mainContainerRef = React.useRef<HTMLElement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const mainContainerRef = useRef<HTMLElement | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     mainContainerRef.current =
       window.document.getElementById('fullscreen-wrapper');
   }, []);

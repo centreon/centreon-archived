@@ -1,5 +1,4 @@
 import '@babel/polyfill';
-import React from 'react';
 
 import configureStore from 'redux-mock-store';
 import { render, fireEvent, queryByAttribute } from '@testing-library/react';

@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import * as React from 'react';
-
 import axios from 'axios';
 import { last, omit } from 'ramda';
 import userEvent from '@testing-library/user-event';

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { dec, equals, length, not, pipe } from 'ramda';
 
 import { Link, Typography } from '@mui/material';

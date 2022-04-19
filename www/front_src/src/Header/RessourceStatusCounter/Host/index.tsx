@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from 'react';
-
 import classnames from 'classnames';
 import * as yup from 'yup';
 import numeral from 'numeral';

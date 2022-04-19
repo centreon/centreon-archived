@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import {
   always,
@@ -61,7 +61,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
 
   const categoriesName = pluck('name', categories);
 
-  const inputsByCategory = React.useMemo(
+  const inputsByCategory = useMemo(
     () =>
       groupBy(
         ({ category }) => find(equals(category), categoriesName) as string,
@@ -70,13 +70,13 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const sortedCategoryNames = React.useMemo(() => {
+  const sortedCategoryNames = useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
     return pluck('name', sortedCategories);
   }, []);
 
-  const sortedInputsByCategory = React.useMemo(
+  const sortedInputsByCategory = useMemo(
     () =>
       reduce<string, Record<string, Array<InputProps>>>(
         (acc, value) => ({
@@ -92,7 +92,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const lastCategory = React.useMemo(() => last(sortedCategoryNames), []);
+  const lastCategory = useMemo(() => last(sortedCategoryNames), []);
 
   return (
     <div>

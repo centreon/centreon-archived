@@ -1,5 +1,5 @@
 /* eslint-disable hooks/sort */
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
@@ -57,7 +57,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   })) as Array<Type>;
 
   const [selectedTypes, setSelectedTypes] =
-    React.useState<Array<Type>>(translatedTypes);
+    useState<Array<Type>>(translatedTypes);
   const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({

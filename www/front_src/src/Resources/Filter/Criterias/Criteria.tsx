@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { equals, isNil } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';

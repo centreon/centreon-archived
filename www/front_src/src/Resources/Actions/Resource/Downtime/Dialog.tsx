@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -88,7 +88,7 @@ const DialogDowntime = ({
   const { t } = useTranslation();
 
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const [isPickerOpened, setIsPickerOpened] = React.useState(false);
+  const [isPickerOpened, setIsPickerOpened] = useState(false);
 
   const { locale } = useAtomValue(userAtom);
 

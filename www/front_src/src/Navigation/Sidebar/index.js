@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 import clsx from 'clsx';
 

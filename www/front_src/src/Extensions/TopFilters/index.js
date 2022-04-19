@@ -7,8 +7,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 
-import React from 'react';
-
 import { Switch, FormControlLabel, Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

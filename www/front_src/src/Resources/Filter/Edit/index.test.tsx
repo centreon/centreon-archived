@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import * as React from 'react';
-
 import axios from 'axios';
 import { omit, head, prop } from 'ramda';
 import { Provider } from 'jotai';

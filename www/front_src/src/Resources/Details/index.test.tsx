@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals, reject, path } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';

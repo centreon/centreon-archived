@@ -6,7 +6,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-restricted-globals */
 
-import React from 'react';
+import { Component } from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -27,7 +27,7 @@ import {
 
 import Wrapper from '../Wrapper';
 
-class ExtensionsHolder extends React.Component {
+class ExtensionsHolder extends Component {
   parseDescription = (description) => {
     return description.replace(/^centreon\s+(\w+)/i, (_, $1) => $1);
   };

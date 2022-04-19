@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -21,7 +21,7 @@ const FormPollerStepOne = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const [waitList, setWaitList] = React.useState<Array<unknown> | null>(null);
+  const [waitList, setWaitList] = useState<Array<unknown> | null>(null);
   const { sendRequest } = useRequest<Array<unknown>>({
     request: postData,
   });
@@ -39,7 +39,7 @@ const FormPollerStepOne = ({
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getWaitList();
   }, []);
 
