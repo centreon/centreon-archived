@@ -87,11 +87,7 @@ import { CriteriaNames } from '../Filter/Criterias/models';
 import { ResourceType } from '../models';
 import useLoadDetails from '../testUtils/useLoadDetails';
 
-import {
-  last7Days,
-  last31Days,
-  CustomTimePeriodProperty,
-} from './tabs/Graph/models';
+import { CustomTimePeriodProperty } from './tabs/Graph/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
