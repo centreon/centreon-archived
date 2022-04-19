@@ -433,7 +433,7 @@ p.description a, p.description a:visited {
 
 /* Content for display text in selected element on select 2 fields */
 .select2-container--default .select2-selection--multiple .select2-selection__choice .select2-content {
-    padding: 2px 0px 2px 8px;
+    padding: 2px 8px 2px 8px;
     border-top: 1px solid var(--select2-selection-multiple-content-border-color-top);
     border-bottom: 1px solid var(--select2-selection-multiple-content-border-color-bottom);
     border-right: 1px solid var(--select2-selection-multiple-content-border-color-right);

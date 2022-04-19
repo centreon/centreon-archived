@@ -145,7 +145,7 @@
     --select2-selection-multiple-border-color : var(--color-alto-5);
     --select2-selection-multiple-content-border-color-top : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-bottom : var(--select2-selection-multiple-border-color);
-    --select2-selection-multiple-content-border-color-right : none;
+    --select2-selection-multiple-content-border-color-right : var(--select2-selection-multiple-content-border-color-bottom);
     --select2-selection-multiple-content-color : var(--color-navy-bleu);
     --select2-selection-multiple-content-background-color : var(--color-alto-5);
     --select2-results-option-highlighted-background-color : var(--color-tundora);

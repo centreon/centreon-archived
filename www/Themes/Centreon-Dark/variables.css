@@ -178,4 +178,5 @@
     --ui-state-processing-border-bottom-color: var(--body-color);
     --popup-volante-background-color: var(--body-background);
     --image-volante-background-color: var(--popup-volante-background-color);
+    --select2--selection-multiple-disabled-background-color: var(--body-background);
 }
