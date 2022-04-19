@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 interface ExternalModuleGenerationInterface
@@ -42,8 +43,5 @@ interface ExternalModuleGenerationInterface
      */
     public function generateFromPollerId(int $pollerId, string $localhost): void;
 
-    /**
-     * @return void
-     */
     public function reset(): void;
 }
