@@ -70,7 +70,7 @@ const DowntimeForm = ({
 
   const currentDate = new Date();
 
-  const defaultDurationInMs = downtime.default_duration * 1000;
+  const defaultDurationInMs = downtime.duration * 1000;
   const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
 
   const form = useFormik<DowntimeFormValues>({
@@ -80,10 +80,10 @@ const DowntimeForm = ({
       dateStart: currentDate,
       duration: {
         unit: 'seconds',
-        value: downtime.default_duration,
+        value: downtime.duration,
       },
-      fixed: downtime.default_fixed,
-      isDowntimeWithServices: downtime.default_with_services,
+      fixed: downtime.fixed,
+      isDowntimeWithServices: downtime.with_services,
       timeEnd: defaultEndDate,
       timeStart: currentDate,
     },

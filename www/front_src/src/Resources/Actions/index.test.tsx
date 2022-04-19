@@ -102,9 +102,9 @@ const mockUserContext = {
   },
   alias: 'admin',
   downtime: {
-    default_duration: 7200,
-    default_fixed: true,
-    default_with_services: false,
+    duration: 7200,
+    fixed: true,
+    with_services: false,
   },
   locale: 'en',
   name: 'admin',
@@ -176,7 +176,6 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
-    mockedAxios.post.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -198,6 +197,7 @@ describe(Actions, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedAxios.post.mockReset();
 
     mockedUserContext.mockReset();
   });
@@ -502,7 +502,8 @@ describe(Actions, () => {
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
     mockedAxios.post.mockResolvedValueOnce({});
 
-    const { getByText, getByLabelText, getByTitle } = renderActions();
+    const { getByText, getByLabelText, getByTitle, queryByText } =
+      renderActions();
 
     act(() => {
       context.setSelectedResources([service]);
@@ -554,6 +555,10 @@ describe(Actions, () => {
         },
         expect.anything(),
       );
+    });
+
+    await waitFor(() => {
+      expect(queryByText(labelSubmitStatus)).toBeNull();
     });
 
     act(() => {

@@ -34,8 +34,11 @@ const contextUser = {
 };
 
 const retrievedDefaultParameters = {
+  monitoring_default_acknowledgement_force_active_checks: false,
+  monitoring_default_acknowledgement_notify: false,
   monitoring_default_acknowledgement_persistent: true,
   monitoring_default_acknowledgement_sticky: false,
+  monitoring_default_acknowledgement_with_services: false,
   monitoring_default_downtime_duration: 1458,
   monitoring_default_downtime_fixed: true,
   monitoring_default_downtime_with_services: false,
@@ -100,21 +103,26 @@ describe(Provider, () => {
       expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
       expect(useUser().setUser).toHaveBeenCalledWith(contextUser);
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
-        default_duration:
+        duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
-        default_fixed:
-          retrievedDefaultParameters.monitoring_default_downtime_fixed,
-        default_with_services:
+        fixed: retrievedDefaultParameters.monitoring_default_downtime_fixed,
+        with_services:
           retrievedDefaultParameters.monitoring_default_downtime_with_services,
       });
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
       );
       expect(useAcknowledgement().setAcknowledgement).toHaveBeenCalledWith({
+        force_active_checks:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_force_active_checks,
+        notify:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_notify,
         persistent:
           retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
         sticky:
           retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
+        with_services:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_with_services,
       });
     });
   });

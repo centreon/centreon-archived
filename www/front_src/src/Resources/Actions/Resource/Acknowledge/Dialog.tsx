@@ -99,7 +99,7 @@ const DialogAcknowledge = ({
                 onChange={handleChange('notify')}
               />
             }
-            label={t(labelNotify)}
+            label={t(labelNotify) as string}
           />
           <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
         </Grid>
@@ -119,7 +119,7 @@ const DialogAcknowledge = ({
                   onChange={handleChange('acknowledgeAttachedResources')}
                 />
               }
-              label={t(labelAcknowledgeServices)}
+              label={t(labelAcknowledgeServices) as string}
             />
           </Grid>
         )}
@@ -134,7 +134,7 @@ const DialogAcknowledge = ({
                 onChange={handleChange('persistent')}
               />
             }
-            label={t(labelPersistent)}
+            label={t(labelPersistent) as string}
           />
         </Grid>
         <Grid item>
@@ -148,7 +148,7 @@ const DialogAcknowledge = ({
                 onChange={handleChange('isSticky')}
               />
             }
-            label={t(labelSticky)}
+            label={t(labelSticky) as string}
           />
         </Grid>
       </Grid>

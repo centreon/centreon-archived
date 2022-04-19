@@ -3438,6 +3438,18 @@ paths:
                       type: boolean
                       description: Default monitoring acknowledgement sticky option
                       example: true
+                    monitoring_default_acknowledgement_notify:
+                      type: boolean
+                      description: Default monitoring acknowledgement notify option
+                      example: true
+                    monitoring_default_acknowledgement_force_active_checks:
+                      type: boolean
+                      description: Default monitoring acknowledgement force active checks option
+                      example: true
+                    monitoring_default_acknowledgement_with_services:
+                      type: boolean
+                      description: Default monitoring acknowledgement with services option
+                      example: true
                     monitoring_default_downtime_fixed:
                       type: boolean
                       description: Default monitoring downtime fixed option
