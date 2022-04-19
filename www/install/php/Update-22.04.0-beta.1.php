@@ -693,7 +693,7 @@ function createGorgoneUser(CentreonDB $pearDB, string $userAlias, string $hashed
 function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
 {
     $usersToExclude = [
-        ':bi' => 'centreonBI',
+        ':bi' => 'CBIS',
         ':map' => 'centreon-map'
     ];
 
