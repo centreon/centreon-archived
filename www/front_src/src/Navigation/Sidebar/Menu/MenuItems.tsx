@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';

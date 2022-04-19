@@ -347,10 +347,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -374,10 +376,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -401,10 +405,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(

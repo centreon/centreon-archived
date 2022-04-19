@@ -65,8 +65,7 @@ const ResourceActions = (): JSX.Element => {
 
   const [resourceToSubmitStatus, setResourceToSubmitStatus] =
     useState<Resource | null>();
-  const [resourceToComment, setResourceToComment] =
-    useState<Resource | null>();
+  const [resourceToComment, setResourceToComment] = useState<Resource | null>();
 
   const [selectedResources, setSelectedResources] = useAtom(
     selectedResourcesAtom,

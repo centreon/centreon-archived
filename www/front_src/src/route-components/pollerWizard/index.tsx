@@ -56,9 +56,7 @@ const PollerWizard = (): JSX.Element | null => {
   const classes = useStyles();
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [serverType, setServerType] = useState<ServerType>(
-    ServerType.Base,
-  );
+  const [serverType, setServerType] = useState<ServerType>(ServerType.Base);
 
   const goToNextStep = (): void => {
     setCurrentStep((step) => step + 1);

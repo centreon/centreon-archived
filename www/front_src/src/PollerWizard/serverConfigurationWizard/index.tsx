@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals } from 'ramda';
@@ -29,7 +29,7 @@ const ServerConfigurationWizard = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [serverType, setServerType] = React.useState<number>(1);
+  const [serverType, setServerType] = useState<number>(1);
 
   const handleSubmit = (event): void => {
     event.preventDefault();
