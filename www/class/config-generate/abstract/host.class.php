@@ -412,11 +412,9 @@ abstract class AbstractHost extends AbstractObject
             $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $stmt->execute();
             $hostCategories = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        } else {
-            $hostCategories = $host['hostCategories'];
         }
 
-        return $hostCategories;
+        return $hostCategories ??  $host['hostCategories'];
     }
 
     /**
