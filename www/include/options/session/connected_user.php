@@ -123,8 +123,9 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
         // adding the link to be able to kick the user
         $session_data[$cpt]["actions"] =
             "<a href='./main.php?p=" . $p . "&o=k&user=" . $r['user_id'] . "'>" .
-                "<img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
-                "' title='" . _("Kick User") . "'>" .
+                "<span title='" . _("Kick User") . "'>" .
+                    returnSvg("www/img/icons/delete.svg", "var(--icons-fill-color)", 22, 22) .
+                "</span>" .
             "</a>";
 
         // checking if the user account is linked to an LDAP

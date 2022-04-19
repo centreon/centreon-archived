@@ -57,7 +57,16 @@
 			<tr class="{$elemArr[elem].MenuClass}">
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
-					<a href="{$elemArr[elem].RowMenu_link}"> <img src="{$elemArr[elem].RowMenu_icone}" class="ico-16 margin_right" />{$elemArr[elem].RowMenu_name}</a>
+					<a href="{$elemArr[elem].RowMenu_link}">
+                        {if $elemArr[elem].isHTSvgFile}
+                            <span class="ico-16  margin_right">
+                                {$elemArr[elem].RowMenu_icone}
+                            </span>
+                        {else}
+                            <img src='{$elemArr[elem].RowMenu_icone}' class='ico-16 margin_right' />
+                        {/if}
+                        {$elemArr[elem].RowMenu_name}
+                    </a>
 				</td>
 				<td class="ListColLeft resizeTitle"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_svChilds}</td>

@@ -181,7 +181,9 @@ for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     }
 
     //Check icon
+    $isHTSvgFile = true;
     if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
+        $isHTSvgFile = false;
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
     } elseif (
         $icone = $host_method->replaceMacroInString(
@@ -189,9 +191,11 @@ for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
             getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)
         )
     ) {
+        $isHTSvgFile = false;
         $host_icone = "./img/media/" . $icone;
     } else {
-        $host_icone = "./img/icons/host.png";
+        $isHTSvgFile = true;
+        $host_icone = returnSvg("www/img/icons/host.svg", "var(--icons-fill-color)", 16, 16);
     }
 
     //Service List
@@ -209,7 +213,8 @@ for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
         "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
         "RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isHTSvgFile" => $isHTSvgFile
     );
     $style != "two" ? $style = "two" : $style = "one";
 }
