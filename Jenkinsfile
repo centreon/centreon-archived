@@ -132,7 +132,7 @@ def checkoutCentreonBuild() {
           ],
           extensions: [
             [
-              $class: 'CleanBeforeCheckout'
+              $class: 'WipeWorkspace'
             ],
             [
               $class: 'CloneOption',
