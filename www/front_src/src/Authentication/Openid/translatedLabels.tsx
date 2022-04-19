@@ -1,6 +1,6 @@
 export const labelOpenIDConnectConfiguration = 'OpenID Connect Configuration';
 export const labelDefineOpenIDConnectConfiguration =
-  'Define OpenID Connect Configuration';
+  'Define OpenID Connect configuration';
 export const labelRequired = 'Required';
 export const labelInvalidURL = 'Invalid URL';
 export const labelInvalidIPAddress = 'Invalid IP Address';
