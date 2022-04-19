@@ -56,6 +56,11 @@ it('should present a NoContentResponse when the use case is executed correctly',
         $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
         $request->authenticationType = 'client_secret_post';
         $request->verifyPeer = false;
+        $request->isAutoImportEnabled = true;
+        $request->contactTemplate = ['id' => 1, "name" => 'contact-template'];
+        $request->emailBindAttribute = 'email';
+        $request->userAliasBindAttribute = 'alias';
+        $request->userNameBindAttribute = 'name';
 
         $openIdConfiguration = OpenIdConfigurationFactory::createFromRequest($request);
 
@@ -71,7 +76,7 @@ it('should present a NoContentResponse when the use case is executed correctly',
 
         $useCase = new UpdateOpenIdConfiguration($this->repository);
         $useCase($this->presenter, $request);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});
 
 it('should present an ErrorResponse when an error occured during the use case execution', function () {
     $request = new UpdateOpenIdConfigurationRequest();
@@ -91,6 +96,11 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
+    $request->isAutoImportEnabled = true;
+    $request->contactTemplate = ['id' => 1, "name" => 'contact-template'];
+    $request->emailBindAttribute = 'email';
+    $request->userAliasBindAttribute = 'alias';
+    $request->userNameBindAttribute = 'name';
 
     $this->presenter
         ->expects($this->once())
@@ -103,4 +113,4 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $useCase = new UpdateOpenIdConfiguration($this->repository);
 
     $useCase($this->presenter, $request);
-})->skip('should present a NoContentResponse when the use case is executed correctly');
+});
