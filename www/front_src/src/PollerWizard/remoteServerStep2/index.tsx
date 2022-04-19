@@ -39,7 +39,7 @@ const RemoteServerWizardStepTwo = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const [remoteServers, setRemoteServers] =
-    React.useState<Array<PollerRemoteList> | null>(null);
+    useState<Array<PollerRemoteList> | null>(null);
 
   const [linkedPollers, setLinkedPollers] = useState<Array<SelectEntry>>([]);
 

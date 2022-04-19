@@ -663,9 +663,9 @@ describe(Details, () => {
   });
 
   it.each([
-    [label1Day, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label1Day, '2020-01-20T06:00:00.000Z', 20],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
     async (period, startIsoString, timelineEventsLimit) => {
@@ -689,8 +689,6 @@ describe(Details, () => {
       await waitFor(() => {
         expect(getByText(period) as HTMLElement).toBeEnabled();
       });
-
-      screen.debug(getByText(period));
 
       userEvent.click(getByText(period) as HTMLElement);
 
