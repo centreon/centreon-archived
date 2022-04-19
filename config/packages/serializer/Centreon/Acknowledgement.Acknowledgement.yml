@@ -103,7 +103,7 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 - 'ack_host_add'
                 - 'ack_resource'
                 - 'ack_full'
-         forceActiveChecks:
+        forceActiveChecks:
             type: bool
             groups:
                 - 'ack_host_add'

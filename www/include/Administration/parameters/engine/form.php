@@ -178,6 +178,7 @@ if ($form->validate()) {
     $form->freeze();
     $valid = true;
 }
+
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }

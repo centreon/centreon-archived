@@ -14725,3 +14725,6 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Action not permitted"
 # msgstr ""
+
+# msgid "Force active checks"
+# msgstr ""

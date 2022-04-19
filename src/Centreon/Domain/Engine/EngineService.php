@@ -341,7 +341,6 @@ class EngineService extends AbstractCentreonService implements
         $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
-    
     /**
      * @inheritDoc
      */
