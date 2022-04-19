@@ -133,7 +133,7 @@ def checkoutCentreonBuild() {
           extensions: [
             [
               $class: 'CloneOption',
-              depth: 1,
+              depth: 0,
               noTags: false,
               reference: '',
               shallow: true,
