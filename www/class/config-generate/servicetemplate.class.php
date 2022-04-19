@@ -181,9 +181,6 @@ class ServiceTemplate extends AbstractService
             ];
 
             $this->service_cache[$service_id]['macros'] = array_merge($this->service_cache[$service_id]['macros'] ?? [], $macros);
-
-            // $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            // $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
         }
     }
 
