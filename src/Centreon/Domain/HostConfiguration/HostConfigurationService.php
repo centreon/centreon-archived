@@ -676,4 +676,16 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             }
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostByName(string $hostName): ?Host
+    {
+        try {
+            return $this->hostConfigurationRepository->findHostByName($hostName);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error while searching for the host'), 0, $ex);
+        }
+    }
 }

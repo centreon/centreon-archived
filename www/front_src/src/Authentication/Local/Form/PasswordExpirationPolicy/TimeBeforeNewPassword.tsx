@@ -9,7 +9,7 @@ import { FormHelperText, FormLabel } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelTimeBeforeSettingNewPassword } from '../../translatedLabels';
+import { labelMinimumTimeBetweenPasswordChanges } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 import { TimeInputConfiguration } from '../../models';
@@ -55,10 +55,10 @@ const TimeBeforeNewPassword = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div>
-        <FormLabel>{t(labelTimeBeforeSettingNewPassword)}</FormLabel>
+        <FormLabel>{t(labelMinimumTimeBetweenPasswordChanges)}</FormLabel>
         <TimeInputs
           baseName={delayBeforeNewPasswordFieldName}
-          inputLabel={labelTimeBeforeSettingNewPassword}
+          inputLabel={labelMinimumTimeBetweenPasswordChanges}
           maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={delayBeforeNewPasswordValue}

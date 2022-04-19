@@ -39,7 +39,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           return undefined;
         }
 
-        return `${selectedValues.at(index)}: ${errorText}`;
+        return `${selectedValues[index]}: ${errorText}`;
       })
       .filter(Boolean) as Array<string>;
 

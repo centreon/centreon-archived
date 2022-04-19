@@ -23,6 +23,7 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { aclEndpoint, parametersEndpoint } from './endpoint';
 import { DefaultParameters } from './models';
 import { labelYouAreDisconnected } from './translatedLabels';
+import usePendo from './usePendo';
 
 const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
@@ -41,6 +42,7 @@ const useApp = (): UseAppState => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
+  usePendo();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

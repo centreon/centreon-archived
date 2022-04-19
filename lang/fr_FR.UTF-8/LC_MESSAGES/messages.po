@@ -2815,10 +2815,6 @@ msgstr "Information sur le moteur de supervision"
 msgid "Admin information"
 msgstr "Informations de l'administrateur"
 
-#: centreon-web/www/install/steps/step5.php:66
-msgid "Login"
-msgstr "Login"
-
 #: centreon-web/www/install/steps/step5.php:73
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:97
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:566
@@ -5299,12 +5295,6 @@ msgstr "Afficher les commentaires sur le graphique"
 
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
-
-msgid "Trusted client addresses"
-msgstr "Adresses des clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses des clients bloqués"
 
 msgid "Base Url"
 msgstr "URL de base"
@@ -16310,10 +16300,10 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr "Dur"
+msgstr "Hard"
 
 msgid "Soft"
-msgstr "Souple"
+msgstr "Soft"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
@@ -16360,7 +16350,7 @@ msgstr "Définir la politique de sécurité de mot de passe"
 msgid "Password case policy"
 msgstr "Politique de casse du mot de passe"
 
-msgid "Password minimum length"
+msgid "Minimum password length"
 msgstr "Longueur minimum du mot de passe"
 
 msgid "Minimum 8 characters"
@@ -16369,17 +16359,17 @@ msgstr "8 caractères minimum"
 msgid "Maximum 128 characters"
 msgstr "128 caractères maximum"
 
-msgid "Force to use upper case"
-msgstr "Forcer à utiliser une majuscule"
+msgid "Password must contain upper case"
+msgstr "Le mot de passe doit contenir une majuscule"
 
-msgid "Force to use lower case"
-msgstr "Forcer à utiliser une minuscule"
+msgid "Password must contain lower case"
+msgstr "Le mot de passe doit contenir une minuscule"
 
-msgid "Force to use numbers"
-msgstr "Forcer à utiliser des nombres"
+msgid "Password must contain numbers"
+msgstr "Le mot de passe doit contenir des nombres"
 
-msgid "Force to use special characters"
-msgstr "Forcer à utiliser des caractères spéciaux"
+msgid "Password must contain special characters"
+msgstr "Le mot de passe doit contenir des caractères spéciaux"
 
 msgid "Password cases"
 msgstr "Casses du mot de passe"
@@ -16396,11 +16386,23 @@ msgstr "Fort"
 msgid "Password expiration policy"
 msgstr "Politique d'expiration du mot de passe"
 
-msgid "Password expiration"
-msgstr "Expiration du mot de passe"
+msgid "Password expires after"
+msgstr "Le mot de passe expire après"
+
+msgid "Choose a duration between 7 days and 12 months"
+msgstr "Veuillez choisir une durée entre 7 jours et 12 mois"
 
 msgid "Choose a duration between 1 hour and 12 months"
 msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
+
+msgid "Reset the form"
+msgstr "Réinitialiser le formulaire"
+
+msgid "Do you want to reset the form?"
+msgstr "Voulez-vous réinitialiser le formulaire ?"
+
+msgid "Excluded users"
+msgstr "Utilisateurs exclus"
 
 msgid "Month"
 msgstr "Mois"
@@ -16417,11 +16419,11 @@ msgstr "Minute"
 msgid "Second"
 msgstr "Seconde"
 
-msgid "Can reuse last 3 passwords"
-msgstr "Peut réutiliser les 3 derniers mot de passe"
+msgid "Last 3 passwords can be reused"
+msgstr "Les 3 derniers mot de passe peuvent être réutilisés"
 
-msgid "Time before setting a new password"
-msgstr "Durée avant de définir un nouveau mot de passe"
+msgid "Minimum time between password changes"
+msgstr "Durée minimum entre chaque changement de mot de passe"
 
 msgid "Choose a duration between 1 hour and 1 week"
 msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
@@ -16429,14 +16431,14 @@ msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
 msgid "Password blocking policy"
 msgstr "Politique de blocage du mot de passe"
 
-msgid "Number of attempts before blocking new attempts"
-msgstr "Nombre de tentatives avant le blocage d'une nouvelle tentative"
+msgid "Number of attempts before user is blocked"
+msgstr "Nombre de tentatives avant que l'utilisateur soit bloqué"
 
 msgid "Choose a value between 1 and 10"
 msgstr "Veuillez choisir une valeur entre 1 et 10"
 
-msgid "Blocking time before new connection attempt"
-msgstr "Durée de blocage avant une nouvelle tentative"
+msgid "Time that must pass before new connection is allowed"
+msgstr "Durée de blocage avant qu'une nouvelle connexion ne soit autorisée"
 
 msgid "Blocking duration must be less than or equal to 7 days"
 msgstr "La durée de blocage doit être inférieure ou égale à 7 jours"
@@ -16552,7 +16554,7 @@ msgstr "Politique de sécurité de mot de passe"
 msgid "OpenID Connect Configuration"
 msgstr "Configuration OpenID Connect"
 
-msgid "Define OpenID Connect Configuration"
+msgid "Define OpenID Connect configuration"
 msgstr "Définir la configuration OpenID Connect"
 
 msgid "Invalid URL"
@@ -16567,17 +16569,11 @@ msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
 msgid "OpenID Connect configuration saved"
 msgstr "Configuration OpenID Connect sauvegardée"
 
-msgid "Enable OpenID Connect Authentication"
+msgid "Enable OpenID Connect authentication"
 msgstr "Activer l'authentification OpenID Connect"
 
 msgid "Authentication mode"
 msgstr "Mode d'authentification"
-
-msgid "Trusted client addresses"
-msgstr "Adresses de clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses de clients sur liste noire"
 
 msgid "Base URL"
 msgstr "URL de base"
@@ -16603,9 +16599,6 @@ msgstr "Portées"
 msgid "Login claim value"
 msgstr "Valeur de la déclaration de connexion"
 
-msgid "Client ID"
-msgstr "ID de client"
-
 msgid "Client secret"
 msgstr "Secret de client"
 
@@ -16617,9 +16610,6 @@ msgstr "Désactiver la vérification du pair"
 
 msgid "OpenID Connect only"
 msgstr "OpenID Connect seulement"
-
-msgid "Mixed"
-msgstr "Mélangé"
 
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
@@ -16722,3 +16712,44 @@ msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaratio
 
 # msgid "Force active checks"
 # msgstr "Forcer les contrôles actif"
+msgid "Web SSO configuration"
+msgstr "Configuration Web SSO"
+
+msgid "Define Web SSO Configuration"
+msgstr "Définir la configuration Web SSO"
+
+msgid "Failed to save Web SSO configuration"
+msgstr "Échec de l'enregistrement de la configuration Web SSO"
+
+msgid "Web SSO configuration saved"
+msgstr "Configuration Web SSO enregistrée"
+
+msgid "Enable Web SSO authentication"
+msgstr "Activer l'authentification Web SSO"
+
+msgid "Web SSO only"
+msgstr "Web SSO seulement"
+
+msgid "Pattern match login (regex)"
+msgstr "Correspondance de login (regex)"
+
+msgid "Pattern replace alias (regex)"
+msgstr "Remplacement du login (regex)"
+
+msgid "Login header attribute name"
+msgstr "Nom d'attribut d'en-tête de login"
+
+msgid "Invalid regex"
+msgstr "Regex invalide"
+
+msgid "Do you want to save the changes?"
+msgstr "Voulez-vous enregistrer les modifications ?"
+
+msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+msgstr "Votre formulaire a des modifications non enregistrées. Voulez-vous quitter le formulaire sans enregistrer les modifications ?"
+
+msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire sans résoudre les erreurs ?"
+
+msgid "Discard"
+msgstr "Annuler"

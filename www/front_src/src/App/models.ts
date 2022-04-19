@@ -14,3 +14,11 @@ export interface DefaultParameters {
 
 type Translation = KeyValuePair<string, string>;
 export type Translations = KeyValuePair<string, Translation>;
+
+export interface CeipData {
+  account?: Record<string, unknown>;
+  cacheGenerationDate?: number;
+  ceip: boolean;
+  excludeAllText?: boolean;
+  visitor?: Record<string, unknown>;
+}

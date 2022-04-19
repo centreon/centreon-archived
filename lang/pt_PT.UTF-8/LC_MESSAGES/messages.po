@@ -15192,7 +15192,7 @@ msgstr ""
 # msgid "Password case policy"
 # msgstr ""
 
-# msgid "Password minimum length"
+# msgid "Minimum password length"
 # msgstr ""
 
 # msgid "Minimum 8 characters"
@@ -15201,16 +15201,16 @@ msgstr ""
 # msgid "Maximum 128 characters"
 # msgstr ""
 
-# msgid "Force to use upper case"
+# msgid "Password must contain upper case"
 # msgstr ""
 
-# msgid "Force to use lower case"
+# msgid "Password must contain lower case"
 # msgstr ""
 
-# msgid "Force to use numbers"
+# msgid "Password must contain numbers"
 # msgstr ""
 
-# msgid "Force to use special characters"
+# msgid "Password must contain special characters"
 # msgstr ""
 
 # msgid "Password cases"
@@ -15228,10 +15228,22 @@ msgstr ""
 # msgid "Password expiration policy"
 # msgstr ""
 
-# msgid "Password expiration"
+# msgid "Password expires after"
+# msgstr ""
+
+# msgid "Choose a duration between 7 days and 12 months"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Reset the form"
+# msgstr ""
+
+# msgid "Do you want to reset the form?"
+# msgstr ""
+
+# msgid "Excluded users"
 # msgstr ""
 
 # msgid "Month"
@@ -15249,10 +15261,10 @@ msgstr ""
 # msgid "Second"
 # msgstr ""
 
-# msgid "Can reuse last 3 passwords"
+# msgid "Last 3 passwords can be reused"
 # msgstr ""
 
-# msgid "Time before setting a new password"
+# msgid "Minimum time between password changes"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 1 week"
@@ -15261,13 +15273,13 @@ msgstr ""
 # msgid "Password blocking policy"
 # msgstr ""
 
-# msgid "Number of attempts before blocking new attempts"
+# msgid "Number of attempts before user is blocked"
 # msgstr ""
 
 # msgid "Choose a value between 1 and 10"
 # msgstr ""
 
-# msgid "Blocking time before new connection attempt"
+# msgid "Time that must pass before new connection is allowed"
 # msgstr ""
 
 # msgid "Blocking duration must be less than or equal to 7 days"
@@ -15336,7 +15348,7 @@ msgstr ""
 # msgid "OpenID Connect Configuration"
 # msgstr ""
 
-# msgid "Define OpenID Connect Configuration"
+# msgid "Define OpenID Connect configuration"
 # msgstr ""
 
 # msgid "Invalid URL"
@@ -15351,16 +15363,10 @@ msgstr ""
 # msgid "OpenID Connect configuration saved"
 # msgstr ""
 
-# msgid "Enable OpenID Connect Authentication"
+# msgid "Enable OpenID Connect authentication"
 # msgstr ""
 
 # msgid "Authentication mode"
-# msgstr ""
-
-# msgid "Trusted client addresses"
-# msgstr ""
-
-# msgid "Blacklist client addresses"
 # msgstr ""
 
 # msgid "Base URL"
@@ -15451,4 +15457,45 @@ msgstr ""
 # msgstr ""
 
 # msgid "Force active checks"
+# msgstr ""
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace alias (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
+# msgstr ""
+
+# msgid "Do you want to save the changes?"
+# msgstr ""
+
+# msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+# msgstr ""
+
+# msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+# msgstr ""
+
+# msgid "Discard"
 # msgstr ""
