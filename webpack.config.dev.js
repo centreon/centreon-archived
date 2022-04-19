@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const { merge } = require('webpack-merge');
 const devConfig = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
 
-const baseConfig = require('./webpack.config');
+const getBaseConfiguration = require('./webpack.config');
 
 const devServerPort = 9090;
 
@@ -57,27 +57,36 @@ const modules = [
   },
 ];
 
-module.exports = merge(baseConfig, devConfig, {
-  devServer: {
-    compress: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    host: '0.0.0.0',
-    hot: true,
-    port: devServerPort,
+module.exports = merge(
+  getBaseConfiguration({
+    react: {
+      development: true,
+      refresh: true,
+    },
+  }),
+  devConfig,
+  {
+    devServer: {
+      compress: true,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      host: '0.0.0.0',
+      hot: true,
+      port: devServerPort,
 
-    static: modules.map(({ name, getDirectoryPath }) => ({
-      directory: path.resolve(getDirectoryPath(name)),
-      publicPath,
-      watch: true,
-    })),
-  },
-  output,
-  plugins,
-  resolve: {
-    alias: {
-      '@mui/material': path.resolve('./node_modules/@mui/material'),
-      dayjs: path.resolve('./node_modules/dayjs'),
-      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+      static: modules.map(({ name, getDirectoryPath }) => ({
+        directory: path.resolve(getDirectoryPath(name)),
+        publicPath,
+        watch: true,
+      })),
+    },
+    output,
+    plugins,
+    resolve: {
+      alias: {
+        '@mui/material': path.resolve('./node_modules/@mui/material'),
+        dayjs: path.resolve('./node_modules/dayjs'),
+        'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+      },
     },
   },
-});
+);
