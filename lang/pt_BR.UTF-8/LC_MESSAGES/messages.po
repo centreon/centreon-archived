@@ -15461,3 +15461,6 @@ msgstr ""
 
 # msgid "Login with"
 # msgstr ""
+
+# msgid "Force active checks"
+# msgstr ""
