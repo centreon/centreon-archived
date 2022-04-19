@@ -15194,3 +15194,6 @@ msgstr ""
 
 # msgid "Soft"
 # msgstr ""
+
+# msgid "Force active checks"
+# msgstr ""
