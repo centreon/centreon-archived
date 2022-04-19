@@ -2815,10 +2815,6 @@ msgstr "Information sur le moteur de supervision"
 msgid "Admin information"
 msgstr "Informations de l'administrateur"
 
-#: centreon-web/www/install/steps/step5.php:66
-msgid "Login"
-msgstr "Login"
-
 #: centreon-web/www/install/steps/step5.php:73
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:97
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:566
@@ -5299,12 +5295,6 @@ msgstr "Afficher les commentaires sur le graphique"
 
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
-
-msgid "Trusted client addresses"
-msgstr "Adresses des clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses des clients bloqués"
 
 msgid "Base Url"
 msgstr "URL de base"
@@ -16310,10 +16300,10 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr "Dur"
+msgstr "Hard"
 
 msgid "Soft"
-msgstr "Souple"
+msgstr "Soft"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
@@ -16609,9 +16599,6 @@ msgstr "Portées"
 msgid "Login claim value"
 msgstr "Valeur de la déclaration de connexion"
 
-msgid "Client ID"
-msgstr "ID de client"
-
 msgid "Client secret"
 msgstr "Secret de client"
 
@@ -16623,9 +16610,6 @@ msgstr "Désactiver la vérification du pair"
 
 msgid "OpenID Connect only"
 msgstr "OpenID Connect seulement"
-
-msgid "Mixed"
-msgstr "Mélangé"
 
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
