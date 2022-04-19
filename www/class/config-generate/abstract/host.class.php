@@ -416,7 +416,7 @@ abstract class AbstractHost extends AbstractObject
             $hostCategories = $host['hostCategories'];
         }
 
-        return $hostCategories ?? null;
+        return $hostCategories;
     }
 
     /**
