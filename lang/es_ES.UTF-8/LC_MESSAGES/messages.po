@@ -14725,3 +14725,36 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Action not permitted"
 # msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 
+
+# msgid "Status type"
+# msgstr ""
+
+# msgid "Hard"
+# msgstr ""
+
+# msgid "Soft"
+# msgstr ""
+
+# msgid "Force active checks"
+# msgstr ""

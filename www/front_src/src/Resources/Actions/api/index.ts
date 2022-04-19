@@ -33,6 +33,7 @@ const acknowledgeResources =
       {
         acknowledgement: {
           comment: params.comment,
+          force_active_checks: params.forceActiveChecks,
           is_notify_contacts: params.notify,
           with_services: params.acknowledgeAttachedResources,
         },

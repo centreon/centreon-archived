@@ -3160,6 +3160,36 @@ paths:
                       type: integer
                       description: Default monitoring refresh interval
                       example: 15
+                    monitoring_default_acknowledgement_persistent:
+                      type: boolean
+                      description: Default monitoring acknowledgement persistent option
+                      example: true
+                    monitoring_default_acknowledgement_sticky:
+                      type: boolean
+                      description: Default monitoring acknowledgement sticky option
+                      example: true
+                    monitoring_default_acknowledgement_notify:
+                      type: boolean
+                      description: Default monitoring acknowledgement notify option
+                      example: true
+                    monitoring_default_acknowledgement_force_active_checks:
+                      type: boolean
+                      description: Default monitoring acknowledgement force active checks option
+                      example: true
+                    monitoring_default_acknowledgement_with_services:
+                      type: boolean
+                      description: Default monitoring acknowledgement with services option
+                      example: true
+                    monitoring_default_downtime_fixed:
+                      type: boolean
+                      description: Default monitoring downtime fixed option
+                      example: true
+                    monitoring_default_downtime_with_services:
+                      type: boolean
+                      description: Default set downtimes on services attached to hosts option
+                      example: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':

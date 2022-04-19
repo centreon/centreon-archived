@@ -424,11 +424,17 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                     throw new EntityNotFoundException(_('Host not found'));
                 }
                 $this->engineService->addHostAcknowledgement($ack, $host);
+                if ($ack->doesForceActiveChecks()) {
+                    $this->engineService->scheduleForcedHostCheck($host);
+                }
                 if ($ack->isWithServices()) {
                     $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
                     foreach ($services as $service) {
                         $service->setHost($host);
                         $this->engineService->addServiceAcknowledgement($ack, $service);
+                        if ($ack->doesForceActiveChecks()) {
+                            $this->engineService->scheduleImmediateForcedServiceCheck($service);
+                        }
                     }
                 }
                 break;
@@ -452,6 +458,9 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 }
                 $service->setHost($host);
                 $this->engineService->addServiceAcknowledgement($ack, $service);
+                if ($ack->doesForceActiveChecks()) {
+                    $this->engineService->scheduleImmediateForcedServiceCheck($service);
+                }
                 break;
             case ResourceEntity::TYPE_META:
                 $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
@@ -470,6 +479,9 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 }
                 $service->setHost($host);
                 $this->engineService->addServiceAcknowledgement($ack, $service);
+                if ($ack->doesForceActiveChecks()) {
+                    $this->engineService->scheduleImmediateForcedServiceCheck($service);
+                }
                 break;
             default:
                 throw new ResourceException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));

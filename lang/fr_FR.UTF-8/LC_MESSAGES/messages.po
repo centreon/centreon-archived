@@ -16189,3 +16189,6 @@ msgstr "Votre clé d'autologin doit être différente de votre mot de passe actu
 
 msgid "Your new password and autologin key must be different"
 msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"
+
+# msgid "Force active checks"
+# msgstr "Forcer les contrôles actif"
