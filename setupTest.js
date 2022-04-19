@@ -12,15 +12,10 @@ import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import ResizeObserver from 'resize-observer-polyfill';
-import { configure } from '@testing-library/dom';
 
 window.ResizeObserver = ResizeObserver;
 
 jest.setTimeout(10000);
-
-configure({
-  asyncUtilTimeout: 10000,
-});
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
