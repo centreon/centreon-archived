@@ -77,6 +77,10 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
+  acknowledgement: {
+    persistent: true,
+    sticky: false,
+  },
   acl: {
     actions: {
       host: {
@@ -99,7 +103,9 @@ const mockUserContext = {
   },
   alias: 'admin',
   downtime: {
-    default_duration: 7200,
+    duration: 7200,
+    fixed: true,
+    with_services: false,
   },
   locale: 'en',
 
@@ -194,6 +200,7 @@ describe(Actions, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedAxios.post.mockReset();
 
     mockedUserContext.mockReset();
   });
@@ -493,7 +500,8 @@ describe(Actions, () => {
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-    const { getByText, getByLabelText, getByTitle } = renderActions();
+    const { getByText, getByLabelText, getByTitle, queryByText } =
+      renderActions();
 
     act(() => {
       context.setSelectedResources([service]);
@@ -545,6 +553,10 @@ describe(Actions, () => {
         },
         expect.anything(),
       );
+    });
+
+    await waitFor(() => {
+      expect(queryByText(labelSubmitStatus)).toBeNull();
     });
 
     act(() => {

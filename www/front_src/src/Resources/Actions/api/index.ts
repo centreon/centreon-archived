@@ -2,6 +2,8 @@ import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
 import { Resource } from '../../models';
+import { AcknowledgeFormValues } from '../Resource/Acknowledge';
+import { DowntimeToPost } from '../Resource/Downtime';
 
 import {
   acknowledgeEndpoint,
@@ -10,15 +12,9 @@ import {
   commentEndpoint,
 } from './endpoint';
 
-interface AcknowledgeParams {
-  acknowledgeAttachedResources?: boolean;
-  comment: string;
-  notify: boolean;
-}
-
 interface ResourcesWithAcknowledgeParams {
   cancelToken: CancelToken;
-  params: AcknowledgeParams;
+  params: AcknowledgeFormValues;
   resources: Array<Resource>;
 }
 
@@ -33,7 +29,10 @@ const acknowledgeResources =
       {
         acknowledgement: {
           comment: params.comment,
+          force_active_checks: params.forceActiveChecks,
           is_notify_contacts: params.notify,
+          is_persistent_comment: params.persistent,
+          is_sticky: params.isSticky,
           with_services: params.acknowledgeAttachedResources,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),
@@ -42,17 +41,8 @@ const acknowledgeResources =
     );
   };
 
-interface DowntimeParams {
-  comment: string;
-  downtimeAttachedResources?: boolean;
-  duration: number;
-  endTime: Date;
-  fixed: boolean;
-  startTime: Date;
-}
-
 interface ResourcesWithDowntimeParams {
-  params: DowntimeParams;
+  params: DowntimeToPost;
   resources: Array<Resource>;
 }
 
@@ -71,7 +61,7 @@ const setDowntimeOnResources =
           end_time: params.endTime,
           is_fixed: params.fixed,
           start_time: params.startTime,
-          with_services: params.downtimeAttachedResources,
+          with_services: params.isDowntimeWithServices,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),
       },
