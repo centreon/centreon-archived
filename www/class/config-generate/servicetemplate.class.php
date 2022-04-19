@@ -174,8 +174,16 @@ class ServiceTemplate extends AbstractService
         $severity = Severity::getInstance($this->dependencyInjector)
             ->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
+            $macros = [
+                '_CRITICALITY_LEVEL' => $severity['level'],
+                '_CRITICALITY_ID' => $severity['sc_id'],
+                'severity' =>  $severity['sc_id'],
+            ];
+
+            $this->service_cache[$service_id]['macros'] = array_merge($this->service_cache[$service_id]['macros'] ?? [], $macros);
+
+            // $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
+            // $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
         }
     }
 
@@ -216,7 +224,12 @@ class ServiceTemplate extends AbstractService
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
         $this->getServiceGroups($service_id);
-        $this->insertServiceInServiceCategoryMembers($service_id);
+
+        // Set ServiceCategories
+        $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
+        $this->insertServiceInServiceCategoryMembers($serviceCategory, $service_id);
+        $this->service_cache[$service_id]['category_tags'] = $serviceCategory->getIdsByServiceId($service_id);
+
         $this->getSeverity($service_id);
 
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);
@@ -239,16 +252,15 @@ class ServiceTemplate extends AbstractService
     }
 
     /**
+     * @param ServiceCategory $serviceCategory
      * @param int $serviceId
-     * @return self
      */
-    protected function insertServiceInServiceCategoryMembers(int $serviceId): self
+    protected function insertServiceInServiceCategoryMembers(ServiceCategory $serviceCategory, int $serviceId): void
     {
-        $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
         $this->service_cache[$serviceId]['serviceCategories'] =
             $serviceCategory->getServiceCategoriesByServiceId($serviceId);
 
-        foreach ($this->service_cache[$serviceId]['serviceCategories'] as &$serviceCategoryId) {
+        foreach ($this->service_cache[$serviceId]['serviceCategories'] as $serviceCategoryId) {
             if (! is_null($serviceCategoryId)) {
                 $serviceCategory->insertServiceToServiceCategoryMembers(
                     $serviceCategoryId,
@@ -257,10 +269,5 @@ class ServiceTemplate extends AbstractService
                 );
             }
         }
-
-        $this->service_cache[$serviceId]['category_tags'] =
-            $serviceCategory->getIdsByServiceId($serviceId);
-
-        return $this;
     }
 }

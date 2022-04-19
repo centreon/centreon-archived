@@ -212,7 +212,12 @@ class HostTemplate extends AbstractHost
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);
-        $this->insertHostInHostCategoryMembers($this->hosts[$host_id]);
+
+        // Set HostCategories
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        $this->insertHostInHostCategoryMembers($hostCategory, $this->hosts[$host_id]);
+        $this->hosts[$host_id]['category_tags'] = $hostCategory->getIdsByHostId($host_id);
+
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);

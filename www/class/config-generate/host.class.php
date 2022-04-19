@@ -488,7 +488,12 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
-        $this->insertHostInHostCategoryMembers($host);
+
+        // Set HostCategories
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        $this->insertHostInHostCategoryMembers($hostCategory, $host);
+        $host['category_tags'] = $hostCategory->getIdsByHostId($host['host_id']);
+
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
 

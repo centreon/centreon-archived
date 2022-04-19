@@ -131,10 +131,7 @@ final class ServiceCategory extends AbstractObject
         if (! isset($this->serviceCategories[$serviceCategoryId])) {
             $this->addServiceCategoryToList($serviceCategoryId);
         }
-        if (
-            isset($this->serviceCategories[$serviceCategoryId])
-            && ! isset($this->serviceCategories[$serviceCategoryId]['members'][$serviceId])
-        ) {
+        if (isset($this->serviceCategories[$serviceCategoryId]['members'])) {
             $this->serviceCategories[$serviceCategoryId]['members'][$serviceId] = $serviceDescription;
         }
     }

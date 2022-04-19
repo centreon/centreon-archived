@@ -404,7 +404,7 @@ abstract class AbstractHost extends AbstractObject
     private function getHostCategoriesByHost(array $host): array
     {
         if (isset($host['hostCategories'])) {
-           return $host['hostCategories'];
+            return $host['hostCategories'];
         }
         $stmt = $this->backend_instance->db->prepare(
             "SELECT hostcategories_hc_id
@@ -417,13 +417,13 @@ abstract class AbstractHost extends AbstractObject
     }
 
     /**
+     * @param HostCategory $hostCategory
      * @param array<string,mixed> $host
      */
-    public function insertHostInHostCategoryMembers(array &$host): void
+    public function insertHostInHostCategoryMembers(HostCategory $hostCategory, array &$host): void
     {
         $host['hostCategories'] = $this->getHostCategoriesByHost($host);
 
-        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
         foreach ($host['hostCategories'] as $hostCategoryId) {
             $hostCategory->insertHostToCategoryMembers(
                 $hostCategoryId,
@@ -431,7 +431,5 @@ abstract class AbstractHost extends AbstractObject
                 $host['name'] ?? $host['host_name']
             );
         }
-
-        $host['category_tags'] = $hostCategory->getIdsByHostId($host['host_id']);
     }
 }
