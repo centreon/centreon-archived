@@ -38,7 +38,6 @@ $debug = 0;
 
 ini_set("display_errors", "Off");
 
-require_once '/etc/centreon/centreon.conf.php';
 require_once realpath(__DIR__ . "/../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../config/bootstrap.php");
 
