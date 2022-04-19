@@ -22,7 +22,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "22.04"
+  version: "21.10"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -42,7 +42,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        default: v22.04
+        default: v21.10
         description: "Version of the API"
 tags:
   - name: Acknowledgement
@@ -112,76 +112,49 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /authentication/users/{alias}/password:
-    put:
-      tags:
-        - Authentication
-      summary: "Update user password"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                old_password:
-                  type: string
-                  description: "Old user password"
-                  example: "Centreon!2021"
-                new_password:
-                  type: "string"
-                  description: "New user password"
-                  example: "Centreon!2022"
-      responses:
-        '204':
-          description: Command Sent
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /authentication/providers/configurations:
     get:
       tags:
         - Authentication
       summary: "Providers Configurations"
-      description: "Endpoint to list active existing providers configuration"
+      description: "Endpoint to list all the existing providers configuration"
       responses:
         '200':
           description: "OK"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      description: "Id of configuration"
-                      example: 1
-                    type:
-                      type: "string"
-                      description: "Type of provider"
-                      example: "local"
-                    name:
-                      type: "string"
-                      description: "Name of provider"
-                      example: "local"
-                    authentication_uri:
-                      type: "string"
-                      description: "Provider Uri used to proceed authentication"
-                      example: "/centreon/authentication/providers/configurations/local"
-                    is_active:
-                      type: boolean
-                      description: "Provider active or not"
-                      example: true
-                    is_forced:
-                      type: boolean
-                      description: "Provider forced or not"
-                      example: false
-  /authentication/providers/configurations/{provider_configuration_name}:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Id of configuration"
+                    example: 1
+                  type:
+                    type: "string"
+                    description: "Type of provider"
+                    example: "local"
+                  name:
+                    type: "string"
+                    description: "Name of provider"
+                    example: "local"
+                  authentication_uri:
+                    type: "string"
+                    description: "Provider Uri used to proceed authentication"
+                    example: "/centreon/authentication/providers/configurations/local"
+                  centreon_base_uri:
+                    type: "string"
+                    description: "Centreon Base Uri used by the provider to redirect"
+                    example: "/centreon"
+                  is_active:
+                    type: boolean
+                    description: "Provider active or not"
+                    example: true
+                  is_forced:
+                    type: boolean
+                    description: "Provider forced or not"
+                    example: false
+  /authentication/providers/{provider_configuration_name}:
     post:
       tags:
        - Authentication
@@ -212,25 +185,6 @@ paths:
                     example: "/centreon/main.php?p=50113&o=ldap"
         '302':
           description: "Found"
-  /authentication/logout:
-    post:
-      tags:
-        - Authentication
-      summary: "Logout Session"
-      description: "Entry point to delete an existing session token."
-      security:
-        - Token: []
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogoutAuthenticationResponse'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/templates:
     get:
       tags:
@@ -751,36 +705,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /configuration/users:
-    get:
-      tags:
-      - User
-      summary: get configured users
-      description: |
-        Get list of configured users
-
-        The available parameters to **search** / **sort_by** are:
-
-        * id
-        * alias
-        * name
-        * email
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Configuration.User'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /configuration/users/current/parameters:
     get:
       tags:
@@ -824,43 +748,12 @@ paths:
                     type: boolean
                     description: If the current user is an administrator
                     example: true
-                  use_deprecated_pages:
+                  useDeprecatedPages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
                     example: false
-                  default_page:
-                    type: string
-                    nullable: true
-                    description: Default page for the current user
-                    example: '/main.php?p=60901'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /configuration/contact-template:
-    get:
-      tags:
-      - User
-      summary: "List contact templates"
-      description: "List configured contact templates"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Configuration.ContactTemplate'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
@@ -1119,49 +1012,6 @@ paths:
                     $ref: '#/components/schemas/Meta'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/resources/hosts/{host_id}:
-    get:
-      tags:
-        - Resource
-      summary: "Get a Host resource type detail"
-      description: "Return the full detail of a resource typed Host."
-      parameters:
-        - $ref: '#/components/parameters/HostId'
-      responses:
-        '200':
-          description: "Successful request"
-          content:
-            application/json:
-              schema:
-                $ref: './ResourceHostDetail.yaml'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/HostNotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/resources/hosts/{host_id}/services/{service_id}:
-    get:
-      tags:
-        - Resource
-      summary: "Get a Service resource type detail"
-      description: "Return the full detail of a resource typed Service."
-      parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
-      responses:
-        '200':
-          description: "Successful request"
-          content:
-            application/json:
-              schema:
-                $ref: './ResourceServiceDetail.yaml'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
@@ -3284,6 +3134,43 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}/{url_type}/redirect:
+    get:
+      tags:
+        - Redirect URL
+      summary: "Redirect to the provided URL for the resource type service"
+      description: |
+        This endpoint will redirect to the URL type provided (action_url / notes_url)
+        with standard and custom macros used in the URL replaced by their actual values
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - $ref: '#/components/parameters/UrlType'
+      responses:
+        '302':
+          $ref: '#/components/responses/Redirect'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/{url_type}/redirect:
+    get:
+      tags:
+        - Redirect URL
+      summary: "Redirect to the provided URL for the resource type host"
+      description: |
+        This endpoint will redirect to the URL type provided (action_url / notes_url)
+        with standard and custom macros used in the URL replaced by their actual values
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/UrlType'
+      responses:
+        '302':
+          $ref: '#/components/responses/Redirect'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/acknowledge:
     post:
       tags:
@@ -3344,58 +3231,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /platform/versions:
-    get:
-      tags:
-        - Platform
-      summary: "List versions of web, widgets and modules"
-      description: "List versions of web, widgets and modules"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  web:
-                      $ref: '#/components/schemas/Platform.Versions'
-                  widgets:
-                    type: object
-                    properties:
-                      widgetName:
-                        type: object
-                        $ref: '#/components/schemas/Platform.Versions'
-                  modules:
-                    type: object
-                    properties:
-                      moduleName:
-                        type: object
-                        $ref: '#/components/schemas/Platform.Versions'
-  /platform/installation/status:
-    get:
-      tags:
-        - Platform
-      summary: "Get centreon web versions"
-      description: "Get installation status and available versions of centreon web"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                required: ["installed_version", "has_upgrade_available"]
-                properties:
-                  is_installed:
-                    type: boolean
-                    description: Installation status of centreon web
-                    example: true
-                  has_upgrade_available:
-                    type: boolean
-                    description: |
-                      upgrade available or not
-                    example: true
   /platform/topology:
     post:
       tags:
@@ -3574,81 +3409,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /administration/authentication/providers/local:
-    get:
-      tags:
-        - Administration
-      summary: get local provider configuration with password security policy
-      responses:
-        '200':
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/AuthenticationLocalProvider'
-    put:
-      tags:
-        - Administration
-      summary: update local provider configuration
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticationLocalProvider'
-      responses:
-        '204':
-            description: "OK"
-  /administration/authentication/providers/web-sso:
-    get:
-      tags:
-        - Administration
-      summary: get WebSSO provider configuration with password security policy
-      responses:
-        '200':
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/AuthenticationWebSSOProvider'
-    put:
-      tags:
-        - Administration
-      summary: update WebSSO provider configuration
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticationWebSSOProvider'
-      responses:
-        '204':
-            description: "OK"
-  /administration/authentication/providers/openid:
-    get:
-      tags:
-        - Administration
-      summary: get openid provider configuration
-      responses:
-        '200':
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-    put:
-      tags:
-        - Administration
-      summary: update openid provider configuration
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      responses:
-        '204':
-            description: "Configuration updated"
   /administration/parameters:
     post:
       tags:
@@ -3947,6 +3707,15 @@ components:
         type: integer
         format: int64
         example: 5
+    UrlType:
+      in: path
+      name: url_type
+      description: "Type of URL provided"
+      required: true
+      schema:
+        type: string
+        enum: [ action-url, notes-url ]
+        example: action-url
     MetaId:
       in: path
       name: meta_id
@@ -4074,10 +3843,8 @@ components:
               message:
                 type: string
                 example: "You are not authorized to access this resource"
-    NotFound:
-      description: "Not Found"
-    HostNotFound:
-      description: "Not Found"
+    Redirect:
+      description: "Redirect"
       content:
         application/json:
           schema:
@@ -4086,10 +3853,9 @@ components:
               code:
                 type: integer
                 format: int64
-                example: 404
-              message:
-                type: string
-                example: "Host not found"
+                example: 302
+    NotFound:
+      description: "Not Found"
     NotFoundHostOrService:
       description: "Host or service not found"
       content:
@@ -4197,277 +3963,6 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
-    AuthenticationLocalProvider:
-      type: object
-      required:
-        - password_security_policy
-      properties:
-        password_security_policy:
-          type: object
-          required:
-            - password_min_length
-            - has_uppercase
-            - has_lowercase
-            - has_number
-            - has_special_character
-            - attempts
-            - blocking_duration
-            - password_expiration
-            - can_reuse_passwords
-            - delay_before_new_password
-            - contact_template_id
-          properties:
-            password_min_length:
-              description: minimum length of the password
-              type: integer
-              minimum: 8
-              maximum: 128
-              default: 12
-            has_uppercase:
-              description: if the password must contain uppercase character
-              type: boolean
-              default: true
-            has_lowercase:
-              description: if the password must contain lowercase character
-              type: boolean
-              default: true
-            has_number:
-              description: if the password must contain number
-              type: boolean
-              default: true
-            has_special_character:
-              description: if the password must contain special character
-              type: boolean
-              default: true
-            attempts:
-              description: login attempts before blocking
-              type: integer
-              nullable: true
-              minimum: 1
-              maximum: 10
-              default: 5
-            blocking_duration:
-              description: blocking duration in seconds before new login attempt
-              type: integer
-              nullable: true
-              maximum: 604800
-              default: 900
-            password_expiration:
-              description: password expiration policy
-              type: object
-              required:
-                - expiration_delay
-                - excluded_users
-              properties:
-                expiration_delay:
-                  description: password expiration delay in seconds
-                  type: integer
-                  nullable: true
-                  minimum: 604800
-                  maximum: 31557600
-                  default: 7776000
-                excluded_users:
-                  description: list of users without password expiration rule
-                  type: array
-                  items:
-                    type: string
-                    description: user login
-                    nullable: false
-                    example: admin
-                    minLength: 1
-                    maxLength: 255
-            can_reuse_passwords:
-              description: is allowed or not to reuse a password among 3 last
-              type: boolean
-              default: false
-            delay_before_new_password:
-              description: delay in seconds before a new password can be set
-              type: integer
-              nullable: true
-              minimum: 3600
-              maximum: 604800
-              default: 3600
-    AuthenticationWebSSOProvider:
-      type: object
-      required:
-        - is_active
-        - is_forced
-        - trusted_client_addresses
-        - blacklist_client_addresses
-        - login_header_attribute
-        - pattern_matching_login
-        - pattern_replace_login
-      properties:
-        is_active:
-          type: boolean
-          description: "Indicates whether the provider is active or not"
-          example: true
-        is_forced:
-          type: boolean
-          description: "Indicates whether the provider is forced or not"
-          example: false
-        trusted_client_addresses:
-          type: array
-          description: "List of trusted client addresses"
-          items:
-            type: string
-            description: "Client address"
-            example: "127.0.0.1"
-        login_header_attribute:
-          type: string
-          description: "Login header attribute"
-          example: "HTTP_X_CENTREON_USER"
-          nullable: true
-        pattern_matching_login:
-          type: string
-          description: "Pattern matching login"
-          example: "^(.*)@(.*)$"
-          nullable: true
-        pattern_replace_login:
-          type: string
-          description: "Pattern replace login"
-          example: "^(.*)@(.*)$"
-    AuthenticationOpenIdProvider:
-      type: object
-      required:
-        - is_active
-        - is_forced
-        - trusted_client_addresses
-        - blacklist_client_addresses
-        - base_url
-        - authorization_endpoint
-        - token_endpoint
-        - introspection_token_endpoint
-        - userinfo_endpoint
-        - endsession_endpoint
-        - connection_scopes
-        - login_claim
-        - client_id
-        - client_secret
-        - authentication_type
-        - verify_peer
-        - auto_import
-        - contact_template
-        - email_bind_attribute
-        - alias_bind_attribute
-        - fullname_bind_attribute
-      properties:
-        is_active:
-          type: boolean
-          description: "Indicates whether the provider is active or not"
-          example: true
-        is_forced:
-          type: boolean
-          description: "Indicates whether the provider is forced or not"
-          example: false
-        trusted_client_addresses:
-          type: array
-          description: "List of trusted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
-        blacklist_client_addresses:
-          type: array
-          description: "List of blacklisted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
-        base_url:
-          type: string
-          description: "Base URL of the provider"
-          example: "https://localhost:8080"
-          nullable: true
-        authorization_endpoint:
-          type: string
-          description: "Authorization endpoint of the provider"
-          example: "/authorize"
-          nullable: true
-        token_endpoint:
-          type: string
-          description: "Token endpoint of the provider"
-          example: "/token"
-          nullable: true
-        introspection_token_endpoint:
-          type: string
-          description: "Introspection token endpoint of the provider"
-          example: "/introspect"
-          nullable: true
-        userinfo_endpoint:
-          type: string
-          description: "Userinfo endpoint of the provider"
-          example: "/userinfo"
-          nullable: true
-        endsession_endpoint:
-          type: string
-          description: "Endsession endpoint of the provider"
-          example: "/logout"
-          nullable: true
-        connection_scopes:
-          type: array
-          description: "List of scopes to request"
-          items:
-            type: string
-            description: "Scope"
-            example: "openid"
-        login_claim:
-          type: string
-          description: "Claim used to login"
-          example: "sub"
-          nullable: true
-        client_id:
-          type: string
-          description: "Client ID"
-          example: "client_id"
-          nullable: true
-        client_secret:
-          type: string
-          description: "Client secret"
-          example: "client_secret"
-          nullable: true
-        authentication_type:
-          type: string
-          description: "Authentication type"
-          example: "client_secret_post"
-          nullable: true
-          enum:
-            - client_secret_post
-            - client_secret_basic
-        verify_peer:
-          type: boolean
-          description: "Verify peer"
-          example: true
-        auto_import:
-          type: boolean
-          description: "Auto import user from external provider"
-          example: true
-        contact_template:
-          type: object
-          properties:
-            id:
-              type: integer
-              description: "Contact template ID"
-              example: 1
-            name:
-              type: string
-              description: "Contact template name"
-              example: "Default"
-        email_bind_attribute:
-          type: string
-          description: "Email bind attribute"
-          example: "email"
-          nullable: true
-        alias_bind_attribute:
-          type: string
-          description: "Alias bind attribute"
-          example: "preferred_username"
-          nullable: true
-        fullname_bind_attribute:
-          type: string
-          description: "Fullname bind attribute"
-          example: "name"
-          nullable: true
     Comment.Resources:
       type: object
       required: [ resources ]
@@ -4504,25 +3999,6 @@ components:
                 type: string
                 description: "Comment to add to the monitored resource"
                 example: "Resource is not-OK but it is expected"
-    Configuration.User:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: User id
-          example: 1
-        alias:
-          type: string
-          description: User alias / login
-          example: admin
-        email:
-          type: string
-          description: email address
-          example: root@localhost
-        is_admin:
-          type: boolean
-          description: is admin or not
-          example: true
     Configuration.Host.Category:
       type: object
       properties:
@@ -4815,20 +4291,6 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
-    Configuration.ContactTemplate:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          description: "Contact template id"
-          example: 1
-        name:
-          type: string
-          description: "Contact template name"
-          example: "Contact Template"
     Media.NullableImage:
       type: object
       nullable: true
@@ -6624,23 +6086,3 @@ components:
                 type: string
                 description: "Data on JSON Format"
                 example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"
-    Platform.Versions:
-      type: object
-      description: "version"
-      properties:
-        version:
-          type: string
-          description: "Full Version"
-          example: 22.04.0
-        major:
-          type: string
-          description: "Major version"
-          example: "22"
-        minor:
-          type: string
-          description: "Minor version"
-          example: "04"
-        fix:
-          type: string
-          description: "Fix version"
-          example: "0"
