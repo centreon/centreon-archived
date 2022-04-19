@@ -16310,10 +16310,10 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr "Dur"
+msgstr "Hard"
 
 msgid "Soft"
-msgstr "Souple"
+msgstr "Soft"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
@@ -16360,7 +16360,7 @@ msgstr "Définir la politique de sécurité de mot de passe"
 msgid "Password case policy"
 msgstr "Politique de casse du mot de passe"
 
-msgid "Password minimum length"
+msgid "Minimum password length"
 msgstr "Longueur minimum du mot de passe"
 
 msgid "Minimum 8 characters"
@@ -16396,11 +16396,23 @@ msgstr "Fort"
 msgid "Password expiration policy"
 msgstr "Politique d'expiration du mot de passe"
 
-msgid "Password expiration:"
-msgstr "Le mot de passe expire après :"
+msgid "Password expires after"
+msgstr "Le mot de passe expire après"
+
+msgid "Choose a duration between 7 days and 12 months"
+msgstr "Veuillez choisir une durée entre 7 jours et 12 mois"
 
 msgid "Choose a duration between 1 hour and 12 months"
 msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
+
+msgid "Reset the form"
+msgstr "Réinitialiser le formulaire"
+
+msgid "Do you want to reset the form?"
+msgstr "Voulez-vous réinitialiser le formulaire ?"
+
+msgid "Excluded users"
+msgstr "Utilisateurs exclus"
 
 msgid "Month"
 msgstr "Mois"
@@ -16552,7 +16564,7 @@ msgstr "Politique de sécurité de mot de passe"
 msgid "OpenID Connect Configuration"
 msgstr "Configuration OpenID Connect"
 
-msgid "Define OpenID Connect Configuration"
+msgid "Define OpenID Connect configuration"
 msgstr "Définir la configuration OpenID Connect"
 
 msgid "Invalid URL"
@@ -16567,17 +16579,11 @@ msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
 msgid "OpenID Connect configuration saved"
 msgstr "Configuration OpenID Connect sauvegardée"
 
-msgid "Enable OpenID Connect Authentication"
+msgid "Enable OpenID Connect authentication"
 msgstr "Activer l'authentification OpenID Connect"
 
 msgid "Authentication mode"
 msgstr "Mode d'authentification"
-
-msgid "Trusted client addresses"
-msgstr "Adresses de clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses de clients sur liste noire"
 
 msgid "Base URL"
 msgstr "URL de base"
@@ -16722,3 +16728,45 @@ msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaratio
 
 msgid "Impossible to get contact templates from data storage"
 msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de données"
+
+msgid "Web SSO configuration"
+msgstr "Configuration Web SSO"
+
+msgid "Define Web SSO Configuration"
+msgstr "Définir la configuration Web SSO"
+
+msgid "Failed to save Web SSO configuration"
+msgstr "Échec de l'enregistrement de la configuration Web SSO"
+
+msgid "Web SSO configuration saved"
+msgstr "Configuration Web SSO enregistrée"
+
+msgid "Enable Web SSO authentication"
+msgstr "Activer l'authentification Web SSO"
+
+msgid "Web SSO only"
+msgstr "Web SSO seulement"
+
+msgid "Pattern match login (regex)"
+msgstr "Correspondance de login (regex)"
+
+msgid "Pattern replace alias (regex)"
+msgstr "Remplacement du login (regex)"
+
+msgid "Login header attribute name"
+msgstr "Nom d'attribut d'en-tête de login"
+
+msgid "Invalid regex"
+msgstr "Regex invalide"
+
+msgid "Do you want to save the changes?"
+msgstr "Voulez-vous enregistrer les modifications ?"
+
+msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+msgstr "Votre formulaire a des modifications non enregistrées. Voulez-vous quitter le formulaire sans enregistrer les modifications ?"
+
+msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire sans résoudre les erreurs ?"
+
+msgid "Discard"
+msgstr "Annuler"

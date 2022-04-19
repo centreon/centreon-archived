@@ -29,7 +29,7 @@ import {
   labelDays,
   labelHour,
   labelMonth,
-  labelPasswordExpiration,
+  labelPasswordExpiresAfter,
   labelPasswordExpirationPolicy,
   labelMinimumTimeBetweenPasswordChanges,
   labelExcludedUsers,
@@ -113,16 +113,16 @@ describe('Password expiration policy', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
+    expect(screen.getByText(labelPasswordExpiresAfter)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelMonth}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelMonth}`),
     ).toBeInTheDocument();
 
     expect(screen.getByText(labelMonth)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
     ).toHaveTextContent('7');
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
@@ -148,9 +148,9 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
+    expect(screen.getByText(labelPasswordExpiresAfter)).toBeInTheDocument();
     userEvent.type(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
       '{selectall}{backspace}',
     );
 
