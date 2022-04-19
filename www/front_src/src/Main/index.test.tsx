@@ -82,13 +82,13 @@ const retrievedProvidersConfiguration = [
 ];
 
 jest.mock('../Header', () => {
-  const Footer = (): JSX.Element => {
+  const Header = (): JSX.Element => {
     return <div />;
   };
 
   return {
     __esModule: true,
-    default: Footer,
+    default: Header,
   };
 });
 

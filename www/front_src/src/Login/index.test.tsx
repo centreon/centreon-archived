@@ -41,7 +41,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-jest.mock('../assets/centreon.png');
+jest.mock('../assets/logo-centreon-colors.png');
 jest.mock('../assets/centreon-wallpaper-xl.jpg');
 jest.mock('../assets/centreon-wallpaper-lg.jpg');
 jest.mock('../assets/centreon-wallpaper-sm.jpg');

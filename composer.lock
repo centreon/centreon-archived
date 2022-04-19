@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94134d5a5dc2cb311e57863a9f0dafd8",
+    "content-hash": "47ecd5f4bf355820b9075be2163ec008",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6538,16 +6538,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-MON-12052-left-menu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3"
+                "reference": "692e09ee788eca11e8bf5634a3dd8940fe969e4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3",
-                "reference": "2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/692e09ee788eca11e8bf5634a3dd8940fe969e4d",
+                "reference": "692e09ee788eca11e8bf5634a3dd8940fe969e4d",
                 "shasum": ""
             },
             "require": {
@@ -6566,7 +6566,6 @@
                 "behat/mink-selenium2-driver": "Mink driver using Selenium",
                 "phpstan/phpstan": "PHP static analysis"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6589,9 +6588,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/MON-12052-left-menu"
             },
-            "time": "2022-02-08T09:28:20+00:00"
+            "time": "2022-03-11T10:03:37+00:00"
         },
         {
             "name": "facade/ignition-contracts",

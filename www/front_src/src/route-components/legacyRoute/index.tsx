@@ -1,12 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 
-import classnames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { equals, isNil, replace } from 'ramda';
 
 import { PageSkeleton } from '@centreon/ui';
-
-import styles from '../../Header/header.scss';
 
 const LegacyRoute = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
@@ -60,7 +57,6 @@ const LegacyRoute = (): JSX.Element => {
     <>
       {loading && <PageSkeleton />}
       <iframe
-        className={classnames({ [styles.hidden as string]: loading })}
         frameBorder="0"
         id="main-content"
         scrolling="yes"

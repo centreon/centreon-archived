@@ -52,7 +52,6 @@ const useStyles = makeStyles({
 const MainRouter = lazy(() => import('../components/mainRouter'));
 const Header = lazy(() => import('../Header'));
 const Navigation = lazy(() => import('../Navigation'));
-const Footer = lazy(() => import('../Footer'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -69,30 +68,19 @@ const App = (): JSX.Element => {
       <Suspense fallback={<PageLoader />}>
         <div className={classes.wrapper}>
           {not(min) && (
-            <Suspense
-              fallback={<LoadingSkeleton height="100%" width={45} />}
-            >
+            <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
               <Navigation />
             </Suspense>
           )}
           <div className={classes.content} id="content">
             {not(min) && (
-              <Suspense
-                fallback={<LoadingSkeleton height={56} width="100%" />}
-              >
+              <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
                 <Header />
               </Suspense>
             )}
             <div className={classes.mainContent}>
               <MainRouter />
             </div>
-            {not(min) && (
-              <Suspense
-                fallback={<LoadingSkeleton height={30} width="100%" />}
-              >
-                <Footer />
-              </Suspense>
-            )}
           </div>
         </div>
       </Suspense>

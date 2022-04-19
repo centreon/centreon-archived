@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import logoCentreon from '../assets/centreon.png';
+import logoCentreon from '../assets/logo-centreon-colors.png';
 import { labelCentreonLogo } from '../Login/translatedLabels';
 
 import { labelCentreonIsLoading } from './translatedLabels';

@@ -27,8 +27,9 @@ use Core\Domain\Configuration\User\Model\User;
 class DbUserFactory
 {
     /**
-     * @param array<string,mixed> $user
+     * @param array<string, string> $user
      * @return User
+     * @throws \Assert\AssertionFailedException
      */
     public static function createFromRecord(array $user): User
     {
@@ -38,6 +39,7 @@ class DbUserFactory
             $user['contact_name'],
             $user['contact_email'],
             $user['contact_admin'] === '1',
+            $user['contact_theme']
         );
     }
 }

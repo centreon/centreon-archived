@@ -16726,6 +16726,18 @@ msgstr "Se connecter avec"
 msgid "Can't resolve username from login claim using configured regular expression"
 msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
 
+msgid "Error on updating an user"
+msgstr "Erreur lors de la mise à jour d'un utilisateur"
+
+msgid "Error in reading the themes available to the user"
+msgstr "Erreur dans la lecture des thèmes disponibles pour l'utilisateur"
+
+msgid "Error when updating the user\'s theme"
+msgstr "Erreur lors de la mise à jour du thème de l'utilisateur"
+
+msgid "Error while searching for the user"
+msgstr "Erreur lors de la recherche de l'utilisateur"
+
 msgid "Web SSO configuration"
 msgstr "Configuration Web SSO"
 
