@@ -403,18 +403,19 @@ abstract class AbstractHost extends AbstractObject
      */
     private function getHostCategoriesByHost(array $host): array
     {
-        if (!isset($host['hostCategories'])) {
-            $stmt = $this->backend_instance->db->prepare(
-                "SELECT hostcategories_hc_id
-                FROM hostcategories_relation
-                WHERE host_host_id = :host_id"
-            );
-            $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-            $stmt->execute();
-            $hostCategories = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        if (isset($host['hostCategories'])) {
+           return $host['hostCategories'];
         }
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT hostcategories_hc_id
+            FROM hostcategories_relation
+            WHERE host_host_id = :host_id"
+        );
+        $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $hostCategories = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-        return $hostCategories ??  $host['hostCategories'];
+        return $hostCategories ;
     }
 
     /**
