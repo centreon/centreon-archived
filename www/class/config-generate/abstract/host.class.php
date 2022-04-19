@@ -415,7 +415,7 @@ abstract class AbstractHost extends AbstractObject
         $stmt->execute();
         $hostCategories = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-        return $hostCategories ;
+        return $hostCategories;
     }
 
     /**
