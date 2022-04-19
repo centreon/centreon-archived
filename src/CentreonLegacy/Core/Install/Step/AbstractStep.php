@@ -54,9 +54,9 @@ abstract class AbstractStep implements StepInterface
      *
      * @param string $file
      * @param array|string $configuration
-     * @return array<int|string,string>
+     * @return array<int|string,string>|string
      */
-    private function getConfiguration($file, $configuration = []): array
+    private function getConfiguration($file, $configuration = [])
     {
         if ($this->dependencyInjector['filesystem']->exists($file)) {
             $configuration = json_decode(file_get_contents($file), true);

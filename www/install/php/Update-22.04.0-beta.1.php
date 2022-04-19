@@ -19,8 +19,13 @@
  *
  */
 
+require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../class/centreonAuth.class.php';
+require_once __DIR__ . '/../../class/centreonLog.class.php';
+require_once __DIR__ . '/../functions.php';
 
-include_once __DIR__ . "/../../class/centreonLog.class.php";
+use Symfony\Component\Yaml\Yaml;
+
 $centreonLog = new CentreonLog();
 
 //error specific content
@@ -35,6 +40,7 @@ try {
         "CREATE TABLE IF NOT EXISTS `password_expiration_excluded_users` (
         `provider_configuration_id` int(11) NOT NULL,
         `user_id` int(11) NOT NULL,
+        PRIMARY KEY (`provider_configuration_id`, `user_id`),
         CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk`
           FOREIGN KEY (`provider_configuration_id`)
           REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
@@ -114,9 +120,14 @@ try {
 
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
-
     $errorMessage = "Unable to migrate broker config to unified_sql";
     migrateBrokerConfigOutputsToUnifiedSql($pearDB);
+
+    $errorMessage = "Unable to configure centreon-gorgone api user";
+    configureGorgoneApiUser($pearDB);
+
+    $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
+    excludeUsersFromPasswordPolicy($pearDB);
 
     $pearDB->commit();
 
@@ -469,7 +480,6 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
  * @throws \Exception
  * @return void
  */
-
 function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 {
     $outputTag = 1;
@@ -595,11 +605,157 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 
         $stmt = $pearDB->prepare(
             "DELETE FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
+            WHERE config_id = $configId
+            AND config_group = 'output'
+            AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
         );
         foreach ($bindedValues as $key => $value) {
             $stmt->bindValue($key, $value, \PDO::PARAM_INT);
         }
         $stmt->execute();
     }
+}
+
+/**
+ * Configure api user in centreon gorgone configuration file
+ * and create user in database if needed
+ *
+ * @param CentreonDB $pearDB
+ */
+function configureGorgoneApiUser(CentreonDB $pearDB): void
+{
+    $gorgoneUser = null;
+
+    $apiConfigurationFile = getGorgoneApiConfigurationFilePath();
+    if ($apiConfigurationFile !== null && is_writable($apiConfigurationFile)) {
+        $apiConfigurationContent = file_get_contents($apiConfigurationFile);
+        if (
+            preg_match('/@GORGONE_USER@/', $apiConfigurationContent)
+            && preg_match('/@GORGONE_PASSWORD@/', $apiConfigurationContent)
+        ) {
+            $gorgoneUser = 'centreon-gorgone';
+            $gorgonePassword = generatePassword();
+            file_put_contents(
+                $apiConfigurationFile,
+                str_replace(
+                    ['@GORGONE_USER@', '@GORGONE_PASSWORD@'],
+                    [$gorgoneUser, $gorgonePassword],
+                    $apiConfigurationContent,
+                ),
+            );
+
+            createGorgoneUser(
+                $pearDB,
+                $gorgoneUser,
+                password_hash($gorgonePassword, CentreonAuth::PASSWORD_HASH_ALGORITHM)
+            );
+        }
+    }
+}
+
+/**
+ * Create centreon-gorgone user in database
+ *
+ * @param CentreonDB $pearDB
+ * @param string $userAlias
+ * @param string $hashedPassword
+ */
+function createGorgoneUser(CentreonDB $pearDB, string $userAlias, string $hashedPassword): void
+{
+    $statementCreateUser = $pearDB->prepare(
+        "INSERT INTO `contact`
+        (`timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`,
+        `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`,
+        `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`,
+        `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`)
+        VALUES(1, 1, :gorgoneUser, :gorgoneUser, 'en_US.UTF-8', 'n', 'n', 'gorgone@localhost', NULL, NULL,
+        '0', '1', 'txt', '1', 'local', NULL, '0')"
+    );
+    $statementCreateUser->bindValue(":gorgoneUser", $userAlias, \PDO::PARAM_STR);
+    $statementCreateUser->execute();
+
+    $statementCreatePassword = $pearDB->prepare(
+        "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+        SELECT :gorgonePassword, c.contact_id, (SELECT UNIX_TIMESTAMP(NOW()))
+        FROM contact c
+        WHERE c.contact_alias = :gorgoneUser"
+    );
+    $statementCreatePassword->bindValue(":gorgoneUser", $userAlias, \PDO::PARAM_STR);
+    $statementCreatePassword->bindValue(":gorgonePassword", $hashedPassword, \PDO::PARAM_STR);
+    $statementCreatePassword->execute();
+}
+
+/**
+ * Exclude Gorgone / MBI / MAP users from password policy
+ *
+ * @param CentreonDB $pearDB
+ */
+function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
+{
+    $usersToExclude = [
+        ':bi' => 'centreonBI',
+        ':map' => 'centreon-map'
+    ];
+
+    $gorgoneUser = getGorgoneApiUser();
+    if ($gorgoneUser !== null) {
+        $usersToExclude[':gorgone'] = $gorgoneUser;
+    }
+
+    $statement = $pearDB->prepare(
+        "INSERT INTO `password_expiration_excluded_users` (provider_configuration_id, user_id)
+        SELECT pc.id, c.contact_id
+        FROM `provider_configuration` pc, `contact` c
+        WHERE pc.name = 'local'
+        AND c.contact_alias IN (" . implode(',', array_keys($usersToExclude)) . ")
+        GROUP BY pc.id, c.contact_id
+        ON DUPLICATE KEY UPDATE provider_configuration_id = provider_configuration_id"
+    );
+
+    foreach ($usersToExclude as $userToExcludeParam => $usersToExcludeValue) {
+        $statement->bindValue($userToExcludeParam, $usersToExcludeValue, \PDO::PARAM_STR);
+    }
+
+    $statement->execute();
+}
+
+/**
+ * Get centreon-gorgone api user from configuration file
+ *
+ * @return string|null
+ */
+function getGorgoneApiUser(): ?string
+{
+    $gorgoneUser = null;
+
+    $apiConfigurationFile = getGorgoneApiConfigurationFilePath();
+    if ($apiConfigurationFile !== null) {
+        $configuration = Yaml::parseFile($apiConfigurationFile);
+
+        if (isset($configuration['gorgone']['tpapi'][0]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][0]['username'];
+        } elseif (isset($configuration['gorgone']['tpapi'][1]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][1]['username'];
+        }
+    }
+
+    return $gorgoneUser;
+}
+
+/**
+ * Get centreon-gorgone api configuration file path if found and readable
+ *
+ * @return string|null
+ */
+function getGorgoneApiConfigurationFilePath(): ?string
+{
+    $gorgoneEtcPath = _CENTREON_ETC_ . '/../centreon-gorgone';
+
+    $apiConfigurationFile = $gorgoneEtcPath . '/config.d/31-centreon-api.yaml';
+
+    if (file_exists($apiConfigurationFile) && is_readable($apiConfigurationFile)) {
+        return $apiConfigurationFile;
+    }
+
+    return null;
 }
