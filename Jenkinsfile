@@ -121,23 +121,13 @@ def checkoutCentreonBuild() {
         [
           $class: 'GitSCM',
           branches: [
-            [name: 'refs/heads/' + env.BUILD_BRANCH],
-            [name: 'refs/heads/master']
+            [name: env.BUILD_BRANCH],
+            [name: 'master']
           ],
           userRemoteConfigs: [
             [
               credentialsId: 'technique-ci',
               url: 'https://github.com/centreon/centreon-build.git'
-            ]
-          ],
-          extensions: [
-            [
-              $class: 'CloneOption',
-              depth: 0,
-              noTags: false,
-              reference: '',
-              shallow: true,
-              timeout: 10
             ]
           ]
         ]
