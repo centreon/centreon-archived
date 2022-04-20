@@ -78,6 +78,7 @@ jest.mock('react-redux', () => ({
 
 const mockUserContext = {
   acknowledgement: {
+    force_active_checks: false,
     persistent: true,
     sticky: false,
   },
@@ -274,7 +275,7 @@ describe(Actions, () => {
     },
   );
 
-  it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
+  it.only('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
     const { getByText, getByLabelText, findByLabelText, getAllByText } =
       renderActions();
 
@@ -302,7 +303,9 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
+            force_active_checks: false,
             is_notify_contacts: true,
+            persistent: true,
             with_services: true,
           },
 
