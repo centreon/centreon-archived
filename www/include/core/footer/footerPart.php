@@ -267,6 +267,39 @@ foreach ($jsdata as $k => $val) {
     }
     ?>
 
+    // send an event to parent for change in iframe URL
+    function parentHrefUpdate(href) {
+        let parentHref = window.parent.location.href;
+        href = href.replace('main.get.php', 'main.php');
+
+        if (parentHref.localeCompare(href) === 0) {
+            return;
+        }
+
+        href = '/' + href.split(window.location.host + '/')[1];
+
+        if (parentHref.localeCompare(href) === 0) {
+            return;
+        }
+
+        var event = new CustomEvent('react.href.update', {
+            detail: {
+                href: href
+            }
+        });
+        window.parent.dispatchEvent(event);
+    }
+
+    // send event when url changed
+    jQuery(document).ready(function() {
+        parentHrefUpdate(location.href);
+    });
+
+    // send event when hash changed
+    jQuery(window).bind('hashchange', function() {
+        parentHrefUpdate(location.href);
+    });
+
     jQuery('body').delegate(
         'a',
         'click',
