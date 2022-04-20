@@ -133,7 +133,7 @@ class UpdateOpenIdConfigurationTest extends TestCase
     }
 
     /**
-     * Test that the useCase present an erro response when introspection and user information
+     * Test that the useCase present an error response when introspection and user information
      * endpoints are both null.
      */
     public function testUseCaseWithMissingUserInformationEndpoints(): void
