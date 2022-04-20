@@ -191,14 +191,14 @@ function initRefresh() {
       var parseInterval;
       if (interval == 0) {
           $refresh.find('.time').hide().text('');
-          var timerGray = "{/literal}{$timerGray}{literal}";
-          $refresh.find('.timer-icon').empty().append(timerGray);
+          var timerDisabled = "{/literal}{$timerDisabled}{literal}";
+          $refresh.find('.timer-icon').empty().append(timerDisabled);
           jQuery('.chart').centreonGraph('setRefresh', 0);
       } else {
           parseInterval = interval.match(/(\d+)([a-z]+)/i);
           $refresh.find('.time').show().text(text);
-          var timerBlue = "{/literal}{$timerBlue}{literal}";
-          $refresh.find('.timer-icon').empty().append(timerBlue);
+          var timerEnabled = "{/literal}{$timerEnabled}{literal}";
+          $refresh.find('.timer-icon').empty().append(timerEnabled);
           jQuery('.chart').centreonGraph(
               'setRefresh',
               moment.duration(

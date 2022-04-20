@@ -115,11 +115,11 @@ function initRefresh() {
                 .find('.time')
                 .hide()
                 .text('');
-            var timerGray = "{/literal}{$timerGray}{literal}";
+            var timerDisabled = "{/literal}{$timerDisabled}{literal}";
             $refresh
                 .find('.timer-icon')
                 .empty()
-                .append(timerGray);
+                .append(timerDisabled);
             jQuery('.chart').centreonGraph('setRefresh', 0);
         } else {
             parseInterval = interval.match(/(\d+)([a-z]+)/i);
@@ -127,11 +127,11 @@ function initRefresh() {
                 .find('.time')
                 .show()
                 .text(text);
-            var timerBlue = "{/literal}{$timerBlue}{literal}";
+            var timerEnabled = "{/literal}{$timerEnabled}{literal}";
             $refresh
                 .find('.timer-icon')
                 .empty()
-                .append(timerBlue);
+                .append(timerEnabled);
             jQuery('.chart').centreonGraph(
                 'setRefresh',
                 moment.duration(
