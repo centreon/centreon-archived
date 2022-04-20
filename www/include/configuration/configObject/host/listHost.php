@@ -376,7 +376,7 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
             isset($ehiCache[$host["host_id"]])
             && $ehiCache[$host["host_id"]]
         ) {
-            $notSvgIcon = false;
+            $isSvgFile = false;
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
         } else {
             $icone = $host_method->replaceMacroInString(
@@ -388,7 +388,7 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
                 )
             );
             if ($icone) {
-                $notSvgIcon = false;
+                $isSvgFile = false;
                 $host_icone = "./img/media/" . $icone;
             }
         }

@@ -63,7 +63,7 @@
 
             <span class="consol_button">
                 <span id="JS_monitoring_play_gray" class="ico-20" title='Play'>
-                    {php}displaySvg("www/img/icons/media_play.svg", "var(--icons-gray-fill-color)", 19, 19){/php}
+                    {php}displaySvg("www/img/icons/media_play.svg", "var(--icons-disabled-fill-color)", 19, 19){/php}
                 </span>
             </span>
             <span class="consol_button">
@@ -75,7 +75,7 @@
             </span>
             <span class="consol_button">
                 <span id="JS_monitoring_pause_gray" class="cachediv" title='Pause'>
-                    {php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-gray-fill-color)", 19, 19){/php}
+                    {php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-disabled-fill-color)", 19, 19){/php}
                 </span>
             </span>
         </div>

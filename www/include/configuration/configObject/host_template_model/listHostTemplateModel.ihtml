@@ -58,7 +58,7 @@
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
 					<a href="{$elemArr[elem].RowMenu_link}">
-                        {if $elemArr[elem].isHTSvgFile}
+                        {if $elemArr[elem].isHostTemplateSvgFile}
                             <span class="ico-16  margin_right">
                                 {$elemArr[elem].RowMenu_icone}
                             </span>

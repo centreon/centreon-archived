@@ -520,10 +520,10 @@ p.description a, p.description a:visited {
 #WzClOsE {
     padding: 1px 0px !important;
     cursor: pointer !important;
-    color: var(--WzClOsE-color) !important;
+    color: var(--wzclose-font-color) !important;
     font-size: 8px !important;
-    background: var(--WzClOsE-background-color) !important;
-    border: 2px solid var(--WzClOsE-border-color ) !important;
+    background: var(--wzclose-background-color) !important;
+    border: 2px solid var(--wzclose-border-color) !important;
     border-radius: 20px !important;
     margin: 0px -15px 0px 0px;
     display: inline-block;

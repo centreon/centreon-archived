@@ -295,7 +295,7 @@ foreach ($contacts as $contact) {
                 "<span class='ico-18'>" .
                 returnSvg(
                     "www/img/icons/refresh.svg",
-                    "var(--icons-gray-fill-color)",
+                    "var(--icons-disabled-fill-color)",
                     18,
                     18
                 ) .
@@ -466,7 +466,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchC', $searchContact);
 
-    // Apply a template definition
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

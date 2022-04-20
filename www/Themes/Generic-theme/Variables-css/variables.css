@@ -161,9 +161,9 @@
     --WzTtDi-border-color : var(--color-iron);
     --WzTtDi-background-color : var(--color-white);
     --WzTiTl-background-color : var(--color-white);
-    --WzClOsE-color : var(--color-primary-light);
-    --WzClOsE-background-color : var(--color-white);
-    --WzClOsE-border-color : var(--WzClOsE-color);
+    --wzclose-font-color : var(--color-primary-light);
+    --wzclose-background-color : var(--color-white);
+    --wzclose-border-color : var(--wzclose-font-color);
     --WzBodyI-font-color : var(--color-black);
     /*************/
 
@@ -766,6 +766,6 @@
     /* ------ START : New Icons variables -----*/
     --help-tool-tip-icon-fill-color: var(--color-primary-dark);
     --icons-fill-color: var(--color-primary-dark);
-    --icons-gray-fill-color: var(--color-teal-blue);
+    --icons-disabled-fill-color: var(--color-teal-blue);
     /* ------ END : New Icons variables -----*/
 }

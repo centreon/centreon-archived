@@ -225,7 +225,7 @@ $form->accept($renderer);
 
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('metrics', $metrics);
-$tpl->assign("timerGray", returnSvg("www/img/icons/timer.svg", "var(--icons-gray-fill-color)", 14, 14));
+$tpl->assign("timerGray", returnSvg("www/img/icons/timer.svg", "var(--icons-disabled-fill-color)", 14, 14));
 $tpl->assign("timerBlue", returnSvg("www/img/icons/timer.svg", "var(--icons-fill-color)", 14, 14));
 
 $tpl->display('graph-split.html');
