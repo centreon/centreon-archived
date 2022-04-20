@@ -70,6 +70,9 @@ require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate
 {
+    private const GENERATION_FOR_ENGINE = 1;
+    private const GENERATION_FOR_BROKER = 2;
+
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
@@ -256,12 +259,13 @@ class Generate
             $this->current_poller['id'],
             $this->current_poller['localhost']
         );
-        $this->generateModuleObjects(1);
+        $this->generateModuleObjects(self::GENERATION_FOR_ENGINE);
+
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
-        $this->generateModuleObjects(2);
+        $this->generateModuleObjects(self::GENERATION_FOR_BROKER);
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
@@ -337,19 +341,27 @@ class Generate
         }
     }
 
-    public function generateModuleObjects($type = 1): void
+    /**
+     * @param int $type (1: engine, 2: broker)
+     * @return void
+     */
+    public function generateModuleObjects(int $type = self::GENERATION_FOR_ENGINE): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
+                $externalModule = $module_object::getInstance($this->dependencyInjector);
                 if (
-                    ($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true)
-                    || ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
+                    $externalModule instanceof ExternalModuleGenerationInterface
+                    && (
+                        ($type === self::GENERATION_FOR_ENGINE && $externalModule->isEngineObject() === true)
+                        || ($type === self::GENERATION_FOR_BROKER && $externalModule->isBrokerObject() === true)
+                    )
                 ) {
-                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
-                        $this->current_poller['id'],
+                    $externalModule->generateFromPollerId(
+                        (int) $this->current_poller['id'],
                         $this->current_poller['localhost']
                     );
                 }
@@ -364,7 +376,10 @@ class Generate
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                $module_object::getInstance($this->dependencyInjector)->reset();
+                $externalModule = $module_object::getInstance($this->dependencyInjector);
+                if ($externalModule instanceof ExternalModuleGenerationInterface) {
+                    $externalModule->reset();
+                }
             }
         }
     }
