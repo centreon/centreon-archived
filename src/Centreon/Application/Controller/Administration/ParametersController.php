@@ -54,9 +54,6 @@ class ParametersController extends AbstractController
      */
     private const KEY_NAME_CONCORDANCE = [
         self::DEFAULT_REFRESH_INTERVAL => 'monitoring_default_refresh_interval',
-<<<<<<< HEAD
-        self::DEFAULT_DOWNTIME_DURATION => 'monitoring_default_downtime_duration'
-=======
         self::DEFAULT_DOWNTIME_DURATION => 'monitoring_default_downtime_duration',
         self::DEFAULT_ACKNOWLEDGEMENT_STICKY => 'monitoring_default_acknowledgement_sticky',
         self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT => 'monitoring_default_acknowledgement_persistent',
@@ -65,7 +62,6 @@ class ParametersController extends AbstractController
         self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS => 'monitoring_default_acknowledgement_force_active_checks',
         self::DEFAULT_DOWNTIME_FIXED => 'monitoring_default_downtime_fixed',
         self::DEFAULT_DOWNTIME_WITH_SERVICES => 'monitoring_default_downtime_with_services',
->>>>>>> 84531036e4... fix(UI): fully handle default ack options and downtime duration (#10976)
     ];
 
     /**
@@ -91,13 +87,6 @@ class ParametersController extends AbstractController
         $downtimeDuration = '';
         $downtimeScale = '';
         $refreshInterval = '';
-<<<<<<< HEAD
-
-        $options = $this->optionService->findSelectedOptions([
-            self::DEFAULT_DOWNTIME_DURATION,
-            self::DEFAULT_DOWNTIME_DURATION_SCALE,
-            self::DEFAULT_REFRESH_INTERVAL
-=======
         $isAcknowledgementPersistent = false;
         $isAcknowledgementSticky = false;
         $isAcknowledgementNotify = true;
@@ -117,7 +106,6 @@ class ParametersController extends AbstractController
             self::DEFAULT_DOWNTIME_DURATION_SCALE,
             self::DEFAULT_DOWNTIME_FIXED,
             self::DEFAULT_DOWNTIME_WITH_SERVICES
->>>>>>> 84531036e4... fix(UI): fully handle default ack options and downtime duration (#10976)
         ]);
 
         foreach ($options as $option) {
@@ -131,8 +119,6 @@ class ParametersController extends AbstractController
                 case self::DEFAULT_REFRESH_INTERVAL:
                     $refreshInterval = $option->getValue();
                     break;
-<<<<<<< HEAD
-=======
                 case self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT:
                     $isAcknowledgementPersistent = (int) $option->getValue() === 1 ? true : false;
                     break;
@@ -154,7 +140,6 @@ class ParametersController extends AbstractController
                 case self::DEFAULT_DOWNTIME_FIXED:
                     $isDowntimeFixed = (int) $option->getValue() === 1 ? true : false;
                     break;
->>>>>>> 84531036e4... fix(UI): fully handle default ack options and downtime duration (#10976)
                 default:
                     break;
             }
@@ -165,8 +150,6 @@ class ParametersController extends AbstractController
 
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_REFRESH_INTERVAL]] = (int) $refreshInterval;
 
-<<<<<<< HEAD
-=======
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT]] =
             $isAcknowledgementPersistent;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] = $isAcknowledgementSticky;
@@ -178,7 +161,6 @@ class ParametersController extends AbstractController
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_FIXED]] = $isDowntimeFixed;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_WITH_SERVICES]] = $isDowntimeWithServices;
 
->>>>>>> 84531036e4... fix(UI): fully handle default ack options and downtime duration (#10976)
         return $this->view($parameters);
     }
 
