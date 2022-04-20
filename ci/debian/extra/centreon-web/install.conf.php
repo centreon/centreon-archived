@@ -1,3 +1,4 @@
+
 <?php
 $conf_centreon['centreon_dir'] = "/usr/share/centreon/";
 $conf_centreon['centreon_etc'] = "/etc/centreon/";
