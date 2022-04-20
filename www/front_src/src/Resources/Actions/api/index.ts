@@ -13,7 +13,9 @@ import {
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;
   comment: string;
+  forceActiveChecks: boolean;
   notify: boolean;
+  persistent: boolean;
 }
 
 interface ResourcesWithAcknowledgeParams {
@@ -35,6 +37,7 @@ const acknowledgeResources =
           comment: params.comment,
           force_active_checks: params.forceActiveChecks,
           is_notify_contacts: params.notify,
+          persistent: params.persistent,
           with_services: params.acknowledgeAttachedResources,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),
