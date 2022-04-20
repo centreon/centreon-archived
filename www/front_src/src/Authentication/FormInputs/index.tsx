@@ -38,10 +38,14 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
 ]);
 
 const useStyles = makeStyles((theme) => ({
+  additionalLabel: {
+    marginBottom: theme.spacing(0.5),
+  },
   category: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  inputWrapper: { width: '100%' },
   inputs: {
     display: 'flex',
     flexDirection: 'column',
@@ -110,6 +114,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   change,
                   getChecked,
                   required,
+                  additionalLabel,
                 }) => {
                   const Input = getInput(type);
 
@@ -124,7 +129,19 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                     type,
                   };
 
-                  return <Input key={label} {...props} />;
+                  return (
+                    <div className={classes.inputWrapper} key={label}>
+                      {additionalLabel && (
+                        <Typography
+                          className={classes.additionalLabel}
+                          variant="body1"
+                        >
+                          {t(additionalLabel)}
+                        </Typography>
+                      )}
+                      <Input {...props} />
+                    </div>
+                  );
                 },
               )}
             </div>

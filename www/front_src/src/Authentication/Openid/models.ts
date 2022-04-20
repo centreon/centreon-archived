@@ -7,7 +7,7 @@ export interface OpenidConfiguration {
   clientSecret: string | null;
   connectionScopes: Array<string>;
   endSessionEndpoint?: string | null;
-  introspectionTokenEndpoint: string | null;
+  introspectionTokenEndpoint?: string | null;
   isActive: boolean;
   isForced: boolean;
   loginClaim?: string | null;
@@ -26,7 +26,7 @@ export interface OpenidConfigurationToAPI {
   client_secret: string | null;
   connection_scopes: Array<string>;
   endsession_endpoint?: string | null;
-  introspection_token_endpoint: string | null;
+  introspection_token_endpoint?: string | null;
   is_active: boolean;
   is_forced: boolean;
   login_claim?: string | null;

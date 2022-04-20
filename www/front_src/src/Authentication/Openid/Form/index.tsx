@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { Formik } from 'formik';
+import { Formik, FormikErrors, FormikValues } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { isEmpty, isNil, pick, pipe, values, or, all, not } from 'ramda';
 
 import { makeStyles } from '@mui/styles';
 
@@ -10,7 +11,12 @@ import { useRequest, useSnackbar } from '@centreon/ui';
 import useValidationSchema from '../useValidationSchema';
 import {
   labelFailedToSaveOpenidConfiguration,
+  labelIntrospectionTokenEndpoint,
+  labelNeedTobeFilled,
   labelOpenIDConnectConfigurationSaved,
+  labelOr,
+  labelRequired,
+  labelUserInformationEndpoint,
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
 import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
@@ -33,6 +39,8 @@ interface Props {
   loadOpenidConfiguration: () => void;
 }
 
+const isNilOrEmpty = (value): boolean => or(isNil(value), isEmpty(value));
+
 const Form = ({
   initialValues,
   loadOpenidConfiguration,
@@ -47,20 +55,37 @@ const Form = ({
       OpenidConfigurationToAPI
     >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid }),
   });
-  const { showSuccessMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
   const validationSchema = useValidationSchema();
 
   const submit = (
-    values: OpenidConfiguration,
+    formikValues: OpenidConfiguration,
     { setSubmitting },
-  ): Promise<void> =>
-    sendRequest(values)
+  ): void => {
+    const areUserInfoOrIntrospectionTokenFilled = pipe(
+      pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
+      values,
+      all(isNilOrEmpty),
+    )(formikValues);
+
+    if (areUserInfoOrIntrospectionTokenFilled) {
+      showErrorMessage(
+        `"${t(labelIntrospectionTokenEndpoint)}" ${t(
+          labelOr,
+        )} "${labelUserInformationEndpoint}" ${t(labelNeedTobeFilled)}`,
+      );
+      setSubmitting(false);
+
+      return;
+    }
+    sendRequest(formikValues)
       .then(() => {
         loadOpenidConfiguration();
         showSuccessMessage(t(labelOpenIDConnectConfigurationSaved));
       })
       .finally(() => setSubmitting(false));
+  };
 
   return (
     <Formik
@@ -68,6 +93,25 @@ const Form = ({
       validateOnBlur
       validateOnMount
       initialValues={initialValues}
+      validate={(formikValues): object => {
+        const baseErrors = validationSchema.validate(values);
+
+        const isUserInfoOrIntrospectionTokenEmpty = pipe(
+          pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
+          values,
+          all(isNilOrEmpty),
+        )(formikValues);
+
+        if (not(isUserInfoOrIntrospectionTokenEmpty)) {
+          return baseErrors;
+        }
+
+        return {
+          ...baseErrors,
+          introspectionTokenEndpoint: t(labelRequired),
+          userinfoEndpoint: t(labelRequired),
+        };
+      }}
       validationSchema={validationSchema}
       onSubmit={submit}
     >
