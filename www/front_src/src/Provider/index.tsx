@@ -23,7 +23,6 @@ import {
   useAcknowledgement,
   User,
   Actions,
-  useAcknowledgement,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -106,6 +105,7 @@ const AppProvider = (): JSX.Element | null => {
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
+            use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
             duration: parseInt(

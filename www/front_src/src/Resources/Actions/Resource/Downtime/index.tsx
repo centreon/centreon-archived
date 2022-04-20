@@ -1,52 +1,92 @@
 import * as React from 'react';
 
-import { useFormik } from 'formik';
+import { useFormik, FormikErrors } from 'formik';
+import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
+import {
+  Severity,
+  useSnackbar,
+  useRequest,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
+  labelRequired,
   labelDowntimeCommandSent,
   labelDowntimeBy,
+  labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-import { getValidationSchema, validate } from './validation';
-import { formatDateInterval } from './utils';
 
-interface Props {
-  onClose: () => void;
-  onSuccess: () => void;
-  resources: Array<Resource>;
-}
-
-export interface DowntimeFormValues {
-  comment?: string;
+interface DateParams {
   dateEnd: Date;
   dateStart: Date;
-  duration: {
-    unit: string;
-    value: number;
-  };
-  fixed: boolean;
-  isDowntimeWithServices: boolean;
   timeEnd: Date;
   timeStart: Date;
 }
 
-export interface DowntimeToPost {
-  comment?: string;
-  duration: {
-    unit: string;
-    value: number;
-  };
-  endTime: string;
-  fixed: boolean;
-  isDowntimeWithServices: boolean;
-  startTime: string;
+const formatDateInterval = (values: DateParams): [Date, Date] => {
+  const timeStart = new Date(values.timeStart);
+  const dateTimeStart = new Date(values.dateStart);
+  dateTimeStart.setHours(timeStart.getHours());
+  dateTimeStart.setMinutes(timeStart.getMinutes());
+  dateTimeStart.setSeconds(0);
+
+  const timeEnd = new Date(values.timeEnd);
+  const dateTimeEnd = new Date(values.dateEnd);
+  dateTimeEnd.setHours(timeEnd.getHours());
+  dateTimeEnd.setMinutes(timeEnd.getMinutes());
+  dateTimeEnd.setSeconds(0);
+
+  return [dateTimeStart, dateTimeEnd];
+};
+
+const getValidationSchema = (t): unknown =>
+  Yup.object().shape({
+    comment: Yup.string().required(t(labelRequired)),
+    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
+    dateStart: Yup.string().required(t(labelRequired)).nullable(),
+    duration: Yup.object().when('fixed', (fixed, schema) => {
+      return !fixed
+        ? schema.shape({
+            unit: Yup.string().required(t(labelRequired)),
+            value: Yup.string().required(t(labelRequired)),
+          })
+        : schema;
+    }),
+    fixed: Yup.boolean(),
+    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
+    timeStart: Yup.string().required(t(labelRequired)).nullable(),
+  });
+
+const validate = (values: DateParams, t): FormikErrors<DateParams> => {
+  const errors: FormikErrors<DateParams> = {};
+
+  if (
+    values.dateStart &&
+    values.timeStart &&
+    values.dateEnd &&
+    values.timeEnd
+  ) {
+    const [start, end] = formatDateInterval(values);
+
+    if (start >= end) {
+      errors.dateEnd = t(labelEndDateMustBeGreater);
+    }
+  }
+
+  return errors;
+};
+
+interface Props {
+  onClose;
+  onSuccess;
+  resources: Array<Resource>;
 }
 
 const DowntimeForm = ({
@@ -55,8 +95,12 @@ const DowntimeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showSuccessMessage } = useSnackbar();
+  const { showMessage } = useSnackbar();
 
+  const showSuccess = (message): void =>
+    showMessage({ message, severity: Severity.success });
+
+  const { alias, downtime } = useUserContext();
   const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
@@ -66,24 +110,22 @@ const DowntimeForm = ({
     request: setDowntimeOnResources,
   });
 
-  const { alias, downtime } = useUserContext();
-
   const currentDate = new Date();
 
   const defaultDurationInMs = downtime.duration * 1000;
   const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
 
-  const form = useFormik<DowntimeFormValues>({
+  const form = useFormik({
     initialValues: {
       comment: undefined,
       dateEnd: defaultEndDate,
       dateStart: currentDate,
+      downtimeAttachedResources: true,
       duration: {
         unit: 'seconds',
         value: downtime.duration,
       },
-      fixed: downtime.fixed,
-      isDowntimeWithServices: downtime.with_services,
+      fixed: true,
       timeEnd: defaultEndDate,
       timeStart: currentDate,
     },
@@ -109,11 +151,11 @@ const DowntimeForm = ({
         },
         resources,
       }).then(() => {
-        showSuccessMessage(t(labelDowntimeCommandSent));
+        showSuccess(t(labelDowntimeCommandSent));
         onSuccess();
       });
     },
-    validate: (values) => validate({ t, values }),
+    validate: (values) => validate(values, t),
     validationSchema: getValidationSchema(t),
   });
 
