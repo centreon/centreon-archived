@@ -77,6 +77,10 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
+  acknowledgement: {
+    persistent: true,
+    sticky: false,
+  },
   acl: {
     actions: {
       host: {
