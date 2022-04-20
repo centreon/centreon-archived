@@ -124,7 +124,7 @@ const mockAcknowledgement = {
   notify: false,
   persistent: true,
   sticky: true,
-  with_services: false,
+  with_services: true,
 };
 
 jest.mock('../icons/Downtime');
@@ -320,14 +320,10 @@ describe(Actions, () => {
     const notifyCheckbox = await findByLabelText(labelNotify);
     const persistentCheckbox = await findByLabelText(labelPersistent);
     const stickyCheckbox = await findByLabelText(labelSticky);
-    const acknowledgeAttachedResources = await findByLabelText(
-      labelAcknowledgeServices,
-    );
 
     fireEvent.click(notifyCheckbox);
     fireEvent.click(persistentCheckbox);
     fireEvent.click(stickyCheckbox);
-    fireEvent.click(acknowledgeAttachedResources);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
