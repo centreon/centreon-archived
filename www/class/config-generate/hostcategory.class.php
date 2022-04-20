@@ -93,7 +93,10 @@ final class HostCategory extends AbstractObject
         if (! isset($this->hostCategories[$hostCategoryId])) {
             $this->addHostCategoryToList($hostCategoryId);
         }
-        if (isset($this->hostCategories[$hostCategoryId]['members'])) {
+        if (
+            isset($this->hostCategories[$hostCategoryId])
+            && ! isset($this->hostCategories[$hostCategoryId]['members'][$hostId])
+        ) {
             $this->hostCategories[$hostCategoryId]['members'][$hostId] = $hostName;
         }
     }
