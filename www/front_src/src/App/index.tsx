@@ -17,7 +17,7 @@ import useApp from './useApp';
 
 const store = createStore();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
@@ -40,7 +40,7 @@ const useStyles = makeStyles({
     zIndex: 1500,
   },
   mainContent: {
-    backgroundcolor: 'white',
+    backgroundColor: theme.palette.background.default,
     height: '100%',
     width: '100%',
   },
@@ -50,7 +50,7 @@ const useStyles = makeStyles({
     height: '100%',
     overflow: 'hidden',
   },
-});
+}));
 
 const MainRouter = React.lazy(() => import('../components/mainRouter'));
 const Header = React.lazy(() => import('../Header'));
