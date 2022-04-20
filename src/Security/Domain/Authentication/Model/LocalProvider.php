@@ -147,7 +147,7 @@ class LocalProvider implements LocalProviderInterface
                     "user" => $credentials['login']
                 ]
             );
-            throw AuthenticationException::notAuthenticated();
+            throw new AuthenticationException(_('Authentication failed'), 401);
         }
 
         if ($auth->userInfos !== null) {
@@ -280,7 +280,7 @@ class LocalProvider implements LocalProviderInterface
                     'contact_alias' => $user->getAlias(),
                 ],
             );
-            throw AuthenticationException::userBlocked();
+            throw new AuthenticationException(_('User is blocked'), 401);
         }
 
         if (
