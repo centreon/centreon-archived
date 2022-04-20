@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
 import { Link, useNavigate } from 'react-router-dom';
@@ -163,7 +163,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, classes.wrapMiddleIcon)}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Critical"
               to={unhandledCriticalServicesLink}
               onClick={changeFilterAndNavigate({
@@ -177,7 +177,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, classes.wrapMiddleIcon)}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Warning"
               to={unhandledWarningServicesLink}
               onClick={changeFilterAndNavigate({
@@ -191,7 +191,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, classes.wrapMiddleIcon)}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Unknown"
               to={unhandledUnknownServicesLink}
               onClick={changeFilterAndNavigate({
@@ -205,7 +205,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, classes.wrapMiddleIcon)}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Ok"
               to={okServicesLink}
               onClick={changeFilterAndNavigate({
@@ -222,7 +222,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(classes.subMenuToggle, {
+              className={clsx(classes.subMenuToggle, {
                 [classes.subMenuToggleActive]: toggled,
               })}
             >

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
@@ -259,8 +259,8 @@ const UserMenu = (): JSX.Element => {
   );
 
   return (
-    <div className={classnames(classes.wrapRightUser)}>
-      <div className={classnames(classes.wrapRightUserItems)}>
+    <div className={clsx(classes.wrapRightUser)}>
+      <div className={clsx(classes.wrapRightUserItems)}>
         <Clock />
         <div ref={profile as React.RefObject<HTMLDivElement>}>
           <Tooltip
@@ -279,22 +279,22 @@ const UserMenu = (): JSX.Element => {
             >
               <UserIcon
                 aria-label={t(labelProfile)}
-                className={classnames(classes.userIcon)}
+                className={clsx(classes.userIcon)}
                 fontSize="large"
                 onClick={toggle}
               />
             </Badge>
           </Tooltip>
           <div
-            className={classnames(classes.subMenu, {
+            className={clsx(classes.subMenu, {
               [classes.subMenuActive]: toggled,
             })}
           >
             <div className={classes.subMenuItemContent}>
-              <ul className={classnames(classes.listUnstyled)}>
+              <ul className={clsx(classes.listUnstyled)}>
                 <li>
                   <div
-                    className={classnames(
+                    className={clsx(
                       classes.itemLink,
                       classes.nameAliasContainer,
                     )}
@@ -313,7 +313,7 @@ const UserMenu = (): JSX.Element => {
                     </div>
                     {allowEditProfile && (
                       <Link
-                        className={classnames(classes.submenuUserEdit)}
+                        className={clsx(classes.submenuUserEdit)}
                         to={`/main.php?p=${editProfileTopologyPage}&o=c`}
                         onClick={toggle}
                       >
@@ -337,7 +337,7 @@ const UserMenu = (): JSX.Element => {
 
                     <textarea
                       readOnly
-                      className={classnames(classes.hiddenInput)}
+                      className={clsx(classes.hiddenInput)}
                       id="autologin-input"
                       ref={
                         autologinNode as React.RefObject<HTMLTextAreaElement>
@@ -349,7 +349,7 @@ const UserMenu = (): JSX.Element => {
               </ul>
               {not(passwordIsNotYetAboutToExpire) && (
                 <div
-                  className={classnames(
+                  className={clsx(
                     classes.subMenuItemContent,
                     classes.passwordExpiration,
                   )}
@@ -362,7 +362,7 @@ const UserMenu = (): JSX.Element => {
                   </Typography>
                 </div>
               )}
-              <div className={classnames(classes.logoutLink)}>
+              <div className={clsx(classes.logoutLink)}>
                 <Paper className={classes.userButton}>
                   <Button
                     fullWidth
