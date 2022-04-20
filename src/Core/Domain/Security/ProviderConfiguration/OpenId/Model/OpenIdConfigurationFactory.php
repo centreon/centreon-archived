@@ -26,6 +26,7 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationRequest
 };
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfigurationFactory
 {
@@ -35,6 +36,11 @@ class OpenIdConfigurationFactory
      */
     public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
     {
+        if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null)
+        {
+            throw OpenIdConfigurationException::missingInformationEndpoint();
+        }
+
         return new OpenIdConfiguration(
             $request->isActive,
             $request->isForced,
