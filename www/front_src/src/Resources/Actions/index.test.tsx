@@ -275,7 +275,7 @@ describe(Actions, () => {
     },
   );
 
-  it.only('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
+  it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
     const { getByText, getByLabelText, findByLabelText, getAllByText } =
       renderActions();
 

@@ -19,10 +19,10 @@ import {
   useUser,
   useAcl,
   useDowntime,
-  useAcknowledgement,
   useRefreshInterval,
   User,
   Actions,
+  useAcknowledgement,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -47,8 +47,8 @@ const store = createStore();
 
 const AppProvider = (): JSX.Element | null => {
   const { user, setUser } = useUser();
-  const { downtime, setDowntime } = useDowntime();
   const { acknowledgement, setAcknowledgement } = useAcknowledgement();
+  const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
   const [dataLoaded, setDataLoaded] = React.useState(false);
