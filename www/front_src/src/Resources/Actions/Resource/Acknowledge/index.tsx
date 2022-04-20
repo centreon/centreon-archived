@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { useSnackbar, useRequest } from '@centreon/ui';
+import { useSnackbar, useRequest, Severity } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
@@ -46,7 +46,7 @@ const AcknowledgeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showSuccessMessage } = useSnackbar();
+  const { showMessage } = useSnackbar();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -54,6 +54,9 @@ const AcknowledgeForm = ({
   } = useRequest({
     request: acknowledgeResources,
   });
+
+  const showSuccess = (message): void =>
+    showMessage({ message, severity: Severity.success });
 
   const { alias, acknowledgement } = useUserContext();
 
@@ -71,7 +74,7 @@ const AcknowledgeForm = ({
         params: values,
         resources,
       }).then(() => {
-        showSuccessMessage(t(labelAcknowledgeCommandSent));
+        showSuccess(t(labelAcknowledgeCommandSent));
         onSuccess();
       });
     },

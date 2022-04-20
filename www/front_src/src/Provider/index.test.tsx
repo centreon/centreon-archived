@@ -7,6 +7,7 @@ import {
   useUser,
   useAcl,
   useDowntime,
+  useAcknowledgement,
   useRefreshInterval,
   useAcknowledgement,
 } from '@centreon/ui-context';

@@ -20,6 +20,7 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  useAcknowledgement,
   User,
   Actions,
   useAcknowledgement,
