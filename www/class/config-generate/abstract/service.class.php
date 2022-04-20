@@ -130,6 +130,7 @@ abstract class AbstractService extends AbstractObject
     );
     protected $attributes_array = array(
         'use',
+        'category_tags',
     );
     protected $attributes_hash = array(
         'macros'
