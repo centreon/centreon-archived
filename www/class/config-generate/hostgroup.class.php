@@ -37,10 +37,14 @@
 class Hostgroup extends AbstractObject
 {
     private const TAG_TYPE = 'hostgroup';
+    private const HOSTGROUP_FILENAME = 'hostgroups.cfg';
+    private const HOSTGROUP_OBJECT_NAME = 'hostgroup';
+    private const TAG_FILENAME = 'tags.cfg';
+    private const TAG_OBJECT_NAME = 'tag';
 
     private $hg = array();
-    protected $generate_filename = 'hostgroups.cfg';
-    protected $object_name = 'hostgroup';
+    protected $generate_filename = self::HOSTGROUP_FILENAME;
+    protected $object_name = self::HOSTGROUP_OBJECT_NAME;
     protected $attributes_select = '
         hg_id,
         hg_name as hostgroup_name,
@@ -97,8 +101,8 @@ class Hostgroup extends AbstractObject
      */
     private function generateHostGroups(): void
     {
-        $this->generate_filename = 'hostgroups.cfg';
-        $this->object_name = 'hostgroup';
+        $this->generate_filename = self::HOSTGROUP_FILENAME;
+        $this->object_name = self::HOSTGROUP_OBJECT_NAME;
         $this->attributes_write = [
             'hostgroup_id',
             'hostgroup_name',
@@ -129,8 +133,8 @@ class Hostgroup extends AbstractObject
      */
     private function generateTags(): void
     {
-        $this->generate_filename = 'tags.cfg';
-        $this->object_name = 'tag';
+        $this->generate_filename = self::TAG_FILENAME;
+        $this->object_name = self::TAG_OBJECT_NAME;
         $this->attributes_write = [
             'id',
             'name',

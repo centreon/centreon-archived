@@ -37,14 +37,18 @@
 class Servicegroup extends AbstractObject
 {
     private const TAG_TYPE = 'servicegroup';
+    private const SERVICEGROUP_FILENAME = 'servicegroups.cfg';
+    private const SERVICEGROUP_OBJECT_NAME = 'servicegroup';
+    private const TAG_FILENAME = 'tags.cfg';
+    private const TAG_OBJECT_NAME = 'tag';
 
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $sg = array();
-    protected $generate_filename = 'servicegroups.cfg';
-    protected $object_name = 'servicegroup';
-    private $sg_relation_cache = array();
+    private $sg = [];
+    private $sg_relation_cache = [];
+    protected $generate_filename = self::SERVICEGROUP_FILENAME;
+    protected $object_name = self::SERVICEGROUP_OBJECT_NAME;
     protected $attributes_select = '
         sg_id,
         sg_name as servicegroup_name,
@@ -185,8 +189,8 @@ class Servicegroup extends AbstractObject
      */
     private function generateServiceGroups(): void
     {
-        $this->generate_filename = 'servicegroups.cfg';
-        $this->object_name = 'servicegroup';
+        $this->generate_filename = self::SERVICEGROUP_FILENAME;
+        $this->object_name = self::SERVICEGROUP_OBJECT_NAME;
         $this->attributes_write = [
             'servicegroup_id',
             'servicegroup_name',
@@ -218,8 +222,8 @@ class Servicegroup extends AbstractObject
      */
     private function generateTags(): void
     {
-        $this->generate_filename = 'tags.cfg';
-        $this->object_name = 'tag';
+        $this->generate_filename = self::TAG_FILENAME;
+        $this->object_name = self::TAG_OBJECT_NAME;
         $this->attributes_write = [
             'id',
             'name',
