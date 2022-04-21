@@ -36,8 +36,7 @@ class OpenIdConfigurationFactory
      */
     public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
     {
-        if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null)
-        {
+        if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null) {
             throw OpenIdConfigurationException::missingInformationEndpoint();
         }
 
