@@ -269,4 +269,24 @@ abstract class AbstractService extends AbstractObject
         }
         return null;
     }
+
+    /**
+     * @param ServiceCategory $serviceCategory
+     * @param int $serviceId
+     */
+    protected function insertServiceInServiceCategoryMembers(ServiceCategory $serviceCategory, int $serviceId): void
+    {
+        $this->service_cache[$serviceId]['serviceCategories'] =
+            $serviceCategory->getServiceCategoriesByServiceId($serviceId);
+
+        foreach ($this->service_cache[$serviceId]['serviceCategories'] as $serviceCategoryId) {
+            if (! is_null($serviceCategoryId)) {
+                $serviceCategory->insertServiceToServiceCategoryMembers(
+                    $serviceCategoryId,
+                    $serviceId,
+                    $this->service_cache[$serviceId]['service_description']
+                );
+            }
+        }
+    }
 }
