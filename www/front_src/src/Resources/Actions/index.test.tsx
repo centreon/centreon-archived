@@ -318,12 +318,8 @@ describe(Actions, () => {
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
-    const persistentCheckbox = await findByLabelText(labelPersistent);
-    const stickyCheckbox = await findByLabelText(labelSticky);
 
     fireEvent.click(notifyCheckbox);
-    fireEvent.click(persistentCheckbox);
-    fireEvent.click(stickyCheckbox);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
@@ -338,8 +334,8 @@ describe(Actions, () => {
             comment: labelAcknowledgedByAdmin,
             force_active_checks: false,
             is_notify_contacts: true,
-            is_persistent_comment: false,
-            is_sticky: false,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
