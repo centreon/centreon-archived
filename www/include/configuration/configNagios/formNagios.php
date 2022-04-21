@@ -336,6 +336,11 @@ $form->addElement(
  * logging options
  */
 $nagTab = array();
+$nagTab[] = $form->createElement('radio', 'logger_version', null, _("V1 (legacy, with epoch timestamps)"), 'log_legacy_enabled');
+$nagTab[] = $form->createElement('radio', 'logger_version', null, _("V2 (ISO-8601, with log level fine tuning)"), 'log_v2_enabled');
+$form->addGroup($nagTab, 'logger_version', _("Logger version"), '&nbsp;');
+
+$nagTab = array();
 $nagTab[] = $form->createElement('radio', 'use_syslog', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'use_syslog', null, _("No"), '0');
 $nagTab[] = $form->createElement('radio', 'use_syslog', null, _("Default"), '2');
@@ -726,7 +731,7 @@ $nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("Default"), '2'
 $form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
 /* ****************************************************
- * Debug
+ * Debug - Log V1
  */
 $form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
 $form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
@@ -782,10 +787,42 @@ foreach ($debugLevel as $key => $val) {
 }
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 $form->setDefaults($nagios_d);
+
+/* ****************************************************
+ * Debug - Log V2
+ */
+$loggerOptions = [
+    'file' => _("File"),
+    'syslog' => _("Syslog"),
+];
+$form->addElement('select', 'log_v2_logger', _("Log destination"), $loggerOptions);
+
+$logLevelOptions = [
+    'trace' => _("Trace"),
+    'debug' => _("Debug"),
+    'info' => _("Info"),
+    'warning' => _("Warning"),
+    'err' => _("Error"),
+    'critical' => _("Critical"),
+    'off' => _("Disabled"),
+];
+$form->addElement('select', 'log_level_checks', _("Checks"), $logLevelOptions);
+$form->addElement('select', 'log_level_commands', _("Commands"), $logLevelOptions);
+$form->addElement('select', 'log_level_comments', _("Comments"), $logLevelOptions);
+$form->addElement('select', 'log_level_config', _("Configuration"), $logLevelOptions);
+$form->addElement('select', 'log_level_downtimes', _("Downtimes"), $logLevelOptions);
+$form->addElement('select', 'log_level_eventbroker', _("Broker events"), $logLevelOptions);
+$form->addElement('select', 'log_level_events', _("Events"), $logLevelOptions);
+$form->addElement('select', 'log_level_external_command', _("External commands"), $logLevelOptions);
+$form->addElement('select', 'log_level_functions', _("Functions"), $logLevelOptions);
+$form->addElement('select', 'log_level_macros', _("Macros"), $logLevelOptions);
+$form->addElement('select', 'log_level_notifications', _("Notifications"), $logLevelOptions);
+$form->addElement('select', 'log_level_process', _("Process"), $logLevelOptions);
+$form->addElement('select', 'log_level_runtime', _("Runtime"), $logLevelOptions);
+
+
 $form->setDefaults($defaultEventBrokerOptions);
-
 $form->setDefaults($objMain->getDefaultMainCfg());
-
 $form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'nagios_id');
