@@ -53,12 +53,10 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
-  labelPersistent,
   labelEndTime,
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
   labelStartTime,
-  labelSticky,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';

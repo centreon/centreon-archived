@@ -20,8 +20,6 @@ import {
   labelNotify,
   labelNotifyHelpCaption,
   labelAcknowledgeServices,
-  labelPersistent,
-  labelSticky,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
