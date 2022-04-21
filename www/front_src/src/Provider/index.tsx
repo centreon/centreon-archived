@@ -22,6 +22,7 @@ import {
   useRefreshInterval,
   User,
   Actions,
+  useAcknowledgement,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -46,6 +47,7 @@ const store = createStore();
 
 const AppProvider = (): JSX.Element | null => {
   const { user, setUser } = useUser();
+  const { acknowledgement, setAcknowledgement } = useAcknowledgement();
   const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
@@ -106,10 +108,13 @@ const AppProvider = (): JSX.Element | null => {
             use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
-            default_duration: parseInt(
+            duration: parseInt(
               retrievedParameters.monitoring_default_downtime_duration,
               10,
             ),
+            fixed: retrievedParameters.monitoring_default_downtime_fixed,
+            with_services:
+              retrievedParameters.monitoring_default_downtime_with_services,
           });
           setRefreshInterval(
             parseInt(
@@ -118,6 +123,18 @@ const AppProvider = (): JSX.Element | null => {
             ),
           );
           setActionAcl(retrievedAcl);
+          setAcknowledgement({
+            force_active_checks:
+              retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
+            notify:
+              retrievedParameters.monitoring_default_acknowledgement_notify,
+            persistent:
+              retrievedParameters.monitoring_default_acknowledgement_persistent,
+            sticky:
+              retrievedParameters.monitoring_default_acknowledgement_sticky,
+            with_services:
+              retrievedParameters.monitoring_default_acknowledgement_with_services,
+          });
 
           initializeI18n({
             retrievedTranslations,
@@ -142,6 +159,7 @@ const AppProvider = (): JSX.Element | null => {
     <Context.Provider
       value={{
         ...user,
+        acknowledgement,
         acl: {
           actions: actionAcl,
         },

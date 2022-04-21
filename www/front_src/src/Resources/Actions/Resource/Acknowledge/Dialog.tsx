@@ -95,7 +95,7 @@ const DialogAcknowledge = ({
                 onChange={handleChange('notify')}
               />
             }
-            label={t(labelNotify)}
+            label={t(labelNotify) as string}
           />
           <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
         </Grid>
@@ -115,7 +115,7 @@ const DialogAcknowledge = ({
                   onChange={handleChange('acknowledgeAttachedResources')}
                 />
               }
-              label={t(labelAcknowledgeServices)}
+              label={t(labelAcknowledgeServices) as string}
             />
           </Grid>
         )}
