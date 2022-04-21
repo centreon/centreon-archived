@@ -13,6 +13,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelPressEnterToAccept } from '../translatedLabels';
 
 import {
   labelAuthorizationEndpoint,
@@ -107,10 +108,14 @@ describe('Openid configuration form', () => {
     expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(
+        `${labelTrustedClientAddresses} (${labelPressEnterToAccept})`,
+      ),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(
+        `${labelBlacklistClientAddresses} (${labelPressEnterToAccept})`,
+      ),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
@@ -129,7 +134,9 @@ describe('Openid configuration form', () => {
     expect(screen.getByLabelText(labelEndSessionEndpoint)).toHaveValue(
       '/logout',
     );
-    expect(screen.getByLabelText(labelScopes)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(`${labelScopes} (${labelPressEnterToAccept})`),
+    ).toBeInTheDocument();
     expect(screen.getByText('openid')).toBeInTheDocument();
     expect(screen.getByLabelText(labelLoginClaimValue)).toHaveValue('sub');
     expect(screen.getByLabelText(labelClientID)).toHaveValue('client_id');
@@ -165,7 +172,9 @@ describe('Openid configuration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(
+        `${labelTrustedClientAddresses} (${labelPressEnterToAccept})`,
+      ),
       'invalid domain',
     );
     userEvent.keyboard('{Enter}');
@@ -177,7 +186,9 @@ describe('Openid configuration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(
+        `${labelBlacklistClientAddresses} (${labelPressEnterToAccept})`,
+      ),
       '127.0.0.1111',
     );
     userEvent.keyboard('{Enter}');
