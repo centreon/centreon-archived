@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, isNil, map, prop, type } from 'ramda';
+import { equals, isEmpty, isNil, map, prop, type } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { FormHelperText, Stack } from '@mui/material';
@@ -12,10 +12,14 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
+import { labelPressEnterToAccept } from '../translatedLabels';
+
 import { InputProps } from './models';
 
 const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const [inputText, setInputText] = React.useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
@@ -63,7 +67,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
-          label={t(label)}
+          label={`${t(label)} (${t(labelPressEnterToAccept)})`}
           open={false}
           options={[]}
           popupIcon={null}

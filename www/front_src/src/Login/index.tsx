@@ -83,6 +83,7 @@ const LoginPage = (): JSX.Element => {
           <Typography variant="h5">{t(labelLogin)}</Typography>
           <div>
             <Formik<LoginFormValues>
+              validateOnMount
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={submitLoginForm}
