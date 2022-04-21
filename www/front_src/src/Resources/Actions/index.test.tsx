@@ -53,7 +53,6 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
-  labelPersistent,
   labelEndTime,
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
@@ -94,9 +93,9 @@ const mockUser = {
 };
 const mockRefreshInterval = 15;
 const mockDowntime = {
-  default_duration: 7200,
-  default_fixed: true,
-  default_with_services: false,
+  duration: 7200,
+  fixed: true,
+  with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -119,8 +118,11 @@ const mockAcl = {
   },
 };
 const mockAcknowledgement = {
+  force_active_checks: false,
+  notify: false,
   persistent: true,
-  sticky: false,
+  sticky: true,
+  with_services: true,
 };
 
 jest.mock('../icons/Downtime');
@@ -303,8 +305,7 @@ describe(Actions, () => {
   );
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByText, getByLabelText, findByLabelText, getAllByText } =
-      renderActions();
+    const { getByText, findByLabelText, getAllByText } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -315,11 +316,8 @@ describe(Actions, () => {
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
-    const persistentCheckbox = await findByLabelText(labelPersistent);
 
     fireEvent.click(notifyCheckbox);
-    fireEvent.click(persistentCheckbox);
-    fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
@@ -332,9 +330,10 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
+            force_active_checks: false,
             is_notify_contacts: true,
-            is_persistent_comment: false,
-            is_sticky: false,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
