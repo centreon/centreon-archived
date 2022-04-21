@@ -97,6 +97,8 @@ class Hostgroup extends AbstractObject
      */
     private function generateHostGroups(): void
     {
+        $this->generate_filename = 'hostgroups.cfg';
+        $this->object_name = 'hostgroup';
         $this->attributes_write = [
             'hostgroup_id',
             'hostgroup_name',
@@ -108,6 +110,9 @@ class Hostgroup extends AbstractObject
         $this->attributes_array = [
             'members',
         ];
+
+        // reset cache to allow export of same ids
+        parent::reset();
 
         foreach ($this->hg as $id => &$value) {
             if (count($value['members']) == 0) {

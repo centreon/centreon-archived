@@ -185,6 +185,8 @@ class Servicegroup extends AbstractObject
      */
     private function generateServiceGroups(): void
     {
+        $this->generate_filename = 'servicegroups.cfg';
+        $this->object_name = 'servicegroup';
         $this->attributes_write = [
             'servicegroup_id',
             'servicegroup_name',
@@ -193,6 +195,9 @@ class Servicegroup extends AbstractObject
         $this->attributes_array = [
             'members',
         ];
+
+        // reset cache to allow export of same ids
+        parent::reset();
 
         foreach ($this->sg as $id => &$value) {
             if (count($value['members_cache']) == 0) {
