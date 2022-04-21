@@ -480,8 +480,6 @@ ENGINECFG;setparam;Centreon Engine Central;accept_passive_service_checks;1
 ENGINECFG;setparam;Centreon Engine Central;execute_host_checks;2
 ENGINECFG;setparam;Centreon Engine Central;accept_passive_host_checks;2
 ENGINECFG;setparam;Centreon Engine Central;enable_event_handlers;1
-ENGINECFG;setparam;Centreon Engine Central;log_rotation_method;d
-ENGINECFG;setparam;Centreon Engine Central;log_archive_path;/var/log/centreon-engine/archives/
 ENGINECFG;setparam;Centreon Engine Central;check_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;command_check_interval;1s
 ENGINECFG;setparam;Centreon Engine Central;command_file;/var/lib/centreon-engine/rw/centengine.cmd

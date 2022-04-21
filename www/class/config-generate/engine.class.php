@@ -38,8 +38,8 @@ class Engine extends AbstractObject
     protected $engine = null;
     protected $generate_filename = null; # it's in 'cfg_nagios' table
     protected $object_name = null;
-    # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
-    # lock_file, daemon_dumps_core
+    # skipped nagios parameters : temp_file, nagios_user, nagios_group,
+    # lock_file
     protected $attributes_select = '
         nagios_id,
         use_timezone,

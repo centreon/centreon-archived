@@ -247,18 +247,6 @@ $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Defa
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 
 /* *****************************************************
- * Log Rotation Method
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("None"), 'n');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Hourly"), 'h');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Daily"), 'd');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Weekly"), 'w');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Monthly"), 'm');
-$form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
-$form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
-
-/* *****************************************************
  * External Commands
  */
 $nagTab = array();
@@ -743,11 +731,6 @@ $form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 $form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
 $form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
 
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'daemon_dumps_core', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'daemon_dumps_core', null, _("No"), '0');
-$form->addGroup($nagTab, 'daemon_dumps_core', _('Daemon core dumps'), '&nbsp;');
-
 $verboseOptions = array(
     '0' => _("Basic information"),
     '1' => _("More detailed information"),
@@ -854,7 +837,6 @@ function validMacroName($value)
 $form->registerRule('validMacroName', 'callback', 'validMacroName');
 
 $form->applyFilter('cfg_dir', 'slash');
-$form->applyFilter('log_archive_path', 'slash');
 $form->applyFilter('__ALL__', 'myTrim');
 
 $form->addRule('instance_heartbeat_interval', _("Number between 5 and 600"), 'isValidHeartbeat');
@@ -970,7 +952,6 @@ if ($valid) {
     $tpl->assign('sort4', _("Data"));
     $tpl->assign('sort5', _("Tuning"));
     $tpl->assign('sort6', _("Admin"));
-    $tpl->assign('sort7', _("Debug"));
     $tpl->assign('Status', _("Status"));
     $tpl->assign('Folders', _("Folders"));
     $tpl->assign('Files', _("Files"));
@@ -998,7 +979,6 @@ if ($valid) {
     $tpl->assign('Advanced', _("Advanced"));
     $tpl->assign('AdminInfo', _("Admin information"));
     $tpl->assign('DebugConfiguration', _("Debug Configuration"));
-    $tpl->assign('Debug', _("Debug"));
     $tpl->assign("Seconds", _("seconds"));
     $tpl->assign("Minutes", _("minutes"));
     $tpl->assign("Bytes", _("bytes"));

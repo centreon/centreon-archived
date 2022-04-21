@@ -50,8 +50,6 @@ class CfgNagios
             'execute_host_checks'                         => '2',
             'accept_passive_host_checks'                  => '2',
             'enable_event_handlers'                       => '1',
-            'log_rotation_method'                         => 'd',
-            'log_archive_path'                            => '@monitoring_varlog@/archives/',
             'check_external_commands'                     => '1',
             'external_command_buffer_slots'               => null,
             'command_check_interval'                      => '1s',

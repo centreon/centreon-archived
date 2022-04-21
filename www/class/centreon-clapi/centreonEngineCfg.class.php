@@ -77,7 +77,6 @@ class CentreonEngineCfg extends CentreonObject
             'execute_host_checks' => '2',
             'accept_passive_host_checks' => '2',
             'enable_event_handlers' => '1',
-            'log_archive_path' => '/var/log/centreon-engine/archives/',
             'check_external_commands' => '1',
             'command_check_interval' => '1s',
             'command_file' => '/var/log/centreon-engine/rw/nagios.cmd',

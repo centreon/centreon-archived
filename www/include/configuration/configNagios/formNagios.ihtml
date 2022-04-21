@@ -8,7 +8,6 @@
 			<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 			<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 			<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
-			<li class="b" id='c7'><a href="#" onclick="javascript:montre('7');">{$sort7}</a></li>
 		</ul>
         <div id="validFormTop">
         {if $o == "a" || $o == "c"}
@@ -219,14 +218,6 @@
 
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Archives}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_rotation_method">&nbsp;{$form.log_rotation_method.label}</td><td class="FormRowValue">{$form.log_rotation_method.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_archive_path">&nbsp;{$form.log_archive_path.label}</td><td class="FormRowValue">{$form.log_archive_path.html}</td></tr>
-
-			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
                 <h4>{$StatesRetention}</h4>
               </td>
             </tr>
@@ -235,21 +226,43 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Minutes}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_retained_program_state">&nbsp;{$form.use_retained_program_state.label}</td><td class="FormRowValue">{$form.use_retained_program_state.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_retained_scheduling_info">&nbsp;{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_host_attribute_mask">&nbsp;{$form.retained_contact_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_service_attribute_mask">&nbsp;{$form.retained_contact_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_service_attribute_mask.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_process_host_attribute_mask">&nbsp;{$form.retained_process_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_process_service_attribute_mask">&nbsp;{$form.retained_process_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_service_attribute_mask.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
 
-                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_host_attribute_mask">&nbsp;{$form.retained_contact_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_host_attribute_mask.html}</td></tr>
-                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_service_attribute_mask">&nbsp;{$form.retained_contact_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_service_attribute_mask.html}</td></tr>
-                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_process_host_attribute_mask">&nbsp;{$form.retained_process_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_host_attribute_mask.html}</td></tr>
-                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_process_service_attribute_mask">&nbsp;{$form.retained_process_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_service_attribute_mask.html}</td></tr>
-                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
-                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
-
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$DebugConfiguration}</h4>
+        </td>
+      </tr>
+      <tr class="list_one">
+        <td class="FormRowField"><img class="helpTooltip" name="debug_file">&nbsp;{$form.debug_file.label}</td>
+        <td class="FormRowValue">{$form.debug_file.html}</td>
+      </tr>
+      <tr class="list_two">
+        <td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}
+        </td>
+        <td class="FormRowValue">{$form.nagios_debug_level.html}</td>
+      </tr>
+      <tr class="list_one">
+        <td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td>
+        <td class="FormRowValue">{$form.debug_verbosity.html}</td>
+      </tr>
+      <tr class="list_two">
+        <td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}
+        </td>
+        <td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td>
+      </tr>
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab4' class='tab'>
@@ -410,32 +423,6 @@
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$AdminInfo}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
-		</table>
-	</div>
-	<div id='tab7' class='tab'>
-		<table class="formTable table">
-		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$Debug}</h3>
-              </td>
-            </tr>
-			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$DebugConfiguration}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_file">&nbsp;{$form.debug_file.label}</td><td class="FormRowValue">{$form.debug_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}</td><td class="FormRowValue">{$form.nagios_debug_level.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="daemon_dumps_core">&nbsp;{$form.daemon_dumps_core.label}</td><td class="FormRowValue">{$form.daemon_dumps_core.html}&nbsp;</td></tr>
             {if $o == "a" || $o == "c"}
                 <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
                 {if isset($form.required)}

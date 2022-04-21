@@ -257,7 +257,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
-        . "`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , "
+        . "`accept_passive_host_checks` , `enable_event_handlers` , "
         . "`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , "
         . "`lock_file` , `retain_state_information` , `state_retention_file` , `retention_update_interval` , "
         . "`use_retained_program_state` , `use_retained_scheduling_info` , "
@@ -292,7 +292,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`check_host_freshness` , `host_freshness_check_interval` , `instance_heartbeat_interval` , `date_format` , "
         . "`illegal_object_name_chars` , `illegal_macro_output_chars`, "
         . "`use_large_installation_tweaks` , `debug_file` , `debug_level` , "
-        . "`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, "
+        . "`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , "
         . "`enable_environment_macros` , `use_setpgid`, `use_regexp_matching` , `use_true_regexp_matching` , "
         . "`admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, "
         . "`event_broker_options` , `translate_passive_host_checks`, "
@@ -413,21 +413,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
     } else {
         $rq .= "'2', ";
-    }
-
-    if (
-        isset($ret["log_rotation_method"]["log_rotation_method"])
-        && $ret["log_rotation_method"]["log_rotation_method"] != 2
-    ) {
-        $rq .= "'" . $ret["log_rotation_method"]["log_rotation_method"] . "',  ";
-    } else {
-        $rq .= "'2', ";
-    }
-
-    if (isset($ret["log_archive_path"]) && $ret["log_archive_path"] != null) {
-        $rq .= "'" . htmlentities($ret["log_archive_path"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
     }
 
     if (
@@ -1049,12 +1034,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["daemon_dumps_core"]["daemon_dumps_core"]) && $ret["daemon_dumps_core"]["daemon_dumps_core"]) {
-        $rq .= "'1', ";
-    } else {
-        $rq .= "'0', ";
-    }
-
     if (
         isset($ret["enable_environment_macros"]["enable_environment_macros"])
         && $ret["enable_environment_macros"]["enable_environment_macros"] != 2
@@ -1354,21 +1333,6 @@ function updateNagios($nagios_id = null)
         $rq .= "enable_event_handlers = '" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
     } else {
         $rq .= "enable_event_handlers = '2', ";
-    }
-
-    if (
-        isset($ret["log_rotation_method"]["log_rotation_method"])
-        && $ret["log_rotation_method"]["log_rotation_method"] != 2
-    ) {
-        $rq .= "log_rotation_method = '" . $ret["log_rotation_method"]["log_rotation_method"] . "',  ";
-    } else {
-        $rq .= "log_rotation_method = '2', ";
-    }
-
-    if (isset($ret["log_archive_path"]) && $ret["log_archive_path"] != null) {
-        $rq .= "log_archive_path = '" . htmlentities($ret["log_archive_path"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "log_archive_path = NULL, ";
     }
 
     if (
@@ -2121,12 +2085,6 @@ function updateNagios($nagios_id = null)
         $rq .= "max_debug_file_size = '" . htmlentities($ret["max_debug_file_size"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "max_debug_file_size = NULL, ";
-    }
-
-    if (isset($ret["daemon_dumps_core"]["daemon_dumps_core"]) && $ret["daemon_dumps_core"]["daemon_dumps_core"]) {
-        $rq .= "daemon_dumps_core = '1',  ";
-    } else {
-        $rq .= "daemon_dumps_core = '0', ";
     }
 
     if (
