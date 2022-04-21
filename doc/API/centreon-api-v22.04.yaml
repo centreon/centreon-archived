@@ -4265,7 +4265,7 @@ components:
                   nullable: true
                   minimum: 604800
                   maximum: 31557600
-                  default: 7776000
+                  default: 15552000
                 excluded_users:
                   description: list of users without password expiration rule
                   type: array
