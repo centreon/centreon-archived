@@ -6,6 +6,8 @@ const setActionAcl = jest.fn();
 
 const setDowntime = jest.fn();
 
+const setAcknowledgement = jest.fn();
+
 const setRefreshInterval = jest.fn();
 
 const useUser = jest.fn(() => ({
@@ -23,12 +25,24 @@ const useDowntime = jest.fn(() => ({
   setDowntime,
 }));
 
+const useAcknowledgement = jest.fn(() => ({
+  acknowledgement: {},
+  setAcknowledgement,
+}));
+
 const useRefreshInterval = jest.fn(() => ({
   refreshInterval: 0,
   setRefreshInterval,
 }));
 
 const useUserContext = jest.fn(() => ({
+  acknowledgement: {
+    force_active_checks: false,
+    notify: false,
+    persistent: true,
+    sticky: false,
+    with_services: false,
+  },
   acl: {
     actions: {
       host: {
@@ -49,7 +63,9 @@ const useUserContext = jest.fn(() => ({
   },
   alias: 'admin',
   downtime: {
-    default_duration: 7200,
+    duration: 7200,
+    fixed: true,
+    with_services: false,
   },
   locale: 'en',
 
@@ -69,5 +85,6 @@ export {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  useAcknowledgement,
   Context,
 };

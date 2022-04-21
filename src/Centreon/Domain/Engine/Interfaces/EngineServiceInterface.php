@@ -67,6 +67,15 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function scheduleForcedHostCheck(Host $host): void;
 
     /**
+     * Schedules an immediate force check for a Service.
+     *
+     * @param Service $service
+     * @throws EngineException
+     * @throws \Exception
+     */
+    public function scheduleImmediateForcedServiceCheck(Service $service): void;
+
+    /**
      * Disacknowledge a host.
      *
      * @param Host $host Host to disacknowledge

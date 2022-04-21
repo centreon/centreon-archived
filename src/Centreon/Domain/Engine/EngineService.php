@@ -321,6 +321,30 @@ class EngineService extends AbstractCentreonService implements
     /**
      * @inheritDoc
      */
+    public function scheduleImmediateForcedServiceCheck(Service $service): void
+    {
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException(_('Host name cannot be empty'));
+        }
+
+        if (empty($service->getDescription())) {
+            throw new EngineException(_('Service description cannot be empty'));
+        }
+
+        $command = sprintf(
+            'SCHEDULE_FORCED_SVC_CHECK;%s;%s;%d',
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            (new \DateTime())->getTimestamp()
+        );
+
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function scheduleForcedHostCheck(Host $host): void
     {
         if (empty($host->getName())) {
