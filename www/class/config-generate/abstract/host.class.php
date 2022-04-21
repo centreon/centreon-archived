@@ -119,6 +119,7 @@ abstract class AbstractHost extends AbstractObject
         'notes_url',
         'action_url',
         'icon_image',
+        'icon_id',
         'icon_image_alt',
         'statusmap_image',
         'timezone',
@@ -181,6 +182,7 @@ abstract class AbstractHost extends AbstractObject
         $media = Media::getInstance($this->dependencyInjector);
         if (!isset($host['icon_image'])) {
             $host['icon_image'] = $media->getMediaPathFromId($host['icon_image_id']);
+            $host['icon_id'] = $host['icon_image_id'];
         }
         if (!isset($host['statusmap_image'])) {
             $host['statusmap_image'] = $media->getMediaPathFromId($host['statusmap_image_id']);

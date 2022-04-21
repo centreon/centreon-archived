@@ -112,6 +112,7 @@ abstract class AbstractService extends AbstractObject
         'notes_url',
         'action_url',
         'icon_image',
+        'icon_id',
         'icon_image_alt',
         'acknowledgement_timeout'
     );
@@ -146,6 +147,7 @@ abstract class AbstractService extends AbstractObject
         $media = Media::getInstance($this->dependencyInjector);
         if (!isset($service['icon_image'])) {
             $service['icon_image'] = $media->getMediaPathFromId($service['icon_image_id']);
+            $service['icon_id'] = $service['icon_image_id'];
         }
     }
 
