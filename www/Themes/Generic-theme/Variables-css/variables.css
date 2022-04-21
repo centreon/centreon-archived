@@ -178,13 +178,14 @@
 
     /** States **/
     --default-badge-background-color: var(--color-primary-dark);
-    --host-down-danger-service-critical-background-color : var(--color-danger);
+    --host-down-danger-service-critical-background-color : var(--color-torch-red);
     --host-unreachable-unknown-background-color: var(--color-aluminium);
     --host-downtime-background-color : var(--color-mauve);
     --service-ok-host-up-success-background-color: var(--color-success);
     --service-warning-background-color: var(--color-warning);
     --pending-background-color :var(--color-pending);
     --service-unknown-background-color: var(--color-ghost);
+    --service-unknown-font-color: var(--color-black);
     --info-background-color:var(--color-iris-blue);
     --ack-background-color : var(--color-ack);
     --bdg-dtm-before-background-color: var(--color-mauve);
@@ -289,13 +290,13 @@
     --list-up-background-color: var(--color-success);
     --list-up-hover-background-color: var(--color-gimblet);
     --list-down-background-color: var(--color-carnation-pink);
-    --list-down-hover-background-color: var(--color-deep-blush);
+    --list-down-hover-background-color: var(--list-one-hover-background-color);
     --list-unreachable-background-color: var(--color-aluminium);
-    --list-unreachable-hover-background-color: var(--list-unreachable-background-color);
+    --list-unreachable-hover-background-color: var(--list-one-hover-background-color);
     --list-downtime-background-color: var(--color-blue-chalk);
-    --list-downtime-hover-background-color: var(--color-fog);
+    --list-downtime-hover-background-color: var(--list-one-hover-background-color);
     --list-ack-background-color: var(--color-dolly);
-    --list-ack-hover-background-color: var(--color-sweet-corn-2);
+    --list-ack-hover-background-color: var(--list-one-hover-background-color);
     --list-lvls-td-top-border-color: var(--color-silver-chalice);
     --list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
     --list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
@@ -791,4 +792,7 @@
     --action-bar-icon-background-color: var(--body-background);
     --ajax-option-h4-disabled-font-color: var(--color-grey-chateau);
     /* ------ END : Plugin pack variables -----*/
+    /* Gorgone variables */
+    --gorgone-config-file-font-color: var(--color-black);
+    --gorgone-config-file-background-color: var(--body-background);
 }

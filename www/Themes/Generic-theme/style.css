@@ -582,7 +582,7 @@ p.description a, p.description a:visited {
     color:var(--status-success-color)}
 .service_warning, .warning  {background-color: var(--service-warning-background-color);}
 .pending    {background-color: var(--pending-background-color);}
-.service_unknown    {background-color: var(--service-unknown-background-color);}
+.service_unknown    {background-color: var(--service-unknown-background-color); color: var(--service-unknown-font-color)}
 .info {background-color: var(--info-background-color)}
 .ack {background-color: var(--ack-background-color);}
 
@@ -2890,4 +2890,10 @@ ul.module_list {
 .add-new-entry {
     cursor: pointer;
     color: var(--add-new-entry-font-color);
+}
+
+.gorgone_config_file {
+    padding: 4px;
+    color: var(--gorgone-config-file-font-color);
+    background-color: var(--gorgone-config-file-background-color);
 }

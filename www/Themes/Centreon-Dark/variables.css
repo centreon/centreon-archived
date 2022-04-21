@@ -179,4 +179,13 @@
     --popup-volante-background-color: var(--body-background);
     --image-volante-background-color: var(--popup-volante-background-color);
     --select2--selection-multiple-disabled-background-color: var(--body-background);
+    --gorgone-config-file-font-color: var(--color-white);
+    --gorgone-config-file-background-color: var(--body-background);
+    --list-downtime-background-color: var(--color-scarlet-gum);
+    --list-downtime-hover-background-color: var(--list-one-hover-background-color);
+    --list-down-background-color: var(--color-torch-red-rgba-4);
+    --list-down-hover-background-color: var(--list-one-hover-background-color);
+    --service-unknown-font-color: var(--color-black);
+    --list-ack-background-color: var(--color-horses-neck);
+    --list-ack-hover-background-color: var(--list-one-hover-background-color);
 }
