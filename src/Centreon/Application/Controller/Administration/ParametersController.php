@@ -87,13 +87,13 @@ class ParametersController extends AbstractController
         $downtimeDuration = '';
         $downtimeScale = '';
         $refreshInterval = '';
-        $isAcknowledgementPersistent = false;
-        $isAcknowledgementSticky = false;
-        $isAcknowledgementNotify = true;
+        $isAcknowledgementPersistent = true;
+        $isAcknowledgementSticky = true;
+        $isAcknowledgementNotify = false;
         $isAcknowledgementWithServices = true;
-        $isAcknowledgementForceActiveChecks = false;
+        $isAcknowledgementForceActiveChecks = true;
         $isDowntimeFixed = true;
-        $isDowntimeWithServices = false;
+        $isDowntimeWithServices = true;
 
         $options = $this->optionService->findSelectedOptions([
             self::DEFAULT_REFRESH_INTERVAL,
@@ -120,10 +120,10 @@ class ParametersController extends AbstractController
                     $refreshInterval = $option->getValue();
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT:
-                    $isAcknowledgementPersistent = (int) $option->getValue() === 1 ? true : false;
+                    $isAcknowledgementPersistent = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_STICKY:
-                    $isAcknowledgementSticky = (int) $option->getValue() === 1 ? true : false;
+                    $isAcknowledgementSticky = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_NOTIFY:
                     $isAcknowledgementNotify = (int) $option->getValue() === 1;
@@ -135,10 +135,10 @@ class ParametersController extends AbstractController
                     $isAcknowledgementForceActiveChecks = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_DOWNTIME_WITH_SERVICES:
-                    $isDowntimeWithServices = (int) $option->getValue() === 1 ? true : false;
+                    $isDowntimeWithServices = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_DOWNTIME_FIXED:
-                    $isDowntimeFixed = (int) $option->getValue() === 1 ? true : false;
+                    $isDowntimeFixed = (int) $option->getValue() === 1;
                     break;
                 default:
                     break;
