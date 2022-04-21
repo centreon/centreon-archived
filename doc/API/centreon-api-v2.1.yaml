@@ -3188,8 +3188,6 @@ paths:
                       type: boolean
                       description: Default set downtimes on services attached to hosts option
                       example: true
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
