@@ -76,6 +76,7 @@ import {
   labelBeforeLastYear,
   labelLastCheckWithOkStatus,
   labelGraph,
+  labelNotificationStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -142,6 +143,15 @@ const serviceDetailsUrlParameters = {
   uuid: 'h1-s1',
 };
 
+const serviceDetailsNotificationUrlParameters = {
+  id: 1,
+  parentId: 1,
+  parentType: 'host',
+  tab: 'notifications',
+  type: 'service',
+  uuid: 'h1-s1',
+};
+
 const serviceDetailsGraphUrlParameters = {
   id: 1,
   parentId: 1,
@@ -173,6 +183,14 @@ const metaserviceDetailsMetricsUrlParameters = {
   type: 'metaservice',
   uuid: 'ms1',
 };
+
+const retrievedNotification = {
+  {"contacts":[{"id":1,"name":"admin","alias":"admin admin","email":"admin@centreon.com","notifications":{"host":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}},"service":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}}},
+  "configuration_uri":"\/centreon\/main.php?p=60301\u0026o=c\u0026contact_id=1"},{"id":4,"name":"centreon-gorgone","alias":"centreon-gorgone","email":"gorgone@localhost","notifications":{"host":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}},"service":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}}},"configuration_uri":"\/centreon\/main.php?p=60301\u0026o=c\u0026contact_id=4"},{"id":17,"name":"guest","alias":"Guest","email":"guest@localhost","notifications":{"host":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}},"service":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}}},"configuration_uri":"\/centreon\/main.php?p=60301\u0026o=c\u0026contact_id=17"},{"id":18,"name":"user","alias":"User","email":"user@localhost","notifications":{"host":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}},"service":{"events":[],"time_period":{"id":1,"name":"24x7","alias":"Always"}}},"configuration_uri":"\/centreon\/main.php?p=60301\u0026o=c\u0026contact_id=18"}],
+  "contact_groups":[{"id":3,"name":"Guest","alias":"Guests Group","configuration_uri":"\/centreon\/main.php?p=60302\u0026o=c\u0026cg_id=3"},{"id":5,"name":"Supervisors","alias":"Centreon supervisors",
+  "configuration_uri":"\/centreon\/main.php?p=60302\u0026o=c\u0026cg_id=5"}],
+  "is_notification_enabled":true}
+}
 
 const retrievedDetails = {
   acknowledged: false,
@@ -493,6 +511,8 @@ const retrievedFilters = {
     result: [],
   },
 };
+
+const retrievedNotification = {};
 
 let context: ResourceContext;
 
@@ -1695,5 +1715,24 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
+  });
+  it.only('displays  details notification tab when is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    setUrlQueryParameters([
+      {
+        name: 'notification',
+        value: serviceDetailsNotificationUrlParameters,
+      },
+    ]);
+    const { getByText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        './api/latest/monitoring/resources/hosts/1/services/1/notification-policy' as string,
+        expect.anything(),
+      );
+    });
+    expect(getByText(labelNotificationStatus)).toBeInTheDocument();
   });
 });
