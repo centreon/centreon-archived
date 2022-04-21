@@ -125,13 +125,15 @@ class ServiceTemplate extends AbstractService
         'acknowledgement_timeout'
     );
 
-    private function getServiceGroups($service_id)
+    private function getServiceGroups($serviceId)
     {
         $host = Host::getInstance($this->dependencyInjector);
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
-        $this->service_cache[$service_id]['sg'] = $servicegroup->getServiceGroupsForStpl($service_id);
-        foreach ($this->service_cache[$service_id]['sg'] as &$sg) {
+        $this->service_cache[$serviceId]['sg'] = $servicegroup->getServiceGroupsForStpl($serviceId);
+        $this->service_cache[$serviceId]['group_tags'] = [];
+        foreach ($this->service_cache[$serviceId]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->current_host_id, $sg['host_host_id'])) {
+                $this->service_cache[$serviceId]['group_tags'][] = $sg['servicegroup_sg_id'];
                 $servicegroup->addServiceInSg(
                     $sg['servicegroup_sg_id'],
                     $this->current_service_id,

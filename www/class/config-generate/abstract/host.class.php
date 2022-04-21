@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -136,11 +137,12 @@ abstract class AbstractHost extends AbstractObject
         'retain_status_information',
         'retain_nonstatus_information',
     );
-    protected $attributes_array = array(
+    protected $attributes_array = [
         'use',
         'parents',
         'category_tags',
-    );
+        'group_tags',
+    ];
     protected $attributes_hash = array(
         'macros'
     );
