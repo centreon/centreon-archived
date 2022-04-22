@@ -318,6 +318,7 @@ function insertVirtualMetric()
 /**
  * Update a virtual metric
  *
+ * @params int|null $vmetricId
  * @global HTML_QuickFormCustom $form
  * @global CentreonDB $pearDB
  * @global CentreonDB $pearDBO
