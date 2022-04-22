@@ -53,7 +53,7 @@ $objMain = new CentreonMainCfg();
  * Database retrieve information for Nagios
  */
 $nagios = array();
-$nagios_d = array();
+$nagios_log_v1 = array();
 
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
@@ -64,10 +64,21 @@ if (($o === 'c' || $o === 'w') && $nagiosId) {
     // Set base value
     $nagios = array_map("myDecode", $statement->fetch());
 
+    // log version
+    $nagios['logger_version'] = $nagios['log_v2_enabled'] === '1' ? 'log_v2_enabled' : 'log_legacy_enabled';
+    // Log V1
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
-        $nagios_d["nagios_debug_level"][$value] = 1;
+        $nagios_log_v1["nagios_debug_level"][$value] = 1;
     }
+    // Log V2
+    if ($nagios['log_v2_enabled'] === '1') {
+        $statement = $pearDB->prepare("SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :nagiosId");
+        $statement->bindValue(':nagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+        $nagios_log_v2 = $statement->fetch();
+    }
+
     $defaultEventBrokerOptions['event_broker_options'] = $objMain->explodeEventBrokerOptions(
         (int)$nagios['event_broker_options']
     );
@@ -340,6 +351,7 @@ $nagTab[] = $form->createElement('radio', 'logger_version', null, _("V1 (legacy,
 $nagTab[] = $form->createElement('radio', 'logger_version', null, _("V2 (ISO-8601, with log level fine tuning)"), 'log_v2_enabled');
 $form->addGroup($nagTab, 'logger_version', _("Logger version"), '&nbsp;');
 
+// LOG V1
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'use_syslog', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'use_syslog', null, _("No"), '0');
@@ -386,6 +398,95 @@ $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'log_pid', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'log_pid', null, _("No"), '0');
 $form->addGroup($nagTab, 'log_pid', _("Enable logging pid information"), '&nbsp;');
+
+// LOG V2
+$loggerOptions = [
+    'file' => _("File"),
+    'syslog' => _("Syslog"),
+];
+$form->addElement('select', 'log_v2_logger', _("Log destination"), $loggerOptions);
+
+$logLevelOptions = [
+    'trace' => _("Trace"),
+    'debug' => _("Debug"),
+    'info' => _("Info"),
+    'warning' => _("Warning"),
+    'err' => _("Error"),
+    'critical' => _("Critical"),
+    'off' => _("Disabled"),
+];
+$form->addElement('select', 'log_level_checks', _("Checks"), $logLevelOptions);
+$form->addElement('select', 'log_level_commands', _("Commands"), $logLevelOptions);
+$form->addElement('select', 'log_level_comments', _("Comments"), $logLevelOptions);
+$form->addElement('select', 'log_level_config', _("Configuration"), $logLevelOptions);
+$form->addElement('select', 'log_level_downtimes', _("Downtimes"), $logLevelOptions);
+$form->addElement('select', 'log_level_eventbroker', _("Broker events"), $logLevelOptions);
+$form->addElement('select', 'log_level_events', _("Events"), $logLevelOptions);
+$form->addElement('select', 'log_level_external_command', _("External commands"), $logLevelOptions);
+$form->addElement('select', 'log_level_functions', _("Functions"), $logLevelOptions);
+$form->addElement('select', 'log_level_macros', _("Macros"), $logLevelOptions);
+$form->addElement('select', 'log_level_notifications', _("Notifications"), $logLevelOptions);
+$form->addElement('select', 'log_level_process', _("Process"), $logLevelOptions);
+$form->addElement('select', 'log_level_runtime', _("Runtime"), $logLevelOptions);
+
+/* ****************************************************
+ * Debug Configuration (Log V1)
+ */
+$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
+$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
+
+$verboseOptions = array(
+    '0' => _("Basic information"),
+    '1' => _("More detailed information"),
+    '2' => _("Highly detailed information")
+);
+$form->addElement('select', 'debug_verbosity', _("Debug Verbosity"), $verboseOptions);
+
+$debugLevel = array();
+$debugLevel["-1"] = _("Log everything");
+$debugLevel["0"] = _("Log nothing (default)");
+$debugLevel["1"] = _("Function enter/exit information");
+$debugLevel["2"] = _("Config information");
+$debugLevel["4"] = _("Process information");
+$debugLevel["8"] = _("Scheduled event information");
+$debugLevel["16"] = _("Host/service check information");
+$debugLevel["32"] = _("Notification information");
+$debugLevel["64"] = _("Event broker information");
+$debugLevel["128"] = _("External Commands");
+$debugLevel["256"] = _("Commands");
+$debugLevel["512"] = _("Downtimes");
+$debugLevel["1024"] = _("Comments");
+$debugLevel["2048"] = _("Macros");
+foreach ($debugLevel as $key => $val) {
+    if ($key == "-1" || $key == "0") {
+        $debugCheck[] = $form->createElement(
+            'checkbox',
+            $key,
+            '&nbsp;',
+            $val,
+            array(
+                "id" => "debug" . $key,
+                "onClick" => "unCheckOthers('debug-level', this.name);",
+                'class' => 'debug-level'
+            )
+        );
+    } else {
+        $debugCheck[] = $form->createElement(
+            'checkbox',
+            $key,
+            '&nbsp;',
+            $val,
+            array(
+                "id" => "debug" . $key,
+                "onClick" => "unCheckAllAndNaught('debug-level');",
+                'class' => 'debug-level'
+            )
+        );
+    }
+}
+$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
+$form->setDefaults($nagios_log_v1);
+
 
 /* *****************************************************
  * Event handler
@@ -730,99 +831,11 @@ $nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("No"), '0');
 $nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
-/* ****************************************************
- * Debug - Log V1
- */
-$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
-$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
-
-$verboseOptions = array(
-    '0' => _("Basic information"),
-    '1' => _("More detailed information"),
-    '2' => _("Highly detailed information")
-);
-$form->addElement('select', 'debug_verbosity', _("Debug Verbosity"), $verboseOptions);
-
-$debugLevel = array();
-$debugLevel["-1"] = _("Log everything");
-$debugLevel["0"] = _("Log nothing (default)");
-$debugLevel["1"] = _("Function enter/exit information");
-$debugLevel["2"] = _("Config information");
-$debugLevel["4"] = _("Process information");
-$debugLevel["8"] = _("Scheduled event information");
-$debugLevel["16"] = _("Host/service check information");
-$debugLevel["32"] = _("Notification information");
-$debugLevel["64"] = _("Event broker information");
-$debugLevel["128"] = _("External Commands");
-$debugLevel["256"] = _("Commands");
-$debugLevel["512"] = _("Downtimes");
-$debugLevel["1024"] = _("Comments");
-$debugLevel["2048"] = _("Macros");
-foreach ($debugLevel as $key => $val) {
-    if ($key == "-1" || $key == "0") {
-        $debugCheck[] = $form->createElement(
-            'checkbox',
-            $key,
-            '&nbsp;',
-            $val,
-            array(
-                "id" => "debug" . $key,
-                "onClick" => "unCheckOthers('debug-level', this.name);",
-                'class' => 'debug-level'
-            )
-        );
-    } else {
-        $debugCheck[] = $form->createElement(
-            'checkbox',
-            $key,
-            '&nbsp;',
-            $val,
-            array(
-                "id" => "debug" . $key,
-                "onClick" => "unCheckAllAndNaught('debug-level');",
-                'class' => 'debug-level'
-            )
-        );
-    }
-}
-$form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
-$form->setDefaults($nagios_d);
-
-/* ****************************************************
- * Debug - Log V2
- */
-$loggerOptions = [
-    'file' => _("File"),
-    'syslog' => _("Syslog"),
-];
-$form->addElement('select', 'log_v2_logger', _("Log destination"), $loggerOptions);
-
-$logLevelOptions = [
-    'trace' => _("Trace"),
-    'debug' => _("Debug"),
-    'info' => _("Info"),
-    'warning' => _("Warning"),
-    'err' => _("Error"),
-    'critical' => _("Critical"),
-    'off' => _("Disabled"),
-];
-$form->addElement('select', 'log_level_checks', _("Checks"), $logLevelOptions);
-$form->addElement('select', 'log_level_commands', _("Commands"), $logLevelOptions);
-$form->addElement('select', 'log_level_comments', _("Comments"), $logLevelOptions);
-$form->addElement('select', 'log_level_config', _("Configuration"), $logLevelOptions);
-$form->addElement('select', 'log_level_downtimes', _("Downtimes"), $logLevelOptions);
-$form->addElement('select', 'log_level_eventbroker', _("Broker events"), $logLevelOptions);
-$form->addElement('select', 'log_level_events', _("Events"), $logLevelOptions);
-$form->addElement('select', 'log_level_external_command', _("External commands"), $logLevelOptions);
-$form->addElement('select', 'log_level_functions', _("Functions"), $logLevelOptions);
-$form->addElement('select', 'log_level_macros', _("Macros"), $logLevelOptions);
-$form->addElement('select', 'log_level_notifications', _("Notifications"), $logLevelOptions);
-$form->addElement('select', 'log_level_process', _("Process"), $logLevelOptions);
-$form->addElement('select', 'log_level_runtime', _("Runtime"), $logLevelOptions);
 
 
 $form->setDefaults($defaultEventBrokerOptions);
 $form->setDefaults($objMain->getDefaultMainCfg());
+$form->setDefaults($objMain->getDefaultLoggerCfg());
 $form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'nagios_id');

@@ -538,8 +538,11 @@ jQuery(document).ready(function() {
     });
     jQuery('input[name=event_broker_options]').trigger('change');
 
-    jQuery('input[name="logger_version[logger_version]"]').change(function (e) {
-      var $this = jQuery(this);
+    $('input[name="logger_version[logger_version]"]').change(function (e) {
+      var $this = $(this);
+      if (! $this.is(':checked')) {
+        return;
+      }
       if ($this.attr('value') === 'log_legacy_enabled') {
         $(".logger_v1_option").show();
         $(".logger_v2_option").hide();
@@ -548,7 +551,7 @@ jQuery(document).ready(function() {
         $(".logger_v1_option").hide();
       }
     });
-    jQuery('input[name="logger_version[logger_version]"]').trigger('change');
+    $('input[name="logger_version[logger_version]"]').trigger('change');
 });
 </script>
 {/literal}

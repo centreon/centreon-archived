@@ -75,6 +75,24 @@ class CentreonMainCfg
         33554432 => 'Command data'
     ];
 
+    /** @var string[] */
+    private const ENGINE_LOGGER_DEFAULT_VALUES = [
+        'log_v2_logger' => 'syslog',
+        'log_level_functions' => 'warning',
+        'log_level_config' => 'warning',
+        'log_level_events' => 'warning',
+        'log_level_checks' => 'warning',
+        'log_level_notifications' => 'warning',
+        'log_level_eventbroker' => 'warning',
+        'log_level_external_command' => 'warning',
+        'log_level_commands' => 'warning',
+        'log_level_downtimes' => 'warning',
+        'log_level_comments' => 'warning',
+        'log_level_macros' => 'warning',
+        'log_level_process' => 'warning',
+        'log_level_runtime' => 'warning',
+    ];
+
     public function __construct()
     {
         $this->DB = new CentreonDB();
@@ -92,7 +110,7 @@ class CentreonMainCfg
 
     private function setEngineOptions()
     {
-        $this->aInstanceDefaultValues = array(
+        $this->aInstanceDefaultValues = [
             'log_file' => '/var/log/centreon-engine/centengine.log',
             'cfg_dir' => '/etc/centreon-engine/',
             'temp_file' => '/var/log/centreon-engine/centengine.tmp',
@@ -182,8 +200,10 @@ class CentreonMainCfg
             'cfg_file' => 'centengine.cfg',
             'cached_host_check_horizon' => '60',
             'log_pid' => 1,
-            'enable_macros_filter' => 0
-        );
+            'enable_macros_filter' => 0,
+            'log_v2_enabled' => 1,
+            'log_legacy_enable' => 0,
+        ];
     }
 
     /**
@@ -193,6 +213,14 @@ class CentreonMainCfg
     public function getDefaultMainCfg()
     {
         return $this->aInstanceDefaultValues;
+    }
+
+    /**
+     * Get default engine logger values
+     */
+    public function getDefaultLoggerCfg()
+    {
+        return self::ENGINE_LOGGER_DEFAULT_VALUES;
     }
 
     /**
