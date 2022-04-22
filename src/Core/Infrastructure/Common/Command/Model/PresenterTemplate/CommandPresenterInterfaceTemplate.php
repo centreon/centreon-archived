@@ -16,6 +16,7 @@ class CommandPresenterInterfaceTemplate extends FileTemplate
 
     public function generateModelContent(): string
     {
+        $dataVariable = '$data';
         $content = <<<EOF
         <?php
         $this->licenceHeader
@@ -30,7 +31,7 @@ class CommandPresenterInterfaceTemplate extends FileTemplate
             /**
              * Present no content.
              */
-            public function present(): void;
+            public function present(mixed $dataVariable): void;
         }
 
         EOF;

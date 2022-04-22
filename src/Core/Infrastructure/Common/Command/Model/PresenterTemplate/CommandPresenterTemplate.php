@@ -19,6 +19,7 @@ class CommandPresenterTemplate extends FileTemplate
     {
         $interfaceNamespace = $this->presenterInterface->namespace . '\\' . $this->presenterInterface->name;
         $interfaceName = $this->presenterInterface->name;
+        $dataVariable = '$data';
         $content = <<<EOF
         <?php
         $this->licenceHeader
@@ -33,7 +34,7 @@ class CommandPresenterTemplate extends FileTemplate
             /**
              * @inheritDoc
              */
-            public function present(): void
+            public function present(mixed $dataVariable): void
             {
             }
         }
