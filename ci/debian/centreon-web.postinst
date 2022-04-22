@@ -57,3 +57,4 @@ if [ "$1" = "configure" ] ; then
   fi
 
 fi
+exit 0
