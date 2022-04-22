@@ -1,7 +1,13 @@
 #!/bin/sh
 
-deluser www-data centreon || true
-deluser centreon || true
-delgroup centreon || true
+set -e
 
-systemctl --no-reload disable --now centreon.service || : &>/dev/null || :
+case "$1" in
+    remove)
+        deluser centreon || true
+        delgroup centreon || true
+        systemctl --no-reload disable --now centreon.service || : &>/dev/null || :
+    ;;
+esac
+
+exit 0
