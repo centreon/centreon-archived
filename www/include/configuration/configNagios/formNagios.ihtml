@@ -265,7 +265,7 @@
         <td class="FormRowValue">{$form.log_level_eventbroker.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_events">&nbsp;{$form.log_v2_logger.label}</td>
+        <td class="FormRowField"><img class="helpTooltip" name="log_level_events">&nbsp;{$form.log_level_events.label}</td>
         <td class="FormRowValue">{$form.log_level_events.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
