@@ -17,7 +17,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     private CommandPresenterInterfaceTemplate $commandPresenterInterfaceTemplate;
     private CommandUseCaseTemplate $commandUseCaseTemplate;
 
-    public function __construct(private string $srcPath)
+    public function __construct(protected string $srcPath)
     {
     }
 

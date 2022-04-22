@@ -111,7 +111,7 @@ class CreateCoreArchCommand extends Command
      */
     private function createCommandArch(OutputInterface $output): void
     {
-        $this->commandService->createRepositoryInterfaceTemplateIfNotExist(
+        $this->commandArchCommandService->createRepositoryInterfaceTemplateIfNotExist(
             $output,
             $this->modelTemplate->name,
             self::WRITE_REPOSITORY_TYPE

@@ -9,7 +9,7 @@ use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryI
 
 class CreateCoreQueryArchCommandService
 {
-    public function __construct(private string $srcPath)
+    public function __construct(protected string $srcPath)
     {
     }
 

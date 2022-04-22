@@ -19,7 +19,7 @@ class CreateCoreArchCommandService
     /**
      * @param string $srcPath
      */
-    public function __construct(private string $srcPath)
+    public function __construct(protected string $srcPath)
     {
     }
 
@@ -83,6 +83,7 @@ class CreateCoreArchCommandService
                 );
                 $modelNamespace = $questionHelper->ask($input, $output, $questionWhichExistingModelUsed);
                 $namespaceValue = preg_replace('/\\\\' . $modelName . '$/', '', $modelNamespace);
+                $namespaceIndex = null;
                 foreach ($foundModels as $key => $foundModel) {
                     if ($foundModel['namespace'] === $namespaceValue) {
                         $namespaceIndex = $key;
@@ -170,9 +171,10 @@ class CreateCoreArchCommandService
         string $modelName,
         string $repositoryType
     ): void {
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/Repository/' . $repositoryType .
+        dump($this->srcPath);
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/Repository/' . $repositoryType .
         $modelName . 'RepositoryInterface.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\Repository';
+        $namespace = 'Core\\' . $modelName . '\\Application\\Repository';
         if (!file_exists($filePath)) {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,

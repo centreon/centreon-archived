@@ -5,7 +5,7 @@ namespace Core\Infrastructure\Common\Command\Model\UseCaseTemplate;
 use Core\Infrastructure\Common\Command\Model\DtoTemplate\RequestDtoTemplate;
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterInterfaceTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
 class CommandUseCaseTemplate extends FileTemplate
 {
@@ -15,7 +15,7 @@ class CommandUseCaseTemplate extends FileTemplate
         public string $name,
         public CommandPresenterInterfaceTemplate $presenter,
         public RequestDtoTemplate $request,
-        public WriteRepositoryInterfaceTemplate $repository,
+        public RepositoryInterfaceTemplate $repository,
         public bool $exists = false
     ) {
     }
