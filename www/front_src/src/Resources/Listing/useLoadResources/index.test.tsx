@@ -89,7 +89,7 @@ describe(useLoadResources, () => {
     [
       'search',
       (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
-      3,
+      2,
     ],
     [
       'states',
@@ -98,7 +98,7 @@ describe(useLoadResources, () => {
           name: 'states',
           value: [{ id: 'unhandled', name: 'Unhandled problems' }],
         }),
-      3,
+      2,
     ],
     [
       'statuses',
@@ -107,7 +107,7 @@ describe(useLoadResources, () => {
           name: 'statuses',
           value: [{ id: 'OK', name: 'Ok' }],
         }),
-      3,
+      2,
     ],
     [
       'resourceTypes',
@@ -116,7 +116,7 @@ describe(useLoadResources, () => {
           name: 'resource_types',
           value: [{ id: 'host', name: 'Host' }],
         }),
-      3,
+      2,
     ],
     [
       'hostGroups',
@@ -125,7 +125,7 @@ describe(useLoadResources, () => {
           name: 'host_groups',
           value: [{ id: 0, name: 'Linux-servers' }],
         }),
-      3,
+      2,
     ],
     [
       'serviceGroups',
@@ -134,7 +134,7 @@ describe(useLoadResources, () => {
           name: 'service_groups',
           value: [{ id: 1, name: 'Web-services' }],
         }),
-      3,
+      2,
     ],
   ];
 
