@@ -324,7 +324,7 @@ function insertVirtualMetric()
  */
 function updateVirtualMetric($vmetricId = null)
 {
-    if (!$vmetricId) {
+    if ($vmetricId === null) {
         return;
     }
 
