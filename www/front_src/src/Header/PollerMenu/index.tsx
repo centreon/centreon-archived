@@ -215,14 +215,14 @@ const PollerMenu = (): JSX.Element | null => {
                 );
               })
             ) : (
-              <Typography
-                className={clsx(classes.label, classes.pollerDetailRow)}
-                component="div"
-                variant="body2"
-              >
-                <div>{t(labelAllPollers)}</div>
-                {pollerCount}
-              </Typography>
+              <div className={classes.pollerDetailRow}>
+                <Typography className={classes.label} variant="body2">
+                  {t(labelAllPollers)}
+                </Typography>
+                <Typography className={classes.label} variant="body2">
+                  {pollerCount as number}
+                </Typography>
+              </div>
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>
