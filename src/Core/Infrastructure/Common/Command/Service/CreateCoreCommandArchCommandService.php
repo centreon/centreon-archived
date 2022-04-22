@@ -31,9 +31,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         OutputInterface $output,
         string $modelName
     ): void {
-        $filePath = $this->srcPath . '/Core/Infrastructure/' . $modelName . '/Repository/' . 'DbWrite'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Repository/' . 'DbWrite'
             . $modelName . 'Repository.php';
-        $namespace = 'Core\\Infrastructure\\' . $modelName . '\\Repository';
+        $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Repository';
         if (!file_exists($filePath)) {
             $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
                 $filePath,
@@ -86,9 +86,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'Request';
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/UseCase/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->requestDtoTemplate = new RequestDtoTemplate(
                 $filePath,
@@ -132,9 +132,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'PresenterInterface';
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/UseCase/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->commandPresenterInterfaceTemplate = new commandPresenterInterfaceTemplate(
                 $filePath,
@@ -177,9 +177,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'Presenter';
-        $filePath = $this->srcPath . '/Core/Infrastructure/' . $modelName . '/Api/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->CommandPresenterTemplate = new CommandPresenterTemplate(
                 $filePath,
@@ -223,9 +223,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         string $useCaseType
     ): void {
         $useCaseName = $useCaseType . $modelName;
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/'  . $modelName . '/Application/UseCase/' . $useCaseName . '\\'
             . $useCaseName . '.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->commandUseCaseTemplate = new CommandUseCaseTemplate(
                 $filePath,
@@ -274,9 +274,9 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'Controller';
-        $filePath = $this->srcPath . '/Core/Infrastructure/' . $modelName . '/Api/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\Infrastructure\\' . $modelName . '\\Api\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Api\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->commandControllerTemplate = new CommandControllerTemplate(
                 $filePath,
