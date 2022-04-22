@@ -305,7 +305,6 @@
             <xsl:element name="span">
                 <xsl:attribute name="style">
                     <xsl:if test="ssc = 3">
-                        color: #818285;
                         font-weight: normal;
                     </xsl:if>
                 </xsl:attribute>
