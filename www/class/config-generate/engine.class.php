@@ -309,6 +309,8 @@ class Engine extends AbstractObject
             $value['cfg_file'][] = $value['path'] . '/meta_timeperiod.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_host.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_services.cfg';
+            $value['cfg_file'][] = $value['path'] . '/tags.cfg';
+            $value['cfg_file'][] = $value['path'] . '/severities.cfg';
 
             foreach ($this->add_cfg_files as $add_cfg_file) {
                 $value['cfg_file'][] = $value['path'] . '/' . $add_cfg_file;

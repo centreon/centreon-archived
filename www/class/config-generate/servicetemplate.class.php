@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -173,8 +174,16 @@ class ServiceTemplate extends AbstractService
         $severity = Severity::getInstance($this->dependencyInjector)
             ->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
+            $macros = [
+                '_CRITICALITY_LEVEL' => $severity['level'],
+                '_CRITICALITY_ID' => $severity['sc_id'],
+                'severity' =>  $severity['sc_id'],
+            ];
+
+            $this->service_cache[$service_id]['macros'] = array_merge(
+                $this->service_cache[$service_id]['macros'] ?? [],
+                $macros
+            );
         }
     }
 
@@ -215,6 +224,12 @@ class ServiceTemplate extends AbstractService
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
         $this->getServiceGroups($service_id);
+
+        // Set ServiceCategories
+        $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
+        $this->insertServiceInServiceCategoryMembers($serviceCategory, $service_id);
+        $this->service_cache[$service_id]['category_tags'] = $serviceCategory->getIdsByServiceId($service_id);
+
         $this->getSeverity($service_id);
 
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);

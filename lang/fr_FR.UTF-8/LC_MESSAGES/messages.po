@@ -16722,6 +16722,9 @@ msgstr "Erreur lors de la mise à jour du thème de l'utilisateur"
 msgid "Error while searching for the user"
 msgstr "Erreur lors de la recherche de l'utilisateur"
 
+msgid "Force active checks"
+msgstr "Forcer les contrôles actifs"
+
 msgid "Web SSO configuration"
 msgstr "Configuration Web SSO"
 
@@ -16743,7 +16746,7 @@ msgstr "Web SSO seulement"
 msgid "Pattern match login (regex)"
 msgstr "Correspondance de login (regex)"
 
-msgid "Pattern replace alias (regex)"
+msgid "Pattern replace login (regex)"
 msgstr "Remplacement du login (regex)"
 
 msgid "Login header attribute name"
