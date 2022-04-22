@@ -120,7 +120,7 @@ class CreateCoreArchCommandService
         //Search for all model with the same name.
         $modelsInfos = iterator_to_array(
             new \GlobIterator(
-                $this->srcPath . '/Core/Domain/*/Model/' . $modelName . '.php'
+                $this->srcPath . '/Core/' . $modelName . '/Domain/Model/' . $modelName . '.php'
             )
         );
 
@@ -171,7 +171,6 @@ class CreateCoreArchCommandService
         string $modelName,
         string $repositoryType
     ): void {
-        dump($this->srcPath);
         $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/Repository/' . $repositoryType .
         $modelName . 'RepositoryInterface.php';
         $namespace = 'Core\\' . $modelName . '\\Application\\Repository';
