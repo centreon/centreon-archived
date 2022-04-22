@@ -2446,26 +2446,27 @@ CREATE TABLE `contact_password` (
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `cfg_nagios_logger` (
+CREATE TABLE IF NOT EXISTS `cfg_nagios_logger` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `cfg_nagios_id` int(11) unsigned NOT NULL,
+  `cfg_nagios_id` int(11) NOT NULL,
   `log_v2_logger` enum('file', 'syslog') DEFAULT 'syslog',
-  `log_level_functions` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_config` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_events` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_checks` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_notifications` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_eventbroker` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_commands` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_downtimes` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_comments` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_macros` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_process` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
-  `log_level_runtime` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') default 'warning',
+  `log_level_functions` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_config` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_events` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_checks` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_notifications` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_eventbroker` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_commands` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_downtimes` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_comments` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_macros` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_process` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
+  `log_level_runtime` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
   PRIMARY KEY (`id`),
-  KEY `cfg_nagios_logger_cfg_nagios_id_fk` (`cfg_nagios_id`),
-  CONSTRAINT `cfg_nagios_logger_cfg_nagios_id_fk` FOREIGN KEY (`cfg_nagios_id`) REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
+  CONSTRAINT `cfg_nagios_logger_cfg_nagios_id_fk`
+    FOREIGN KEY (`cfg_nagios_id`)
+    REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
