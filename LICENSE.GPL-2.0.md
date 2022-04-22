@@ -279,7 +279,7 @@ POSSIBILITY OF SUCH DAMAGES.
 
 		     END OF TERMS AND CONDITIONS
 
-    Copyright (C) 2008-2020  CENTREON - contact@centreon.com
+    Copyright (C) 2008-2022  CENTREON - contact@centreon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
