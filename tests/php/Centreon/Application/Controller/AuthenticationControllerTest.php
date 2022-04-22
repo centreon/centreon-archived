@@ -28,16 +28,11 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Application\Controller\AuthenticationController;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
-use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Tests\Centreon\Application\Controller
@@ -58,16 +53,6 @@ class AuthenticationControllerTest extends TestCase
      * @var Logout|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $logout;
-
-    /**
-     * @var FindProvidersConfigurations|\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $findProvidersConfigurations;
-
-    /**
-     * @var Authenticate|\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $authenticate;
 
     /**
      * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -93,8 +78,6 @@ class AuthenticationControllerTest extends TestCase
 
         $this->authenticateApi = $this->createMock(AuthenticateApi::class);
         $this->logout = $this->createMock(Logout::class);
-        $this->findProvidersConfigurations = $this->createMock(FindProvidersConfigurations::class);
-        $this->authenticate = $this->createMock(Authenticate::class);
 
         $this->container = $this->createMock(ContainerInterface::class);
 
@@ -163,7 +146,7 @@ class AuthenticationControllerTest extends TestCase
         $this->authenticateApi
             ->expects($this->once())
             ->method('execute')
-            ->will($this->throwException(AuthenticationException::notAuthenticated()));
+            ->willThrowException(AuthenticationException::invalidCredentials());
 
         $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
 
@@ -229,27 +212,6 @@ class AuthenticationControllerTest extends TestCase
                 ],
                 Response::HTTP_UNAUTHORIZED
             ),
-            $view
-        );
-    }
-
-    /**
-     * test findProvidersConfigurations
-     */
-    public function testFindProvidersConfigurations(): void
-    {
-        $authenticationController = new AuthenticationController();
-        $authenticationController->setContainer($this->container);
-
-        $localProvider = new ProviderConfiguration(1, 'local', 'local', true, true, '/');
-
-        $response = new FindProvidersConfigurationsResponse();
-        $response->setProvidersConfigurations([$localProvider]);
-
-        $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations, $response);
-
-        $this->assertEquals(
-            View::create(ProvidersConfigurationsFactory::createFromResponse($response)),
             $view
         );
     }

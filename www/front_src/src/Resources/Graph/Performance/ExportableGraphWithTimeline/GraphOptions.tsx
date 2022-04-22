@@ -72,6 +72,7 @@ const Options = (): JSX.Element => {
       <>
         <IconButton
           ariaLabel={t(labelGraphOptions)}
+          data-testid={labelGraphOptions}
           size="small"
           title={t(labelGraphOptions)}
           onClick={openGraphOptions}
@@ -104,6 +105,7 @@ const Options = (): JSX.Element => {
                     }
                   />
                 }
+                data-testid={label}
                 key={label}
                 label={t(label) as string}
                 labelPlacement="start"

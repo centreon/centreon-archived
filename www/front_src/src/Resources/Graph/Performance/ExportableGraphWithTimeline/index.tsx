@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   graphContainer: {
     display: 'grid',
     gridTemplateRows: '1fr',
+    height: '93%',
     padding: theme.spacing(2, 1, 1),
   },
 }));
@@ -151,13 +152,15 @@ const ExportablePerformanceGraphWithTimeline = ({
   ]);
 
   const addCommentToTimeline = ({ date, comment }): void => {
+    const [id] = crypto.getRandomValues(new Uint16Array(1));
+
     setTimeline([
       ...(timeline as Array<TimelineEvent>),
       {
         contact: { name: alias },
         content: comment,
         date,
-        id: Math.random(),
+        id,
         type: 'comment',
       },
     ]);

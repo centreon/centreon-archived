@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ interface PresenterInterface
 {
     /**
      * @param ResponseStatusInterface|null $responseStatus
-     * @return void
      */
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void;
 
@@ -38,6 +37,29 @@ interface PresenterInterface
      * @return ResponseStatusInterface|null
      */
     public function getResponseStatus(): ?ResponseStatusInterface;
+
+    /**
+     * @param mixed[] $responseHeaders
+     */
+    public function setResponseHeaders(array $responseHeaders): void;
+
+    /**
+     * @return mixed[]
+     */
+    public function getResponseHeaders(): array;
+
+    /**
+     * @param mixed $data
+     */
+    public function present(mixed $data): void;
+
+    /**
+     * Return the response stored in the presenter.
+     *
+     * Useful for handle case where show is not called (e.g for a redirection)
+     * @return mixed
+     */
+    public function getPresentedData(): mixed;
 
     /**
      * @return Response

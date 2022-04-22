@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
@@ -36,6 +35,11 @@ abstract class AbstractPresenter implements PresenterInterface
     protected $responseStatus;
 
     /**
+     * @var mixed
+     */
+    protected mixed $presentedData;
+
+    /**
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(protected PresenterFormatterInterface $presenterFormatter)
@@ -45,11 +49,25 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
+    public function present(mixed $presentedData): void
+    {
+        $this->presentedData = $presentedData;
+        $this->presenterFormatter->present($presentedData);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPresentedData(): mixed
+    {
+        return $this->presentedData;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function show(): Response
     {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
         return $this->presenterFormatter->show();
     }
 
@@ -59,6 +77,7 @@ abstract class AbstractPresenter implements PresenterInterface
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
     {
         $this->responseStatus = $responseStatus;
+        $this->presenterFormatter->present($responseStatus);
     }
 
     /**
@@ -67,5 +86,21 @@ abstract class AbstractPresenter implements PresenterInterface
     public function getResponseStatus(): ?ResponseStatusInterface
     {
         return $this->responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->presenterFormatter->setResponseHeaders($responseHeaders);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->presenterFormatter->getResponseHeaders();
     }
 }

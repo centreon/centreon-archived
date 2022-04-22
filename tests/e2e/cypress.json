@@ -11,7 +11,7 @@
     "mochaFile": "cypress/results/reports/junit-report.xml"
   },
   "retries": 0,
-  "defaultCommandTimeout": 6000,
+  "defaultCommandTimeout": 10000,
   "requestTimeout": 10000,
   "execTimeout": 60000,
   "baseUrl": "http://centreon-web",

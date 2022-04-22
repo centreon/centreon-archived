@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   partition,
   where,
-  contains,
+  includes,
   head,
   split,
   pipe,
@@ -12,7 +12,6 @@ import {
   prop,
   reject,
   map,
-  includes,
   __,
   propEq,
   find,
@@ -55,7 +54,7 @@ import { getColumns, defaultSelectedColumnIds } from './columns';
 import Listing from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const columns = getColumns({
@@ -198,7 +197,7 @@ describe(Listing, () => {
     });
 
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-      where({ information: contains('\n') }),
+      where({ information: includes('\n') }),
       retrievedListing.result,
     );
 
@@ -362,7 +361,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        getListingEndpoint({ limit: 20 }),
+        getListingEndpoint({ limit: 30 }),
         cancelTokenRequestParam,
       ),
     );

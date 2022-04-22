@@ -1,0 +1,15 @@
+# Snyk (https://snyk.io) policy file
+version: v1.14.0
+
+ignore: {}
+
+exclude:
+   code:
+     - "test?/**/*"
+     - "**/index.test.tsx"
+     - tests/php/**/*
+     - www/install/step_upgrade/**/*
+     - features/**/*
+     - GPL_LIB/**/*
+     - lang/**/*
+     - www/include/common/javascript/xslt.js

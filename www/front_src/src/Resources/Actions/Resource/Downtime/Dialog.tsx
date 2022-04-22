@@ -92,8 +92,11 @@ const DialogDowntime = ({
 
   const { locale } = useAtomValue(userAtom);
 
-  const { Adapter, getLocalAndConfiguredTimezoneOffset } =
-    useDateTimePickerAdapter();
+  const {
+    Adapter,
+    getDestinationAndConfiguredTimezoneOffset,
+    formatKeyboardValue,
+  } = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
@@ -112,9 +115,11 @@ const DialogDowntime = ({
     (newValue: dayjs.Dayjs | null, keyBoardValue: string | undefined): void => {
       const value = isPickerOpened
         ? dayjs(newValue).toDate()
-        : dayjs(keyBoardValue)
+        : dayjs(formatKeyboardValue(keyBoardValue))
             .add(
-              dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }),
+              dayjs.duration({
+                hours: getDestinationAndConfiguredTimezoneOffset(),
+              }),
             )
             .toDate();
 

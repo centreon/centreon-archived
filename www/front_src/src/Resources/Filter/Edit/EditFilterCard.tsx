@@ -2,16 +2,7 @@ import * as React from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {
-  all,
-  equals,
-  any,
-  reject,
-  update,
-  findIndex,
-  propEq,
-  omit,
-} from 'ramda';
+import { all, equals, any, reject, update, findIndex, omit } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
@@ -59,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   filter: Filter;
 }
+
+const areFilterIdsEqual =
+  (filter: Filter) =>
+  (filterToCompare: Filter): boolean =>
+    equals(Number(filter.id), Number(filterToCompare.id));
 
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
@@ -111,7 +107,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
           setCurrentFilter(updatedFilter);
         }
 
-        const index = findIndex(propEq('id', updatedFilter.id), customFilters);
+        const index = findIndex(areFilterIdsEqual(filter), customFilters);
 
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
@@ -129,12 +125,12 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     sendDeleteFilterRequest(filter).then(() => {
       showSuccessMessage(t(labelFilterDeleted));
 
-      if (equals(filter.id, currentFilter.id)) {
+      if (areFilterIdsEqual(filter)(currentFilter)) {
         setCurrentFilter({ ...filter, ...newFilter });
         setAppliedFilter({ ...filter, ...newFilter });
       }
 
-      setCustomFilters(reject(equals(filter), customFilters));
+      setCustomFilters(reject(areFilterIdsEqual(filter), customFilters));
     });
   };
 

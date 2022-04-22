@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,11 +36,15 @@
 
 namespace CentreonClapi;
 
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Model\LocalProvider;
+
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once __DIR__ . '/../centreonAuth.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
@@ -501,21 +506,16 @@ class CentreonAPI
         /**
          * Check Login / Password
          */
-        if ($useSha1) {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'sha1');
-        } else {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
-        }
-
-        if ($isWorker) {
-            $pass = 'md5__' . $this->password;
-        }
-
-        $DBRESULT = $this->DB->query("SELECT *
-                 FROM contact
-                 WHERE contact_alias = '" . $this->login . "'
-                 AND contact_activate = '1'");
-
+        $DBRESULT = $this->DB->prepare(
+            "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd`,
+            `contact_password`.`creation_date` AS `password_creation` FROM `contact`
+            LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+            WHERE `contact_alias` = :contactAlias
+            AND `contact_activate` = '1' AND `contact_register` = '1'
+            ORDER BY contact_password.creation_date DESC LIMIT 1"
+        );
+        $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $DBRESULT->execute();
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
 
@@ -523,17 +523,66 @@ class CentreonAPI
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
             }
+            $contact = new \CentreonContact($this->DB);
+            // Get Security Policy
+            $securityPolicy = $contact->getPasswordSecurityPolicy();
 
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
-            if (!$algo) {
-                if ($useSha1) {
-                    $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
+            // Remove any blocking if it's not in the policy
+            if ($securityPolicy['blocking_duration'] === null) {
+                $this->removeBlockingTimeOnUser();
+                $row['login_attempts'] = null;
+                $row['blocking_time'] = null;
+            }
+
+            // Check if user is blocked
+            if ($row['blocking_time'] !== null) {
+                // If he is block and blocking duration is expired, unblock him
+                if ((int) $row['blocking_time'] + (int) $securityPolicy['blocking_duration'] < time()) {
+                    $this->removeBlockingTimeOnUser();
+                    $row['login_attempts'] = null;
+                    $row['blocking_time'] = null;
                 } else {
-                    $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
+                    $now = new \DateTime();
+                    $expirationDate = (new \DateTime())->setTimestamp(
+                        $row['blocking_time'] + $securityPolicy['blocking_duration']
+                    );
+                    $interval = (date_diff($now, $expirationDate))->format('%Dd %Hh %Im %Ss');
+                    print "Unable to login, max login attempts has been reached. $interval left\n";
+                    exit(1);
                 }
             }
-            if ($row['contact_passwd'] == $pass) {
+
+            $passwordExpirationDelay = $securityPolicy['password_expiration']['expiration_delay'];
+            if (
+                $passwordExpirationDelay !== null
+                && (int) $row['password_creation'] + (int) $passwordExpirationDelay < time()
+            ) {
+                print "Unable to login, your password has expired.\n";
+                exit(1);
+            }
+
+            // Update password from md5 to bcrypt if old md5 password is valid.
+            if (
+                (str_starts_with($row["contact_passwd"], 'md5__')
+                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5'))
+                || 'md5__' . $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass(
+                    $this->password,
+                    'md5'
+                )
+            ) {
+                $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                $contact->replacePasswordByContactId(
+                    (int) $row['contact_id'],
+                    $row["contact_passwd"],
+                    $hashedPassword
+                );
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
+                return 1;
+            }
+            if (password_verify($this->password, $row['contact_passwd'])) {
+                \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
                 return 1;
             } elseif ($row['contact_auth_type'] == 'ldap') {
                 $CentreonLog = new \CentreonUserLog(-1, $this->DB);
@@ -549,6 +598,13 @@ class CentreonAPI
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 }
+            }
+            if ($securityPolicy['attempts'] !== null && $securityPolicy['blocking_duration'] !== null) {
+                $this->exitOnInvalidCredentials(
+                    (int) $row['login_attempts'],
+                    (int) $securityPolicy['attempts'],
+                    (int) $securityPolicy['blocking_duration']
+                );
             }
         }
         print "Invalid credentials.\n";
@@ -759,7 +815,7 @@ class CentreonAPI
                         $this->launchActionForImport();
                     } catch (CentreonClapiException $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
                     }
                     if ($this->return_code) {
@@ -1140,5 +1196,77 @@ class CentreonAPI
                 }
             }
         }
+    }
+
+    /**
+     * Increment login attempts for user.
+     *
+     * @param integer $contactLoginAttempts
+     * @return integer
+     */
+    private function incrementLoginAttempts(int $contactLoginAttempts): int
+    {
+        //Increments login attempts for user
+        $contactLoginAttempts++;
+
+        //update User attempts
+        $attemptStatement = $this->DB->prepare(
+            'UPDATE contact SET login_attempts = :loginAttempts WHERE contact_alias = :contactAlias'
+        );
+        $attemptStatement->bindValue(':loginAttempts', $contactLoginAttempts, \PDO::PARAM_INT);
+        $attemptStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $attemptStatement->execute();
+
+        return $contactLoginAttempts;
+    }
+
+    /**
+     * Block login for user.
+     */
+    private function blockLoginForUser(): void
+    {
+        $blockLoginStatement = $this->DB->prepare(
+            'UPDATE contact SET blocking_time = :blockingTime WHERE contact_alias = :contactAlias'
+        );
+        $blockLoginStatement->bindValue(':blockingTime', time(), \PDO::PARAM_INT);
+        $blockLoginStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $blockLoginStatement->execute();
+    }
+
+    /**
+     * Exit with invalid credentials message.
+     *
+     * @param integer $contactLoginAttempts
+     * @param integer $securityPolicyAttempts
+     * @param integer $blockingDuration
+     */
+    private function exitOnInvalidCredentials(
+        int $contactLoginAttempts,
+        int $securityPolicyAttempts,
+        int $blockingDuration
+    ): void {
+        $loginAttempts = $this->incrementLoginAttempts($contactLoginAttempts);
+        if ($loginAttempts === $securityPolicyAttempts) {
+            $this->blockLoginForUser();
+            print "Invalid credentials. Max attempts has been reached, you can't login for "
+                . "$blockingDuration seconds. \n";
+            exit(1);
+        }
+        $attemptRemaining = $securityPolicyAttempts - $loginAttempts;
+        print "Invalid credentials. $attemptRemaining attempt(s) remaining \n";
+        exit(1);
+    }
+
+    /**
+     * Remove the blocking time and login attemps.
+     */
+    private function removeBlockingTimeOnUser(): void
+    {
+        $unblockStatement = $this->DB->prepare(
+            "UPDATE contact SET blocking_time = NULL, login_attempts = NULL "
+                . "WHERE contact_alias = :contactAlias"
+        );
+        $unblockStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $unblockStatement->execute();
     }
 }

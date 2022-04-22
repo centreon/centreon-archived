@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Contact;
 
 use Centreon\Domain\Menu\Model\Page;
-use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
@@ -49,6 +48,7 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_HOST_ADD_COMMENT = 'ROLE_HOST_ADD_COMMENT';
     public const ROLE_SERVICE_ADD_COMMENT = 'ROLE_SERVICE_ADD_COMMENT';
     public const ROLE_DISPLAY_COMMAND = 'ROLE_DISPLAY_COMMAND';
+    public const ROLE_GENERATE_CONFIGURATION = 'ROLE_GENERATE_CONFIGURATION';
 
     // user pages access
     public const ROLE_CONFIGURATION_HOSTS_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
@@ -62,6 +62,11 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_REPORTING_DASHBOARD_SERVICES = 'ROLE_REPORTING_DASHBOARD_SERVICES_RW';
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE = 'ROLE_CONFIGURATION_POLLERS_POLLERS_RW';
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ = 'ROLE_CONFIGURATION_POLLERS_POLLERS_R';
+    public const ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_RW';
+    public const ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ = 'ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_R';
+    public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE =
+        'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_RW';
+    public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ = 'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_R';
 
     /**
      * @var string
@@ -104,7 +109,7 @@ class Contact implements UserInterface, ContactInterface
     private $isAdmin;
 
     /**
-     * @var int Id of the contact template
+     * @var int|null Id of the contact template
      */
     private $templateId;
 
@@ -124,7 +129,7 @@ class Contact implements UserInterface, ContactInterface
     private $token;
 
     /**
-     * @var string Encoded password
+     * @var string|null Encoded password
      */
     private $encodedPassword;
 
@@ -139,7 +144,7 @@ class Contact implements UserInterface, ContactInterface
     private $hasAccessToApiRealTime;
 
     /**
-     * @var (Role|string)[]
+     * @var string[]
      */
     private $roles = [];
 
@@ -277,9 +282,9 @@ class Contact implements UserInterface, ContactInterface
      * Set if the user is admin or not.
      *
      * @param bool $isAdmin
-     * @return static
+     * @return self
      */
-    public function setAdmin(bool $isAdmin): static
+    public function setAdmin(bool $isAdmin): self
     {
         $this->isAdmin = $isAdmin;
         if ($this->isAdmin) {
@@ -290,18 +295,18 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int
+    public function getTemplateId(): ?int
     {
         return $this->templateId;
     }
 
     /**
-     * @param int $templateId
-     * @return static
+     * @param int|null $templateId
+     * @return self
      */
-    public function setTemplateId(?int $templateId): static
+    public function setTemplateId(?int $templateId): self
     {
         $this->templateId = $templateId;
         return $this;
@@ -317,9 +322,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isActive
-     * @return static
+     * @return self
      */
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
         return $this;
@@ -353,27 +358,27 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param string|null $token
-     * @return static
+     * @return self
      */
-    public function setToken(?string $token): static
+    public function setToken(?string $token): self
     {
         $this->token = $token;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string
+    public function getEncodedPassword(): ?string
     {
         return $this->encodedPassword;
     }
 
     /**
      * @param string|null $encodedPassword
-     * @return static
+     * @return self
      */
-    public function setEncodedPassword(?string $encodedPassword): static
+    public function setEncodedPassword(?string $encodedPassword): self
     {
         $this->encodedPassword = $encodedPassword;
         return $this;
@@ -404,9 +409,9 @@ class Contact implements UserInterface, ContactInterface
      * This should be the encoded password. On authentication, a plain-text
      * password will be salted, encoded, and then compared to this value.
      *
-     * @return string The password
+     * @return string|null The password
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->token;
     }
@@ -445,7 +450,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function hasAccessToApiConfiguration(): bool
     {
@@ -453,8 +458,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param bool $hasAccessToApiConfiguration
-     * @return static
+     * @inheritDoc
      */
     public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static
     {
@@ -470,7 +474,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function hasAccessToApiRealTime(): bool
     {
@@ -478,8 +482,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param bool $hasAccessToApiRealTime
-     * @return static
+     * @inheritDoc
      */
     public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static
     {
@@ -493,10 +496,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a role.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasRole(string $role): bool
     {
@@ -504,10 +504,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a topology access.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasTopologyRole(string $role): bool
     {
@@ -552,9 +549,9 @@ class Contact implements UserInterface, ContactInterface
      * timezone setter
      *
      * @param \DateTimeZone $timezone
-     * @return static
+     * @return self
      */
-    public function setTimezone(\DateTimeZone $timezone): static
+    public function setTimezone(\DateTimeZone $timezone): self
     {
         $this->timezone = $timezone;
         return $this;
@@ -612,20 +609,17 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if user uses deprecated pages
-     *
-     * @return  bool
+     * @inheritDoc
      */
-    public function isUsingDeprecatedPages()
+    public function isUsingDeprecatedPages(): bool
     {
         return $this->useDeprecatedPages;
     }
 
     /**
-     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
-     * @return  self
+     * @inheritDoc
      */
-    public function setUseDeprecatedPages(bool $useDeprecatedPages)
+    public function setUseDeprecatedPages(bool $useDeprecatedPages): static
     {
         $this->useDeprecatedPages = $useDeprecatedPages;
 
@@ -642,9 +636,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isOneClickExportEnabled
-     * @return static
+     * @return self
      */
-    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): static
+    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): self
     {
         $this->isOneClickExportEnabled = $isOneClickExportEnabled;
 

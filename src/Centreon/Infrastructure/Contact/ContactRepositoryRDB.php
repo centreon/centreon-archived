@@ -54,13 +54,17 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findById(int $contactId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
                 ON t.topology_page = contact.default_page
-            WHERE contact_id = :contact_id'
+            WHERE contact.contact_id = :contact_id
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
 
         $statement = $this->db->prepare($request);
@@ -82,14 +86,17 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findByName(string $name): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
                 ON t.topology_page = contact.default_page
             WHERE contact_alias = :username
-            LIMIT 1'
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':username', $name, \PDO::PARAM_STR);
@@ -107,11 +114,44 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function findByEmail(string $email): ?Contact
+    {
+        $request = $this->translateDbName(
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
+            LEFT JOIN `:db`.timezone tz
+                ON tz.timezone_id = contact.contact_location
+            LEFT JOIN `:db`.topology t
+                ON t.topology_page = contact.default_page
+            WHERE contact_email = :email
+            ORDER BY cp.creation_date DESC LIMIT 1'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':email', $email, \PDO::PARAM_STR);
+        $statement->execute();
+
+        $contact = null;
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $contact = $this->createContact($result);
+        }
+
+        return $contact;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findBySession(string $sessionId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
@@ -119,7 +159,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             INNER JOIN `:db`.session
               on session.user_id = contact.contact_id
             WHERE session.session_id = :session_id
-            LIMIT 1'
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
@@ -141,15 +181,19 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+                "SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+                t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
                 FROM `:db`.contact
+                LEFT JOIN `:db`.contact_password cp
+                    ON cp.contact_id = contact.contact_id
                 LEFT JOIN `:db`.timezone tz
                     ON tz.timezone_id = contact.contact_location
                 LEFT JOIN `:db`.topology t
                     ON t.topology_page = contact.default_page
                 INNER JOIN `:db`.security_authentication_tokens sat
                     ON sat.user_id = contact.contact_id
-                WHERE sat.token = :token"
+                WHERE sat.token = :token
+                ORDER BY cp.creation_date DESC LIMIT 1"
             )
         );
         $statement->bindValue(':token', $token, \PDO::PARAM_STR);
@@ -367,6 +411,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setName($contact['contact_name'])
             ->setAlias($contact['contact_alias'])
             ->setEmail($contact['contact_email'])
+            ->setLang($contact['contact_lang'])
             ->setTemplateId((int) $contact['contact_template_id'])
             ->setIsActive($contact['contact_activate'] === '1')
             ->setAllowedToReachWeb($contact['contact_oreon'] === '1')
@@ -438,6 +483,9 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 break;
             case 'service_display_command':
                 $contact->addRole(Contact::ROLE_DISPLAY_COMMAND);
+                break;
+            case 'generate_cfg':
+                $contact->addRole(Contact::ROLE_GENERATE_CONFIGURATION);
                 break;
         }
     }

@@ -36,7 +36,8 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
-require_once '../functions.php';
+require_once __DIR__ . '/../functions.php';
+require_once __DIR__ . '/../../functions.php';
 
 $return = [
     'id' => 'configfile',
@@ -48,44 +49,36 @@ $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 $configuration = $step->getBaseConfiguration();
 $engine = $step->getEngineConfiguration();
+$gorgonePassword = generatePassword();
 
-if ($parameters['address']) {
-    $host = $parameters['address'];
-} else {
-    $host = 'localhost';
-}
-
-// mandatory parameters used by centCore or Gorgone.d in the legacy SSH mode
-$patterns = [
-    '/--ADDRESS--/',
-    '/--DBUSER--/',
-    '/--DBPASS--/',
-    '/--CONFDB--/',
-    '/--STORAGEDB--/',
-    '/--CENTREONDIR--/',
-    '/--CENTREON_CACHEDIR--/',
-    '/--DBPORT--/',
-    '/--INSTANCEMODE--/',
-    '/--CENTREON_VARLIB--/',
-];
+$host = $parameters['address'] ?: 'localhost';
 
 // escape double quotes and backslashes
 $needle = ['\\', '"'];
 $escape = ['\\\\', '\"'];
 $password = str_replace($needle, $escape, $parameters['db_password']);
 
-
-$replacements = [
-    $host,
-    $parameters['db_user'],
-    $password,
-    $parameters['db_configuration'],
-    $parameters['db_storage'],
-    $configuration['centreon_dir'],
-    $configuration['centreon_cachedir'],
-    $parameters['port'],
-    'central',
-    $configuration['centreon_varlib'],
+$macroReplacements = [
+    '--ADDRESS--' => $host,
+    '--DBUSER--' => $parameters['db_user'],
+    '--DBPASS--' => $password,
+    '--CONFDB--' => $parameters['db_configuration'],
+    '--STORAGEDB--' => $parameters['db_storage'],
+    '--CENTREONDIR--' => $configuration['centreon_dir'],
+    '--CENTREON_CACHEDIR--' => $configuration['centreon_cachedir'],
+    '--DBPORT--' => $parameters['port'],
+    '--INSTANCEMODE--' => 'central',
+    '--CENTREON_VARLIB--' => $configuration['centreon_varlib'],
+    // specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
+    '--CENTREON_SPOOL--' => '/var/spool/centreon',
+    '--HTTPSERVERADDRESS--' => '0.0.0.0',
+    '--HTTPSERVERPORT--' => '8085',
+    '--SSLMODE--' => 'false',
+    '--CENTREON_TRAPDIR--' => '/etc/snmp/centreon_traps',
+    '--GORGONE_VARLIB--' => '/var/lib/centreon-gorgone',
+    '--ENGINE_COMMAND--' => $engine['monitoring_var_lib'] . '/rw/centengine.cmd',
+    '@GORGONE_USER@' => 'centreon-gorgone',
+    '@GORGONE_PASSWORD@' => $gorgonePassword,
 ];
 
 $centreonEtcPath = rtrim($configuration['centreon_etc'], '/');
@@ -95,7 +88,7 @@ $centreonEtcPath = rtrim($configuration['centreon_etc'], '/');
  */
 $centreonConfFile = $centreonEtcPath . '/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
-$contents = preg_replace($patterns, $replacements, $contents);
+$contents = str_replace(array_keys($macroReplacements), array_values($macroReplacements), $contents);
 file_put_contents($centreonConfFile, $contents);
 chmod($centreonConfFile, 0660);
 chown($centreonConfFile, 'apache');
@@ -106,49 +99,42 @@ chgrp($centreonConfFile, 'apache');
  */
 $centreonConfPmFile = $centreonEtcPath . '/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
-$contents = preg_replace($patterns, $replacements, $contents);
+$contents = str_replace(array_keys($macroReplacements), array_values($macroReplacements), $contents);
 file_put_contents($centreonConfPmFile, $contents);
 chmod($centreonConfPmFile, 0660);
 chown($centreonConfPmFile, 'centreon');
 chgrp($centreonConfPmFile, 'centreon');
-
-// specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
-array_push(
-    $patterns,
-    '/--CENTREON_SPOOL--/',
-    '/--HTTPSERVERADDRESS--/',
-    '/--HTTPSERVERPORT--/',
-    '/--SSLMODE--/',
-    '/--CENTREON_TRAPDIR--/',
-    '/--GORGONE_VARLIB--/',
-    '/--ENGINE_COMMAND--/'
-);
-
-array_push(
-    $replacements,
-    '/var/spool/centreon',
-    '0.0.0.0',
-    '8085',
-    'false',
-    '/etc/snmp/centreon_traps',
-    '/var/lib/centreon-gorgone',
-    $engine['monitoring_var_lib'] . '/rw/centengine.cmd'
-);
 
 /**
  * Database configuration file
  */
 $gorgoneDatabaseFile = $centreonEtcPath . '/config.d/10-database.yaml';
 $contents = file_get_contents('../../var/databaseTemplate.yaml');
-$contents = preg_replace($patterns, $replacements, $contents);
+$contents = str_replace(array_keys($macroReplacements), array_values($macroReplacements), $contents);
 file_put_contents($gorgoneDatabaseFile, $contents);
+
+/**
+ * Gorgone API configuration file
+ */
+$apiConfigurationFile = $centreonEtcPath . '/../centreon-gorgone/config.d/31-centreon-api.yaml';
+if (file_exists($apiConfigurationFile) && is_writable($apiConfigurationFile)) {
+    file_put_contents(
+        $apiConfigurationFile,
+        str_replace(
+            array_keys($macroReplacements),
+            array_values($macroReplacements),
+            file_get_contents($apiConfigurationFile)
+        ),
+    );
+}
+
 
 /**
  * Gorgone daemon configuration file for a central
  */
 $gorgoneCoreFileForCentral = $centreonEtcPath . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneCentralTemplate.yaml');
-$contents = preg_replace($patterns, $replacements, $contents);
+$contents = str_replace(array_keys($macroReplacements), array_values($macroReplacements), $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
 
 $return['result'] = 0;

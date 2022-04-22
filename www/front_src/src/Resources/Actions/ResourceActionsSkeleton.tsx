@@ -9,10 +9,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: `${theme.spacing(18)}px ${theme.spacing(
+    gridTemplateColumns: `${theme.spacing(18)} ${theme.spacing(
       17,
-    )}px ${theme.spacing(11)}px min-content`,
-    gridTemplateRows: `${theme.spacing(3.5)}px`,
+    )} ${theme.spacing(11)} min-content`,
+    gridTemplateRows: theme.spacing(3.5),
   },
 }));
 

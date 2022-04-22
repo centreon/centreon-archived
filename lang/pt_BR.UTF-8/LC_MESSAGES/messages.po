@@ -15198,6 +15198,120 @@ msgstr ""
 msgid "Last check with OK status"
 msgstr ""
 
+# msgid "Define the password security policy"
+# msgstr ""
+
+# msgid "Password case policy"
+# msgstr ""
+
+# msgid "Minimum password length"
+# msgstr ""
+
+# msgid "Minimum 8 characters"
+# msgstr ""
+
+# msgid "Maximum 128 characters"
+# msgstr ""
+
+# msgid "Password must contain upper case"
+# msgstr ""
+
+# msgid "Password must contain lower case"
+# msgstr ""
+
+# msgid "Password must contain numbers"
+# msgstr ""
+
+# msgid "Password must contain special characters"
+# msgstr ""
+
+# msgid "Password cases"
+# msgstr ""
+
+# msgid "Weak"
+# msgstr ""
+
+# msgid "Good"
+# msgstr ""
+
+# msgid "Strong"
+# msgstr ""
+
+# msgid "Password expiration policy"
+# msgstr ""
+
+# msgid "Password expires after"
+# msgstr ""
+
+# msgid "Choose a duration between 7 days and 12 months"
+# msgstr ""
+
+# msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Reset the form"
+# msgstr ""
+
+# msgid "Do you want to reset the form?"
+# msgstr ""
+
+# msgid "Excluded users"
+# msgstr ""
+
+# msgid "Month"
+# msgstr ""
+
+# msgid "Months"
+# msgstr ""
+
+# msgid "Hour"
+# msgstr ""
+
+# msgid "Minute"
+# msgstr ""
+
+# msgid "Second"
+# msgstr ""
+
+# msgid "Last 3 passwords can be reused"
+# msgstr ""
+
+# msgid "Minimum time between password changes"
+# msgstr ""
+
+# msgid "Choose a duration between 1 hour and 1 week"
+# msgstr ""
+
+# msgid "Password blocking policy"
+# msgstr ""
+
+# msgid "Number of attempts before user is blocked"
+# msgstr ""
+
+# msgid "Choose a value between 1 and 10"
+# msgstr ""
+
+# msgid "Time that must pass before new connection is allowed"
+# msgstr ""
+
+# msgid "Blocking duration must be less than or equal to 7 days"
+# msgstr ""
+
+# msgid "Saving..."
+# msgstr ""
+
+# msgid "Saved"
+# msgstr ""
+
+# msgid "Password security policy saved"
+# msgstr ""
+
+# msgid "Failed to save password security policy"
+# msgstr ""
+
+# msgid "This will not be used because the number of attempts is not defined"
+# msgstr "" 
+
 # msgid "Status type"
 # msgstr ""
 
@@ -15205,4 +15319,196 @@ msgstr ""
 # msgstr ""
 
 # msgid "Soft"
+# msgstr ""
+
+# msgid "You are disconnected"
+# msgstr ""
+
+# msgid "Centreon is loading..."
+# msgstr ""
+
+# msgid "Login succeeded"
+# msgstr ""
+
+# msgid "Login"
+# msgstr ""
+
+# msgid "Centreon Logo"
+# msgstr ""
+
+# msgid "You are not allowed to see this page"
+# msgstr ""
+
+# msgid "This page could not be found"
+# msgstr ""
+
+# msgid "Display the password"
+# msgstr ""
+
+# msgid "Hide the password"
+# msgstr ""
+
+# msgid "You have been logged out"
+# msgstr ""
+
+# msgid "Profile"
+# msgstr ""
+
+# msgid "Password security policy"
+# msgstr ""
+
+# msgid "OpenID Connect Configuration"
+# msgstr ""
+
+# msgid "Define OpenID Connect configuration"
+# msgstr ""
+
+# msgid "Invalid URL"
+# msgstr ""
+
+# msgid "Invalid IP Address"
+# msgstr ""
+
+# msgid "Failed to save OpenID Connect configuration"
+# msgstr ""
+
+# msgid "OpenID Connect configuration saved"
+# msgstr ""
+
+# msgid "Enable OpenID Connect authentication"
+# msgstr ""
+
+# msgid "Authentication mode"
+# msgstr ""
+
+# msgid "Base URL"
+# msgstr ""
+
+# msgid "Authorization endpoint"
+# msgstr ""
+
+# msgid "Token endpoint"
+# msgstr ""
+
+# msgid "Introspection token endpoint"
+# msgstr ""
+
+# msgid "User information endpoint"
+# msgstr ""
+
+# msgid "End session endpoint"
+# msgstr ""
+
+# msgid "Scopes"
+# msgstr ""
+
+# msgid "Login claim value"
+# msgstr ""
+
+# msgid "Client ID"
+# msgstr ""
+
+# msgid "Client secret"
+# msgstr ""
+
+# msgid "Use basic authentication for token endpoint authentication"
+# msgstr ""
+
+# msgid "Disable verify peer"
+# msgstr ""
+
+# msgid "OpenID Connect only"
+# msgstr ""
+
+# msgid "Mixed"
+# msgstr ""
+
+# msgid "Reset your password"
+# msgstr ""
+
+# msgid "Current password"
+# msgstr ""
+
+# msgid "New password"
+# msgstr ""
+
+# msgid "New password confirmation"
+# msgstr ""
+
+# msgid "New passwords must match"
+# msgstr ""
+
+# msgid "The new password is the same as the old password"
+# msgstr ""
+
+# msgid "Reset password"
+# msgstr ""
+
+# msgid "Password renewed"
+# msgstr ""
+
+# msgid "Your password will expire in"
+# msgstr ""
+
+# msgid "Password has expired"
+# msgstr ""
+
+# msgid "Choose letter cases"
+# msgstr ""
+
+# msgid "Activation"
+# msgstr ""
+
+# msgid "Identity provider"
+# msgstr ""
+
+# msgid "Client addresses"
+# msgstr ""
+
+# msgid "Login with"
+# msgstr ""
+
+# msgid "Force active checks"
+# msgstr ""
+
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace login (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
+# msgstr ""
+
+# msgid "Do you want to save the changes?"
+# msgstr ""
+
+# msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+# msgstr ""
+
+# msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+# msgstr ""
+
+# msgid "Discard"
 # msgstr ""

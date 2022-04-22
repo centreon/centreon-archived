@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTheme, alpha } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { LoadingSkeleton } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { LoadingSkeleton } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
@@ -23,7 +23,7 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
   return (
     <LoadingSkeleton
       className={classes.skeleton}
-      height={theme.spacing(5.5)}
+      height={theme.spacing(5)}
       variant="text"
       width={theme.spacing(width)}
     />

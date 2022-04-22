@@ -23,19 +23,20 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\Authentication\UseCase;
 
 use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Contact\Contact;
+use Security\Domain\Authentication\Model\LocalProvider;
+use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Model\LocalProvider;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\ProviderToken;
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -82,7 +83,7 @@ class AuthenticateApiTest extends TestCase
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
-        $this->provider = $this->createMock(ProviderInterface::class);
+        $this->provider = $this->createMock(LocalProviderInterface::class);
         $this->providerConfiguration = $this->createMock(ProviderConfiguration::class);
         $this->providerToken = $this->createMock(ProviderToken::class);
         $this->contact = (new Contact())
@@ -151,16 +152,12 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
-            ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(false);
+            ])
+            ->willThrowException(AuthenticationException::invalidCredentials());
 
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Invalid Credentials');
@@ -195,16 +192,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())
@@ -244,16 +236,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())
@@ -308,16 +295,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())

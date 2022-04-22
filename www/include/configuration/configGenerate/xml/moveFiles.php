@@ -118,9 +118,10 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
     $centreon = $_SESSION['centreon'];
 }
 
-if (!isset($_POST['poller'])) {
+if (!isset($_POST['poller']) || ! $centreon->user->access->checkAction('generate_cfg')) {
     exit;
 }
+
 
 /**
  * List of error from php
@@ -133,8 +134,10 @@ $pollers = explode(',', $_POST['poller']);
 
 // Add task to export files if there is a remote
 $pollerParams = [];
-foreach ($pollers as $pollerId) {
-    $pollerParams[':poller_' . $pollerId] = $pollerId;
+foreach ($pollers as $index => $pollerId) {
+    if (is_numeric($pollerId)) {
+        $pollerParams[':poller_' . $index] = $pollerId;
+    }
 }
 
 // SELECT Remote Servers from selected pollers
@@ -241,6 +244,9 @@ try {
      * Copying image in logos directory
      */
     if (isset($centreon->optGen["nagios_path_img"]) && $centreon->optGen["nagios_path_img"]) {
+        /**
+         * @var CentreonDBStatement $DBRESULT_imgs
+         */
         $DBRESULT_imgs = $pearDB->query(
             "SELECT `dir_alias`, `img_path` " .
             "FROM `view_img`, `view_img_dir`, `view_img_dir_relation` " .
@@ -308,7 +314,7 @@ try {
                 /*
                  * Copy monitoring engine's configuration files
                  */
-                foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
+                foreach (glob($nagiosCFGPath . $host['id'] . '/*.{json,cfg}', GLOB_BRACE) as $filename) {
                     $succeded = @copy(
                         $filename,
                         rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename)

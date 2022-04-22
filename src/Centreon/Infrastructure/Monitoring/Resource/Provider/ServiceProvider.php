@@ -175,7 +175,7 @@ final class ServiceProvider extends Provider
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.name NOT LIKE '_Module_%'
+                AND sh.name NOT LIKE '\_Module\_%'
                 AND sh.enabled = 1";
 
         // get monitoring server information

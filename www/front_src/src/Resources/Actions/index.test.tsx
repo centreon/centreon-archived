@@ -53,7 +53,6 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
-  labelPersistent,
   labelEndTime,
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
@@ -83,13 +82,8 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const onRefresh = jest.fn();
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
-
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
 
 const mockUser = {
   alias: 'admin',
@@ -99,9 +93,9 @@ const mockUser = {
 };
 const mockRefreshInterval = 15;
 const mockDowntime = {
-  default_duration: 7200,
-  default_fixed: true,
-  default_with_services: false,
+  duration: 7200,
+  fixed: true,
+  with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -124,8 +118,11 @@ const mockAcl = {
   },
 };
 const mockAcknowledgement = {
+  force_active_checks: false,
+  notify: false,
   persistent: true,
-  sticky: false,
+  sticky: true,
+  with_services: true,
 };
 
 jest.mock('../icons/Downtime');
@@ -308,8 +305,7 @@ describe(Actions, () => {
   );
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByText, getByLabelText, findByLabelText, getAllByText } =
-      renderActions();
+    const { getByText, findByLabelText, getAllByText } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -320,11 +316,8 @@ describe(Actions, () => {
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
-    const persistentCheckbox = await findByLabelText(labelPersistent);
 
     fireEvent.click(notifyCheckbox);
-    fireEvent.click(persistentCheckbox);
-    fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
@@ -337,9 +330,10 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
+            force_active_checks: false,
             is_notify_contacts: true,
-            is_persistent_comment: false,
-            is_sticky: false,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
@@ -468,8 +462,13 @@ describe(Actions, () => {
   });
 
   it('cannot send a downtime request when the Downtime action is clicked and the input dates have an invalid format', async () => {
-    const { getByLabelText, getAllByText, findByText, getByText } =
-      renderActions();
+    const {
+      getByLabelText,
+      getAllByText,
+      findByText,
+      getByText,
+      findAllByText,
+    } = renderActions();
 
     const selectedResources = [host];
 
@@ -477,21 +476,23 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
+    await findAllByText(labelSetDowntime);
+
     fireEvent.click(head(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
 
-    userEvent.type(getByLabelText(labelStartTime), 'l');
+    userEvent.type(getByLabelText(labelStartTime), '{backspace}l');
 
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
         last(getAllByText(labelSetDowntime)) as HTMLElement,
-      ).toBeDisabled(),
-    );
+      ).toBeDisabled();
+    });
 
     expect(getByText(labelInvalidFormat)).toBeInTheDocument();
 
-    userEvent.type(getByLabelText(labelStartTime), '{backspace}');
+    userEvent.type(getByLabelText(labelStartTime), '{backspace}M');
 
     await waitFor(() =>
       expect(last(getAllByText(labelSetDowntime)) as HTMLElement).toBeEnabled(),

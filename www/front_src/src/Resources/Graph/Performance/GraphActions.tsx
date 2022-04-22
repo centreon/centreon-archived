@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -60,7 +60,7 @@ const GraphActions = ({
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [exporting, setExporting] = React.useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -89,7 +89,7 @@ const GraphActions = ({
       return params.toString();
     };
 
-    history.push(`/main.php?p=204&${urlParameters()}`);
+    navigate(`/main.php?p=204&${urlParameters()}`);
   };
 
   const convertToPng = (ratio: number): void => {
@@ -114,8 +114,10 @@ const GraphActions = ({
         <>
           <IconButton
             disableTouchRipple
+            ariaLabel={t(labelPerformancePage)}
             className={classes.buttonLink}
             color="primary"
+            data-testid={labelPerformancePage}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
@@ -124,6 +126,8 @@ const GraphActions = ({
           </IconButton>
           <IconButton
             disableTouchRipple
+            ariaLabel={t(labelExportToPng)}
+            data-testid={labelExportToPng}
             disabled={isNil(timeline)}
             size="large"
             title={t(labelExportToPng)}
@@ -137,13 +141,22 @@ const GraphActions = ({
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
-            <MenuItem onClick={(): void => convertToPng(1)}>
+            <MenuItem
+              data-testid={labelAsDisplayed}
+              onClick={(): void => convertToPng(1)}
+            >
               {t(labelAsDisplayed)}
             </MenuItem>
-            <MenuItem onClick={(): void => convertToPng(0.75)}>
+            <MenuItem
+              data-testid={labelMediumSize}
+              onClick={(): void => convertToPng(0.75)}
+            >
               {t(labelMediumSize)}
             </MenuItem>
-            <MenuItem onClick={(): void => convertToPng(0.5)}>
+            <MenuItem
+              data-testid={labelSmallSize}
+              onClick={(): void => convertToPng(0.5)}
+            >
               {t(labelSmallSize)}
             </MenuItem>
           </Menu>

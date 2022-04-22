@@ -2815,10 +2815,6 @@ msgstr "Information sur le moteur de supervision"
 msgid "Admin information"
 msgstr "Informations de l'administrateur"
 
-#: centreon-web/www/install/steps/step5.php:66
-msgid "Login"
-msgstr "Login"
-
 #: centreon-web/www/install/steps/step5.php:73
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:97
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:566
@@ -5299,12 +5295,6 @@ msgstr "Afficher les commentaires sur le graphique"
 
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
-
-msgid "Trusted client addresses"
-msgstr "Adresses des clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses des clients bloqués"
 
 msgid "Base Url"
 msgstr "URL de base"
@@ -15940,7 +15930,7 @@ msgstr "Commande de désacquittement envoyée"
 msgid "Unable to find the Engine configuration"
 msgstr "Impossible de trouver la configuration du moteur de supervision"
 
-msgid "Ip address can not be empty"
+msgid "Ip address cannot be empty"
 msgstr "L'adresse IP ne peut pas être vide"
 
 msgid "Monitoring server is not correctly defined"
@@ -16160,7 +16150,7 @@ msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
 msgid "Authentication failed"
-msgstr "Authentification échouée"
+msgstr "Echec de l'authentification"
 
 msgid "User cannot be logout"
 msgstr "L'utilisateur ne peut pas être déconnecté"
@@ -16310,10 +16300,457 @@ msgid "Status type"
 msgstr "Type de status"
 
 msgid "Hard"
-msgstr "Dur"
+msgstr "Hard"
 
 msgid "Soft"
-msgstr "Souple"
+msgstr "Soft"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
+
+msgid "You are disconnected"
+msgstr "Vous êtes déconnecté"
+
+msgid "Centreon is loading..."
+msgstr "Centreon est en cours de chargement..."
+
+msgid "Login succeeded"
+msgstr "Connexion réussie"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Centreon Logo"
+msgstr "Logo de Centreon"
+
+msgid "You are not allowed to see this page"
+msgstr "Vous n'êtes pas autorisé à voir cette page"
+
+msgid "This page could not be found"
+msgstr "Cette page n'a pas pu être trouvée"
+
+msgid "Successful logout"
+msgstr "Déconnexion réussie"
+
+msgid "No session token provided"
+msgstr "Aucun jeton de session fourni"
+
+msgid "Display the password"
+msgstr "Afficher le mot de passe"
+
+msgid "Hide the password"
+msgstr "Cacher le mot de passe"
+
+msgid "centreon is not properly installed"
+msgstr "centreon n'est pas correctement installé"
+
+msgid "Define the password security policy"
+msgstr "Définir la politique de sécurité de mot de passe"
+
+msgid "Password case policy"
+msgstr "Politique de casse du mot de passe"
+
+msgid "Minimum password length"
+msgstr "Longueur minimum du mot de passe"
+
+msgid "Minimum 8 characters"
+msgstr "8 caractères minimum"
+
+msgid "Maximum 128 characters"
+msgstr "128 caractères maximum"
+
+msgid "Password must contain upper case"
+msgstr "Le mot de passe doit contenir une majuscule"
+
+msgid "Password must contain lower case"
+msgstr "Le mot de passe doit contenir une minuscule"
+
+msgid "Password must contain numbers"
+msgstr "Le mot de passe doit contenir des nombres"
+
+msgid "Password must contain special characters"
+msgstr "Le mot de passe doit contenir des caractères spéciaux"
+
+msgid "Password cases"
+msgstr "Casses du mot de passe"
+
+msgid "Weak"
+msgstr "Faible"
+
+msgid "Good"
+msgstr "Bon"
+
+msgid "Strong"
+msgstr "Fort"
+
+msgid "Password expiration policy"
+msgstr "Politique d'expiration du mot de passe"
+
+msgid "Password expires after"
+msgstr "Le mot de passe expire après"
+
+msgid "Choose a duration between 7 days and 12 months"
+msgstr "Veuillez choisir une durée entre 7 jours et 12 mois"
+
+msgid "Choose a duration between 1 hour and 12 months"
+msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
+
+msgid "Reset the form"
+msgstr "Réinitialiser le formulaire"
+
+msgid "Do you want to reset the form?"
+msgstr "Voulez-vous réinitialiser le formulaire ?"
+
+msgid "Excluded users"
+msgstr "Utilisateurs exclus"
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Months"
+msgstr "Mois"
+
+msgid "Hour"
+msgstr "Heure"
+
+msgid "Minute"
+msgstr "Minute"
+
+msgid "Second"
+msgstr "Seconde"
+
+msgid "Last 3 passwords can be reused"
+msgstr "Les 3 derniers mot de passe peuvent être réutilisés"
+
+msgid "Minimum time between password changes"
+msgstr "Durée minimum entre chaque changement de mot de passe"
+
+msgid "Choose a duration between 1 hour and 1 week"
+msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
+
+msgid "Password blocking policy"
+msgstr "Politique de blocage du mot de passe"
+
+msgid "Number of attempts before user is blocked"
+msgstr "Nombre de tentatives avant que l'utilisateur soit bloqué"
+
+msgid "Choose a value between 1 and 10"
+msgstr "Veuillez choisir une valeur entre 1 et 10"
+
+msgid "Time that must pass before new connection is allowed"
+msgstr "Durée de blocage avant qu'une nouvelle connexion ne soit autorisée"
+
+msgid "Blocking duration must be less than or equal to 7 days"
+msgstr "La durée de blocage doit être inférieure ou égale à 7 jours"
+
+msgid "Saving..."
+msgstr "En cours de sauvegarde..."
+
+msgid "Saved"
+msgstr "Sauvegardé"
+
+msgid "Password security policy saved"
+msgstr "Politique de sécurité de mot de passe sauvegardée"
+
+msgid "Failed to save password security policy"
+msgstr "La sauvegarde de la politique de définition de mot de passe a échoué"
+
+msgid "This will not be used because the number of attempts is not defined"
+msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas défini"
+
+msgid "You can't change your password because the delay before changing password is not over."
+msgstr "Vous ne pouvez pas changer votre mot de passe car le délai avant changement de mot de passe n'est pas encore terminé."
+
+msgid "Your password must be %d characters long"
+msgstr "Votre mot de passe doit contenir %d caractères"
+
+msgid "and must contain"
+msgstr "et doit contenir"
+
+msgid "uppercase characters"
+msgstr "caractères majuscules"
+
+msgid "lowercase characters"
+msgstr "caractères minuscules"
+
+msgid "numbers"
+msgstr "nombres"
+
+msgid "special characters among '%s'"
+msgstr "caractères spéciaux parmi '%s'"
+
+msgid "Your password has already been used. Please choose a different password from the previous three."
+msgstr "Votre mot de passe a déjà été utilisé. Veuillez choisir un mot de passe différent des trois précédents."
+
+msgid "Your password has expired. Please change it."
+msgstr "Votre mot de passe a expiré. Veuillez le changer."
+
+msgid "Your password will expire in %s days."
+msgstr "Votre mot de passe expirera dans %s jours."
+
+msgid "Security policy not found. Please verify that your installation is valid"
+msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"
+
+msgid "Error while reading local provider configuration"
+msgstr "Erreur lors de la lecture de la configuration du fournisseur local"
+
+msgid "Your autologin key must be different than your current password"
+msgstr "Votre clé d'autologin doit être différente de votre mot de passe actuel"
+
+msgid "Your new password and autologin key must be different"
+msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"
+
+msgid "Error on adding a host (Reason: %s)"
+msgstr "Erreur lors de l'ajout d'un hôte (Raison : %s)"
+
+msgid "Error on updating a host (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'un hôte (Raison : %s)"
+
+msgid "Error on removing services from the host #%d"
+msgstr "Erreur lors de la suppression des services de l'hôte #%d"
+
+msgid "You have been logged out"
+msgstr "Vous avez été déconnecté"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Role Relations"
+msgstr "Relations de rôle"
+
+msgid "Linked to Roles"
+msgstr "Lié aux rôles"
+
+msgid "Local provider configuration not found"
+msgstr "Configuration du fournisseur d'accès local non trouvée"
+
+msgid "User information not found"
+msgstr "Informations utilisateur non trouvées"
+
+msgid "User is blocked"
+msgstr "L'utilisateur est bloqué"
+
+msgid "Your password doesn't match the security policy"
+msgstr "Votre mot de passe ne correspond pas à la politique de sécurité"
+
+msgid "Error on reading host macros (Reason: %s)"
+msgstr "Erreur lors de la lecture des macros de l'hôte (Raison : %s)"
+
+msgid "Error on updating a host macro (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'une macro d'hôte (Raison : %s)"
+
+msgid "Error on reading host templates (Reason: %s)"
+msgstr "Erreur lors de la lecture des modèles d'hôtes (Raison : %s)"
+
+msgid "Error while linking template (id: %d) to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
+
+msgid "Error while linking template %s to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
+
+msgid "Password security policy"
+msgstr "Politique de sécurité de mot de passe"
+
+msgid "OpenID Connect Configuration"
+msgstr "Configuration OpenID Connect"
+
+msgid "Define OpenID Connect configuration"
+msgstr "Définir la configuration OpenID Connect"
+
+msgid "Invalid URL"
+msgstr "URL invalide"
+
+msgid "Invalid IP Address"
+msgstr "Adresse IP invalide"
+
+msgid "Failed to save OpenID Connect configuration"
+msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
+
+msgid "OpenID Connect configuration saved"
+msgstr "Configuration OpenID Connect sauvegardée"
+
+msgid "Enable OpenID Connect authentication"
+msgstr "Activer l'authentification OpenID Connect"
+
+msgid "Authentication mode"
+msgstr "Mode d'authentification"
+
+msgid "Base URL"
+msgstr "URL de base"
+
+msgid "Authorization endpoint"
+msgstr "Point d'entrée d'autorisation"
+
+msgid "Token endpoint"
+msgstr "Point d'entrée de jeton"
+
+msgid "Introspection token endpoint"
+msgstr "Point d'entrée de jeton d'introspection"
+
+msgid "User information endpoint"
+msgstr "Point d'entrée d'information utilisateur"
+
+msgid "End session endpoint"
+msgstr "Point d'entrée de fin de session"
+
+msgid "Scopes"
+msgstr "Portées"
+
+msgid "Login claim value"
+msgstr "Valeur de la déclaration de connexion"
+
+msgid "Client secret"
+msgstr "Secret de client"
+
+msgid "Use basic authentication for token endpoint authentication"
+msgstr "Utiliser l'authentification basique pour l'authentification du point d'entrée de jeton"
+
+msgid "Disable verify peer"
+msgstr "Désactiver la vérification du pair"
+
+msgid "OpenID Connect only"
+msgstr "OpenID Connect seulement"
+
+msgid "Reset your password"
+msgstr "Réinitialiser votre mot de passe"
+
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "New password confirmation"
+msgstr "Confirmation du nouveau mot de passe"
+
+msgid "New passwords must match"
+msgstr "Les nouveaux mots de passe doivent correspondre"
+
+msgid "The new password is the same as the old password"
+msgstr "Le nouveau mot de passe est identique au mot de passe actuel"
+
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "Password renewed"
+msgstr "Mot de passe renouvelé"
+
+msgid "Your password will expire in"
+msgstr "Votre mot de passe expirera dans"
+
+msgid "Password has expired"
+msgstr "Votre mot de passe a expiré"
+
+msgid "The value '%s' was expected to be a valid ip address"
+msgstr "La valeur '%s' devait être une adresse ip valide"
+
+msgid "Choose letter cases"
+msgstr "Choisir les casses d'écriture"
+
+msgid "Activation"
+msgstr "Activation"
+
+msgid "Identity provider"
+msgstr "Fournisseur d'identité"
+
+msgid "Client addresses"
+msgstr "Adresses de client"
+
+msgid "No provider presenters could be found"
+msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
+
+msgid "No provider repositories could be found"
+msgstr "Aucun dépôt de fournisseur n'a pu être trouvé"
+
+msgid "No provider responses could be found"
+msgstr "Aucune réponse de fournisseur n'a pu être trouvée"
+
+msgid "Missing token endpoint in your configuration"
+msgstr "Le point d'accès au jeton est manquant dans votre configuration"
+
+msgid "Missing userinfo and introspection token endpoint"
+msgstr "Les points d'accès au jeton d'information utilisateur et d'introspection sont manquants"
+
+msgid "No refresh token has been found"
+msgstr "Aucun jeton de rafraîchissement n'a été trouvé"
+
+msgid "[%s]: Both provider and refresh tokens have expired"
+msgstr "[%s] : Les jetons de fournisseur et de rafraîchissement ont expirés"
+
+msgid "Request for connection token to external provider has failed"
+msgstr "La demande de jeton de connexion à un fournisseur externe a échoué"
+
+msgid "[%s]: An error occured during your request"
+msgstr "[%s] : Une erreur est survenue durant votre demande"
+
+msgid "Request for refresh token to external provider has failed"
+msgstr "La demande de jeton de rafraîchissement à un fournisseur externe a échoué"
+
+msgid "Request for introspection token to external provider has failed"
+msgstr "La demande de jeton d'introspection à un fournisseur externe a échoué"
+
+msgid "Request for user information to external provider has failed"
+msgstr "La demande d'information utilisateur à un fournisseur externe a échoué"
+
+msgid "Your IP is blacklisted"
+msgstr "Votre adresse IP est sur liste noire"
+
+msgid "Your IP is not whitelisted"
+msgstr "Votre adresse IP n'est pas sur liste blanche"
+
+msgid "[%s]: Login claim [%s] not found from external provider user"
+msgstr "[%s] : La déclaration de connexion [%s] n'a pas été trouvée dans l'utilisateur du fournisseur externe"
+
+msgid "[%s]: No authorization code return by external provider"
+msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur externe"
+
+msgid "Login with"
+msgstr "Se connecter avec"
+
+msgid "Can't resolve username from login claim using configured regular expression"
+msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
+
+msgid "Force active checks"
+msgstr "Forcer les contrôles actifs"
+
+msgid "Web SSO configuration"
+msgstr "Configuration Web SSO"
+
+msgid "Define Web SSO Configuration"
+msgstr "Définir la configuration Web SSO"
+
+msgid "Failed to save Web SSO configuration"
+msgstr "Échec de l'enregistrement de la configuration Web SSO"
+
+msgid "Web SSO configuration saved"
+msgstr "Configuration Web SSO enregistrée"
+
+msgid "Enable Web SSO authentication"
+msgstr "Activer l'authentification Web SSO"
+
+msgid "Web SSO only"
+msgstr "Web SSO seulement"
+
+msgid "Pattern match login (regex)"
+msgstr "Correspondance de login (regex)"
+
+msgid "Pattern replace login (regex)"
+msgstr "Remplacement du login (regex)"
+
+msgid "Login header attribute name"
+msgstr "Nom d'attribut d'en-tête de login"
+
+msgid "Invalid regex"
+msgstr "Regex invalide"
+
+msgid "Do you want to save the changes?"
+msgstr "Voulez-vous enregistrer les modifications ?"
+
+msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+msgstr "Votre formulaire a des modifications non enregistrées. Voulez-vous quitter le formulaire sans enregistrer les modifications ?"
+
+msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire sans résoudre les erreurs ?"
+
+msgid "Discard"
+msgstr "Annuler"

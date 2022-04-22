@@ -1401,7 +1401,7 @@ ServerTokens Prod
 
 <VirtualHost *:80>
     Header set X-Frame-Options: "sameorigin"
-    Header always edit Set-Cookie ^(.*)$ $1;HttpOnly
+    Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;SameSite=Strict
     ServerSignature Off
     TraceEnable Off
 
@@ -1417,7 +1417,7 @@ ServerTokens Prod
     </LocationMatch>
 
     ProxyTimeout 300
-    DirectoryIndex index.php
+    ErrorDocument 404 ${base_uri}/index.html
     Options -Indexes +FollowSymLinks
 
     <IfModule mod_security2.c>

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -90,9 +91,9 @@ interface ContactInterface
     /**
      * Contact template id.
      *
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int;
+    public function getTemplateId(): ?int;
 
     /**
      * Contact token.
@@ -104,9 +105,9 @@ interface ContactInterface
     /**
      * Contact encoded password.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string;
+    public function getEncodedPassword(): ?string;
 
     /**
      * Returns the roles granted to the user.
@@ -123,6 +124,22 @@ interface ContactInterface
      * @return string[] The user roles
      */
     public function getRoles(): array;
+
+    /**
+     * Indicates if this user has a role.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasRole(string $role): bool;
+
+    /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool;
 
     /**
      * Contact timezone.
@@ -150,4 +167,39 @@ interface ContactInterface
      * @return static
      */
     public function setDefaultPage(?Page $defaultPage): static;
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return bool
+     */
+    public function isUsingDeprecatedPages(): bool;
+
+    /**
+     * @param bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return static
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages): static;
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiConfiguration(): bool;
+
+    /**
+     * @param bool $hasAccessToApiConfiguration
+     * @return static
+     */
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static;
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiRealTime(): bool;
+
+    /**
+     * @param bool $hasAccessToApiRealTime
+     * @return static
+     */
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
 }

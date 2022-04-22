@@ -39,6 +39,7 @@ if (!isset($oreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/CentreonLDAPAdmin.class.php';
 require_once __DIR__ . '/DB-Func.php';
 
 $attrsText = array("size" => "40");
@@ -373,7 +374,8 @@ if ($form->validate()) {
             // updating the next expected auto-sync at login if the admin has changed the sync options
             // or it never occurred
             if (
-                $gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
+                isset($values['ldap_auto_sync']['ldap_auto_sync'])
+                && $gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
                 && !empty($gopt['ar_sync_base_date'])
                 && ($gopt['ar_sync_base_date'] + ($values['ldap_sync_interval'] * 3600)) > $currentTime
                 && $currentTime > $gopt['ar_sync_base_date']

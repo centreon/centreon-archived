@@ -104,7 +104,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             'WHERE i.id = m.index_id ' .
             'AND s.enabled = 1 ' .
             'AND i.service_id = s.service_id ' .
-            'AND i.host_name NOT LIKE "_Module_%" ';
+            'AND i.host_name NOT LIKE "\_Module\_%" ' .
+            'AND CONCAT(i.host_name, " - ", i.service_description) LIKE :fullName ';
 
         if (!$isAdmin) {
             $query .= 'AND acl.host_id = i.host_id ' .

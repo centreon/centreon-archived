@@ -8,19 +8,17 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/destructuring-assignment */
 
-import React, { Component } from 'react';
+import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { batchActions } from 'redux-batched-actions';
+import axios from 'axios';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
 
 import Hook from '../components/Hook';
-import axios from '../axios';
-import { fetchNavigationData } from '../redux/actions/navigationActions';
-import { fetchExternalComponents } from '../redux/actions/externalComponentsActions';
+import useNavigation from '../Navigation/useNavigation';
+import useExternalComponents from '../externalComponents/useExternalComponents';
 
 import ExtensionsHolder from './ExtensionsHolder';
 import ExtensionDetailsPopup from './ExtensionDetailsPopup';
@@ -28,7 +26,7 @@ import ExtensionDeletePopup from './ExtensionDeletePopup';
 import TopFilters from './TopFilters';
 import Wrapper from './Wrapper';
 
-class ExtensionsRoute extends Component {
+class ExtensionsManager extends React.Component {
   state = {
     confirmedDeletingEntityId: null,
     deleteToggled: false,
@@ -234,10 +232,10 @@ class ExtensionsRoute extends Component {
   // install/remove extension
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
-      axios(
-        `internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
-      )
-        .post()
+      axios
+        .post(
+          `./api/internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
+        )
         .then(() => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
@@ -298,8 +296,8 @@ class ExtensionsRoute extends Component {
         modalDetailsLoading: modalDetailsActive,
       },
       () => {
-        axios('internal.php?object=centreon_module&action=remove')
-          .delete('', {
+        axios
+          .delete('./api/internal.php?object=centreon_module&action=remove', {
             params: {
               id,
               type,
@@ -357,8 +355,8 @@ class ExtensionsRoute extends Component {
         nothingShown,
       });
       if (!nothingShown) {
-        axios(`internal.php?object=centreon_module&action=list${params}`)
-          .get()
+        axios
+          .get(`./api/internal.php?object=centreon_module&action=list${params}`)
           .then(({ data }) => {
             this.setState(
               {
@@ -396,10 +394,10 @@ class ExtensionsRoute extends Component {
   };
 
   getExtensionDetails = (id, type) => {
-    axios(
-      `internal.php?object=centreon_module&action=details&type=${type}&id=${id}`,
-    )
-      .get()
+    axios
+      .get(
+        `./api/internal.php?object=centreon_module&action=details&type=${type}&id=${id}`,
+      )
       .then(({ data }) => {
         const { result } = data;
         if (result.images) {
@@ -604,15 +602,16 @@ class ExtensionsRoute extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    reloadNavigation: () => {
-      // batch actions to avoid useless multiple rendering
-      dispatch(
-        batchActions([fetchNavigationData(), fetchExternalComponents()]),
-      );
-    },
-  };
+const ExtensionsRoute = () => {
+  const { getNavigation } = useNavigation();
+  const { getExternalComponents } = useExternalComponents();
+
+  const reloadNavigation = React.useCallback(() => {
+    getNavigation();
+    getExternalComponents();
+  }, []);
+
+  return <ExtensionsManager reloadNavigation={reloadNavigation} />;
 };
 
-export default connect(null, mapDispatchToProps)(ExtensionsRoute);
+export default ExtensionsRoute;

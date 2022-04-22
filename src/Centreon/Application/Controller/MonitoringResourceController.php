@@ -45,6 +45,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 /**
@@ -130,11 +131,6 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var MonitoringServiceInterface
-     */
-    private $monitoring;
-
-    /**
      * @var ResourceServiceInterface
      */
     protected $resource;
@@ -150,18 +146,15 @@ class MonitoringResourceController extends AbstractController
     protected $iconUrlNormalizer;
 
     /**
-     * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      * @param IconUrlNormalizer $iconUrlNormalizer
      */
     public function __construct(
-        MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
         IconUrlNormalizer $iconUrlNormalizer
     ) {
-        $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
         $this->iconUrlNormalizer = $iconUrlNormalizer;
@@ -256,192 +249,6 @@ class MonitoringResourceController extends AbstractController
             'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the host
-     *
-     * @return View
-     */
-    public function detailsHost(int $hostId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_HOST])
-            ->setHostIds([$hostId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichHostWithDetails($resource);
-
-        if (
-            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
-            $contact->isAdmin()
-        ) {
-            try {
-                $host = (new Host())->setId($resource->getId())
-                    ->setCheckCommand($resource->getCommandLine());
-                $this->monitoring->hidePasswordInHostCommandLine($host);
-                $resource->setCommandLine($host->getCheckCommand());
-            } catch (\Throwable $ex) {
-                $resource->setCommandLine(
-                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-                );
-            }
-        } else {
-            $resource->setCommandLine(null);
-        }
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the service
-     *
-     * @return View
-     */
-    public function detailsService(int $hostId, int $serviceId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_SERVICE])
-            ->setHostIds([$hostId])
-            ->setServiceIds([$serviceId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichServiceWithDetails($resource);
-
-        if (
-            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
-            $contact->isAdmin()
-        ) {
-            try {
-                $service = (new Service())
-                    ->setId($resource->getId())
-                    ->setHost((new Host())->setId($resource->getParent()->getId()))
-                    ->setCommandLine($resource->getCommandLine());
-                $this->monitoring->hidePasswordInServiceCommandLine($service);
-                $resource->setCommandLine($service->getCommandLine());
-            } catch (\Throwable $ex) {
-                $resource->setCommandLine(
-                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-                );
-            }
-        } else {
-            $resource->setCommandLine(null);
-        }
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the service
-     *
-     * @return View
-     */
-    public function detailsMetaService(int $metaId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_META])
-            ->setMetaServiceIds([$metaId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichMetaServiceWithDetails($resource);
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
     }
 
     /**

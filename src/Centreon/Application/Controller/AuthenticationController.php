@@ -23,23 +23,16 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Authentication\Model\Credentials;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Core\Domain\Security\Authentication\AuthenticationException;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
-use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Centreon\Application\Controller
@@ -107,67 +100,5 @@ class AuthenticationController extends AbstractController
         return $this->view([
             'message' => 'Successful logout'
         ]);
-    }
-
-    /**
-     * Returns the list of available providers.
-     * @param FindProvidersConfigurations $findProviderConfigurations
-     * @param FindProvidersConfigurationsResponse $response
-     * @return View
-     */
-    public function findProvidersConfigurations(
-        FindProvidersConfigurations $findProviderConfigurations,
-        FindProvidersConfigurationsResponse $response
-    ): View {
-        $findProviderConfigurations->execute($response);
-        return $this->view(ProvidersConfigurationsFactory::createFromResponse($response));
-    }
-
-    /**
-     * @param Request $request
-     * @param Authenticate $authenticate
-     * @param string $providerConfigurationName
-     * @param AuthenticateResponse $response
-     * @return View
-     */
-    public function authentication(
-        Request $request,
-        Authenticate $authenticate,
-        string $providerConfigurationName,
-        AuthenticateResponse $response
-    ): View {
-        // submitted from form directly
-        $data = json_decode((string) $request->getContent(), true);
-        $referer = $request->headers->get('referer');
-        $clientIp = $request->getClientIp();
-        if ($clientIp === null) {
-            throw new \InvalidArgumentException('Invalid address');
-        }
-        if (empty($data['login']) || empty($data['password'])) {
-            throw new \InvalidArgumentException('Missing credentials parameters');
-        }
-        $credentials = new Credentials($data['login'], $data['password']);
-
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            $providerConfigurationName,
-            $this->getBaseUri(),
-            $referer,
-            $clientIp
-        );
-
-        try {
-            $authenticate->execute($authenticateRequest, $response);
-        } catch (AuthenticationException $e) {
-            return $this->view(
-                [
-                    "code" => Response::HTTP_UNAUTHORIZED,
-                    "message" => _(self::INVALID_CREDENTIALS_MESSAGE),
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
-        }
-
-        return $this->view($response->getRedirectionUriApi());
     }
 }

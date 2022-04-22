@@ -11,20 +11,17 @@ env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
+  env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
-  env.DOCKER_STAGE = 'Docker packaging'
 } else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
   env.DELIVERY_STAGE = 'Delivery to canary'
-  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
+  env.REPO = 'unstable'
   env.DELIVERY_STAGE = 'Delivery to unstable'
-  env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
-  env.DELIVERY_STAGE = 'Delivery to canary'
-  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
 env.BUILD_BRANCH = env.BRANCH_NAME
@@ -79,6 +76,12 @@ def apiFeatureFiles = []
 def featureFiles = []
 def acceptanceTag = ""
 
+// Skip sonarQ analysis on branch without PR  - Unable to merge
+def securityAnalysisRequired = 'yes'
+if (!env.CHANGE_ID && env.BUILD == 'CI') {
+    securityAnalysisRequired = 'no'
+}
+
 /*
 ** Functions
 */
@@ -113,11 +116,17 @@ def hasChanges(patterns) {
 
 def checkoutCentreonBuild() {
   dir('centreon-build') {
-    checkout resolveScm(source: [$class: 'GitSCMSource',
-      remote: 'https://github.com/centreon/centreon-build.git',
-      credentialsId: 'technique-ci',
-      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-      targets: [env.BUILD_BRANCH, 'master'])
+    retry(3) {
+      checkout resolveScm(
+        source: [
+          $class: 'GitSCMSource',
+          remote: 'https://github.com/centreon/centreon-build.git',
+          credentialsId: 'technique-ci',
+          traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]
+        ],
+        targets: [env.BUILD_BRANCH, 'master']
+      )
+    }
   }
 }
 
@@ -150,6 +159,7 @@ stage('Deliver sources') {
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
     stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
+    stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -193,7 +203,6 @@ try {
           recordIssues(
             referenceJobName: "centreon-web/${env.REF_BRANCH}",
             enabledForFailure: true,
-            failOnError: true,
             qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
             tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
             trendChartType: 'NONE'
@@ -209,7 +218,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild()      
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -238,26 +247,30 @@ try {
     },
     'sonar': {
       node {
-        // Run sonarQube analysis
-        checkoutCentreonBuild()
-        unstash 'git-sources'
-        unstash 'vendor'
-        unstash 'node_modules'
-        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        sh 'rm -rf centreon-web/vendor && tar xzf vendor.tar.gz -C centreon-web'
-        sh 'rm -rf centreon-web/node_modules && tar xzf node_modules.tar.gz -C centreon-web'
-        withSonarQubeEnv('SonarQubeDev') {
-          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-        }
-        // sonarQube step to get qualityGate result
-        timeout(time: 10, unit: 'MINUTES') {
-          def qualityGate = waitForQualityGate()
-          if (qualityGate.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        if (securityAnalysisRequired == 'no') {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
+          checkoutCentreonBuild()
+          unstash 'git-sources'
+          unstash 'vendor'
+          unstash 'node_modules'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          sh 'rm -rf centreon-web/vendor && tar xzf vendor.tar.gz -C centreon-web'
+          sh 'rm -rf centreon-web/node_modules && tar xzf node_modules.tar.gz -C centreon-web'
+          withSonarQubeEnv('SonarQubeDev') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
           }
-        }
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error("Quality gate failure: ${qualityGate.status}.");
+          // sonarQube step to get qualityGate result
+          timeout(time: 10, unit: 'MINUTES') {
+            def qualityGate = waitForQualityGate()
+            if (qualityGate.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+            }
+          }
+          if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+            error("Quality gate failure: ${qualityGate.status}.");
+          }
         }
       }
     },
@@ -271,14 +284,26 @@ try {
         sh 'rm -rf output'
       }
     },
-    'rpm packaging centos8': {
+    'rpm packaging alma8': {
       node {
-        checkoutCentreonBuild()           
+        checkoutCentreonBuild()
         unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
-        stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
+        archiveArtifacts artifacts: "rpms-alma8.tar.gz"
+        stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
+      }
+    },
+    'Debian 11 packaging': {
+      node {
+        dir('centreon') {
+          checkout scm
+        }
+        sh 'rm -rf *.deb'
+        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="Debian11" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
+        stash name: 'Debian11', includes: '*.deb'
+        archiveArtifacts artifacts: "*"
+        sh 'rm -rf *.deb'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -286,10 +311,9 @@ try {
     }
   }
 
-
-  stage('Violations to Github') {
-    node {
-      if (env.CHANGE_ID) { // pull request to comment with coding style issues
+  if (env.CHANGE_ID) { // pull request to comment with coding style issues
+    stage('Violations to Github') {
+      node {
         if (hasBackendChanges) {
           unstash 'codestyle-be.xml'
           unstash 'phpstan.xml'
@@ -314,35 +338,22 @@ try {
           ]
         ])
       }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Reports stage failure");
+
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error("Reports stage failure");
+      }
     }
   }
 
-  stage("$DELIVERY_STAGE") {
-    node {
-      checkoutCentreonBuild()    
-      sh 'rm -rf output'
-      unstash 'tar-sources'
-      unstash 'api-doc'
-      unstash 'rpms-centos8'
-      unstash 'rpms-centos7'
-      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure');
-    }
-  }
-  
-  stage("$DOCKER_STAGE") {
+  stage('Docker packaging') {
     def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild()
+          unstash "rpms-${osBuild}"
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
@@ -369,9 +380,10 @@ try {
                 returnStatus: true
               )
               junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
               archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+                currentBuild.result = 'FAILURE'
+              }
             }
           }
         }
@@ -388,11 +400,15 @@ try {
             unstash 'tar-sources'
             unstash 'cypress-node-modules'
             timeout(time: 10, unit: 'MINUTES') {
-              def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+              def acceptanceStatus = sh(
+                script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}",
+                returnStatus: true
+              )
               junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
                 currentBuild.result = 'FAILURE'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+              }
             }
           }
         }
@@ -404,20 +420,24 @@ try {
         node {
           checkoutCentreonBuild();
           unstash 'tar-sources'
+          unstash 'centreon-injector'
           sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
           publishHTML([
             allowMissing: false,
             keepAll: true,
-            reportDir: "$PROJECT-$VERSION/.lighthouseci",
+            reportDir: "$PROJECT-$VERSION/lighthouse/report",
             reportFiles: 'lighthouseci-index.html',
             reportName: 'Centreon Web Performances',
             reportTitles: ''
           ])
+          if (currentBuild.result == 'UNSTABLE') {
+            currentBuild.result = 'FAILURE'
+          }
         }
       }
     }
   }
-  
+
   stage('Acceptance tests') {
     if (hasBackendChanges) {
       def atparallelSteps = [:]
@@ -425,7 +445,7 @@ try {
         def feature = x
         atparallelSteps[feature] = {
           node {
-            checkoutCentreonBuild()     
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(
@@ -433,15 +453,42 @@ try {
               returnStatus: true
             )
             junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+              currentBuild.result = 'FAILURE'
+            }
           }
         }
       }
       parallel atparallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Critical tests stage failure');
+      }
+    }
+  }
+
+  if (env.BUILD != 'CI') {
+    stage("$DELIVERY_STAGE") {
+      node {
+        checkoutCentreonBuild()
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-alma8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+          checkout scm
+          unstash "Debian11"
+          sh '''for i in $(echo *.deb)
+                do 
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
+                done
+             '''    
+        }
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
       }
     }
   }

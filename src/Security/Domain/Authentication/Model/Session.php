@@ -26,30 +26,15 @@ namespace Security\Domain\Authentication\Model;
 class Session
 {
     /**
-     * @var string
-     */
-    private $token;
-
-    /**
-     * @var int
-     */
-    private $contactId;
-
-    /**
-     * @var string
-     */
-    private $clientIp;
-
-    /**
      * @param string $token
-     * @param integer $contactId
-     * @param string $clientIp
+     * @param int $contactId
+     * @param string|null $clientIp
      */
-    public function __construct(string $token, int $contactId, string $clientIp)
-    {
-        $this->token = $token;
-        $this->contactId = $contactId;
-        $this->clientIp = $clientIp;
+    public function __construct(
+        private string $token,
+        private int $contactId,
+        private ?string $clientIp,
+    ) {
     }
 
     /**
@@ -69,9 +54,9 @@ class Session
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getClientIp(): string
+    public function getClientIp(): ?string
     {
         return $this->clientIp;
     }

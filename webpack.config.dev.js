@@ -3,8 +3,7 @@ const os = require('os');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { merge } = require('webpack-merge');
-
-const devConfig = require('@centreon/centreon-frontend/packages/frontend-config/webpack/patch/dev');
+const devConfig = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
 
 const baseConfig = require('./webpack.config');
 
@@ -15,7 +14,8 @@ const externalInterface = Object.keys(interfaces).find(
   (interfaceName) =>
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
-    interfaces[interfaceName][0].internal === false,
+    interfaces[interfaceName][0].internal === false &&
+    !process.env.IS_STATIC_PORT_FORWARDED,
 );
 
 const devServerAddress = externalInterface
@@ -34,11 +34,27 @@ const output = isServing
     }
   : {};
 
+const getStaticDirectoryPath = (moduleName) =>
+  `${__dirname}/www/modules/${moduleName}/static`;
+
 const modules = [
-  'centreon-license-manager',
-  'centreon-autodiscovery-server',
-  'centreon-bam-server',
-  'centreon-augmented-services',
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-license-manager',
+  },
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-autodiscovery-server',
+  },
+  { getDirectoryPath: getStaticDirectoryPath, name: 'centreon-bam-server' },
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-augmented-services',
+  },
+  {
+    getDirectoryPath: () => `${__dirname}/www/modules/centreon-map4-web-client`,
+    name: 'centreon-map4-web-client',
+  },
 ];
 
 module.exports = merge(baseConfig, devConfig, {
@@ -49,8 +65,8 @@ module.exports = merge(baseConfig, devConfig, {
     hot: true,
     port: devServerPort,
 
-    static: modules.map((module) => ({
-      directory: path.resolve(`${__dirname}/www/modules/${module}/static`),
+    static: modules.map(({ name, getDirectoryPath }) => ({
+      directory: path.resolve(getDirectoryPath(name)),
       publicPath,
       watch: true,
     })),
