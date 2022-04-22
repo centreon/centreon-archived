@@ -161,10 +161,10 @@
     --WzTtDi-border-color : var(--color-iron);
     --WzTtDi-background-color : var(--color-white);
     --WzTiTl-background-color : var(--color-white);
-    --WzClOsE-color : var(--color-danger);
-    --WzClOsE-background-color : var(--color-white);
-    --WzClOsE-border-color : var(--color-danger);
-    --WzBodyI-border-color : var(--color-martar);
+    --wzclose-font-color : var(--color-primary-light);
+    --wzclose-background-color : var(--color-white);
+    --wzclose-border-color : var(--wzclose-font-color);
+    --WzBodyI-font-color : var(--color-black);
     /*************/
 
     /** START : Colors  **/
@@ -317,7 +317,7 @@
     --list-header-font-color: var(--body-color);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
-    --input-button-hover-background-color: var(--color-primary-light);
+    --input-button-hover-background-color: var(--color-primary-dark);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
@@ -763,4 +763,9 @@
     --ui-state-processing-anchor-background-color: none;
     --ui-state-processing-background-color: none;
     /* ------ END : JQuery UI variables -----*/
+    /* ------ START : New Icons variables -----*/
+    --help-tool-tip-icon-fill-color: var(--color-primary-dark);
+    --icons-fill-color: var(--color-primary-dark);
+    --icons-disabled-fill-color: var(--color-teal-blue);
+    /* ------ END : New Icons variables -----*/
 }

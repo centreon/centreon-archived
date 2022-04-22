@@ -125,4 +125,13 @@
     --list-lvl-1-font-color: var(--color-white);
     --c3-path-stroke-color: var(--color-white);
     --c3-text-fill-color: var(--color-white);
+    --help-tool-tip-icon-fill-color: var(--color-primary-light);
+    --icons-fill-color: var(--color-primary-light);
+    --WzTtDi-background-color: var(--body-background);
+    --WzTiTl-background-color : var(--WzTtDi-background-color);
+    --WzBodyI-font-color: var(--color-white);
+    --WzTtDi-border-color: var(--body-color);
+    --wzclose-font-color: var(--color-primary-light);
+    --wzclose-background-color : var(--wzclose-font-color);
+    --wzclose-border-color : var(--body-background);
 }
