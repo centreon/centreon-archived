@@ -158,6 +158,8 @@ class CfgNagios
             'max_debug_file_size'                         => '1000000000',
             'cfg_file'                                    => 'centengine.cfg',
             'log_pid'                                     => '1',
+            'log_v2_enabled'                              => '1',
+            'log_legacy_enabled'                          => '0',
         ];
     }
 }
