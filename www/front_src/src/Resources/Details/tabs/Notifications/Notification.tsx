@@ -32,7 +32,7 @@ const Notification = (): JSX.Element => {
   const [notificationContacts, setNotificationContacts] =
     React.useState<NotificationContacts | null>(null);
 
-  const { sendRequest, sending } = useRequest<NotificationContacts>({
+  const { sendRequest } = useRequest<NotificationContacts>({
     request: getData,
   });
   const details = useAtomValue(detailsAtom);
@@ -44,8 +44,11 @@ const Notification = (): JSX.Element => {
   };
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
     loadNotificationContacts();
-  }, []);
+  }, [details]);
 
   const contactHeaders = (
     <>
@@ -81,7 +84,7 @@ const Notification = (): JSX.Element => {
     );
   };
 
-  if (sending || isNil(notificationContacts)) {
+  if (isNil(details) || isNil(notificationContacts)) {
     return <ContactsLoadingSkeleton />;
   }
 
@@ -112,7 +115,7 @@ const Notification = (): JSX.Element => {
         contacts={notificationContacts?.contacts as Array<Contact>}
         getColumns={getContactWithEmailColumns}
         headers={contactWithEmailHeaders}
-        templateColumns="1fr 1fr 1fr auto"
+        templateColumns="1fr 1fr auto 1fr"
       />
       <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
         <GroupIcon color="primary" fontSize="large" />
@@ -124,7 +127,7 @@ const Notification = (): JSX.Element => {
         contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
         getColumns={getContactColumns}
         headers={contactHeaders}
-        templateColumns="1fr 1fr auto"
+        templateColumns="1fr 1fr 1fr"
       />
     </Stack>
   );
