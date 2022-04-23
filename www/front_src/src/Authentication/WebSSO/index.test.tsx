@@ -13,7 +13,6 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
-import { labelPressEnterToAccept } from '../translatedLabels';
 
 import {
   labelBlacklistClientAddresses,
@@ -90,14 +89,10 @@ describe('Web SSOconfiguration form', () => {
     expect(screen.getByLabelText(labelWebSSOOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(
-        `${labelTrustedClientAddresses} (${labelPressEnterToAccept})`,
-      ),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(
-        `${labelBlacklistClientAddresses} (${labelPressEnterToAccept})`,
-      ),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toHaveValue(
@@ -138,9 +133,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(
-        `${labelTrustedClientAddresses} (${labelPressEnterToAccept})`,
-      ),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
       'invalid domain',
     );
     userEvent.keyboard('{Enter}');
@@ -152,9 +145,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(
-        `${labelBlacklistClientAddresses} (${labelPressEnterToAccept})`,
-      ),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
       '127.0.0.1111',
     );
     userEvent.keyboard('{Enter}');
