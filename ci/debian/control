@@ -13,6 +13,51 @@ Build-Depends:
     composer,
     npm
 
+Package: centreon
+Architecture: all
+Depends: 
+    centreon-central (>= 22.04.0~),
+    centreon-database (>= 22.04.0~),
+    sudo
+Description: 
+Centreon is a network, system, applicative supervision and monitoring tool,
+it is based upon the most effective Open Source monitoring engine : Nagios.
+Centreon provides a new frontend and new functionnalities to Nagios.
+
+It allows you to be more efficient in your network monitoring, but also allows
+you to make your supervision information readable by a largest range of users.
+Indeed, a non technical user can now use the Centreon/Nagios couple to easily
+understand your network infrastructure thanks to charts and graphical representations
+of the gathered information. Skilled users still have access to specific and technical
+information collected  by Nagios though.
+
+Package: centreon-central
+Architecture: all
+Depends: 
+    centreon-poller-centreon-engine (>= 22.04.0~),
+    centreon-license-manager (>= 22.04.0~),
+    centreon-pp-manager (>= 22.04.0~),
+    centreon-web-apache (>= 22.04.0~),
+    centreon-engine-extcommands (>= 22.04.0~),
+    centreon-connector (>= 22.04.0~),
+    centreon-widget-engine-status,
+    centreon-widget-global-health,
+    centreon-widget-graph-monitoring,
+    centreon-widget-grid-map,
+    centreon-widget-host-monitoring,
+    centreon-widget-hostgroup-monitoring,
+    centreon-widget-httploader,
+    centreon-widget-live-top10-cpu-usage,
+    centreon-widget-live-top10-memory-usage,
+    centreon-widget-service-monitoring,
+    centreon-widget-servicegroup-monitoring,
+    centreon-widget-tactical-overview
+Description:
+The package contains base configuration for Centreon Engine and Centreon Broker.
+It provides one default monitoring engine running with Centreon Engine and
+two Centreon Broker instances to store real-time information in database and
+performance data in RRD files.
+
 Package: centreon-web
 Architecture: all
 Depends: 
@@ -73,8 +118,20 @@ Description: Install a database server optimized for use with Centreon.
 
 Package: centreon-web-apache
 Architecture: all
+Conflicts: centreon-web-nginx
 Depends: 
     apache2,
+    centreon-web (>= 22.04.0~),
+    ${misc:Depends}
+Description: Centreon is a network, system, applicative supervision and monitoring tool,
+ it is based upon an effective Open Source monitoring engine : Centreon Engine.
+ Centreon provides a new frontend and new functionnalities to Centreon Engine.
+
+Package: centreon-web-nginx
+Architecture: all
+Conflicts: centreon-web-apache
+Depends: 
+    nginx,
     centreon-web (>= 22.04.0~),
     ${misc:Depends}
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
@@ -106,8 +163,9 @@ Depends:
     snmpd,
     ${misc:Depends},
     ${shlibs:Depends}
-Description: This package add rights and default directories for a poller
- managed by Centreon. This includes the default central poller.
+Description: 
+This package add rights and default directories for a poller
+managed by Centreon. This includes the default central poller.
 
 Package: centreon-plugins-sudoers
 Architecture: all
