@@ -17,4 +17,5 @@ cp -rf ci/debian .
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "$RELEASE"
 debuild-pbuilder
 cd ../
+ls -lart
 #mv *.deb /src
