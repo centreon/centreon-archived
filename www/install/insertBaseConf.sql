@@ -81,7 +81,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
 ('broker','broker'),
-('oreon_path','@centreon_dir@'),
+('oreon_path','@centreon_dir@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),

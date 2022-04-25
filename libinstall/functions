@@ -1769,7 +1769,7 @@ createConfFile() {
  *
  */
 
-\$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
+\$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON";
 \$conf_centreon['centreon_etc'] = "$CENTREON_ETC/";
 \$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
 \$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
