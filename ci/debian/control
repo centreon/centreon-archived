@@ -58,15 +58,22 @@ Description: The package contains base configuration for Centreon Engine and Cen
  two Centreon Broker instances to store real-time information in database and
  performance data in RRD files.
 
+Package: centreon-web-common
+Architecture: all
+Depends: 
+    centreon-common (>= ${centreon:version}~),
+    centreon-perl-libs (>= ${centreon:version}~),
+    php8.0,
+    php8.0-cli
+Description: Centreon installation entry point.
+
 Package: centreon-web
 Architecture: all
 Depends: 
     ${misc:Depends},
     lsb-release,
-    centreon-perl-libs,
-    centreon-common (>= ${centreon:version}~),
+    centreon-web-common (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
-    php8.0,
     php8.0-curl,
     php8.0-intl,
     php8.0-xml,
@@ -85,7 +92,7 @@ Depends:
     rrdtool,
     bsd-mailx,
     sudo
-Description: Centreon installation entry point.
+Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
 Depends:    
