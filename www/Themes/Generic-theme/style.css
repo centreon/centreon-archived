@@ -31,7 +31,6 @@
  * For more information : contact@centreon.com
  *
  */
-@import "./Variables-css/variables.css";
 
 body {
     background-color:var(--body-background);
@@ -434,7 +433,7 @@ p.description a, p.description a:visited {
 
 /* Content for display text in selected element on select 2 fields */
 .select2-container--default .select2-selection--multiple .select2-selection__choice .select2-content {
-    padding: 2px 0px 2px 8px;
+    padding: 2px 8px 2px 8px;
     border-top: 1px solid var(--select2-selection-multiple-content-border-color-top);
     border-bottom: 1px solid var(--select2-selection-multiple-content-border-color-bottom);
     border-right: 1px solid var(--select2-selection-multiple-content-border-color-right);
@@ -520,10 +519,10 @@ p.description a, p.description a:visited {
 #WzClOsE {
     padding: 1px 0px !important;
     cursor: pointer !important;
-    color: var(--WzClOsE-color) !important;
+    color: var(--wzclose-font-color) !important;
     font-size: 8px !important;
-    background: var(--WzClOsE-background-color) !important;
-    border: 2px solid var(--WzClOsE-border-color ) !important;
+    background: var(--wzclose-background-color) !important;
+    border: 2px solid var(--wzclose-border-color) !important;
     border-radius: 20px !important;
     margin: 0px -15px 0px 0px;
     display: inline-block;
@@ -542,7 +541,7 @@ p.description a, p.description a:visited {
     top: -1em !important;
 }
 #WzBoDyI {
-    color: var(--WzBodyI-border-color) !important;
+    color: var(--WzBodyI-font-color) !important;
     text-align: left !important;
     line-height: 16px !important;
 }
@@ -580,10 +579,10 @@ p.description a, p.description a:visited {
 .host_downtime      {background-color: var(--host-downtime-background-color);}
 
 .service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);
-color:var(--status-success-color)}
+    color:var(--status-success-color)}
 .service_warning, .warning  {background-color: var(--service-warning-background-color);}
 .pending    {background-color: var(--pending-background-color);}
-.service_unknown    {background-color: var(--service-unknown-background-color);}
+.service_unknown    {background-color: var(--service-unknown-background-color); color: var(--service-unknown-font-color)}
 .info {background-color: var(--info-background-color)}
 .ack {background-color: var(--ack-background-color);}
 
@@ -1204,7 +1203,8 @@ table-form-header-h3 {
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    background: var(--ui-background-color) !important;
+    background-color: var(--ui-background-color) !important;
+    border: 1px solid var(--ui-state-active-border-color) !important;
 }
 
 .ui-state-default a {
@@ -1225,7 +1225,7 @@ table-form-header-h3 {
     margin-bottom: -1px;
     padding-bottom: 0;
     border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color);
+    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color) !important;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
@@ -1480,7 +1480,7 @@ div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.le
 
 div.uptodate    {background-color:var(--up-to-date-background-color);border:1px var(--up-to-date-border-color) solid; color:var(--up-to-date-color)}
 div.updateSecu  {background-color:var(--update-secu-background-color);border:1px var(--update-secu-border-color) solid;color:var(--up-to-date-color)}
-div.update  {background-color:var(--update-background-color);border:1px var(--update-border-color) solid;}
+div.update  {background-color:var(--update-background-color);border:1px var(--update-border-color) solid; color: var(--update-font-color)}
 div.updateError {background-color:var(--update-error-background-color);border:1px var(--update-error-border-color) solid;}
 div.update_readme,div.update_output {background-color:var(--update-read-me-output-background-color);border:1px var(--update-read-me-output-border-color) solid;}
 
@@ -2165,6 +2165,7 @@ div#tabs_periods {
     background: var(--ui-td-date-time-picker-anchor-span-background-color) !important;
     font-weight: bold !important;
     color: var(--ui-td-date-time-picker-anchor-span-font-color) !important;
+    border-radius: 40%;
 }
 
 td.ui-timepicker-minute-cell a, td.ui-timepicker-minute-cell span{
@@ -2889,4 +2890,10 @@ ul.module_list {
 .add-new-entry {
     cursor: pointer;
     color: var(--add-new-entry-font-color);
+}
+
+.gorgone_config_file {
+    padding: 4px;
+    color: var(--gorgone-config-file-font-color);
+    background-color: var(--gorgone-config-file-background-color);
 }

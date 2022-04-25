@@ -6,7 +6,7 @@ import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
-import SwitchMode from './SwitchThemeMode ';
+import SwitchMode from './SwitchThemeMode';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 

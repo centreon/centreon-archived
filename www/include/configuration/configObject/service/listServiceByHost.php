@@ -320,7 +320,9 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         $retry_units = "sec";
     }
 
+    $isHostSvgFile = true;
     if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
+        $isHostSvgFile = false;
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$service["host_id"]]);
     } elseif (
         $icone = $host_method->replaceMacroInString(
@@ -328,12 +330,16 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1)
         )
     ) {
+        $isHostSvgFile = false;
         $host_icone = "./img/media/" . $icone;
     } else {
-        $host_icone = "./img/icons/host.png";
+        $isHostSvgFile = true;
+        $host_icone = returnSvg("www/img/icons/host.svg", "var(--icons-fill-color)", 21, 21);
     }
 
+    $isServiceSvgFile = true;
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
     } elseif (
         $icone = $mediaObj->getFilename(
@@ -343,9 +349,11 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             )
         )
     ) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $icone;
     } else {
-        $svc_icon = "./img/icons/service.png";
+        $isServiceSvgFile = true;
+        $svc_icon = returnSvg("www/img/icons/service.svg", "var(--icons-fill-color)", 18, 18);
     }
 
     $elemArr[$i] = array(
@@ -363,7 +371,9 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         "RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
         "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $service["service_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isHostSvgFile" => $isHostSvgFile,
+        "isServiceSvgFile" => $isServiceSvgFile
     );
     $fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
     $style != "two" ? $style = "two" : $style = "one";

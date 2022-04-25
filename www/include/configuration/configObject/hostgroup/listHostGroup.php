@@ -168,10 +168,13 @@ for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     $nbrhostAct = count($nbrhostActArr);
     $nbrhostDeact = count($nbrhostDeactArr);
 
+    $isHGSvgFile = true;
     if ($hg['hg_icon_image'] != "") {
+        $isHGSvgFile = false;
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
     } else {
-        $hgIcone = "./img/icons/host_group.png";
+        $isHGSvgFile = true;
+        $hgIcone = returnSvg("www/img/icons/host_group.svg", "var(--icons-fill-color)", 16, 16);
     }
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
@@ -186,7 +189,8 @@ for ($i = 0; $hg = $dbResult->fetch(); $i++) {
         "RowMenu_hostAct" => $nbrhostAct,
         "RowMenu_icone" => $hgIcone,
         "RowMenu_hostDeact" => $nbrhostDeact,
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isHgSvgFile" => $isHGSvgFile
     );
 
     // Switch color line

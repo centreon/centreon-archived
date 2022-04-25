@@ -98,20 +98,23 @@ const useApp = (): UseAppState => {
             retrievedParameters.monitoring_default_downtime_duration,
             10,
           ),
-          fixed: false,
-          with_services: false,
+          fixed: retrievedParameters.monitoring_default_downtime_fixed,
+          with_services:
+            retrievedParameters.monitoring_default_downtime_with_services,
         });
         setRefreshInterval(
           parseInt(retrievedParameters.monitoring_default_refresh_interval, 10),
         );
         setAcl({ actions: retrievedAcl });
         setAcknowledgement({
-          force_active_checks: false,
-          notify: false,
+          force_active_checks:
+            retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
+          notify: retrievedParameters.monitoring_default_acknowledgement_notify,
           persistent:
             retrievedParameters.monitoring_default_acknowledgement_persistent,
           sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
-          with_services: false,
+          with_services:
+            retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
 
         setDataLoaded(true);

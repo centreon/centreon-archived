@@ -646,16 +646,6 @@ describe(Filter, () => {
               page: 1,
               total: 0,
             },
-            result: [],
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            meta: {
-              limit: 30,
-              page: 1,
-              total: 0,
-            },
             result: [linuxServersHostGroup],
           },
         })
@@ -680,7 +670,7 @@ describe(Filter, () => {
         findByText,
       } = renderResult;
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(4));
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       await waitFor(() => {
         expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
@@ -910,7 +900,7 @@ describe(Filter, () => {
       const { getByDisplayValue, queryByText } = renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
       await waitFor(() =>

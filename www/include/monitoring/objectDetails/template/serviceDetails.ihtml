@@ -187,7 +187,9 @@
                               <td class="FormHeader" colspan="2">
                                 <h4>
                                   {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
-                                    <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
+                                        <span class="ico-18 pull-right">
+                                            {$chartIcon}
+                                        </span>
                                   </a>
                                 </h4>
                               </td>

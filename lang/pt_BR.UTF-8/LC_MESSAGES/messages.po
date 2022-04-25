@@ -15468,6 +15468,9 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
+# msgid "Force active checks"
+# msgstr ""
+
 # msgid "Web SSO configuration"
 # msgstr ""
 
@@ -15489,7 +15492,7 @@ msgstr ""
 # msgid "Pattern match login (regex)"
 # msgstr ""
 
-# msgid "Pattern replace alias (regex)"
+# msgid "Pattern replace login (regex)"
 # msgstr ""
 
 # msgid "Login header attribute name"

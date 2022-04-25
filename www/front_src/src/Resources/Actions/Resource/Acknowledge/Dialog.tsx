@@ -18,8 +18,6 @@ import {
   labelNotify,
   labelNotifyHelpCaption,
   labelAcknowledgeServices,
-  labelPersistent,
-  labelSticky,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
@@ -121,34 +119,6 @@ const DialogAcknowledge = ({
             />
           </Grid>
         )}
-        <Grid item>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.persistent}
-                color="primary"
-                inputProps={{ 'aria-label': t(labelPersistent) }}
-                size="small"
-                onChange={handleChange('persistent')}
-              />
-            }
-            label={t(labelPersistent) as string}
-          />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.isSticky}
-                color="primary"
-                inputProps={{ 'aria-label': t(labelSticky) }}
-                size="small"
-                onChange={handleChange('isSticky')}
-              />
-            }
-            label={t(labelSticky) as string}
-          />
-        </Grid>
       </Grid>
     </Dialog>
   );
