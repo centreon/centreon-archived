@@ -236,7 +236,7 @@ function insertVirtualMetric()
 
     $ret = $form->getSubmitValues();
 
-    $indexId = isset($ret["host_id"]) && $ret["host_id"] !== null
+    $indexId = isset($ret["host_id"])
         ? getIndexIdFromHostServiceId($pearDBO, $ret["host_id"])
         : null;
 
@@ -257,7 +257,7 @@ function insertVirtualMetric()
 
     $insertStatement->bindValue(
         ':vmetric_name',
-        isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
+        isset($ret["vmetric_name"])
             ? htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")
             : null,
         \PDO::PARAM_STR
@@ -301,7 +301,7 @@ function insertVirtualMetric()
 
     $insertStatement->bindValue(
         ':comment',
-        isset($ret["comment"]) && $ret["comment"] != null
+        isset($ret["comment"])
             ? htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")
             : null,
         \PDO::PARAM_STR
@@ -333,7 +333,7 @@ function updateVirtualMetric($vmetricId = null)
 
     $ret = $form->getSubmitValues();
 
-    $indexId = isset($ret["host_id"]) && $ret["host_id"] !== null
+    $indexId = isset($ret["host_id"])
         ? getIndexIdFromHostServiceId($pearDBO, $ret["host_id"])
         : null;
 
@@ -361,7 +361,7 @@ function updateVirtualMetric($vmetricId = null)
 
     $updateStatement->bindValue(
         ':vmetric_name',
-        isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
+        isset($ret["vmetric_name"])
             ? htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")
             : null,
         \PDO::PARAM_STR
@@ -405,7 +405,7 @@ function updateVirtualMetric($vmetricId = null)
 
     $updateStatement->bindValue(
         ':comment',
-        isset($ret["comment"]) && $ret["comment"] != null
+        isset($ret["comment"])
             ? htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")
             : null,
         \PDO::PARAM_STR
