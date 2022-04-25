@@ -38,6 +38,7 @@ Depends:
     centreon-license-manager (>= 22.04.0~),
     centreon-pp-manager (>= 22.04.0~),
     centreon-web-apache (>= 22.04.0~),
+    centreon-broker (>= 22.04.0~),
     centreon-engine-extcommands (>= 22.04.0~),
     centreon-connector (>= 22.04.0~),
     centreon-widget-engine-status,
