@@ -90,7 +90,7 @@ $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
 
 
-$availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
+$availableRoute = './api/internal.php?object=centreon_configuration_service&action=list';
 
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
@@ -100,10 +100,10 @@ $attrServices = array(
 );
 
 if ($o !== METRIC_ADD) {
-    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
+    $defaultRoute = './api/internal.php?object=centreon_configuration_graphvirtualmetric' .
         '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
 
-    $attrService['defaultDatasetRoute'] = $defaultRoute;
+    $attrServices['defaultDatasetRoute'] = $defaultRoute;
 }
 
 

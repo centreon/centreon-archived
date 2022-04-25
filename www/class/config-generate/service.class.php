@@ -580,6 +580,11 @@ class Service extends AbstractService
             );
         }
 
+        // Set ServiceCategories
+        $serviceCategory = ServiceCategory::getInstance($this->dependencyInjector);
+        $this->insertServiceInServiceCategoryMembers($serviceCategory, $serviceId);
+        $this->service_cache[$serviceId]['category_tags'] = $serviceCategory->getIdsByServiceId($serviceId);
+
         $this->getSeverity($hostId, $serviceId);
         $this->getServiceGroups($serviceId, $hostId, $hostName);
         $this->generateObjectInFile(
@@ -606,7 +611,7 @@ class Service extends AbstractService
         $this->getContactGroups($this->service_cache[$serviceId]);
         $this->getContacts($this->service_cache[$serviceId]);
         $serviceTplInstance = ServiceTemplate::getInstance($this->dependencyInjector);
-        
+
         $serviceTplId = isset($this->service_cache[$serviceId]['service_template_model_stm_id'])
             ? $this->service_cache[$serviceId]['service_template_model_stm_id']
             : null;

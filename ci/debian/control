@@ -15,10 +15,12 @@ Build-Depends:
 
 Package: centreon-web
 Architecture: all
-Depends: ${misc:Depends},
+Depends: 
+    ${misc:Depends},
+    lsb-release,
     centreon-perl-libs,
-    centreon-common,
-    centreon-gorgone,
+    centreon-common (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
     php8.0,
     php8.0-fpm,
     php8.0-curl,
@@ -27,31 +29,30 @@ Depends: ${misc:Depends},
     php8.0-dom,
     php8.0-gd,
     php8.0-mbstring,
-    php8.0-xml, 
+    php8.0-xml,
     php8.0-mysql,
     php8.0-zip,
+    php8.0-snmp,
+    php8.0-ldap,
     php8.0-readline,
     php8.0-sqlite3,
     php-pear,
     ntp,
     rrdtool,
-    sudo
-Recommends: ${misc:Recommends},
-    php8.0-ldap,
-    php8.0-snmp,
     bsd-mailx,
-    lsb-release
+    sudo
 Description: Centreon installation entry point.
 
 Package: centreon-perl-libs
-Depends:    ${misc:Depends},
-            centreon-common,
-            libconfig-inifiles-perl,
-            libcrypt-des-perl,
-            librrds-perl,
-            libdigest-hmac-perl,
-            libdigest-sha-perl,
-            libgd-perl
+Depends:    
+    ${misc:Depends},
+    centreon-common (>= 22.04.0~),
+    libconfig-inifiles-perl,
+    libcrypt-des-perl,
+    librrds-perl,
+    libdigest-hmac-perl,
+    libdigest-sha-perl,
+    libgd-perl
 Architecture: all
 Description: This packages contains Centreon Perl libraries.
 
@@ -64,27 +65,36 @@ Description: Base package for all Centreon installations.
 
 Package: centreon-database
 Architecture: all
-Depends: centreon-web, mariadb-server, ${misc:Depends}
+Depends: 
+    centreon-web (>= 22.04.0~),
+    mariadb-server,
+    ${misc:Depends}
 Description: Install a database server optimized for use with Centreon.
 
 Package: centreon-web-apache
 Architecture: all
-Depends: apache2, centreon-web, centreon-common, centreon-gorgone, ${misc:Depends}
+Depends: 
+    apache2,
+    centreon-web (>= 22.04.0~),
+    ${misc:Depends}
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon an effective Open Source monitoring engine : Centreon Engine.
  Centreon provides a new frontend and new functionnalities to Centreon Engine.
 
 Package: centreon-trap
 Architecture: all
-Depends: centreon-common, snmpd, ${misc:Depends}
+Depends: 
+    centreon-common (>= 22.04.0~),
+    snmpd,
+    ${misc:Depends}
 Description: This package contains Centreon Trap engine
 
 Package: centreon-poller-centreon-engine
 Architecture: any
 Depends: 
-    centreon-broker,
-    centreon-engine,
-    centreon-gorgone,
+    centreon-broker (>= 22.04.0~),
+    centreon-engine (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
     centreon-plugin-applications-protocol-dns,
@@ -101,5 +111,9 @@ Description: This package add rights and default directories for a poller
 
 Package: centreon-plugins-sudoers
 Architecture: all
-Depends: centreon-common, centreon-engine, centreon-gorgone, ${misc:Depends}
+Depends: 
+    centreon-common (>= 22.04.0~),
+    centreon-engine (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
+    ${misc:Depends}
 Description: Sudoers configuration for centreon plugins
