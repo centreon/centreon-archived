@@ -80,7 +80,7 @@ const mockUserContext = {
   acknowledgement: {
     force_active_checks: false,
     persistent: true,
-    sticky: false,
+    sticky: true,
   },
   acl: {
     actions: {
@@ -305,7 +305,8 @@ describe(Actions, () => {
             comment: labelAcknowledgedByAdmin,
             force_active_checks: false,
             is_notify_contacts: true,
-            persistent: true,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
