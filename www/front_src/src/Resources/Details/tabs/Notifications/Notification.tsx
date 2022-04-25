@@ -89,7 +89,7 @@ const Notification = (): JSX.Element => {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={0.5}>
       <Paper>
         <Stack
           alignItems="center"
@@ -116,6 +116,8 @@ const Notification = (): JSX.Element => {
         getColumns={getContactWithEmailColumns}
         headers={contactWithEmailHeaders}
         templateColumns="1fr 1fr auto 1fr"
+        templateRows="28px"
+        templateTextOverflow="ellipsis"
       />
       <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
         <GroupIcon color="primary" fontSize="large" />
@@ -127,7 +129,9 @@ const Notification = (): JSX.Element => {
         contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
         getColumns={getContactColumns}
         headers={contactHeaders}
-        templateColumns="1fr 1fr 1fr"
+        templateColumns="1fr 2.8fr auto"
+        templateRows="28px"
+        templateTextOverflow="ellipsis"
       />
     </Stack>
   );

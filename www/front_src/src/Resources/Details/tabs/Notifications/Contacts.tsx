@@ -15,6 +15,8 @@ interface Props {
   getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
   templateColumns: string;
+  templateRows: string;
+  templateTextOverflow: string;
 }
 
 const Contacts = ({
@@ -22,6 +24,8 @@ const Contacts = ({
   templateColumns,
   getColumns,
   headers,
+  templateRows,
+  templateTextOverflow,
 }: Props): JSX.Element => {
   const navigate = useNavigate();
 
@@ -33,7 +37,7 @@ const Contacts = ({
     return (
       <IconButton
         size="small"
-        sx={{ justifySelf: 'center', marginRight: 1, width: 'auto' }}
+        sx={{ justifySelf: 'right', marginRight: 1 }}
         title={t(labelConfiguration)}
         onClick={(): void => goToUri(configuration_uri)}
       >
@@ -50,8 +54,10 @@ const Contacts = ({
         alignItems: 'center',
         gap: 1,
         gridTemplateColumns: templateColumns,
+        gridTemplateRows: templateRows,
         justifyContent: 'center',
         py: 1,
+        textOverflow: templateTextOverflow,
       }}
     >
       <>
