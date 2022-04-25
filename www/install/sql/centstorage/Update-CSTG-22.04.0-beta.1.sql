@@ -11,6 +11,7 @@ CREATE TABLE `severities` (
 
 CREATE TABLE `resources` (
   `resource_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `internal_id` bigint(20) unsigned DEFAULT NULL COMMENT 'id of linked metaservice or business-activity',
   `id` bigint(20) unsigned NOT NULL,
   `parent_id` bigint(20) unsigned NOT NULL,
   `type` tinyint(3) unsigned NOT NULL COMMENT '0=service, 1=host',
@@ -38,6 +39,8 @@ CREATE TABLE `resources` (
   `last_check` bigint(20) unsigned DEFAULT NULL COMMENT 'the last check timestamp',
   `last_status_change` bigint(20) unsigned DEFAULT NULL COMMENT 'the last status change timestamp',
   `output` text DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=resource disabled, 1=resource enabled',
+  `icon_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`resource_id`),
   UNIQUE KEY `resources_id_parent_id_type_uindex` (`id`,`parent_id`,`type`),
   KEY `resources_severities_severity_id_fk` (`severity_id`),
