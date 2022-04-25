@@ -46,6 +46,7 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
+  labelPersistent,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -76,7 +77,6 @@ jest.mock('react-redux', () => ({
 
 const mockUserContext = {
   acknowledgement: {
-    force_active_checks: true,
     persistent: true,
     sticky: false,
   },
@@ -285,8 +285,10 @@ describe(Actions, () => {
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
+    const persistentCheckbox = await findByLabelText(labelPersistent);
 
     fireEvent.click(notifyCheckbox);
+    fireEvent.click(persistentCheckbox);
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -300,9 +302,8 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
-            force_active_checks: true,
             is_notify_contacts: true,
-            is_persistent_comment: true,
+            is_persistent_comment: false,
             is_sticky: false,
             with_services: true,
           },
