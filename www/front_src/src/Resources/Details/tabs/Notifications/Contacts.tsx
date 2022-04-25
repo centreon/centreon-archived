@@ -2,11 +2,15 @@ import * as React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
+import { isNil } from 'ramda';
 
 import { Box, Divider, IconButton, Paper } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import { labelConfiguration } from '../../../translatedLabels';
+import {
+  labelActionNotPermitted,
+  labelConfigure,
+} from '../../../translatedLabels';
 
 import { ContactGroup, Contact } from './models';
 
@@ -15,8 +19,6 @@ interface Props {
   getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
   templateColumns: string;
-  templateRows: string;
-  templateTextOverflow: string;
 }
 
 const Contacts = ({
@@ -24,8 +26,6 @@ const Contacts = ({
   templateColumns,
   getColumns,
   headers,
-  templateRows,
-  templateTextOverflow,
 }: Props): JSX.Element => {
   const navigate = useNavigate();
 
@@ -34,14 +34,21 @@ const Contacts = ({
   };
 
   const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
+    const canGoToConfiguration = !isNil(configuration_uri);
+    const tooltipTitle = canGoToConfiguration
+      ? labelConfigure
+      : labelActionNotPermitted;
+
     return (
       <IconButton
+        color="primary"
+        disabled={!canGoToConfiguration}
         size="small"
-        sx={{ justifySelf: 'right', marginRight: 1 }}
-        title={t(labelConfiguration)}
+        sx={{ justifySelf: 'flex-end', marginRight: 1 }}
+        title={t(tooltipTitle)}
         onClick={(): void => goToUri(configuration_uri)}
       >
-        <SettingsIcon color="primary" fontSize="small" />
+        <SettingsIcon fontSize="small" />
       </IconButton>
     );
   };
@@ -54,10 +61,8 @@ const Contacts = ({
         alignItems: 'center',
         gap: 1,
         gridTemplateColumns: templateColumns,
-        gridTemplateRows: templateRows,
         justifyContent: 'center',
         py: 1,
-        textOverflow: templateTextOverflow,
       }}
     >
       <>
