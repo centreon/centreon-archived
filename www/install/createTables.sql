@@ -2448,7 +2448,7 @@ CREATE TABLE `contact_password` (
 CREATE TABLE IF NOT EXISTS `cfg_nagios_logger` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `cfg_nagios_id` int(11) NOT NULL,
-  `log_v2_logger` enum('file', 'syslog') DEFAULT 'syslog',
+  `log_v2_logger` enum('file', 'syslog') DEFAULT 'file',
   `log_level_functions` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
   `log_level_config` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',
   `log_level_events` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'warning',

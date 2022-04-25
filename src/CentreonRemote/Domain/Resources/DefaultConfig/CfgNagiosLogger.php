@@ -16,7 +16,7 @@ class CfgNagiosLogger
     {
         return [
             'cfg_nagios_id' => 1,
-            'log_v2_logger' => 'syslog',
+            'log_v2_logger' => 'file',
             'log_level_functions' => 'warning',
             'log_level_config' => 'warning',
             'log_level_events' => 'warning',

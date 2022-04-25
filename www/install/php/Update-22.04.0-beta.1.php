@@ -98,6 +98,7 @@ try {
         $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
     }
 
+    // Add custom_configuration to provider configurations
     if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
         // Add custom_configuration to provider configurations
         $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
@@ -115,7 +116,7 @@ try {
         );
     }
 
-    // Centengine logger
+    // Centengine logger v2
     if (
         $pearDB->isColumnExist('cfg_nagios', 'log_archive_path') === 1
         && $pearDB->isColumnExist('cfg_nagios', 'log_rotation_method') === 1
@@ -193,6 +194,11 @@ try {
 
     $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
     excludeUsersFromPasswordPolicy($pearDB);
+
+    $errorMessage = "Unable to update logger_version from cfg_nagios table";
+    $pearDB->query(
+        "UPDATE `cfg_nagios` set logger_version = 'log_legacy_enabled'"
+    );
 
     $pearDB->commit();
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
