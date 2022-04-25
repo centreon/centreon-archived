@@ -25,6 +25,7 @@ import {
 import { Contact, ContactGroup, NotificationContacts } from './models';
 import Contacts from './Contacts';
 import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
+import ContactCell from './ContactCell';
 
 const Notification = (): JSX.Element => {
   const { t } = useTranslation();
@@ -69,8 +70,9 @@ const Notification = (): JSX.Element => {
   const getContactColumns = ({ name, alias }): JSX.Element => {
     return (
       <>
-        <Typography sx={{ paddingLeft: 1 }}>{name}</Typography>
-        <Typography>{alias}</Typography>
+        <ContactCell paddingLeft={1}>{name}</ContactCell>
+
+        <ContactCell>{alias}</ContactCell>
       </>
     );
   };
@@ -79,17 +81,17 @@ const Notification = (): JSX.Element => {
     return (
       <>
         {getContactColumns(contact)}
-        <Typography>{contact.email}</Typography>
+        <ContactCell>{contact.email}</ContactCell>
       </>
     );
   };
 
-  if (isNil(details) || isNil(notificationContacts)) {
+  if (isNil(notificationContacts)) {
     return <ContactsLoadingSkeleton />;
   }
 
   return (
-    <Stack spacing={0.5}>
+    <Stack spacing={1}>
       <Paper>
         <Stack
           alignItems="center"
@@ -107,32 +109,34 @@ const Notification = (): JSX.Element => {
           )}
         </Stack>
       </Paper>
-      <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-        <PersonIcon color="primary" fontSize="large" />
-        <Typography sx={{ fontWeight: 'bold' }}>{t(labelContacts)}</Typography>
+      <Stack>
+        <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+          <PersonIcon color="primary" fontSize="large" />
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {t(labelContacts)}
+          </Typography>
+        </Stack>
+        <Contacts
+          contacts={notificationContacts?.contacts as Array<Contact>}
+          getColumns={getContactWithEmailColumns}
+          headers={contactWithEmailHeaders}
+          templateColumns="1fr 1fr 1fr 1fr"
+        />
       </Stack>
-      <Contacts
-        contacts={notificationContacts?.contacts as Array<Contact>}
-        getColumns={getContactWithEmailColumns}
-        headers={contactWithEmailHeaders}
-        templateColumns="1fr 1fr auto 1fr"
-        templateRows="28px"
-        templateTextOverflow="ellipsis"
-      />
-      <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-        <GroupIcon color="primary" fontSize="large" />
-        <Typography sx={{ fontWeight: 'bold' }}>
-          {t(labelContactGroups)}
-        </Typography>
+      <Stack>
+        <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+          <GroupIcon color="primary" fontSize="large" />
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {t(labelContactGroups)}
+          </Typography>
+        </Stack>
+        <Contacts
+          contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
+          getColumns={getContactColumns}
+          headers={contactHeaders}
+          templateColumns="1fr 1fr 1fr"
+        />
       </Stack>
-      <Contacts
-        contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
-        getColumns={getContactColumns}
-        headers={contactHeaders}
-        templateColumns="1fr 2.8fr auto"
-        templateRows="28px"
-        templateTextOverflow="ellipsis"
-      />
     </Stack>
   );
 };
