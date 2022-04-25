@@ -242,3 +242,5 @@ export const labelContactGroups = 'Contact groups';
 export const labelSettings = 'Settings';
 export const labelNotificationStatus = 'Notification status';
 export const labelConfiguration = 'Configuration';
+export const labelNotEntitledAccessConfiguration =
+  'You are not entitled to access configuration';

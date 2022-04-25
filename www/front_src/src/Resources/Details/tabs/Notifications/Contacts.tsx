@@ -8,8 +8,8 @@ import { Box, Divider, IconButton, Paper, Tooltip } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
-  labelActionNotPermitted,
   labelConfigure,
+  labelNotEntitledAccessConfiguration,
 } from '../../../translatedLabels';
 
 import { ContactGroup, Contact } from './models';
@@ -37,7 +37,7 @@ const Contacts = ({
     const canGoToConfiguration = !isNil(configuration_uri);
     const tooltipTitle = canGoToConfiguration
       ? t(labelConfigure)
-      : t(labelActionNotPermitted);
+      : t(labelNotEntitledAccessConfiguration);
     const iconColor = canGoToConfiguration ? 'primary' : 'default';
 
     return (

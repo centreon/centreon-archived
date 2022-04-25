@@ -16719,3 +16719,6 @@ msgstr "Se connecter avec"
 
 msgid "Can't resolve username from login claim using configured regular expression"
 msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
+
+# msgid "You are not entitled to access configuration"
+# msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
