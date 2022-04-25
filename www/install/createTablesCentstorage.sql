@@ -329,7 +329,7 @@ CREATE TABLE `resources` (
   `last_status_change` bigint(20) unsigned DEFAULT NULL COMMENT 'the last status change timestamp',
   `output` text DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=resource disabled, 1=resource enabled'
-  `icon_id` bigint(20) unsigned DEFAULT NULL
+  `icon_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`resource_id`),
   UNIQUE KEY `resources_id_parent_id_type_uindex` (`id`,`parent_id`,`type`),
   KEY `resources_severities_severity_id_fk` (`severity_id`),
