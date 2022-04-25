@@ -27,10 +27,8 @@ const Contacts = ({
   getColumns,
   headers,
 }: Props): JSX.Element => {
-  const navigate = useNavigate();
-
-  const goToUri = (uri: string): void => {
-    navigate(uri);
+  const goToUri = (uri): void => {
+    window.location.href = uri as string;
   };
 
   const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
