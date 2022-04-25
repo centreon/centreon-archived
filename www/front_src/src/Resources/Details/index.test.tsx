@@ -175,18 +175,31 @@ const metaserviceDetailsMetricsUrlParameters = {
   uuid: 'ms1',
 };
 
-const retrievedNotification = {
-  contact_groups: {
-    alias: 'admin admin',
-    configuration_uri: '/centreon/main.php?p=60301&o=c&cg_id=1',
-    name: 'admin',
-  },
-  contacts: {
-    alias: 'Guest Guest',
-    configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=1',
-    email: 'localhost@centreon.com',
-    name: 'Guest',
-  },
+const serviceDetailsNotificationUrlParameters = {
+  id: 1,
+  parentId: 1,
+  parentType: 'host',
+  tab: 'notification',
+  type: 'service',
+  uuid: 'h1-s1',
+};
+
+const retrievedNotificationContacts = {
+  contact_groups: [
+    {
+      alias: 'admin admin',
+      configuration_uri: '/centreon/main.php?p=60301&o=c&cg_id=1',
+      name: 'admin',
+    },
+  ],
+  contacts: [
+    {
+      alias: 'Guest Guest',
+      configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=1',
+      email: 'localhost@centreon.com',
+      name: 'Guest',
+    },
+  ],
   is_notification_enabled: true,
 };
 
@@ -1715,18 +1728,10 @@ describe(Details, () => {
   });
 
   it.only('displays contacts and contact groups in notification tab when she is clicked', async () => {
-    // ARRANGE
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedNotification });
-
-    const serviceDetailsNotificationUrlParameters = {
-      id: 1,
-      parentId: 1,
-      parentType: 'host',
-      tab: 'notification',
-      type: 'service',
-      uuid: 'h1-s1',
-    };
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedNotificationContacts,
+    });
 
     setUrlQueryParameters([
       {
@@ -1735,20 +1740,30 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByText } = renderDetails();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
+    const { getByText, getByTestId } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        './api/latest/monitoring/resources/hosts/1/services/1/notification-policy' as string,
+        retrievedDetails.links.endpoints.notification_policy,
         expect.anything(),
-        // /centreon/api/latest/configuration/hosts/14/notification-policy
       );
     });
-    // ASSERT
-    expect(getByText(labelNotificationStatus)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText(labelNotificationStatus)).toBeInTheDocument();
+    });
+
+    expect(getByTestId('NotificationsActiveIcon')).toBeInTheDocument();
+
+    retrievedNotificationContacts.contact_groups.forEach(({ name, alias }) => {
+      expect(getByText(name)).toBeInTheDocument();
+      expect(getByText(alias)).toBeInTheDocument();
+    });
+
+    retrievedNotificationContacts.contacts.forEach(({ name, alias, email }) => {
+      expect(getByText(name)).toBeInTheDocument();
+      expect(getByText(alias)).toBeInTheDocument();
+      expect(getByText(email)).toBeInTheDocument();
+    });
   });
 });
