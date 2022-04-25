@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import { isNil } from 'ramda';
 
-import { Box, Divider, IconButton, Paper } from '@mui/material';
+import { Box, Divider, IconButton, Paper, Tooltip } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
@@ -36,20 +36,22 @@ const Contacts = ({
   const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
     const canGoToConfiguration = !isNil(configuration_uri);
     const tooltipTitle = canGoToConfiguration
-      ? labelConfigure
-      : labelActionNotPermitted;
+      ? t(labelConfigure)
+      : t(labelActionNotPermitted);
+    const iconColor = canGoToConfiguration ? 'primary' : 'default';
 
     return (
-      <IconButton
-        color="primary"
-        disabled={!canGoToConfiguration}
-        size="small"
-        sx={{ justifySelf: 'flex-end', marginRight: 1 }}
-        title={t(tooltipTitle)}
-        onClick={(): void => goToUri(configuration_uri)}
-      >
-        <SettingsIcon fontSize="small" />
-      </IconButton>
+      <Tooltip title={tooltipTitle}>
+        <IconButton
+          color={iconColor}
+          size="small"
+          sx={{ justifySelf: 'flex-end', marginRight: 1 }}
+          title={t(tooltipTitle)}
+          onClick={(): void => goToUri(configuration_uri)}
+        >
+          <SettingsIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
     );
   };
 
