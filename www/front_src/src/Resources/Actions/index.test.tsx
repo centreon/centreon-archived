@@ -71,6 +71,8 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
+jest.setTimeout(11000);
+
 jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
@@ -80,7 +82,7 @@ const mockUserContext = {
   acknowledgement: {
     force_active_checks: false,
     persistent: true,
-    sticky: false,
+    sticky: true,
   },
   acl: {
     actions: {
@@ -305,7 +307,8 @@ describe(Actions, () => {
             comment: labelAcknowledgedByAdmin,
             force_active_checks: false,
             is_notify_contacts: true,
-            persistent: true,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
