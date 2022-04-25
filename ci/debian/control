@@ -151,6 +151,7 @@ Depends:
     centreon-broker (>= 22.04.0~),
     centreon-engine (>= 22.04.0~),
     centreon-gorgone (>= 22.04.0~),
+    centreon-trap (>= 22.04.0~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
     centreon-plugin-applications-protocol-dns,
