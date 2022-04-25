@@ -16,8 +16,8 @@ Build-Depends:
 Package: centreon
 Architecture: all
 Depends: 
-    centreon-central (>= 22.04.0~),
-    centreon-database (>= 22.04.0~),
+    centreon-central (>= ${centreon:version}~),
+    centreon-database (>= ${centreon:version}~),
     sudo
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon the most effective Open Source monitoring engine : Nagios.
@@ -34,13 +34,13 @@ Description: Centreon is a network, system, applicative supervision and monitori
 Package: centreon-central
 Architecture: all
 Depends: 
-    centreon-poller-centreon-engine (>= 22.04.0~),
-    centreon-license-manager (>= 22.04.0~),
-    centreon-pp-manager (>= 22.04.0~),
-    centreon-web-apache (>= 22.04.0~),
-    centreon-broker (>= 22.04.0~),
-    centreon-engine-extcommands (>= 22.04.0~),
-    centreon-connector (>= 22.04.0~),
+    centreon-poller-centreon-engine (>= ${centreon:version}~),
+    centreon-license-manager (>= ${centreon:version}~),
+    centreon-pp-manager (>= ${centreon:version}~),
+    centreon-web-apache (>= ${centreon:version}~),
+    centreon-broker (>= ${centreon:version}~),
+    centreon-engine-extcommands (>= ${centreon:version}~),
+    centreon-connector (>= ${centreon:version}~),
     centreon-widget-engine-status,
     centreon-widget-global-health,
     centreon-widget-graph-monitoring,
@@ -64,10 +64,9 @@ Depends:
     ${misc:Depends},
     lsb-release,
     centreon-perl-libs,
-    centreon-common (>= 22.04.0~),
-    centreon-gorgone (>= 22.04.0~),
+    centreon-common (>= ${centreon:version}~),
+    centreon-gorgone (>= ${centreon:version}~),
     php8.0,
-    php8.0-fpm,
     php8.0-curl,
     php8.0-intl,
     php8.0-xml,
@@ -91,7 +90,7 @@ Description: Centreon installation entry point.
 Package: centreon-perl-libs
 Depends:    
     ${misc:Depends},
-    centreon-common (>= 22.04.0~),
+    centreon-common (>= ${centreon:version}~),
     libconfig-inifiles-perl,
     libcrypt-des-perl,
     librrds-perl,
@@ -111,7 +110,7 @@ Description: Base package for all Centreon installations.
 Package: centreon-database
 Architecture: all
 Depends: 
-    centreon-web (>= 22.04.0~),
+    centreon-web (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
 Description: Install a database server optimized for use with Centreon.
@@ -121,7 +120,8 @@ Architecture: all
 Conflicts: centreon-web-nginx
 Depends: 
     apache2,
-    centreon-web (>= 22.04.0~),
+    php8.0-fpm,
+    centreon-web (>= ${centreon:version}~),
     ${misc:Depends}
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon an effective Open Source monitoring engine : Centreon Engine.
@@ -132,7 +132,8 @@ Architecture: all
 Conflicts: centreon-web-apache
 Depends: 
     nginx,
-    centreon-web (>= 22.04.0~),
+    php8.0-fpm,
+    centreon-web (>= ${centreon:version}~),
     ${misc:Depends}
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon an effective Open Source monitoring engine : Centreon Engine.
@@ -141,7 +142,7 @@ Description: Centreon is a network, system, applicative supervision and monitori
 Package: centreon-trap
 Architecture: all
 Depends: 
-    centreon-common (>= 22.04.0~),
+    centreon-common (>= ${centreon:version}~),
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
@@ -149,10 +150,10 @@ Description: This package contains Centreon Trap engine
 Package: centreon-poller-centreon-engine
 Architecture: any
 Depends: 
-    centreon-broker (>= 22.04.0~),
-    centreon-engine (>= 22.04.0~),
-    centreon-gorgone (>= 22.04.0~),
-    centreon-trap (>= 22.04.0~),
+    centreon-broker (>= ${centreon:version}~),
+    centreon-engine (>= ${centreon:version}~),
+    centreon-gorgone (>= ${centreon:version}~),
+    centreon-trap (>= ${centreon:version}~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
     centreon-plugin-applications-protocol-dns,
@@ -170,8 +171,8 @@ Description: This package add rights and default directories for a poller
 Package: centreon-plugins-sudoers
 Architecture: all
 Depends: 
-    centreon-common (>= 22.04.0~),
-    centreon-engine (>= 22.04.0~),
-    centreon-gorgone (>= 22.04.0~),
+    centreon-common (>= ${centreon:version}~),
+    centreon-engine (>= ${centreon:version}~),
+    centreon-gorgone (>= ${centreon:version}~),
     ${misc:Depends}
 Description: Sudoers configuration for centreon plugins
