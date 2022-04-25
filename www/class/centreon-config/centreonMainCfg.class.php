@@ -77,7 +77,7 @@ class CentreonMainCfg
 
     /** @var string[] */
     private const ENGINE_LOGGER_DEFAULT_VALUES = [
-        'log_v2_logger' => 'syslog',
+        'log_v2_logger' => 'file',
         'log_level_functions' => 'warning',
         'log_level_config' => 'warning',
         'log_level_events' => 'warning',
@@ -201,8 +201,7 @@ class CentreonMainCfg
             'cached_host_check_horizon' => '60',
             'log_pid' => 1,
             'enable_macros_filter' => 0,
-            'log_v2_enabled' => 1,
-            'log_legacy_enable' => 0,
+            'logger_version' => 'log_v2_enabled',
         ];
     }
 
