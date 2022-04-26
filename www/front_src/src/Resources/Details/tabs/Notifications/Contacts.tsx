@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import { isNil } from 'ramda';
 
