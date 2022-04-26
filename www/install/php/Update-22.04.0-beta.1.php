@@ -459,7 +459,7 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
             "has_special_characters" => true,
             "attempts" => 5,
             "blocking_duration" => 900,
-            "password_expiration_delay" => 7776000,
+            "password_expiration_delay" => 15552000,
             "delay_before_new_password" => 3600,
             "can_reuse_passwords" => false,
         ],
@@ -605,7 +605,9 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 
         $stmt = $pearDB->prepare(
             "DELETE FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
+            WHERE config_id = $configId
+            AND config_group = 'output'
+            AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
         );
         foreach ($bindedValues as $key => $value) {
             $stmt->bindValue($key, $value, \PDO::PARAM_INT);
@@ -691,7 +693,7 @@ function createGorgoneUser(CentreonDB $pearDB, string $userAlias, string $hashed
 function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
 {
     $usersToExclude = [
-        ':bi' => 'centreonBI',
+        ':bi' => 'CBIS',
         ':map' => 'centreon-map'
     ];
 

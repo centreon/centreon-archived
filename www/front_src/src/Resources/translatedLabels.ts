@@ -244,3 +244,4 @@ export const labelNotificationStatus = 'Notification status';
 export const labelConfiguration = 'Configuration';
 export const labelNotEntitledAccessConfiguration =
   'You are not entitled to access configuration';
+export const labelForceActiveChecks = 'Force active checks';

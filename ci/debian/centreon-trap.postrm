@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    remove)
+        # Package removal, not upgrade
+        systemctl --no-reload disable --now centreontrapd.service || : &>/dev/null || :
+    ;;
+    upgrade)
+        # Package upgrade, not uninstall
+        systemctl try-restart centreontrapd.service || : &>/dev/null || :
+    ;;
+esac
+
+exit 0

@@ -51,9 +51,19 @@ abstract class AbstractObject
     protected $broker = false;
     protected $dependencyInjector;
 
-    public static function getInstance(\Pimple\Container $dependencyInjector)
+    /**
+     * @param \Pimple\Container $dependencyInjector
+     * @return static
+     */
+    public static function getInstance(\Pimple\Container $dependencyInjector): static
     {
+        /**
+         * @var array<string, static>
+         */
         static $instances = array();
+        /**
+         * @var class-string<static>
+         */
         $calledClass = get_called_class();
 
         if (!isset($instances[$calledClass])) {
@@ -256,13 +266,29 @@ abstract class AbstractObject
         return array();
     }
 
-    public function isEngineObject()
+    /**
+     * @return bool
+     */
+    public function isEngineObject(): bool
     {
         return $this->engine;
     }
 
-    public function isBrokerObject()
+    /**
+     * @return bool
+     */
+    public function isBrokerObject(): bool
     {
         return $this->broker;
+    }
+
+    /**
+     * Move file pointer to end of file
+     */
+    protected function seekFileEnd(): void
+    {
+        if (! is_null($this->fp)) {
+            fseek($this->fp, 0, SEEK_END);
+        }
     }
 }

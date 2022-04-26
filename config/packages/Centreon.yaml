@@ -167,6 +167,11 @@ services:
     Centreon\Domain\Engine\Interfaces\EngineServiceInterface:
         class: Centreon\Domain\Engine\EngineService
 
+    Core\Domain\Engine\Model\EngineCommandGenerator:
+        public: true
+        arguments:
+            - !tagged_iterator 'engine.command.generator'
+
     # API Acknowledgement
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface:
         class: Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB
@@ -232,9 +237,9 @@ services:
         class: Centreon\Domain\Monitoring\ResourceService
 
     Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurations:
-            arguments:
-              - !tagged_iterator 'authentication.provider.repositories'
-              - !tagged_iterator 'authentication.provider.responses'
+        arguments:
+          - !tagged_iterator 'authentication.provider.repositories'
+          - !tagged_iterator 'authentication.provider.responses'
 
     Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']

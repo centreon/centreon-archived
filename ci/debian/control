@@ -1,0 +1,119 @@
+Source: centreon
+Section: net
+Priority: optional
+Maintainer: Luiz Costa <me@luizgustavo.pro.br>
+Standards-Version: 4.5.0
+Homepage: https://www.centreon.com
+Build-Depends: 
+    debhelper-compat (=12),
+    php8.0-curl,
+    php8.0-intl,
+    php8.0-xml,
+    php-pear,
+    composer,
+    npm
+
+Package: centreon-web
+Architecture: all
+Depends: 
+    ${misc:Depends},
+    lsb-release,
+    centreon-perl-libs,
+    centreon-common (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
+    php8.0,
+    php8.0-fpm,
+    php8.0-curl,
+    php8.0-intl,
+    php8.0-xml,
+    php8.0-dom,
+    php8.0-gd,
+    php8.0-mbstring,
+    php8.0-xml,
+    php8.0-mysql,
+    php8.0-zip,
+    php8.0-snmp,
+    php8.0-ldap,
+    php8.0-readline,
+    php8.0-sqlite3,
+    php-pear,
+    ntp,
+    rrdtool,
+    bsd-mailx,
+    sudo
+Description: Centreon installation entry point.
+
+Package: centreon-perl-libs
+Depends:    
+    ${misc:Depends},
+    centreon-common (>= 22.04.0~),
+    libconfig-inifiles-perl,
+    libcrypt-des-perl,
+    librrds-perl,
+    libdigest-hmac-perl,
+    libdigest-sha-perl,
+    libgd-perl
+Architecture: all
+Description: This packages contains Centreon Perl libraries.
+
+Package: centreon-common
+Depends:
+    ${misc:Depends},
+    sudo
+Architecture: all
+Description: Base package for all Centreon installations.
+
+Package: centreon-database
+Architecture: all
+Depends: 
+    centreon-web (>= 22.04.0~),
+    mariadb-server,
+    ${misc:Depends}
+Description: Install a database server optimized for use with Centreon.
+
+Package: centreon-web-apache
+Architecture: all
+Depends: 
+    apache2,
+    centreon-web (>= 22.04.0~),
+    ${misc:Depends}
+Description: Centreon is a network, system, applicative supervision and monitoring tool,
+ it is based upon an effective Open Source monitoring engine : Centreon Engine.
+ Centreon provides a new frontend and new functionnalities to Centreon Engine.
+
+Package: centreon-trap
+Architecture: all
+Depends: 
+    centreon-common (>= 22.04.0~),
+    snmpd,
+    ${misc:Depends}
+Description: This package contains Centreon Trap engine
+
+Package: centreon-poller-centreon-engine
+Architecture: any
+Depends: 
+    centreon-broker (>= 22.04.0~),
+    centreon-engine (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
+    centreon-plugin-applications-monitoring-centreon-central,
+    centreon-plugin-applications-monitoring-centreon-poller,
+    centreon-plugin-applications-protocol-dns,
+    centreon-plugin-applications-protocol-ldap,
+    centreon-plugin-hardware-printers-generic-snmp,
+    centreon-plugin-network-cisco-standard-snmp,
+    centreon-plugin-operatingsystems-linux-snmp,
+    centreon-plugin-operatingsystems-windows-snmp,
+    snmpd,
+    ${misc:Depends},
+    ${shlibs:Depends}
+Description: This package add rights and default directories for a poller
+ managed by Centreon. This includes the default central poller.
+
+Package: centreon-plugins-sudoers
+Architecture: all
+Depends: 
+    centreon-common (>= 22.04.0~),
+    centreon-engine (>= 22.04.0~),
+    centreon-gorgone (>= 22.04.0~),
+    ${misc:Depends}
+Description: Sudoers configuration for centreon plugins
