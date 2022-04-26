@@ -35,7 +35,7 @@ Feature:
         "is_notify_contacts": false,
         "with_services": false,
         "is_sticky": true,
-        "is_persistent_comment": "true"
+        "is_persistent_comment": true
       },
       "resources": [
         {
