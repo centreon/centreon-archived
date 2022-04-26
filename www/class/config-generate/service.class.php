@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -64,8 +65,10 @@ class Service extends AbstractService
     {
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
         $this->service_cache[$serviceId]['sg'] = $servicegroup->getServiceGroupsForService($hostId, $serviceId);
+        $this->service_cache[$serviceId]['group_tags'] = [];
         foreach ($this->service_cache[$serviceId]['sg'] as &$value) {
             if (is_null($value['host_host_id']) || $hostId == $value['host_host_id']) {
+                $this->service_cache[$serviceId]['group_tags'][] = $value['servicegroup_sg_id'];
                 $servicegroup->addServiceInSg(
                     $value['servicegroup_sg_id'],
                     $serviceId,

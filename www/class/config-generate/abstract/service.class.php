@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -129,10 +130,11 @@ abstract class AbstractService extends AbstractObject
         'retain_status_information',
         'retain_nonstatus_information',
     );
-    protected $attributes_array = array(
+    protected $attributes_array = [
         'use',
         'category_tags',
-    );
+        'group_tags',
+    ];
     protected $attributes_hash = array(
         'macros'
     );
