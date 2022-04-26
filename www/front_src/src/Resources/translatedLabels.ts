@@ -245,3 +245,7 @@ export const labelConfiguration = 'Configuration';
 export const labelNotAuthorizedToAccessConfiguration =
   'You are not authorized to access configuration';
 export const labelForceActiveChecks = 'Force active checks';
+export const labelNoContactIsConfiguredForThisResource =
+  'No contact is configured for this resource';
+export const labelNoContactGroupsIsConfiguredForThisResource =
+  'No contact groups is configured for this resource';

@@ -15064,3 +15064,9 @@ msgstr ""
 
 # msgid "Discard"
 # msgstr ""
+
+# msgid "No contact is configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups is configured for this resource"
+# msgstr ""

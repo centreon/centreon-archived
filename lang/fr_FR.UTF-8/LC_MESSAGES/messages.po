@@ -16757,3 +16757,9 @@ msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire
 
 msgid "Discard"
 msgstr "Annuler"
+
+msgid "No contact is configured for this resource"
+msgstr "Aucun contact n’est configuré pour cette ressource"
+
+msgid "No contact groups is configured for this resource"
+msgstr "Aucun contact groupe n’est configuré pour cette ressource"
