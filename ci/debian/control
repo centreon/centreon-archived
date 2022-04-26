@@ -124,21 +124,8 @@ Description: Install a database server optimized for use with Centreon.
 
 Package: centreon-web-apache
 Architecture: all
-Conflicts: centreon-web-nginx
 Depends: 
     apache2,
-    php8.0-fpm,
-    centreon-web (>= ${centreon:version}~),
-    ${misc:Depends}
-Description: Centreon is a network, system, applicative supervision and monitoring tool,
- it is based upon an effective Open Source monitoring engine : Centreon Engine.
- Centreon provides a new frontend and new functionnalities to Centreon Engine.
-
-Package: centreon-web-nginx
-Architecture: all
-Conflicts: centreon-web-apache
-Depends: 
-    nginx,
     php8.0-fpm,
     centreon-web (>= ${centreon:version}~),
     ${misc:Depends}
