@@ -233,66 +233,58 @@
       </tr>
       <!-- LOGGER V2 OPTIONS -->
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_v2_logger">&nbsp;{$form.log_v2_logger.label}</td>
+        <td class="FormRowField">{$form.log_v2_logger.label}</td>
         <td class="FormRowValue">{$form.log_v2_logger.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_checks">&nbsp;{$form.log_level_checks.label}</td>
+        <td class="FormRowField">{$form.log_level_checks.label}</td>
         <td class="FormRowValue">{$form.log_level_checks.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_commands">&nbsp;{$form.log_level_commands.label}
-        </td>
+        <td class="FormRowField">{$form.log_level_commands.label}</td>
         <td class="FormRowValue">{$form.log_level_commands.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_comments">&nbsp;{$form.log_level_comments.label}
-        </td>
+        <td class="FormRowField">{$form.log_level_comments.label}</td>
         <td class="FormRowValue">{$form.log_level_comments.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_config">&nbsp;{$form.log_level_config.label}</td>
+        <td class="FormRowField">{$form.log_level_config.label}</td>
         <td class="FormRowValue">{$form.log_level_config.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_downtimes">&nbsp;{$form.log_level_downtimes.label}
-        </td>
+        <td class="FormRowField">{$form.log_level_downtimes.label}</td>
         <td class="FormRowValue">{$form.log_level_downtimes.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip"
-            name="log_level_eventbroker">&nbsp;{$form.log_level_eventbroker.label}</td>
+        <td class="FormRowField">{$form.log_level_eventbroker.label}</td>
         <td class="FormRowValue">{$form.log_level_eventbroker.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_events">&nbsp;{$form.log_level_events.label}</td>
+        <td class="FormRowField">{$form.log_level_events.label}</td>
         <td class="FormRowValue">{$form.log_level_events.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip"
-            name="log_level_external_command">&nbsp;{$form.log_level_external_command.label}</td>
+        <td class="FormRowField">{$form.log_level_external_command.label}</td>
         <td class="FormRowValue">{$form.log_level_external_command.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_functions">&nbsp;{$form.log_level_functions.label}
-        </td>
+        <td class="FormRowField">{$form.log_level_functions.label}</td>
         <td class="FormRowValue">{$form.log_level_functions.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_macros">&nbsp;{$form.log_level_macros.label}</td>
+        <td class="FormRowField">{$form.log_level_macros.label}</td>
         <td class="FormRowValue">{$form.log_level_macros.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip"
-            name="log_level_notifications">&nbsp;{$form.log_level_notifications.label}</td>
+      <tr class="list_one logger_v2_option">{$form.log_level_notifications.label}</td>
         <td class="FormRowValue">{$form.log_level_notifications.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_process">&nbsp;{$form.log_level_process.label}</td>
+        <td class="FormRowField">{$form.log_level_process.label}</td>
         <td class="FormRowValue">{$form.log_level_process.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">
-        <td class="FormRowField"><img class="helpTooltip" name="log_level_runtime">&nbsp;{$form.log_level_runtime.label}</td>
+        <td class="FormRowField">{$form.log_level_runtime.label}</td>
         <td class="FormRowValue">{$form.log_level_runtime.html}</td>
       </tr>
 
