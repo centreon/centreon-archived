@@ -44,6 +44,28 @@ const Notification = (): JSX.Element => {
     sendRequest({ endpoint }).then(setNotificationContacts);
   };
 
+  const getContactColumns = React.useCallback((contact): JSX.Element => {
+    return (
+      <>
+        <ContactCell paddingLeft={1}>{contact.name}</ContactCell>
+
+        <ContactCell>{contact.alias}</ContactCell>
+      </>
+    );
+  }, []);
+
+  const getContactWithEmailColumns = React.useCallback(
+    (contact: Contact): JSX.Element => {
+      return (
+        <>
+          {getContactColumns(contact)}
+          <ContactCell>{contact.email}</ContactCell>
+        </>
+      );
+    },
+    [],
+  );
+
   React.useEffect(() => {
     if (isNil(details)) {
       return;
@@ -66,25 +88,6 @@ const Notification = (): JSX.Element => {
       <Typography sx={{ fontWeight: 'bold' }}>{t(labelEmail)}</Typography>
     </>
   );
-
-  const getContactColumns = ({ name, alias }): JSX.Element => {
-    return (
-      <>
-        <ContactCell paddingLeft={1}>{name}</ContactCell>
-
-        <ContactCell>{alias}</ContactCell>
-      </>
-    );
-  };
-
-  const getContactWithEmailColumns = (contact: Contact): JSX.Element => {
-    return (
-      <>
-        {getContactColumns(contact)}
-        <ContactCell>{contact.email}</ContactCell>
-      </>
-    );
-  };
 
   if (isNil(notificationContacts)) {
     return <ContactsLoadingSkeleton />;
