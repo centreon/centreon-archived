@@ -8,7 +8,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
   labelConfigure,
-  labelNotEntitledAccessConfiguration,
+  labelNotAuthorizedToAccessConfiguration,
 } from '../../../translatedLabels';
 import memoizeComponent from '../../../memoizedComponent';
 
@@ -36,7 +36,7 @@ const Contacts = ({
       const canGoToConfiguration = !isNil(configuration_uri);
       const tooltipTitle = canGoToConfiguration
         ? t(labelConfigure)
-        : t(labelNotEntitledAccessConfiguration);
+        : t(labelNotAuthorizedToAccessConfiguration);
       const iconColor = canGoToConfiguration ? 'primary' : 'default';
       const goToConfiguration = (): void => goToUri(configuration_uri);
 
