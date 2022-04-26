@@ -31,28 +31,31 @@ const Contacts = ({
     window.location.href = uri as string;
   };
 
-  const getConfigurationColumn = ({ configuration_uri }): JSX.Element => {
-    const canGoToConfiguration = !isNil(configuration_uri);
-    const tooltipTitle = canGoToConfiguration
-      ? t(labelConfigure)
-      : t(labelNotEntitledAccessConfiguration);
-    const iconColor = canGoToConfiguration ? 'primary' : 'default';
-    const goToConfiguration = (): void => goToUri(configuration_uri);
+  const getConfigurationColumn = React.useCallback(
+    ({ configuration_uri }): JSX.Element => {
+      const canGoToConfiguration = !isNil(configuration_uri);
+      const tooltipTitle = canGoToConfiguration
+        ? t(labelConfigure)
+        : t(labelNotEntitledAccessConfiguration);
+      const iconColor = canGoToConfiguration ? 'primary' : 'default';
+      const goToConfiguration = (): void => goToUri(configuration_uri);
 
-    return (
-      <Tooltip title={tooltipTitle}>
-        <IconButton
-          color={iconColor}
-          size="small"
-          sx={{ justifySelf: 'flex-end', marginRight: 1 }}
-          title={t(tooltipTitle)}
-          onClick={goToConfiguration}
-        >
-          <SettingsIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-    );
-  };
+      return (
+        <Tooltip title={tooltipTitle}>
+          <IconButton
+            color={iconColor}
+            size="small"
+            sx={{ justifySelf: 'flex-end', marginRight: 1 }}
+            title={t(tooltipTitle)}
+            onClick={goToConfiguration}
+          >
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      );
+    },
+    [],
+  );
 
   return (
     <Box
