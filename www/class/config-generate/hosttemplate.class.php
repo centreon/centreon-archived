@@ -126,10 +126,10 @@ class HostTemplate extends AbstractHost
         '3d_coords',
         'acknowledgement_timeout'
     );
-    protected $attributes_array = array(
+    protected $attributes_array = [
         'use',
-        'category_tags'
-    );
+        'category_tags',
+    ];
 
     /**
      * @param int $hostId

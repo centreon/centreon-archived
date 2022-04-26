@@ -36,9 +36,15 @@
 
 class Hostgroup extends AbstractObject
 {
+    private const TAG_TYPE = 'hostgroup';
+    private const HOSTGROUP_FILENAME = 'hostgroups.cfg';
+    private const HOSTGROUP_OBJECT_NAME = 'hostgroup';
+    private const TAG_FILENAME = 'tags.cfg';
+    private const TAG_OBJECT_NAME = 'tag';
+
     private $hg = array();
-    protected $generate_filename = 'hostgroups.cfg';
-    protected $object_name = 'hostgroup';
+    protected $generate_filename = self::HOSTGROUP_FILENAME;
+    protected $object_name = self::HOSTGROUP_OBJECT_NAME;
     protected $attributes_select = '
         hg_id,
         hg_name as hostgroup_name,
@@ -47,17 +53,6 @@ class Hostgroup extends AbstractObject
         hg_notes_url as notes_url,
         hg_action_url as action_url
     ';
-    protected $attributes_write = array(
-        'hostgroup_id',
-        'hostgroup_name',
-        'alias',
-        'notes',
-        'notes_url',
-        'action_url'
-    );
-    protected $attributes_array = array(
-        'members'
-    );
     protected $stmt_hg = null;
 
     private function getHostgroupFromId($hg_id)
@@ -92,8 +87,37 @@ class Hostgroup extends AbstractObject
         return 0;
     }
 
-    public function generateObjects()
+    /**
+     * Generate host groups / tags and write in file
+     */
+    public function generateObjects(): void
     {
+        $this->generateHostGroups();
+        $this->generateTags();
+    }
+
+    /**
+     * Generate host groups and write in file
+     */
+    private function generateHostGroups(): void
+    {
+        $this->generate_filename = self::HOSTGROUP_FILENAME;
+        $this->object_name = self::HOSTGROUP_OBJECT_NAME;
+        $this->attributes_write = [
+            'hostgroup_id',
+            'hostgroup_name',
+            'alias',
+            'notes',
+            'notes_url',
+            'action_url',
+        ];
+        $this->attributes_array = [
+            'members',
+        ];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
         foreach ($this->hg as $id => &$value) {
             if (count($value['members']) == 0) {
                 continue;
@@ -101,6 +125,38 @@ class Hostgroup extends AbstractObject
             $value['hostgroup_id'] = $value['hg_id'];
 
             $this->generateObjectInFile($value, $id);
+        }
+    }
+
+    /**
+     * Generate tags and write in file
+     */
+    private function generateTags(): void
+    {
+        $this->generate_filename = self::TAG_FILENAME;
+        $this->object_name = self::TAG_OBJECT_NAME;
+        $this->attributes_write = [
+            'id',
+            'name',
+            'type',
+        ];
+        $this->attributes_array = [];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
+        foreach ($this->hg as $id => $value) {
+            if (count($value['members']) == 0) {
+                continue;
+            }
+
+            $tag = [
+                'id' => $value['hostgroup_id'],
+                'name' => $value['hostgroup_name'],
+                'type' => self::TAG_TYPE,
+            ];
+
+            $this->generateObjectInFile($tag, $id);
         }
     }
 
