@@ -10,6 +10,7 @@ import {
   labelConfigure,
   labelNotEntitledAccessConfiguration,
 } from '../../../translatedLabels';
+import memoizeComponent from '../../../memoizedComponent';
 
 import { ContactGroup, Contact } from './models';
 
@@ -82,4 +83,9 @@ const Contacts = ({
   );
 };
 
-export default Contacts;
+const MemoizedConfigurationColumn = memoizeComponent<Props>({
+  Component: Contacts,
+  memoProps: ['contacts', 'getColumns', 'headers', 'templateColumns'],
+});
+
+export default MemoizedConfigurationColumn;
