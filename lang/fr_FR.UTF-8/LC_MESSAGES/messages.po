@@ -16712,6 +16712,7 @@ msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaratio
 
 # msgid "You are not entitled to access configuration"
 # msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
+
 msgid "Force active checks"
 msgstr "Forcer les contrôles actifs"
 

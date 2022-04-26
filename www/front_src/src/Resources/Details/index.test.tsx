@@ -1727,7 +1727,7 @@ describe(Details, () => {
     });
   });
 
-  it.only('displays contacts and contact groups in notification tab when she is clicked', async () => {
+  it('displays contacts and contact groups when the notification tab is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({
       data: retrievedNotificationContacts,
