@@ -15,7 +15,7 @@ import memoizeComponent from '../../../memoizedComponent';
 import { ContactGroup, Contact } from './models';
 
 interface Props {
-  contacts: Array<Contact> | Array<ContactGroup>;
+  contacts: Array<Contact> | Array<ContactGroup> | undefined;
   getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
   templateColumns: string;
@@ -75,7 +75,7 @@ const Contacts = ({
 
         <Divider sx={{ gridColumn: '1 / -1' }} />
       </>
-      {contacts.map((contact) => {
+      {contacts?.map((contact) => {
         return (
           <React.Fragment key={contact.alias}>
             {getColumns(contact)}
