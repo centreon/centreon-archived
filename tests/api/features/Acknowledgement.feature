@@ -33,7 +33,9 @@ Feature:
       "acknowledgement": {
         "comment": "Acknowledged by admin",
         "is_notify_contacts": false,
-        "with_services": false
+        "with_services": false,
+        "is_sticky": true,
+        "is_persistent_comment": "true"
       },
       "resources": [
         {
