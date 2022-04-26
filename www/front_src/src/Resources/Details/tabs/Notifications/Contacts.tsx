@@ -33,7 +33,7 @@ const Contacts = ({
 
   const getConfigurationColumn = React.useCallback(
     ({ configuration_uri }): JSX.Element => {
-      const canGoToConfiguration = !isNil(configuration_uri);
+      const canGoToConfiguration = isNil(configuration_uri);
       const tooltipTitle = canGoToConfiguration
         ? t(labelConfigure)
         : t(labelNotAuthorizedToAccessConfiguration);

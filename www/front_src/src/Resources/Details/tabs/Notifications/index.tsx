@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai/utils';
 import { detailsAtom } from '../../detailsAtoms';
 
 import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
-import Notification from './Notification';
+import Notifications from './Notifications';
 
 const NotificationTab = (): JSX.Element => {
   const details = useAtomValue(detailsAtom);
@@ -17,7 +17,7 @@ const NotificationTab = (): JSX.Element => {
     return <ContactsLoadingSkeleton />;
   }
 
-  return <Notification />;
+  return <Notifications />;
 };
 
 export default NotificationTab;

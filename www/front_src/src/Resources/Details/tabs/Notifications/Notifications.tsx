@@ -29,7 +29,7 @@ import Contacts from './Contacts';
 import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
 import ContactCell from './ContactCell';
 
-const Notification = (): JSX.Element => {
+const Notifications = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [notificationContacts, setNotificationContacts] =
@@ -181,4 +181,4 @@ const Notification = (): JSX.Element => {
   );
 };
 
-export default Notification;
+export default Notifications;
