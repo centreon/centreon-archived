@@ -37,6 +37,7 @@ const Contacts = ({
       ? t(labelConfigure)
       : t(labelNotEntitledAccessConfiguration);
     const iconColor = canGoToConfiguration ? 'primary' : 'default';
+    const goToConfiguration = (): void => goToUri(configuration_uri);
 
     return (
       <Tooltip title={tooltipTitle}>
@@ -45,7 +46,7 @@ const Contacts = ({
           size="small"
           sx={{ justifySelf: 'flex-end', marginRight: 1 }}
           title={t(tooltipTitle)}
-          onClick={(): void => goToUri(configuration_uri)}
+          onClick={goToConfiguration}
         >
           <SettingsIcon fontSize="small" />
         </IconButton>
