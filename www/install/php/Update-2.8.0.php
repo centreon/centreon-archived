@@ -44,25 +44,18 @@ if (isset($pearDB)) {
     /* Check virtual host */
     $queryHost = 'SELECT host_id '
         . 'FROM host '
-        . 'WHERE host_register = :host_register '
-        . 'AND host_name = :host_name ';
-    $statement = $pearDB->prepare($queryHost);
-    $statement->bindValue(":host_register", '2');
-    $statement->bindValue(":host_name", '_Module_Meta');
-    $statement->execute();
-    if ($statement->rowCount()) {
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
+        . 'WHERE host_register = "2" '
+        . 'AND host_name = "_Module_Meta" ';
+    $res = $pearDB->query($queryHost);
+    if ($res->rowCount()) {
+        $row = $res->fetchRow();
         $hostId = $row['host_id'];
     } else {
         $query = 'INSERT INTO host (host_name, host_register) '
-            . 'VALUES (:host_name, :host_register) ';
-        $insertStatement = $pearDB->prepare($query);
-        $insertStatement->bindValue(':host_name', '_Module_Meta');
-        $insertStatement->bindValue(':host_register', '2');
-        $insertStatement->execute();
-        $statement->execute();
-        if ($statement->rowCount()) {
-            $row = $statement->fetch(\PDO::FETCH_ASSOC);
+            . 'VALUES ("_Module_Meta", "2") ';
+        $pearDB->query($query);
+        if ($res->rowCount()) {
+            $row = $res->fetchRow();
             $hostId = $row['host_id'];
         }
     }
@@ -70,13 +63,10 @@ if (isset($pearDB)) {
     /* Check existing virtual services */
     $query = 'SELECT service_id, service_description '
         . 'FROM service '
-        . 'WHERE service_description LIKE :service_description '
-        . 'AND service_register = :service_register ';
-    $statement = $pearDB->prepare($query);
-    $statement->bindValue(":service_description", 'meta_%');
-    $statement->bindValue(":service_register", '2');
-    $statement->execute();
-    foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+        . 'WHERE service_description LIKE "meta_%" '
+        . 'AND service_register = "2" ';
+    $res = $pearDB->query($query);
+    while ($row = $res->fetchRow()) {
         if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
             $metaId = $matches[1];
             $virtualServices[$matches[1]]['service_id'] = $row['service_id'];
@@ -87,12 +77,10 @@ if (isset($pearDB)) {
     $query = 'SELECT s.service_id, s.service_description '
         . 'FROM service s, host_service_relation hsr '
         . 'WHERE hsr.host_host_id = :host_id '
-        . 'AND s.service_register = :service_register '
-        . 'AND s.service_description LIKE :service_description ';
+        . 'AND s.service_register = "2" '
+        . 'AND s.service_description LIKE "meta_%" ';
     $statement = $pearDB->prepare($query);
     $statement->bindValue(':host_id', (int)$hostId, \PDO::PARAM_INT);
-    $statement->bindValue(':service_register', '2');
-    $statement->bindValue(':service_description', 'meta_%');
     $statement->execute();
     foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
         if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
