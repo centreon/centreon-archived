@@ -328,6 +328,24 @@ try {
     $formAddWidget->accept($rendererAddWidget);
     $template->assign('formAddWidget', $rendererAddWidget->toArray());
     $template->assign('rotationTimer', $rotationTimer);
+    $template->assign(
+        'editModeIcon',
+        returnSvg(
+            "www/img/icons/edit_mode.svg",
+            "var(--icons-fill-color)",
+            20,
+            20
+        )
+    );
+    $template->assign(
+        'noEditModeIcon',
+        returnSvg(
+            "www/img/icons/no_edit_mode.svg",
+            "var(--icons-fill-color)",
+            20,
+            20
+        )
+    );
 
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {

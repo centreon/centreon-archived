@@ -11,9 +11,27 @@ import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import MenuLoader from '../../components/MenuLoader';
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
+  },
+  subMenuToggle: {
+    backgroundColor: theme.palette.common.black,
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggleActive: {
+    display: 'block',
+  },
+  wrapMiddleIcon: {
+    display: 'flex',
   },
 }));
 
