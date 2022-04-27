@@ -16766,3 +16766,9 @@ msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire
 
 msgid "Discard"
 msgstr "Annuler"
+
+msgid "At least one of the two following fields must be filled"
+msgstr "Au moins l'un des deux champs suivants doit être rempli"
+
+msgid "Press Enter to accept"
+msgstr "Appuyer sur Entrée pour accepter"

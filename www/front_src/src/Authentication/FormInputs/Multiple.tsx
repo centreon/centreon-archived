@@ -10,10 +10,14 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
+import { labelPressEnterToAccept } from '../translatedLabels';
+
 import { InputProps } from './models';
 
 const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const [inputText, setInputText] = React.useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
@@ -44,6 +48,8 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
     return error || undefined;
   };
 
+  const textChange = (event): void => setInputText(event.target.value);
+
   const normalizedValues = selectedValues.map((value) => ({
     id: value,
     name: value,
@@ -51,23 +57,25 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
 
   const inputErrors = getError();
 
+  const additionalLabel = inputText ? ` (${labelPressEnterToAccept})` : '';
+
   return useMemoComponent({
     Component: (
       <div>
         <MultiAutocompleteField
-          clearOnBlur
           freeSolo
-          handleHomeEndKeys
+          inputValue={inputText}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
-          label={t(label)}
+          label={`${t(label)}${additionalLabel}`}
           open={false}
           options={[]}
           popupIcon={null}
           required={required}
           value={normalizedValues}
           onChange={change}
+          onTextChange={textChange}
         />
         {inputErrors && (
           <Stack>
@@ -80,7 +88,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors],
+    memoProps: [normalizedValues, inputErrors, additionalLabel],
   });
 };
 

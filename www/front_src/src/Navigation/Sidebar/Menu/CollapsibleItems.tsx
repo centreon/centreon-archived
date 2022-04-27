@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import * as React from 'react';
 
 import { equals } from 'ramda';
 import clsx from 'clsx';
