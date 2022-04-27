@@ -52,8 +52,7 @@ $result = $pearDB->query($query);
 $row = $result->fetchRow();
 
 // Update to new path if necessary.
-if (
-    $row
+if ($row
     && preg_match('#/usr/lib/nagios/plugins/?#', $row['value'])
     && is_dir('/usr/lib64/nagios/plugins')
 ) {
@@ -92,8 +91,7 @@ while ($aclTopology = $aclTopologies->fetch()) {
     // get missing parent topology relations
     $aclToInsert = [];
     foreach ($topologies as $topologyPage => $topologyParameters) {
-        if (
-            isset($topologyParameters['topology_parent']) &&
+        if (isset($topologyParameters['topology_parent']) &&
             !isset($topologies[$topologyParameters['topology_parent']]) &&
             !in_array($topologyParameters['topology_parent'], $aclToInsert)
         ) {
@@ -123,7 +121,7 @@ while ($aclTopology = $aclTopologies->fetch()) {
             'FROM topology t ' .
             'WHERE t.topology_page IN (:acl_to_insert)'
         );
-        $statement->bindValue(":acl_topology_id", (int) $aclTopologyId, \PDO::PARAM_INT);
+        $statement->bindValue(":acl_topology_id", (int)$aclTopologyId, \PDO::PARAM_INT);
         $statement->bindValue(":acl_to_insert", implode(',', $aclToInsert));
         $statement->execute();
     }
