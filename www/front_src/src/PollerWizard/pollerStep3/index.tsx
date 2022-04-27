@@ -1,34 +1,25 @@
 import * as React from 'react';
 
-import { useTranslation, withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { useAtomValue } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import { pollerAtom, PollerData } from '../pollerAtoms';
+import WizardFormSetupStatus from '../../components/WizardFormSetupStatus';
+import { labelFinalStep } from '../translatedLabels';
 
-interface Props {
-  pollerData;
-}
-
-const FormPollerStepThree = ({ pollerData }: Props): JSX.Element => {
+const PollerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const pollerData = useAtomValue<PollerData | null>(pollerAtom);
+
   return (
-    <WizardFormInstallingStatus
-      formTitle={`${t('Finalizing Setup')}`}
-      statusCreating={pollerData.submitStatus}
+    <WizardFormSetupStatus
+      error={null}
+      formTitle={t(labelFinalStep)}
+      statusCreating={pollerData?.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={null}
     />
   );
 };
 
-const mapStateToProps = ({ pollerForm }): Props => ({
-  pollerData: pollerForm,
-});
-
-const mapDispatchToProps = {};
-
-const PollerStepThree = withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(FormPollerStepThree),
-);
-
-export default (): JSX.Element => <PollerStepThree />;
+export default PollerWizardStepThree;

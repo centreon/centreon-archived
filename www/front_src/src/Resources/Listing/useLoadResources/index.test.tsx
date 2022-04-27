@@ -13,10 +13,6 @@ import useLoadDetails from '../../testUtils/useLoadDetails';
 
 import useLoadResources from '.';
 
-jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('centreon-frontend/packages/ui-context'),
-);
-
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockUser = {
@@ -87,11 +83,13 @@ describe(useLoadResources, () => {
     [
       'sort',
       (): void => context.setCriteria?.({ name: 'sort', value: ['a', 'asc'] }),
+      2,
     ],
-    ['limit', (): void => context.setLimit?.(20), '20'],
+    ['limit', (): void => context.setLimit?.(20), 2],
     [
       'search',
       (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
+      2,
     ],
     [
       'states',
@@ -100,6 +98,7 @@ describe(useLoadResources, () => {
           name: 'states',
           value: [{ id: 'unhandled', name: 'Unhandled problems' }],
         }),
+      2,
     ],
     [
       'statuses',
@@ -108,6 +107,7 @@ describe(useLoadResources, () => {
           name: 'statuses',
           value: [{ id: 'OK', name: 'Ok' }],
         }),
+      2,
     ],
     [
       'resourceTypes',
@@ -116,6 +116,7 @@ describe(useLoadResources, () => {
           name: 'resource_types',
           value: [{ id: 'host', name: 'Host' }],
         }),
+      2,
     ],
     [
       'hostGroups',
@@ -124,6 +125,7 @@ describe(useLoadResources, () => {
           name: 'host_groups',
           value: [{ id: 0, name: 'Linux-servers' }],
         }),
+      2,
     ],
     [
       'serviceGroups',
@@ -132,16 +134,17 @@ describe(useLoadResources, () => {
           name: 'service_groups',
           value: [{ id: 1, name: 'Web-services' }],
         }),
+      2,
     ],
   ];
 
   it.each(testCases)(
     'resets the page to 1 when %p is changed and current filter is applied',
-    async (_, setter) => {
+    async (_, setter, numberOfCalls) => {
       renderLoadResources();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(numberOfCalls as number);
       });
 
       act(() => {

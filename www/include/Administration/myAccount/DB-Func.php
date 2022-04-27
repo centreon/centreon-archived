@@ -148,6 +148,7 @@ function updateContact($contactId = null)
           'default_page = :defaultPage, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
+          'contact_theme = :contactTheme, ' .
           'enable_one_click_export = :enableOneClickExport';
     $rq .= ' WHERE contact_id = :contactId';
 
@@ -174,6 +175,11 @@ function updateContact($contactId = null)
         ':contactLocation',
         !empty($ret['contact_location']) ? $ret['contact_location'] : null,
         \PDO::PARAM_INT
+    );
+    $stmt->bindValue(
+        ':contactTheme',
+        !empty($ret['contact_theme']['contact_theme']) ? $ret['contact_theme']['contact_theme'] : "light",
+        \PDO::PARAM_STR
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);

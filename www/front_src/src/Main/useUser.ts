@@ -42,6 +42,7 @@ const useUser = (
           isExportButtonEnabled,
           locale,
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
           default_page: defaultPage,
@@ -53,6 +54,7 @@ const useUser = (
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
