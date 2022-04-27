@@ -276,7 +276,8 @@
         <td class="FormRowField">{$form.log_level_macros.label}</td>
         <td class="FormRowValue">{$form.log_level_macros.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">{$form.log_level_notifications.label}</td>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_notifications.label}</td>
         <td class="FormRowValue">{$form.log_level_notifications.html}</td>
       </tr>
       <tr class="list_one logger_v2_option">

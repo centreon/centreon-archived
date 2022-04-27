@@ -457,6 +457,19 @@ function updateLoggerV2Cfg(CentreonDb $pearDB, array $ret, int $nagiosId): void
     $statement->execute();
 }
 
+function insertOrUpdateLogger(CentreonDb $pearDB, array $ret, int $nagiosId): void
+{
+    $statement = $pearDB->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
+    $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
+    $statement->execute();
+
+    if ($res = $statement->fetch() && $ret['logger_version'] === 'log_v2_enabled') {
+        updateLoggerV2Cfg($pearDB, $ret, $nagiosId);
+    } else {
+        insertLoggerV2Cfg($pearDB, $ret, $nagiosId);
+    }
+}
+
 function insertNagios($ret = array(), $brokerTab = array())
 {
     global $form, $pearDB, $centreon;
@@ -584,7 +597,7 @@ function updateNagios($nagiosId = null)
     $statement->execute();
 
     if (isset($nagiosCfg['logger_version']) && $nagiosCfg['logger_version'] === 'log_v2_enabled') {
-        updateLoggerV2Cfg($pearDB, $ret, $nagiosId);
+        insertOrUpdateLogger($pearDB, $ret, $nagiosId);
     }
 
     $mainCfg = new CentreonConfigEngine($pearDB);
