@@ -120,6 +120,7 @@ class HostTemplate extends AbstractHost
         'notes_url',
         'action_url',
         'icon_image',
+        'icon_id',
         'icon_image_alt',
         'statusmap_image',
         '2d_coords',
