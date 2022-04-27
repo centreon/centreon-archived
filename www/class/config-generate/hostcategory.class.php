@@ -106,7 +106,6 @@ final class HostCategory extends AbstractObject
      */
     public function generateObjects(): void
     {
-        $this->seekFileEnd();
         foreach ($this->hostCategories as $id => &$value) {
             if (! isset($value['members']) || count($value['members']) === 0) {
                 continue;

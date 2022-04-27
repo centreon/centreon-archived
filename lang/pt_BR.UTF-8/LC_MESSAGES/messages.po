@@ -15521,3 +15521,9 @@ msgstr ""
 
 # msgid "No contact groups is configured for this resource"
 # msgstr ""
+
+# msgid "At least one of the two following fields must be filled"
+# msgstr ""
+
+# msgid "Press Enter to accept"
+# msgstr ""

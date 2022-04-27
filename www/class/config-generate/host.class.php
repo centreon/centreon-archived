@@ -56,6 +56,8 @@ class Host extends AbstractHost
 
     private function getHostGroups(&$host)
     {
+        $host['group_tags'] = $host['group_tags'] ?? [];
+
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
                 $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
@@ -70,8 +72,9 @@ class Host extends AbstractHost
         }
 
         $hostgroup = Hostgroup::getInstance($this->dependencyInjector);
-        foreach ($host['hg'] as $hg_id) {
-            $hostgroup->addHostInHg($hg_id, $host['host_id'], $host['host_name']);
+        foreach ($host['hg'] as $hostGroupId) {
+            $host['group_tags'][] = $hostGroupId;
+            $hostgroup->addHostInHg($hostGroupId, $host['host_id'], $host['host_name']);
         }
     }
 
