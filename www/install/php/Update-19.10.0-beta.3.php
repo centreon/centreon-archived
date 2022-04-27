@@ -128,20 +128,14 @@ if ($needToUpdateValues) {
 }
 
 // update topology of poller wizard to display breadcrumb
-$statement = $pearDB->prepare(
+$pearDB->query(
     'UPDATE topology
-    SET topology_parent = :topology_parent,
-    topology_page = :topology_page,
-    topology_group = :topology_group,
-    topology_show = :topology_show
-    WHERE topology_url LIKE :topology_url'
+    SET topology_parent = 60901,
+    topology_page = 60959,
+    topology_group = 1,
+    topology_show = "0"
+    WHERE topology_url LIKE "/poller-wizard/%"'
 );
-$statement->bindValue(':topology_parent', 60901, \PDO::PARAM_INT);
-$statement->bindValue(':topology_page', 60959, \PDO::PARAM_INT);
-$statement->bindValue(':topology_group', 1, \PDO::PARAM_INT);
-$statement->bindValue(':topology_show', '0');
-$statement->bindValue(':topology_url', '/poller-wizard/%');
-$statement->execute();
 
 
 try {
@@ -208,11 +202,9 @@ $stmt = $pearDB->prepare('
     WHERE id = :id
 ');
 
-$statement = $pearDB->prepare('SELECT value FROM `options` WHERE `key` = :key');
-$statement->bindValue(':key', 'broker_correlator_script');
-$statement->execute();
+$result = $pearDB->query('SELECT value FROM `options` WHERE `key` = \'broker_correlator_script\'');
 $brokerServiceName = 'cbd';
-if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+if ($row = $result->fetch()) {
     if (!empty($row['value'])) {
         $brokerServiceName = $row['value'];
     }
@@ -238,12 +230,8 @@ while ($row = $result->fetch()) {
 $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_script`');
 $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_system`');
 $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `monitoring_engine`');
-$statement = $pearDB->prepare('DELETE FROM `options` WHERE `key` = :key');
-$statement->bindValue(':key', 'broker_correlator_script');
-$statement->execute();
-$statement = $pearDB->prepare('DELETE FROM `options` WHERE `key` = :key');
-$statement->bindValue(':key', 'monitoring_engine');
-$statement->execute();
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'monitoring_engine\'');
 
 
 /**
@@ -259,17 +247,14 @@ while ($row = $result->fetch()) {
 }
 
 // get poller preferences of engine-status widget
-$pollerStatement = $pearDB->prepare(
+$result = $pearDB->query(
     'SELECT wpr.widget_view_id, wpr.parameter_id, wpr.preference_value, wpr.user_id
     FROM widget_preferences wpr
     INNER JOIN widget_parameters wpa ON wpa.parameter_id = wpr.parameter_id
-    AND wpa.parameter_code_name = :parameter_code_name
+    AND wpa.parameter_code_name = \'poller\'
     INNER JOIN widget_models wm ON wm.widget_model_id = wpa.widget_model_id
-    AND wm.title = :title'
+    AND wm.title = \'Engine-Status\''
 );
-$pollerStatement->bindValue(':parameter_code_name', 'poller');
-$pollerStatement->bindValue(':title', 'Engine-Status');
-$pollerStatement->execute();
 
 $statement = $pearDB->prepare(
     'UPDATE widget_preferences
@@ -280,7 +265,7 @@ $statement = $pearDB->prepare(
 );
 
 // update poller preferences from name to id
-foreach ($pollerStatement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+while ($row = $result->fetch()) {
     $pollerName = strtolower($row['preference_value']);
     $pollerId = isset($pollers[$pollerName])
         ? $pollers[$pollerName]
@@ -302,17 +287,14 @@ while ($row = $result->fetch()) {
 }
 
 // get poller preferences (criticality_filter) of service-monitoring widget
-$pollerStatement = $pearDB->prepare(
+$result = $pearDB->query(
     'SELECT wpr.widget_view_id, wpr.parameter_id, wpr.preference_value, wpr.user_id
     FROM widget_preferences wpr
     INNER JOIN widget_parameters wpa ON wpa.parameter_id = wpr.parameter_id
-    AND wpa.parameter_code_name = :parameter_code_name
+    AND wpa.parameter_code_name = \'criticality_filter\'
     INNER JOIN widget_models wm ON wm.widget_model_id = wpa.widget_model_id
-    AND wm.title = :title'
+    AND wm.title = \'Service Monitoring\''
 );
-$pollerStatement->bindValue(':parameter_code_name', 'criticality_filter');
-$pollerStatement->bindValue(':title', 'Service Monitoring');
-$pollerStatement->execute();
 
 $statement = $pearDB->prepare(
     'UPDATE widget_preferences
@@ -323,7 +305,7 @@ $statement = $pearDB->prepare(
 );
 
 // update poller preferences from name to id
-foreach ($pollerStatement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+while ($row = $result->fetch()) {
     $severityIds = [];
     $severityNames = explode(',', $row['preference_value']);
     foreach ($severityNames as $severityName) {
@@ -343,27 +325,20 @@ foreach ($pollerStatement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
 }
 
 // manage rrdcached upgrade
-$statement = $pearDB->prepare("SELECT `value` FROM options WHERE `key` = :key ");
-$statement->bindValue(':key', 'rrdcached_enable');
-$statement->execute();
-$cache = $statement->fetch(\PDO::FETCH_ASSOC);
+$result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_enable' ");
+$cache = $result->fetch();
 
 if ($cache['value']) {
     try {
         $pearDB->beginTransaction();
 
-        $brokerStatement = $pearDB->prepare(
-            "SELECT * FROM cfg_centreonbroker_info WHERE `config_key` = :config_key AND `config_value` = :config_value"
+        $res = $pearDB->query(
+            "SELECT * FROM cfg_centreonbroker_info WHERE `config_key` = 'type' AND `config_value` = 'rrd'"
         );
-        $brokerStatement->bindValue(':config_key', 'type');
-        $brokerStatement->bindValue(':config_value', 'rrd');
-        $brokerStatement->execute();
-        $statement = $pearDB->prepare("SELECT `value` FROM options WHERE `key` = :key ");
-        $statement->bindValue(':key', 'rrdcached_port');
-        $statement->execute();
-        $port = $statement->fetch(\PDO::FETCH_ASSOC);
+        $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_port' ");
+        $port = $result->fetch();
 
-        foreach ($brokerStatement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+        while ($row = $res->fetch()) {
             if ($port['value']) {
                 $brokerInfoData = [
                     [
@@ -381,12 +356,12 @@ if ($cache['value']) {
                         'config_group_id' => $row['config_group_id']
                     ],
                 ];
+                $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
+                    . 'config_group, config_group_id ) VALUES '
+                    . '( :config_id, :config_key, :config_value, '
+                    . ':config_group, :config_group_id)';
+                $statement = $pearDB->prepare($query);
                 foreach ($brokerInfoData as $dataRow) {
-                    $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
-                        . 'config_group, config_group_id ) VALUES '
-                        . '( :config_id, :config_key, :config_value, '
-                        . ':config_group, :config_group_id)';
-                    $statement = $pearDB->prepare($query);
                     $statement->bindValue(":config_id", (int) $dataRow['config_id'], \PDO::PARAM_INT);
                     $statement->bindValue(":config_key", $dataRow['config_key']);
                     $statement->bindValue(":config_value", $dataRow['config_value']);
@@ -416,12 +391,12 @@ if ($cache['value']) {
                         'config_group_id' => $row['config_group_id']
                     ],
                 ];
+                $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
+                    . 'config_group, config_group_id ) VALUES '
+                    . '( :config_id, :config_key, :config_value, '
+                    . ':config_group, :config_group_id)';
+                $statement = $pearDB->prepare($query);
                 foreach ($brokerInfoData as $rowData) {
-                    $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
-                        . 'config_group, config_group_id ) VALUES '
-                        . '( :config_id, :config_key, :config_value, '
-                        . ':config_group, :config_group_id)';
-                    $statement = $pearDB->prepare($query);
                     $statement->bindValue(':config_id', (int) $rowData['config_id'], \PDO::PARAM_INT);
                     $statement->bindValue(':config_key', $rowData['config_key']);
                     $statement->bindValue(':config_value', $rowData['config_value']);
@@ -443,17 +418,12 @@ if ($cache['value']) {
             $statement->bindValue(':config_key_2', 'path');
             $statement->execute();
         }
-        $statement = $pearDB->prepare(
-            "DELETE FROM options WHERE `key` = :key_1
-                OR `key` = :key_2 OR `key` = :key_3"
+        $pearDB->query(
+            "DELETE FROM options WHERE `key` = 'rrdcached_enable'
+                OR `key` = 'rrdcached_port' OR `key` = 'rrdcached_unix_path'"
         );
-        $statement->bindValue(':key_1', 'rrdcached_enable');
-        $statement->bindValue(':key_2', 'rrdcached_port');
-        $statement->bindValue(':key_3', 'rrdcached_unix_path');
-        $statement->execute();
         $pearDB->commit();
     } catch (\PDOException $e) {
-
         $centreonLog->insertLog(
             2, // sql-error.log
             "UPGRADE : 19.10.0-beta.3 Unable to move rrd global cache option on broker form"
