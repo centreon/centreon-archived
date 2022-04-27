@@ -15512,3 +15512,9 @@ msgstr ""
 
 # msgid "Discard"
 # msgstr ""
+
+# msgid "At least one of the two following fields must be filled"
+# msgstr ""
+
+# msgid "Press Enter to accept"
+# msgstr ""

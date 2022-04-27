@@ -52,6 +52,7 @@ const Text = ({
   return useMemoComponent({
     Component: (
       <TextField
+        fullWidth
         EndAdornment={passwordEndAdornment}
         ariaLabel={t(label)}
         error={error as string | undefined}
