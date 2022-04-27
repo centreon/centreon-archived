@@ -283,13 +283,13 @@ function insertVirtualMetric()
 
     $insertStatement->bindValue(
         ':warn',
-        !empty($ret['warn']) && is_numeric($ret['warn']) ? $ret['warn'] : null,
+        array_key_exists('warn', $ret) && is_numeric($ret['warn']) ? $ret['warn'] : null,
         \PDO::PARAM_INT
     );
 
     $insertStatement->bindValue(
         ':crit',
-        !empty($ret['crit']) && is_numeric($ret['crit']) ? $ret['crit'] : null,
+        array_key_exists('crit', $ret) && is_numeric($ret['crit']) ? $ret['crit'] : null,
         \PDO::PARAM_INT
     );
 
@@ -387,13 +387,13 @@ function updateVirtualMetric($vmetricId = null)
 
     $updateStatement->bindValue(
         ':warn',
-        !empty($ret['warn']) && is_numeric($ret['warn']) ? $ret['warn'] : null,
+        array_key_exists('warn', $ret) && is_numeric($ret['warn']) ? $ret['warn'] : null,
         \PDO::PARAM_INT
     );
 
     $updateStatement->bindValue(
         ':crit',
-        !empty($ret['crit']) && is_numeric($ret['crit']) ? $ret['crit'] : null,
+        array_key_exists('crit', $ret) && is_numeric($ret['crit']) ? $ret['crit'] : null,
         \PDO::PARAM_INT
     );
 
