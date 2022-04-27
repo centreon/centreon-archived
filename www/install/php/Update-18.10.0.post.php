@@ -39,31 +39,54 @@
  * Generate random key for application key
  */
 $uniqueKey = md5(uniqid(rand(), true));
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
-$pearDB->query($query);
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
-$pearDB->query($query);
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isCentral', 'no')";
-$pearDB->query($query);
+$informationsData = [
+    [
+        'key' => 'appKey',
+        'value' => $uniqueKey
+    ],
+    [
+        'key' => 'isRemote',
+        'value' => 'no'
+    ],
+    [
+        'key' => 'isCentral',
+        'value' => 'no'
+    ]
+];
+foreach ($informationsData as $row) {
+    $query = "INSERT INTO `informations` (`key`,`value`) VALUES (:key, :value)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':key', $row['key']);
+    $statement->bindValue(':value', $row['value']);
+    $statement->execute();
+}
 
 // Retrieve current Nagios plugins path.
-$query = "SELECT value FROM options WHERE `key`='nagios_path_plugins'";
-$result = $pearDB->query($query);
-$row = $result->fetchRow();
+$query = "SELECT value FROM options WHERE `key`=:key";
+$statement = $pearDB->prepare($query);
+$statement->bindValue(":key", 'nagios_path_plugins');
+$statement->execute();
+$row = $statement->fetch(\PDO::FETCH_ASSOC);
 
 // Update to new path if necessary.
 if ($row
     && preg_match('#/usr/lib/nagios/plugins/?#', $row['value'])
     && is_dir('/usr/lib64/nagios/plugins')) {
     // options table.
-    $query = "UPDATE options SET value='/usr/lib64/nagios/plugins/' WHERE `key`='nagios_path_plugins'";
-    $pearDB->query($query);
+    $query = "UPDATE options SET value=:value WHERE `key`=:key";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(":value", '/usr/lib64/nagios/plugins/');
+    $statement->bindValue(":key", 'nagios_path_plugins');
+    $statement->execute();
 
     // USER1 resource.
-    $pearDB->query(
-        "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins'
-        WHERE resource_line='/usr/lib/nagios/plugins'"
+    $statement = $pearDB->prepare(
+        "UPDATE cfg_resource SET resource_line=:resource_line_value
+        WHERE resource_line=:resource_line_condition"
     );
+    $statement->bindValue(":resource_line_value", '/usr/lib64/nagios/plugins');
+    $statement->bindValue(":resource_line_condition", '/usr/lib/nagios/plugins');
+    $statement->execute();
 }
 
 /*
@@ -114,11 +137,14 @@ while ($aclTopology = $aclTopologies->fetch()) {
 
     // insert missing parent topology relations
     if (count($aclToInsert)) {
-        $statement = $pearDB->query(
+        $statement = $pearDB->prepare(
             'INSERT INTO acl_topology_relations(acl_topo_id, topology_topology_id) ' .
-            'SELECT ' . $aclTopologyId  . ', t.topology_id ' .
+            'SELECT :acl_topology_id, t.topology_id ' .
             'FROM topology t ' .
-            'WHERE t.topology_page IN (' . implode(',', $aclToInsert) . ')'
+            'WHERE t.topology_page IN (:acl_to_insert)'
         );
+        $statement->bindValue(":acl_topology_id", (int) $aclTopologyId, \PDO::PARAM_INT);
+        $statement->bindValue(":acl_to_insert", implode(',', $aclToInsert));
+        $statement->execute();
     }
 }
