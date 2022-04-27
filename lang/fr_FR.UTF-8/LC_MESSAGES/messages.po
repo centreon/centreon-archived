@@ -16758,11 +16758,11 @@ msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire
 msgid "Discard"
 msgstr "Annuler"
 
-msgid "No contact is configured for this resource"
-msgstr "Aucun contact n’est configuré pour cette ressource"
+msgid "No contacts are configured for this resource"
+msgstr "Aucun contacts ne sont configurés pour cette ressource"
 
-msgid "No contact groups is configured for this resource"
-msgstr "Aucun contact groupe n’est configuré pour cette ressource"
+msgid "No contact groups are configured for this resource"
+msgstr "Aucun contact groupes ne sont configurés pour cette ressource"
 
 msgid "At least one of the two following fields must be filled"
 msgstr "Au moins l'un des deux champs suivants doit être rempli"
