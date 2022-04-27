@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +19,6 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 
@@ -69,6 +67,21 @@ const useStyles = makeStyles((theme) => ({
   },
   pollerDetailTitle: {
     flexGrow: 1,
+  },
+  subMenuToggle: {
+    backgroundColor: theme.palette.common.black,
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggleActive: {
+    display: 'block',
   },
 }));
 
@@ -178,8 +191,8 @@ const PollerMenu = (): JSX.Element | null => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
-              [styles['submenu-toggle-active'] as string]: toggled,
+            className={clsx(classes.subMenuToggle, {
+              [classes.subMenuToggleActive]: toggled,
             })}
           >
             {!isEmpty(issues) ? (
@@ -202,13 +215,14 @@ const PollerMenu = (): JSX.Element | null => {
                 );
               })
             ) : (
-              <Typography
-                className={clsx(classes.label, classes.pollerDetailRow)}
-                variant="body2"
-              >
-                <div>{t(labelAllPollers)}</div>
-                {pollerCount}
-              </Typography>
+              <div className={classes.pollerDetailRow}>
+                <Typography className={classes.label} variant="body2">
+                  {t(labelAllPollers)}
+                </Typography>
+                <Typography className={classes.label} variant="body2">
+                  {pollerCount as number}
+                </Typography>
+              </div>
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>

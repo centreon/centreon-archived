@@ -35,6 +35,7 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
+import { userAtom } from '@centreon/ui-context';
 import {
   MemoizedFilter,
   SearchField,
@@ -146,6 +147,7 @@ const Filter = (): JSX.Element => {
   const customFilters = useAtomValue(customFiltersAtom);
   const currentFilter = useAtomValue(currentFilterAtom);
   const sendingFilter = useAtomValue(sendingFilterAtom);
+  const user = useAtomValue(userAtom);
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
   const setNewFilter = useUpdateAtom(setNewFilterDerivedAtom);
@@ -512,6 +514,7 @@ const Filter = (): JSX.Element => {
     currentFilter,
     isDynamicCriteria,
     sendingDynamicCriteriaValueRequests,
+    user,
   ];
 
   return (

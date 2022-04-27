@@ -1,23 +1,24 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { useTranslation, withTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { equals, not } from 'ramda';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import WizardFormSetupStatus from '../../components/WizardFormSetupStatus';
 import routeMap from '../../reactRoutes/routeMap';
-
-interface Props {
-  pollerData;
-}
+import { remoteServerAtom, RemoteServerData } from '../pollerAtoms';
+import {
+  labelExportGenerationTimeout,
+  labelFinalStep,
+} from '../translatedLabels';
 
 const exportTaskEndpoint =
   'internal.php?object=centreon_task_service&action=getTaskStatus';
 
-const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
+const RemoteServerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [error, setError] = React.useState<string | null>(null);
@@ -37,6 +38,9 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
   const generationTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const remainingGenerationTimeoutRef = React.useRef<number>(30);
+  const pollerData = useAtomValue<RemoteServerData | null>(
+    remoteServerAtom,
+  ) as RemoteServerData;
 
   const refreshGeneration = (): void => {
     const { taskId } = pollerData;
@@ -75,7 +79,7 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
 
       return;
     }
-    setError('Export generation timeout');
+    setError(t(labelExportGenerationTimeout));
     setGenerateStatus(false);
   };
 
@@ -84,23 +88,13 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
   }, []);
 
   return (
-    <WizardFormInstallingStatus
+    <WizardFormSetupStatus
       error={error}
-      formTitle={`${t('Finalizing Setup')}`}
-      statusCreating={pollerData.submitStatus}
+      formTitle={t(labelFinalStep)}
+      statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={generateStatus}
     />
   );
 };
 
-const mapStateToProps = ({ pollerForm }): Props => ({
-  pollerData: pollerForm,
-});
-
-const mapDispatchToProps = {};
-
-const RemoteServerStepThree = withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(FormRemoteServerStepThree),
-);
-
-export default (): JSX.Element => <RemoteServerStepThree />;
+export default RemoteServerWizardStepThree;

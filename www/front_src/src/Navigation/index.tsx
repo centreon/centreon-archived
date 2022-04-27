@@ -6,11 +6,11 @@ import Sidebar from './Sidebar';
 import useNavigation from './useNavigation';
 
 const Navigation = (): JSX.Element => {
-  const { reactRoutes, menu } = useNavigation();
+  const { menu } = useNavigation();
 
   return useMemoComponent({
-    Component: <Sidebar navigationData={menu} reactRoutes={reactRoutes} />,
-    memoProps: [menu, reactRoutes],
+    Component: <Sidebar navigationData={menu} />,
+    memoProps: [menu],
   });
 };
 

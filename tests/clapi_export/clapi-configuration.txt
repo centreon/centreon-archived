@@ -557,6 +557,7 @@ CONTACTTPL;ADD;contact_template;contact_template;;$2y$10$Yf78oIppk6wC7hMtDd0TKeX
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
+CONTACTTPL;setparam;contact_template;contact_theme;light
 CONTACTTPL;setparam;contact_template;timezone;0
 CONTACTTPL;setparam;contact_template;reach_api;0
 CONTACTTPL;setparam;contact_template;reach_api_rt;0
@@ -571,6 +572,7 @@ CONTACTTPL;ADD;test_name;test_contact-template;;$2y$10$BqnZdxhI2wz1Ot/exXd73eOng
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
+CONTACTTPL;setparam;test_contact-template;contact_theme;light
 CONTACTTPL;setparam;test_contact-template;timezone;0
 CONTACTTPL;setparam;test_contact-template;reach_api;0
 CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
@@ -587,6 +589,7 @@ CONTACT;setparam;admin;svcnotifperiod;24x7
 CONTACT;setparam;admin;hostnotifopt;n
 CONTACT;setparam;admin;servicenotifopt;n
 CONTACT;setparam;admin;contact_js_effects;0
+CONTACT;setparam;admin;contact_theme;light
 CONTACT;setparam;admin;timezone;0
 CONTACT;setparam;admin;reach_api;0
 CONTACT;setparam;admin;reach_api_rt;0
@@ -605,6 +608,7 @@ CONTACT;setparam;guest;svcnotifperiod;24x7
 CONTACT;setparam;guest;hostnotifopt;n
 CONTACT;setparam;guest;servicenotifopt;n
 CONTACT;setparam;guest;contact_js_effects;0
+CONTACT;setparam;guest;contact_theme;light
 CONTACT;setparam;guest;timezone;0
 CONTACT;setparam;guest;reach_api;0
 CONTACT;setparam;guest;reach_api_rt;0
@@ -621,6 +625,7 @@ CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;$2y$10$xRDrrYnB0.ZcN2c
 CONTACT;setparam;jeanpierre;hostnotifopt;n
 CONTACT;setparam;jeanpierre;servicenotifopt;n
 CONTACT;setparam;jeanpierre;contact_js_effects;0
+CONTACT;setparam;jeanpierre;contact_theme;light
 CONTACT;setparam;jeanpierre;timezone;0
 CONTACT;setparam;jeanpierre;reach_api;0
 CONTACT;setparam;jeanpierre;reach_api_rt;0
@@ -635,6 +640,7 @@ CONTACT;ADD;test_contact;test_contact;test@localhost;$2y$10$HcwRGF.oU8k9sfm9Vpp7
 CONTACT;setparam;test_contact;hostnotifopt;n
 CONTACT;setparam;test_contact;servicenotifopt;n
 CONTACT;setparam;test_contact;contact_js_effects;0
+CONTACT;setparam;test_contact;contact_theme;light
 CONTACT;setparam;test_contact;timezone;0
 CONTACT;setparam;test_contact;reach_api;0
 CONTACT;setparam;test_contact;reach_api_rt;0
@@ -651,6 +657,7 @@ CONTACT;setparam;user;svcnotifperiod;24x7
 CONTACT;setparam;user;hostnotifopt;n
 CONTACT;setparam;user;servicenotifopt;n
 CONTACT;setparam;user;contact_js_effects;0
+CONTACT;setparam;user;contact_theme;light
 CONTACT;setparam;user;timezone;0
 CONTACT;setparam;user;reach_api;0
 CONTACT;setparam;user;reach_api_rt;0

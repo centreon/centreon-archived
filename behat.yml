@@ -150,20 +150,10 @@ default:
       paths: [ "%paths.base%/features/HostTemplateConfiguration.feature" ]
       contexts: [ HostTemplateConfigurationContext ]
 
-    module:
-      paths: [ "%paths.base%/features/Module.feature" ]
-      contexts:
-      - ModuleContext
-
     module_api:
       paths: [ "%paths.base%/features/ModuleApi.feature" ]
       contexts:
       - ModuleApiContext
-
-    widget:
-      paths: [ "%paths.base%/features/Widget.feature" ]
-      contexts:
-      - WidgetContext
 
     rest_api:
       paths: [ "%paths.base%/features/RestApi.feature" ]

@@ -33,11 +33,11 @@
         <td>
           
           <div class="Toolbar_TDSelectAction_Top">
-                <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></a></span>
-                <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></a></span>
-                <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
-                <span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></a></span>
-                <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
+              <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><span title='Refresh'>{php}displaySvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 18, 18){/php}</span></a></span>
+              <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><span title="Play">{php}displaySvg("www/img/icons/media_play.svg", "var(--icons-fill-color)", 20, 20){/php}</span></a></span>
+              <span class="consol_button"><span id="JS_monitoring_play_gray" title="Play">{php}displaySvg("www/img/icons/media_play.svg", "var(--icons-disabled-fill-color)", 18, 18){/php}</span></span>
+              <span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><span title="Pause">{php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-fill-color)", 20, 20){/php}</span></a></span>
+              <span class="consol_button"><span id="JS_monitoring_pause_gray" class="cachediv" title="Pause">{php}displaySvg("www/img/icons/media_pause.svg", "var(--icons-disabled-fill-color)", 18, 18){/php}</span></span>
             </div>
         </td>
         <td id="pagination1" class="ToolbarPagination"></td>

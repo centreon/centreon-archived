@@ -50,6 +50,8 @@ if (!$min) {
     // Centreon ToolTips
     var centreonTooltip = new CentreonToolTip();
     centreonTooltip.setTitle('<?php echo _("Help"); ?>');
+    var svg = "<?php displaySvg("www/img/icons/question.svg", "var(--help-tool-tip-icon-fill-color)", 18, 18); ?>"
+    centreonTooltip.setSource(svg);
     centreonTooltip.render();
 
     function myToggleAll(duration, toggle) {
