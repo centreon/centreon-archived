@@ -1,9 +1,16 @@
 import * as React from 'react';
 
 import { t } from 'i18next';
-import { isNil } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 
-import { Box, Divider, IconButton, Paper, Tooltip } from '@mui/material';
+import {
+  Box,
+  Divider,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
@@ -18,6 +25,7 @@ interface Props {
   contacts: Array<Contact> | Array<ContactGroup> | undefined;
   getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
+  messageNoContacts: JSX.Element;
   templateColumns: string;
 }
 
@@ -26,6 +34,7 @@ const Contacts = ({
   templateColumns,
   getColumns,
   headers,
+  messageNoContacts,
 }: Props): JSX.Element => {
   const goToUri = (uri): void => {
     window.location.href = uri as string;
@@ -33,7 +42,7 @@ const Contacts = ({
 
   const getConfigurationColumn = React.useCallback(
     ({ configuration_uri }): JSX.Element => {
-      const canGoToConfiguration = isNil(configuration_uri);
+      const canGoToConfiguration = !isNil(configuration_uri);
       const tooltipTitle = canGoToConfiguration
         ? t(labelConfigure)
         : t(labelNotAuthorizedToAccessConfiguration);
@@ -56,6 +65,21 @@ const Contacts = ({
     },
     [],
   );
+
+  if (isEmpty(contacts)) {
+    return (
+      <Box
+        component={Paper}
+        display="grid"
+        sx={{
+          justifyContent: 'center',
+          py: 1,
+        }}
+      >
+        <Typography>{messageNoContacts}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box

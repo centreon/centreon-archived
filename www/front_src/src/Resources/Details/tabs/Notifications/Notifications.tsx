@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, isNil, path } from 'ramda';
+import { isNil, path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,6 @@ import { Contact, ContactGroup, NotificationContacts } from './models';
 import Contacts from './Contacts';
 import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
 import ContactCell from './ContactCell';
-import ContactsNotConfigured from './ContactNotConfigured';
 
 const Notifications = (): JSX.Element => {
   const { t } = useTranslation();
@@ -116,53 +115,37 @@ const Notifications = (): JSX.Element => {
           )}
         </Stack>
       </Paper>
-      {isEmpty(notificationContacts.contacts) ? (
-        <ContactsNotConfigured
-          icon={<PersonIcon color="primary" fontSize="large" />}
-          label={t(labelContacts)}
-          messageLabel={t(labelNoContactIsConfiguredForThisResource)}
-        />
-      ) : (
-        <Stack>
-          <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-            <PersonIcon color="primary" fontSize="large" />
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelContacts)}
-            </Typography>
-          </Stack>
+      <Stack>
+        <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+          <PersonIcon color="primary" fontSize="large" />
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {t(labelContacts)}
+          </Typography>
+        </Stack>
 
-          <Contacts
-            contacts={notificationContacts?.contacts as Array<Contact>}
-            getColumns={getContactWithEmailColumns}
-            headers={contactWithEmailHeaders}
-            templateColumns="1fr 1fr 1fr 1fr"
-          />
-        </Stack>
-      )}
-      {isEmpty(notificationContacts.contacts) ? (
-        <ContactsNotConfigured
-          icon={<GroupIcon color="primary" fontSize="large" />}
-          label={labelContactGroups}
-          messageLabel={t(labelNoContactGroupsIsConfiguredForThisResource)}
+        <Contacts
+          contacts={notificationContacts?.contacts as Array<Contact>}
+          getColumns={getContactWithEmailColumns}
+          headers={contactWithEmailHeaders}
+          messageNoContacts={t(labelNoContactIsConfiguredForThisResource)}
+          templateColumns="1fr 1fr 1fr 1fr"
         />
-      ) : (
-        <Stack>
-          <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-            <GroupIcon color="primary" fontSize="large" />
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelContactGroups)}
-            </Typography>
-          </Stack>
-          <Contacts
-            contacts={
-              notificationContacts?.contact_groups as Array<ContactGroup>
-            }
-            getColumns={getContactColumns}
-            headers={contactHeaders}
-            templateColumns="1fr 1fr 1fr"
-          />
+      </Stack>
+      <Stack>
+        <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
+          <GroupIcon color="primary" fontSize="large" />
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {t(labelContactGroups)}
+          </Typography>
         </Stack>
-      )}
+        <Contacts
+          contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
+          getColumns={getContactColumns}
+          headers={contactHeaders}
+          messageNoContacts={t(labelNoContactGroupsIsConfiguredForThisResource)}
+          templateColumns="1fr 1fr 1fr"
+        />
+      </Stack>
     </Stack>
   );
 };
