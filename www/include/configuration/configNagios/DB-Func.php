@@ -463,7 +463,7 @@ function insertOrUpdateLogger(CentreonDb $pearDB, array $ret, int $nagiosId): vo
     $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
     $statement->execute();
 
-    if ($res = $statement->fetch() && $ret['logger_version'] === 'log_v2_enabled') {
+    if ($res = $statement->fetch()) {
         updateLoggerV2Cfg($pearDB, $ret, $nagiosId);
     } else {
         insertLoggerV2Cfg($pearDB, $ret, $nagiosId);
