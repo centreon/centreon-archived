@@ -89,10 +89,10 @@ describe('Web SSOconfiguration form', () => {
     expect(screen.getByLabelText(labelWebSSOOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toHaveValue(
@@ -133,7 +133,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
       'invalid domain',
     );
     userEvent.keyboard('{Enter}');
@@ -145,7 +145,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
       '127.0.0.1111',
     );
     userEvent.keyboard('{Enter}');
