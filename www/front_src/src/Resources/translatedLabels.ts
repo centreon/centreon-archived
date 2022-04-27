@@ -243,7 +243,7 @@ export const labelSettings = 'Settings';
 export const labelNotificationStatus = 'Notification status';
 export const labelConfiguration = 'Configuration';
 export const labelNotAuthorizedToAccessConfiguration =
-  'You are not authorized to access configuration';
+  'You are not authorized to access to the configuration';
 export const labelForceActiveChecks = 'Force active checks';
 export const labelNoContactIsConfiguredForThisResource =
   'No contact is configured for this resource';
