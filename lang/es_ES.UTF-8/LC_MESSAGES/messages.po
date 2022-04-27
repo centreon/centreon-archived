@@ -15068,7 +15068,7 @@ msgstr ""
 # msgid "No contacts are configured for this resource"
 # msgstr ""
 
-# msgid "No contact groups is configured for this resource"
+# msgid "No contact groups are configured for this resource"
 # msgstr ""
 
 # msgid "At least one of the two following fields must be filled"
