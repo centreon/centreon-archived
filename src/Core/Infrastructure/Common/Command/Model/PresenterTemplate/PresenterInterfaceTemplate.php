@@ -4,22 +4,18 @@ namespace Core\Infrastructure\Common\Command\Model\PresenterTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 
-class CommandPresenterTemplate extends FileTemplate
+class PresenterInterfaceTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
         public string $namespace,
         public string $name,
-        public CommandPresenterInterfaceTemplate $presenterInterface,
         public bool $exists = false
     ) {
     }
 
     public function generateModelContent(): string
     {
-        $interfaceNamespace = $this->presenterInterface->namespace . '\\' . $this->presenterInterface->name;
-        $interfaceName = $this->presenterInterface->name;
-        $dataVariable = '$data';
         $content = <<<EOF
         <?php
         $this->licenceHeader
@@ -27,20 +23,19 @@ class CommandPresenterTemplate extends FileTemplate
 
         namespace $this->namespace;
 
-        use $interfaceNamespace;
+        use Core\Application\Common\UseCase\PresenterInterface;
 
-        class $this->name extends $interfaceName
+        interface $this->name extends PresenterInterface
         {
-            /**
-             * @inheritDoc
-             */
-            public function present(mixed $dataVariable): void
-            {
-            }
         }
 
         EOF;
 
         return $content;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

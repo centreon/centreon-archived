@@ -5,7 +5,7 @@ namespace Core\Infrastructure\Common\Command\Model\RepositoryTemplate;
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
-class WriteRepositoryTemplate extends FileTemplate
+class RepositoryTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,

@@ -5,18 +5,46 @@ namespace Core\Infrastructure\Common\Command\Service;
 use Symfony\Component\Console\Output\OutputInterface;
 use Core\Infrastructure\Common\Command\Model\DtoTemplate\RequestDtoTemplate;
 use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\CommandUseCaseTemplate;
-use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryTemplate;
 use Core\Infrastructure\Common\Command\Model\ControllerTemplate\CommandControllerTemplate;
-use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterInterfaceTemplate;
 
 class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
 {
-    private WriteRepositoryTemplate $writeRepositoryTemplate;
+    /**
+     * @var RepositoryTemplate
+     */
+    private RepositoryTemplate $writeRepositoryTemplate;
+
+    /**
+     * @var RequestDtoTemplate
+     */
     private RequestDtoTemplate $requestDtoTemplate;
-    private CommandPresenterInterfaceTemplate $commandPresenterInterfaceTemplate;
+
+    /**
+     * @var PresenterInterfaceTemplate
+     */
+    private PresenterInterfaceTemplate $commandPresenterInterfaceTemplate;
+
+    /**
+     * @var CommandUseCaseTemplate
+     */
     private CommandUseCaseTemplate $commandUseCaseTemplate;
 
+    /**
+     * @var PresenterTemplate
+     */
+    private PresenterTemplate $commandPresenterTemplate;
+
+    /**
+     * @var CommandControllerTemplate
+     */
+    private CommandControllerTemplate $commandControllerTemplate;
+
+    /**
+     * @param string $srcPath
+     */
     public function __construct(protected string $srcPath)
     {
     }
@@ -35,7 +63,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             . $modelName . 'Repository.php';
         $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Repository';
         if (!file_exists($filePath)) {
-            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+            $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
                 $namespace,
                 'DbWrite' . $modelName . 'Repository',
@@ -58,7 +86,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                     . $this->writeRepositoryTemplate->name
             );
         } else {
-            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+            $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
                 $namespace,
                 'DbWrite' . $modelName . 'Repository',
@@ -77,7 +105,6 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
      *
      * @param OutputInterface $output
      * @param string $modelName
-     * @return void
      */
     public function createRequestDtoTemplateIfNotExist(
         OutputInterface $output,
@@ -125,6 +152,13 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         }
     }
 
+    /**
+     * Create the Presenter Interface file if it doesn't exist
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $useCaseType
+     */
     public function createPresenterInterfaceIfNotExist(
         OutputInterface $output,
         string $modelName,
@@ -136,7 +170,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             . $className . '.php';
         $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->commandPresenterInterfaceTemplate = new commandPresenterInterfaceTemplate(
+            $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
                 $filePath,
                 $namespace,
                 $className,
@@ -157,7 +191,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                     . $this->commandPresenterInterfaceTemplate->name
             );
         } else {
-            $this->commandPresenterInterfaceTemplate = new commandPresenterInterfaceTemplate(
+            $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
                 $filePath,
                 $namespace,
                 $className,
@@ -170,6 +204,13 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         }
     }
 
+    /**
+     * Create the Presenter Interface file if it doesn't exist
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $useCaseType
+     */
     public function createPresenterIfNotExist(
         OutputInterface $output,
         string $modelName,
@@ -181,7 +222,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             . $className . '.php';
         $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->CommandPresenterTemplate = new CommandPresenterTemplate(
+            $this->commandPresenterTemplate = new PresenterTemplate(
                 $filePath,
                 $namespace,
                 $className,
@@ -195,15 +236,15 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 mkdir($dirLocation, 0777, true);
             }
             file_put_contents(
-                $this->CommandPresenterTemplate->filePath,
-                $this->CommandPresenterTemplate->generateModelContent()
+                $this->commandPresenterTemplate->filePath,
+                $this->commandPresenterTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
-                    . $this->CommandPresenterTemplate->name
+                'Creating Presenter : ' . $this->commandPresenterTemplate->namespace . '\\'
+                    . $this->commandPresenterTemplate->name
             );
         } else {
-            $this->CommandPresenterTemplate = new CommandPresenterTemplate(
+            $this->commandPresenterTemplate = new PresenterTemplate(
                 $filePath,
                 $namespace,
                 $className,
@@ -211,12 +252,19 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
-                    . $this->CommandPresenterTemplate->name
+                'Using Existing Presenter : ' . $this->commandPresenterTemplate->namespace . '\\'
+                    . $this->commandPresenterTemplate->name
             );
         }
     }
 
+    /**
+     * Create the UseCase file if it doesn't exist
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $useCaseType
+     */
     public function createUseCaseIfNotExist(
         OutputInterface $output,
         string $modelName,
@@ -267,6 +315,13 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         }
     }
 
+    /**
+     * Create the Controller file if it doesn't exist
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $useCaseType
+     */
     public function createControllerIfNotExist(
         OutputInterface $output,
         string $modelName,
@@ -316,5 +371,20 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                     . $this->commandControllerTemplate->name
             );
         }
+    }
+
+    /**
+     * Create the Unit tests files if they don't exist
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $repositoryType
+     */
+    public function createUnitTestsIfNotExists(
+        OutputInterface $output,
+        string $modelName,
+        string $repositoryType
+    ): void {
+
     }
 }

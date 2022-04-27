@@ -150,7 +150,6 @@ class CreateCoreArchCommandService
      * Create the Model file.
      *
      * @param ModelTemplate $model
-     * @return void
      */
     public function createModel(ModelTemplate $model): void
     {
@@ -166,6 +165,13 @@ class CreateCoreArchCommandService
         file_put_contents($model->filePath, $model->generateModelContent());
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @param string $repositoryType
+     */
     public function createRepositoryInterfaceTemplateIfNotExist(
         OutputInterface $output,
         string $modelName,
@@ -181,7 +187,7 @@ class CreateCoreArchCommandService
                 $repositoryType . $modelName . 'RepositoryInterface',
                 false
             );
-            preg_match('/^(.+).Write' . $modelName . 'RepositoryInterface\.php$/', $filePath, $matches);
+            preg_match('/^(.+).'. $repositoryType . $modelName . 'RepositoryInterface\.php$/', $filePath, $matches);
             $dirLocation = $matches[1];
             //Create dir if not exists,
             if (!is_dir($dirLocation)) {

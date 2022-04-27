@@ -2,12 +2,17 @@
 
 namespace Core\Infrastructure\Common\Command\Service;
 
-use Core\Infrastructure\Common\Command\Model\DtoTemplate\ResponseDtoTemplate;
+use Core\Infrastructure\Common\Command\Model\ControllerTemplate\QueryControllerTemplate;
 use Symfony\Component\Console\Output\OutputInterface;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\DtoTemplate\ResponseDtoTemplate;
+use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\QueryUseCaseTemplate;
 
-class CreateCoreQueryArchCommandService
+class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
 {
     public function __construct(protected string $srcPath)
     {
@@ -23,11 +28,11 @@ class CreateCoreQueryArchCommandService
         OutputInterface $output,
         string $modelName
     ): void {
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/Repository/' . 'Read' .
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/Repository/' . 'Read' .
             $modelName . 'RepositoryInterface.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\Repository';
+        $namespace = 'Core\\' . $modelName . '\\Application\\Repository';
         if (!file_exists($filePath)) {
-            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
+            $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
                 $namespace,
                 'Read' . $modelName . 'RepositoryInterface',
@@ -41,23 +46,23 @@ class CreateCoreQueryArchCommandService
             }
 
             file_put_contents(
-                $this->writeRepositoryInterfaceTemplate->filePath,
-                $this->writeRepositoryInterfaceTemplate->generateModelContent()
+                $this->repositoryInterfaceTemplate->filePath,
+                $this->repositoryInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
-                    . $this->writeRepositoryInterfaceTemplate->name
+                'Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name
             );
         } else {
-            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
+            $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
                 $namespace,
                 'Read' . $modelName . 'RepositoryInterface',
                 true
             );
             $output->writeln(
-                'Using Existing Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
-                    . $this->writeRepositoryInterfaceTemplate->name
+                'Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name
             );
         }
     }
@@ -72,15 +77,15 @@ class CreateCoreQueryArchCommandService
         OutputInterface $output,
         string $modelName
     ): void {
-        $filePath = $this->srcPath . '/Core/Infrastructure/' . $modelName . '/Repository/' . 'DbRead'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Repository/' . 'DbRead'
             . $modelName . 'Repository.php';
-        $namespace = 'Core\\Infrastructure\\' . $modelName . '\\Repository';
+        $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Repository';
         if (!file_exists($filePath)) {
-            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+            $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
                 $namespace,
                 'DbRead' . $modelName . 'Repository',
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 false
             );
             preg_match('/^(.+).DbRead' . $modelName . 'Repository\.php$/', $filePath, $matches);
@@ -99,11 +104,11 @@ class CreateCoreQueryArchCommandService
                     . $this->writeRepositoryTemplate->name
             );
         } else {
-            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+            $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
                 $namespace,
                 'DbRead' . $modelName . 'Repository',
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 true
             );
             $output->writeln(
@@ -127,9 +132,9 @@ class CreateCoreQueryArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'Response';
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/UseCase/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->responseDtoTemplate = new ResponseDtoTemplate(
                 $filePath,
@@ -149,7 +154,7 @@ class CreateCoreQueryArchCommandService
                 $this->responseDtoTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating response : ' . $this->responseDtoTemplate->namespace . '\\'
+                'Creating Response : ' . $this->responseDtoTemplate->namespace . '\\'
                     . $this->responseDtoTemplate->name
             );
         } else {
@@ -160,8 +165,201 @@ class CreateCoreQueryArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing response : ' . $this->responseDtoTemplate->namespace . '\\'
+                'Using Existing Response : ' . $this->responseDtoTemplate->namespace . '\\'
                     . $this->responseDtoTemplate->name
+            );
+        }
+    }
+
+    public function createPresenterInterfaceIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelName;
+        $className = $useCaseName . 'PresenterInterface';
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/UseCase/' . $useCaseName . '\\'
+            . $className . '.php';
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                false
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->commandPresenterInterfaceTemplate->filePath,
+                $this->commandPresenterInterfaceTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name
+            );
+        } else {
+            $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                true
+            );
+            $output->writeln(
+                'Using Existing Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name
+            );
+        }
+    }
+
+    public function createPresenterIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelName;
+        $className = $useCaseName . 'Presenter';
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
+            . $className . '.php';
+        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->CommandPresenterTemplate = new PresenterTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $this->commandPresenterInterfaceTemplate,
+                false
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->CommandPresenterTemplate->filePath,
+                $this->CommandPresenterTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name
+            );
+        } else {
+            $this->CommandPresenterTemplate = new PresenterTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $this->commandPresenterInterfaceTemplate,
+                true
+            );
+            $output->writeln(
+                'Using Existing Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name
+            );
+        }
+    }
+
+    public function createUseCaseIfNotExist(
+        OutputInterface $output,
+        ModelTemplate $modelTemplate,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelTemplate->name;
+        $filePath = $this->srcPath . '/Core/'  . $modelTemplate->name . '/Application/UseCase/' . $useCaseName . '\\'
+            . $useCaseName . '.php';
+        $namespace = 'Core\\' . $modelTemplate->name . '\\Application\\UseCase\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->queryUseCaseTemplate = new QueryUseCaseTemplate(
+                $filePath,
+                $namespace,
+                $useCaseName,
+                $this->commandPresenterInterfaceTemplate,
+                $this->responseDtoTemplate,
+                $this->repositoryInterfaceTemplate,
+                false,
+                $modelTemplate
+            );
+            preg_match('/^(.+).' . $useCaseName . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->queryUseCaseTemplate->filePath,
+                $this->queryUseCaseTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
+                    . $this->queryUseCaseTemplate->name
+            );
+        } else {
+            $this->queryUseCaseTemplate = new QueryUseCaseTemplate(
+                $filePath,
+                $namespace,
+                $useCaseName,
+                $this->commandPresenterInterfaceTemplate,
+                $this->responseDtoTemplate,
+                $this->repositoryInterfaceTemplate,
+                true,
+                $modelTemplate
+            );
+            $output->writeln(
+                'Using Existing Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
+                    . $this->queryUseCaseTemplate->name
+            );
+        }
+    }
+
+    public function createControllerIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelName;
+        $className = $useCaseName . 'Controller';
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
+            . $className . '.php';
+        $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Api\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->queryControllerTemplate = new QueryControllerTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $this->queryUseCaseTemplate,
+                $this->commandPresenterInterfaceTemplate,
+                false
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->queryControllerTemplate->filePath,
+                $this->queryControllerTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Controller : ' . $this->queryControllerTemplate->namespace . '\\'
+                    . $this->queryControllerTemplate->name
+            );
+        } else {
+            $this->queryControllerTemplate = new QueryControllerTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $this->queryUseCaseTemplate,
+                $this->commandPresenterInterfaceTemplate,
+                true
+            );
+            $output->writeln(
+                'Using Existing Controller : ' . $this->queryControllerTemplate->namespace . '\\'
+                    . $this->queryControllerTemplate->name
             );
         }
     }

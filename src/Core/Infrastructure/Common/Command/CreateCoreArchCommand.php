@@ -149,9 +149,10 @@ class CreateCoreArchCommand extends Command
 
     private function createQueryArch(OutputInterface $output): void
     {
-        $this->queryArchCommandService->createReadRepositoryInterfaceTemplateIfNotExist(
+        $this->commandArchCommandService->createRepositoryInterfaceTemplateIfNotExist(
             $output,
-            $this->modelTemplate->name
+            $this->modelTemplate->name,
+            self::READ_REPOSITORY_TYPE
         );
         $this->queryArchCommandService->createReadRepositoryTemplateIfNotExist(
             $output,
@@ -161,6 +162,26 @@ class CreateCoreArchCommand extends Command
             $output,
             $this->modelTemplate->name,
             $this->useCaseType
+        );
+        $this->queryArchCommandService->createPresenterInterfaceIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType
+        );
+        $this->queryArchCommandService->createPresenterIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType
+        );
+        $this->queryArchCommandService->createUseCaseIfNotExist(
+            $output,
+            $this->modelTemplate,
+            $this->useCaseType,
+        );
+        $this->queryArchCommandService->createControllerIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType,
         );
     }
 }

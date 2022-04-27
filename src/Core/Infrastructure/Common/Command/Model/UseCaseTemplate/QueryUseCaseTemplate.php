@@ -2,38 +2,41 @@
 
 namespace Core\Infrastructure\Common\Command\Model\UseCaseTemplate;
 
-use Core\Infrastructure\Common\Command\Model\{
-    DtoTemplate\RequestDtoTemplate,
-    FileTemplate,
-    PresenterTemplate\PresenterInterfaceTemplate,
-    RepositoryTemplate\RepositoryInterfaceTemplate
-};
+use Core\Infrastructure\Common\Command\Model\FileTemplate;
+use Core\Infrastructure\Common\Command\Model\DtoTemplate\ResponseDtoTemplate;
+use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
-class CommandUseCaseTemplate extends FileTemplate
+class QueryUseCaseTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
         public string $namespace,
         public string $name,
         public PresenterInterfaceTemplate $presenter,
-        public RequestDtoTemplate $request,
+        public ResponseDtoTemplate $response,
         public RepositoryInterfaceTemplate $repository,
-        public bool $exists = false
+        public bool $exists = false,
+        public ModelTemplate $model
     ) {
+
     }
 
     public function generateModelContent(): string
     {
         $presenterInterfaceNamespace = $this->presenter->namespace . '\\' . $this->presenter->name;
         $presenterInterfaceName = $this->presenter->name;
-        $requestNamespace = $this->request->namespace . '\\' . $this->request->name;
-        $requestName = $this->request->name;
         $repositoryNamespace = $this->repository->namespace . '\\' . $this->repository->name;
         $repositoryName = $this->repository->name;
+        $responseName = $this->response->name;
         $repositoryVariable = 'repository';
         $presenterVariable = 'presenter';
-        $requestVariable = 'request';
-
+        $responseVariable = 'response';
+        $responseNamespace = $this->response->namespace . '\\' . $this->response->name;
+        $modelNameVariable = lcfirst($this->model->name);
+        $modelNamespace = $this->model->namespace . '\\' . $this->model->name;
+        $modelName = $this->model->name;
 
         $content = <<<EOF
         <?php
@@ -43,8 +46,9 @@ class CommandUseCaseTemplate extends FileTemplate
         namespace $this->namespace;
 
         use $presenterInterfaceNamespace;
-        use $requestNamespace;
         use $repositoryNamespace;
+        use $responseNamespace;
+        use $modelNamespace;
 
         class $this->name
         {
@@ -57,12 +61,17 @@ class CommandUseCaseTemplate extends FileTemplate
 
             /**
              * @param $presenterInterfaceName $$presenterVariable
-             * @param $requestName $$requestVariable
              */
             public function __invoke(
-                $presenterInterfaceName $$presenterVariable,
-                $requestName $$requestVariable
+                $presenterInterfaceName $$presenterVariable
             ): void {
+            }
+
+            public function createResponse($modelName $$modelNameVariable): $responseName
+            {
+                $$responseVariable = new $responseName();
+
+                return $$responseVariable;
             }
         }
 
@@ -75,4 +84,5 @@ class CommandUseCaseTemplate extends FileTemplate
     {
         return $this->name;
     }
+
 }
