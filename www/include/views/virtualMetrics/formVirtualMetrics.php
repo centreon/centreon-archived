@@ -152,7 +152,9 @@ $form->addElement(
 #$form->addElement('select', 'real_metrics', null, $rmetrics);
 $form->addElement('text', 'unit_name', _("Metric Unit"), $attrsText2);
 $form->addElement('text', 'warn', _("Warning Threshold"), $attrsText2);
+$form->addRule('warn', _('Must be a number'), 'numeric');
 $form->addElement('text', 'crit', _("Critical Threshold"), $attrsText2);
+$form->addRule('crit', _('Must be a number'), 'numeric');
 // Options
 $form->addElement('checkbox', 'vhidden', _("Hidden Graph And Legend"), "", "onChange=manageVDEF();");
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
