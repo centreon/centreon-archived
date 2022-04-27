@@ -30,17 +30,13 @@ const keepAliveEndpoint =
 
 interface UseAppState {
   dataLoaded: boolean;
-  displayInFullScreen: () => void;
   hasMinArgument: () => boolean;
-  isFullscreenEnabled: boolean;
-  removeFullscreen: () => void;
 }
 
 const useApp = (): UseAppState => {
   const { t } = useTranslation();
 
   const [dataLoaded, setDataLoaded] = React.useState(false);
-  const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
   usePendo();
 
@@ -132,14 +128,6 @@ const useApp = (): UseAppState => {
 
   const hasMinArgument = (): boolean => equals(searchParams.get('min'), '1');
 
-  const displayInFullScreen = (): void => {
-    setIsFullscreenEnabled(true);
-  };
-
-  const removeFullscreen = (): void => {
-    setIsFullscreenEnabled(false);
-  };
-
   const keepAlive = (): void => {
     keepAliveRequest({
       endpoint: keepAliveEndpoint,
@@ -165,10 +153,7 @@ const useApp = (): UseAppState => {
 
   return {
     dataLoaded,
-    displayInFullScreen,
     hasMinArgument,
-    isFullscreenEnabled,
-    removeFullscreen,
   };
 };
 

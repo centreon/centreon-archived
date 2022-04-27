@@ -164,13 +164,15 @@ const DialogDowntime = ({
             {isNil(errors?.startTime) ? (
               <div />
             ) : (
-              <FormHelperText error>{errors?.startTime}</FormHelperText>
+              <FormHelperText error>
+                {errors?.startTime as string}
+              </FormHelperText>
             )}
             <div />
             {isNil(errors?.endTime) ? (
               <div />
             ) : (
-              <FormHelperText error>{errors?.endTime}</FormHelperText>
+              <FormHelperText error>{errors?.endTime as string}</FormHelperText>
             )}
           </Box>
 

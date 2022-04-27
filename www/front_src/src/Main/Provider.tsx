@@ -1,13 +1,12 @@
 import * as React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider as JotaiProvider } from 'jotai';
 import { not, startsWith, tail } from 'ramda';
 
-import { ThemeProvider, Module } from '@centreon/ui';
+import { Module } from '@centreon/ui';
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactElement;
 }
 
 const Provider = ({ children }: Props): JSX.Element | null => {
@@ -33,11 +32,9 @@ const Provider = ({ children }: Props): JSX.Element | null => {
 
   return (
     <Router basename={basename}>
-      <ThemeProvider>
-        <Module maxSnackbars={2} seedName="centreon">
-          <JotaiProvider scope="ui-context">{children}</JotaiProvider>
-        </Module>
-      </ThemeProvider>
+      <Module maxSnackbars={2} seedName="centreon">
+        {children}
+      </Module>
     </Router>
   );
 };

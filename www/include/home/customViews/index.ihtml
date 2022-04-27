@@ -2,7 +2,7 @@
 <div id='globalView'>
     {if $aclParameters == 1}
     <div class="toggleEdit">
-        <a href="#" title="{$editMode}"><img src="./img/icons/edit_mode.png" class="ico-14"></a>
+        <a href="#" title="{$editMode}">{$editModeIcon}</a>
     </div>
     {/if}
 
@@ -21,7 +21,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#88b917;">{t}Create a view{/t}</h3>
+                                    <h3 class="table-form-header-h3">{t}Create a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr class="list_two">
@@ -71,7 +71,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#00bfb3;">{t}Edit a view{/t}</h3>
+                                    <h3 class="table-form-header-h3">{t}Edit a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr>
@@ -124,7 +124,7 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color: #00bfb3;">{t}Share view{/t}</h3>
+                                <h3 class="table-form-header-h3">{t}Share view{/t}</h3>
                             </td>
                         </tr>
                         <tr>
@@ -173,7 +173,7 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color:#88b917;">{t}Add a widget{/t}</h3>
+                                <h3 class="table-form-header-h3">{t}Add a widget{/t}</h3>
                             </td>
                         </tr>
                         <tr>
@@ -586,7 +586,8 @@ function toggleEdit(show) {
       jQuery(this).find('.ui-icon-wrench').hide();
       jQuery(this).find('.ui-icon-trash').hide();
     });
-    $el.find('img').attr('src','./img/icons/edit_mode.png');
+    var editMode = "{/literal}{$editModeIcon}{literal}";
+    $el.find('span').replaceWith(editMode);
   } else if (show === true) {
       jQuery('#actionBar').show();
       $el.addClass('edit');
@@ -596,7 +597,8 @@ function toggleEdit(show) {
         jQuery(this).find('.ui-icon-wrench').show();
         jQuery(this).find('.ui-icon-trash').show();
     });
-    $el.find('img').attr('src','./img/icons/no_edit_mode.png');
+    var noEditMode = "{/literal}{$noEditModeIcon}{literal}";
+    $el.find('span').replaceWith(noEditMode);
   }
 
   jQuery.ajax({

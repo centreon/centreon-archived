@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
 import { Link, useNavigate } from 'react-router-dom';
@@ -24,7 +24,6 @@ import { userAtom } from '@centreon/ui-context';
 
 import { Criteria } from '../../../Resources/Filter/Criterias/models';
 import { applyFilterDerivedAtom } from '../../../Resources/Filter/filterAtoms';
-import styles from '../../header.scss';
 import {
   getHostResourcesUrl,
   downCriterias,
@@ -156,7 +155,7 @@ const HostStatusCounter = (): JSX.Element => {
       schema={statusSchema}
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
-        <div className={`${styles.wrapper} wrap-right-hosts`}>
+        <div>
           <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={HostIcon}
@@ -165,7 +164,8 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
+              data-testid="Hosts Down"
               to={unhandledDownHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledDownHostsCriterias,
@@ -178,7 +178,8 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
+              data-testid="Hosts Unreachable"
               to={unhandledUnreachableHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledUnreachableHostsCriterias,
@@ -191,7 +192,8 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
+              data-testid="Hosts Up"
               to={upHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: upHostsCriterias,
@@ -206,8 +208,8 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(styles['submenu-toggle'], {
-                [styles['submenu-toggle-active'] as string]: toggled,
+              className={clsx(classes.subMenuToggle, {
+                [classes.subMenuToggleActive]: toggled,
               })}
             >
               <SubmenuItems>
