@@ -168,37 +168,150 @@ try {
 
     //queries for broker logs
     $errorMessage = "Unable to Update cfg_centreonbroker";
-    $pearDB->query(
-        "UPDATE `cfg_centreonbroker` SET `log_directory` = '/var/log/centreon-broker/'"
+    $statement = $pearDB->prepare(
+        "UPDATE `cfg_centreonbroker` SET `log_directory` = :log_directory"
     );
+    $statement->bindValue(':log_directory', '/var/log/centreon-broker/');
+    $statement->execute();
     $errorMessage = "Unable to set cb_log";
-    $pearDB->query(
-        "INSERT INTO `cb_log` (`name`)
-        VALUES ('core'), ('config'), ('sql'), ('processing'), ('perfdata'),
-               ('bbdo'), ('tcp'), ('tls'), ('lua'), ('bam')"
-    );
+    $cbLogData = [
+        [
+            'name' => 'core'
+        ],
+        [
+            'name' => 'config'
+        ],
+        [
+            'name' => 'sql'
+        ],
+        [
+            'name' => 'processing'
+        ],
+        [
+            'name' => 'perfdata'
+        ],
+        [
+            'name' => 'bbdo'
+        ],
+        [
+            'name' => 'tcp'
+        ],
+        [
+            'name' => 'tls'
+        ],
+        [
+            'name' => 'lua'
+        ],
+        [
+            'name' => 'bam'
+        ]
+    ];
+    foreach ($cbLogData as $row) {
+        $statement = $pearDB->prepare(
+            "INSERT INTO `cb_log` (`name`)
+        VALUES (:name)"
+        );
+        $statement->bindValue(':name', $row['name']);
+        $statement->execute();
+    }
     $errorMessage = "Unable to set cb_log_level";
-    $pearDB->query(
-        "INSERT INTO `cb_log_level` (`name`)
-        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('info'), ('debug'), ('trace')"
-    );
+    $cbLogLevelData = [
+        [
+            'name' => 'disabled'
+        ],
+        [
+            'name' => 'critical'
+        ],
+        [
+            'name' => 'error'
+        ],
+        [
+            'name' => 'warning'
+        ],
+        [
+            'name' => 'info'
+        ],
+        [
+            'name' => 'debug'
+        ],
+        [
+            'name' => 'trace'
+        ]
+    ];
+    foreach ($cbLogLevelData as $row) {
+        $statement = $pearDB->prepare(
+            "INSERT INTO `cb_log_level` (`name`)
+        VALUES (:name)"
+        );
+        $statement->bindValue(':name', $row['name']);
+        $statement->execute();
+    }
     $stmt = $pearDB->query(
         "SELECT config_id FROM cfg_centreonbroker"
     );
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $pearDB->query(
-            "INSERT INTO `cfg_centreonbroker_log` (`id_centreonbroker`, `id_log`, `id_level`)
-            VALUES (" . $row['config_id'] . ",1,5),
-                   (" . $row['config_id'] . ",2,3),
-                   (" . $row['config_id'] . ",3,3),
-                   (" . $row['config_id'] . ",4,3),
-                   (" . $row['config_id'] . ",5,3),
-                   (" . $row['config_id'] . ",6,3),
-                   (" . $row['config_id'] . ",7,3),
-                   (" . $row['config_id'] . ",8,3),
-                   (" . $row['config_id'] . ",9,3),
-                   (" . $row['config_id'] . ",10,3)"
-        );
+        $brokerLogData = [
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 1,
+                'id_level' => 5
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 2,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 3,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 4,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 5,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 6,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 7,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 8,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 9,
+                'id_level' => 3
+            ],
+            [
+                'id_centreonbroker' => $row['config_id'],
+                'id_log' => 10,
+                'id_level' => 3
+            ]
+        ];
+        foreach ($brokerLogData as $row) {
+            $statement = $pearDB->prepare(
+                "INSERT INTO `cfg_centreonbroker_log` (`id_centreonbroker`, `id_log`, `id_level`)
+            VALUES (:id_centreonbroker, :id_log, :id_level)"
+            );
+            $statement->bindValue(':id_centreonbroker', (int) $row['id_centreonbroker'], \PDO::PARAM_INT);
+            $statement->bindValue(':id_log', (int) $row['id_log'], \PDO::PARAM_INT);
+            $statement->bindValue(':id_level', (int) $row['id_level'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
     $pearDB->commit();
 } catch (\Exception $e) {
