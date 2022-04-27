@@ -28,6 +28,7 @@ import { Contact, ContactGroup, NotificationContacts } from './models';
 import Contacts from './Contacts';
 import ContactsLoadingSkeleton from './ContactsLoadingSkeleton';
 import ContactCell from './ContactCell';
+import ContactsNotConfigured from './ContactNotConfigured';
 
 const Notifications = (): JSX.Element => {
   const { t } = useTranslation();
@@ -72,6 +73,7 @@ const Notifications = (): JSX.Element => {
     if (isNil(details)) {
       return;
     }
+
     loadNotificationContacts();
   }, [details]);
 
@@ -115,19 +117,11 @@ const Notifications = (): JSX.Element => {
         </Stack>
       </Paper>
       {isEmpty(notificationContacts.contacts) ? (
-        <Paper>
-          <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-            <PersonIcon color="primary" fontSize="large" />
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelContacts)}
-            </Typography>
-          </Stack>
-          <Stack padding={1}>
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelNoContactIsConfiguredForThisResource)}
-            </Typography>
-          </Stack>
-        </Paper>
+        <ContactsNotConfigured
+          icon={<PersonIcon color="primary" fontSize="large" />}
+          label={t(labelContacts)}
+          messageLabel={t(labelNoContactIsConfiguredForThisResource)}
+        />
       ) : (
         <Stack>
           <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
@@ -146,19 +140,11 @@ const Notifications = (): JSX.Element => {
         </Stack>
       )}
       {isEmpty(notificationContacts.contacts) ? (
-        <Paper>
-          <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
-            <GroupIcon color="primary" fontSize="large" />
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelContacts)}
-            </Typography>
-          </Stack>
-          <Stack padding={1}>
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {t(labelNoContactGroupsIsConfiguredForThisResource)}
-            </Typography>
-          </Stack>
-        </Paper>
+        <ContactsNotConfigured
+          icon={<GroupIcon color="primary" fontSize="large" />}
+          label={labelContactGroups}
+          messageLabel={t(labelNoContactGroupsIsConfiguredForThisResource)}
+        />
       ) : (
         <Stack>
           <Stack alignItems="center" direction="row" padding={1} spacing={0.5}>
