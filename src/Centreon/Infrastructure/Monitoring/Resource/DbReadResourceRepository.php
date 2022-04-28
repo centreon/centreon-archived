@@ -495,6 +495,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                         AND tags.type IN (' . implode(', ', $searchedTagTypes) . ')
                         LIMIT 1
                     )
+                    LIMIT 1
                 )';
         }
 
