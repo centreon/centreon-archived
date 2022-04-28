@@ -511,7 +511,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     private function addMonitoringServerSubRequest(ResourceFilter $filter, StatementCollector $collector): string
     {
         $subRequest = '';
-        if (empty($filter->getMonitoringServerNames()) === false) {
+        if (! empty($filter->getMonitoringServerNames())) {
             $monitoringServerNames = [];
 
             foreach ($filter->getMonitoringServerNames() as $index => $monitoringServerName) {
