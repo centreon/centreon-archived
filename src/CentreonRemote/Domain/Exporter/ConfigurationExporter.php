@@ -75,7 +75,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
         $stmt = $db->getCentreonDBInstance()->query('SHOW TABLES');
         $tables = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            foreach ($row as $key => $name) {
+            foreach ($row as $name) {
                 $tables[$name] = 1;
             }
         }
