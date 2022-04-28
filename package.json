@@ -10,7 +10,8 @@
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js"
+    "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.16.12",
