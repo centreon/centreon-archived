@@ -218,7 +218,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                 $this->accessGroups
             );
             $request .= ' AND EXISTS (
-              SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE (
+              SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
                   (resources.type IN (0,2) AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
                   OR
                   (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
