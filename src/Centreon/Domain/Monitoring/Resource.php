@@ -57,17 +57,17 @@ class Resource
     public const TYPE_META = 'metaservice';
 
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $type;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
@@ -117,7 +117,7 @@ class Resource
     private $parent;
 
     /**
-     * @var \Centreon\Domain\Monitoring\ResourceStatus
+     * @var \Centreon\Domain\Monitoring\ResourceStatus|null
      */
     private $status;
 
@@ -330,56 +330,59 @@ class Resource
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setId(int $id): self
+    public function setId(?int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
     /**
-     * @param string $type
+     * @param string|null $type
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
+
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -561,20 +564,21 @@ class Resource
     }
 
     /**
-     * @return \Centreon\Domain\Monitoring\ResourceStatus
+     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
      */
-    public function getStatus(): ResourceStatus
+    public function getStatus(): ?ResourceStatus
     {
         return $this->status;
     }
 
     /**
-     * @param \Centreon\Domain\Monitoring\ResourceStatus $status
+     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setStatus(ResourceStatus $status): self
+    public function setStatus(?ResourceStatus $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 

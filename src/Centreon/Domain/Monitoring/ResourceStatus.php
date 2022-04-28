@@ -48,22 +48,22 @@ class ResourceStatus
     public const STATUS_NAME_UNKNOWN = 'UNKNOWN';
 
     /**
-     * @var int
+     * @var int|null
      */
     private $code;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $severityCode;
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCode(): ?int
     {
@@ -71,35 +71,37 @@ class ResourceStatus
     }
 
     /**
-     * @param int $code
+     * @param int|null $code
      * @return \Centreon\Domain\Monitoring\ResourceStatus
      */
-    public function setCode(int $code): self
+    public function setCode(?int $code): self
     {
         $this->code = $code;
+
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Centreon\Domain\Monitoring\ResourceStatus
      */
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getSeverityCode(): ?int
     {
@@ -107,12 +109,13 @@ class ResourceStatus
     }
 
     /**
-     * @param int $severityCode
+     * @param int|null $severityCode
      * @return \Centreon\Domain\Monitoring\ResourceStatus
      */
-    public function setSeverityCode(int $severityCode): self
+    public function setSeverityCode(?int $severityCode): self
     {
         $this->severityCode = $severityCode;
+
         return $this;
     }
 }

@@ -48,9 +48,9 @@ class Icon
     private $url;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -62,6 +62,7 @@ class Icon
     public function setId(?int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
