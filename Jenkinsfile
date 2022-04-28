@@ -215,7 +215,7 @@ try {
             keepAll: true,
             reportDir: "coverage/Icov-report",
             reportFiles: 'index.html',
-            reportName: 'Centreon Code Coverage Frontend',
+            reportName: 'Centreon Frontend Code Coverage',
             reportTitles: ''
           ])
         }
