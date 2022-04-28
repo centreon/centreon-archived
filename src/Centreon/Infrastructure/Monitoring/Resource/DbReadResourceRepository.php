@@ -465,7 +465,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             }
         }
 
-        if (empty($filter->getServicegroupNames()) === false) {
+        if (! empty($filter->getServicegroupNames())) {
             $searchedTagTypes[] = 0;
             foreach ($filter->getServicegroupNames() as $servicegroupName) {
                 $searchedTagNames[] = $servicegroupName;
