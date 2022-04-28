@@ -72,8 +72,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
         $db = $this->db->getAdapter('configuration_db');
 
         // get tables
-        $stmt = $db->getCentreonDBInstance()->prepare('SHOW TABLES');
-        $stmt->execute();
+        $stmt = $db->getCentreonDBInstance()->query('SHOW TABLES');
         $tables = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($row as $key => $name) {
