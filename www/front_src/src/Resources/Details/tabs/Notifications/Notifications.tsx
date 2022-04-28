@@ -122,7 +122,6 @@ const Notifications = (): JSX.Element => {
             {t(labelContacts)}
           </Typography>
         </Stack>
-
         <Contacts
           contacts={notificationContacts?.contacts as Array<Contact>}
           getColumns={getContactWithEmailColumns}
