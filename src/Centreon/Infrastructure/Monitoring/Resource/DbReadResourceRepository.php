@@ -301,6 +301,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
          * Loop on resources on a private method to get icon ids and add them to the entity
          */
         $resources = $this->getIconsForResources($resources);
+
         return $resources;
     }
 
