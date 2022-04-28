@@ -56,10 +56,10 @@ class Icon
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return self
      */
-    public function setId(int $id): self
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
