@@ -562,7 +562,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                 $resourceIndex = array_search((int) $record['icon_id'], $iconIds);
                 $resources[$resourceIndex]->getIcon()
                     ?->setName($record['icon_name'])
-                    ->setUrl($record['icon_directory'] . '/' . $record['icon_path']);
+                    ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
             }
         }
 
