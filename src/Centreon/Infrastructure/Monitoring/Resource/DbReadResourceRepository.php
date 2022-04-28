@@ -458,7 +458,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $searchedTagTypes = [];
         $searchedTags = [];
 
-        if (empty($filter->getHostgroupNames()) === false) {
+        if (! empty($filter->getHostgroupNames())) {
             $searchedTagTypes[] = 1;
             foreach ($filter->getHostgroupNames() as $hostgroupName) {
                 $searchedTagNames[] = $hostgroupName;
