@@ -1,56 +1,68 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { isEmpty } from 'ramda';
+import { isEmpty, pick } from 'ramda';
+import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-import { postData, useRequest } from '@centreon/ui';
+import { Typography } from '@mui/material';
 
-import Form from '../forms/remoteServer/RemoteServerFormStepTwo';
+import {
+  postData,
+  useRequest,
+  SelectEntry,
+  MultiAutocompleteField,
+} from '@centreon/ui';
+
+import WizardButtons from '../forms/wizardButtons';
+import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
-import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import { WizardFormProps } from '../models';
-
-interface Props
-  extends Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'> {
-  pollerData: Record<string, unknown>;
-  setWizard: (pollerWizard) => Record<string, unknown>;
-}
+import {
+  remoteServerAtom,
+  setRemoteServerWizardDerivedAtom,
+} from '../pollerAtoms';
+import {
+  labelAdvancedServerConfiguration,
+  labelRemoteServers,
+} from '../translatedLabels';
+import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 
 const getRemoteServersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
 const wizardFormEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
 
-const FormRemoteServerStepTwo = ({
-  pollerData,
-  setWizard,
+const RemoteServerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const [remoteServers, setRemoteServers] = React.useState<Record<
-    string,
-    unknown
-  > | null>(null);
+  const classes = useStyles();
+  const { t } = useTranslation();
+  const [remoteServers, setRemoteServers] =
+    React.useState<Array<PollerRemoteList> | null>(null);
 
-  const { sendRequest: getRemoteServersRequest } = useRequest<Array<unknown>>({
+  const [linkedPollers, setLinkedPollers] = React.useState<Array<SelectEntry>>(
+    [],
+  );
+
+  const { sendRequest: getRemoteServersRequest } = useRequest<
+    Array<PollerRemoteList>
+  >({
     request: postData,
   });
-  const { sendRequest: postWizardFormRequest } = useRequest<{
+  const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
+    s;
     success: boolean;
     task_id: number | string | null;
   }>({
     request: postData,
   });
 
-  const navigate = useNavigate();
+  const pollerData = useAtomValue(remoteServerAtom);
+  const setWizard = useUpdateAtom(setRemoteServerWizardDerivedAtom);
 
-  const filterOutDefaultPoller = (itemArr): Record<string, unknown> => {
-    for (let i = 0; i < itemArr.items.length; i += 1) {
-      if (itemArr.items[i].id === '1') itemArr.items.splice(i, 1);
-    }
-
-    return itemArr;
+  const filterOutDefaultPoller = (itemArr): Array<PollerRemoteList> => {
+    return itemArr.filter(({ id }) => id !== '1');
   };
 
   const getRemoteServers = (): void => {
@@ -60,18 +72,24 @@ const FormRemoteServerStepTwo = ({
     }).then((retrievedRemoteServers) => {
       setRemoteServers(
         isEmpty(retrievedRemoteServers)
-          ? { items: [] }
+          ? null
           : filterOutDefaultPoller(retrievedRemoteServers),
       );
     });
   };
 
-  React.useEffect(() => {
-    getRemoteServers();
-  }, []);
+  const navigate = useNavigate();
 
-  const handleSubmit = (data): void => {
-    const dataToPost = { ...data, ...pollerData };
+  const changeValue = (_, Pollers): void => {
+    setLinkedPollers(Pollers);
+  };
+
+  const handleSubmit = (event): void => {
+    event.preventDefault();
+    const dataToPost = {
+      ...pollerData,
+      linked_pollers: linkedPollers.map(({ id }) => id),
+    };
     dataToPost.server_type = 'remote';
 
     postWizardFormRequest({
@@ -84,6 +102,7 @@ const FormRemoteServerStepTwo = ({
             submitStatus: success,
             taskId: task_id,
           });
+
           goToNextStep();
         } else {
           navigate(routeMap.pollerList);
@@ -92,30 +111,37 @@ const FormRemoteServerStepTwo = ({
       .catch(() => undefined);
   };
 
+  const remoteServersOption = remoteServers?.map(pick(['id', 'name']));
+
+  React.useEffect(() => {
+    getRemoteServers();
+  }, []);
+
   return (
-    <Form
-      goToPreviousStep={goToPreviousStep}
-      pollers={remoteServers}
-      onSubmit={handleSubmit}
-    />
+    <div>
+      <div className={classes.formHeading}>
+        <Typography variant="h6">
+          {t(labelAdvancedServerConfiguration)}
+        </Typography>
+      </div>
+      <form autoComplete="off" onSubmit={handleSubmit}>
+        {remoteServersOption && (
+          <MultiAutocompleteField
+            fullWidth
+            label={t(labelRemoteServers)}
+            options={remoteServersOption}
+            value={linkedPollers}
+            onChange={changeValue}
+          />
+        )}
+        <WizardButtons
+          disabled={loading}
+          goToPreviousStep={goToPreviousStep}
+          type={WizardButtonsTypes.Apply}
+        />
+      </form>
+    </div>
   );
 };
 
-const mapStateToProps = ({ pollerForm }): Pick<Props, 'pollerData'> => ({
-  pollerData: pollerForm,
-});
-
-const mapDispatchToProps = {
-  setWizard: setPollerWizard,
-};
-
-const RemoteServerStepTwo = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FormRemoteServerStepTwo);
-
-export default (
-  props: Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'>,
-): JSX.Element => {
-  return <RemoteServerStepTwo {...props} />;
-};
+export default RemoteServerWizardStepTwo;

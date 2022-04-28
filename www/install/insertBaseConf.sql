@@ -11,8 +11,11 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '22.04.0-beta.1')
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', 'en_US.UTF-8', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', 'en_US.UTF-8', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', 'en_US.UTF-8', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(4, 1, 1, '@GORGONE_USER@', '@GORGONE_USER@', 'en_US.UTF-8', 'n', 'n', 'gorgone@localhost', NULL, NULL, '0', '1', 'txt', '1', 'local', NULL, '0');
 
 INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('@admin_password@', 1, (SELECT UNIX_TIMESTAMP(NOW())));
+INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('@GORGONE_PASSWORD@', 4, (SELECT UNIX_TIMESTAMP(NOW())));
+
 --
 -- Contenu de la table `contact_param`
 --
@@ -86,7 +89,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
-('template','Centreon-2'),
 ('color_up','#88b917'),
 ('color_down','#e00b3d'),
 ('color_unreachable','#818285'),
@@ -1416,7 +1418,7 @@ INSERT INTO `provider_configuration` (type, name, custom_configuration, is_activ
 VALUES (
   'local',
   'local',
-  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
+  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 15552000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
   true,
   true
 ),
@@ -1434,3 +1436,7 @@ VALUES (
   false,
   false
 );
+
+-- Exclude centreon-gorgone user from password policy
+INSERT INTO `password_expiration_excluded_users` (provider_configuration_id, user_id)
+VALUES (1, 4);

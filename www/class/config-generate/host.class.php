@@ -56,6 +56,8 @@ class Host extends AbstractHost
 
     private function getHostGroups(&$host)
     {
+        $host['group_tags'] = $host['group_tags'] ?? [];
+
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
                 $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
@@ -70,8 +72,9 @@ class Host extends AbstractHost
         }
 
         $hostgroup = Hostgroup::getInstance($this->dependencyInjector);
-        foreach ($host['hg'] as $hg_id) {
-            $hostgroup->addHostInHg($hg_id, $host['host_id'], $host['host_name']);
+        foreach ($host['hg'] as $hostGroupId) {
+            $host['group_tags'][] = $hostGroupId;
+            $hostgroup->addHostInHg($hostGroupId, $host['host_id'], $host['host_name']);
         }
     }
 
@@ -404,9 +407,16 @@ class Host extends AbstractHost
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity'])) {
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] =
-                $this->hosts[$host_id_arg]['severity']['level'];
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
+            $macros = [
+                '_CRITICALITY_LEVEL' => $this->hosts[$host_id_arg]['severity']['level'],
+                '_CRITICALITY_ID' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+                'severity' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+            ];
+
+            $this->hosts[$host_id_arg]['macros'] = array_merge(
+                $this->hosts[$host_id_arg]['macros'] ?? [],
+                $macros
+            );
         }
 
         $hosts_tpl = &HostTemplate::getInstance($this->dependencyInjector)->hosts;
@@ -416,7 +426,7 @@ class Host extends AbstractHost
                 continue;
             }
             $loop[$host_id] = 1;
-            if (isset($hosts_tpl[$host_id]['severity_id']) && !is_null($hosts_tpl[$host_id]['severity_id'])) {
+            if (isset($hosts_tpl[$host_id]['severity_id'])) {
                 $severity_id = $hosts_tpl[$host_id]['severity_id'];
                 break;
             }
@@ -431,9 +441,7 @@ class Host extends AbstractHost
                     continue;
                 }
                 $loop[$host_id2] = 1;
-                if (isset($hosts_tpl[$host_id2]['severity_id']) && !is_null($hosts_tpl[$host_id2]['severity_id'])) {
-                    $severity_id = $hosts_tpl[$host_id2]['severity_id'];
-                }
+
                 if (isset($hosts_tpl[$host_id2]['severity_id'])) {
                     $severity_id = $hosts_tpl[$host_id2]['severity_id'];
                     break;
@@ -483,6 +491,12 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
+
+        // Set HostCategories
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        $this->insertHostInHostCategoryMembers($hostCategory, $host);
+        $host['category_tags'] = $hostCategory->getIdsByHostId($host['host_id']);
+
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
 
@@ -517,6 +531,9 @@ class Host extends AbstractHost
         Servicegroup::getInstance($this->dependencyInjector)->generateObjects();
         Escalation::getInstance($this->dependencyInjector)->generateObjects();
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
+        Severity::getInstance($this->dependencyInjector)->generateObjects();
+        HostCategory::getInstance($this->dependencyInjector)->generateObjects();
+        ServiceCategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)

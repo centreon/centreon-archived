@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Configuration\User\Repository;
 
+use Assert\AssertionFailedException;
 use Core\Domain\Configuration\User\Model\User;
 
 interface ReadUserRepositoryInterface
@@ -41,4 +42,20 @@ interface ReadUserRepositoryInterface
      * @return int[]
      */
     public function findUserIdsByAliases(array $userAliases): array;
+
+    /**
+     * Find user by its id
+     *
+     * @param int $userId
+     * @return User|null
+     * @throws AssertionFailedException
+     */
+    public function findById(int $userId): ?User;
+
+    /**
+     * Find all available themes.
+     *
+     * @return string[]
+     */
+    public function findAvailableThemes(): array;
 }

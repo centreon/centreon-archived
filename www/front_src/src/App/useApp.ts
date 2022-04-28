@@ -23,24 +23,22 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { aclEndpoint, parametersEndpoint } from './endpoint';
 import { DefaultParameters } from './models';
 import { labelYouAreDisconnected } from './translatedLabels';
+import usePendo from './usePendo';
 
 const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
 
 interface UseAppState {
   dataLoaded: boolean;
-  displayInFullScreen: () => void;
   hasMinArgument: () => boolean;
-  isFullscreenEnabled: boolean;
-  removeFullscreen: () => void;
 }
 
 const useApp = (): UseAppState => {
   const { t } = useTranslation();
 
   const [dataLoaded, setDataLoaded] = React.useState(false);
-  const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
+  usePendo();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -96,21 +94,27 @@ const useApp = (): UseAppState => {
     ])
       .then(([retrievedParameters, retrievedAcl]) => {
         setDowntime({
-          default_duration: parseInt(
+          duration: parseInt(
             retrievedParameters.monitoring_default_downtime_duration,
             10,
           ),
-          default_fixed: false,
-          default_with_services: false,
+          fixed: retrievedParameters.monitoring_default_downtime_fixed,
+          with_services:
+            retrievedParameters.monitoring_default_downtime_with_services,
         });
         setRefreshInterval(
           parseInt(retrievedParameters.monitoring_default_refresh_interval, 10),
         );
         setAcl({ actions: retrievedAcl });
         setAcknowledgement({
+          force_active_checks:
+            retrievedParameters.monitoring_default_acknowledgement_force_active_checks,
+          notify: retrievedParameters.monitoring_default_acknowledgement_notify,
           persistent:
             retrievedParameters.monitoring_default_acknowledgement_persistent,
           sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
+          with_services:
+            retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
 
         setDataLoaded(true);
@@ -123,14 +127,6 @@ const useApp = (): UseAppState => {
   }, []);
 
   const hasMinArgument = (): boolean => equals(searchParams.get('min'), '1');
-
-  const displayInFullScreen = (): void => {
-    setIsFullscreenEnabled(true);
-  };
-
-  const removeFullscreen = (): void => {
-    setIsFullscreenEnabled(false);
-  };
 
   const keepAlive = (): void => {
     keepAliveRequest({
@@ -157,10 +153,7 @@ const useApp = (): UseAppState => {
 
   return {
     dataLoaded,
-    displayInFullScreen,
     hasMinArgument,
-    isFullscreenEnabled,
-    removeFullscreen,
   };
 };
 

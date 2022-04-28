@@ -36,7 +36,6 @@ import {
   labelNotify,
   labelFixed,
   labelCheck,
-  labelServicesDenied,
   labelHostsDenied,
   labelMoreActions,
   labelDisacknowledge,
@@ -53,7 +52,6 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
-  labelPersistent,
   labelEndTime,
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
@@ -94,9 +92,9 @@ const mockUser = {
 };
 const mockRefreshInterval = 15;
 const mockDowntime = {
-  default_duration: 7200,
-  default_fixed: true,
-  default_with_services: false,
+  duration: 7200,
+  fixed: true,
+  with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -119,8 +117,11 @@ const mockAcl = {
   },
 };
 const mockAcknowledgement = {
+  force_active_checks: false,
+  notify: false,
   persistent: true,
-  sticky: false,
+  sticky: true,
+  with_services: true,
 };
 
 jest.mock('../icons/Downtime');
@@ -211,18 +212,16 @@ describe(Actions, () => {
     });
 
     mockedAxios.post.mockReset();
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          meta: {
-            limit: 30,
-            page: 1,
-            total: 0,
-          },
-          result: [],
+    mockedAxios.get.mockResolvedValue({
+      data: {
+        meta: {
+          limit: 30,
+          page: 1,
+          total: 0,
         },
-      })
-      .mockResolvedValueOnce({ data: [] });
+        result: [],
+      },
+    });
 
     mockDate.set(mockNow);
   });
@@ -303,8 +302,7 @@ describe(Actions, () => {
   );
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByText, getByLabelText, findByLabelText, getAllByText } =
-      renderActions();
+    const { getByText, findByLabelText, getAllByText } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -312,14 +310,15 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
+    await waitFor(() => {
+      expect(getByText(labelAcknowledge)).toBeInTheDocument();
+    });
+
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
-    const persistentCheckbox = await findByLabelText(labelPersistent);
 
     fireEvent.click(notifyCheckbox);
-    fireEvent.click(persistentCheckbox);
-    fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({});
@@ -332,9 +331,10 @@ describe(Actions, () => {
         {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
+            force_active_checks: false,
             is_notify_contacts: true,
-            is_persistent_comment: false,
-            is_sticky: false,
+            is_persistent_comment: true,
+            is_sticky: true,
             with_services: true,
           },
 
@@ -352,6 +352,12 @@ describe(Actions, () => {
 
     act(() => {
       context.setSelectedResources?.(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(
+        getByLabelText(labelMoreActions).firstChild as HTMLElement,
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
@@ -385,6 +391,10 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
+    await waitFor(() => {
+      expect(getByText(labelAcknowledge)).toBeInTheDocument();
+    });
+
     fireEvent.click(getByText(labelAcknowledge));
 
     await findByText(labelAcknowledgedByAdmin);
@@ -399,6 +409,12 @@ describe(Actions, () => {
 
     act(() => {
       context.setSelectedResources?.(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(
+        getByLabelText(labelMoreActions).firstChild as HTMLElement,
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
@@ -418,6 +434,12 @@ describe(Actions, () => {
 
     act(() => {
       context.setSelectedResources?.(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -444,6 +466,12 @@ describe(Actions, () => {
 
     act(() => {
       context.setSelectedResources?.(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(
+        head(getAllByText(labelSetDowntime)) as HTMLElement,
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(head(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -525,6 +553,12 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
+    await waitFor(() => {
+      expect(
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
+      ).toBeInTheDocument();
+    });
+
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -566,6 +600,10 @@ describe(Actions, () => {
     mockedAxios.all.mockResolvedValueOnce([]);
     mockedAxios.post.mockResolvedValueOnce({});
 
+    await waitFor(() => {
+      expect(getByText(labelCheck)).toBeInTheDocument();
+    });
+
     fireEvent.click(getByText(labelCheck));
 
     await waitFor(() => {
@@ -586,6 +624,12 @@ describe(Actions, () => {
 
     act(() => {
       context.setSelectedResources?.([service]);
+    });
+
+    await waitFor(() => {
+      expect(
+        getByLabelText(labelMoreActions).firstElementChild as HTMLElement,
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(
@@ -763,18 +807,6 @@ describe(Actions, () => {
     [
       labelSetDowntime,
       labelSetDowntime,
-      labelServicesDenied,
-      cannotDowntimeServicesAcl,
-    ],
-    [
-      labelAcknowledge,
-      labelAcknowledge,
-      labelServicesDenied,
-      cannotAcknowledgeServicesAcl,
-    ],
-    [
-      labelSetDowntime,
-      labelSetDowntime,
       labelHostsDenied,
       cannotDowntimeHostsAcl,
     ],
@@ -799,6 +831,12 @@ describe(Actions, () => {
 
       act(() => {
         context.setSelectedResources?.(selectedResources);
+      });
+
+      await waitFor(() => {
+        expect(
+          getByLabelText(labelMoreActions).firstChild as HTMLElement,
+        ).toBeInTheDocument();
       });
 
       fireEvent.click(

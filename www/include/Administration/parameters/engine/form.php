@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -54,9 +55,8 @@ if (!isset($gopt["nagios_path_img"])) {
     $gopt["nagios_path_img"] = _CENTREON_PATH_ . 'www/img/media/';
 }
 
-
-$attrsText = array("size"=>"40");
-$attrsText2 = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 // Form begin
@@ -141,6 +141,8 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
+$sessionKeyFreeze = 'administration-parameters-monitoring-freeze';
+
 if ($form->validate()) {
     // Update in DB
     updateNagiosConfigData($form->getSubmitValue("gopt_id"));
@@ -150,18 +152,35 @@ if ($form->validate()) {
 
     $o = null;
     $valid = true;
+
+    /**
+     * Freeze the form and reload the page
+     */
     $form->freeze();
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
+    );
+    $_SESSION[$sessionKeyFreeze] = true;
+    echo '<script>parent.location.href = "main.php?p=' . $p . '&o=engine";</script>';
+    exit;
+} elseif (array_key_exists($sessionKeyFreeze, $_SESSION) && $_SESSION[$sessionKeyFreeze] === true) {
+    unset($_SESSION[$sessionKeyFreeze]);
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
+    );
+    $form->freeze();
+    $valid = true;
 }
+
 if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }
-
-$form->addElement(
-    "button",
-    "change",
-    _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
-);
 
 /*
  * Apply a template definition

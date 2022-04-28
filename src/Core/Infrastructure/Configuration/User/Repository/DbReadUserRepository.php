@@ -23,11 +23,13 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Configuration\User\Repository;
 
+use Assert\AssertionFailedException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Domain\Configuration\User\Model\User;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 
 class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
@@ -54,6 +56,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
 
     /**
      * @inheritDoc
+     * @throws AssertionFailedException
      */
     public function findAllUsers(): array
     {
@@ -61,7 +64,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
 
         $request =
             "SELECT SQL_CALC_FOUND_ROWS
-              contact_id, contact_alias, contact_name, contact_email, contact_admin
+              contact_id, contact_alias, contact_name, contact_email, contact_admin, contact_theme
             FROM `:db`.contact";
 
         // Search
@@ -81,9 +84,11 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         );
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $type = key($data);
-            $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
+            if (is_array($data)) {
+                $type = (int) key($data);
+                $value = $data[$type];
+                $statement->bindValue($key, $value, $type);
+            }
         }
 
         $statement->execute();
@@ -95,11 +100,34 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         }
 
         $users = [];
-        while ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
             $users[] = DbUserFactory::createFromRecord($result);
         }
 
         return $users;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById(int $userId): ?User
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('SELECT * FROM `:db`.contact WHERE contact_id = :contact_id')
+        );
+        $statement->bindValue(':contact_id', $userId, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
+            return DbUserFactory::createFromRecord($result);
+        }
+        return null;
     }
 
     /**
@@ -130,14 +158,40 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
 
         foreach ($bindValues as $key => $value) {
             $statement->bindValue($key, $value, \PDO::PARAM_STR);
-        };
+        }
 
         $statement->execute();
 
-        while ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array{contact_id: int} $result
+             */
             $userIds[] = $result['contact_id'];
         }
 
         return $userIds;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAvailableThemes(): array
+    {
+        $statement = $this->db->query(
+            'SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = \'contact\' AND COLUMN_NAME = \'contact_theme\''
+        );
+        if ($statement != false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
+            if (preg_match_all("/'([^,]+)'/", $result['COLUMN_TYPE'], $match)) {
+                /**
+                 * @var array<int, string[]> $match
+                 */
+                return $match[1];
+            }
+        }
+        return [];
     }
 }

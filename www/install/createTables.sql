@@ -742,6 +742,7 @@ CREATE TABLE `contact` (
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
   `contact_js_effects` enum('0','1') DEFAULT '0',
+  `contact_theme` enum('light','dark') DEFAULT 'light',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -2394,6 +2395,7 @@ CREATE TABLE `provider_configuration` (
 CREATE TABLE `password_expiration_excluded_users` (
   `provider_configuration_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`provider_configuration_id`, `user_id`),
   CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
