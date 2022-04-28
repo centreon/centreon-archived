@@ -126,7 +126,7 @@ const Notifications = (): JSX.Element => {
           contacts={notificationContacts?.contacts as Array<Contact>}
           getColumns={getContactWithEmailColumns}
           headers={contactWithEmailHeaders}
-          messageNoContacts={t(labelNoContactIsConfiguredForThisResource)}
+          noContactsMessage={t(labelNoContactIsConfiguredForThisResource)}
           templateColumns="1fr 1fr 1fr 1fr"
         />
       </Stack>
@@ -141,7 +141,7 @@ const Notifications = (): JSX.Element => {
           contacts={notificationContacts?.contact_groups as Array<ContactGroup>}
           getColumns={getContactColumns}
           headers={contactHeaders}
-          messageNoContacts={t(labelNoContactGroupsIsConfiguredForThisResource)}
+          noContactsMessage={t(labelNoContactGroupsIsConfiguredForThisResource)}
           templateColumns="1fr 1fr 1fr"
         />
       </Stack>

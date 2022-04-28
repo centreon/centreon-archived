@@ -15468,7 +15468,7 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
-# msgid "You are not authorized to access to the configuration"
+# msgid "You are not authorized to access the configuration"
 # msgstr ""
 
 # msgid "Force active checks"

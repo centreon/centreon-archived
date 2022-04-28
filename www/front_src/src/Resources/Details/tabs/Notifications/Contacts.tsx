@@ -25,7 +25,7 @@ interface Props {
   contacts: Array<Contact> | Array<ContactGroup> | undefined;
   getColumns: (contact) => JSX.Element;
   headers: JSX.Element;
-  messageNoContacts: JSX.Element;
+  noContactsMessage: JSX.Element;
   templateColumns: string;
 }
 
@@ -34,7 +34,7 @@ const Contacts = ({
   templateColumns,
   getColumns,
   headers,
-  messageNoContacts,
+  noContactsMessage,
 }: Props): JSX.Element => {
   const goToUri = (uri): void => {
     window.location.href = uri as string;
@@ -76,7 +76,7 @@ const Contacts = ({
           py: 1,
         }}
       >
-        <Typography>{messageNoContacts}</Typography>
+        <Typography>{noContactsMessage}</Typography>
       </Box>
     );
   }
