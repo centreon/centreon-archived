@@ -1,0 +1,11 @@
+{
+    "supportFile": "cypress/support/index.tsx",
+    "pluginsFile": "cypress/plugins/index.ts",
+    "video": true,
+    "videosFolder": "cypress/results/videos",
+    "screenshotsFolder": "cypress/results/screenshots",
+    "component": {
+      "componentFolder": "./www/front_src/src",
+      "testFiles": "./**/*.cypress.test.{ts,tsx}"
+    }
+  }
