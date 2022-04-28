@@ -613,7 +613,9 @@ function updateNagios($nagiosId = null)
 
     $queryPieces = array_map(fn($columnName) => "`{$columnName}` = :{$columnName}", array_keys($nagiosCfg));
 
-    $statement = $pearDB->prepare('UPDATE cfg_nagios SET ' . implode(', ', $queryPieces) . " where nagios_id = {$nagiosId}");
+    $statement = $pearDB->prepare(
+        'UPDATE cfg_nagios SET ' . implode(', ', $queryPieces) . " WHERE nagios_id = {$nagiosId}"
+    );
 
     array_walk(
         $nagiosCfg,

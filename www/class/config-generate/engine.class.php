@@ -361,7 +361,7 @@ class Engine extends AbstractObject
     }
 
     /**
-     *  If log Vé enabled, set logger V2 configuration and unset logger legacy elements
+     *  If log V2 enabled, set logger V2 configuration and unset logger legacy elements
      */
     private function setLoggerCfg(): void
     {

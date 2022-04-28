@@ -246,7 +246,7 @@ class CentreonEngineCfg extends CentreonObject
                 } else {
                     $params[2] = null;
                 }
-            } elseif ($params[1] === 'logger_version' && $params['2'] === 'log_v2_enabled') {
+            } elseif ($params[1] === 'logger_version' && $params[2] === 'log_v2_enabled') {
                 $this->createLoggerV2Cfg($objectId);
             } elseif (preg_match('/(' . implode('|', $loggerColumns) . ')/', $params[1], $matches)) {
                 $this->updateLoggerV2Param($objectId, $params);

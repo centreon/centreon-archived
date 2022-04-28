@@ -53,8 +53,8 @@ $objMain = new CentreonMainCfg();
  * Database retrieve information for Nagios
  */
 $nagios = [];
-$nagios_log_v1 = [];
-$nagios_log_v2 = [];
+$nagiosLogV1 = [];
+$nagiosLogV2 = [];
 
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
@@ -68,14 +68,16 @@ if (($o === 'c' || $o === 'w') && $nagiosId) {
     // Log V1
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
-        $nagios_log_v1["nagios_debug_level"][$value] = 1;
+        $nagiosLogV1["nagios_debug_level"][$value] = 1;
     }
     // Log V2
     if ($nagios['logger_version'] === 'log_v2_enabled') {
         $statement = $pearDB->prepare("SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :nagiosId");
         $statement->bindValue(':nagiosId', $nagiosId, \PDO::PARAM_INT);
         $statement->execute();
-        $nagios_log_v2 = $statement->fetch();
+        if ($result = $statement->fetch()) {
+            $nagiosLogV2 = $result;
+        }
     }
 
     $defaultEventBrokerOptions['event_broker_options'] = $objMain->explodeEventBrokerOptions(
@@ -929,8 +931,8 @@ if ($o == "w") {
         );
     }
     $form->setDefaults($nagios);
-    $form->setDefaults($nagios_log_v1);
-    $form->setDefaults($nagios_log_v2);
+    $form->setDefaults($nagiosLogV1);
+    $form->setDefaults($nagiosLogV2);
     $form->freeze();
 } elseif ($o == "c") {
     // Modify nagios information
@@ -943,8 +945,8 @@ if ($o == "w") {
     );
 
     $form->setDefaults($nagios);
-    $form->setDefaults($nagios_log_v1);
-    $form->setDefaults($nagios_log_v2);
+    $form->setDefaults($nagiosLogV1);
+    $form->setDefaults($nagiosLogV2);
 } elseif ($o == "a") {
     // Add nagios information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
