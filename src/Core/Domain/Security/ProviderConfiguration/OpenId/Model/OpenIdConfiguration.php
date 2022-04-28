@@ -76,7 +76,9 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
         private ?string $authenticationType,
         private bool $verifyPeer
     ) {
-        $this->connectionScopes[] = self::OFFLINE_ACCESS_SCOPE;
+        if(!in_array(self::OFFLINE_ACCESS_SCOPE, $connectionScopes)) {
+            $this->connectionScopes[] = self::OFFLINE_ACCESS_SCOPE;
+        }
         foreach ($trustedClientAddresses as $trustedClientAddress) {
             if (
                 filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false
@@ -205,7 +207,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      */
     public function getConnectionScopes(): array
     {
-        return array_unique($this->connectionScopes);
+        return $this->connectionScopes;
     }
 
     /**
