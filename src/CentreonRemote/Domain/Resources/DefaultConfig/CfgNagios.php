@@ -153,6 +153,7 @@ class CfgNagios
             'debug_verbosity'                             => '2',
             'max_debug_file_size'                         => null,
             'cfg_file'                                    => 'centengine.cfg',
+            'logger_version'                              => 'log_v2_enabled',
         ];
     }
 }
