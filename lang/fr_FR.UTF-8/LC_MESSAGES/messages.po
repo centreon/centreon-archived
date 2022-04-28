@@ -16710,6 +16710,9 @@ msgstr "Se connecter avec"
 msgid "Can't resolve username from login claim using configured regular expression"
 msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
 
+# msgid "You are not authorized to access the configuration"
+# msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
+
 msgid "Error on updating an user"
 msgstr "Erreur lors de la mise à jour d'un utilisateur"
 
@@ -16763,6 +16766,12 @@ msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire
 
 msgid "Discard"
 msgstr "Annuler"
+
+msgid "No contacts are configured for this resource"
+msgstr "Aucun contact configuré pour cette ressource"
+
+msgid "No contact groups are configured for this resource"
+msgstr "Aucun contact groupe configuré pour cette ressource"
 
 msgid "At least one of the two following fields must be filled"
 msgstr "Au moins l'un des deux champs suivants doit être rempli"

@@ -674,6 +674,70 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/{host_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a host"
+      description: "Return the notified contacts and contact groups of a host."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/{host_id}/services/{service_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a service"
+      description: "Return the notified contacts and contact groups of a service."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices/{meta_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a meta service"
+      description: "Return the notified contacts and contact groups of a meta service."
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/servers:
     get:
       tags:
@@ -5897,6 +5961,11 @@ components:
               nullable: true
               description: "current resource downtimes endpoint"
               example: "/centreon/api/latest/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+            notification_policy:
+              type: string
+              nullable: true
+              description: "current resource notification policy endpoint"
+              example: "/centreon/api/latest/configurations/hosts/11/notification-policy"
         externals:
           type: object
           properties:

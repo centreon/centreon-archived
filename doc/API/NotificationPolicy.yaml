@@ -1,0 +1,106 @@
+type: object
+properties:
+  contacts:
+    type: array
+    items:
+      type: object
+      required:
+        - id
+        - name
+        - alias
+        - email
+        - notifications
+        - configuration_uri
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: "Id of the contact"
+          example: 14
+        name:
+          type: string
+          description: "Name of the contact"
+          example: "contact 1"
+        alias:
+          type: string
+          description: "Alias of the contact"
+          example: "contact1"
+        email:
+          type: string
+          description: "Email of the contact"
+          example: "contact1@localhost"
+        notifications:
+          type: object
+          description: "Notification settings of the contact"
+          required:
+            - host
+            - service
+          properties:
+            host:
+              type: object
+              required:
+                - events
+                - time_period
+              properties:
+                events:
+                  type: array
+                  items:
+                    type: string
+                    enum: [UP, DOWN, UNREACHABLE, PENDING]
+                  example: [UP, DOWN]
+                time_period:
+                  type: object
+                  required:
+                    - id
+                    - name
+                    - alias
+                  properties:
+                    id:
+                      type: integer
+                      format: int32
+                      description: "Id of the contact"
+                      example: 14
+                    name:
+                      type: string
+                      description: "Name of the time period"
+                      example: "24/7"
+                    alias:
+                      type: string
+                      description: "Alias of the time period"
+                      example: "24/24 7/7"
+            service:
+              type: object
+              required:
+                - events
+                - time_period
+              properties:
+                events:
+                  type: array
+                  items:
+                    type: string
+                    enum: [OK, WARNING, CRITICAL, UNKNOWN, PENDING]
+                  example: [OK, CRITICAL]
+                time_period:
+                  type: object
+                  required:
+                    - id
+                    - name
+                    - alias
+                  properties:
+                    id:
+                      type: integer
+                      format: int32
+                      description: "Id of the contact"
+                      example: 14
+                    name:
+                      type: string
+                      description: "Name of the time period"
+                      example: "24/7"
+                    alias:
+                      type: string
+                      description: "Alias of the time period"
+                      example: "24/24 7/7"
+        configuration_uri:
+          type: string
+          description: "uri to configure the contact"
+          example: "/centreon/main.php?p=60301&o=c&contact_id=14"

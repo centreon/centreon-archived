@@ -15468,6 +15468,9 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
+# msgid "You are not authorized to access the configuration"
+# msgstr ""
+
 # msgid "Force active checks"
 # msgstr ""
 
@@ -15511,6 +15514,12 @@ msgstr ""
 # msgstr ""
 
 # msgid "Discard"
+# msgstr ""
+
+# msgid "No contact are configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups are configured for this resource"
 # msgstr ""
 
 # msgid "At least one of the two following fields must be filled"
