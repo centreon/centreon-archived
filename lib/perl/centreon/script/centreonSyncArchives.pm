@@ -66,7 +66,7 @@ sub run {
     die("Error SQL Quit") if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
         $data->{log_archive_path} = $data->{log_file};
-        $data->{log_archive_path} =~ s/(.*)\/.*/$1\/archives\//;
+        $data->{log_archive_path} =~ s#(.*)/.*#$1/archives/#;
 		if (defined($data->{log_archive_path}) && $data->{log_archive_path} ne '') {
 			`$self->{rsync} -c -e "ssh -o port=$data->{'ssh_port'}" $data->{'ns_ip_address'}:$data->{'log_archive_path'}/* $self->{centreon_config}->{VarLib}/log/$data->{'id'}/archives/`;
 		} else {

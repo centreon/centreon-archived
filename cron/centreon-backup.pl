@@ -743,7 +743,7 @@ sub monitoringengineBackup() {
     } else {
         $nagios_server = $sth2->fetchrow_hashref;
         $nagios_server->{log_archive_path} = $nagios_server->{log_file};
-        $nagios_server->{log_archive_path} =~ s/(.*)\/.*/$1\/archives\//;
+        $nagios_server->{log_archive_path} =~ s#(.*)/.*#$1/archives/#;;
         $poller_name = $nagios_server->{nagios_name};
         $sth2->finish();
     }

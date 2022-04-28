@@ -242,7 +242,7 @@ sub parseArchive {
         }
         my $data = $sth->fetchrow_hashref();
         $data->{log_archive_path} = $data->{log_file};
-        $data->{log_archive_path} =~ s/(.*)\/.*/$1\/archives\//;
+        $data->{log_archive_path} =~  s#(.*)/.*#$1/archives/#;;
         if (!$data->{log_archive_path}) {
             $self->{logger}->writeLogError("Can't find local varlib directory \"$data->{log_archive_path}\"");
             return ;
