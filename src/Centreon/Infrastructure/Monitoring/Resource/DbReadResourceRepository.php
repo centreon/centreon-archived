@@ -299,7 +299,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             $resources[] = DbResourceFactory::createFromRecord($resourceRecord);
         }
 
-
         /**
          * Loop on resources on a private method to get icon ids and add them to the entity
          */
