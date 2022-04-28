@@ -213,7 +213,7 @@ try {
           publishHTML([
             allowMissing: false,
             keepAll: true,
-            reportDir: "$PROJECT/coverage/Icov-report",
+            reportDir: "coverage/Icov-report",
             reportFiles: 'index.html',
             reportName: 'Centreon Code Coverage Frontend',
             reportTitles: ''
