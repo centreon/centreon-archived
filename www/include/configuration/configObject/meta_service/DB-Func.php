@@ -57,8 +57,7 @@ function testExistence($name = null)
     #Modif case
     if ($statement->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
-    } #Duplicate entry
-    elseif ($statement->rowCount() >= 1 && $meta["meta_id"] != $id) {
+    } elseif ($statement->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
