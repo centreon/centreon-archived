@@ -31,6 +31,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
+    public const OFFLINE_ACCESS_SCOPE = 'offline_access';
     public const TYPE = 'openid';
     public const NAME = 'openid';
 
@@ -75,6 +76,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
         private ?string $authenticationType,
         private bool $verifyPeer
     ) {
+        $this->connectionScopes[] = self::OFFLINE_ACCESS_SCOPE;
         foreach ($trustedClientAddresses as $trustedClientAddress) {
             if (
                 filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false
@@ -203,7 +205,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      */
     public function getConnectionScopes(): array
     {
-        return $this->connectionScopes;
+        return array_unique($this->connectionScopes);
     }
 
     /**

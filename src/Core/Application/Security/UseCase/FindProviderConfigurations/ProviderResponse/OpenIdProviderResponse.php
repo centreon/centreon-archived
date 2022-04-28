@@ -51,6 +51,11 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public ?string $authorizationEndpoint;
 
+    /**
+     * @var string[]
+     */
+    public ?array $connectionScopes;
+
 
     /**
      * @var string|null
@@ -77,6 +82,7 @@ class OpenIdProviderResponse implements ProviderResponseInterface
         $response->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
         $response->clientId = $configuration->getClientId();
         $response->id = $configuration->getId();
+        $response->connectionScopes = $configuration->getConnectionScopes();
 
         return $response;
     }

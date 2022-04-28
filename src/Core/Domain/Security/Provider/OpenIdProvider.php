@@ -327,7 +327,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         $data = [
             "grant_type" => "authorization_code",
             "code" => $authorizationCode,
-            "redirect_uri" => $redirectUri
+            "redirect_uri" => $redirectUri,
+            "scope" => $this->configuration->getConnectionScopes()
         ];
 
         $response = $this->sendRequestToTokenEndpoint($data);
@@ -349,30 +350,35 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
+        $accessTokenLog = [
+            'provider_token' => '...' . substr($content['access_token'], -10)
+        ];
+        if(array_key_exists('refresh_token', $content)) {
+            $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
+        }
         $this->info(
             'Access Token return by external provider',
-            [
-                'provider_token' => '...' . substr($content['access_token'], -10),
-                'refresh_token' => '...' . substr($content['refresh_token'], -10),
-            ]
+            $accessTokenLog
         );
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
-        $refreshTokenExpiration = (new \DateTime())
-            ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
             null,
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
-        $this->refreshToken = new ProviderToken(
-            null,
-            $content['refresh_token'],
-            $creationDate,
-            $refreshTokenExpiration
-        );
+        if (array_key_exists('refresh_token', $content)) {
+            $refreshTokenExpiration = (new \DateTime())
+                ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
+            $this->refreshToken = new ProviderToken(
+                null,
+                $content['refresh_token'],
+                $creationDate,
+                $refreshTokenExpiration
+            );
+        }
     }
 
     /**
