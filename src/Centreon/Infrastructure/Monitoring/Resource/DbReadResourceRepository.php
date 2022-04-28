@@ -478,7 +478,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             }
         }
 
-        if (empty($searchedTagNames) === false) {
+        if (! empty($searchedTagNames)) {
             foreach ($searchedTagNames as $index => $name) {
                 $key = ":tagName_{$index}";
                 $searchedTags[] = $key;
