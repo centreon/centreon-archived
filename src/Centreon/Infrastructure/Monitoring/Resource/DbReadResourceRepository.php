@@ -223,7 +223,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                   OR
                   (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
                   AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
-              )
               LIMIT 1
             )';
         }
