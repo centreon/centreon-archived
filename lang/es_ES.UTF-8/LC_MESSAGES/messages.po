@@ -15067,3 +15067,9 @@ msgstr ""
 
 # msgid "Press Enter to accept"
 # msgstr ""
+
+# msgid "License invalid or expired"
+# msgstr ""
+
+# msgid "Please contact your administrator"
+# msgstr ""
