@@ -87,8 +87,6 @@ class ConfigurationExporter extends ExporterServiceAbstract
                 if (!isset($truncated[$data['table']])) {
                     // empty table
                     $db->query("DELETE FROM `" . $data['table'] . "`");
-                    // optimize table
-                    $db->query("OPTIMIZE TABLE `" . $data['table'] . "`");
                     $truncated[$data['table']] = 1;
                 }
 
