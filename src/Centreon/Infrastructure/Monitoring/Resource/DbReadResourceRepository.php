@@ -352,7 +352,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             }
         }
 
-        if (empty($resourceTypes) === false) {
+        if (! empty($resourceTypes)) {
             $subRequest = ' AND resources.type IN (' . implode(', ', $resourceTypes) . ')';
         }
 
