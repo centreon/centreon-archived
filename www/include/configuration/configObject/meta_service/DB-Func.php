@@ -49,14 +49,16 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('meta_id');
     }
-    $query = "SELECT meta_id FROM meta_service WHERE meta_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $dbResult = $pearDB->query($query);
-    $meta = $dbResult->fetch();
+    $query = "SELECT meta_id FROM meta_service WHERE meta_name = :meta_name";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':meta_name', htmlentities($name, ENT_QUOTES, "UTF-8"));
+    $statement->execute();
+    $meta = $statement->fetch(\PDO::FETCH_ASSOC);
     #Modif case
-    if ($dbResult->rowCount() >= 1 && $meta["meta_id"] == $id) {
+    if ($statement->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($dbResult->rowCount() >= 1 && $meta["meta_id"] != $id) {
+    elseif ($statement->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
@@ -170,9 +172,11 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     $query = "SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     while ($Contact = $dbResult->fetch()) {
-                        $query = "INSERT INTO meta_contact VALUES ('" .
-                            $maxId["MAX(meta_id)"] . "', '" . $Contact["contact_id"] . "')";
-                        $pearDB->query($query);
+                        $query = "INSERT INTO meta_contact VALUES (:max_mc_id, :contact_id)";
+                        $statement = $pearDB->prepare($query);
+                        $statement->bindValue(':max_mc_id', (int)$maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':contact_id', (int)$Contact["contact_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     /* Duplicate contactgroups */
                     $query = "SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '" . $key . "'";
@@ -180,8 +184,11 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
 
                     while ($Cg = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contactgroup_relation " .
-                            "VALUES ('" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
-                        $pearDB->query($query);
+                            "VALUES (:max_mg_id, :cg_id)";
+                        $statement = $pearDB->prepare($query);
+                        $statement->bindValue(':max_mg_id', (int)$maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':cg_id', (int)$Cg["cg_cg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
                     while ($metric = $dbResult->fetch()) {
@@ -455,8 +462,10 @@ function updateMetaServiceContact($meta_id)
     global $form;
     global $pearDB;
     /* Purge old relation */
-    $queryPurge = "DELETE FROM meta_contact WHERE meta_id = " . $meta_id;
-    $pearDB->query($queryPurge);
+    $queryPurge = "DELETE FROM meta_contact WHERE meta_id = :meta_id";
+    $statement = $pearDB->prepare($queryPurge);
+    $statement->bindValue('meta_id', (int)$meta_id, \PDO::PARAM_INT);
+    $statement->execute();
 
     /* Add relation between metaservice and contact */
     $ret = array();
