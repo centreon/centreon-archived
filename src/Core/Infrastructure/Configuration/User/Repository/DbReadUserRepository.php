@@ -27,7 +27,6 @@ use Assert\AssertionFailedException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Domain\Configuration\User\Model\User;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
