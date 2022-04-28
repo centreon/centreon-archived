@@ -493,6 +493,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                         SELECT 1 FROM `:dbstg`.tags
                         WHERE tags.tag_id = rtags.tag_id AND tags.name IN (' . implode(', ', $searchedTags) . ')
                         AND tags.type IN (' . implode(', ', $searchedTagTypes) . ')
+                        LIMIT 1
                     )
                 )';
         }
