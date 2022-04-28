@@ -93,12 +93,6 @@ class ResourceFilter
         self::SOFT_STATUS_TYPE => 0,
     ];
 
-    public const MAP_RESOURCE_TYPES = [
-        self::TYPE_SERVICE => 0,
-        self::TYPE_HOST => 1,
-        self::TYPE_META => 2,
-    ];
-
     /**
      * @var string[]
      */
