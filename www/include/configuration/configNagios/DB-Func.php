@@ -244,21 +244,32 @@ function calculateBitwise($list)
     return $bitwise;
 }
 
-
+/**
+ * @param array $levels
+ * @return int
+ */
 function calculateDebugLevel(array $levels): int
 {
     $level = 0;
     foreach ($levels as $key => $value) {
-        $level += $key;
+        $level += (int) $key;
     }
     return $level;
 }
 
+/**
+ * @param array $levels
+ * @return string
+ */
 function implodeDebugLevel(array $levels): string
 {
     return implode(",", array_keys($levels));
 }
 
+/**
+ * @param array $macros
+ * @return string
+ */
 function concatMacrosWhitelist(array $macros): string
 {
     return trim(
@@ -271,6 +282,9 @@ function concatMacrosWhitelist(array $macros): string
     );
 }
 
+/**
+ * @return array<string,mixed>
+ */
 function getNagiosCfgColumnsDetails(): array
 {
     return [
@@ -400,6 +414,9 @@ function getNagiosCfgColumnsDetails(): array
     ];
 }
 
+/**
+ * @return string[]
+ */
 function getLoggerV2Columns(): array
 {
     return [
@@ -421,11 +438,11 @@ function getLoggerV2Columns(): array
 }
 
 /**
- * @param CentreonDb $pearDB
+ * @param CentreonDB $pearDB
  * @param array $ret
  * @param int $nagiosId
  */
-function insertLoggerV2Cfg(CentreonDb $pearDB, array $ret, int $nagiosId): void
+function insertLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
 {
     $loggerCfg = getLoggerV2Columns();
 
@@ -441,7 +458,12 @@ function insertLoggerV2Cfg(CentreonDb $pearDB, array $ret, int $nagiosId): void
     $statement->execute();
 }
 
-function updateLoggerV2Cfg(CentreonDb $pearDB, array $ret, int $nagiosId): void
+/**
+ * @param CentreonDB $pearDB
+ * @param array<string,mixed> $ret
+ * @param int $nagiosId
+ */
+function updateLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
 {
     $loggerCfg = getLoggerV2Columns();
 
@@ -457,7 +479,12 @@ function updateLoggerV2Cfg(CentreonDb $pearDB, array $ret, int $nagiosId): void
     $statement->execute();
 }
 
-function insertOrUpdateLogger(CentreonDb $pearDB, array $ret, int $nagiosId): void
+/**
+ * @param CentreonDB $pearDB
+ * @param array<string,mixed> $ret
+ * @param int $nagiosId
+ */
+function insertOrUpdateLogger(CentreonDB $pearDB, array $ret, int $nagiosId): void
 {
     $statement = $pearDB->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
     $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
@@ -478,7 +505,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $ret = $form->getSubmitValues();
     }
 
-    $nagiosColumns = getNagiosCfgColumnsDetails($ret);
+    $nagiosColumns = getNagiosCfgColumnsDetails();
 
     $nagiosCfg = [];
     foreach ($ret as $columnName => $rawValue) {
@@ -560,7 +587,7 @@ function updateNagios($nagiosId = null)
 
     $ret = [];
     $ret = $form->getSubmitValues();
-    $nagiosColumns = getNagiosCfgColumnsDetails($ret);
+    $nagiosColumns = getNagiosCfgColumnsDetails();
 
     $nagiosCfg = [];
     foreach ($ret as $columnName => $rawValue) {

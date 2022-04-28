@@ -65,8 +65,6 @@ if (($o === 'c' || $o === 'w') && $nagiosId) {
     // Set base value
     $nagios = array_map("myDecode", $statement->fetch());
 
-    // log version
-    // $nagios['logger_version'] = $nagios['log_v2_enabled'] === '1' ? 'log_v2_enabled' : 'log_legacy_enabled';
     // Log V1
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -348,8 +346,20 @@ $form->addElement(
  * logging options
  */
 $nagTab = array();
-$nagTab[] = $form->createElement('radio', 'logger_version', null, _("V1 (legacy, with epoch timestamps)"), 'log_legacy_enabled');
-$nagTab[] = $form->createElement('radio', 'logger_version', null, _("V2 (ISO-8601, with log level fine tuning)"), 'log_v2_enabled');
+$nagTab[] = $form->createElement(
+    'radio',
+    'logger_version',
+    null,
+    _("V1 (legacy, with epoch timestamps)"),
+    'log_legacy_enabled'
+);
+$nagTab[] = $form->createElement(
+    'radio',
+    'logger_version',
+    null,
+    _("V2 (ISO-8601, with log level fine tuning)"),
+    'log_v2_enabled'
+);
 $form->addGroup($nagTab, 'logger_version', _("Logger version"), '&nbsp;');
 
 // LOG V1

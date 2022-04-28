@@ -360,7 +360,10 @@ class Engine extends AbstractObject
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    private function buildLoggerCfg()
+    /**
+     *  If log Vé enabled, set logger V2 configuration and unset logger legacy elements
+     */
+    private function setLoggerCfg(): void
     {
         $this->engine['log_v2_enabled'] = $this->engine['logger_version'] === 'log_v2_enabled' ? 1 : 0;
         $this->engine['log_legacy_enabled'] = $this->engine['logger_version'] === 'log_legacy_enabled' ? 1 : 0;
@@ -380,7 +383,16 @@ class Engine extends AbstractObject
 
             $this->engine = array_merge($this->engine, $loggerCfg);
 
-            $logsV1 = ['use_syslog', 'log_notifications', 'log_service_retries', 'log_host_retries', 'log_event_handlers', 'log_external_commands', 'log_passive_checks', 'log_pid' ];
+            $logsV1 = [
+                'use_syslog',
+                'log_notifications',
+                'log_service_retries',
+                'log_host_retries',
+                'log_event_handlers',
+                'log_external_commands',
+                'log_passive_checks',
+                'log_pid',
+            ];
             foreach ($logsV1 as $logName) {
                 unset($this->engine[$logName]);
             }
@@ -407,7 +419,7 @@ class Engine extends AbstractObject
         }
 
         $this->buildCfgFile($poller_id);
-        $this->buildLoggerCfg();
+        $this->setLoggerCfg();
         $this->getBrokerModules();
         $this->getIntervalLength();
 

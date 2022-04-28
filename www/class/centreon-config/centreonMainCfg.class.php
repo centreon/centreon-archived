@@ -76,7 +76,7 @@ class CentreonMainCfg
     ];
 
     /** @var string[] */
-    private const ENGINE_LOGGER_DEFAULT_VALUES = [
+    private $loggerDefaultCfg = [
         'log_v2_logger' => 'file',
         'log_level_functions' => 'err',
         'log_level_config' => 'info',
@@ -216,10 +216,12 @@ class CentreonMainCfg
 
     /**
      * Get default engine logger values
+     *
+     * @param string[]
      */
-    public function getDefaultLoggerCfg()
+    public function getDefaultLoggerCfg(): array
     {
-        return self::ENGINE_LOGGER_DEFAULT_VALUES;
+        return $this->loggerDefaultCfg;
     }
 
     /**
