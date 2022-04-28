@@ -21,7 +21,6 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use Pimple\Container;
-use PDO;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 
