@@ -284,8 +284,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             $collector->addValue($key, current($data), key($data));
         }
 
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
-
         $collector->bind($statement);
         $statement->execute();
 
