@@ -16771,10 +16771,10 @@ msgid "Discard"
 msgstr "Annuler"
 
 msgid "No contacts are configured for this resource"
-msgstr "Aucun contacts configurés pour cette ressource"
+msgstr "Aucun contact configuré pour cette ressource"
 
 msgid "No contact groups are configured for this resource"
-msgstr "Aucun contact groupes configurés pour cette ressource"
+msgstr "Aucun contact groupe configuré pour cette ressource"
 
 msgid "At least one of the two following fields must be filled"
 msgstr "Au moins l'un des deux champs suivants doit être rempli"
