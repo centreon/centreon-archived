@@ -204,7 +204,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $request .= $hasWhereCondition ? ' AND ' : ' WHERE ';
 
         $request .= " resources.name NOT LIKE '\_Module\_%'
-            AND resources.parent_name NOT LIKE '\_Module\_BAM'
+            AND resources.parent_name NOT LIKE '\_Module\_BAM%'
             AND resources.enabled = 1";
 
         /**
