@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { FC } from 'react';
 
 import { path } from 'ramda';
 
@@ -17,7 +17,7 @@ import DowntimeDetailsTable from './DetailsTable/Downtime';
 
 interface StateChipProps {
   Chip: () => JSX.Element;
-  DetailsTable: React.FC<{ endpoint: string }>;
+  DetailsTable: FC<{ endpoint: string }>;
   endpoint: string;
   label: string;
 }

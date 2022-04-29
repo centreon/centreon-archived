@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { KeyboardEvent, useState } from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -63,7 +63,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const { showSuccessMessage } = useSnackbar();
 
-  const [deleting, setDeleting] = React.useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const {
     sendRequest: sendUpdateFilterRequest,
@@ -153,7 +153,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     form.submitForm();
   };
 
-  const renameOnEnterKey = (event: React.KeyboardEvent): void => {
+  const renameOnEnterKey = (event: KeyboardEvent<HTMLDivElement>): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {
