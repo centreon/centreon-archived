@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useCallback, Fragment } from 'react';
 
 import { t } from 'i18next';
 import { isEmpty, isNil } from 'ramda';
@@ -40,7 +40,7 @@ const Contacts = ({
     window.location.href = uri as string;
   };
 
-  const getConfigurationColumn = React.useCallback(
+  const getConfigurationColumn = useCallback(
     ({ configuration_uri }): JSX.Element => {
       const canGoToConfiguration = !isNil(configuration_uri);
       const tooltipTitle = canGoToConfiguration
@@ -101,10 +101,10 @@ const Contacts = ({
       </>
       {contacts?.map((contact) => {
         return (
-          <React.Fragment key={contact.alias}>
+          <Fragment key={contact.alias}>
             {getColumns(contact)}
             {getConfigurationColumn(contact)}
-          </React.Fragment>
+          </Fragment>
         );
       })}
     </Box>

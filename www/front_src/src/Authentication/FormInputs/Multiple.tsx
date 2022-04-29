@@ -17,7 +17,7 @@ import { InputProps } from './models';
 const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const [inputText, setInputText] = React.useState('');
+  const [inputText, setInputText] = useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
