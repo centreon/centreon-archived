@@ -16725,7 +16725,7 @@ msgstr "Erreur lors de la mise à jour d'un utilisateur"
 msgid "Error in reading the themes available to the user"
 msgstr "Erreur dans la lecture des thèmes disponibles pour l'utilisateur"
 
-msgid "Error when updating the user\'s theme"
+msgid "Error when updating the user\\'s theme"
 msgstr "Erreur lors de la mise à jour du thème de l'utilisateur"
 
 msgid "Error while searching for the user"
