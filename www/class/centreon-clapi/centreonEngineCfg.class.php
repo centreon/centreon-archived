@@ -227,13 +227,13 @@ class CentreonEngineCfg extends CentreonObject
                 'log_level_process',
                 'log_level_runtime',
             ];
-            $setUpdateParams = true;
+            $canUpdateParams = true;
             if ($params[1] == "instance" || $params[1] == "nagios_server_id") {
                 $params[1] = "nagios_server_id";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
-                $setUpdateParams = false;
+                $canUpdateParams = false;
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
@@ -250,9 +250,9 @@ class CentreonEngineCfg extends CentreonObject
                 $this->createLoggerV2Cfg($objectId);
             } elseif (preg_match('/(' . implode('|', $loggerColumns) . ')/', $params[1], $matches)) {
                 $this->updateLoggerV2Param($objectId, $params);
-                $setUpdateParams = false;
+                $canUpdateParams = false;
             }
-            if ($setUpdateParams) {
+            if ($canUpdateParams) {
                 $p = strtolower($params[1]);
                 if ($params[2] == "") {
                     if (isset($this->params[$p]) && $this->params[$p] == 2) {
@@ -480,11 +480,26 @@ class CentreonEngineCfg extends CentreonObject
     }
 
     /**
+     * This method is automatically called in CentreonObject
+     *
      * @param int $nagiosId
      */
     public function insertRelations(int $nagiosId): void
     {
         $this->createLoggerV2Cfg($nagiosId);
+    }
+
+    /**
+     * @param int $nagiosId
+     * @return bool
+     */
+    private function doesLoggerV2CfgExist(int $nagiosId): bool
+    {
+        $statement = $this->db->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetch() !== false;
     }
 
     /**
@@ -494,13 +509,9 @@ class CentreonEngineCfg extends CentreonObject
      */
     private function createLoggerV2Cfg(int $nagiosId): void
     {
-        $statement = $this->db->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
-        $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        if (! ($statement->fetch())) {
-            $statement = $this->db->prepare('INSERT INTO cfg_nagios_logger (cfg_nagios_id) VALUES (:cfg_nagios_id)');
-            $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
+            $statement = $this->db->prepare('INSERT INTO cfg_nagios_logger (cfg_nagios_id) VALUES (:cfgNagiosId)');
+            $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
             $statement->execute();
         }
     }
@@ -511,8 +522,8 @@ class CentreonEngineCfg extends CentreonObject
      */
     private function getLoggerV2Cfg(int $nagiosId): array
     {
-        $statement = $this->db->prepare('SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
-        $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
+        $statement = $this->db->prepare('SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
         $statement->execute();
 
         if ($result = $statement->fetch()) {
@@ -532,19 +543,15 @@ class CentreonEngineCfg extends CentreonObject
      */
     private function updateLoggerV2Param(int $nagiosId, array $params): void
     {
-        $statement = $this->db->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
-        $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        if ($statement->fetch()) {
-            $statement = $this->db->prepare(
-                "UPDATE cfg_nagios_logger SET {$params[1]} = :paramValue WHERE cfg_nagios_id = :cfg_nagios_id"
-            );
-            $statement->bindValue(':paramValue', $params[2], \PDO::PARAM_STR);
-            $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
-            $statement->execute();
-        } else {
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
+
+        $statement = $this->db->prepare(
+            "UPDATE cfg_nagios_logger SET `{$params[1]}` = :paramValue WHERE cfg_nagios_id = :cfgNagiosId"
+        );
+        $statement->bindValue(':paramValue', $params[2], \PDO::PARAM_STR);
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 }

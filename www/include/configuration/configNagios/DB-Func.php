@@ -439,10 +439,10 @@ function getLoggerV2Columns(): array
 
 /**
  * @param CentreonDB $pearDB
- * @param array $ret
+ * @param array $data
  * @param int $nagiosId
  */
-function insertLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
+function insertLoggerV2Cfg(CentreonDB $pearDB, array $data, int $nagiosId): void
 {
     $loggerCfg = getLoggerV2Columns();
 
@@ -453,17 +453,17 @@ function insertLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
 
     $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
     foreach ($loggerCfg as $columnName) {
-        $statement->bindValue(':' . $columnName, $ret[$columnName] ?? null, \PDO::PARAM_STR);
+        $statement->bindValue(':' . $columnName, $data[$columnName] ?? null, \PDO::PARAM_STR);
     }
     $statement->execute();
 }
 
 /**
  * @param CentreonDB $pearDB
- * @param array<string,mixed> $ret
+ * @param array<string,mixed> $data
  * @param int $nagiosId
  */
-function updateLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
+function updateLoggerV2Cfg(CentreonDB $pearDB, array $data, int $nagiosId): void
 {
     $loggerCfg = getLoggerV2Columns();
 
@@ -474,41 +474,43 @@ function updateLoggerV2Cfg(CentreonDB $pearDB, array $ret, int $nagiosId): void
 
     $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
     foreach ($loggerCfg as $columnName) {
-        $statement->bindValue(':' . $columnName, $ret[$columnName] ?? null, \PDO::PARAM_STR);
+        $statement->bindValue(':' . $columnName, $data[$columnName] ?? null, \PDO::PARAM_STR);
     }
     $statement->execute();
 }
 
 /**
+ * Insert logger V2 config if doesn't exist, otherwise update it
+ *
  * @param CentreonDB $pearDB
- * @param array<string,mixed> $ret
+ * @param array<string,mixed> $data
  * @param int $nagiosId
  */
-function insertOrUpdateLogger(CentreonDB $pearDB, array $ret, int $nagiosId): void
+function insertOrUpdateLogger(CentreonDB $pearDB, array $data, int $nagiosId): void
 {
     $statement = $pearDB->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfg_nagios_id');
     $statement->bindValue(':cfg_nagios_id', $nagiosId, \PDO::PARAM_INT);
     $statement->execute();
 
-    if ($res = $statement->fetch()) {
-        updateLoggerV2Cfg($pearDB, $ret, $nagiosId);
+    if ($statement->fetch()) {
+        updateLoggerV2Cfg($pearDB, $data, $nagiosId);
     } else {
-        insertLoggerV2Cfg($pearDB, $ret, $nagiosId);
+        insertLoggerV2Cfg($pearDB, $data, $nagiosId);
     }
 }
 
-function insertNagios($ret = array(), $brokerTab = array())
+function insertNagios($data = array(), $brokerTab = array())
 {
     global $form, $pearDB, $centreon;
 
-    if (!count($ret)) {
-        $ret = $form->getSubmitValues();
+    if (! count($data)) {
+        $data = $form->getSubmitValues();
     }
 
     $nagiosColumns = getNagiosCfgColumnsDetails();
 
     $nagiosCfg = [];
-    foreach ($ret as $columnName => $rawValue) {
+    foreach ($data as $columnName => $rawValue) {
         if (! array_key_exists($columnName, $nagiosColumns)) {
             continue;
         }
@@ -547,7 +549,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     $dbResult->closeCursor();
 
     if (isset($nagiosCfg['logger_version']) && $nagiosCfg['logger_version'] === 'log_v2_enabled') {
-        insertLoggerV2Cfg($pearDB, $ret, $nagios_id["MAX(nagios_id)"]);
+        insertLoggerV2Cfg($pearDB, $data, $nagios_id["MAX(nagios_id)"]);
     }
 
     if (isset($_REQUEST['in_broker'])) {
@@ -556,20 +558,20 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
 
     /* Manage the case where you have to main.cfg on the same poller */
-    if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"]) {
+    if (isset($data["nagios_activate"]["nagios_activate"]) && $data["nagios_activate"]["nagios_activate"]) {
         $dbResult = $pearDB->query(
             "UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '"
             . $nagios_id["MAX(nagios_id)"]
-            . "' AND nagios_server_id = '" . $ret['nagios_server_id'] . "'"
+            . "' AND nagios_server_id = '" . $data['nagios_server_id'] . "'"
         );
     }
 
     /* Prepare value for changelog */
-    $fields = CentreonLogAction::prepareChanges($ret);
+    $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog(
         "engine",
         $nagios_id["MAX(nagios_id)"],
-        $pearDB->escape($ret["nagios_name"]),
+        $pearDB->escape($data["nagios_name"]),
         "a",
         $fields
     );
@@ -585,12 +587,12 @@ function updateNagios($nagiosId = null)
         return;
     }
 
-    $ret = [];
-    $ret = $form->getSubmitValues();
+    $data = [];
+    $data = $form->getSubmitValues();
     $nagiosColumns = getNagiosCfgColumnsDetails();
 
     $nagiosCfg = [];
-    foreach ($ret as $columnName => $rawValue) {
+    foreach ($data as $columnName => $rawValue) {
         if (! array_key_exists($columnName, $nagiosColumns)) {
             continue;
         }
@@ -626,7 +628,7 @@ function updateNagios($nagiosId = null)
     $statement->execute();
 
     if (isset($nagiosCfg['logger_version']) && $nagiosCfg['logger_version'] === 'log_v2_enabled') {
-        insertOrUpdateLogger($pearDB, $ret, $nagiosId);
+        insertOrUpdateLogger($pearDB, $data, $nagiosId);
     }
 
     $mainCfg = new CentreonConfigEngine($pearDB);
@@ -636,16 +638,16 @@ function updateNagios($nagiosId = null)
         $mainCfg->insertBrokerDirectives($nagiosId);
     }
 
-    if ($ret["nagios_activate"]["nagios_activate"]) {
+    if ($data["nagios_activate"]["nagios_activate"]) {
         enableNagiosInDB($nagiosId);
     }
 
     /* Prepare value for changelog */
-    $fields = CentreonLogAction::prepareChanges($ret);
+    $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog(
         "engine",
         $nagiosId,
-        $pearDB->escape($ret["nagios_name"]),
+        $pearDB->escape($data["nagios_name"]),
         "c",
         $fields
     );
