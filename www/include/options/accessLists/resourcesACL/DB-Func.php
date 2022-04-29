@@ -683,7 +683,8 @@ function updateMetaServices($acl_id = null)
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES (:acl_res_id, :meta_id)";
+                $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES (:acl_res_id, 
+                                                                       :meta_id)";
                 $statement = $pearDB->prepare($query);
                 $statement->bindValue(':acl_res_id', (int)$acl_id, \PDO::PARAM_INT);
                 $statement->bindValue(':meta_id', (int)$value, \PDO::PARAM_INT);
