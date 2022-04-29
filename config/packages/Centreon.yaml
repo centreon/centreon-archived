@@ -244,19 +244,19 @@ services:
     Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']
 
-#     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-#         class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
-#         calls:
-#             - method: setSqlRequestTranslator
-#               arguments: ['@sqlRequestTranslator']
-#             - method: setProviders
-#               arguments: [!tagged_iterator 'monitoring.resource.providers']
-
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository
+        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+            - method: setProviders
+              arguments: [!tagged_iterator 'monitoring.resource.providers']
+
+#    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+#        class: Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository
+#        calls:
+#            - method: setSqlRequestTranslator
+#              arguments: ['@sqlRequestTranslator']
 
     Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
         class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
