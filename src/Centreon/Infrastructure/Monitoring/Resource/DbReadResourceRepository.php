@@ -544,7 +544,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                 ON imgdr.img_img_id = img.img_id
             INNER JOIN `:db`.view_img_dir imgd
                 ON imgd.dir_id = imgdr.dir_dir_parent_id
-            WHERE img.img_id IN (' . str_repeat('?, ', count($iconIds) - 1) . ')';
+            WHERE img.img_id IN (' . str_repeat('?, ', count($iconIds) - 1) . '?)';
 
             $statement = $this->db->prepare($this->translateDbName($request));
             $statement->execute($iconIds);
