@@ -64,7 +64,7 @@ try {
         REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
     );
 
-     /**
+    /**
      * Alter Tables
      */
     if (
