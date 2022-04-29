@@ -31,7 +31,7 @@ use Centreon\Infrastructure\Monitoring\Resource\DbResourceFactory;
 class DbResourceFactoryTest extends TestCase
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $record;
 
