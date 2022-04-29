@@ -327,8 +327,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $data = [
             "grant_type" => "authorization_code",
             "code" => $authorizationCode,
-            "redirect_uri" => $redirectUri,
-            "scope" => $this->configuration->getConnectionScopes()
+            "redirect_uri" => $redirectUri
         ];
 
         $response = $this->sendRequestToTokenEndpoint($data);
