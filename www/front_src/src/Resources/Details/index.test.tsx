@@ -75,6 +75,7 @@ import {
   labelBeforeLastYear,
   labelLastCheckWithOkStatus,
   labelGraph,
+  labelNotificationStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -165,6 +166,34 @@ const metaserviceDetailsMetricsUrlParameters = {
   uuid: 'ms1',
 };
 
+const serviceDetailsNotificationUrlParameters = {
+  id: 1,
+  parentId: 1,
+  parentType: 'host',
+  tab: 'notification',
+  type: 'service',
+  uuid: 'h1-s1',
+};
+
+const retrievedNotificationContacts = {
+  contact_groups: [
+    {
+      alias: 'admin admin',
+      configuration_uri: '/centreon/main.php?p=60301&o=c&cg_id=1',
+      name: 'admin',
+    },
+  ],
+  contacts: [
+    {
+      alias: 'Guest Guest',
+      configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=1',
+      email: 'localhost@centreon.com',
+      name: 'Guest',
+    },
+  ],
+  is_notification_enabled: true,
+};
+
 const retrievedDetails = {
   acknowledged: false,
   acknowledgement: {
@@ -210,6 +239,7 @@ const retrievedDetails = {
   latency: 0.005,
   links: {
     endpoints: {
+      notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
     },
@@ -1397,6 +1427,7 @@ describe(Details, () => {
           property: CustomTimePeriodProperty.start,
         });
       });
+
       act(() => {
         context.changeCustomTimePeriod?.({
           date: new Date('2020-01-21T06:00:00.000Z'),
@@ -1710,6 +1741,46 @@ describe(Details, () => {
         `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
         cancelTokenRequestParam,
       );
+    });
+  });
+
+  it('displays contacts and contact groups when the notification tab is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedNotificationContacts,
+    });
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: serviceDetailsNotificationUrlParameters,
+      },
+    ]);
+
+    const { getByText, getByTestId } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        retrievedDetails.links.endpoints.notification_policy,
+        expect.anything(),
+      );
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelNotificationStatus)).toBeInTheDocument();
+    });
+
+    expect(getByTestId('NotificationsActiveIcon')).toBeInTheDocument();
+
+    retrievedNotificationContacts.contact_groups.forEach(({ name, alias }) => {
+      expect(getByText(name)).toBeInTheDocument();
+      expect(getByText(alias)).toBeInTheDocument();
+    });
+
+    retrievedNotificationContacts.contacts.forEach(({ name, alias, email }) => {
+      expect(getByText(name)).toBeInTheDocument();
+      expect(getByText(alias)).toBeInTheDocument();
+      expect(getByText(email)).toBeInTheDocument();
     });
   });
 });

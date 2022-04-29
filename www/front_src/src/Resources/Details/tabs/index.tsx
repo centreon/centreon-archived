@@ -10,6 +10,7 @@ import {
   labelTimeline,
   labelServices,
   labelMetrics,
+  labelNotification,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import DetailsLoadingSkeleton from '../LoadingSkeleton';
@@ -21,12 +22,14 @@ const GraphTab = lazy(() => import('./Graph'));
 const TimelineTab = lazy(() => import('./Timeline'));
 const ServicesTab = lazy(() => import('./Services'));
 const MetricsTab = lazy(() => import('./Metrics'));
+const NotificationsTab = lazy(() => import('./Notifications'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
+const notificationsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -82,6 +85,13 @@ const tabs: Array<Tab> = [
     id: metricsTabId,
     title: labelMetrics,
   },
+  {
+    Component: NotificationsTab,
+    ariaLabel: labelNotification,
+    getIsActive: (): boolean => true,
+    id: notificationsTabId,
+    title: labelNotification,
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -113,6 +123,7 @@ const tabIdByLabel = {
   details: detailsTabId,
   graph: graphTabId,
   metrics: metricsTabId,
+  notification: notificationsTabId,
   services: servicesTabId,
   timeline: timelineTabId,
 };
@@ -137,6 +148,7 @@ export {
   graphTabId,
   servicesTabId,
   metricsTabId,
+  notificationsTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

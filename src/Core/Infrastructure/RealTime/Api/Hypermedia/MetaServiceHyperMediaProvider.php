@@ -39,7 +39,8 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     public const ENDPOINT_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getMetaServicePerformanceMetrics',
                  ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getMetaServiceStatusMetrics',
-                 ENDPOINT_METRIC_LIST = 'centreon_application_find_meta_service_metrics';
+                 ENDPOINT_METRIC_LIST = 'centreon_application_find_meta_service_metrics',
+                 ENDPOINT_NOTIFICATION_POLICY = 'configuration.metaservice.notification-policy';
 
     /**
      * @param ContactInterface $contact
@@ -171,6 +172,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
             'performance_graph' => $response->hasGraphData
                 ? $this->createForPerformanceDataEndpoint($parameters)
                 : null,
+            'notification_policy' => $this->createNotificationPolicyEndpoint($response),
         ];
     }
 
@@ -197,5 +199,19 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     public function createInternalGroupsUri(mixed $response): array
     {
         return [];
+    }
+
+    /**
+     * Create Notification policy endpoint URI for the Meta Service Resource
+     *
+     * @param FindMetaServiceResponse $response
+     * @return string
+     */
+    private function createNotificationPolicyEndpoint(FindMetaServiceResponse $response): string
+    {
+        return $this->router->generate(
+            self::ENDPOINT_NOTIFICATION_POLICY,
+            ['metaServiceId' => $response->id],
+        );
     }
 }

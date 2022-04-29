@@ -121,6 +121,7 @@ class ServiceTemplate extends AbstractService
         'notes_url',
         'action_url',
         'icon_image',
+        'icon_id',
         'icon_image_alt',
         'acknowledgement_timeout'
     );

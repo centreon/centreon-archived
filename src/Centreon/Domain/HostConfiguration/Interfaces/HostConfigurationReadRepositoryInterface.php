@@ -108,6 +108,16 @@ interface HostConfigurationReadRepositoryInterface
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 
     /**
+     * Find a host regarding user ACL
+     *
+     * @param integer $hostId
+     * @param int[] $accessGroupIds
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+
+    /**
      * Find host templates linked to a host (non recursive)
      *
      * **The priority order of host templates is maintained!**
