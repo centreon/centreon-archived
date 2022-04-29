@@ -68,16 +68,16 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         'alias' => 'resources.alias',
         'fqdn' => 'resources.address',
         'type' => 'resources.type',
-        'h.name' => 'r2.name',
-        'h.alias' => 'r2.alias',
-        'h.address' => 'r2.address',
+        'h.name' => 'parent_resource.name',
+        'h.alias' => 'parent_resource.alias',
+        'h.address' => 'parent_resource.address',
         's.description' => 'resources.type IN (0,2) AND resources.name',
         'status_code' => 'resources.status',
         'status_severity_code' => 'resources.status_ordered',
         'action_url' => 'resources.action_url',
         'parent_name' => 'resources.parent_name',
-        'parent_alias' => 'r2.alias',
-        'parent_status' => 'r2.status',
+        'parent_alias' => 'parent_resource.alias',
+        'parent_status' => 'parent_resource.status',
         'severity_level' => 'severity_level',
         'in_downtime' => 'resources.in_downtime',
         'acknowledged' => 'resources.acknowledged',
@@ -152,9 +152,9 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             resources.internal_id,
             resources.parent_id,
             resources.parent_name,
-            r2.status AS `parent_status`,
-            r2.alias AS `parent_alias`,
-            r2.status_ordered AS `parent_status_ordered`,
+            parent_resource.status AS `parent_status`,
+            parent_resource.alias AS `parent_alias`,
+            parent_resource.status_ordered AS `parent_status_ordered`,
             severities.level AS `severity_level`,
             resources.type,
             resources.status,
@@ -179,8 +179,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             resources.enabled,
             resources.icon_id
         FROM `:dbstg`.`resources`
-        LEFT JOIN `:dbstg`.`resources` r2
-            ON r2.id = resources.parent_id
+        LEFT JOIN `:dbstg`.`resources` resource_parent
+            ON resource_parent.id = resources.parent_id
         LEFT JOIN `:dbstg`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
         LEFT JOIN `:dbstg`.`resources_tags` AS rtags
@@ -200,12 +200,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        if (!empty($searchSubRequest)) {
-            $request .= $searchSubRequest;
-            $hasWhereCondition = true;
-        }
-
-        $request .= $hasWhereCondition ? ' AND ' : ' WHERE ';
+        $request .= !empty($searchSubRequest) ? $searchSubRequest . ' AND ' : ' WHERE ';
 
         $request .= " resources.name NOT LIKE '\_Module\_%'
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
@@ -216,7 +211,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
          */
         if ($this->contact->isAdmin() === false) {
             $accessGroupIds = array_map(
-                function ($accessGroup) {
+                function (AccessGroup $accessGroup) {
                     return $accessGroup->getId();
                 },
                 $this->accessGroups
@@ -344,15 +339,12 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $resourceTypes = [];
         $subRequest = '';
         foreach ($filter->getTypes() as $resourceType) {
-            switch (true) {
-                case $resourceType === ResourceEntity::TYPE_HOST:
-                    $resourceTypes[] = self::RESOURCE_TYPE_HOST;
-                    break;
-                case $resourceType === ResourceEntity::TYPE_SERVICE:
-                    $resourceTypes[] = self::RESOURCE_TYPE_SERVICE;
-                    break;
-                case $resourceType === ResourceEntity::TYPE_META:
-                    $resourceTypes[] = self::RESOURCE_TYPE_METASERVICE;
+            if ($resourceType === ResourceEntity::TYPE_HOST) {
+                $resourceTypes[] = self::RESOURCE_TYPE_HOST;
+            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
+                $resourceTypes[] = self::RESOURCE_TYPE_SERVICE;
+            } elseif ($resourceType === ResourceEntity::TYPE_META) {
+                $resourceTypes[] = self::RESOURCE_TYPE_METASERVICE;
             }
         }
 
@@ -373,8 +365,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     {
         $subRequest = '';
         if (
-            !empty($filter->getStates()) &&
-            !$filter->hasState(ResourceFilter::STATE_ALL)
+            !empty($filter->getStates())
+            && !$filter->hasState(ResourceFilter::STATE_ALL)
         ) {
             $sqlState = [];
             $sqlStateCatalog = [
@@ -406,7 +398,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     {
         $subRequest = '';
         $sqlStatuses = [];
-        if (!empty($filter->getStatuses())) {
+        if (! empty($filter->getStatuses())) {
             foreach ($filter->getStatuses() as $status) {
                 if (array_key_exists($status, ResourceFilter::MAP_STATUS_SERVICE)) {
                     $sqlStatuses[] = '(resources.type = ' . self::RESOURCE_TYPE_SERVICE
@@ -486,7 +478,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             $subRequest = ' AND
                 EXISTS (
                     SELECT 1 FROM `:dbstg`.resources_tags AS rtags
-                    WHERE (rtags.resource_id = resources.resource_id OR rtags.resource_id = r2.resource_id)
+                    WHERE (rtags.resource_id = resources.resource_id OR rtags.resource_id = parent_resource.resource_id)
                     AND EXISTS (
                         SELECT 1 FROM `:dbstg`.tags
                         WHERE tags.tag_id = rtags.tag_id AND tags.name IN (' . implode(', ', $searchedTags) . ')
@@ -552,10 +544,10 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
                 ON imgdr.img_img_id = img.img_id
             INNER JOIN `:db`.view_img_dir imgd
                 ON imgd.dir_id = imgdr.dir_dir_parent_id
-            WHERE img.img_id IN (' . implode(', ', $iconIds) . ')';
+            WHERE img.img_id IN (' . str_repeat('?, ', count($iconIds) - 1) . ')';
 
             $statement = $this->db->prepare($this->translateDbName($request));
-            $statement->execute();
+            $statement->execute($iconIds);
 
             while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
                 $resourceIndex = array_search((int) $record['icon_id'], $iconIds);

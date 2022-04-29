@@ -130,8 +130,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $hostId = null;
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $hostId = (int) $resource->getId();
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            $hostId = (int) $resource->getParent()?->getId();
+        } elseif (
+            $resource->getParent() !== null
+            && $resource->getType() === ResourceEntity::TYPE_SERVICE
+        ) {
+            $hostId = (int) $resource->getParent()->getId();
         }
 
         return $hostId;
@@ -186,7 +189,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
         $resourceType = $resource->getType();
 
-        if (!empty($actionUrl)) {
+        if (! empty($actionUrl)) {
             if ($resourceType === ResourceEntity::TYPE_HOST) {
                 $actionUrl = $this->replaceMacrosInUrlsForHostResource($resource, $actionUrl);
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
@@ -195,7 +198,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
         }
 
-        if (!empty($notesUrl)) {
+        if (! empty($notesUrl)) {
             if ($resourceType === ResourceEntity::TYPE_HOST) {
                 $notesUrl = $this->replaceMacrosInUrlsForHostResource($resource, $notesUrl);
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
