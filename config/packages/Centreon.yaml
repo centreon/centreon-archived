@@ -252,6 +252,12 @@ services:
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
 
+#    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+#        class: Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository
+#        calls:
+#            - method: setSqlRequestTranslator
+#              arguments: ['@sqlRequestTranslator']
+
     Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
         class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
         calls:
