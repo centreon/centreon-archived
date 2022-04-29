@@ -2445,7 +2445,7 @@ CREATE TABLE `contact_password` (
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `cfg_nagios_logger` (
+CREATE TABLE `cfg_nagios_logger` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `cfg_nagios_id` int(11) NOT NULL,
   `log_v2_logger` enum('file', 'syslog') DEFAULT 'file',
