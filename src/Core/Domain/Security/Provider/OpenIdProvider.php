@@ -352,7 +352,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $accessTokenLog = [
             'provider_token' => '...' . substr($content['access_token'], -10)
         ];
-        if(array_key_exists('refresh_token', $content)) {
+        if (array_key_exists('refresh_token', $content)) {
             $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
         }
         $this->info(
