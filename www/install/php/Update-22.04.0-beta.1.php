@@ -98,7 +98,6 @@ try {
         $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
     }
 
-    // Add custom_configuration to provider configurations
     if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
         // Add custom_configuration to provider configurations
         $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
