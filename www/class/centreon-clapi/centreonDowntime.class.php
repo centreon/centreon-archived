@@ -146,33 +146,49 @@ class CentreonDowntime extends CentreonObject
             echo $paramString . "\n";
             $filterList = '';
         } else {
+            if (isset($filter[1])) {
+                switch (strtolower($filter[1])) {
+                    case 'host':
+                        $paramString .= ";hosts\n";
+                        break;
+                    case 'hg':
+                        $paramString .= ";host groups\n";
+                        break;
+                    case 'service':
+                        $paramString .= ";services\n";
+                        break;
+                    case 'sg':
+                        $paramString .= ";service groups\n";
+                        break;
+                    default:
+                        throw new CentreonClapiException(self::UNKNOWNPARAMETER);
+                }
+            } else {
+                $paramString .= ";hosts;host groups;services;service groups\n";
+            }
             foreach ($elements as $element) {
                 if (isset($filter[1])) {
                     switch (strtolower($filter[1])) {
                         case 'host':
-                            echo $paramString . ";hosts\n";
                             $filterList = ';' . $this->listHosts($element["dt_id"]);
                             break;
                         case 'hg':
-                            echo $paramString . ";host groups\n";
                             $filterList = ';' . $this->listHostGroups($element["dt_id"]);
                             break;
                         case 'service':
-                            echo $paramString . ";services\n";
                             $filterList = ';' . $this->listServices($element["dt_id"]);
                             break;
                         case 'sg':
-                            echo $paramString . ";service groups\n";
                             $filterList = ';' . $this->listServiceGroups($element["dt_id"]);
                             break;
                         default:
                             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
                     }
                 } else {
-                    echo $paramString . ";hosts;host groups;services;service groups\n";
                     $filterList = ';' . $this->listResources($element["dt_id"]);
                 }
             }
+        echo $paramString;
         }
 
         foreach ($elements as $tab) {
@@ -548,7 +564,7 @@ class CentreonDowntime extends CentreonObject
         }
 
         return implode("|", $hosts) . $this->delim . implode("|", $hostgroups) . $this->delim .
-            implode("|", $services) . $this->delim . implode("|", $servicegroups) . "\n";
+            implode("|", $services) . $this->delim . implode("|", $servicegroups);
     }
 
     /**
