@@ -60,7 +60,7 @@ describe('React Router', () => {
     });
   });
 
-  it('displays an error message if the page is not found', async () => {
+  it('displays an error message when the page is not found', async () => {
     window.history.pushState({}, '', '/not-found');
 
     renderReactRouter();
