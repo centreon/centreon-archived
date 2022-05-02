@@ -198,7 +198,7 @@ abstract class ServerConnectionConfigurationService
     protected function insertBrokerLog(array $brokerLogs): void
     {
         foreach ($brokerLogs as $brokerLog) {
-           $this->insertWithAdapter('cfg_centreonbroker_log', $brokerLog);
+            $this->insertWithAdapter('cfg_centreonbroker_log', $brokerLog);
         }
     }
 
