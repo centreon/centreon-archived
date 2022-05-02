@@ -1,4 +1,3 @@
-/* eslint-disable hooks/sort */
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -45,12 +44,6 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
-  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
-  const customTimePeriod = useAtomValue(customTimePeriodAtom);
-
-  const [start, end] = getIntervalDates(selectedTimePeriod);
-
   const translatedTypes = types.map((type) => ({
     ...type,
     name: t(type.name),
@@ -58,12 +51,19 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const [selectedTypes, setSelectedTypes] =
     useState<Array<Type>>(translatedTypes);
-  const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     decoder: listTimelineEventsDecoder,
     request: listTimelineEvents,
   });
+
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+
+  const [start, end] = getIntervalDates(selectedTimePeriod);
+
+  const limit = 30;
 
   const getSearch = (): SearchParameter | undefined => {
     if (isEmpty(selectedTypes)) {

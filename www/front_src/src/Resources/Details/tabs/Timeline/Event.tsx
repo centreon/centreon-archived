@@ -1,6 +1,3 @@
-/* eslint-disable hooks/sort */
-// Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
-
 import { prop, isNil, filter, equals } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
@@ -131,8 +128,8 @@ const Author = ({ event }: Props): JSX.Element => {
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={classes.event}>
@@ -189,9 +186,9 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const { format } = useLocaleDateTimeFormat();
-  const classes = useStyles();
 
   const getCaption = (): string => {
     const formattedStartDate = format({
