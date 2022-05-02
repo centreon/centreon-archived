@@ -122,6 +122,9 @@ const ExtensionDetailPopup = ({
                   PrevIcon={<ChevronLeftIcon />}
                   animation="slide"
                   autoPlay={false}
+                  sx={{
+                    height: '100%',
+                  }}
                 >
                   {extensionDetails.images?.map((image) => (
                     <img alt={image} key={image} src={image} width={width} />
