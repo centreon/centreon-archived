@@ -121,7 +121,7 @@ function getCentreonBrokerInformation($id)
     $query =
         "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
             config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
-            cache_directory, command_file, daemon, pool_size, log_directory, log_filename, log_max_size
+            cache_directory, command_file, daemon, pool_size, log_directory, log_filename, log_max_size, bbdo_version
         FROM cfg_centreonbroker
         WHERE config_id = " . $id;
     try {
@@ -159,6 +159,7 @@ function getCentreonBrokerInformation($id)
             "log_directory" => $row['log_directory'],
             "log_filename" => $row['log_filename'],
             "log_max_size" => $row['log_max_size'],
+            "bbdo_version" => $row['bbdo_version'],
         ];
     }
     /*
