@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -80,7 +80,7 @@ const AcknowledgeForm = ({
     validationSchema,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${alias}`);
   }, []);
 

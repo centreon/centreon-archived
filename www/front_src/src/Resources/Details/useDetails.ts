@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { isNil } from 'ramda';
 import { useAtom } from 'jotai';
@@ -59,7 +59,7 @@ const useDetails = (): void => {
     sending: sendingDetails,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
 
     const detailsUrlQueryParameters =
@@ -95,7 +95,7 @@ const useDetails = (): void => {
     setDefaultSelectedCustomTimePeriod(customTimePeriodFromUrl);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setUrlQueryParameters([
       {
         name: 'details',

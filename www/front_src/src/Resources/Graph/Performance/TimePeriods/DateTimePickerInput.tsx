@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import dayjs from 'dayjs';
 
@@ -16,7 +16,7 @@ interface Props {
   maxDate?: Date;
   minDate?: Date;
   property: CustomTimePeriodProperty;
-  setDate: React.Dispatch<React.SetStateAction<Date>>;
+  setDate: Dispatch<SetStateAction<Date>>;
 }
 
 const renderDateTimePickerTextField =
@@ -44,7 +44,7 @@ const DateTimePickerInput = ({
   changeDate,
   setDate,
 }: Props): JSX.Element => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { getDestinationAndConfiguredTimezoneOffset, formatKeyboardValue } =
     useDateTimePickerAdapter();
 

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import { render, act, waitFor, RenderResult } from '@testing-library/react';
 import { Provider } from 'jotai';

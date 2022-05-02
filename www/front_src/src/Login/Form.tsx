@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useCallback } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { isEmpty, not, prop } from 'ramda';
@@ -32,7 +32,7 @@ const getTouchedError = ({ fieldName, errors, touched }): string | undefined =>
 const LoginForm = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const {
     values,
     handleChange,
@@ -62,7 +62,7 @@ const LoginForm = (): JSX.Element => {
   });
   const isDisabled = not(isEmpty(errors)) || isSubmitting || not(dirty);
 
-  const passwordEndAdornment = React.useCallback(
+  const passwordEndAdornment = useCallback(
     (): JSX.Element => (
       <PasswordEndAdornment
         changeVisibility={changeVisibility}

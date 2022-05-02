@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, useState, Suspense } from 'react';
 
 import { equals, isNil, path } from 'ramda';
 
@@ -16,21 +16,21 @@ import {
   labelSelectServerType,
 } from './translatedLabels';
 
-const ServerConfigurationWizard = React.lazy(
+const ServerConfigurationWizard = lazy(
   () => import('../../PollerWizard/serverConfigurationWizard'),
 );
-const RemoteServerStep1 = React.lazy(
+const RemoteServerStep1 = lazy(
   () => import('../../PollerWizard/remoteServerStep1'),
 );
-const PollerStep1 = React.lazy(() => import('../../PollerWizard/pollerStep1'));
-const RemoteServerStep2 = React.lazy(
+const PollerStep1 = lazy(() => import('../../PollerWizard/pollerStep1'));
+const RemoteServerStep2 = lazy(
   () => import('../../PollerWizard/remoteServerStep2'),
 );
-const PollerStep2 = React.lazy(() => import('../../PollerWizard/pollerStep2'));
-const RemoteServerStep3 = React.lazy(
+const PollerStep2 = lazy(() => import('../../PollerWizard/pollerStep2'));
+const RemoteServerStep3 = lazy(
   () => import('../../PollerWizard/remoteServerStep3'),
 );
-const PollerStep3 = React.lazy(() => import('../../PollerWizard/pollerStep3'));
+const PollerStep3 = lazy(() => import('../../PollerWizard/pollerStep3'));
 
 const formSteps = [
   { [ServerType.Base]: ServerConfigurationWizard },
@@ -55,10 +55,8 @@ const useStyles = makeStyles((theme) => ({
 const PollerWizard = (): JSX.Element | null => {
   const classes = useStyles();
 
-  const [currentStep, setCurrentStep] = React.useState(0);
-  const [serverType, setServerType] = React.useState<ServerType>(
-    ServerType.Base,
-  );
+  const [currentStep, setCurrentStep] = useState(0);
+  const [serverType, setServerType] = useState<ServerType>(ServerType.Base);
 
   const goToNextStep = (): void => {
     setCurrentStep((step) => step + 1);
@@ -85,13 +83,13 @@ const PollerWizard = (): JSX.Element | null => {
     <BaseWizard>
       <ProgressBar activeStep={currentStep} steps={steps} />
       <div className={classes.formContainer}>
-        <React.Suspense fallback={<LoadingSkeleton />}>
+        <Suspense fallback={<LoadingSkeleton />}>
           <Form
             changeServerType={changeServerType}
             goToNextStep={goToNextStep}
             goToPreviousStep={goToPreviousStep}
           />
-        </React.Suspense>
+        </Suspense>
       </div>
     </BaseWizard>
   );

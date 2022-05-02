@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Typography, Alert } from '@mui/material';
 
 import { Dialog } from '@centreon/ui';

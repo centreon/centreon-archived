@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { equals } from 'ramda';
 import clsx from 'clsx';
@@ -31,12 +38,8 @@ interface Props {
   level: number;
   onClick: (item: Page) => void;
   onLeave?: () => void;
-  setCollapseScrollMaxHeight: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-  setCollapseScrollMaxWidth: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
+  setCollapseScrollMaxHeight: Dispatch<SetStateAction<number | undefined>>;
+  setCollapseScrollMaxWidth: Dispatch<SetStateAction<number | undefined>>;
 }
 
 interface StyleProps {
@@ -143,7 +146,7 @@ const CollapsibleItems = ({
     useState<undefined | number>(undefined);
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
-  const collapsRef = React.useRef<HTMLElement | null>(null);
+  const collapsRef = useRef<HTMLElement | null>(null);
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
   const setHoveredNavigationItems = useUpdateAtom(
@@ -208,7 +211,7 @@ const CollapsibleItems = ({
     setCollapseScrollMaxWidth((window.innerWidth - rect.left) / 8);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isCollapsed && collapsRef && collapsRef.current) {
       updateCollapseSize(collapsRef.current);
     }
@@ -234,7 +237,7 @@ const CollapsibleItems = ({
               navigationItem: selectedNavigationItems,
             }) || equals(hoveredIndex, index);
 
-          const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
+          const mouseEnterItem = (e: MouseEvent<HTMLElement>): void =>
             hoverItem({ currentPage: item, e, index });
 
           const isCollapseWithSubheader =
@@ -275,7 +278,7 @@ const CollapsibleItems = ({
                     }) || equals(hoveredIndex, nestedIndex);
 
                   const mouseEnterContent = (
-                    e: React.MouseEvent<HTMLElement>,
+                    e: MouseEvent<HTMLElement>,
                   ): void =>
                     hoverItem({ currentPage: content, e, index: nestedIndex });
 
