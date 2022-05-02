@@ -49,7 +49,7 @@ trait HttpUrlTrait
 
         return $protocol . '://'
             . $serverName . ($port !== null ? ':' . $port : '')
-            . '/' . ltrim($baseUri, '/');
+            . '/' . trim($baseUri, '/');
     }
 
     /**
