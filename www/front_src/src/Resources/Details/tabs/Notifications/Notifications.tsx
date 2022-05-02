@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import { isNil, path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -33,7 +33,7 @@ const Notifications = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [notificationContacts, setNotificationContacts] =
-    React.useState<NotificationContacts | null>(null);
+    useState<NotificationContacts | null>(null);
 
   const { sendRequest } = useRequest<NotificationContacts>({
     request: getData,
@@ -46,7 +46,7 @@ const Notifications = (): JSX.Element => {
     sendRequest({ endpoint }).then(setNotificationContacts);
   };
 
-  const getContactColumns = React.useCallback((contact): JSX.Element => {
+  const getContactColumns = useCallback((contact): JSX.Element => {
     return (
       <>
         <ContactCell paddingLeft={1}>{contact.name}</ContactCell>
@@ -56,7 +56,7 @@ const Notifications = (): JSX.Element => {
     );
   }, []);
 
-  const getContactWithEmailColumns = React.useCallback(
+  const getContactWithEmailColumns = useCallback(
     (contact: Contact): JSX.Element => {
       return (
         <>
@@ -68,7 +68,7 @@ const Notifications = (): JSX.Element => {
     [],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(details)) {
       return;
     }

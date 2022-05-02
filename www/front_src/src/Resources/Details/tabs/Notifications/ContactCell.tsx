@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { ReactElement } from 'react';
 
 import { Typography, Tooltip } from '@mui/material';
 
 interface Props {
-  children: React.ReactElement | string;
+  children: ReactElement | string;
   paddingLeft?: number;
 }
 

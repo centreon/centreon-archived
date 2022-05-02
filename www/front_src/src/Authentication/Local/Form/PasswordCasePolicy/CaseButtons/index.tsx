@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -80,7 +80,7 @@ const CaseButtons = (): JSX.Element => {
       object: values,
     });
 
-  const thresholds = React.useMemo(
+  const thresholds = useMemo(
     () => [
       { color: theme.palette.error.main, label: labelWeak, value: 2 },
       { color: theme.palette.warning.main, label: labelGood, value: 3 },

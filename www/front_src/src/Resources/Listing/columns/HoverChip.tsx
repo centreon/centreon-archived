@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { not } from 'ramda';
 
@@ -34,13 +34,13 @@ const HoverChip = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [isChipHovered, setIsChipHovered] = React.useState<boolean>(false);
+  const [isChipHovered, setIsChipHovered] = useState<boolean>(false);
 
   const openTooltip = (): void => setIsChipHovered(true);
 
   const closeTooltip = (): void => setIsChipHovered(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (not(isHovered)) {
       return;
     }

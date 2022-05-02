@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -41,14 +41,12 @@ const PollerWizardStepTwo = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pollers, setPollers] = React.useState<Array<PollerRemoteList>>([]);
-  const [stepTwoFormData, setStepTwoFormData] = React.useState<StepTwoFormData>(
-    {
-      linked_remote_master: '',
-      linked_remote_slaves: [],
-      open_broker_flow: false,
-    },
-  );
+  const [pollers, setPollers] = useState<Array<PollerRemoteList>>([]);
+  const [stepTwoFormData, setStepTwoFormData] = useState<StepTwoFormData>({
+    linked_remote_master: '',
+    linked_remote_slaves: [],
+    open_broker_flow: false,
+  });
 
   const { sendRequest: getPollersRequest } = useRequest<
     Array<PollerRemoteList>
@@ -127,7 +125,7 @@ const PollerWizardStepTwo = ({
     .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
     .map(pick(['id', 'name']));
 
-  React.useEffect(() => {
+  useEffect(() => {
     getPollers();
   }, []);
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 
 import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -48,12 +48,12 @@ const NavigationMenu = ({
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
-  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
-  const [currentTop, setCurrentTop] = React.useState<number>();
-  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = React.useState<
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [currentTop, setCurrentTop] = useState<number>();
+  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = useState<
     number | undefined
   >(undefined);
-  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = React.useState<
+  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
@@ -220,7 +220,7 @@ const NavigationMenu = ({
     setHoveredNavigationItems(null);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
       const filteredResult = flatten(searchedItems || []).filter(Boolean);
@@ -258,7 +258,7 @@ const NavigationMenu = ({
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
-                onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
+                onMouseEnter={(e: MouseEvent<HTMLElement>): void =>
                   hoverItem({ currentPage: item, e, index })
                 }
               />

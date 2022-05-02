@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { isNil, isEmpty, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -38,19 +38,17 @@ const PollerWizardStepOne = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [waitList, setWaitList] = React.useState<Array<WaitList> | null>(null);
-  const [initialized, setInitialized] = React.useState(false);
-  const [inputTypeManual, setInputTypeManual] = React.useState(true);
+  const [waitList, setWaitList] = useState<Array<WaitList> | null>(null);
+  const [initialized, setInitialized] = useState(false);
+  const [inputTypeManual, setInputTypeManual] = useState(true);
 
-  const [stepOneFormData, setStepOneFormData] = React.useState<StepOneFormData>(
-    {
-      centreon_central_ip: '',
-      server_ip: '',
-      server_name: '',
-    },
-  );
+  const [stepOneFormData, setStepOneFormData] = useState<StepOneFormData>({
+    centreon_central_ip: '',
+    server_ip: '',
+    server_name: '',
+  });
 
-  const [error, setError] = React.useState<StepOneFormData>({
+  const [error, setError] = useState<StepOneFormData>({
     centreon_central_ip: '',
     server_ip: '',
     server_name: '',
@@ -118,11 +116,11 @@ const PollerWizardStepOne = ({
   const isFormNotCompleted = values(stepOneFormData).some((x) => x === '');
   const hasError = values(error).some((x) => x !== '');
 
-  React.useEffect(() => {
+  useEffect(() => {
     getWaitList();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (waitList) {
       const platform = waitList.find(
         (server) => server.ip === stepOneFormData.server_ip,
@@ -136,7 +134,7 @@ const PollerWizardStepOne = ({
     }
   }, [stepOneFormData.server_ip]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(waitList) || initialized) {
       return;
     }

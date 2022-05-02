@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -35,11 +35,9 @@ const RemoteServerWizardStepTwo = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const [remoteServers, setRemoteServers] =
-    React.useState<Array<PollerRemoteList> | null>(null);
+    useState<Array<PollerRemoteList> | null>(null);
 
-  const [linkedPollers, setLinkedPollers] = React.useState<Array<SelectEntry>>(
-    [],
-  );
+  const [linkedPollers, setLinkedPollers] = useState<Array<SelectEntry>>([]);
 
   const { sendRequest: getRemoteServersRequest } = useRequest<
     Array<PollerRemoteList>
@@ -109,7 +107,7 @@ const RemoteServerWizardStepTwo = ({
 
   const remoteServersOption = remoteServers?.map(pick(['id', 'name']));
 
-  React.useEffect(() => {
+  useEffect(() => {
     getRemoteServers();
   }, []);
 

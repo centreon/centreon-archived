@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
@@ -19,10 +19,8 @@ import { exportTaskEndpoint } from '../api/endpoints';
 const RemoteServerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [error, setError] = React.useState<string | null>(null);
-  const [generateStatus, setGenerateStatus] = React.useState<boolean | null>(
-    null,
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [generateStatus, setGenerateStatus] = useState<boolean | null>(null);
 
   const { sendRequest: getExportTask } = useRequest<{
     status: string | null;
@@ -33,9 +31,9 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const generationTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const generationTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const remainingGenerationTimeoutRef = React.useRef<number>(30);
+  const remainingGenerationTimeoutRef = useRef<number>(30);
   const pollerData = useAtomValue<RemoteServerData | null>(
     remoteServerAtom,
   ) as RemoteServerData;
@@ -81,7 +79,7 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
     setGenerateStatus(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setGenerationTimeout();
   }, []);
 

@@ -1,6 +1,4 @@
-import * as React from 'react';
-
-import { equals, reject, path, isNil } from 'ramda';
+import { equals, reject, path } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import userEvent from '@testing-library/user-event';
@@ -16,6 +14,7 @@ import {
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
+  screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -89,11 +88,7 @@ import { CriteriaNames } from '../Filter/Criterias/models';
 import { ResourceType } from '../models';
 import useLoadDetails from '../testUtils/useLoadDetails';
 
-import {
-  last7Days,
-  last31Days,
-  CustomTimePeriodProperty,
-} from './tabs/Graph/models';
+import { CustomTimePeriodProperty } from './tabs/Graph/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
@@ -604,7 +599,9 @@ describe(Details, () => {
       );
     });
 
-    expect(getByText('10')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('10')).toBeInTheDocument();
+    });
 
     expect(getByText('Critical')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
@@ -692,25 +689,18 @@ describe(Details, () => {
   });
 
   it.each([
-    [label1Day, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label1Day, '2020-01-20T06:00:00.000Z', 20],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
-    async (period, startIsoString, timelineEventsLimit, periodId) => {
+    async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-      if (!isNil(periodId)) {
-        mockedAxios.get.mockResolvedValueOnce({
-          data: retrievedPerformanceGraphData,
-        });
-      }
-
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
 
       setUrlQueryParameters([
@@ -826,6 +816,8 @@ describe(Details, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
+    await waitFor(() => expect(getByLabelText(labelCopy)).toBeInTheDocument());
+
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
@@ -876,7 +868,7 @@ describe(Details, () => {
       ),
     );
 
-    expect(getByText(labelToday)).toBeInTheDocument();
+    await waitFor(() => expect(getByText(labelToday)).toBeInTheDocument());
 
     expect(getByText('Tuesday, January 21, 2020 9:40 AM')).toBeInTheDocument();
     expect(getAllByLabelText('Event')).toHaveLength(3); // 2 events + 1 selected option
@@ -1012,6 +1004,10 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
+    await waitFor(() =>
+      expect(getByLabelText(labelShortcuts)).toBeInTheDocument(),
+    );
+
     userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
 
     expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
@@ -1065,6 +1061,8 @@ describe(Details, () => {
         expect.anything(),
       );
     });
+
+    await waitFor(() => expect(getByText(labelDetails)).toBeInTheDocument());
 
     fireEvent.click(getByText(labelDetails));
 
@@ -1139,6 +1137,10 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
+    await waitFor(() =>
+      expect(getByLabelText(labelCopyLink)).toBeInTheDocument(),
+    );
+
     act(() => {
       fireEvent.click(
         getByLabelText(labelCopyLink).firstElementChild as HTMLElement,
@@ -1174,7 +1176,7 @@ describe(Details, () => {
     const { getByText, queryByText } = renderDetails();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1202,7 +1204,7 @@ describe(Details, () => {
       expect.anything(),
     );
 
-    expect(getByText('Ok')).toBeInTheDocument();
+    await waitFor(() => expect(getByText('Ok')).toBeInTheDocument());
     expect(getByText('Ping')).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0ms lost 0%'));
     expect(getByText('22m')).toBeInTheDocument();
@@ -1440,6 +1442,10 @@ describe(Details, () => {
         );
       });
 
+      await waitFor(() =>
+        expect(getByLabelText(iconLabel)).toBeInTheDocument(),
+      );
+
       userEvent.click(getByLabelText(iconLabel));
 
       await waitFor(() => {
@@ -1451,7 +1457,7 @@ describe(Details, () => {
     },
   );
 
-  it('display retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
+  it('displays retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
     const service = retrievedServices.result[0];
 
     const retrievedMetrics = {
@@ -1495,7 +1501,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
-    expect(getByText('pl')).toBeInTheDocument();
+    await waitFor(() => expect(getByText('pl')).toBeInTheDocument());
     expect(getByText('3 (%)')).toBeInTheDocument();
     expect(getByText(service.name)).toBeInTheDocument();
   });
@@ -1522,7 +1528,7 @@ describe(Details, () => {
       );
     });
 
-    expect(getByLabelText(labelMin)).toBeInTheDocument();
+    await waitFor(() => expect(getByLabelText(labelMin)).toBeInTheDocument());
     expect(getByText('N/A')).toBeInTheDocument();
     expect(getByLabelText(labelMax)).toBeInTheDocument();
     expect(getByText('2.46k')).toBeInTheDocument();
@@ -1547,6 +1553,10 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
+
+    await waitFor(() =>
+      expect(getByLabelText('Linux-servers Chip')).toBeInTheDocument(),
+    );
 
     userEvent.hover(getByLabelText('Linux-servers Chip'));
     userEvent.click(getByLabelText('Linux-servers Filter'));
@@ -1589,6 +1599,10 @@ describe(Details, () => {
       );
     });
 
+    await waitFor(() =>
+      expect(getByText(retrievedDetails.name)).toBeInTheDocument(),
+    );
+
     userEvent.hover(getByText(retrievedDetails.name));
 
     expect(
@@ -1625,7 +1639,9 @@ describe(Details, () => {
       );
     });
 
-    expect(getByText(labelMonitoringServer)).toBeInTheDocument();
+    await waitFor(() =>
+      expect(getByText(labelMonitoringServer)).toBeInTheDocument(),
+    );
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
 
     expect(queryByText(labelLastCheck)).toBeInTheDocument();
@@ -1639,8 +1655,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedTimeline })
       .mockResolvedValueOnce(retrievedFilters)
       .mockResolvedValueOnce({ data: retrievedDetails })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
     setUrlQueryParameters([
       {
@@ -1679,6 +1694,12 @@ describe(Details, () => {
         }),
         cancelTokenRequestParam,
       ),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
+      ).toBeInTheDocument(),
     );
 
     userEvent.click(getByText(label7Days) as HTMLElement);

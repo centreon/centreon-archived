@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
 }
 

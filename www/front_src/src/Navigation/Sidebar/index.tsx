@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 
 import { equals } from 'ramda';
 
@@ -69,7 +69,7 @@ export interface Props {
 }
 
 export default ({ navigationData }: Props): JSX.Element => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const toggleNavigation = (): void => {
     setOpen(!open);

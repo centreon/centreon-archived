@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { makeStyles } from '@mui/styles';
 
 import Hook from '../components/Hook';

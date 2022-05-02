@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
@@ -61,9 +61,9 @@ interface UseLoginState {
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
   const [platformVersions, setPlatformVersions] =
-    React.useState<PlatformVersions | null>(null);
+    useState<PlatformVersions | null>(null);
   const [providersConfiguration, setProvidersConfiguration] =
-    React.useState<Array<ProviderConfiguration> | null>(null);
+    useState<Array<ProviderConfiguration> | null>(null);
 
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
@@ -93,7 +93,7 @@ const useLogin = (): UseLoginState => {
     passwordResetInformationsAtom,
   );
 
-  const checkPasswordExpiration = React.useCallback(
+  const checkPasswordExpiration = useCallback(
     ({ error, alias, setSubmitting }) => {
       const isUserNotAllowed = pathEq(['response', 'status'], 401, error);
 
@@ -139,7 +139,7 @@ const useLogin = (): UseLoginState => {
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     i18n.changeLanguage?.(getBrowserLocale());
 
     sendPlatformVersions({

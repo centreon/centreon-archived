@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { useTheme, Grid } from '@mui/material';
 
@@ -6,8 +6,8 @@ import { Props } from './Refresh';
 import GlobalActionsSkeleton from './GlobalActionsSkeleton';
 import ResourceActionsSkeleton from './ResourceActionsSkeleton';
 
-const ResourceActions = React.lazy(() => import('./Resource'));
-const GlobalActions = React.lazy(() => import('./Refresh'));
+const ResourceActions = lazy(() => import('./Resource'));
+const GlobalActions = lazy(() => import('./Refresh'));
 
 const Actions = ({ onRefresh }: Props): JSX.Element => {
   const theme = useTheme();
@@ -15,14 +15,14 @@ const Actions = ({ onRefresh }: Props): JSX.Element => {
   return (
     <Grid container>
       <Grid item>
-        <React.Suspense fallback={<ResourceActionsSkeleton />}>
+        <Suspense fallback={<ResourceActionsSkeleton />}>
           <ResourceActions />
-        </React.Suspense>
+        </Suspense>
       </Grid>
       <Grid item style={{ paddingLeft: theme.spacing(3) }}>
-        <React.Suspense fallback={<GlobalActionsSkeleton />}>
+        <Suspense fallback={<GlobalActionsSkeleton />}>
           <GlobalActions onRefresh={onRefresh} />
-        </React.Suspense>
+        </Suspense>
       </Grid>
     </Grid>
   );
