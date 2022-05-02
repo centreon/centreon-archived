@@ -459,7 +459,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
         ];
-        $url = str_starts_with($this->configuration->getUserInformationEndpoint() ,'/')
+        $url = str_starts_with($this->configuration->getUserInformationEndpoint(), '/')
             ? $this->configuration->getBaseUrl() . $this->configuration->getUserInformationEndpoint()
             : $this->configuration->getUserInformationEndpoint();
         try {
