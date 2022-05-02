@@ -35,7 +35,7 @@ interface CfgCentreonBrokerInterface
     /**
      * Get config id of poller broker
      *
-     * @param int pollerId the poller id
+     * @param int $pollerId pollerId the poller id
      * @return int the config id of poller broker
      */
     public function findBrokerConfigIdByPollerId(int $pollerId): int;

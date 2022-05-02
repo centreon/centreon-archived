@@ -21,22 +21,20 @@
 
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
-require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
-require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonBroker.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonConfigCentreonBroker.php';
-require_once _CENTREON_PATH_ . 'www/include/configuration/configGenerate/DB-Func.php';
+require_once __DIR__ . '/../../../../../www/class/centreonContactgroup.class.php';
+require_once __DIR__ . '/../../../../../www/class/config-generate/generate.class.php';
+require_once __DIR__ . '/../../../../../www/class/centreonBroker.class.php';
+require_once __DIR__ . '/../../../../../www/class/centreonConfigCentreonBroker.php';
+require_once __DIR__ . '/../../../../../www/include/configuration/configGenerate/DB-Func.php';
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\PollerServer;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputForwardMaster;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Domain\Service\BrokerConfigurationService;
 use CentreonRemote\Domain\Service\TaskService;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\InputFlowOnePeerRetention;
 
 class LinkedPollerConfigurationService

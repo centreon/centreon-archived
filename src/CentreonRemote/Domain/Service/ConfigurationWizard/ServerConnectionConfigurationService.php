@@ -22,7 +22,6 @@
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\NagiosServer;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagios;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosBrokerModule;
@@ -30,7 +29,6 @@ use CentreonRemote\Domain\Resources\RemoteConfig\BamBrokerCfgInfo;
 
 abstract class ServerConnectionConfigurationService
 {
-
     /** @var CentreonDBAdapter */
     protected $dbAdapter;
 
@@ -192,18 +190,17 @@ abstract class ServerConnectionConfigurationService
         $this->insertWithAdapter('cfg_resource_instance_relations', $pluginResourceData);
     }
 
-   /**
-    * insert broker log information
-    *
-    * @param int $configurationId
-    * @param array<string,array<string,mixed> $brokerLogs
-    */
-   protected function insertBrokerLog(array $brokerLogs): void
-   {
-       foreach ($brokerLogs as $brokerLog) {
+    /**
+     * insert broker log information
+     *
+     * @param array<string,array<string,mixed> $brokerLogs
+     */
+    protected function insertBrokerLog(array $brokerLogs): void
+    {
+        foreach ($brokerLogs as $brokerLog) {
            $this->insertWithAdapter('cfg_centreonbroker_log', $brokerLog);
-       }
-   }
+        }
+    }
 
     /**
      * @throws \Exception

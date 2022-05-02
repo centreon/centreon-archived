@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -25,7 +26,6 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonRemote\Infrastructure\Export\ExportParserJson;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
-use DateTime;
 
 /**
  * @group CentreonRemote

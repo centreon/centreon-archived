@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -20,7 +21,6 @@
 
 namespace CentreonRemote\Domain\Exporter;
 
-use Pimple\Container;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use ConfigGenerateRemote\Manifest;
