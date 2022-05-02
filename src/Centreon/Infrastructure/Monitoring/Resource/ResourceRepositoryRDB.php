@@ -334,33 +334,37 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $resource->setIcon($icon);
         }
 
-        // parse parent Resource object
-        $parent = EntityCreator::createEntityByArray(
-            ResourceEntity::class,
-            $data,
-            'parent_'
-        );
-
-        if ($parent->getId()) {
-            $parentIcon = EntityCreator::createEntityByArray(
-                Icon::class,
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $parent = null;
+        } else {
+            // parse parent Resource object
+            $parent = EntityCreator::createEntityByArray(
+                ResourceEntity::class,
                 $data,
-                'parent_icon_'
+                'parent_'
             );
 
-            if ($parentIcon->getUrl()) {
-                $parent->setIcon($parentIcon);
+            if ($parent->getId()) {
+                $parentIcon = EntityCreator::createEntityByArray(
+                    Icon::class,
+                    $data,
+                    'parent_icon_'
+                );
+
+                if ($parentIcon->getUrl()) {
+                    $parent->setIcon($parentIcon);
+                }
+
+                $parentStatus = EntityCreator::createEntityByArray(
+                    ResourceStatus::class,
+                    $data,
+                    'parent_status_'
+                );
+                $parent->setStatus($parentStatus);
             }
-
-            $parentStatus = EntityCreator::createEntityByArray(
-                ResourceStatus::class,
-                $data,
-                'parent_status_'
-            );
-            $parent->setStatus($parentStatus);
-
-            $resource->setParent($parent);
         }
+
+        $resource->setParent($parent);
 
         // Setting the External links
         $externalLinks = $resource->getLinks()->getExternals();

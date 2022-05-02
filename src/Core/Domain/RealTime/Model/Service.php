@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
@@ -46,6 +45,12 @@ class Service
      * @var boolean
      */
     private $isAcknowledged = false;
+
+    /**
+     * @var bool
+     */
+    private $isNotificationEnabled = false;
+
     /**
      * @var int|null
      */
@@ -328,6 +333,25 @@ class Service
     public function setNotificationNumber(?int $notificationNumber): self
     {
         $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->isNotificationEnabled;
+    }
+
+    /**
+     * @param bool $isNotificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $isNotificationEnabled): self
+    {
+        $this->isNotificationEnabled = $isNotificationEnabled;
+
         return $this;
     }
 

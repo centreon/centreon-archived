@@ -5,13 +5,12 @@
   "scripts": {
     "build": "webpack --mode production --config ./webpack.config.prod.js",
     "build:analyze": "webpack --mode production --config ./webpack.config.analyze.js",
-    "build:dev": "webpack --mode development --config ./webpack.config.dev.js",
-    "watch": "webpack --mode=development --config ./webpack.config.dev.js --watch",
+    "build:dev": "cross-env WEBPACK_ENV=development webpack serve --mode development --config ./webpack.config.dev.js",
     "eslint": "eslint ./www/front_src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "start:dev": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js"
+    "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js"
   },
   "devDependencies": {
     "@babel/core": "^7.16.12",
@@ -95,7 +94,7 @@
     "@mui/styles": "^5.3.0",
     "@visx/visx": "2.9.0",
     "axios": "^0.25.0",
-    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#MON-11932-dark-mode",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",

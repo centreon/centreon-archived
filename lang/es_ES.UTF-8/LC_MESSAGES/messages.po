@@ -15017,7 +15017,7 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
-# msgid "Force active checks"
+# msgid "You are not authorized to access the configuration"
 # msgstr ""
 
 # msgid "Web SSO configuration"
@@ -15062,8 +15062,20 @@ msgstr ""
 # msgid "Discard"
 # msgstr ""
 
+# msgid "No contacts are configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups are configured for this resource"
+# msgstr ""
+
 # msgid "At least one of the two following fields must be filled"
 # msgstr ""
 
 # msgid "Press Enter to accept"
+# msgstr ""
+
+# msgid "License invalid or expired"
+# msgstr ""
+
+# msgid "Please contact your administrator"
 # msgstr ""
