@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
@@ -36,6 +34,7 @@ interface StylesProps {
 const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   button: {
     fontSize: theme.typography.body2.fontSize,
+    pointerEvents: 'all',
   },
   buttonGroup: {
     alignSelf: 'center',

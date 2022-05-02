@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
@@ -13,6 +11,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelActivation } from '../translatedLabels';
 
 import {
   labelBlacklistClientAddresses,
@@ -83,6 +82,10 @@ describe('Web SSOconfiguration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     expect(
       screen.getByLabelText(labelEnableWebSSOAuthentication),
     ).toBeChecked();
@@ -110,6 +113,10 @@ describe('Web SSOconfiguration form', () => {
         authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -170,6 +177,10 @@ describe('Web SSOconfiguration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelLoginHeaderAttributeName),
       'admin',
@@ -209,6 +220,10 @@ describe('Web SSOconfiguration form', () => {
         authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(

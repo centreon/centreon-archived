@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useMemoComponent } from '@centreon/ui';
 
 import Sidebar from './Sidebar';

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
@@ -94,11 +94,11 @@ const PollerMenu = (): JSX.Element => {
     pollerConfigurationPageNumber,
   );
 
-  const [issues, setIssues] = React.useState<Issues | null>(null);
-  const [pollerCount, setPollerCount] = React.useState<PollerData | number>(0);
-  const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
-  const [toggled, setToggled] = React.useState<boolean>(false);
-  const interval = React.useRef<number>();
+  const [issues, setIssues] = useState<Issues | null>(null);
+  const [pollerCount, setPollerCount] = useState<PollerData | number>(0);
+  const [isExporting, setIsExportingConfiguration] = useState<boolean>();
+  const [toggled, setToggled] = useState<boolean>(false);
+  const interval = useRef<number>();
   const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
     request: getData,
@@ -113,7 +113,7 @@ const PollerMenu = (): JSX.Element => {
     setToggled(!toggled);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadPollerData();
 
     interval.current = window.setInterval(() => {

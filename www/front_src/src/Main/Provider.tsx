@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ReactElement, useEffect } from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 import { not, startsWith, tail } from 'ramda';
@@ -6,7 +6,7 @@ import { not, startsWith, tail } from 'ramda';
 import { Module } from '@centreon/ui';
 
 interface Props {
-  children: React.ReactElement;
+  children: ReactElement;
 }
 
 const Provider = ({ children }: Props): JSX.Element | null => {
@@ -17,7 +17,7 @@ const Provider = ({ children }: Props): JSX.Element | null => {
 
   const pathStartsWithBasename = startsWith(basename, window.location.pathname);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (pathStartsWithBasename) {
       return;
     }

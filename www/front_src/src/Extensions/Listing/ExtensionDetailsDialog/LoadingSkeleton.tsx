@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useTheme, Skeleton, SkeletonProps } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

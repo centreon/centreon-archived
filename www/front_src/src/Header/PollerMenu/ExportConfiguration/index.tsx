@@ -1,7 +1,4 @@
-/* eslint-disable hooks/sort */
-// Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
-
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
@@ -52,7 +49,7 @@ const ExportConfiguration = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
-    React.useState(false);
+    useState(false);
   const { sendRequest, sending } = useRequest({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
@@ -79,7 +76,7 @@ const ExportConfiguration = ({
     closeConfirmDialog();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsExportingConfiguration(sending);
   }, [sending]);
 

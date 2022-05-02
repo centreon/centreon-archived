@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -106,9 +106,9 @@ const CustomTimePeriodPickers = ({
 }: Props): JSX.Element => {
   const classes = useStyles(isMinimalWidth);
   const { t } = useTranslation();
-  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const [start, setStart] = React.useState<Date>(customTimePeriod.start);
-  const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const [start, setStart] = useState<Date>(customTimePeriod.start);
+  const [end, setEnd] = useState<Date>(customTimePeriod.end);
   const { format } = useLocaleDateTimeFormat();
   const { locale } = useAtomValue(userAtom);
   const { Adapter } = useDateTimePickerAdapter();
@@ -143,7 +143,7 @@ const CustomTimePeriodPickers = ({
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       and(
         dayjs(customTimePeriod.start).isSame(dayjs(start), 'minute'),
@@ -156,7 +156,7 @@ const CustomTimePeriodPickers = ({
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
 
-  const openPopover = (event: React.MouseEvent): void => {
+  const openPopover = (event: MouseEvent): void => {
     setAnchorEl(event.currentTarget);
   };
 

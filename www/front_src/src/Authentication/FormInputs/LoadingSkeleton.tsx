@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { always, cond, equals } from 'ramda';
 
 import { makeStyles } from '@mui/styles';

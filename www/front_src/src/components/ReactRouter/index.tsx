@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { Routes, Route, useHref } from 'react-router-dom';
 import { isNil, not, propOr } from 'ramda';
@@ -17,8 +17,8 @@ import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
 
-const NotAllowedPage = React.lazy(() => import('../../NotFoundPage'));
-const NotFoundPage = React.lazy(() => import('../../NotFoundPage'));
+const NotAllowedPage = lazy(() => import('../../NotFoundPage'));
+const NotFoundPage = lazy(() => import('../../NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -40,14 +40,18 @@ const getExternalPageRoutes = ({
   const loadablePages = pageEntries.filter(([path]) => isAllowedPage(path));
 
   return loadablePages.map(([path, parameter]) => {
-    const Page = React.lazy(() => dynamicImport(basename, parameter));
+    const Page = lazy(() => dynamicImport(basename, parameter));
 
     return (
       <Route
         element={
           <PageContainer>
             <BreadcrumbTrail path={path} />
-            <Page />
+            <Suspense
+              fallback={<PageSkeleton displayHeaderAndNavigation={false} />}
+            >
+              <Page />
+            </Suspense>
           </PageContainer>
         }
         key={path}
@@ -72,33 +76,35 @@ const ReactRouterContent = ({
 
   return useMemoComponent({
     Component: (
-      <React.Suspense fallback={<PageSkeleton />}>
-        <Routes>
-          {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
-            <Route
-              element={
-                <PageContainer>
-                  {allowedPages.includes(path) ? (
-                    <>
-                      <BreadcrumbTrail path={path} />
+      <Routes>
+        {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
+          <Route
+            element={
+              <PageContainer>
+                {allowedPages.includes(path) ? (
+                  <>
+                    <BreadcrumbTrail path={path} />
+                    <Suspense
+                      fallback={
+                        <PageSkeleton displayHeaderAndNavigation={false} />
+                      }
+                    >
                       <Comp />
-                    </>
-                  ) : (
-                    <NotAllowedPage />
-                  )}
-                </PageContainer>
-              }
-              key={path}
-              path={path}
-              {...rest}
-            />
-          ))}
-          {getExternalPageRoutes({ allowedPages, basename, pages })}
-          {externalPagesFetched && (
-            <Route element={<NotFoundPage />} path="*" />
-          )}
-        </Routes>
-      </React.Suspense>
+                    </Suspense>
+                  </>
+                ) : (
+                  <NotAllowedPage />
+                )}
+              </PageContainer>
+            }
+            key={path}
+            path={path}
+            {...rest}
+          />
+        ))}
+        {getExternalPageRoutes({ allowedPages, basename, pages })}
+        {externalPagesFetched && <Route element={<NotFoundPage />} path="*" />}
+      </Routes>
     ),
     memoProps: [externalPagesFetched, pages, allowedPages],
   });

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import axios from 'axios';
 import * as yup from 'yup';
@@ -51,11 +51,11 @@ const RessourceStatusCounter = <
   schema,
   children,
   loaderWidth,
-}: Props): JSX.Element => {
-  const [data, setData] = React.useState<StatusCount>();
-  const [toggled, setToggled] = React.useState<boolean>();
+}: Props): JSX.Element | null => {
+  const [data, setData] = useState<StatusCount>();
+  const [toggled, setToggled] = useState<boolean>();
 
-  const interval = React.useRef<number>();
+  const interval = useRef<number>();
 
   const refreshInterval = useAtomValue(refreshIntervalAtom);
 
@@ -74,7 +74,7 @@ const RessourceStatusCounter = <
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getData();
 
     interval.current = window.setInterval(() => {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { isNil, not } from 'ramda';
 import { useAtom } from 'jotai';
@@ -11,7 +11,7 @@ import PageLoader from '../../components/PageLoader';
 import { MainLoader } from '../MainLoader';
 import { areUserParametersLoadedAtom } from '../useUser';
 
-const App = React.lazy(() => import('../../App'));
+const App = lazy(() => import('../../App'));
 
 const InitializationPage = (): JSX.Element => {
   const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
@@ -30,9 +30,9 @@ const InitializationPage = (): JSX.Element => {
   }
 
   return (
-    <React.Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<PageLoader />}>
       <App />
-    </React.Suspense>
+    </Suspense>
   );
 };
 

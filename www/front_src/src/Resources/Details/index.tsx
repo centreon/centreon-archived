@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const panelRef = React.useRef<HTMLDivElement>();
+  const panelRef = useRef<HTMLDivElement>();
 
   const [panelWidth, setPanelWidth] = useAtom(panelWidthStorageAtom);
   const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
@@ -39,7 +39,7 @@ const Details = (): JSX.Element | null => {
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
   const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(details)) {
       return;
     }
@@ -94,7 +94,7 @@ const Details = (): JSX.Element | null => {
       header={<Header details={details} onSelectParent={selectResource} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
       memoProps={[openDetailsTabId, details, panelWidth]}
-      ref={panelRef as React.RefObject<HTMLDivElement>}
+      ref={panelRef as RefObject<HTMLDivElement>}
       selectedTab={<TabById details={details} id={openDetailsTabId} />}
       selectedTabId={getTabIndex(openDetailsTabId)}
       tabs={getVisibleTabs().map(({ id, title }) => (

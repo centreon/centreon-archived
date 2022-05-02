@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import React from 'react';
-
 import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';

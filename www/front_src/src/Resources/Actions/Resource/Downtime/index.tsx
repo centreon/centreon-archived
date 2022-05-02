@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -114,7 +114,7 @@ const DowntimeForm = ({
     validationSchema: getValidationSchema(t),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     form.setFieldValue('comment', `${t(labelDowntimeBy)} ${alias}`);
   }, []);
 

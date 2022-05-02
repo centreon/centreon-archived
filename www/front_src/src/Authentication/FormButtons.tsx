@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -40,13 +40,13 @@ const useStyles = makeStyles((theme) => ({
 const FormButtons = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [submitted, setSubmitted] = React.useState(false);
-  const [askingBeforeReset, setAskingBeforeReset] = React.useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [askingBeforeReset, setAskingBeforeReset] = useState(false);
 
   const { isSubmitting, dirty, isValid, submitForm, resetForm } =
     useFormikContext<FormikValues>();
 
-  const [unsavedDialogOpened, setUnsavedDialogOpened] = React.useState(false);
+  const [unsavedDialogOpened, setUnsavedDialogOpened] = useState(false);
 
   const [appliedTab, setAppliedTab] = useAtom(appliedTabAtom);
   const [tab, setTab] = useAtom(tabAtom);
@@ -89,7 +89,7 @@ const FormButtons = (): JSX.Element => {
   const canSubmit = not(isSubmitting) && dirty && isValid && not(submitted);
   const canReset = not(isSubmitting) && dirty && not(submitted);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (not(dirty) || equals(tab, appliedTab)) {
       setAppliedTab(tab);
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -59,7 +59,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
-  const [extensions, setExtension] = React.useState<Extensions>({
+  const [extensions, setExtension] = useState<Extensions>({
     module: {
       entities: [],
     },
@@ -68,24 +68,24 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     },
   });
 
-  const [modulesActive, setModulesActive] = React.useState(false);
-  const [widgetsActive, setWidgetsActive] = React.useState(false);
+  const [modulesActive, setModulesActive] = useState(false);
+  const [widgetsActive, setWidgetsActive] = useState(false);
 
-  const [entityDetails, setEntityDetails] = React.useState<EntityType | null>(
+  const [entityDetails, setEntityDetails] = useState<EntityType | null>(null);
+
+  const [entityDeleting, setEntityDeleting] = useState<EntityDeleting | null>(
     null,
   );
 
-  const [entityDeleting, setEntityDeleting] =
-    React.useState<EntityDeleting | null>(null);
-
   const [extensionsInstallingStatus, setExtensionsInstallingStatus] =
-    React.useState<ExtensionsStatus>({});
+    useState<ExtensionsStatus>({});
 
   const [extensionsUpdatingStatus, setExtensionsUpdatingStatus] =
-    React.useState<ExtensionsStatus>({});
+    useState<ExtensionsStatus>({});
 
-  const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] =
-    React.useState<string | null>(null);
+  const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
+    string | null
+  >(null);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
     request: getData,
@@ -104,7 +104,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     appliedFilterCriteriasAtom,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const types = find(propEq('name', 'types'), getAppliedFilterCriteriasAtom);
     const statuses = find(
       propEq('name', 'statuses'),
@@ -457,7 +457,7 @@ const ExtensionsRoute = (): JSX.Element => {
   const { getNavigation } = useNavigation();
   const { getExternalComponents } = useExternalComponents();
 
-  const reloadNavigation = React.useCallback(() => {
+  const reloadNavigation = useCallback(() => {
     getNavigation();
     getExternalComponents();
   }, []);
