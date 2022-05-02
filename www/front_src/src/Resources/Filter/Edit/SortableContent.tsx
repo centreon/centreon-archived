@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 
@@ -13,7 +13,7 @@ import EditFilterCard from './EditFilterCard';
 interface ContentProps extends Filter {
   attributes;
   isDragging: boolean;
-  itemRef: React.RefObject<HTMLDivElement>;
+  itemRef: RefObject<HTMLDivElement>;
   listeners: DraggableSyntheticListeners;
   style;
 }

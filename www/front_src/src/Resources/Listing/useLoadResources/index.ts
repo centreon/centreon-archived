@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useRef, useEffect } from 'react';
 
 import {
   always,
@@ -99,7 +99,7 @@ const useLoadResources = (): LoadResources => {
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
 
-  const refreshIntervalRef = React.useRef<number>();
+  const refreshIntervalRef = useRef<number>();
 
   const refreshIntervalMs = refreshInterval * 1000;
 
@@ -210,17 +210,17 @@ const useLoadResources = (): LoadResources => {
     load();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     initAutorefresh();
   }, [enabledAutorefresh, selectedResourceId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return (): void => {
       clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(details)) {
       return;
     }
@@ -228,7 +228,7 @@ const useLoadResources = (): LoadResources => {
     initAutorefresh();
   }, [isNil(details)]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(page)) {
       return;
     }
@@ -236,7 +236,7 @@ const useLoadResources = (): LoadResources => {
     initAutorefreshAndLoad();
   }, [page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (page === 1) {
       initAutorefreshAndLoad();
     }
@@ -244,15 +244,15 @@ const useLoadResources = (): LoadResources => {
     setPage(1);
   }, [limit, appliedFilter]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSending(sending);
   }, [sending]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSendingDetails(sending);
   }, [sendingDetails]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setDetails(undefined);
     loadDetails();
   }, [selectedResourceUuid]);

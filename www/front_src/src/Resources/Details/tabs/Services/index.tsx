@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { useRequest, ListingModel } from '@centreon/ui';

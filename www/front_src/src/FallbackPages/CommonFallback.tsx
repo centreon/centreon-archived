@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { memo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals } from 'ramda';
@@ -64,4 +64,4 @@ const NotFoundPage = ({ message, statusCode }: Props): JSX.Element => {
   );
 };
 
-export default React.memo(NotFoundPage, equals);
+export default memo(NotFoundPage, equals);

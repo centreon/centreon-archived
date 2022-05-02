@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { Routes, Route, useHref } from 'react-router-dom';
 import { isNil, not, propOr } from 'ramda';
@@ -17,12 +17,8 @@ import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
 
-const NotAllowedPage = React.lazy(
-  () => import('../../FallbackPages/NotAllowedPage'),
-);
-const NotFoundPage = React.lazy(
-  () => import('../../FallbackPages/NotFoundPage'),
-);
+const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
+const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -44,14 +40,18 @@ const getExternalPageRoutes = ({
   const loadablePages = pageEntries.filter(([path]) => isAllowedPage(path));
 
   return loadablePages.map(([path, parameter]) => {
-    const Page = React.lazy(() => dynamicImport(basename, parameter));
+    const Page = lazy(() => dynamicImport(basename, parameter));
 
     return (
       <Route
         element={
           <PageContainer>
             <BreadcrumbTrail path={path} />
-            <Page />
+            <Suspense
+              fallback={<PageSkeleton displayHeaderAndNavigation={false} />}
+            >
+              <Page />
+            </Suspense>
           </PageContainer>
         }
         key={path}
@@ -76,7 +76,7 @@ const ReactRouterContent = ({
 
   return useMemoComponent({
     Component: (
-      <React.Suspense fallback={<PageSkeleton />}>
+      <Suspense fallback={<PageSkeleton />}>
         <Routes>
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
@@ -100,9 +100,9 @@ const ReactRouterContent = ({
             <Route element={<NotFoundPage />} path="*" />
           )}
         </Routes>
-      </React.Suspense>
+      </Suspense>
     ),
-    memoProps: [externalPagesFetched, pages],
+    memoProps: [externalPagesFetched, pages, allowedPages],
   });
 };
 

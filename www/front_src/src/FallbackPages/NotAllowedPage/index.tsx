@@ -1,5 +1,3 @@
-import React from 'react';
-
 import CommonFallback from '../CommonFallback';
 
 import { labelYouAreNotAllowedToSeeThisPage } from './translatedLabels';

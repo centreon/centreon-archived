@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
@@ -9,7 +9,7 @@ import ExportableGraphWithTimeline from '../../../Graph/Performance/ExportableGr
 import { MousePosition } from '../../../Graph/Performance/Graph/mouseTimeValueAtoms';
 
 interface Props {
-  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  infiniteScrollTriggerRef: RefObject<HTMLDivElement>;
   services: Array<Resource>;
 }
 

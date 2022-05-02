@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useUpdateAtom } from 'jotai/utils';
 import { equals, not, pathEq } from 'ramda';
@@ -36,8 +36,8 @@ interface UseAppState {
 const useApp = (): UseAppState => {
   const { t } = useTranslation();
 
-  const [dataLoaded, setDataLoaded] = React.useState(false);
-  const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const keepAliveIntervalRef = useRef<NodeJS.Timer | null>(null);
   usePendo();
 
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const useApp = (): UseAppState => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getNavigation();
     getExternalComponents();
 
@@ -141,7 +141,7 @@ const useApp = (): UseAppState => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     keepAlive();
 
     keepAliveIntervalRef.current = setInterval(keepAlive, 15000);

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'jotai';
@@ -102,11 +100,16 @@ describe('User Menu', () => {
         cancelTokenRequestParam,
       );
     });
-    expect(screen.getByText('Admin admin')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Admin admin')).toBeInTheDocument();
+    });
 
     expect(screen.getByText('as admin')).toBeInTheDocument();
 
-    expect(screen.getByText('1:20 PM')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('1:20 PM')).toBeInTheDocument();
+    });
     expect(screen.getByText('January 1, 2022')).toBeInTheDocument();
 
     expect(screen.queryByText('Edit profile')).not.toBeInTheDocument();
@@ -120,6 +123,10 @@ describe('User Menu', () => {
 
     await waitFor(() => {
       expect(screen.getByText(labelCopyAutologinLink)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Admin admin')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText(labelCopyAutologinLink));
@@ -150,6 +157,8 @@ describe('User Menu', () => {
       );
     });
 
-    expect(window.location.href).toBe('http://localhost/login');
+    await waitFor(() => {
+      expect(window.location.href).toBe('http://localhost/login');
+    });
   });
 });

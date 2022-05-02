@@ -28,15 +28,6 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
 
-document.createRange = () => ({
-  commonAncestorContainer: {
-    nodeName: 'BODY',
-    ownerDocument: document,
-  },
-  setEnd: () => {},
-  setStart: () => {},
-});
-
 class IntersectionObserver {
   observe = jest.fn();
 

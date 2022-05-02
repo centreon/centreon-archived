@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import CommonFallback from '../CommonFallback';
 
 import { labelThisPageCouldNotBeFound } from './translatedLabels';

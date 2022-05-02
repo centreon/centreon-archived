@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 
@@ -76,7 +74,9 @@ describe('Authentication', () => {
       );
     });
 
-    expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    });
     expect(screen.getByText(labelPasswordExpirationPolicy)).toBeInTheDocument();
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
@@ -124,7 +124,9 @@ describe('Authentication', () => {
       );
     });
 
-    expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    });
     expect(screen.getByText(labelPasswordExpirationPolicy)).toBeInTheDocument();
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
@@ -176,7 +178,9 @@ describe('Authentication', () => {
       );
     });
 
-    expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    });
     expect(screen.getByText(labelPasswordExpirationPolicy)).toBeInTheDocument();
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 

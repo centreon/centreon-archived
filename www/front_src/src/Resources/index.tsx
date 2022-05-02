@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy } from 'react';
 
 import { isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -12,8 +12,8 @@ import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
 
-const Filter = React.lazy(() => import('./Filter'));
-const Listing = React.lazy(() => import('./Listing'));
+const Filter = lazy(() => import('./Filter'));
+const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
