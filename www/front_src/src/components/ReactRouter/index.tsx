@@ -100,7 +100,7 @@ const ReactRouterContent = ({
         </Routes>
       </React.Suspense>
     ),
-    memoProps: [externalPagesFetched, pages],
+    memoProps: [externalPagesFetched, pages, allowedPages],
   });
 };
 
