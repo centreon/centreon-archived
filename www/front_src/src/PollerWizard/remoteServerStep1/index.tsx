@@ -28,9 +28,7 @@ import {
 } from '../translatedLabels';
 import { Props, WaitList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
-
-const remoteServerWaitListEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
+import { remoteServerWaitListEndpoint } from '../api/endpoints';
 
 interface RemoteServerStepOneFormData {
   centreon_central_ip: string;

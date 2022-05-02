@@ -26,11 +26,7 @@ import {
 } from '../translatedLabels';
 import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
-
-const getPollersEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
-const wizardFormEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
+import { getPollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 interface StepTwoFormData {
   linked_remote_master: string;
