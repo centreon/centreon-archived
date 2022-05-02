@@ -63,8 +63,8 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
             'authentication_uri' => $response->baseUrl . '/'
                 . ltrim($response->authorizationEndpoint ?? '', '/')
                 . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri='
-                . rtrim($redirectUri, '/') . '&state=' . uniqid() .
-                (!empty($response->connectionScopes) ? '&scope=' . implode('%20', $response->connectionScopes) : ''),
+                . rtrim($redirectUri, '/') . '&state=' . uniqid()
+                . (! empty($response->connectionScopes) ? '&scope=' . implode('%20', $response->connectionScopes) : ''),
             'is_active' => $response->isActive,
             'is_forced' => $response->isForced,
         ];
