@@ -17,8 +17,12 @@ import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
 
-const NotAllowedPage = React.lazy(() => import('../../NotFoundPage'));
-const NotFoundPage = React.lazy(() => import('../../NotFoundPage'));
+const NotAllowedPage = React.lazy(
+  () => import('../../FallbackPages/NotAllowedPage'),
+);
+const NotFoundPage = React.lazy(
+  () => import('../../FallbackPages/NotFoundPage'),
+);
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -77,16 +81,14 @@ const ReactRouterContent = ({
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
               element={
-                <PageContainer>
-                  {allowedPages.includes(path) ? (
-                    <>
-                      <BreadcrumbTrail path={path} />
-                      <Comp />
-                    </>
-                  ) : (
-                    <NotAllowedPage />
-                  )}
-                </PageContainer>
+                allowedPages.includes(path) ? (
+                  <PageContainer>
+                    <BreadcrumbTrail path={path} />
+                    <Comp />
+                  </PageContainer>
+                ) : (
+                  <NotAllowedPage />
+                )
               }
               key={path}
               path={path}
