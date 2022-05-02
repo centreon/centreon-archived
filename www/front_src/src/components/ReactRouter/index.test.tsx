@@ -74,7 +74,7 @@ describe('React Router', () => {
     expect(screen.getByAltText(labelCentreonLogo)).toBeInTheDocument();
   });
 
-  it('displays an error message if the user is not allowed', async () => {
+  it('displays an error message when the user is not allowed', async () => {
     window.history.pushState({}, '', '/monitoring/resources');
 
     renderReactRouter(retrievedNavigationWithAnEmptySet);
