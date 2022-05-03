@@ -624,9 +624,7 @@ class PartEngine
             unset($config);
 
             return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     /**
