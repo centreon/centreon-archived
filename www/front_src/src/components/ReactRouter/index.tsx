@@ -17,8 +17,8 @@ import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
 
-const NotAllowedPage = lazy(() => import('../../NotFoundPage'));
-const NotFoundPage = lazy(() => import('../../NotFoundPage'));
+const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
+const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -76,35 +76,31 @@ const ReactRouterContent = ({
 
   return useMemoComponent({
     Component: (
-      <Routes>
-        {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
-          <Route
-            element={
-              <PageContainer>
-                {allowedPages.includes(path) ? (
-                  <>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
+            <Route
+              element={
+                allowedPages.includes(path) ? (
+                  <PageContainer>
                     <BreadcrumbTrail path={path} />
-                    <Suspense
-                      fallback={
-                        <PageSkeleton displayHeaderAndNavigation={false} />
-                      }
-                    >
-                      <Comp />
-                    </Suspense>
-                  </>
+                    <Comp />
+                  </PageContainer>
                 ) : (
                   <NotAllowedPage />
-                )}
-              </PageContainer>
-            }
-            key={path}
-            path={path}
-            {...rest}
-          />
-        ))}
-        {getExternalPageRoutes({ allowedPages, basename, pages })}
-        {externalPagesFetched && <Route element={<NotFoundPage />} path="*" />}
-      </Routes>
+                )
+              }
+              key={path}
+              path={path}
+              {...rest}
+            />
+          ))}
+          {getExternalPageRoutes({ allowedPages, basename, pages })}
+          {externalPagesFetched && (
+            <Route element={<NotFoundPage />} path="*" />
+          )}
+        </Routes>
+      </Suspense>
     ),
     memoProps: [externalPagesFetched, pages, allowedPages],
   });
