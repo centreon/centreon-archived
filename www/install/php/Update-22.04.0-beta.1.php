@@ -80,11 +80,6 @@ try {
         );
     }
 
-    if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
-        $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
-        $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-    }
-
     $errorMessage = "Unable to find constraint unique_index from security_token";
     $constraintExistStatement = $pearDB->query(
         'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
@@ -178,6 +173,10 @@ try {
     excludeUsersFromPasswordPolicy($pearDB);
 
     $pearDB->commit();
+    if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
+        $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
+        $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    }
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
