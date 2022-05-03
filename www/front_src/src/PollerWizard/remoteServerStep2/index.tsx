@@ -26,11 +26,7 @@ import {
   labelRemoteServers,
 } from '../translatedLabels';
 import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
-
-const getRemoteServersEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
-const wizardFormEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
+import { getRemoteServersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 const RemoteServerWizardStepTwo = ({
   goToNextStep,
