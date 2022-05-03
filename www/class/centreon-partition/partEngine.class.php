@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -592,7 +593,6 @@ class PartEngine
         $dbResult = $db->query("SELECT plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE plugin_name = 'partition'");
         $config = $dbResult->fetch();
         $dbResult->closeCursor();
-        
         if ($config === false || empty($config["plugin_status"])) {
             // as the plugin "partition" was deprecated in mysql 5.7
             // and as it was removed from mysql 8 and replaced by the native partitioning one,
