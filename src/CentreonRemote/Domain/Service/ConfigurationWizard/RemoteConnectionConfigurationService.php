@@ -51,9 +51,24 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
         $moduleID = (int) $this->insertWithAdapter('cfg_centreonbroker', $brokerConfiguration['module']);
         $rrdID = (int) $this->insertWithAdapter('cfg_centreonbroker', $brokerConfiguration['rrd']);
 
-        $this->insertBrokerLog(CfgCentreonBrokerLog::getConfiguration($this->brokerID));
-        $this->insertBrokerLog(CfgCentreonBrokerLog::getConfiguration($moduleID));
-        $this->insertBrokerLog(CfgCentreonBrokerLog::getConfiguration($rrdID));
+        $this->insertBrokerLog(
+            CfgCentreonBrokerLog::getConfiguration(
+                $this->getDbAdapter()->getCentreonDBInstance(),
+                $this->brokerID
+            )
+        );
+        $this->insertBrokerLog(
+            CfgCentreonBrokerLog::getConfiguration(
+                $this->getDbAdapter()->getCentreonDBInstance(),
+                $moduleID
+            )
+        );
+        $this->insertBrokerLog(
+            CfgCentreonBrokerLog::getConfiguration(
+                $this->getDbAdapter()->getCentreonDBInstance(),
+                $rrdID
+            )
+        );
 
         $this->insertBrokerInfo($this->brokerID, $brokerInfoConfiguration['central-broker']);
         $this->insertBrokerInfo($moduleID, $brokerInfoConfiguration['central-module']);

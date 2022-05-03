@@ -21,64 +21,74 @@
 
 namespace CentreonRemote\Domain\Resources\DefaultConfig;
 
+use CentreonDB;
+
 /**
  * Get broker configuration template
  */
 class CfgCentreonBrokerLog
 {
-    private const LOG_IDS = [
-        'core' => 1,
-        'config' => 2,
-        'sql' => 3,
-        'processing' => 4,
-        'perfdata' => 5,
-        'bbdo' => 6,
-        'tcp' => 7,
-        'tls' => 8,
-        'lua' => 9,
-        'bam' => 10,
-    ];
-
-    private const LOG_LEVELS = [
-        'disabled' => 1,
-        'critical' => 2,
-        'error' => 3,
-        'warning' => 4,
-        'info' => 5,
-        'debug' => 6,
-        'trace' => 7,
-    ];
-
     /**
      * Get template configuration
      *
+     * @param CentreonDB $db
      * @param int $brokerId
-     * @return array<string, array<string, array<int, array<string>>>> the configuration template
+     * @return \Generator<array<string,string|int>> the configuration template
      */
-    public static function getConfiguration(int $brokerId): array
+    public static function getConfiguration(CentreonDB $db, int $brokerId): \Generator
     {
+        $loggerIds = self::getLoggerIds($db);
+        $loggerLevelIds = self::getLoggerLevelIds($db);
+
         $loggerConfigurations = [
-            self::LOG_IDS['core'] => self::LOG_LEVELS['info'],
-            self::LOG_IDS['config'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['sql'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['processing'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['perfdata'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['bbdo'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['tcp'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['tls'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['lua'] => self::LOG_LEVELS['error'],
-            self::LOG_IDS['bam'] => self::LOG_LEVELS['error'],
+            $loggerIds['core'] => $loggerLevelIds['info'],
+            $loggerIds['config'] => $loggerLevelIds['error'],
+            $loggerIds['sql'] => $loggerLevelIds['error'],
+            $loggerIds['processing'] => $loggerLevelIds['error'],
+            $loggerIds['perfdata'] => $loggerLevelIds['error'],
+            $loggerIds['bbdo'] => $loggerLevelIds['error'],
+            $loggerIds['tcp'] => $loggerLevelIds['error'],
+            $loggerIds['tls'] => $loggerLevelIds['error'],
+            $loggerIds['lua'] => $loggerLevelIds['error'],
+            $loggerIds['bam'] => $loggerLevelIds['error'],
         ];
 
-        $configuration = [];
         foreach ($loggerConfigurations as $loggerId => $loggerLevel) {
-            $configuration[] = [
+            yield [
                 'id_centreonbroker' => $brokerId,
                 'id_log' => $loggerId,
                 'id_level' => $loggerLevel,
             ];
         }
+    }
 
-        return $configuration;
+    /**
+     * Get logger ids
+     *
+     * @param CentreonDB $db
+     * @return array<string,int>
+     */
+    private static function getLoggerIds(CentreonDB $db): array
+    {
+        $result = $db->query(
+            "SELECT name, id FROM cb_log"
+        );
+
+        return $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+    }
+
+    /**
+     * Get logger level ids
+     *
+     * @param CentreonDB $db
+     * @return array<string,int>
+     */
+    private static function getLoggerLevelIds(CentreonDB $db): array
+    {
+        $result = $db->query(
+            "SELECT name, id FROM cb_log_level"
+        );
+
+        return $result->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 }

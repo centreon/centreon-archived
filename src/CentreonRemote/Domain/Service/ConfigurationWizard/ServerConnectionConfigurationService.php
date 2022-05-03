@@ -193,9 +193,9 @@ abstract class ServerConnectionConfigurationService
     /**
      * insert broker log information
      *
-     * @param array<string,array<string,mixed> $brokerLogs
+     * @param \Generator<array<string,string|int>> $brokerLogs
      */
-    protected function insertBrokerLog(array $brokerLogs): void
+    protected function insertBrokerLog(\Generator $brokerLogs): void
     {
         foreach ($brokerLogs as $brokerLog) {
             $this->insertWithAdapter('cfg_centreonbroker_log', $brokerLog);
@@ -228,7 +228,7 @@ abstract class ServerConnectionConfigurationService
 
     /**
      * @param string $table
-     * @param array<string,int> $data
+     * @param array<string,mixed> $data
      * @throws \Exception
      * @return int
      */
