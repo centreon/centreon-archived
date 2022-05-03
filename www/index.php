@@ -43,6 +43,7 @@ require_once __DIR__ . "/class/centreonDB.class.php";
 const AUTOLOGIN_FIELDS = ['autologin' , 'useralias', 'token'];
 
 updateCentreonBaseUri();
+include __DIR__ . '/index.html';
 
 CentreonSession::start();
 
@@ -51,7 +52,7 @@ CentreonSession::start();
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = &$_SESSION["centreon"];
-    include __DIR__ . '/index.html';
+    return;
 }
 
 /*
@@ -198,7 +199,6 @@ if (
         return;
     }
 }
-header("Location: index.html");
 
 /**
  * Update centreon base uri in index.html
