@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { lazy } from 'react';
 
 import { ListingPage, useMemoComponent } from '@centreon/ui';
 
-const Filter = React.lazy(() => import('./Filter'));
-const Listing = React.lazy(() => import('./Listing'));
+const Filter = lazy(() => import('./Filter'));
+const Listing = lazy(() => import('./Listing'));
 
 const Extensions = (): JSX.Element => {
   return useMemoComponent({

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { gte, isNil, not } from 'ramda';
 import { atomWithStorage } from 'jotai/utils';
@@ -17,7 +17,7 @@ const centreonPlatformDataAtom = atomWithStorage<CeipData | null>(
 );
 
 const usePendo = (): void => {
-  const [isCeipEnabled, setIsCeipEnabled] = React.useState(false);
+  const [isCeipEnabled, setIsCeipEnabled] = useState(false);
   const { sendRequest } = useRequest<CeipData>({
     request: getData,
   });
@@ -90,7 +90,7 @@ const usePendo = (): void => {
     sendCeipInfo(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(window.fetch)) {
       return;
     }
@@ -98,7 +98,7 @@ const usePendo = (): void => {
     activateCeip();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('online', goOnline);
     window.addEventListener('offline', goOffline);
 

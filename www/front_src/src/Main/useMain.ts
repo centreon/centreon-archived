@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtom } from 'jotai';
@@ -80,7 +80,7 @@ const useMain = (): void => {
     showErrorMessage(authenticationError as string);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     displayAuthenticationError();
 
     getTranslations({
@@ -101,7 +101,7 @@ const useMain = (): void => {
       });
   }, []);
 
-  React.useEffect((): void => {
+  useEffect((): void => {
     if (isNil(webVersions)) {
       return;
     }
@@ -109,7 +109,7 @@ const useMain = (): void => {
     loadUser();
   }, [webVersions]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const canChangeToBrowserLanguage = and(
       isNil(areUserParametersLoaded),
       i18next.isInitialized,

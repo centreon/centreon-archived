@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
 import { useAtomValue } from 'jotai/utils';

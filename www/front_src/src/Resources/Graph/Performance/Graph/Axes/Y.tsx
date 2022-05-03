@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Axis } from '@visx/visx';
 import { isNil } from 'ramda';
 import { ScaleLinear } from 'd3-scale';

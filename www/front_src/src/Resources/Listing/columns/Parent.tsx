@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Typography } from '@mui/material';
 
 import { ComponentColumnProps, StatusChip } from '@centreon/ui';

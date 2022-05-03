@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, isNil, map, prop, type } from 'ramda';
@@ -19,7 +19,7 @@ import { InputProps } from './models';
 const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const [inputText, setInputText] = React.useState('');
+  const [inputText, setInputText] = useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 

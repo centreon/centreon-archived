@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useAtomValue } from 'jotai';
 
 import { Fade } from '@mui/material';

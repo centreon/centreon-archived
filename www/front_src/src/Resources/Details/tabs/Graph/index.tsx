@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals, or } from 'ramda';
 
 import { Theme } from '@mui/material';

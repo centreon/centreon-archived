@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
@@ -83,8 +81,11 @@ describe(ExportConfiguration, () => {
     expect(
       screen.getByText(labelExportingAndReloadingTheConfiguration),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(labelConfigurationExportedAndReloaded),
-    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(labelConfigurationExportedAndReloaded),
+      ).toBeInTheDocument();
+    });
   });
 });

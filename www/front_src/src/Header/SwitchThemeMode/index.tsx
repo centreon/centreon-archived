@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals } from 'ramda';
 import { useAtom } from 'jotai';
 import { useLocation } from 'react-router-dom';
