@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, RefObject, useEffect, useRef, useState } from 'react';
 
 import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
@@ -146,12 +146,12 @@ const UserMenu = (): JSX.Element => {
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();
 
-  const [copied, setCopied] = React.useState(false);
-  const [data, setData] = React.useState<UserData | null>(null);
-  const [toggled, setToggled] = React.useState(false);
-  const profile = React.useRef<HTMLDivElement>();
-  const autologinNode = React.useRef<HTMLTextAreaElement>();
-  const refreshTimeout = React.useRef<NodeJS.Timeout>();
+  const [copied, setCopied] = useState(false);
+  const [data, setData] = useState<UserData | null>(null);
+  const [toggled, setToggled] = useState(false);
+  const profile = useRef<HTMLDivElement>();
+  const autologinNode = useRef<HTMLTextAreaElement>();
+  const refreshTimeout = useRef<NodeJS.Timeout>();
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
   });
@@ -228,7 +228,7 @@ const UserMenu = (): JSX.Element => {
     setToggled(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
     loadUserData();
 
@@ -262,7 +262,7 @@ const UserMenu = (): JSX.Element => {
     <div className={clsx(classes.wrapRightUser)}>
       <div className={clsx(classes.wrapRightUserItems)}>
         <Clock />
-        <div ref={profile as React.RefObject<HTMLDivElement>}>
+        <div ref={profile as RefObject<HTMLDivElement>}>
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire
@@ -339,9 +339,7 @@ const UserMenu = (): JSX.Element => {
                       readOnly
                       className={clsx(classes.hiddenInput)}
                       id="autologin-input"
-                      ref={
-                        autologinNode as React.RefObject<HTMLTextAreaElement>
-                      }
+                      ref={autologinNode as RefObject<HTMLTextAreaElement>}
                       value={autolink}
                     />
                   </Paper>
@@ -369,7 +367,7 @@ const UserMenu = (): JSX.Element => {
                     aria-label={t('Logout')}
                     href="index.php"
                     size="small"
-                    onClick={(e: React.MouseEvent): void => {
+                    onClick={(e: MouseEvent): void => {
                       e.preventDefault();
                       logout();
                     }}

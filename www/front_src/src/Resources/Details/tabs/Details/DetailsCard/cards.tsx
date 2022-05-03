@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { pick, isEmpty, isNil, equals, includes } from 'ramda';
 
 import { SeverityCode } from '@centreon/ui';

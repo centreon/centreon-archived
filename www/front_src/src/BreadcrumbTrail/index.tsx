@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useAtomValue } from 'jotai/utils';
 import { isNil } from 'ramda';
@@ -47,7 +47,7 @@ const getBreadcrumbs = ({
 const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const breadcrumbs = React.useMemo(
+  const breadcrumbs = useMemo(
     () => getBreadcrumbs({ breadcrumbsByPath, path }),
     [breadcrumbsByPath, path],
   );

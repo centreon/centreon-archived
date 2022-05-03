@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { Provider as ReduxProvider } from 'react-redux';
 import { not } from 'ramda';
@@ -49,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainRouter = React.lazy(() => import('../components/mainRouter'));
-const Header = React.lazy(() => import('../Header'));
-const Navigation = React.lazy(() => import('../Navigation'));
+const MainRouter = lazy(() => import('../components/mainRouter'));
+const Header = lazy(() => import('../Header'));
+const Navigation = lazy(() => import('../Navigation'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -65,31 +65,25 @@ const App = (): JSX.Element => {
 
   return (
     <ReduxProvider store={store}>
-      <React.Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<PageLoader />}>
         <div className={classes.wrapper}>
           {not(min) && (
-            <React.Suspense
-              fallback={<LoadingSkeleton height="100%" width={45} />}
-            >
+            <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
               <Navigation />
-            </React.Suspense>
+            </Suspense>
           )}
           <div className={classes.content} id="content">
             {not(min) && (
-              <React.Suspense
-                fallback={<LoadingSkeleton height={56} width="100%" />}
-              >
+              <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
                 <Header />
-              </React.Suspense>
+              </Suspense>
             )}
-            <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
-              <div className={classes.mainContent}>
-                <MainRouter />
-              </div>
+            <div className={classes.mainContent}>
+              <MainRouter />
             </div>
           </div>
         </div>
-      </React.Suspense>
+      </Suspense>
     </ReduxProvider>
   );
 };

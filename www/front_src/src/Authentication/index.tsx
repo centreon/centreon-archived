@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
@@ -107,7 +107,7 @@ const Authentication = (): JSX.Element => {
     setTab(newTab);
   };
 
-  const tabs = React.useMemo(
+  const tabs = useMemo(
     () =>
       panels.map(({ title, value }) => (
         <Tab key={value} label={t(title)} value={value} />
@@ -115,7 +115,7 @@ const Authentication = (): JSX.Element => {
     [],
   );
 
-  const tabPanels = React.useMemo(
+  const tabPanels = useMemo(
     () =>
       panels.map(({ Component, value, image }) => (
         <TabPanel className={classes.panel} key={value} value={value}>

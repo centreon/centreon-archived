@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 import { Responsive } from '@visx/visx';
 import {
@@ -154,12 +154,12 @@ const PerformanceGraph = ({
   });
   const { t } = useTranslation();
 
-  const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>();
-  const [title, setTitle] = React.useState<string>();
-  const [base, setBase] = React.useState<number>();
-  const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
-  const performanceGraphHeightRef = React.useRef<number>(0);
+  const [timeSeries, setTimeSeries] = useState<Array<TimeValue>>([]);
+  const [lineData, setLineData] = useState<Array<LineModel>>();
+  const [title, setTitle] = useState<string>();
+  const [base, setBase] = useState<number>();
+  const performanceGraphRef = useRef<HTMLDivElement | null>(null);
+  const performanceGraphHeightRef = useRef<number>(0);
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -175,7 +175,7 @@ const PerformanceGraph = ({
 
   const { toDateTime } = useLocaleDateTimeFormat();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(endpoint)) {
       return;
     }
@@ -204,14 +204,14 @@ const PerformanceGraph = ({
       .catch(() => undefined);
   }, [endpoint]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (or(isNil(selectedResourceId), isNil(lineData))) {
       return;
     }
     setLineData(undefined);
   }, [selectedResourceId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {
       performanceGraphHeightRef.current =
         performanceGraphRef.current.clientHeight;
@@ -357,7 +357,7 @@ const PerformanceGraph = ({
   return (
     <div
       className={classes.container}
-      ref={performanceGraphRef as React.MutableRefObject<HTMLDivElement | null>}
+      ref={performanceGraphRef as MutableRefObject<HTMLDivElement | null>}
     >
       {displayTitle && (
         <div className={classes.graphHeader}>

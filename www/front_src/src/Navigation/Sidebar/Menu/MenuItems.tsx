@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent, MouseEventHandler, ReactNode } from 'react';
 
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
@@ -24,12 +24,12 @@ const rootHeightItem = 37;
 interface Props {
   data: Page;
   hover: boolean;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   isDrawerOpen?: boolean;
   isOpen: boolean;
   isRoot?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+  onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({

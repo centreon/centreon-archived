@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { equals, isNil, replace } from 'ramda';
@@ -6,8 +6,7 @@ import { equals, isNil, replace } from 'ramda';
 import { PageSkeleton } from '@centreon/ui';
 
 const LegacyRoute = (): JSX.Element => {
-  const [loading, setLoading] = React.useState(true);
-  const mainContainerRef = React.useRef<HTMLElement | null>(null);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,10 +49,7 @@ const LegacyRoute = (): JSX.Element => {
     });
   };
 
-  React.useEffect(() => {
-    mainContainerRef.current =
-      window.document.getElementById('fullscreen-wrapper');
-
+  useEffect(() => {
     window.addEventListener('react.href.update', handleHref, false);
 
     return () => {

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -270,6 +268,10 @@ describe('Password expiration policy', () => {
         }),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText('admin'));

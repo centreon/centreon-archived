@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
@@ -30,7 +30,7 @@ const LocalAuthentication = (): JSX.Element => {
     loadPasswordPasswordSecurityPolicy,
   } = useAuthentication();
 
-  const isPasswordSecurityPolicyEmpty = React.useMemo(
+  const isPasswordSecurityPolicyEmpty = useMemo(
     () => isNil(initialPasswordPasswordSecurityPolicy),
     [initialPasswordPasswordSecurityPolicy],
   );

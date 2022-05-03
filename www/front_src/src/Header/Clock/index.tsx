@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
 const Clock = (): JSX.Element => {
   const classes = useStyles();
 
-  const refreshIntervalRef = React.useRef<number>();
-  const [dateTime, setDateTime] = React.useState({
+  const refreshIntervalRef = useRef<number>();
+  const [dateTime, setDateTime] = useState({
     date: '',
     time: '',
   });
@@ -31,7 +31,7 @@ const Clock = (): JSX.Element => {
     setDateTime({ date, time });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateDateTime();
 
     const thirtySeconds = 30 * 1000;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
@@ -17,12 +17,12 @@ import DetailsLoadingSkeleton from '../LoadingSkeleton';
 
 import { Tab, TabId } from './models';
 
-const DetailsTab = React.lazy(() => import('./Details'));
-const GraphTab = React.lazy(() => import('./Graph'));
-const TimelineTab = React.lazy(() => import('./Timeline'));
-const ServicesTab = React.lazy(() => import('./Services'));
-const MetricsTab = React.lazy(() => import('./Metrics'));
-const NotificationsTab = React.lazy(() => import('./Notifications'));
+const DetailsTab = lazy(() => import('./Details'));
+const GraphTab = lazy(() => import('./Graph'));
+const TimelineTab = lazy(() => import('./Timeline'));
+const ServicesTab = lazy(() => import('./Services'));
+const MetricsTab = lazy(() => import('./Metrics'));
+const NotificationsTab = lazy(() => import('./Notifications'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
@@ -112,9 +112,9 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
   return (
     <div className={classes.container}>
-      <React.Suspense fallback={<DetailsLoadingSkeleton />}>
+      <Suspense fallback={<DetailsLoadingSkeleton />}>
         <Component details={details} />
-      </React.Suspense>
+      </Suspense>
     </div>
   );
 };

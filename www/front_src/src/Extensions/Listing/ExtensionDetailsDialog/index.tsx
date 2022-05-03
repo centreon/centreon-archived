@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
@@ -58,17 +58,15 @@ const ExtensionDetailPopup = ({
   isLoading,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const [extensionDetails, setExtensionDetails] = React.useState<Entity | null>(
-    null,
-  );
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [extensionDetails, setExtensionDetails] = useState<Entity | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { sendRequest: sendExtensionDetailsValueRequests } =
     useRequest<ExtensionDetails>({
       request: getData,
     });
 
-  React.useEffect(() => {
+  useEffect(() => {
     sendExtensionDetailsValueRequests({
       endpoint: buildEndPoint({
         action: 'details',
@@ -122,6 +120,9 @@ const ExtensionDetailPopup = ({
                   PrevIcon={<ChevronLeftIcon />}
                   animation="slide"
                   autoPlay={false}
+                  sx={{
+                    height: '100%',
+                  }}
                 >
                   {extensionDetails.images?.map((image) => (
                     <img alt={image} key={image} src={image} width={width} />

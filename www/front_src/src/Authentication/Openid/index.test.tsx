@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
@@ -13,6 +11,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelActivation } from '../translatedLabels';
 
 import {
   labelAuthorizationEndpoint,
@@ -101,6 +100,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     expect(
       screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
     ).toBeChecked();
@@ -140,7 +143,7 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(
         labelUseBasicAuthenticatonForTokenEndpointAuthentication,
       ),
-    ).toBeChecked();
+    ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
   });
 
@@ -152,6 +155,10 @@ describe('Openid configuration form', () => {
         authenticationProvidersEndpoint(Provider.Openid),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -202,6 +209,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
       '{selectall}{backspace}http://localhost:8081/login',
@@ -241,6 +252,10 @@ describe('Openid configuration form', () => {
         authenticationProvidersEndpoint(Provider.Openid),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
