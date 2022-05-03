@@ -2455,7 +2455,7 @@ CREATE TABLE `cfg_nagios_logger` (
   `log_level_checks` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
   `log_level_notifications` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
   `log_level_eventbroker` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
-  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
   `log_level_commands` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
   `log_level_downtimes` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
   `log_level_comments` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',

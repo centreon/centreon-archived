@@ -84,7 +84,7 @@ class CentreonMainCfg
         'log_level_checks' => 'info',
         'log_level_notifications' => 'err',
         'log_level_eventbroker' => 'err',
-        'log_level_external_command' => 'err',
+        'log_level_external_command' => 'info',
         'log_level_commands' => 'err',
         'log_level_downtimes' => 'err',
         'log_level_comments' => 'err',

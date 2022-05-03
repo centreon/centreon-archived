@@ -559,7 +559,7 @@ ENGINECFG;setparam;Centreon Engine Central;log_level_events;info
 ENGINECFG;setparam;Centreon Engine Central;log_level_checks;info
 ENGINECFG;setparam;Centreon Engine Central;log_level_notifications;err
 ENGINECFG;setparam;Centreon Engine Central;log_level_eventbroker;err
-ENGINECFG;setparam;Centreon Engine Central;log_level_external_command;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_external_command;info
 ENGINECFG;setparam;Centreon Engine Central;log_level_commands;err
 ENGINECFG;setparam;Centreon Engine Central;log_level_downtimes;err
 ENGINECFG;setparam;Centreon Engine Central;log_level_comments;err
