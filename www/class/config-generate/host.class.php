@@ -572,7 +572,7 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getHostTemplates($host, false);
 
-        $hostTplInstance = &HostTemplate::getInstance($this->dependencyInjector);
+        $hostTplInstance = HostTemplate::getInstance($this->dependencyInjector);
 
         $stack = $host['htpl'];
         $loop = array();

@@ -124,7 +124,6 @@ class MonitoringResourceControllerTest extends TestCase
             ->setStatus($resourceStatus);
 
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
-        $router = $kernel->getContainer()->get('router');
         $this->urlGenerator = $kernel->getContainer()->get('router')->getRouter()->getGenerator();
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
@@ -224,18 +223,18 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getDetails(),
-            '/centreon/api/v21.10/monitoring/resources/hosts/1'
+            '/centreon/api/latest/monitoring/resources/hosts/1'
         );
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getTimeline(),
-            '/centreon/api/v21.10/monitoring/hosts/1/timeline'
+            '/centreon/api/latest/monitoring/hosts/1/timeline'
         );
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getAcknowledgement(),
-            '/centreon/api/v21.10/monitoring/hosts/1/acknowledgements?limit=1'
+            '/centreon/api/latest/monitoring/hosts/1/acknowledgements?limit=1'
         );
         $this->assertMatchesRegularExpression(
-            '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
+            '#/centreon/api/latest/monitoring/hosts/1/downtimes\?'
                 . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
                 . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
             urldecode($resource->getLinks()->getEndpoints()->getDowntime() ?? '')
