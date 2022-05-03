@@ -622,6 +622,7 @@ class PartEngine
             }
         } elseif ($config["plugin_status"] === "ACTIVE") {
             return true;
+        }
         return false;
     }
 
