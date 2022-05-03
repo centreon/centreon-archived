@@ -50,8 +50,8 @@ const retrievedWebSSOConfiguration = {
   is_active: true,
   is_forced: false,
   login_header_attribute: '',
-  pattern_matching_login: '',
-  pattern_replace_login: '',
+  pattern_matching_login: null,
+  pattern_replace_login: null,
   trusted_client_addresses: ['127.0.0.1'],
 };
 

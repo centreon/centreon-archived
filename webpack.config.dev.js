@@ -24,21 +24,39 @@ const devServerAddress = externalInterface
 
 const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
 
-const isServing = process.env.WEBPACK_ENV === 'serve';
+const isServeMode = process.env.WEBPACK_ENV === 'serve';
+const isDevelopmentMode = process.env.WEBPACK_ENV === 'development';
 
-const plugins = isServing ? [new ReactRefreshWebpackPlugin()] : [];
+const plugins = isServeMode ? [new ReactRefreshWebpackPlugin()] : [];
 
-const output = isServing
-  ? {
-      publicPath,
-    }
-  : {};
+const output =
+  isServeMode || isDevelopmentMode
+    ? {
+        publicPath,
+      }
+    : {};
+
+const getStaticDirectoryPath = (moduleName) =>
+  `${__dirname}/www/modules/${moduleName}/static`;
 
 const modules = [
-  'centreon-license-manager',
-  'centreon-autodiscovery-server',
-  'centreon-bam-server',
-  'centreon-augmented-services',
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-license-manager',
+  },
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-autodiscovery-server',
+  },
+  { getDirectoryPath: getStaticDirectoryPath, name: 'centreon-bam-server' },
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-augmented-services',
+  },
+  {
+    getDirectoryPath: () => `${__dirname}/www/modules/centreon-map4-web-client`,
+    name: 'centreon-map4-web-client',
+  },
 ];
 
 module.exports = merge(baseConfig, devConfig, {
@@ -48,9 +66,8 @@ module.exports = merge(baseConfig, devConfig, {
     host: '0.0.0.0',
     hot: true,
     port: devServerPort,
-
-    static: modules.map((module) => ({
-      directory: path.resolve(`${__dirname}/www/modules/${module}/static`),
+    static: modules.map(({ name, getDirectoryPath }) => ({
+      directory: path.resolve(getDirectoryPath(name)),
       publicPath,
       watch: true,
     })),

@@ -138,12 +138,12 @@ export const inputs: Array<InputProps> = [
       setFieldValue(
         'authenticationType',
         value
-          ? AuthenticationType.ClientSecretPost
-          : AuthenticationType.ClientSecretBasic,
+          ? AuthenticationType.ClientSecretBasic
+          : AuthenticationType.ClientSecretPost,
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value) => equals(AuthenticationType.ClientSecretPost, value),
+    getChecked: (value) => equals(AuthenticationType.ClientSecretBasic, value),
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },

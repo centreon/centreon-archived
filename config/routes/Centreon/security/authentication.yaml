@@ -8,7 +8,7 @@ centreon_security_authentication_login:
     path: /authentication/providers/configurations/local
     controller: 'Core\Infrastructure\Security\Api\LoginSession\LoginSessionController'
 
-centreon_application_authentication_logout:
+centreon_security_authentication_logout:
     methods: POST
     path: /authentication/logout
     controller: 'Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController'

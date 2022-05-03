@@ -64,11 +64,54 @@ try {
         REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
     );
 
-    // Add custom_configuration to provider configurations
+     /**
+     * Alter Tables
+     */
+    if (
+        $pearDB->isColumnExist('contact', 'login_attempts') !== 1
+        && $pearDB->isColumnExist('contact', 'blocking_time') !== 1
+    ) {
+        // Add login blocking mechanism to contact
+        $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
+        $pearDB->query(
+            "ALTER TABLE `contact`
+            ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+            ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
+        );
+    }
+
+    $errorMessage = "Unable to find constraint unique_index from security_token";
+    $constraintExistStatement = $pearDB->query(
+        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
+    );
+    if ($constraintExistStatement->fetch() !== false) {
+        $errorMessage = "Unable to remove unique_index from security_token";
+        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
+    }
+
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+
+    if ($pearDB->isColumnExist('cfg_centreonbroker', 'bbdo_version') !== 1) {
+        $errorMessage = "Unable to add 'bbdo_version' column to 'cfg_centreonbroker' table";
+        $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
+    }
+
     if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
+        // Add custom_configuration to provider configurations
         $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
         $pearDB->query(
             "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
+        );
+    }
+
+    // Add contact_theme column to contact table
+    if ($pearDB->isColumnExist('contact', 'contact_theme') !== 1) {
+        $errorMessage = "Unable to add column 'contact_theme' to table 'contact'";
+        $pearDB->query(
+            "ALTER TABLE `contact` ADD COLUMN "
+            . "`contact_theme` enum('light','dark') DEFAULT 'light' AFTER `contact_js_effects`"
         );
     }
 
@@ -130,40 +173,10 @@ try {
     excludeUsersFromPasswordPolicy($pearDB);
 
     $pearDB->commit();
-
-    /**
-     * Alter Tables
-     */
-    if (
-        $pearDB->isColumnExist('contact', 'login_attempts') !== 1
-        && $pearDB->isColumnExist('contact', 'blocking_time') !== 1
-    ) {
-        // Add login blocking mechanism to contact
-        $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
-            ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
-        );
-    }
-
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
         $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
         $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
     }
-
-    $errorMessage = "Unable to find constraint unique_index from security_token";
-    $constraintExistStatement = $pearDB->query(
-        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
-    );
-    if ($constraintExistStatement->fetch() !== false) {
-        $errorMessage = "Unable to remove unique_index from security_token";
-        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
-    }
-
-    $errorMessage = "Unable to alter table security_token";
-    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();

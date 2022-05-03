@@ -14,9 +14,7 @@ import {
   labelExportGenerationTimeout,
   labelFinalStep,
 } from '../translatedLabels';
-
-const exportTaskEndpoint =
-  'internal.php?object=centreon_task_service&action=getTaskStatus';
+import { exportTaskEndpoint } from '../api/endpoints';
 
 const RemoteServerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();

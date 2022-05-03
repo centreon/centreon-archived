@@ -15459,9 +15459,6 @@ msgstr ""
 # msgid "You are not authorized to access the configuration"
 # msgstr ""
 
-# msgid "Force active checks"
-# msgstr ""
-
 # msgid "Web SSO configuration"
 # msgstr ""
 
