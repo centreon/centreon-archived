@@ -143,7 +143,7 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(
         labelUseBasicAuthenticatonForTokenEndpointAuthentication,
       ),
-    ).toBeChecked();
+    ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
   });
 
