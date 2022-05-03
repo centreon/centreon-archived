@@ -620,7 +620,7 @@ class PartEngine
 
                 return true;
             }
-        } elseif ($config["plugin_status"] == "ACTIVE") {
+        } elseif ($config["plugin_status"] === "ACTIVE") {
             unset($config);
 
             return true;
