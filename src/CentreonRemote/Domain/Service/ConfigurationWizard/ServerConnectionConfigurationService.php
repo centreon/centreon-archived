@@ -1,9 +1,27 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\NagiosServer;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagios;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosBrokerModule;
@@ -11,7 +29,6 @@ use CentreonRemote\Domain\Resources\RemoteConfig\BamBrokerCfgInfo;
 
 abstract class ServerConnectionConfigurationService
 {
-
     /** @var CentreonDBAdapter */
     protected $dbAdapter;
 
@@ -174,6 +191,18 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
+     * insert broker log information
+     *
+     * @param \Generator<array<string,string|int>> $brokerLogs
+     */
+    protected function insertBrokerLog(\Generator $brokerLogs): void
+    {
+        foreach ($brokerLogs as $brokerLog) {
+            $this->insertWithAdapter('cfg_centreonbroker_log', $brokerLog);
+        }
+    }
+
+    /**
      * @throws \Exception
      */
     protected function insertBamBrokers(): void
@@ -199,7 +228,7 @@ abstract class ServerConnectionConfigurationService
 
     /**
      * @param string $table
-     * @param array<string,int> $data
+     * @param array<string,mixed> $data
      * @throws \Exception
      * @return int
      */
