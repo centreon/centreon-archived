@@ -51,7 +51,7 @@ CentreonSession::start();
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = &$_SESSION["centreon"];
-    include __DIR__ . '/../../../index.html';
+    include __DIR__ . '/index.html';
 }
 
 /*
@@ -144,17 +144,20 @@ if (
             throw new \Exception('No local provider found');
         }
 
-        $kernel = \App\Kernel::createForWeb();
-        $authenticationRepository = $kernel->getContainer()->get(
-            \Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface::class
+        $securityAuthenticationTokenStatement = $pearDB->prepare(
+            "INSERT INTO security_authentication_tokens " .
+            "(`token`, `provider_token_id`, `provider_configuration_id`, `user_id`) VALUES " .
+            "(:token, :providerTokenId, :providerConfigurationId, :userId)"
         );
-        $authenticationRepository->insertSecurityAuthenticationToken(
-            session_id(),
-            $centreon->user->user_id,
-            $providerTokenId,
-            null,
+        $securityAuthenticationTokenStatement->bindValue(':token', session_id(), \PDO::PARAM_STR);
+        $securityAuthenticationTokenStatement->bindValue(':providerTokenId', $providerTokenId, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->bindValue(
+            ':providerConfigurationId',
             $configurationId,
+            \PDO::PARAM_INT
         );
+        $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->execute();
 
         $headerRedirection = "./main.php";
         $argP = filter_var(
