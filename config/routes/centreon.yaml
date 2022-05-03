@@ -2,11 +2,14 @@ centreon:
     resource: "./Centreon/**/*.yaml"
     prefix: "{base_uri}api/{version}"
     defaults:
+        base_uri: "centreon"
         version: "latest"
     requirements:
         base_uri: ".*"
 security:
     resource: "./Centreon/security/*.yaml"
     prefix: "{base_uri}"
+    defaults:
+        base_uri: "centreon"
     requirements:
         base_uri: ".*"
