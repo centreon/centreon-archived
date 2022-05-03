@@ -210,6 +210,14 @@ try {
           junit 'ut-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "coverage/lcov-report",
+            reportFiles: 'index.html',
+            reportName: 'Centreon Frontend Code Coverage',
+            reportTitles: ''
+          ])
         }
       }
     },
