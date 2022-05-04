@@ -244,7 +244,7 @@ try {
           stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
-    }/*,
+    },
     'sonar': {
       node {
         if (securityAnalysisRequired == 'no') {
@@ -273,7 +273,7 @@ try {
           }
         }
       }
-    }*/,
+    },
     'rpm packaging centos7': {
       node {
         checkoutCentreonBuild()
