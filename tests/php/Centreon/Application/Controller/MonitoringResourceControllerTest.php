@@ -60,7 +60,7 @@ class MonitoringResourceControllerTest extends TestCase
     protected $resourceService;
 
     /**
-     * @var UrlGeneratorInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlGenerator;
 
