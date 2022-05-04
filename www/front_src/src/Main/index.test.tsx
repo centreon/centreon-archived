@@ -8,7 +8,7 @@ import { labelConnect } from '../Login/translatedLabels';
 import {
   aclEndpoint,
   parametersEndpoint,
-  translationEndpoint,
+  externalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
 import { retrievedExternalComponents } from '../externalComponents/mocks';
@@ -125,6 +125,9 @@ const mockDefaultGetRequests = (): void => {
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
@@ -160,6 +163,9 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -247,6 +253,9 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
@@ -286,7 +295,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        translationEndpoint,
+        externalTranslationEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -435,7 +444,7 @@ describe('Main', () => {
     );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      translationEndpoint,
+      externalTranslationEndpoint,
       cancelTokenRequestParam,
     );
   });

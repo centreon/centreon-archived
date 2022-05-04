@@ -58,7 +58,7 @@ const useUser = (
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
-        changeLanguage?.((retrievedUser as User).locale.substring(0, 2));
+        // changeLanguage?.((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
       })
       .catch(() => {

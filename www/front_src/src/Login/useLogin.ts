@@ -24,6 +24,7 @@ import { platformInstallationStatusAtom } from '../platformInstallationStatusAto
 import useUser from '../Main/useUser';
 import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
 import routeMap from '../reactRoutes/routeMap';
+import useInitializeTranslation from '../Main/useInitializeTranslation';
 
 import postLogin from './api';
 import {
@@ -60,6 +61,7 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
+
   const [platformVersions, setPlatformVersions] =
     useState<PlatformVersions | null>(null);
   const [providersConfiguration, setProvidersConfiguration] =
@@ -82,6 +84,8 @@ const useLogin = (): UseLoginState => {
     decoder: providersConfigurationDecoder,
     request: getData,
   });
+
+  const { getInternalTranslation } = useInitializeTranslation();
 
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
@@ -130,7 +134,9 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(redirectUri));
+        getInternalTranslation().finally(() =>
+          loadUser()?.then(() => navigate(redirectUri)),
+        );
       })
       .catch((error) =>
         checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
