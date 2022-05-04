@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -581,7 +582,7 @@ class PartEngine
 
     /**
      *
-     * Check if MySQL version is compatible with partitionning.
+     * Check if MySQL/MariaDB version is compatible with partitionning.
      *
      * @param $db The Db singleton
      *
@@ -592,11 +593,7 @@ class PartEngine
         $dbResult = $db->query("SELECT plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE plugin_name = 'partition'");
         $config = $dbResult->fetch();
         $dbResult->closeCursor();
-        if ($config["plugin_status"] == "ACTIVE") {
-            unset($config);
-
-            return true;
-        } elseif (empty($config["plugin_status"])) {
+        if ($config === false || empty($config["plugin_status"])) {
             // as the plugin "partition" was deprecated in mysql 5.7
             // and as it was removed from mysql 8 and replaced by the native partitioning one,
             // we need to check the current version and db before failing this step
@@ -623,6 +620,8 @@ class PartEngine
 
                 return true;
             }
+        } elseif ($config["plugin_status"] === "ACTIVE") {
+            return true;
         }
         return false;
     }
