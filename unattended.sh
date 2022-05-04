@@ -40,8 +40,8 @@ function genpasswd() {
     exit 1
   fi
 
-        #return the generated password
-        echo $_pwd
+  #return the generated password
+  echo $_pwd
 
 }
 
