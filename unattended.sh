@@ -28,8 +28,8 @@ central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first
 function genpasswd() {
   local _pwd
 
-        PWD_STRING_LENGTH=16
-        PWD_SPECIAL_CHARS='a-zA-Z0-9\!\@\$\*\?'
+  PWD_STRING_LENGTH=16
+  PWD_SPECIAL_CHARS='a-zA-Z0-9\!\@\$\*\?'
 
         _pwd=$(cat /dev/urandom | tr -dc $PWD_SPECIAL_CHARS | fold -w $PWD_STRING_LENGTH | head -n 1)
 
