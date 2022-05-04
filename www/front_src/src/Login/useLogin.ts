@@ -90,7 +90,7 @@ const useLogin = (): UseLoginState => {
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
   const navigate = useNavigate();
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
   const setPasswordResetInformations = useUpdateAtom(

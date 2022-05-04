@@ -36,7 +36,7 @@ const useMain = (): void => {
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
-  const loadUser = useUser(i18next.changeLanguage);
+  const loadUser = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParameter] = useSearchParams();
