@@ -26,7 +26,7 @@ wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"false"} #Default the install wizard is n
 central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first of hostname -I
 
 function genpasswd() {
-        local _pwd
+  local _pwd
 
         PWD_STRING_LENGTH=16
         PWD_SPECIAL_CHARS='a-zA-Z0-9\!\@\$\*\?'
