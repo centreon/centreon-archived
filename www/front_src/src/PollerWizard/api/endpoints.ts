@@ -1,6 +1,6 @@
 const legacyBaseEndpoint = './api/internal.php';
 
-const baseRemoteConfigurationEndpoint = `${legacyBaseEndpoint}?action=centreon_configuration_remote`;
+const baseRemoteConfigurationEndpoint = `${legacyBaseEndpoint}?object=centreon_configuration_remote`;
 
 export const pollerWaitListEndpoint = `${baseRemoteConfigurationEndpoint}&action=getPollerWaitList`;
 export const getPollersEndpoint = `${baseRemoteConfigurationEndpoint}&action=getRemotesList`;
