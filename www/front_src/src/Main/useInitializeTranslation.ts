@@ -1,3 +1,5 @@
+import { useLayoutEffect } from 'react';
+
 import i18next, { i18n, Resource, ResourceLanguage } from 'i18next';
 import { mergeAll, pipe, reduce, toPairs } from 'ramda';
 import { initReactI18next } from 'react-i18next';
@@ -63,6 +65,10 @@ const useInitializeTranslation = (): UseInitializeTranslationState => {
 
   const getInternalTranslation = (): Promise<void> =>
     getTranslation(internalTranslationEndpoint);
+
+  useLayoutEffect(() => {
+    initializeI18n();
+  }, []);
 
   return {
     getBrowserLocale,

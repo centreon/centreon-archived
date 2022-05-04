@@ -85,7 +85,8 @@ const useLogin = (): UseLoginState => {
     request: getData,
   });
 
-  const { getInternalTranslation } = useInitializeTranslation();
+  const { getInternalTranslation, getExternalTranslation } =
+    useInitializeTranslation();
 
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
@@ -146,7 +147,9 @@ const useLogin = (): UseLoginState => {
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
   useEffect(() => {
-    i18n.changeLanguage?.(getBrowserLocale());
+    getExternalTranslation().then(() =>
+      i18n.changeLanguage?.(getBrowserLocale()),
+    );
 
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,

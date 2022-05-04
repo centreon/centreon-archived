@@ -9,6 +9,7 @@ import {
   aclEndpoint,
   parametersEndpoint,
   externalTranslationEndpoint,
+  internalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
 import { retrievedExternalComponents } from '../externalComponents/mocks';
@@ -113,9 +114,6 @@ const renderMain = (): RenderResult =>
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
@@ -147,13 +145,13 @@ const mockDefaultGetRequests = (): void => {
 const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
       },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedWeb,
@@ -187,9 +185,6 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
 const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
@@ -197,6 +192,9 @@ const mockNotConnectedGetRequests = (): void => {
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedWeb,
@@ -208,9 +206,6 @@ const mockNotConnectedGetRequests = (): void => {
 
 const mockInstallGetRequests = (): void => {
   mockedAxios.get
-    .mockRejectedValueOnce({
-      data: retrievedTranslations,
-    })
     .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
@@ -225,9 +220,6 @@ const mockInstallGetRequests = (): void => {
 const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
         is_installed: true,
@@ -240,9 +232,6 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
 
 const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
     .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
@@ -329,10 +318,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -444,7 +435,7 @@ describe('Main', () => {
     );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      externalTranslationEndpoint,
+      internalTranslationEndpoint,
       cancelTokenRequestParam,
     );
   });

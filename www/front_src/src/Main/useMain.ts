@@ -25,12 +25,8 @@ const useMain = (): void => {
     });
   const { showErrorMessage } = useSnackbar();
 
-  const {
-    getBrowserLocale,
-    getInternalTranslation,
-    i18next,
-    getExternalTranslation,
-  } = useInitializeTranslation();
+  const { getBrowserLocale, getInternalTranslation, i18next } =
+    useInitializeTranslation();
 
   const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
   const user = useAtomValue(userAtom);
@@ -53,13 +49,11 @@ const useMain = (): void => {
 
   useEffect(() => {
     displayAuthenticationError();
-    getExternalTranslation().finally(() =>
-      getWebVersions({
-        endpoint: webVersionsEndpoint,
-      }).then((retrievedWebVersions) => {
-        setWebVersions(retrievedWebVersions);
-      }),
-    );
+    getWebVersions({
+      endpoint: webVersionsEndpoint,
+    }).then((retrievedWebVersions) => {
+      setWebVersions(retrievedWebVersions);
+    });
   }, []);
 
   useEffect((): void => {
