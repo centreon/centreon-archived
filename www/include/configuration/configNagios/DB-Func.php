@@ -158,10 +158,10 @@ function deleteNagiosInDB($nagios = array())
 
 function multipleNagiosInDB($nagios = array(), $nbrDup = array())
 {
-    foreach ($nagios as $key => $value) {
+    foreach ($nagios as $originalNagiosId => $value) {
         global $pearDB;
         $dbResult = $pearDB->query(
-            "SELECT * FROM cfg_nagios WHERE nagios_id = '" . $key . "' LIMIT 1"
+            "SELECT * FROM cfg_nagios WHERE nagios_id = '" . $originalNagiosId . "' LIMIT 1"
         );
         $row = $dbResult->fetch();
         $row["nagios_id"] = '';
@@ -169,17 +169,17 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
         $dbResult->closeCursor();
         $rowBks = array();
         $dbResult = $pearDB->query(
-            "SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='" . $key . "'"
+            "SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='" . $originalNagiosId . "'"
         );
         while ($rowBk = $dbResult->fetch()) {
             $rowBks[] = $rowBk;
         }
         $dbResult->closeCursor();
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
+        for ($i = 1; $i <= $nbrDup[$originalNagiosId]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $value2 = $pearDB->escape($value2);
-                $key2 == "nagios_name" ? ($nagios_name = $value2 = $value2 . "_" . $i) : null;
+                $key2 == "nagios_name" ? ($nagios_name = $value2 . "_" . $i) : null;
                 $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
@@ -188,17 +188,50 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
                 $dbResult = $pearDB->query($rq);
                 /* Find the new last nagios_id once */
                 $dbResult = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
-                $nagios_id = $dbResult->fetch();
+                $nagiosId = $dbResult->fetch();
                 $dbResult->closeCursor();
                 foreach ($rowBks as $keyBk => $valBk) {
                     if ($valBk["broker_module"]) {
                         $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('"
-                            . $nagios_id["MAX(nagios_id)"] . "', '" . $valBk["broker_module"] . "')";
+                            . $nagiosId["MAX(nagios_id)"] . "', '" . $valBk["broker_module"] . "')";
                     }
                     $dbResult = $pearDB->query($rqBk);
                 }
+                duplicateLoggerV2Cfg($pearDB, $originalNagiosId, $nagiosId["MAX(nagios_id)"]);
             }
         }
+    }
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $originalNagiosId
+ * @param int $duplicatedNagiosId
+ */
+function duplicateLoggerV2Cfg(CentreonDB $pearDB, int $originalNagiosId, int $duplicatedNagiosId): void
+{
+    $statement = $pearDB->prepare("SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id=:nagiosId");
+    $statement->bindValue('nagiosId', $originalNagiosId);
+    $statement->execute();
+    $loggerCfg = $statement->fetch(\PDO::FETCH_ASSOC);
+
+    if (! empty($loggerCfg)) {
+        unset($loggerCfg['id']);
+        $loggerCfg['cfg_nagios_id'] = $duplicatedNagiosId;
+        $columnNames = array_keys($loggerCfg);
+
+        $statement = $pearDB->prepare(
+            'INSERT INTO cfg_nagios_logger ( `' . implode('`, `', $columnNames) . '`) VALUES
+            ( :' . implode(', :', $columnNames) . ' )'
+        );
+        foreach ($loggerCfg as $columnName => $value) {
+            if ($columnName === 'cfg_nagios_id') {
+                $statement->bindValue(":{$columnName}", $value, \PDO::PARAM_INT);
+            } else {
+                $statement->bindValue(":{$columnName}", $value, \PDO::PARAM_STR);
+            }
+        }
+        $statement->execute();
     }
 }
 

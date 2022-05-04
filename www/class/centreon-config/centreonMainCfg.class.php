@@ -260,6 +260,53 @@ class CentreonMainCfg
     }
 
     /**
+     * @param int $nagiosId
+     */
+    public function insertDefaultCfgNagiosLogger(int $nagiosId): void
+    {
+        $stmt = $this->DB->prepare("INSERT INTO cfg_nagios_logger (`cfg_nagios_id`) VALUES (:nagiosId)");
+        $stmt->bindValue('nagiosId', $nagiosId);
+        $stmt->execute();
+    }
+
+    /**
+     * @param int $nagiosId
+     * @param int $serverId
+     */
+    public function insertCfgNagiosLogger(int $nagiosId, int $serverId): void
+    {
+        $stmt = $this->DB->prepare(
+            "SELECT logger.* FROM cfg_nagios_logger logger, cfg_nagios cfg
+            WHERE cfg.nagios_id = logger.cfg_nagios_id AND cfg.nagios_server_id = :serverId"
+        );
+        $stmt->bindValue('serverId', $serverId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $baseValues = $stmt->fetch();
+
+        if (empty($baseValues)) {
+            $baseValues = $this->getDefaultLoggerCfg();
+        } else {
+            unset($baseValues['id']);
+        }
+        $baseValues['cfg_nagios_id'] = $nagiosId;
+        $columnNames = array_keys($baseValues);
+
+        $stmt = $this->DB->prepare(
+            'INSERT INTO cfg_nagios_logger (`' . implode('`, `', $columnNames) . '`)
+            VALUES(:' . implode(', :', $columnNames) . ')'
+        );
+        foreach ($baseValues as $columName => $value) {
+            if ($columName === 'cfg_nagios_id') {
+                $stmt->bindValue(":{$columName}", $value, \PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(":{$columName}", $value, \PDO::PARAM_STR);
+            }
+        }
+        $stmt->execute();
+    }
+
+
+    /**
      * Insert the instance in cfg_nagios
      *
      * @param int $source The poller id

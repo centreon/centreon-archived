@@ -400,6 +400,7 @@ function duplicateServer(array $server, array $nbrDup): void
                     if ($res->rowCount() > 0) {
                         $row = $res->fetch();
                         $iId = $obj->insertServerInCfgNagios($serverId, $row['id'], $serverName);
+                        $obj->insertCfgNagiosLogger($iId, $serverId);
 
                         if (isset($rowBks)) {
                             foreach ($rowBks as $keyBk => $valBk) {
@@ -480,6 +481,7 @@ function insertServerInDB(array $data): int
 
     if (!empty($iIdNagios)) {
         $srvObj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
+        $srvObj->insertDefaultCfgNagiosLogger($iIdNagios);
     }
     addUserRessource($id);
 
@@ -762,7 +764,7 @@ function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
 
     if ($total === 1) {
         $statement = $pearDB->prepare("
-            UPDATE remote_servers 
+            UPDATE remote_servers
             SET http_method = :http_method, http_port = :http_port,
                 no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
             WHERE ip = :ip
@@ -1074,7 +1076,7 @@ UNION
 
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg 
+        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg
         INNER JOIN hosts h ON h.host_id = sg.host_id AND h.instance_id IN ($pollersSearch)
     ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.servicegroup_id
 WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
