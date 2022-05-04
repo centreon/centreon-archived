@@ -31,14 +31,14 @@ function genpasswd() {
   PWD_STRING_LENGTH=16
   PWD_SPECIAL_CHARS='a-zA-Z0-9\!\@\$\*\?'
 
-        _pwd=$(cat /dev/urandom | tr -dc $PWD_SPECIAL_CHARS | fold -w $PWD_STRING_LENGTH | head -n 1)
+  _pwd=$(cat /dev/urandom | tr -dc $PWD_SPECIAL_CHARS | fold -w $PWD_STRING_LENGTH | head -n 1)
 
-        echo "Random password generated for user [$1] is [$_pwd]" >>$tmp_passwords_file
+  echo "Random password generated for user [$1] is [$_pwd]" >>$tmp_passwords_file
 
-        if [ $? -ne 0 ]; then
-                echo "ERROR : Cannot save the random password to [$tmp_passwords_file]"
-                exit 1
-        fi
+  if [ $? -ne 0 ]; then
+    echo "ERROR : Cannot save the random password to [$tmp_passwords_file]"
+    exit 1
+  fi
 
         #return the generated password
         echo $_pwd
