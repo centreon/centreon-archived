@@ -208,4 +208,6 @@
     --success-message-background-color: var(--up-to-date-background-color);
     --success-message-font-color: var(--up-to-date-border-color);
     --success-message-border-color: var(--up-to-date-color);
+    --custom-macros-placeholder-font-color: var(--color-black);
+    --custom-macros-font-color: var(--color-white);
 }
