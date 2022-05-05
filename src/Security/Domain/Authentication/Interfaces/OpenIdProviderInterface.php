@@ -42,7 +42,7 @@ interface OpenIdProviderInterface extends ProviderInterface
     /**
      * @return ProviderToken
      */
-    public function getProviderRefreshToken(): ProviderToken;
+    public function getProviderRefreshToken(): ?ProviderToken;
 
     /**
      * @return ContactInterface|null
