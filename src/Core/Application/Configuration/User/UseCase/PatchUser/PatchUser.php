@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\User\UseCase\PatchUser;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
+use Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
@@ -31,6 +33,7 @@ use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Application\Configuration\User\Exception\UserException;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Configuration\User\Model\User;
 
 final class PatchUser
 {
@@ -39,10 +42,14 @@ final class PatchUser
     /**
      * @param ReadUserRepositoryInterface $readUserRepository
      * @param WriteUserRepositoryInterface $writeUserRepository
+     * @param ReadSessionRepositoryInterface $readSessionRepository
+     * @param WriteSessionRepositoryInterface $writeSessionRepository
      */
     public function __construct(
         private ReadUserRepositoryInterface $readUserRepository,
-        private WriteUserRepositoryInterface $writeUserRepository
+        private WriteUserRepositoryInterface $writeUserRepository,
+        private ReadSessionRepositoryInterface $readSessionRepository,
+        private WriteSessionRepositoryInterface $writeSessionRepository
     ) {
     }
 
@@ -87,13 +94,36 @@ final class PatchUser
                 $this->debug('New theme', ['theme' => $request->theme]);
                 $user->setTheme($request->theme);
                 $this->writeUserRepository->update($user);
+                $this->updateUserInSession($user, $request->theme);
             } catch (\Throwable $ex) {
+                $this->error($ex->getMessage());
                 throw UserException::errorWhenUpdatingUserTheme($ex);
             }
             $presenter->setResponseStatus(new NoContentResponse());
         } catch (\Throwable $ex) {
             $this->error($ex->getTraceAsString());
             $this->unexpectedError($ex->getMessage(), $presenter);
+        }
+    }
+
+    private function updateUserInSession(User $user, string $selectedTheme): void
+    {
+        $sessionIds = $this->readSessionRepository->findSessionIdsByUserid($user->getId());
+
+        foreach ($sessionIds as $sessionId) {
+            /**
+             * @var \Centreon $centreon
+             */
+            $centreon = $this->readSessionRepository->getValueFromSession(
+                $sessionId,
+                'centreon'
+            );
+            $centreon->user->theme = $selectedTheme;
+            $this->writeSessionRepository->updateSession(
+                $sessionId,
+                'centreon',
+                $centreon
+            );
         }
     }
 
