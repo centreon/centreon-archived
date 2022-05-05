@@ -3,10 +3,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
-const baseConfig = require('centreon-frontend/packages/frontend-config/webpack/base');
-const { ModuleFederationPlugin } = require('webpack').container;
+const {
+  getBasicConfig,
+} = require('centreon-frontend/packages/frontend-config/webpack/base');
 
-module.exports = merge(baseConfig, {
+module.exports = merge(getBasicConfig({ moduleName: 'centreon' }), {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   module: {
     rules: [
@@ -45,46 +46,5 @@ module.exports = merge(baseConfig, {
       template: './www/front_src/public/index.html',
     }),
     new HtmlWebpackHarddiskPlugin(),
-    new ModuleFederationPlugin({
-      name: 'centreon',
-      shared: [
-        {
-          '@centreon/ui-context': {
-            requiredVersion: '22.4.0',
-            singleton: true,
-          },
-        },
-        {
-          jotai: {
-            requiredVersion: '1.x',
-            singleton: true,
-          },
-        },
-        {
-          react: {
-            requiredVersion: '18.x',
-            singleton: true,
-          },
-        },
-        {
-          'react-dom': {
-            requiredVersion: '18.x',
-            singleton: true,
-          },
-        },
-        {
-          'react-i18next': {
-            requiredVersion: '11.x',
-            singleton: true,
-          },
-        },
-        {
-          'react-router-dom': {
-            requiredVersion: '6.x',
-            singleton: true,
-          },
-        },
-      ],
-    }),
   ],
 });
