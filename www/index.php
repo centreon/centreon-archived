@@ -40,7 +40,7 @@ require_once __DIR__ . "/class/centreonAuth.class.php";
 require_once __DIR__ . "/class/centreonLog.class.php";
 require_once __DIR__ . "/class/centreonDB.class.php";
 
-const AUTOLOGIN_FIELDS = ['autologin' , 'useralias', 'token'];
+const AUTOLOGIN_FIELDS = ['autologin', 'useralias', 'token'];
 
 updateCentreonBaseUri();
 include __DIR__ . '/index.html';
