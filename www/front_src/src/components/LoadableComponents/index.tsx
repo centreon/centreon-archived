@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { filter, isNil, propEq } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -24,7 +24,7 @@ const LoadableComponents = ({
               <Remote
                 isHook
                 component={component}
-                key={name}
+                key={component}
                 moduleName={moduleName}
                 name={name}
                 remoteEntry={remoteEntry}
@@ -39,18 +39,25 @@ const LoadableComponents = ({
   });
 };
 
-const Hook = (props): JSX.Element | null => {
+interface LoadableComponentsContainerProps {
+  moduleNameToFilter?: string;
+}
+
+const LoadableComponentsContainer = ({
+  moduleNameToFilter,
+  ...props
+}: LoadableComponentsContainerProps): JSX.Element | null => {
   const federatedComponents = useAtomValue(federatedComponentsAtom);
 
   if (isNil(federatedComponents)) {
     return null;
   }
 
-  console.log(federatedComponents);
+  const components = moduleNameToFilter
+    ? filter(propEq('moduleName', moduleNameToFilter), federatedComponents)
+    : federatedComponents;
 
-  return (
-    <LoadableComponents federatedComponents={federatedComponents} {...props} />
-  );
+  return <LoadableComponents federatedComponents={components} {...props} />;
 };
 
-export default Hook;
+export default LoadableComponentsContainer;

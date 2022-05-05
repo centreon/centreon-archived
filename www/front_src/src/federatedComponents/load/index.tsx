@@ -1,6 +1,10 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 
-import { MenuSkeleton } from '@centreon/ui';
+import { atom, useAtom } from 'jotai';
+
+import { MenuSkeleton, PageSkeleton } from '@centreon/ui';
+
+import NotFoundPage from '../../FallbackPages/NotFoundPage';
 
 import loadComponent from './loadComponent';
 
@@ -14,49 +18,53 @@ interface UseDynamicLoadRemoteEntryProps {
   remoteEntry: string;
 }
 
+const remoteEntriesLoadedAtom = atom([] as Array<string>);
+
 const useDynamicLoadRemoteEntry = ({
   remoteEntry,
   moduleName,
 }: UseDynamicLoadRemoteEntryProps): UseDynamicLoadRemoteEntryState => {
-  const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+
+  const [remoteEntriesLoaded, setRemoteEntriesLoaded] = useAtom(
+    remoteEntriesLoadedAtom,
+  );
 
   useEffect((): (() => void) | undefined => {
     if (!remoteEntry) {
       return undefined;
     }
-    console.log(`Dynamic Script Loading: ${remoteEntry}`);
+
+    const remoteEntryScript = document.getElementById(moduleName);
+
+    if (remoteEntryScript || remoteEntriesLoaded.includes(moduleName)) {
+      return undefined;
+    }
 
     const element = document.createElement('script');
     element.src = `./modules/${moduleName}/static/${remoteEntry}`;
     element.type = 'text/javascript';
+    element.id = moduleName;
     element.async = true;
 
-    setReady(false);
-    setFailed(false);
-
     element.onload = (): void => {
-      console.log(`Dynamic Script Loaded: ${remoteEntry}`);
-      setReady(true);
+      setRemoteEntriesLoaded([...remoteEntriesLoaded, moduleName]);
     };
 
     element.onerror = (): void => {
-      console.error(`Dynamic Script Error: ${remoteEntry}`);
-      setReady(false);
       setFailed(true);
     };
 
     document.head.appendChild(element);
 
     return () => {
-      console.log(`Dynamic Script Removed: ${remoteEntry}`);
       document.head.removeChild(element);
     };
-  }, [remoteEntry]);
+  }, [remoteEntriesLoadedAtom]);
 
   return {
     failed,
-    ready,
+    ready: remoteEntriesLoaded.includes(moduleName),
   };
 };
 
@@ -72,7 +80,6 @@ const LoadComponent = ({
   isHook,
   ...props
 }: LoadComponentProps): JSX.Element => {
-  console.log(name, component);
   const Component = useMemo(
     () => lazy(loadComponent({ component, moduleName: name })),
     [name],
@@ -80,7 +87,7 @@ const LoadComponent = ({
 
   return (
     <Suspense
-      fallback={isHook ? <MenuSkeleton width={29} /> : `Loading remote ${name}`}
+      fallback={isHook ? <MenuSkeleton width={29} /> : <PageSkeleton />}
     >
       <Component {...props} />
     </Suspense>
@@ -106,11 +113,11 @@ export const Remote = ({
   });
 
   if (!ready) {
-    return <h2>Loading dynamic script: {remoteEntry}</h2>;
+    return isHook ? <MenuSkeleton width={29} /> : <PageSkeleton />;
   }
 
   if (failed) {
-    return <h2>Failed to load dynamic script: {remoteEntry}</h2>;
+    return <NotFoundPage />;
   }
 
   return (
