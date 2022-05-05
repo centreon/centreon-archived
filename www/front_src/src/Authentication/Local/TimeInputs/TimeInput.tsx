@@ -170,7 +170,15 @@ const TimeInput = ({
         <Typography>{t(label)}</Typography>
       </div>
     ),
-    memoProps: [timeValue, unit, labels, name, required, getAbsoluteValue],
+    memoProps: [
+      timeValue,
+      unit,
+      labels,
+      name,
+      required,
+      getAbsoluteValue,
+      classes,
+    ],
   });
 };
 
