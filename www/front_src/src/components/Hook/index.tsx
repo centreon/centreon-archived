@@ -1,61 +1,56 @@
-import { lazy, Suspense } from 'react';
-
-import { isNil, propOr } from 'ramda';
-import { useHref } from 'react-router';
+import { isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { useMemoComponent, MenuSkeleton } from '@centreon/ui';
+import { useMemoComponent } from '@centreon/ui';
 
-import { dynamicImport } from '../../helpers/dynamicImport';
-import { externalComponentsAtom } from '../../externalComponents/atoms';
-import ExternalComponents, {
-  ExternalComponent,
-} from '../../externalComponents/models';
+import { federatedComponentsAtom } from '../../federatedComponents/atoms';
+import { Remote } from '../../federatedComponents/load';
+import { FederatedComponent } from '../../federatedComponents/models';
 
 interface Props {
-  hooks: ExternalComponent;
-  path: string;
+  federatedComponents: Array<FederatedComponent>;
 }
 
-const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
-  const basename = useHref('/');
-
+const LoadableComponents = ({
+  federatedComponents,
+  ...rest
+}: Props): JSX.Element | null => {
   return useMemoComponent({
     Component: (
       <>
-        {Object.entries(hooks)
-          .filter(([hook]) => hook.includes(path))
-          .map(([, parameters]) => {
-            const HookComponent = lazy(() =>
-              dynamicImport(basename, parameters),
-            );
-
+        {federatedComponents.map(({ remoteEntry, name, hooks, moduleName }) => {
+          return hooks.map((component) => {
             return (
-              <Suspense fallback={<MenuSkeleton width={29} />} key={path}>
-                <HookComponent {...rest} />
-              </Suspense>
+              <Remote
+                isHook
+                component={component}
+                key={name}
+                moduleName={moduleName}
+                name={name}
+                remoteEntry={remoteEntry}
+                {...rest}
+              />
             );
-          })}
+          });
+        })}
       </>
     ),
-    memoProps: [hooks],
+    memoProps: [federatedComponents],
   });
 };
 
-const Hook = (props: Pick<Props, 'path'>): JSX.Element | null => {
-  const externalComponents = useAtomValue(externalComponentsAtom);
+const Hook = (props): JSX.Element | null => {
+  const federatedComponents = useAtomValue(federatedComponentsAtom);
 
-  const hooks = propOr<undefined, ExternalComponents | null, ExternalComponent>(
-    undefined,
-    'hooks',
-    externalComponents,
-  );
-
-  if (isNil(hooks)) {
+  if (isNil(federatedComponents)) {
     return null;
   }
 
-  return <LoadableHooks hooks={hooks} {...props} />;
+  console.log(federatedComponents);
+
+  return (
+    <LoadableComponents federatedComponents={federatedComponents} {...props} />
+  );
 };
 
 export default Hook;

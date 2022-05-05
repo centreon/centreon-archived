@@ -20,7 +20,7 @@ import {
 
 import Hook from '../../components/Hook';
 import useNavigation from '../../Navigation/useNavigation';
-import useExternalComponents from '../../externalComponents/useExternalComponents';
+import useFederatedComponents from '../../federatedComponents/useFederatedComponents';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
 import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
 
@@ -455,11 +455,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
 const ExtensionsRoute = (): JSX.Element => {
   const { getNavigation } = useNavigation();
-  const { getExternalComponents } = useExternalComponents();
+  const { getFederatedComponents } = useFederatedComponents();
 
   const reloadNavigation = useCallback(() => {
     getNavigation();
-    getExternalComponents();
+    getFederatedComponents();
   }, []);
 
   return <ExtensionsManager reloadNavigation={reloadNavigation} />;

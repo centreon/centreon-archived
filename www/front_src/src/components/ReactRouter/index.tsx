@@ -12,10 +12,7 @@ import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
-import { externalComponentsAtom } from '../../externalComponents/atoms';
-import ExternalComponents, {
-  ExternalComponent,
-} from '../../externalComponents/models';
+import { federatedComponentsAtom } from '../../federatedComponents/atoms';
 
 const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
 const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
@@ -64,7 +61,7 @@ const getExternalPageRoutes = ({
 interface Props {
   allowedPages: Array<string | Array<string>>;
   externalPagesFetched: boolean;
-  pages: Record<string, unknown>;
+  pages: Record<string, unknown> | null;
 }
 
 const ReactRouterContent = ({
@@ -95,7 +92,7 @@ const ReactRouterContent = ({
               {...rest}
             />
           ))}
-          {getExternalPageRoutes({ allowedPages, basename, pages })}
+          {/* getExternalPageRoutes({ allowedPages, basename, pages }) */}
           {externalPagesFetched && (
             <Route element={<NotFoundPage />} path="*" />
           )}
@@ -107,26 +104,17 @@ const ReactRouterContent = ({
 };
 
 const ReactRouter = (): JSX.Element => {
-  const externalComponents = useAtomValue(externalComponentsAtom);
   const { allowedPages } = useNavigation();
 
-  const externalPagesFetched = not(isNil(externalComponents));
-
-  if (!externalPagesFetched || !allowedPages) {
+  if (!allowedPages) {
     return <PageSkeleton />;
   }
 
-  const pages = propOr<undefined, ExternalComponents | null, ExternalComponent>(
-    undefined,
-    'pages',
-    externalComponents,
-  );
-
   return (
     <ReactRouterContent
+      externalPagesFetched
       allowedPages={allowedPages}
-      externalPagesFetched={externalPagesFetched}
-      pages={pages}
+      pages={null}
     />
   );
 };
