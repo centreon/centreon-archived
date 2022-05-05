@@ -148,6 +148,7 @@ const FormButtons = (): JSX.Element => {
       askingBeforeReset,
       tab,
       unsavedDialogOpened,
+      classes,
     ],
   });
 };
