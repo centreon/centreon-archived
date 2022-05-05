@@ -45,11 +45,12 @@ trait HttpUrlTrait
 
         $serverName = $_SERVER['SERVER_NAME'];
 
-        $baseUri = $this->getBaseUri();
+        $baseUri = trim($this->getBaseUri(), '/');
 
-        return $protocol . '://'
-            . $serverName . ($port !== null ? ':' . $port : '')
-            . '/' . trim($baseUri, '/');
+        return rtrim(
+            $protocol . '://' . $serverName . ($port !== null ? ':' . $port : '') . '/' . $baseUri,
+            '/'
+        );
     }
 
     /**
@@ -70,7 +71,7 @@ trait HttpUrlTrait
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+?)\/(' . implode('|', $routeSuffixPatterns) . ')/',
+                '/^(.+?)\/?(' . implode('|', $routeSuffixPatterns) . ')/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )
@@ -78,6 +79,6 @@ trait HttpUrlTrait
             $baseUri = $matches[1];
         }
 
-        return $baseUri;
+        return rtrim($baseUri, '/');
     }
 }

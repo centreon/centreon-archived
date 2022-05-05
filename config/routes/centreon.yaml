@@ -6,7 +6,7 @@ centreon:
     requirements:
         base_uri: ".*"
 security:
-    resource: "./Centreon/security/*.yaml"
-    prefix: "{base_uri}"
+    resource: "./Security/**/*.yaml"
+    prefix: "{base_uri}authentication"
     requirements:
         base_uri: ".*"
