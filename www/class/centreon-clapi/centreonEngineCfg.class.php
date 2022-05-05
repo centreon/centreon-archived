@@ -213,6 +213,7 @@ class CentreonEngineCfg extends CentreonObject
                 'ochp_command'
             );
             $loggerColumns = [
+                'log_v2_logger',
                 'log_level_functions',
                 'log_level_config',
                 'log_level_events',

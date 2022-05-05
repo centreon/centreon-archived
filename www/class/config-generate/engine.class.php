@@ -230,6 +230,7 @@ class Engine extends AbstractObject
         'grpc_port',
         'log_v2_enabled',
         'log_legacy_enabled',
+        'log_v2_logger',
         'log_level_functions',
         'log_level_config',
         'log_level_events',
@@ -370,7 +371,7 @@ class Engine extends AbstractObject
 
         if ($this->engine['log_v2_enabled'] === 1) {
             $stmt = $this->backend_instance->db->prepare(
-                'SELECT log_level_functions, log_level_config, log_level_events, log_level_checks,
+                'SELECT log_v2_logger, log_level_functions, log_level_config, log_level_events, log_level_checks,
                     log_level_notifications, log_level_eventbroker, log_level_external_command, log_level_commands,
                     log_level_downtimes, log_level_comments, log_level_macros, log_level_process, log_level_runtime
                 FROM cfg_nagios_logger
@@ -382,20 +383,6 @@ class Engine extends AbstractObject
             $loggerCfg = $stmt->fetch(PDO::FETCH_ASSOC);
 
             $this->engine = array_merge($this->engine, $loggerCfg);
-
-            $logsV1 = [
-                'use_syslog',
-                'log_notifications',
-                'log_service_retries',
-                'log_host_retries',
-                'log_event_handlers',
-                'log_external_commands',
-                'log_passive_checks',
-                'log_pid',
-            ];
-            foreach ($logsV1 as $logName) {
-                unset($this->engine[$logName]);
-            }
         }
     }
 
