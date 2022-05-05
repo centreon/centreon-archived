@@ -51,7 +51,6 @@ CentreonSession::start();
  * Already connected
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = &$_SESSION["centreon"];
     return;
 }
 
@@ -66,16 +65,15 @@ if (version_compare(phpversion(), '8.0') < 0) {
     return;
 }
 
-global $pearDB;
-$pearDB = new CentreonDB();
+if (isset($_GET["autologin"]) && $_GET["autologin"]) {
+    global $pearDB;
+    $pearDB = new CentreonDB();
 
-$dbResult = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_autologin'");
-$isAutologinEnabled = ($row = $dbResult->fetch()) && $row['value'] === '1';
+    $dbResult = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_autologin'");
+    if (($row = $dbResult->fetch()) && $row['value'] !== '1') {
+        return;
+    }
 
-if (
-    isset($_GET["autologin"]) && $_GET["autologin"]
-    && $isAutologinEnabled
-) {
     /*
     * Init log class
     */
