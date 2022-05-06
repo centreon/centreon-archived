@@ -746,7 +746,7 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
             'onClick' => $onClick,
             'class' => 'event-broker-options'
         ]
-    );;
+    );
 }
 $form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
  // New options for enable whitelist of macros sent to Centreon Broker

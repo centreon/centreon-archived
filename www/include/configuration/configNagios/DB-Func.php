@@ -170,8 +170,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
         $stmt->closeCursor();
 
         $rowBks = array();
-        $stmt = $pearDB->prepare(
-            "SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = :nagiosId");
+        $stmt = $pearDB->prepare("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = :nagiosId");
         $stmt->bindValue('nagiosId', (int) $originalNagiosId, \PDO::PARAM_INT);
         $stmt->execute();
         while ($rowBk = $stmt->fetch()) {
@@ -196,7 +195,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
                 $dbResult->closeCursor();
                 foreach ($rowBks as $keyBk => $valBk) {
                     if ($valBk["broker_module"]) {
-                       $stmt =  $pearDB->prepare(
+                        $stmt = $pearDB->prepare(
                             "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`)
                             VALUES (:nagiosId, :brokerModule)"
                         );
