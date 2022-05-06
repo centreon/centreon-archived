@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -53,6 +53,8 @@ interface Props {
   reloadNavigation: () => void;
 }
 
+const offset = 150;
+
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -86,6 +88,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
     string | null
   >(null);
+
+  const [listingHeight, setListingHeight] = useState(window.innerHeight);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
     request: getData,
@@ -343,6 +347,18 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
+  const resize = (): void => {
+    setListingHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   const allModulesInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
@@ -364,7 +380,12 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
   return (
-    <div>
+    <Box
+      sx={{
+        height: listingHeight - offset,
+        overflowY: 'auto',
+      }}
+    >
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
           <Button
@@ -449,7 +470,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           onConfirm={deleteById}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
