@@ -1229,6 +1229,13 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret = $cfg;
     }
 
+    if (!isset($ret["contact_additive_inheritance"])) {
+       $ret["contact_additive_inheritance"] = "0";
+    }
+    if (!isset($ret["cg_additive_inheritance"])) {
+    $ret["cg_additive_inheritance"] = "0";
+    }
+
     isset($ret["nagios_server_id"])
         ? $server_id = $ret["nagios_server_id"]
         : $server_id = $form->getSubmitValue("nagios_server_id");
@@ -2535,15 +2542,15 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'contact_additive_inheritance':
             case 'cg_additive_inheritance':
-                $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                $bindParams[':' . $inputName] = [\PDO::PARAM_INT => $inputValue];
                 break;
             case 'mc_contact_additive_inheritance':
             case 'mc_cg_additive_inheritance':
-                $bindParams[':' . ltrim($inputName, 'mc_')] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                if (in_array($inputValue[$inputName], ['0', '1'])){
+                    $bindParams[':' . str_replace('mc_', '', $inputName)] = [
+                        \PDO::PARAM_INT => $inputValue[$inputName]
+                    ];
+                }
                 break;
             case 'host_stalOpts':
                 if (!empty($inputValue)) {
