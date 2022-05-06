@@ -236,7 +236,7 @@
         <td class="FormRowField">{$form.log_v2_logger.label}</td>
         <td class="FormRowValue">{$form.log_v2_logger.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_checks.label}</td>
         <td class="FormRowValue">{$form.log_level_checks.html}</td>
       </tr>
@@ -244,7 +244,7 @@
         <td class="FormRowField">{$form.log_level_commands.label}</td>
         <td class="FormRowValue">{$form.log_level_commands.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_comments.label}</td>
         <td class="FormRowValue">{$form.log_level_comments.html}</td>
       </tr>
@@ -252,7 +252,7 @@
         <td class="FormRowField">{$form.log_level_config.label}</td>
         <td class="FormRowValue">{$form.log_level_config.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_downtimes.label}</td>
         <td class="FormRowValue">{$form.log_level_downtimes.html}</td>
       </tr>
@@ -260,7 +260,7 @@
         <td class="FormRowField">{$form.log_level_eventbroker.label}</td>
         <td class="FormRowValue">{$form.log_level_eventbroker.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_events.label}</td>
         <td class="FormRowValue">{$form.log_level_events.html}</td>
       </tr>
@@ -268,7 +268,7 @@
         <td class="FormRowField">{$form.log_level_external_command.label}</td>
         <td class="FormRowValue">{$form.log_level_external_command.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_functions.label}</td>
         <td class="FormRowValue">{$form.log_level_functions.html}</td>
       </tr>
@@ -276,7 +276,7 @@
         <td class="FormRowField">{$form.log_level_macros.label}</td>
         <td class="FormRowValue">{$form.log_level_macros.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_notifications.label}</td>
         <td class="FormRowValue">{$form.log_level_notifications.html}</td>
       </tr>
@@ -284,7 +284,7 @@
         <td class="FormRowField">{$form.log_level_process.label}</td>
         <td class="FormRowValue">{$form.log_level_process.html}</td>
       </tr>
-      <tr class="list_one logger_v2_option">
+      <tr class="list_two logger_v2_option">
         <td class="FormRowField">{$form.log_level_runtime.label}</td>
         <td class="FormRowValue">{$form.log_level_runtime.html}</td>
       </tr>
