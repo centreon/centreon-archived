@@ -3,10 +3,13 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import { Responsive } from '@visx/visx';
 
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
+
+import { userAtom } from '@centreon/ui-context';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -84,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
   },
   panel: {
-    height: '88%',
+    height: '80%',
     padding: 0,
   },
   paper: {
@@ -96,11 +99,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const marginBottomHeight = 88;
+
 const Authentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const appliedTab = useAtomValue(appliedTabAtom);
+  const { themeMode } = useAtomValue(userAtom);
   const setTab = useUpdateAtom(tabAtom);
 
   const changeTab = (_, newTab: Provider): void => {
@@ -116,16 +122,26 @@ const Authentication = (): JSX.Element => {
   );
 
   const tabPanels = useMemo(
-    () =>
-      panels.map(({ Component, value, image }) => (
-        <TabPanel className={classes.panel} key={value} value={value}>
-          <div className={classes.formContainer}>
-            <Component />
-            <img alt="padlock" className={classes.image} src={image} />
-          </div>
-        </TabPanel>
-      )),
-    [],
+    () => (
+      <Responsive.ParentSize>
+        {({ height }): Array<JSX.Element> =>
+          panels.map(({ Component, value, image }) => (
+            <TabPanel
+              className={classes.panel}
+              key={value}
+              style={{ height: height - marginBottomHeight }}
+              value={value}
+            >
+              <div className={classes.formContainer}>
+                <Component />
+                <img alt="padlock" className={classes.image} src={image} />
+              </div>
+            </TabPanel>
+          ))
+        }
+      </Responsive.ParentSize>
+    ),
+    [themeMode],
   );
 
   return (

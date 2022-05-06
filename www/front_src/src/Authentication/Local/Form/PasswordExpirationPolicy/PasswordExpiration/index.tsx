@@ -100,7 +100,7 @@ const PasswordExpiration = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordExpirationValue, passwordExpirationError],
+    memoProps: [passwordExpirationValue, passwordExpirationError, classes],
   });
 };
 

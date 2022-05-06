@@ -77,7 +77,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         'action_url' => 'resources.action_url',
         'parent_name' => 'resources.parent_name',
         'parent_alias' => 'parent_resource.alias',
-        'parent_status' => 'parent_resource.status',
+        'parent_status' => 'parent_status',
         'severity_level' => 'severity_level',
         'in_downtime' => 'resources.in_downtime',
         'acknowledged' => 'resources.acknowledged',
@@ -179,8 +179,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             resources.enabled,
             resources.icon_id
         FROM `:dbstg`.`resources`
-        LEFT JOIN `:dbstg`.`resources` resource_parent
-            ON resource_parent.id = resources.parent_id
+        LEFT JOIN `:dbstg`.`resources` parent_resource
+            ON parent_resource.id = resources.parent_id
         LEFT JOIN `:dbstg`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
         LEFT JOIN `:dbstg`.`resources_tags` AS rtags
@@ -192,7 +192,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
          * Handle search values
          */
         $searchSubRequest = null;
-        $hasWhereCondition = false;
 
         try {
             $searchSubRequest .= $this->sqlRequestTranslator->translateSearchParameterToSql();
@@ -200,16 +199,16 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $request .= !empty($searchSubRequest) ? $searchSubRequest . ' AND ' : ' WHERE ';
+        $request .= ! empty($searchSubRequest) ? $searchSubRequest . ' AND ' : ' WHERE ';
 
         $request .= " resources.name NOT LIKE '\_Module\_%'
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
-            AND resources.enabled = 1";
+            AND resources.enabled = 1 AND resources.type != 3";
 
         /**
          * Handle ACL
          */
-        if ($this->contact->isAdmin() === false) {
+        if (! $this->contact->isAdmin()) {
             $accessGroupIds = array_map(
                 function (AccessGroup $accessGroup) {
                     return $accessGroup->getId();
@@ -533,7 +532,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             }
         }
 
-        if (empty($iconIds) === false) {
+        if (! empty($iconIds)) {
             $request = 'SELECT
                 img_id AS `icon_id`,
                 img_name AS `icon_name`,
@@ -547,7 +546,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             WHERE img.img_id IN (' . str_repeat('?, ', count($iconIds) - 1) . '?)';
 
             $statement = $this->db->prepare($this->translateDbName($request));
-            $statement->execute($iconIds);
+            $statement->execute(array_values($iconIds));
 
             while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
                 $resourceIndex = array_search((int) $record['icon_id'], $iconIds);
