@@ -33,7 +33,6 @@ use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Application\Configuration\User\Exception\UserException;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
-use Core\Domain\Configuration\User\Model\User;
 
 final class PatchUser
 {
@@ -94,7 +93,7 @@ final class PatchUser
                 $this->debug('New theme', ['theme' => $request->theme]);
                 $user->setTheme($request->theme);
                 $this->writeUserRepository->update($user);
-                $this->updateUserInSession($user, $request->theme);
+                $this->updateUserSessions($request);
             } catch (\Throwable $ex) {
                 $this->error($ex->getMessage());
                 throw UserException::errorWhenUpdatingUserTheme($ex);
@@ -106,11 +105,18 @@ final class PatchUser
         }
     }
 
-    private function updateUserInSession(User $user, string $selectedTheme): void
+    /**
+     * Update all user sessions.
+     *
+     * @param PatchUserRequest $request
+     * @return void
+     * @throws \Throwable
+     */
+    private function updateUserSessions(PatchUserRequest $request): void
     {
-        $sessionIds = $this->readSessionRepository->findSessionIdsByUserid($user->getId());
+        $userSessionIds = $this->readSessionRepository->findSessionIdsByUserId($request->userId);
 
-        foreach ($sessionIds as $sessionId) {
+        foreach ($userSessionIds as $sessionId) {
             /**
              * @var \Centreon $centreon
              */
@@ -118,7 +124,7 @@ final class PatchUser
                 $sessionId,
                 'centreon'
             );
-            $centreon->user->theme = $selectedTheme;
+            $centreon->user->theme = $request->theme;
             $this->writeSessionRepository->updateSession(
                 $sessionId,
                 'centreon',

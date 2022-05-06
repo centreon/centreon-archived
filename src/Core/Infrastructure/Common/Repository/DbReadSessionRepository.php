@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Common\Repository;
 
-use _PHPStan_61858e129\Nette\NotImplementedException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
@@ -41,7 +40,7 @@ class DbReadSessionRepository extends AbstractRepositoryDRB implements ReadSessi
     /**
      * @inheritDoc
      */
-    public function findSessionIdsByUserid(int $userId): array
+    public function findSessionIdsByUserId(int $userId): array
     {
         $statement = $this->db->prepare(
             $this->translateDbName(

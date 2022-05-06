@@ -27,17 +27,27 @@ use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
 
 class MultiReadSessionRepository implements ReadSessionRepositoryInterface
 {
+    /**
+     * @param SystemReadSessionRepository $systemRepository
+     * @param DbReadSessionRepository $dbReadSessionRepository
+     */
     public function __construct(
         private SystemReadSessionRepository $systemRepository,
         private DbReadSessionRepository $dbReadSessionRepository
     ) {
     }
 
-    public function findSessionIdsByUserid(int $userId): array
+    /**
+     * @inheritDoc
+     */
+    public function findSessionIdsByUserId(int $userId): array
     {
-        return $this->dbReadSessionRepository->findSessionIdsByUserid($userId);
+        return $this->dbReadSessionRepository->findSessionIdsByUserId($userId);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getValueFromSession(string $sessionId, string $key): mixed
     {
         return $this->systemRepository->getValueFromSession($sessionId, $key);

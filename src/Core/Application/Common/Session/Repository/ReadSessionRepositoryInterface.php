@@ -33,7 +33,7 @@ interface ReadSessionRepositoryInterface
      *
      * @throws \Throwable
      */
-    public function findSessionIdsByUserid(int $userId): array;
+    public function findSessionIdsByUserId(int $userId): array;
 
     /**
      * Get a value from session using a key.

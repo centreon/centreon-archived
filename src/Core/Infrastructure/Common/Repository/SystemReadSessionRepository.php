@@ -30,7 +30,7 @@ class SystemReadSessionRepository implements ReadSessionRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findSessionIdsByUserid(int $userId): array
+    public function findSessionIdsByUserId(int $userId): array
     {
         throw RepositoryException::notImplemented('SystemReadRepository::findSessionIdsByUserid');
     }
