@@ -1233,7 +1233,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret["contact_additive_inheritance"] = "0";
     }
     if (!isset($ret["cg_additive_inheritance"])) {
-    $ret["cg_additive_inheritance"] = "0";
+        $ret["cg_additive_inheritance"] = "0";
     }
 
     isset($ret["nagios_server_id"])
