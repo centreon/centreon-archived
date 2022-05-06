@@ -117,4 +117,3 @@ it(
         'http://192.168.0.1/monitoring/centreon'
     ],
 ]);
-
