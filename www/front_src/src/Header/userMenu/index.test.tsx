@@ -12,6 +12,7 @@ import { areUserParametersLoadedAtom } from '../../Main/useUser';
 import { logoutEndpoint } from '../../api/endpoint';
 
 import { userEndpoint } from './api/endpoint';
+import { labelProfile } from './translatedLabels';
 
 import UserMenu from '.';
 
@@ -102,6 +103,12 @@ describe('User Menu', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByLabelText(labelProfile)).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByLabelText(labelProfile));
+
+    await waitFor(() => {
       expect(screen.getByText('Admin admin')).toBeInTheDocument();
     });
 
@@ -122,6 +129,12 @@ describe('User Menu', () => {
     renderUserMenu();
 
     await waitFor(() => {
+      expect(screen.getByLabelText(labelProfile)).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByLabelText(labelProfile));
+
+    await waitFor(() => {
       expect(screen.getByText(labelCopyAutologinLink)).toBeInTheDocument();
     });
 
@@ -137,6 +150,12 @@ describe('User Menu', () => {
   it(`logs out the user when the "${labelLogout}" button is clicked`, async () => {
     mockRequestsWithLogout();
     renderUserMenu();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelProfile)).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByLabelText(labelProfile));
 
     await waitFor(() => {
       expect(screen.getByText(labelLogout)).toBeInTheDocument();
