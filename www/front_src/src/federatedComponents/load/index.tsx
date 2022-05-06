@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 
 import { atom, useAtom } from 'jotai';
+import { isEmpty } from 'ramda';
 
 import { MenuSkeleton, PageSkeleton } from '@centreon/ui';
 
@@ -31,13 +32,13 @@ const useDynamicLoadRemoteEntry = ({
   );
 
   useEffect((): (() => void) | undefined => {
-    if (!remoteEntry) {
+    if (isEmpty(remoteEntry)) {
       return undefined;
     }
 
-    const remoteEntryScript = document.getElementById(moduleName);
+    const remoteEntryElement = document.getElementById(moduleName);
 
-    if (remoteEntryScript || remoteEntriesLoaded.includes(moduleName)) {
+    if (remoteEntryElement && remoteEntriesLoaded.includes(moduleName)) {
       return undefined;
     }
 
@@ -45,7 +46,6 @@ const useDynamicLoadRemoteEntry = ({
     element.src = `./modules/${moduleName}/static/${remoteEntry}`;
     element.type = 'text/javascript';
     element.id = moduleName;
-    element.async = true;
 
     element.onload = (): void => {
       setRemoteEntriesLoaded([...remoteEntriesLoaded, moduleName]);
@@ -57,10 +57,10 @@ const useDynamicLoadRemoteEntry = ({
 
     document.head.appendChild(element);
 
-    return () => {
+    return (): void => {
       document.head.removeChild(element);
     };
-  }, [remoteEntriesLoadedAtom]);
+  }, []);
 
   return {
     failed,

@@ -15,6 +15,6 @@ export const retrievedExternalComponents: Array<FederatedComponent> = [
         route: '/configuration/bam/bvs',
       },
     ],
-    remoteEntry: './remoteEntry.js',
+    remoteEntry: 'remoteEntry.js',
   },
 ];
