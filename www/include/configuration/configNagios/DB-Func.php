@@ -219,7 +219,7 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
 function duplicateLoggerV2Cfg(CentreonDB $pearDB, int $originalNagiosId, int $duplicatedNagiosId): void
 {
     $statement = $pearDB->prepare("SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id=:nagiosId");
-    $statement->bindValue('nagiosId', $originalNagiosId);
+    $statement->bindValue('nagiosId', $originalNagiosId, \PDO::PARAM_INT);
     $statement->execute();
     $loggerCfg = $statement->fetch(\PDO::FETCH_ASSOC);
 
