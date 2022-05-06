@@ -107,7 +107,7 @@ const NavigationMenu = ({
     timeoutRef.current = setTimeout((): void => {
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
-    }, 1000);
+    }, 500);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
