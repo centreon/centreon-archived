@@ -48,6 +48,9 @@ $commandName = filter_var(
     FILTER_SANITIZE_STRING
 );
 
+$plugin = '';
+$mode = '';
+
 if ($commandId !== false) {
     //Get command information
     $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
@@ -58,8 +61,12 @@ if ($commandId !== false) {
 
     $aCmd = explode(" ", $cmd["command_line"]);
     $fullLine = $aCmd[0];
-    $plugin = array_values(preg_grep('/^\-\-plugin\=(\w+)/i', $aCmd))[0];
-    $mode = array_values(preg_grep('/^\-\-mode\=(\w+)/i', $aCmd))[0];
+
+    $matchPluginOption = array_values(preg_grep('/^\-\-plugin\=(\w+)/i', $aCmd));
+    $plugin = $matchPluginOption[0] ?? $plugin;
+    $matchModeOption = array_values(preg_grep('/^\-\-mode\=(\w+)/i', $aCmd));
+    $mode = $matchModeOption[0] ?? $mode;
+
     $aCmd = explode("/", $fullLine);
     $resourceInfo = $aCmd[0];
 
@@ -93,12 +100,11 @@ $commandPath = realpath($tab[0]) === false ? $tab[0] : realpath($tab[0]);
 $dbResult = $pearDB->query('SELECT `resource_line` FROM `cfg_resource`');
 $allowedPaths = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 
+$msg = "Command not allowed";
 if (preg_match('#(' . implode('|', $allowedPaths) . ')#', $commandPath)) {
     $command = $commandPath . ' ' . $plugin . ' ' . $mode . ' --help';
     $stdout = shell_exec($command . " 2>&1");
     $msg = str_replace("\n", "<br />", $stdout);
-} else {
-    $msg = "Command not allowed";
 }
 
 $attrsText = array("size" => "25");
