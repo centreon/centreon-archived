@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Configuration\User\UseCase\PatchUser;
 
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
+use Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Configuration\User\Exception\UserException;
@@ -36,6 +38,8 @@ use Core\Infrastructure\Configuration\User\Api\PatchUser\PatchUserPresenter;
 beforeEach(function () {
     $this->writeUserRepository = $this->createMock(WriteUserRepositoryInterface::class);
     $this->readUserRepository = $this->createMock(ReadUserRepositoryInterface::class);
+    $this->readSessionRepository = $this->createMock(ReadSessionRepositoryInterface::class);
+    $this->writeSessionRepository = $this->createMock(WriteSessionRepositoryInterface::class);
     $this->request = new PatchUserRequest();
     $this->request->theme = 'light';
     $this->request->userId = 1;
@@ -47,7 +51,12 @@ it('tests the error message when user is not found', function () {
         ->expects($this->once())
         ->method('findById')
         ->willReturn(null);
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(new NotFoundResponse('User'));
@@ -58,7 +67,12 @@ it('tests the exception while searching for the user', function () {
         ->expects($this->once())
         ->method('findById')
         ->willThrowException(new UserException());
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(
@@ -77,7 +91,12 @@ it('tests the error message when there are no available themes', function () {
         ->expects($this->once())
         ->method('findAvailableThemes')
         ->willReturn([]);
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(new ErrorResponse('Abnormally empty list of themes'));
@@ -93,7 +112,12 @@ it('tests the error message when the given theme is not in the list of available
         ->expects($this->once())
         ->method('findAvailableThemes')
         ->willReturn(['blue', 'green']);
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(new ErrorResponse('Requested theme not found'));
@@ -109,7 +133,12 @@ it('tests the exception while searching for available themes', function () {
         ->expects($this->once())
         ->method('findAvailableThemes')
         ->willThrowException(new UserException());
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(
@@ -134,7 +163,12 @@ it('tests the exception while updating the theme of user', function () {
         ->with($user)
         ->willThrowException(new UserException());
 
-    $useCase = new PatchUser($this->readUserRepository, $this->writeUserRepository);
+    $useCase = new PatchUser(
+        $this->readUserRepository,
+        $this->writeUserRepository,
+        $this->readSessionRepository,
+        $this->writeSessionRepository
+    );
     $useCase($this->request, $this->presenter);
     expect($this->presenter->getResponseStatus())
         ->toEqual(
@@ -143,3 +177,4 @@ it('tests the exception while updating the theme of user', function () {
             )
         );
 });
+
