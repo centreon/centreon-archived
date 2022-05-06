@@ -75,7 +75,7 @@ class CentreonMainCfg
         33554432 => 'Command data'
     ];
 
-    /** @var string[] */
+    /** @var array<string,string> */
     private $loggerDefaultCfg = [
         'log_v2_logger' => 'file',
         'log_level_functions' => 'err',
@@ -217,7 +217,7 @@ class CentreonMainCfg
     /**
      * Get default engine logger values
      *
-     * @param string[]
+     * @param array<string,string>
      */
     public function getDefaultLoggerCfg(): array
     {
