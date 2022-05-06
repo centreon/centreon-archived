@@ -91,9 +91,9 @@ $commandPath = realpath($tab[0]) === false ? $tab[0] : realpath($tab[0]);
 
 // Exec command only if located in allowed directories
 $dbResult = $pearDB->query('SELECT `resource_line` FROM `cfg_resource`');
-$allowedPath = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
+$allowedPaths = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 
-if (preg_match('#(' . implode('|', $allowedPath) . ')#', $commandPath)) {
+if (preg_match('#(' . implode('|', $allowedPaths) . ')#', $commandPath)) {
     $command = $commandPath . ' ' . $plugin . ' ' . $mode . ' --help';
     $stdout = shell_exec($command . " 2>&1");
     $msg = str_replace("\n", "<br />", $stdout);
