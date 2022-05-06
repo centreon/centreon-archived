@@ -98,7 +98,7 @@ class MonitoringResourceControllerTest extends TestCase
 
     protected function setUp(): void
     {
-        $kernel = new \App\Kernel('test', false);
+        $kernel = new \App\Kernel('prod', false);
         $kernel->boot();
 
         $timezone = new \DateTimeZone('Europe/Paris');
@@ -131,6 +131,7 @@ class MonitoringResourceControllerTest extends TestCase
         $this->request->server = new ServerBag([]);
         $requestStack = new RequestStack();
         $requestStack->push($this->request);
+        dump($requestStack);
         $this->urlGenerator->setHttpServerBag($requestStack);
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
