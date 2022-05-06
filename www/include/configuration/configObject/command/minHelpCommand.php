@@ -87,14 +87,19 @@ $command = str_replace($search, $replace, $command);
 $command = escapeshellcmd($command);
 
 $tab = explode(' ', $command);
-if (realpath($tab[0])) {
-    $command = realpath($tab[0]) . ' ' . $plugin . ' ' . $mode . ' --help';
-} else {
-    $command = $tab[0] . ' ' . $plugin . ' ' . $mode . ' --help';
-}
+$commandPath = realpath($tab[0]) === false ? $tab[0] : realpath($tab[0]);
 
-$stdout = shell_exec($command . " 2>&1");
-$msg = str_replace("\n", "<br />", $stdout);
+// Exec command only if located in allowed directories
+$dbResult = $pearDB->query('SELECT `resource_line` FROM `cfg_resource`');
+$allowedPath = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
+
+if (preg_match('#(' . implode('|', $allowedPath) . ')#', $commandPath)) {
+    $command = $commandPath . ' ' . $plugin . ' ' . $mode . ' --help';
+    $stdout = shell_exec($command . " 2>&1");
+    $msg = str_replace("\n", "<br />", $stdout);
+} else {
+    $msg = "Command not allowed";
+}
 
 $attrsText = array("size" => "25");
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
