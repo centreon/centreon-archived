@@ -1230,7 +1230,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
     }
 
     if (!isset($ret["contact_additive_inheritance"])) {
-       $ret["contact_additive_inheritance"] = "0";
+        $ret["contact_additive_inheritance"] = "0";
     }
     if (!isset($ret["cg_additive_inheritance"])) {
     $ret["cg_additive_inheritance"] = "0";
