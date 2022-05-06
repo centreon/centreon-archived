@@ -62,6 +62,6 @@ class DbReadSessionRepository extends AbstractRepositoryDRB implements ReadSessi
      */
     public function getValueFromSession(string $sessionId, string $key): mixed
     {
-        throw RepositoryException::notImplemented('DbReadRepository::getValueFromSession');
+        throw RepositoryException::notImplemented(__METHOD__);
     }
 }

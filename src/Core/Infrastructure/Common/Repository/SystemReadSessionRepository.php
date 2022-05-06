@@ -32,7 +32,7 @@ class SystemReadSessionRepository implements ReadSessionRepositoryInterface
      */
     public function findSessionIdsByUserId(int $userId): array
     {
-        throw RepositoryException::notImplemented('SystemReadRepository::findSessionIdsByUserid');
+        throw RepositoryException::notImplemented(__METHOD__);
     }
 
     /**
