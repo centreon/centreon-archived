@@ -1545,16 +1545,6 @@ msgstr ""
 "Para cambiar esta opción cuando la retención de estado está activa (y use_retained_program_state está activa), será necesario usar el comando externo apropiado o cambiarlo a través de la interfaz web. \n"
 "La opción está habilitada por defecto."
 
-#: centreon-web/www/include/configuration/configNagios/help.php:174
-msgid "This is the rotation method that you would like Monitoring Engine to use for your log file."
-msgstr "El método de rotación que desea que el motor de administración use para sus archivos de registro."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:178
-msgid "This is the directory where Monitoring Engine should place log files that have been rotated. This option is ignored if you choose to not use the log rotation functionality."
-msgstr ""
-"Este es el directorio donde el motor de administración debe guardar los archivos de registro que se han girado. \n"
-"Esta opción se ignora si no ha habilitado la rotación de registros."
-
 #: centreon-web/www/include/configuration/configNagios/help.php:183
 msgid "This option determines whether or not Monitoring Engine will check the command file for commands that should be executed. This option must be enabled if you plan on using Centreon to issue commands via the web interface."
 msgstr ""
@@ -2405,13 +2395,6 @@ msgstr ""
 "Esta opción determina el tamaño máximo (en bytes) del archivo de depuración. Si el archivo excede el tamaño que especificó, se le cambiará el nombre con una extensión .old. \n"
 "Si el archivo .old ya existe, se eliminará automáticamente. \n"
 "Esta opción le permite mantener un control sobre el espacio en disco que ocupa el motor de administración cuando está en modo de depuración."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:481
-msgid "This option allows dumping core in case a segmentation fault occurs. Warning: Make sure that server has sufficient disk space for these dumps (ulimit). This option is discarded when using Centreon Engine."
-msgstr ""
-"Esta opción permite la creación de un archivo de depuración si se produce un error de segmentación. \n"
-"Advertencia: asegúrese de que el servidor tenga suficiente espacio en disco para estos archivos (ulimit). \n"
-"Esta opción no se puede utilizar con el programador de Centreon Engine."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:482
 msgid "This option determines how much debugging information Monitoring Engine should write to the debug_file. By default the verbosity is set to level 1."

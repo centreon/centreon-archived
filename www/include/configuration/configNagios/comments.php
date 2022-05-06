@@ -109,17 +109,6 @@ $nagios_comment["temp_file"] = "This is a temporary file< that is used as scratc
     . "is created, used, and deleted throughout the time that Nagios is "
     . "running. ";
 
-$nagios_comment["log_rotation_method"] = "This is the log rotation method that Nagios should use to rotate "
-    . "the main log file. Values are as follows..<br /> "
-    . "n	= None - don\'t rotate the log <br />"
-    . "h	= Hourly rotation (top of the hour) <br />"
-    . "d	= Daily rotation (midnight every day)<br /> "
-    . "w	= Weekly rotation (midnight on Saturday evening)<br /> "
-    . "m	= Monthly rotation (midnight last day of month)<br /> ";
-
-$nagios_comment["log_archive_path"] = "This is the directory where archived (rotated) log files should be  "
-    . "placed (assuming you\'ve chosen to do log rotation). ";
-
 $nagios_comment["use_syslog"] = "If you want messages logged to the syslog facility, as well as the "
     . "NetAlarm log file set this option to 1.  If not, set it to 0. ";
 
