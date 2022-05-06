@@ -51,7 +51,7 @@ function testExistence($name = null)
     }
     $query = "SELECT meta_id FROM meta_service WHERE meta_name = :meta_name";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':meta_name', htmlentities($name, ENT_QUOTES, "UTF-8"));
+    $statement->bindValue(':meta_name', htmlentities($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
     $statement->execute();
     $meta = $statement->fetch(\PDO::FETCH_ASSOC);
     #Modif case
@@ -173,8 +173,8 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     while ($Contact = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contact VALUES (:max_mc_id, :contact_id)";
                         $statement = $pearDB->prepare($query);
-                        $statement->bindValue(':max_mc_id', (int)$maxId["MAX(meta_id)"], \PDO::PARAM_INT);
-                        $statement->bindValue(':contact_id', (int)$Contact["contact_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':max_mc_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':contact_id', (int) $Contact["contact_id"], \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     /* Duplicate contactgroups */
@@ -185,8 +185,8 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                         $query = "INSERT INTO meta_contactgroup_relation " .
                             "VALUES (:max_mg_id, :cg_id)";
                         $statement = $pearDB->prepare($query);
-                        $statement->bindValue(':max_mg_id', (int)$maxId["MAX(meta_id)"], \PDO::PARAM_INT);
-                        $statement->bindValue(':cg_id', (int)$Cg["cg_cg_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':max_mg_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':cg_id', (int) $Cg["cg_cg_id"], \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
@@ -463,7 +463,7 @@ function updateMetaServiceContact($meta_id)
     /* Purge old relation */
     $queryPurge = "DELETE FROM meta_contact WHERE meta_id = :meta_id";
     $statement = $pearDB->prepare($queryPurge);
-    $statement->bindValue('meta_id', (int)$meta_id, \PDO::PARAM_INT);
+    $statement->bindValue('meta_id', (int) $meta_id, \PDO::PARAM_INT);
     $statement->execute();
 
     /* Add relation between metaservice and contact */
