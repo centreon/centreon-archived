@@ -41,6 +41,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\ServerBag;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MonitoringResourceControllerTest extends TestCase
 {
@@ -125,6 +127,11 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
         $this->urlGenerator = $kernel->getContainer()->get('router');
+        $this->request = $this->createMock(Request::class);
+        $this->request->server = new ServerBag([]);
+        $requestStack = new RequestStack();
+        $requestStack->push($this->request);
+        $this->urlGenerator->setHttpServerBag($requestStack);
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -156,7 +163,6 @@ class MonitoringResourceControllerTest extends TestCase
             );
 
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
-        $this->request = $this->createMock(Request::class);
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
     }

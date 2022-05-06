@@ -32,14 +32,10 @@ beforeEach(function () {
 });
 
 it('returns empty base url when there is no current request', function () {
-    $this->httpServerBag = null;
-
     expect($this->getBaseUrl())->toBe('');
 });
 
 it('returns empty base uri when there is no current request', function () {
-    $this->httpServerBag = null;
-
     expect($this->getBaseUri())->toBe('');
 });
 
