@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -53,7 +53,7 @@ interface Props {
   reloadNavigation: () => void;
 }
 
-const offset = 150;
+const scrollMargin = 8;
 
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
@@ -88,6 +88,8 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
     string | null
   >(null);
+
+  const listingRef = useRef<HTMLDivElement | null>(null);
 
   const [listingHeight, setListingHeight] = useState(window.innerHeight);
 
@@ -379,10 +381,16 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
+  const listingContainerHeight =
+    listingHeight -
+    (listingRef.current?.getBoundingClientRect().top || 0) -
+    scrollMargin;
+
   return (
     <Box
+      ref={listingRef}
       sx={{
-        height: listingHeight - offset,
+        height: listingContainerHeight,
         overflowY: 'auto',
       }}
     >
