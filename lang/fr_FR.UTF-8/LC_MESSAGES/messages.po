@@ -16784,3 +16784,24 @@ msgstr "Licence invalide ou expirée"
 
 msgid "Please contact your administrator"
 msgstr "Veuillez contacter votre administrateur"
+
+msgid "Broker events"
+msgstr "Évènements Broker"
+
+msgid "Events"
+msgstr "Évènements"
+
+msgid "Functions"
+msgstr "Fonctions"
+
+msgid "Process"
+msgstr "Processus"
+
+msgid "Runtime"
+msgstr "Exécution"
+
+msgid "Log destination"
+msgstr "Destination du journal"
+
+msgid "Error"
+msgstr "Erreur"
