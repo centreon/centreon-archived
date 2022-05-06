@@ -177,4 +177,3 @@ it('tests the exception while updating the theme of user', function () {
             )
         );
 });
-
