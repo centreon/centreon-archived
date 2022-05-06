@@ -29,9 +29,9 @@ use Symfony\Contracts\Service\Attribute\Required;
 trait HttpUrlTrait
 {
     /**
-     * @var ServerBag
+     * @var ServerBag|null
      */
-    private ServerBag $httpServerBag;
+    private ?ServerBag $httpServerBag;
 
     /**
      * @param RequestStack $requestStack
@@ -39,7 +39,7 @@ trait HttpUrlTrait
     #[Required]
     public function setHttpServerBag(RequestStack $requestStack): void
     {
-        $this->httpServerBag = $requestStack->getCurrentRequest()->server;
+        $this->httpServerBag = $requestStack->getCurrentRequest()?->server;
     }
 
     /**
@@ -49,16 +49,16 @@ trait HttpUrlTrait
      */
     protected function getBaseUrl(): string
     {
-        if (! $this->httpServerBag->has('SERVER_NAME')) {
+        if (! $this->httpServerBag?->has('SERVER_NAME')) {
             return '';
         }
 
-        $protocol = $this->httpServerBag->has('HTTPS') && $this->httpServerBag->get('HTTPS') !== 'off'
+        $protocol = $this->httpServerBag?->has('HTTPS') && $this->httpServerBag->get('HTTPS') !== 'off'
             ? 'https'
             : 'http';
 
         $port = null;
-        if ($this->httpServerBag->get('SERVER_PORT')) {
+        if ($this->httpServerBag?->get('SERVER_PORT')) {
             if (
                 ($protocol === 'http' && $this->httpServerBag->get('SERVER_PORT') !== '80')
                 || ($protocol === 'https' && $this->httpServerBag->get('SERVER_PORT') !== '443')
@@ -93,7 +93,7 @@ trait HttpUrlTrait
         ];
 
         if (
-            $this->httpServerBag->has('REQUEST_URI')
+            $this->httpServerBag?->has('REQUEST_URI')
             && preg_match(
                 '/^(.+?)\/?(' . implode('|', $routeSuffixPatterns) . ')/',
                 $this->httpServerBag->get('REQUEST_URI'),
