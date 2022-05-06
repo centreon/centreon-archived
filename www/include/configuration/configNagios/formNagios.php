@@ -471,31 +471,19 @@ $debugLevel["512"] = _("Downtimes");
 $debugLevel["1024"] = _("Comments");
 $debugLevel["2048"] = _("Macros");
 foreach ($debugLevel as $key => $val) {
-    if ($key == "-1" || $key == "0") {
-        $debugCheck[] = $form->createElement(
-            'checkbox',
-            $key,
-            '&nbsp;',
-            $val,
-            array(
-                "id" => "debug" . $key,
-                "onClick" => "unCheckOthers('debug-level', this.name);",
-                'class' => 'debug-level'
-            )
-        );
-    } else {
-        $debugCheck[] = $form->createElement(
-            'checkbox',
-            $key,
-            '&nbsp;',
-            $val,
-            array(
-                "id" => "debug" . $key,
-                "onClick" => "unCheckAllAndNaught('debug-level');",
-                'class' => 'debug-level'
-            )
-        );
-    }
+    $debugCheck[] = $form->createElement(
+        'checkbox',
+        $key,
+        '&nbsp;',
+        $val,
+        [
+            "id" => "debug" . $key,
+            "onClick" => in_array($key, ['-1', '0'], true)
+                ? "unCheckOthers('debug-level', this.name);"
+                : "unCheckAllAndNaught('debug-level');",
+            'class' => 'debug-level'
+        ]
+    );
 }
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 
