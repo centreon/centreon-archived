@@ -145,6 +145,9 @@ class CentreonDowntime extends CentreonObject
         if (count($filter) === 0) {
             echo $paramString . "\n";
             $filterList = '';
+            foreach ($elements as $element) {
+                echo implode($this->delim, $element) . "\n";
+            }
         } else {
             if (isset($filter[1])) {
                 switch (strtolower($filter[1])) {
@@ -166,33 +169,32 @@ class CentreonDowntime extends CentreonObject
             } else {
                 $paramString .= ";hosts;host groups;services;service groups\n";
             }
+            echo $paramString;
             foreach ($elements as $element) {
                 if (isset($filter[1])) {
                     switch (strtolower($filter[1])) {
                         case 'host':
-                            $filterList = ';' . $this->listHosts($element["dt_id"]);
+                            $filterList = $this->listHosts($element["dt_id"]);
                             break;
                         case 'hg':
-                            $filterList = ';' . $this->listHostGroups($element["dt_id"]);
+                            $filterList = $this->listHostGroups($element["dt_id"]);
                             break;
                         case 'service':
-                            $filterList = ';' . $this->listServices($element["dt_id"]);
+                            $filterList = $this->listServices($element["dt_id"]);
                             break;
                         case 'sg':
-                            $filterList = ';' . $this->listServiceGroups($element["dt_id"]);
+                            $filterList = $this->listServiceGroups($element["dt_id"]);
                             break;
                         default:
                             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
                     }
                 } else {
-                    $filterList = ';' . $this->listResources($element["dt_id"]);
+                    $filterList = $this->listResources($element["dt_id"]);
+                }
+                if (!empty($filterList)) {
+                    echo implode($this->delim, $element) . ';' . $filterList . "\n";
                 }
             }
-        echo $paramString;
-        }
-
-        foreach ($elements as $tab) {
-            echo implode($this->delim, $tab) . $filterList . "\n";
         }
     }
 
