@@ -48,7 +48,10 @@ const useDynamicLoadRemoteEntry = ({
     element.id = moduleName;
 
     element.onload = (): void => {
-      setRemoteEntriesLoaded([...remoteEntriesLoaded, moduleName]);
+      setRemoteEntriesLoaded((currentRemoteEntries) => [
+        ...currentRemoteEntries,
+        moduleName,
+      ]);
     };
 
     element.onerror = (): void => {

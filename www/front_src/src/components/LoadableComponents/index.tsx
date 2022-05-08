@@ -1,4 +1,6 @@
-import { filter, isNil, propEq } from 'ramda';
+import { useMemo } from 'react';
+
+import { filter, isNil, propEq, reject } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -40,22 +42,49 @@ const LoadableComponents = ({
 };
 
 interface LoadableComponentsContainerProps {
-  moduleNameToFilter?: string;
+  exclude?: string;
+  include?: string;
 }
 
-const LoadableComponentsContainer = ({
-  moduleNameToFilter,
-  ...props
-}: LoadableComponentsContainerProps): JSX.Element | null => {
-  const federatedComponents = useAtomValue(federatedComponentsAtom);
+interface LoadableComponentsProps extends LoadableComponentsContainerProps {
+  federatedComponents: Array<FederatedComponent> | null;
+}
 
+const getLoadableComponents = ({
+  include,
+  exclude,
+  federatedComponents,
+}: LoadableComponentsProps): Array<FederatedComponent> | null => {
   if (isNil(federatedComponents)) {
     return null;
   }
 
-  const components = moduleNameToFilter
-    ? filter(propEq('moduleName', moduleNameToFilter), federatedComponents)
+  const excludedComponents = exclude
+    ? reject(propEq('moduleName', exclude), federatedComponents)
     : federatedComponents;
+
+  const components = include
+    ? filter(propEq('moduleName', include), excludedComponents)
+    : excludedComponents;
+
+  return components;
+};
+
+const LoadableComponentsContainer = ({
+  include,
+  exclude,
+  ...props
+}: LoadableComponentsContainerProps): JSX.Element | null => {
+  const federatedComponents = useAtomValue(federatedComponentsAtom);
+
+  const components = useMemo(
+    () => getLoadableComponents({ exclude, federatedComponents, include }),
+    [federatedComponents, include, exclude],
+  );
+
+  if (isNil(components)) {
+    return null;
+  }
 
   return <LoadableComponents federatedComponents={components} {...props} />;
 };

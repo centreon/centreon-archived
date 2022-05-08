@@ -13,7 +13,6 @@ import {
 import { retrievedNavigation } from '../Navigation/mocks';
 import { retrievedExternalComponents } from '../federatedComponents/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
-import { externalComponentsEndpoint } from '../federatedComponents/useFederatedComponents';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
@@ -418,11 +417,6 @@ describe('Main', () => {
         cancelTokenRequestParam,
       );
     });
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      externalComponentsEndpoint,
-      cancelTokenRequestParam,
-    );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       parametersEndpoint,

@@ -34,7 +34,7 @@ const getExternalPageRoutes = ({
     allowedPages?.find((allowedPage) => path.includes(allowedPage));
 
   return federatedComponents.map(({ pages, remoteEntry, name, moduleName }) => {
-    return pages.map(({ component, route }) => {
+    return pages?.map(({ component, route }) => {
       if (not(isAllowedPage(route))) {
         return null;
       }

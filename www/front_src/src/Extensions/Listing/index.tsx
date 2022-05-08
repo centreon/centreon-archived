@@ -18,11 +18,11 @@ import {
   useSnackbar,
 } from '@centreon/ui';
 
-import Hook from '../../components/LoadableComponents';
+import LoadableComponent from '../../components/LoadableComponents';
 import useNavigation from '../../Navigation/useNavigation';
-import useFederatedComponents from '../../federatedComponents/useFederatedComponents';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
 import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
+import usePlatformVersions from '../../Main/usePlatformVersions';
 
 import { deleteExtension } from './api';
 import ExtensionsHolder from './ExtensionsHolder';
@@ -387,7 +387,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <Hook moduleNameToFilter="centreon-license-manager" />
+          <LoadableComponent include="centreon-license-manager" />
         </Stack>
       </div>
       {extensions && (
@@ -455,11 +455,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
 const ExtensionsRoute = (): JSX.Element => {
   const { getNavigation } = useNavigation();
-  const { getFederatedComponents } = useFederatedComponents();
+  const { getPlatformVersions } = usePlatformVersions();
 
   const reloadNavigation = useCallback(() => {
     getNavigation();
-    getFederatedComponents();
+    getPlatformVersions();
   }, []);
 
   return <ExtensionsManager reloadNavigation={reloadNavigation} />;

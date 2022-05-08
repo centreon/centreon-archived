@@ -26,7 +26,7 @@ export const userDecoder = JsonDecoder.object<User>(
   },
 );
 
-export const webVersionsDecoder =
+export const platformInstallationStatusDecoder =
   JsonDecoder.object<PlatformInstallationStatus>(
     {
       hasUpgradeAvailable: JsonDecoder.boolean,

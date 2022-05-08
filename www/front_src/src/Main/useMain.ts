@@ -21,19 +21,21 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { getData, useRequest, useSnackbar } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
-import { webVersionsDecoder } from '../api/decoders';
+import { platformInstallationStatusDecoder } from '../api/decoders';
 import { webVersionsEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
 import { translationEndpoint } from '../App/endpoint';
 import reactRoutes from '../reactRoutes/routeMap';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import useFederatedComponents from '../federatedComponents/useFederatedComponents';
 
+import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import useUser, { areUserParametersLoadedAtom } from './useUser';
+import usePlatformVersions from './usePlatformVersions';
 
 const useMain = (): void => {
   const { sendRequest: getWebVersions } =
     useRequest<PlatformInstallationStatus>({
-      decoder: webVersionsDecoder,
+      decoder: platformInstallationStatusDecoder,
       request: getData,
     });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
@@ -42,7 +44,9 @@ const useMain = (): void => {
   });
   const { showErrorMessage } = useSnackbar();
 
-  const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
+  const [platformInstallationStatus, setPlatformInstallationStatus] = useAtom(
+    platformInstallationStatusAtom,
+  );
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
@@ -50,6 +54,8 @@ const useMain = (): void => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParameter] = useSearchParams();
+  const { getPlatformVersions } = usePlatformVersions();
+  useFederatedComponents();
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
@@ -83,6 +89,8 @@ const useMain = (): void => {
   useEffect(() => {
     displayAuthenticationError();
 
+    getPlatformVersions();
+
     getTranslations({
       endpoint: translationEndpoint,
     })
@@ -96,18 +104,18 @@ const useMain = (): void => {
         getWebVersions({
           endpoint: webVersionsEndpoint,
         }).then((retrievedWebVersions) => {
-          setWebVersions(retrievedWebVersions);
+          setPlatformInstallationStatus(retrievedWebVersions);
         });
       });
   }, []);
 
   useEffect((): void => {
-    if (isNil(webVersions)) {
+    if (isNil(platformInstallationStatus)) {
       return;
     }
 
     loadUser();
-  }, [webVersions]);
+  }, [platformInstallationStatus]);
 
   useEffect(() => {
     const canChangeToBrowserLanguage = and(

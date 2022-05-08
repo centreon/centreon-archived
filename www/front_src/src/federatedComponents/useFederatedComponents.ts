@@ -1,11 +1,17 @@
+import { useEffect } from 'react';
+
 import { useAtom } from 'jotai';
+import { useDeepCompare } from 'centreon-frontend/packages/centreon-ui/src/utils/useMemoComponent';
 
 import { getData, useRequest } from '@centreon/ui';
+
+import usePlatformVersions from '../Main/usePlatformVersions';
 
 import { federatedComponentsAtom } from './atoms';
 import { FederatedComponent } from './models';
 
-export const externalComponentsEndpoint = 'http://10.25.8.83:3010/';
+export const getFederatedComponent = (moduleName: string): string =>
+  `./modules/${moduleName}/static/moduleFederation.json`;
 
 interface UseFederatedComponentsState {
   federatedComponents: Array<FederatedComponent> | null;
@@ -13,19 +19,31 @@ interface UseFederatedComponentsState {
 }
 
 const useFederatedComponents = (): UseFederatedComponentsState => {
-  const { sendRequest } = useRequest<Array<FederatedComponent>>({
+  const { sendRequest } = useRequest<FederatedComponent>({
     request: getData,
   });
-
   const [federatedComponents, setFederatedComponents] = useAtom(
     federatedComponentsAtom,
   );
+  const { getModules } = usePlatformVersions();
+
+  const modules = getModules();
 
   const getFederatedComponents = (): void => {
-    sendRequest({
-      endpoint: externalComponentsEndpoint,
-    }).then(setFederatedComponents);
+    if (!modules) {
+      return;
+    }
+
+    Promise.all(
+      getModules()?.map((moduleName) =>
+        sendRequest({ endpoint: getFederatedComponent(moduleName) }),
+      ) || [],
+    ).then(setFederatedComponents);
   };
+
+  useEffect(() => {
+    getFederatedComponents();
+  }, useDeepCompare([modules]));
 
   return {
     federatedComponents,

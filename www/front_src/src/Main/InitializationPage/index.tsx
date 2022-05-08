@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai/utils';
 
 import { userAtom } from '@centreon/ui-context';
 
-import { platformInstallationStatusAtom } from '../../platformInstallationStatusAtom';
+import { platformInstallationStatusAtom } from '../atoms/platformInstallationStatusAtom';
 import PageLoader from '../../components/PageLoader';
 import { MainLoader } from '../MainLoader';
 import { areUserParametersLoadedAtom } from '../useUser';

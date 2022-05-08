@@ -14,8 +14,8 @@ import {
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
-import { userEndpoint } from '../api/endpoint';
+import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
+import { platformVersionsEndpoint, userEndpoint } from '../api/endpoint';
 import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
 
 import {
@@ -29,11 +29,7 @@ import {
   labelLoginWith,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import {
-  loginEndpoint,
-  platformVersionsEndpoint,
-  providersConfigurationEndpoint,
-} from './api/endpoint';
+import { loginEndpoint, providersConfigurationEndpoint } from './api/endpoint';
 
 import LoginPage from '.';
 
