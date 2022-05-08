@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-import Hook from '../components/LoadableComponents';
+import Hook from '../components/FederatedComponents';
 
 import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';

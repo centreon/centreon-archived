@@ -11,8 +11,8 @@ import {
   retrievedNavigation,
   retrievedNavigationWithAnEmptySet,
 } from '../../Navigation/mocks';
-import { retrievedExternalComponents } from '../../federatedComponents/mocks';
-import { federatedComponentsAtom } from '../../federatedComponents/atoms';
+import { retrievedExternalComponents } from '../../federatedModules/mocks';
+import { federatedComponentsAtom } from '../../federatedModules/atoms';
 import { labelYouAreNotAllowedToSeeThisPage } from '../../FallbackPages/NotAllowedPage/translatedLabels';
 import { labelCentreonLogo } from '../../Login/translatedLabels';
 

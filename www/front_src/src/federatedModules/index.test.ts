@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import axios from 'axios';
 import { waitFor } from '@testing-library/dom';
 
-import useFederatedComponents from './useFederatedComponents';
+import useFederatedComponents from './useFederatedModules';
 import { retrievedExternalComponents } from './mocks';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;

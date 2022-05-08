@@ -11,7 +11,7 @@ import {
   translationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
-import { retrievedExternalComponents } from '../federatedComponents/mocks';
+import { retrievedExternalComponents } from '../federatedModules/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
 
 import { labelCentreonIsLoading } from './translatedLabels';

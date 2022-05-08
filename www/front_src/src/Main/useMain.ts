@@ -26,7 +26,7 @@ import { webVersionsEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
 import { translationEndpoint } from '../App/endpoint';
 import reactRoutes from '../reactRoutes/routeMap';
-import useFederatedComponents from '../federatedComponents/useFederatedComponents';
+import useFederatedComponents from '../federatedModules/useFederatedModules';
 
 import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import useUser, { areUserParametersLoadedAtom } from './useUser';

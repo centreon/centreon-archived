@@ -11,9 +11,9 @@ import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 import internalPagesRoutes from '../../reactRoutes';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
-import { federatedComponentsAtom } from '../../federatedComponents/atoms';
-import { FederatedComponent } from '../../federatedComponents/models';
-import { Remote } from '../../federatedComponents/load';
+import { federatedComponentsAtom } from '../../federatedModules/atoms';
+import { FederatedComponent } from '../../federatedModules/models';
+import { Remote } from '../../federatedModules/Load';
 
 const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
 const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));

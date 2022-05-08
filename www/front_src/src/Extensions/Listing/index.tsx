@@ -18,7 +18,7 @@ import {
   useSnackbar,
 } from '@centreon/ui';
 
-import LoadableComponent from '../../components/LoadableComponents';
+import FederatedComponents from '../../components/FederatedComponents';
 import useNavigation from '../../Navigation/useNavigation';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
 import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
@@ -387,7 +387,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <LoadableComponent include="centreon-license-manager" />
+          <FederatedComponents include="centreon-license-manager" />
         </Stack>
       </div>
       {extensions && (

@@ -5,15 +5,15 @@ import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { federatedComponentsAtom } from '../../federatedComponents/atoms';
-import { Remote } from '../../federatedComponents/load';
-import { FederatedComponent } from '../../federatedComponents/models';
+import { federatedComponentsAtom } from '../../federatedModules/atoms';
+import { Remote } from '../../federatedModules/Load';
+import { FederatedComponent } from '../../federatedModules/models';
 
 interface Props {
   federatedComponents: Array<FederatedComponent>;
 }
 
-const LoadableComponents = ({
+const FederatedComponents = ({
   federatedComponents,
   ...rest
 }: Props): JSX.Element | null => {
@@ -86,7 +86,7 @@ const LoadableComponentsContainer = ({
     return null;
   }
 
-  return <LoadableComponents federatedComponents={components} {...props} />;
+  return <FederatedComponents federatedComponents={components} {...props} />;
 };
 
 export default LoadableComponentsContainer;
