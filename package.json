@@ -12,7 +12,8 @@
     "test:watch": "npm test -- --watch",
     "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
     "cypress:cli": "npx cypress run-ct",
-    "cypress:ui": "npx cypress open-ct"
+    "cypress:ui": "npx cypress open-ct",
+    "percy": "npx percy exec -- cypress run-ct"
   },
   "devDependencies": {
     "@babel/core": "^7.16.12",
