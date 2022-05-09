@@ -345,6 +345,7 @@ try {
       parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild()
+          sh 'rm -rf output'
           unstash "rpms-${osBuild}"
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
