@@ -1,7 +1,10 @@
 import { FederatedComponent } from './models';
 
 export const retrievedFederatedComponent: FederatedComponent = {
-  hooks: ['./monitoring/hooks/topCounter'],
+  hooksConfiguration: {
+    hooks: ['./monitoring/hooks/topCounter'],
+    path: '/header/topCounter',
+  },
   moduleName: 'centreon-bam-server',
   name: 'bam',
   pages: [

@@ -1,5 +1,8 @@
 export interface FederatedComponent {
-  hooks: Array<string>;
+  hooksConfiguration: {
+    hooks: Array<string>;
+    path: string;
+  };
   moduleName: string;
   name: string;
   pages: Array<PageComponent>;

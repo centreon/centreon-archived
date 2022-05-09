@@ -34,7 +34,7 @@ const Header = (): JSX.Element => {
           <PollerMenu />
         </div>
         <div className={classes.rightContainer}>
-          <HookComponent exclude="centreon-license-manager" />
+          <HookComponent path="/header/topCounter" />
           <HostStatusCounter />
           <ServiceStatusCounter />
           <SwitchMode />

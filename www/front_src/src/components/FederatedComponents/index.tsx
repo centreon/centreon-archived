@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { filter, isNil, propEq, reject } from 'ramda';
+import { filter, isNil, pathEq } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -20,21 +20,23 @@ const FederatedComponents = ({
   return useMemoComponent({
     Component: (
       <>
-        {federatedComponents.map(({ remoteEntry, name, hooks, moduleName }) => {
-          return hooks.map((component) => {
-            return (
-              <Remote
-                isHook
-                component={component}
-                key={component}
-                moduleName={moduleName}
-                name={name}
-                remoteEntry={remoteEntry}
-                {...rest}
-              />
-            );
-          });
-        })}
+        {federatedComponents.map(
+          ({ remoteEntry, name, hooksConfiguration, moduleName }) => {
+            return hooksConfiguration.hooks.map((component) => {
+              return (
+                <Remote
+                  isHook
+                  component={component}
+                  key={component}
+                  moduleName={moduleName}
+                  name={name}
+                  remoteEntry={remoteEntry}
+                  {...rest}
+                />
+              );
+            });
+          },
+        )}
       </>
     ),
     memoProps: [federatedComponents],
@@ -42,8 +44,7 @@ const FederatedComponents = ({
 };
 
 interface LoadableComponentsContainerProps {
-  exclude?: string;
-  include?: string;
+  path: string;
 }
 
 interface LoadableComponentsProps extends LoadableComponentsContainerProps {
@@ -51,35 +52,29 @@ interface LoadableComponentsProps extends LoadableComponentsContainerProps {
 }
 
 const getLoadableComponents = ({
-  include,
-  exclude,
+  path,
   federatedComponents,
 }: LoadableComponentsProps): Array<FederatedComponent> | null => {
   if (isNil(federatedComponents)) {
     return null;
   }
 
-  const excludedComponents = exclude
-    ? reject(propEq('moduleName', exclude), federatedComponents)
+  const components = path
+    ? filter(pathEq(['hooksConfiguration', 'path'], path), federatedComponents)
     : federatedComponents;
-
-  const components = include
-    ? filter(propEq('moduleName', include), excludedComponents)
-    : excludedComponents;
 
   return components;
 };
 
 const LoadableComponentsContainer = ({
-  include,
-  exclude,
+  path,
   ...props
 }: LoadableComponentsContainerProps): JSX.Element | null => {
   const federatedComponents = useAtomValue(federatedComponentsAtom);
 
   const components = useMemo(
-    () => getLoadableComponents({ exclude, federatedComponents, include }),
-    [federatedComponents, include, exclude],
+    () => getLoadableComponents({ federatedComponents, path }),
+    [federatedComponents, path],
   );
 
   if (isNil(components)) {

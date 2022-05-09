@@ -387,7 +387,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <FederatedComponents include="centreon-license-manager" />
+          <FederatedComponents path="/administration/extensions/manager" />
         </Stack>
       </div>
       {extensions && (
