@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -56,6 +56,7 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -91,11 +92,22 @@ const NavigationMenu = ({
     setCurrentTop(top);
     setHoveredIndex(index);
     setHoveredNavigationItemsDerived({ currentPage, levelName });
+    discardTimeout();
+  };
+
+  const discardTimeout = (): void => {
+    if (isNil(timeoutRef.current)) {
+      return;
+    }
+    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
-    setHoveredIndex(null);
-    setHoveredNavigationItems(null);
+    discardTimeout();
+    timeoutRef.current = setTimeout((): void => {
+      setHoveredIndex(null);
+      setHoveredNavigationItems(null);
+    }, 500);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
@@ -238,7 +250,11 @@ const NavigationMenu = ({
 
   return useMemoComponent({
     Component: (
-      <List className={classes.list} onMouseLeave={handleLeave}>
+      <List
+        className={classes.list}
+        onMouseEnter={discardTimeout}
+        onMouseLeave={handleLeave}
+      >
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
