@@ -18,6 +18,10 @@ class UnitTestTemplate extends FileTemplate
 
         namespace $namespace;
 
+        it('should be erased or throw an error', function () {
+            expect(false)-toBeTrue();
+        })
+
         EOF;
 
         return $content;

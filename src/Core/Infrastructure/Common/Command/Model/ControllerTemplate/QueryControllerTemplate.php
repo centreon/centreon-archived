@@ -33,7 +33,6 @@ class QueryControllerTemplate extends FileTemplate
 
         namespace $this->namespace;
 
-        use Symfony\Component\HttpFoundation\Request;
         use $useCaseNamespace;
         use $presenterNamespace;
 

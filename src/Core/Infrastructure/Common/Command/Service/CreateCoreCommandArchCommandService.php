@@ -220,7 +220,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
         $className = $useCaseName . 'Presenter';
         $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
             . $className . '.php';
-        $namespace = 'Core\\' . $modelName . '\\Application\\UseCase\\' . $useCaseName;
+        $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Api\\' . $useCaseName;
         if (!file_exists($filePath)) {
             $this->commandPresenterTemplate = new PresenterTemplate(
                 $filePath,
@@ -380,7 +380,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
      * @param string $modelName
      * @param string $repositoryType
      */
-    public function createUnitTestsIfNotExists(
+    public function createFactoryIfNotExist(
         OutputInterface $output,
         string $modelName,
         string $repositoryType
