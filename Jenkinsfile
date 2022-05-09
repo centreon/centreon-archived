@@ -285,6 +285,7 @@ try {
     'rpm packaging centos7': {
       node {
         checkoutCentreonBuild()
+        sh 'rm -rf output'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
@@ -295,6 +296,7 @@ try {
     'rpm packaging alma8': {
       node {
         checkoutCentreonBuild()
+        sh 'rm -rf output'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
         archiveArtifacts artifacts: "rpms-alma8.tar.gz"
