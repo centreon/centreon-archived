@@ -61,7 +61,6 @@ const useMain = (): void => {
     getPlatformInstallationStatus({
       endpoint: platformInstallationStatusEndpoint,
     }).then((retrievedPlatformInstallationStatus) => {
-      console.log(retrievedPlatformInstallationStatus);
       setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
     });
   }, []);

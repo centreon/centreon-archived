@@ -15,7 +15,7 @@ import {
   internalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
-import { retrievedExternalComponents } from '../federatedModules/mocks';
+import { retrievedFederatedComponent } from '../federatedModules/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
 
 import { labelCentreonIsLoading } from './translatedLabels';
@@ -134,7 +134,7 @@ const mockDefaultGetRequests = (): void => {
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
+      data: retrievedFederatedComponent,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -160,9 +160,6 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
-      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
@@ -343,20 +340,13 @@ describe('Main', () => {
     });
   });
 
-  /* todo */ it('redirects the user to the upgrade page when the retrieved web versions contains an available version and the user is disconnected', async () => {
+  it('redirects the user to the upgrade page when the retrieved web versions contains an available version and the user is disconnected', async () => {
     window.history.pushState({}, '', '/');
     mockUpgradeAndUserDisconnectedGetRequests();
 
     renderMain();
 
     expect(screen.getByText(labelCentreonIsLoading)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        externalTranslationEndpoint,
-        cancelTokenRequestParam,
-      );
-    });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -379,7 +369,7 @@ describe('Main', () => {
     });
   });
 
-  /* todo */ it('does not redirect the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
+  it('does not redirect the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
     window.history.pushState({}, '', '/');
     mockUpgradeAndUserConnectedGetRequests();
 
@@ -453,7 +443,7 @@ describe('Main', () => {
     );
   });
 
-  it.only('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
+  it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
     window.history.pushState({}, '', '/login');
     mockRedirectFromLoginPageGetRequests();
 
