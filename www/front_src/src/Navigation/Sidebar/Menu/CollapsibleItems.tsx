@@ -49,7 +49,7 @@ interface StyleProps {
   currentWidth: number;
 }
 
-const collapseWidth = 25.5;
+const collapseWidth = 26;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     textOverflow: 'ellipsis',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
+    whiteSpace: 'nowrap',
     width: theme.spacing(collapseWidth),
     zIndex: theme.zIndex.mobileStepper,
   },
