@@ -6,6 +6,7 @@ import { isEmpty } from 'ramda';
 import { MenuSkeleton, PageSkeleton } from '@centreon/ui';
 
 import NotFoundPage from '../../FallbackPages/NotFoundPage';
+import memoizeComponent from '../../Resources/memoizedComponent';
 
 import loadComponent from './loadComponent';
 
@@ -97,6 +98,11 @@ const LoadComponent = ({
   );
 };
 
+const MemoizedLoadComponent = memoizeComponent<LoadComponentProps>({
+  Component: LoadComponent,
+  memoProps: ['name', 'component', 'isHook'],
+});
+
 interface RemoteProps extends LoadComponentProps {
   moduleName: string;
   remoteEntry: string;
@@ -124,7 +130,7 @@ export const Remote = ({
   }
 
   return (
-    <LoadComponent
+    <MemoizedLoadComponent
       component={component}
       isHook={isHook}
       name={name}

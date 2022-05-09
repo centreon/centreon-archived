@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useAtom } from 'jotai';
 import { isNil, keys } from 'ramda';
 
@@ -20,19 +22,19 @@ const usePlatformVersions = (): UsePlatformVersionsState => {
 
   const [platformVersions, setPlatformVersions] = useAtom(platformVersionsAtom);
 
-  const getPlatformVersions = (): void => {
+  const getPlatformVersions = useCallback((): void => {
     sendPlatformVersions({ endpoint: platformVersionsEndpoint }).then(
       setPlatformVersions,
     );
-  };
+  }, []);
 
-  const getModules = (): Array<string> | null => {
+  const getModules = useCallback((): Array<string> | null => {
     if (isNil(platformVersions)) {
       return null;
     }
 
     return keys(platformVersions?.modules) as Array<string>;
-  };
+  }, [platformVersions]);
 
   return {
     getModules,

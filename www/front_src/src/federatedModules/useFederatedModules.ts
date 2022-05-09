@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useAtom } from 'jotai';
 import { useDeepCompare } from 'centreon-frontend/packages/centreon-ui/src/utils/useMemoComponent';
@@ -29,17 +29,17 @@ const useFederatedComponents = (): UseFederatedComponentsState => {
 
   const modules = getModules();
 
-  const getFederatedComponents = (): void => {
+  const getFederatedComponents = useCallback((): void => {
     if (!modules) {
       return;
     }
 
     Promise.all(
-      getModules()?.map((moduleName) =>
+      modules?.map((moduleName) =>
         sendRequest({ endpoint: getFederatedComponent(moduleName) }),
       ) || [],
     ).then(setFederatedComponents);
-  };
+  }, [modules]);
 
   useEffect(() => {
     getFederatedComponents();
