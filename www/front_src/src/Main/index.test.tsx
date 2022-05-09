@@ -3,7 +3,10 @@ import { Provider } from 'jotai';
 
 import { render, RenderResult, waitFor, screen } from '@centreon/ui';
 
-import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
+import {
+  platformInstallationStatusEndpoint,
+  userEndpoint,
+} from '../api/endpoint';
 import { labelConnect } from '../Login/translatedLabels';
 import {
   aclEndpoint,
@@ -112,6 +115,9 @@ const renderMain = (): RenderResult =>
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedWeb,
+    })
+    .mockResolvedValueOnce({
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
@@ -143,6 +149,9 @@ const mockDefaultGetRequests = (): void => {
 const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedWeb,
+    })
+    .mockResolvedValueOnce({
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
@@ -152,19 +161,10 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       },
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
-    })
-    .mockResolvedValueOnce({
-      data: retrievedProvidersConfiguration,
-    })
-    .mockResolvedValueOnce({
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
-    })
-    .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -180,6 +180,9 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
 const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedWeb,
+    })
+    .mockResolvedValueOnce({
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
@@ -192,15 +195,15 @@ const mockNotConnectedGetRequests = (): void => {
       response: { status: 403 },
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
-    })
-    .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
     });
 };
 
 const mockInstallGetRequests = (): void => {
   mockedAxios.get
+    .mockResolvedValueOnce({
+      data: retrievedWeb,
+    })
     .mockRejectedValueOnce({
       data: retrievedTranslations,
     })
@@ -234,6 +237,9 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
 const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedWeb,
+    })
+    .mockResolvedValueOnce({
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
@@ -247,9 +253,6 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
-    })
-    .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -278,7 +281,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -314,7 +317,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -331,7 +334,7 @@ describe('Main', () => {
     });
   });
 
-  it('redirects the user to the upgrade page when the retrieved web versions contains an available version and the user is disconnected', async () => {
+  /* todo */ it('redirects the user to the upgrade page when the retrieved web versions contains an available version and the user is disconnected', async () => {
     window.history.pushState({}, '', '/');
     mockUpgradeAndUserDisconnectedGetRequests();
 
@@ -341,7 +344,14 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        translationEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -360,7 +370,7 @@ describe('Main', () => {
     });
   });
 
-  it('does not redirect the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
+  /* todo */ it('does not redirect the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
     window.history.pushState({}, '', '/');
     mockUpgradeAndUserConnectedGetRequests();
 
@@ -370,7 +380,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -399,7 +409,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -434,7 +444,7 @@ describe('Main', () => {
     );
   });
 
-  it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
+  it.only('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
     window.history.pushState({}, '', '/login');
     mockRedirectFromLoginPageGetRequests();
 
@@ -444,7 +454,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });

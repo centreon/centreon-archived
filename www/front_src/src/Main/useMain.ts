@@ -22,7 +22,7 @@ import { getData, useRequest, useSnackbar } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { platformInstallationStatusDecoder } from '../api/decoders';
-import { webVersionsEndpoint } from '../api/endpoint';
+import { platformInstallationStatusEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
 import { translationEndpoint } from '../App/endpoint';
 import reactRoutes from '../reactRoutes/routeMap';
@@ -33,7 +33,7 @@ import useUser, { areUserParametersLoadedAtom } from './useUser';
 import usePlatformVersions from './usePlatformVersions';
 
 const useMain = (): void => {
-  const { sendRequest: getWebVersions } =
+  const { sendRequest: getPlatformInstallationStatus } =
     useRequest<PlatformInstallationStatus>({
       decoder: platformInstallationStatusDecoder,
       request: getData,
@@ -101,10 +101,11 @@ const useMain = (): void => {
         initializeI18n();
       })
       .finally(() => {
-        getWebVersions({
-          endpoint: webVersionsEndpoint,
-        }).then((retrievedWebVersions) => {
-          setPlatformInstallationStatus(retrievedWebVersions);
+        getPlatformInstallationStatus({
+          endpoint: platformInstallationStatusEndpoint,
+        }).then((retrievedPlatformInstallationStatus) => {
+          console.log(retrievedPlatformInstallationStatus);
+          setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
         });
       });
   }, []);
