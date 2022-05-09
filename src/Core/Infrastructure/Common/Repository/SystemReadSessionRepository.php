@@ -21,27 +21,29 @@
 
 declare(strict_types=1);
 
-interface ExternalModuleGenerationInterface
+namespace Core\Infrastructure\Common\Repository;
+
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
+
+class SystemReadSessionRepository implements ReadSessionRepositoryInterface
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
-     *
-     * @return bool
+     * @inheritDoc
      */
-    public function isEngineObject(): bool;
+    public function findSessionIdsByUserId(int $userId): array
+    {
+        throw RepositoryException::notImplemented(__METHOD__);
+    }
 
     /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
+     * @inheritDoc
      */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public function getValueFromSession(string $sessionId, string $key): mixed
+    {
+        session_id($sessionId);
+        session_start();
+        $value = $_SESSION[$key];
+        session_write_close();
+        return $value;
+    }
 }

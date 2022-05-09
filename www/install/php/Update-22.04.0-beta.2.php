@@ -18,30 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-
-declare(strict_types=1);
-
-interface ExternalModuleGenerationInterface
-{
-    /**
-     * Indicates if this class is designed to generate something for Engine.
-     *
-     * @return bool
-     */
-    public function isEngineObject(): bool;
-
-    /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
-     */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
-}

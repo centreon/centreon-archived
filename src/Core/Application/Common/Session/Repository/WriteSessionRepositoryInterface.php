@@ -21,27 +21,17 @@
 
 declare(strict_types=1);
 
-interface ExternalModuleGenerationInterface
+namespace Core\Application\Common\Session\Repository;
+
+interface WriteSessionRepositoryInterface
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
+     * Update a value in session.
      *
-     * @return bool
+     * @param string $sessionId
+     * @param string $key
+     * @param mixed $value
+     * @return void
      */
-    public function isEngineObject(): bool;
-
-    /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
-     */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public function updateSession(string $sessionId, string $key, mixed $value): void;
 }
