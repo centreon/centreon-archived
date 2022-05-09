@@ -55,6 +55,7 @@ class DbServiceFactory
             ->setExecutionTime(self::getFloatOrNull($data['execution_time']))
             ->setStatusChangePercentage(self::getFloatOrNull($data['status_change_percentage']))
             ->setSeverityLevel(self::getIntOrNull($data['severity_level']))
+            ->setNotificationEnabled((int) $data['notify'] === 1)
             ->setNotificationNumber(self::getIntOrNull($data['notification_number']))
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $data['last_status_change']))
             ->setLastNotification(self::createDateTimeFromTimestamp((int) $data['last_notification']))

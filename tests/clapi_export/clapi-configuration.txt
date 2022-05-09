@@ -480,8 +480,6 @@ ENGINECFG;setparam;Centreon Engine Central;accept_passive_service_checks;1
 ENGINECFG;setparam;Centreon Engine Central;execute_host_checks;2
 ENGINECFG;setparam;Centreon Engine Central;accept_passive_host_checks;2
 ENGINECFG;setparam;Centreon Engine Central;enable_event_handlers;1
-ENGINECFG;setparam;Centreon Engine Central;log_rotation_method;d
-ENGINECFG;setparam;Centreon Engine Central;log_archive_path;/var/log/centreon-engine/archives/
 ENGINECFG;setparam;Centreon Engine Central;check_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;command_check_interval;1s
 ENGINECFG;setparam;Centreon Engine Central;command_file;/var/lib/centreon-engine/rw/centengine.cmd
@@ -553,6 +551,21 @@ ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
+ENGINECFG;setparam;Centreon Engine Central;logger_version;log_v2_enabled
+ENGINECFG;setparam;Centreon Engine Central;log_v2_logger;file
+ENGINECFG;setparam;Centreon Engine Central;log_level_functions;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_config;info
+ENGINECFG;setparam;Centreon Engine Central;log_level_events;info
+ENGINECFG;setparam;Centreon Engine Central;log_level_checks;info
+ENGINECFG;setparam;Centreon Engine Central;log_level_notifications;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_eventbroker;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_external_command;info
+ENGINECFG;setparam;Centreon Engine Central;log_level_commands;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_downtimes;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_comments;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_macros;err
+ENGINECFG;setparam;Centreon Engine Central;log_level_process;info
+ENGINECFG;setparam;Centreon Engine Central;log_level_runtime;err
 CONTACTTPL;ADD;contact_template;contact_template;;$2y$10$Yf78oIppk6wC7hMtDd0TKeXByb1kVD5IGvAEF/g.F4KtiMSbXvpT.;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n

@@ -38,7 +38,7 @@ function differentPasswords(this, newPassword?: string): boolean {
 }
 
 const useResetPassword = (): UseResetPasswordState => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { showSuccessMessage } = useSnackbar();
@@ -48,7 +48,7 @@ const useResetPassword = (): UseResetPasswordState => {
 
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
 
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
   const { sendLogin } = useLogin();
 
   const submitResetPassword = (

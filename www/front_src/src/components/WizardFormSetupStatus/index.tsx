@@ -1,8 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-
-import React from 'react';
-
 import { equals, isNil, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 

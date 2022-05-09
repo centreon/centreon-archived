@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
@@ -10,23 +10,26 @@ import {
   labelTimeline,
   labelServices,
   labelMetrics,
+  labelNotification,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import DetailsLoadingSkeleton from '../LoadingSkeleton';
 
 import { Tab, TabId } from './models';
 
-const DetailsTab = React.lazy(() => import('./Details'));
-const GraphTab = React.lazy(() => import('./Graph'));
-const TimelineTab = React.lazy(() => import('./Timeline'));
-const ServicesTab = React.lazy(() => import('./Services'));
-const MetricsTab = React.lazy(() => import('./Metrics'));
+const DetailsTab = lazy(() => import('./Details'));
+const GraphTab = lazy(() => import('./Graph'));
+const TimelineTab = lazy(() => import('./Timeline'));
+const ServicesTab = lazy(() => import('./Services'));
+const MetricsTab = lazy(() => import('./Metrics'));
+const NotificationsTab = lazy(() => import('./Notifications'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
+const notificationsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -82,6 +85,13 @@ const tabs: Array<Tab> = [
     id: metricsTabId,
     title: labelMetrics,
   },
+  {
+    Component: NotificationsTab,
+    ariaLabel: labelNotification,
+    getIsActive: (): boolean => true,
+    id: notificationsTabId,
+    title: labelNotification,
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -102,9 +112,9 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
   return (
     <div className={classes.container}>
-      <React.Suspense fallback={<DetailsLoadingSkeleton />}>
+      <Suspense fallback={<DetailsLoadingSkeleton />}>
         <Component details={details} />
-      </React.Suspense>
+      </Suspense>
     </div>
   );
 };
@@ -113,6 +123,7 @@ const tabIdByLabel = {
   details: detailsTabId,
   graph: graphTabId,
   metrics: metricsTabId,
+  notification: notificationsTabId,
   services: servicesTabId,
   timeline: timelineTabId,
 };
@@ -137,6 +148,7 @@ export {
   graphTabId,
   servicesTabId,
   metricsTabId,
+  notificationsTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

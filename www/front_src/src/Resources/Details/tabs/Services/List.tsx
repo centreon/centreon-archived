@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { equals, last } from 'ramda';
 
@@ -6,7 +6,7 @@ import { Resource, Status } from '../../../models';
 import ServiceCard from '../Details/ServiceCard';
 
 interface Props {
-  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  infiniteScrollTriggerRef: RefObject<HTMLDivElement>;
   onSelectService: (service: Resource) => void;
   services: Array<Resource>;
 }

@@ -130,7 +130,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $hostId = null;
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $hostId = (int) $resource->getId();
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+        } elseif (
+            $resource->getParent() !== null
+            && $resource->getType() === ResourceEntity::TYPE_SERVICE
+        ) {
             $hostId = (int) $resource->getParent()->getId();
         }
 
@@ -146,11 +149,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     private function replaceMacrosInUrlsForHostResource(ResourceEntity $resource, string $url): string
     {
-        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
+        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn() ?? '', $url);
         $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
         $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
         $url = str_replace('$HOSTSTATEID$', (string) $resource->getStatus()->getCode(), $url);
-        $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getAlias() ?? '', $url);
 
         return $url;
     }
@@ -164,11 +167,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     private function replaceMacrosInUrlsForServiceResource(ResourceEntity $resource, string $url): string
     {
-        $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
-        $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
-        $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', (string) $resource->getParent()->getStatus()->getCode(), $url);
-        $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
+        $url = str_replace('$HOSTADDRESS$', $resource->getParent()?->getFqdn() ?? '', $url);
+        $url = str_replace('$HOSTNAME$', $resource->getParent()?->getName() ?? '', $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getParent()?->getStatus()->getName() ?? '', $url);
+        $url = str_replace('$HOSTSTATEID$', (string) $resource->getParent()?->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getParent()?->getAlias() ?? '', $url);
         $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
         $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
         $url = str_replace('$SERVICESTATEID$', (string) $resource->getStatus()->getCode(), $url);
@@ -186,7 +189,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
         $resourceType = $resource->getType();
 
-        if ($actionUrl !== null) {
+        if (! empty($actionUrl)) {
             if ($resourceType === ResourceEntity::TYPE_HOST) {
                 $actionUrl = $this->replaceMacrosInUrlsForHostResource($resource, $actionUrl);
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
@@ -195,13 +198,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
         }
 
-        if ($notesUrl !== null) {
+        if (! empty($notesUrl)) {
             if ($resourceType === ResourceEntity::TYPE_HOST) {
                 $notesUrl = $this->replaceMacrosInUrlsForHostResource($resource, $notesUrl);
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
                 $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
             }
-            $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
+            $resource->getLinks()->getExternals()->getNotes()?->setUrl($notesUrl);
         }
     }
 

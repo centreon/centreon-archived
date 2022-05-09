@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { pick } from 'ramda';
 
 import { ComponentColumnProps } from '@centreon/ui';

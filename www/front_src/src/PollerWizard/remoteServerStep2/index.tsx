@@ -1,7 +1,7 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { isEmpty, pick } from 'ramda';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
@@ -26,11 +26,7 @@ import {
   labelRemoteServers,
 } from '../translatedLabels';
 import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
-
-const getRemoteServersEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
-const wizardFormEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
+import { getRemoteServersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 const RemoteServerWizardStepTwo = ({
   goToNextStep,
@@ -39,11 +35,9 @@ const RemoteServerWizardStepTwo = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const [remoteServers, setRemoteServers] =
-    React.useState<Array<PollerRemoteList> | null>(null);
+    useState<Array<PollerRemoteList> | null>(null);
 
-  const [linkedPollers, setLinkedPollers] = React.useState<Array<SelectEntry>>(
-    [],
-  );
+  const [linkedPollers, setLinkedPollers] = useState<Array<SelectEntry>>([]);
 
   const { sendRequest: getRemoteServersRequest } = useRequest<
     Array<PollerRemoteList>
@@ -113,7 +107,7 @@ const RemoteServerWizardStepTwo = ({
 
   const remoteServersOption = remoteServers?.map(pick(['id', 'name']));
 
-  React.useEffect(() => {
+  useEffect(() => {
     getRemoteServers();
   }, []);
 

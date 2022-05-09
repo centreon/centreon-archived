@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { filter, propEq, isNil } from 'ramda';
 import { ScaleTime } from 'd3-scale';
 

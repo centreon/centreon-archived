@@ -5,7 +5,7 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
-import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 import Main from './Main';
 
@@ -20,6 +20,8 @@ declare global {
     ReactRouterDom;
   }
 }
+
+const container = document.getElementById('root') as HTMLElement;
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -39,5 +41,5 @@ declare global {
   );
   window.Jotai = await import(/* webpackChunkName: "external" */ 'jotai');
 
-  window.ReactDOM.render(<Main />, document.getElementById('root'));
+  createRoot(container).render(<Main />);
 })();

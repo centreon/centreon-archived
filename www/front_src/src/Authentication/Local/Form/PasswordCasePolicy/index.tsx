@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
@@ -69,7 +67,7 @@ const PasswordCasePolicy = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordLengthError, passwordLengthValue],
+    memoProps: [passwordLengthError, passwordLengthValue, classes],
   });
 };
 

@@ -19,8 +19,13 @@
  *
  */
 
+require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../class/centreonAuth.class.php';
+require_once __DIR__ . '/../../class/centreonLog.class.php';
+require_once __DIR__ . '/../functions.php';
 
-include_once __DIR__ . "/../../class/centreonLog.class.php";
+use Symfony\Component\Yaml\Yaml;
+
 $centreonLog = new CentreonLog();
 
 //error specific content
@@ -35,6 +40,7 @@ try {
         "CREATE TABLE IF NOT EXISTS `password_expiration_excluded_users` (
         `provider_configuration_id` int(11) NOT NULL,
         `user_id` int(11) NOT NULL,
+        PRIMARY KEY (`provider_configuration_id`, `user_id`),
         CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk`
           FOREIGN KEY (`provider_configuration_id`)
           REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
@@ -58,11 +64,76 @@ try {
         REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
     );
 
-    // Add custom_configuration to provider configurations
+    /**
+     * Alter Tables
+     */
+    if (
+        $pearDB->isColumnExist('contact', 'login_attempts') !== 1
+        && $pearDB->isColumnExist('contact', 'blocking_time') !== 1
+    ) {
+        // Add login blocking mechanism to contact
+        $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
+        $pearDB->query(
+            "ALTER TABLE `contact`
+            ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+            ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
+        );
+    }
+
+    $errorMessage = "Unable to find constraint unique_index from security_token";
+    $constraintExistStatement = $pearDB->query(
+        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
+    );
+    if ($constraintExistStatement->fetch() !== false) {
+        $errorMessage = "Unable to remove unique_index from security_token";
+        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
+    }
+
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+
+    if ($pearDB->isColumnExist('cfg_centreonbroker', 'bbdo_version') !== 1) {
+        $errorMessage = "Unable to add 'bbdo_version' column to 'cfg_centreonbroker' table";
+        $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
+    }
+
     if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
+        // Add custom_configuration to provider configurations
         $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
         $pearDB->query(
             "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
+        );
+    }
+
+    // Add contact_theme column to contact table
+    if ($pearDB->isColumnExist('contact', 'contact_theme') !== 1) {
+        $errorMessage = "Unable to add column 'contact_theme' to table 'contact'";
+        $pearDB->query(
+            "ALTER TABLE `contact` ADD COLUMN "
+            . "`contact_theme` enum('light','dark') DEFAULT 'light' AFTER `contact_js_effects`"
+        );
+    }
+
+    // Centengine logger v2
+    if (
+        $pearDB->isColumnExist('cfg_nagios', 'log_archive_path') === 1
+        && $pearDB->isColumnExist('cfg_nagios', 'log_rotation_method') === 1
+        && $pearDB->isColumnExist('cfg_nagios', 'daemon_dumps_core') === 1
+    ) {
+        $errorMessage = "Unable to remove log_archive_path,log_rotation_method,daemon_dumps_core from cfg_nagios table";
+        $pearDB->query(
+            "ALTER TABLE `cfg_nagios`
+            DROP COLUMN `log_archive_path`,
+            DROP COLUMN `log_rotation_method`,
+            DROP COLUMN `daemon_dumps_core`"
+        );
+    }
+    if ($pearDB->isColumnExist('cfg_nagios', 'logger_version') === 1) {
+        $errorMessage = "Unable to add logger_version to cfg_nagios table";
+        $pearDB->query(
+            "ALTER TABLE `cfg_nagios`
+            ADD COLUMN `logger_version` enum('log_v2_enabled', 'log_legacy_enabled') DEFAULT 'log_v2_enabled'"
         );
     }
 
@@ -114,42 +185,25 @@ try {
 
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
+    $errorMessage = "Unable to migrate broker config to unified_sql";
+    migrateBrokerConfigOutputsToUnifiedSql($pearDB);
+
+    $errorMessage = "Unable to configure centreon-gorgone api user";
+    configureGorgoneApiUser($pearDB);
+
+    $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
+    excludeUsersFromPasswordPolicy($pearDB);
+
+    $errorMessage = "Unable to update logger_version from cfg_nagios table";
+    $pearDB->query(
+        "UPDATE `cfg_nagios` set logger_version = 'log_legacy_enabled'"
+    );
 
     $pearDB->commit();
-
-    /**
-     * Alter Tables
-     */
-    if (
-        $pearDB->isColumnExist('contact', 'login_attempts') !== 1
-        && $pearDB->isColumnExist('contact', 'blocking_time') !== 1
-    ) {
-        // Add login blocking mechanism to contact
-        $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
-            ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
-        );
-    }
-
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
         $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
         $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
     }
-
-    $errorMessage = "Unable to find constraint unique_index from security_token";
-    $constraintExistStatement = $pearDB->query(
-        'SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-         WHERE TABLE_NAME="security_token" AND CONSTRAINT_NAME="unique_token"'
-    );
-    if ($constraintExistStatement->fetch() !== false) {
-        $errorMessage = "Unable to remove unique_index from security_token";
-        $pearDB->query("ALTER TABLE `security_token` DROP INDEX `unique_token`");
-    }
-
-    $errorMessage = "Unable to alter table security_token";
-    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -445,7 +499,7 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
             "has_special_characters" => true,
             "attempts" => 5,
             "blocking_duration" => 900,
-            "password_expiration_delay" => 7776000,
+            "password_expiration_delay" => 15552000,
             "delay_before_new_password" => 3600,
             "can_reuse_passwords" => false,
         ],
@@ -457,4 +511,291 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
     );
     $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
     $statement->execute();
+}
+
+/**
+ * Migrate broker outputs 'sql' and 'storage' to a unique output 'unified_sql'
+ *
+ * @param CentreonDB $pearDB
+ * @throws \Exception
+ * @return void
+ */
+function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
+{
+    $outputTag = 1;
+
+    // Determine blockIds for output of type sql and storage
+    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('sql', 'storage')");
+    $typeIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
+    if (empty($typeIds) || count($typeIds) !== 2) {
+        throw new \Exception("Error while retrieving 'sql' and 'storage' in cb_type table");
+    }
+    $blockIds = array_map(fn ($typeId) => "{$outputTag}_{$typeId}", $typeIds);
+
+    // Retrieve broker config ids to migrate
+    $subqueries = [];
+    $bindedValues = [];
+    foreach ($blockIds as $key => $blockId) {
+        $subqueries[] = "SELECT DISTINCT(config_id) FROM cfg_centreonbroker_info
+            WHERE config_group = 'output' AND config_key = 'blockId' AND config_value = :blockId_{$key}";
+        $bindedValues[":blockId_{$key}"] = $blockId;
+    }
+    $stmt = $pearDB->prepare(implode(' INTERSECT ', $subqueries));
+    foreach ($bindedValues as $param => $value) {
+        $stmt->bindValue($param, $value, \PDO::PARAM_STR);
+    }
+    $stmt->execute();
+    $configIds = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+    if (empty($configIds)) {
+        throw new \Exception("Cannot find broker config ids to migrate");
+    }
+
+    // Retrieve unified_sql type id
+    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname = 'unified_sql'");
+    $unifiedSqlType = $dbResult->fetch(\PDO::FETCH_COLUMN, 0);
+    if (empty($unifiedSqlType)) {
+        throw new \Exception("Cannot find 'unified_sql' in cb_type table");
+    }
+    $unifiedSqlTypeId = (int) $unifiedSqlType['cb_type_id'];
+
+    foreach ($configIds as $configId) {
+        // Find next config group id
+        $dbResult = $pearDB->query(
+            "SELECT MAX(config_group_id) as max_config_group_id FROM cfg_centreonbroker_info
+            WHERE config_id = $configId AND config_group = 'output'"
+        );
+        $maxConfigGroupId = $dbResult->fetch(\PDO::FETCH_COLUMN, 0);
+        if (empty($maxConfigGroupId)) {
+            throw new \Exception("Cannot find max config group id in cfg_centreonbroker_info table");
+        }
+        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
+
+        // Find config group ids of outputs to replace
+        $dbResult = $pearDB->query(
+            "SELECT config_group_id FROM cfg_centreonbroker_info
+            WHERE config_id = $configId AND config_key = 'blockId'
+            AND config_value IN ('" . implode('\', \'', $blockIds) . "')"
+        );
+        $configGroupIds = $dbResult->fetchAll(\PDO::FETCH_COLUMN, 0);
+        if (empty($configGroupIds)) {
+            throw new \Exception("Cannot find config group ids in cfg_centreonbroker_info table");
+        }
+
+        // Build unified sql output config from outputs to replace
+        $unifiedSqlOutput = [];
+        foreach ($configGroupIds as $configGroupId) {
+            $dbResult = $pearDB->query(
+                "SELECT * FROM cfg_centreonbroker_info
+                WHERE config_id = $configId AND config_group = 'output' AND config_group_id = $configGroupId"
+            );
+            while ($row = $dbResult->fetch()) {
+                $unifiedSqlOutput[$row['config_key']] = array_merge($unifiedSqlOutput[$row['config_key']] ?? [], $row);
+                $unifiedSqlOutput[$row['config_key']]['config_group_id'] = $nextConfigGroupId;
+            }
+        }
+        if (empty($unifiedSqlOutput)) {
+            throw new \Exception("Cannot find conf for unified sql from cfg_centreonbroker_info table");
+        }
+
+        $unifiedSqlOutput['name']['config_value'] = str_replace(
+            ['sql', 'perfdata'],
+            'unified-sql',
+            $unifiedSqlOutput['name']['config_value']
+        );
+        $unifiedSqlOutput['type']['config_value'] = 'unified_sql';
+        $unifiedSqlOutput['blockId']['config_value'] = "{$outputTag}_{$unifiedSqlTypeId}";
+
+        // Insert new output
+        $queryRows = [];
+        $bindedValues = [];
+        $columnNames = null;
+        foreach ($unifiedSqlOutput as $configKey => $configInput) {
+            $columnNames = $columnNames ?? implode(", ", array_keys($configInput));
+
+            $queryKeys = [];
+            foreach ($configInput as $key => $value) {
+                $queryKeys[] = ":" . $configKey . '_' . $key;
+                if (in_array($key, ['config_key', 'config_value', 'config_group'])) {
+                    $bindedValues[':' . $configKey . '_' . $key] = ['value' => $value, 'type' => \PDO::PARAM_STR];
+                } else {
+                    $bindedValues[':' . $configKey . '_' . $key] = ['value' => $value, 'type' => \PDO::PARAM_INT];
+                }
+            }
+            if (! empty($queryKeys)) {
+                $queryRows[] = '(' . implode(', ', $queryKeys) . ')';
+            }
+        }
+
+        if (! empty($queryRows) && $columnNames !== null) {
+            $query = "INSERT INTO cfg_centreonbroker_info ($columnNames) VALUES ";
+            $query .= implode(', ', $queryRows);
+
+            $stmt = $pearDB->prepare($query);
+            foreach ($bindedValues as $key => $value) {
+                $stmt->bindValue($key, $value['value'], $value['type']);
+            }
+            $stmt->execute();
+        }
+
+        // Delete deprecated outputs
+        $bindedValues = [];
+        foreach ($configGroupIds as $index => $configGroupId) {
+            $bindedValues[':id_' . $index] = $configGroupId;
+        }
+
+        $stmt = $pearDB->prepare(
+            "DELETE FROM cfg_centreonbroker_info
+            WHERE config_id = $configId
+            AND config_group = 'output'
+            AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
+        );
+        foreach ($bindedValues as $key => $value) {
+            $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+        }
+        $stmt->execute();
+    }
+}
+
+/**
+ * Configure api user in centreon gorgone configuration file
+ * and create user in database if needed
+ *
+ * @param CentreonDB $pearDB
+ */
+function configureGorgoneApiUser(CentreonDB $pearDB): void
+{
+    $gorgoneUser = null;
+
+    $apiConfigurationFile = getGorgoneApiConfigurationFilePath();
+    if ($apiConfigurationFile !== null && is_writable($apiConfigurationFile)) {
+        $apiConfigurationContent = file_get_contents($apiConfigurationFile);
+        if (
+            preg_match('/@GORGONE_USER@/', $apiConfigurationContent)
+            && preg_match('/@GORGONE_PASSWORD@/', $apiConfigurationContent)
+        ) {
+            $gorgoneUser = 'centreon-gorgone';
+            $gorgonePassword = generatePassword();
+            file_put_contents(
+                $apiConfigurationFile,
+                str_replace(
+                    ['@GORGONE_USER@', '@GORGONE_PASSWORD@'],
+                    [$gorgoneUser, $gorgonePassword],
+                    $apiConfigurationContent,
+                ),
+            );
+
+            createGorgoneUser(
+                $pearDB,
+                $gorgoneUser,
+                password_hash($gorgonePassword, CentreonAuth::PASSWORD_HASH_ALGORITHM)
+            );
+        }
+    }
+}
+
+/**
+ * Create centreon-gorgone user in database
+ *
+ * @param CentreonDB $pearDB
+ * @param string $userAlias
+ * @param string $hashedPassword
+ */
+function createGorgoneUser(CentreonDB $pearDB, string $userAlias, string $hashedPassword): void
+{
+    $statementCreateUser = $pearDB->prepare(
+        "INSERT INTO `contact`
+        (`timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`,
+        `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`,
+        `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`,
+        `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`)
+        VALUES(1, 1, :gorgoneUser, :gorgoneUser, 'en_US.UTF-8', 'n', 'n', 'gorgone@localhost', NULL, NULL,
+        '0', '1', 'txt', '1', 'local', NULL, '0')"
+    );
+    $statementCreateUser->bindValue(":gorgoneUser", $userAlias, \PDO::PARAM_STR);
+    $statementCreateUser->execute();
+
+    $statementCreatePassword = $pearDB->prepare(
+        "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+        SELECT :gorgonePassword, c.contact_id, (SELECT UNIX_TIMESTAMP(NOW()))
+        FROM contact c
+        WHERE c.contact_alias = :gorgoneUser"
+    );
+    $statementCreatePassword->bindValue(":gorgoneUser", $userAlias, \PDO::PARAM_STR);
+    $statementCreatePassword->bindValue(":gorgonePassword", $hashedPassword, \PDO::PARAM_STR);
+    $statementCreatePassword->execute();
+}
+
+/**
+ * Exclude Gorgone / MBI / MAP users from password policy
+ *
+ * @param CentreonDB $pearDB
+ */
+function excludeUsersFromPasswordPolicy(CentreonDB $pearDB): void
+{
+    $usersToExclude = [
+        ':bi' => 'CBIS',
+        ':map' => 'centreon-map'
+    ];
+
+    $gorgoneUser = getGorgoneApiUser();
+    if ($gorgoneUser !== null) {
+        $usersToExclude[':gorgone'] = $gorgoneUser;
+    }
+
+    $statement = $pearDB->prepare(
+        "INSERT INTO `password_expiration_excluded_users` (provider_configuration_id, user_id)
+        SELECT pc.id, c.contact_id
+        FROM `provider_configuration` pc, `contact` c
+        WHERE pc.name = 'local'
+        AND c.contact_alias IN (" . implode(',', array_keys($usersToExclude)) . ")
+        GROUP BY pc.id, c.contact_id
+        ON DUPLICATE KEY UPDATE provider_configuration_id = provider_configuration_id"
+    );
+
+    foreach ($usersToExclude as $userToExcludeParam => $usersToExcludeValue) {
+        $statement->bindValue($userToExcludeParam, $usersToExcludeValue, \PDO::PARAM_STR);
+    }
+
+    $statement->execute();
+}
+
+/**
+ * Get centreon-gorgone api user from configuration file
+ *
+ * @return string|null
+ */
+function getGorgoneApiUser(): ?string
+{
+    $gorgoneUser = null;
+
+    $apiConfigurationFile = getGorgoneApiConfigurationFilePath();
+    if ($apiConfigurationFile !== null) {
+        $configuration = Yaml::parseFile($apiConfigurationFile);
+
+        if (isset($configuration['gorgone']['tpapi'][0]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][0]['username'];
+        } elseif (isset($configuration['gorgone']['tpapi'][1]['username'])) {
+            $gorgoneUser = $configuration['gorgone']['tpapi'][1]['username'];
+        }
+    }
+
+    return $gorgoneUser;
+}
+
+/**
+ * Get centreon-gorgone api configuration file path if found and readable
+ *
+ * @return string|null
+ */
+function getGorgoneApiConfigurationFilePath(): ?string
+{
+    $gorgoneEtcPath = _CENTREON_ETC_ . '/../centreon-gorgone';
+
+    $apiConfigurationFile = $gorgoneEtcPath . '/config.d/31-centreon-api.yaml';
+
+    if (file_exists($apiConfigurationFile) && is_readable($apiConfigurationFile)) {
+        return $apiConfigurationFile;
+    }
+
+    return null;
 }

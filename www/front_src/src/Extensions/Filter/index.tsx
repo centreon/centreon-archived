@@ -1,4 +1,12 @@
-import * as React from 'react';
+import {
+  KeyboardEvent,
+  lazy,
+  RefObject,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   isEmpty,
@@ -50,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   loader: { display: 'flex', justifyContent: 'center' },
 }));
 
-const Criterias = React.lazy(() => import('./Criterias'));
+const Criterias = lazy(() => import('./Criterias'));
 
 const renderClearFilter = (onClear) => (): JSX.Element => {
   const { t } = useTranslation();
@@ -71,21 +79,20 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [isSearchFieldFocus, setIsSearchFieldFocused] = React.useState(false);
+  const [isSearchFieldFocus, setIsSearchFieldFocused] = useState(false);
 
   const [autocompleteAnchor, setAutocompleteAnchor] =
-    React.useState<HTMLDivElement | null>(null);
+    useState<HTMLDivElement | null>(null);
 
-  const searchRef = React.useRef<HTMLInputElement>();
+  const searchRef = useRef<HTMLInputElement>();
 
-  const [autoCompleteSuggestions, setAutoCompleteSuggestions] = React.useState<
+  const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState<
     Array<string>
   >([]);
 
-  const [cursorPosition, setCursorPosition] = React.useState(0);
+  const [cursorPosition, setCursorPosition] = useState(0);
 
-  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
-    React.useState(0);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
 
   const [search, setSearch] = useAtom(searchAtom);
   const currentFilter = useAtomValue(currentFilterCriteriasAtom);
@@ -94,7 +101,7 @@ const Filter = (): JSX.Element => {
 
   const open = Boolean(autocompleteAnchor);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedSuggestionIndex(0);
 
     if (isEmpty(search.charAt(dec(cursorPosition)).trim())) {
@@ -118,11 +125,11 @@ const Filter = (): JSX.Element => {
     setCursorPosition(searchRef?.current?.selectionStart || 0);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateCursorPosition();
   }, [searchRef?.current?.selectionStart]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEmpty(autoCompleteSuggestions)) {
       setAutocompleteAnchor(null);
 
@@ -218,7 +225,7 @@ const Filter = (): JSX.Element => {
     );
   };
 
-  const inputKey = (event: React.KeyboardEvent): void => {
+  const inputKey = (event: KeyboardEvent): void => {
     const enterKeyPressed = event.key === 'Enter';
     const tabKeyPressed = event.key === 'Tab';
     const escapeKeyPressed = event.key === 'Escape';
@@ -307,19 +314,19 @@ const Filter = (): JSX.Element => {
     <MemoizedFilter
       content={
         <div className={classes.container}>
-          <React.Suspense
+          <Suspense
             fallback={
               <LoadingSkeleton height={24} variant="circular" width={24} />
             }
           >
             <Criterias />
-          </React.Suspense>
+          </Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
             <div>
               <SearchField
                 fullWidth
                 EndAdornment={renderClearFilter(clearFilter)}
-                inputRef={searchRef as React.RefObject<HTMLInputElement>}
+                inputRef={searchRef as RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
                 onBlur={blurInput}

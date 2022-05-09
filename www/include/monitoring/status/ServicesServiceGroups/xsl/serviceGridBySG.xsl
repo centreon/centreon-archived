@@ -49,17 +49,11 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="href"><xsl:value-of select="s_listing_uri"/></xsl:attribute>
                                 <xsl:attribute name="isreact">true</xsl:attribute>
-                                <xsl:element name="img">
-                                    <xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
-                                    <xsl:attribute name="class">ico-18</xsl:attribute>
-                                </xsl:element>
+                                <xsl:value-of select="viewIcon" disable-output-escaping="yes"/>
                             </xsl:element>
                             <xsl:element name="a">
                                 <xsl:attribute name="href">main.php?p=20401&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
-                                <xsl:element name="img">
-                                    <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-                                    <xsl:attribute name="class">ico-18</xsl:attribute>
-                                </xsl:element>
+                                <xsl:value-of select="chartIcon" disable-output-escaping="yes"/>
                             </xsl:element>
                         </td>
                         <xsl:if test="//i/s = 1">

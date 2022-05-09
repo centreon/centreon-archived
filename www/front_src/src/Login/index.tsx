@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
@@ -83,6 +81,7 @@ const LoginPage = (): JSX.Element => {
           <Typography variant="h5">{t(labelLogin)}</Typography>
           <div>
             <Formik<LoginFormValues>
+              validateOnMount
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={submitLoginForm}

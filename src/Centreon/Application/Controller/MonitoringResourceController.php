@@ -25,17 +25,12 @@ namespace Centreon\Application\Controller;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Icon;
-use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Monitoring\Service;
 use JMS\Serializer\SerializerInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -44,8 +39,6 @@ use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 /**
@@ -118,6 +111,9 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebyhostandservice';
     private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
     private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
+    private const HOST_NOTIFICATION_POLICY_ROUTE = 'configuration.host.notification-policy';
+    private const SERVICE_NOTIFICATION_POLICY_ROUTE = 'configuration.service.notification-policy';
+    private const META_SERVICE_NOTIFICATION_POLICY_ROUTE = 'configuration.metaservice.notification-policy';
 
     // Groups for serialization
     public const SERIALIZER_GROUPS_LISTING = [
@@ -388,6 +384,13 @@ class MonitoringResourceController extends AbstractController
                     $parameters
                 )
             );
+
+            $resource->getLinks()->getEndpoints()->setNotificationPolicy(
+                $this->router->generate(
+                    self::SERVICE_NOTIFICATION_POLICY_ROUTE,
+                    $parameters
+                )
+            );
         } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
             $parameters = [
                 'metaId' => $resource->getId(),
@@ -434,6 +437,13 @@ class MonitoringResourceController extends AbstractController
                     $parameters
                 )
             );
+
+            $resource->getLinks()->getEndpoints()->setNotificationPolicy(
+                $this->router->generate(
+                    self::META_SERVICE_NOTIFICATION_POLICY_ROUTE,
+                    ['metaServiceId' => $resource->getId()]
+                )
+            );
         }
 
         if ($hostResource !== null) {
@@ -466,6 +476,13 @@ class MonitoringResourceController extends AbstractController
                 $this->router->generate(
                     self::HOST_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
+                )
+            );
+
+            $hostResource->getLinks()->getEndpoints()->setNotificationPolicy(
+                $this->router->generate(
+                    self::HOST_NOTIFICATION_POLICY_ROUTE,
+                    $parameters
                 )
             );
         }

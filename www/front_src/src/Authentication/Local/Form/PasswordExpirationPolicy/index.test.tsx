@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -29,7 +27,7 @@ import {
   labelDays,
   labelHour,
   labelMonth,
-  labelPasswordExpiration,
+  labelPasswordExpiresAfter,
   labelPasswordExpirationPolicy,
   labelMinimumTimeBetweenPasswordChanges,
   labelExcludedUsers,
@@ -113,16 +111,16 @@ describe('Password expiration policy', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
+    expect(screen.getByText(labelPasswordExpiresAfter)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelMonth}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelMonth}`),
     ).toBeInTheDocument();
 
     expect(screen.getByText(labelMonth)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
     ).toHaveTextContent('7');
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
@@ -148,9 +146,9 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
+    expect(screen.getByText(labelPasswordExpiresAfter)).toBeInTheDocument();
     userEvent.type(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
+      screen.getByLabelText(`${labelPasswordExpiresAfter} ${labelDays}`),
       '{selectall}{backspace}',
     );
 
@@ -270,6 +268,10 @@ describe('Password expiration policy', () => {
         }),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText('admin'));

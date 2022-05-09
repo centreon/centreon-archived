@@ -1,5 +1,6 @@
 import {
   allPass,
+  compose,
   concat,
   endsWith,
   filter,
@@ -26,7 +27,6 @@ import {
   startsWith,
   trim,
   without,
-  compose,
   __,
 } from 'ramda';
 import pluralize from 'pluralize';

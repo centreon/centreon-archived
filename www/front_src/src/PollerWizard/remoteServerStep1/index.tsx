@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { isNil, isEmpty, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -28,9 +28,7 @@ import {
 } from '../translatedLabels';
 import { Props, WaitList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
-
-const remoteServerWaitListEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
+import { remoteServerWaitListEndpoint } from '../api/endpoints';
 
 interface RemoteServerStepOneFormData {
   centreon_central_ip: string;
@@ -58,12 +56,12 @@ const RemoteServerWizardStepOne = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [waitList, setWaitList] = React.useState<Array<WaitList> | null>(null);
-  const [initialized, setInitialized] = React.useState(false);
-  const [inputTypeManual, setInputTypeManual] = React.useState(true);
+  const [waitList, setWaitList] = useState<Array<WaitList> | null>(null);
+  const [initialized, setInitialized] = useState(false);
+  const [inputTypeManual, setInputTypeManual] = useState(true);
 
   const [stepOneFormData, setStepOneFormData] =
-    React.useState<RemoteServerStepOneFormData>({
+    useState<RemoteServerStepOneFormData>({
       centreon_central_ip: '',
       centreon_folder: '/centreon/',
       db_password: '',
@@ -74,7 +72,7 @@ const RemoteServerWizardStepOne = ({
       server_name: '',
     });
 
-  const [error, setError] = React.useState<RemoteServerStepOneFormDataError>({
+  const [error, setError] = useState<RemoteServerStepOneFormDataError>({
     centreon_central_ip: '',
     centreon_folder: '',
     db_password: '',
@@ -154,11 +152,11 @@ const RemoteServerWizardStepOne = ({
   const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
 
-  React.useEffect(() => {
+  useEffect(() => {
     getWaitList();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (waitList) {
       const platform = waitList.find(
         (server) => server.ip === stepOneFormData.server_ip,
@@ -172,7 +170,7 @@ const RemoteServerWizardStepOne = ({
     }
   }, [stepOneFormData.server_ip]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(waitList) || initialized) {
       return;
     }

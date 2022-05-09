@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { difference, min, max, isNil } from 'ramda';
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';

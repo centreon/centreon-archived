@@ -1,19 +1,22 @@
-import * as React from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
+  setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
@@ -28,7 +31,6 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   icon: {
-    color: theme.palette.text.primary,
     fontSize: 26,
   },
   list: {
@@ -46,20 +48,27 @@ const NavigationMenu = ({
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
-  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
-  const [currentTop, setCurrentTop] = React.useState<number>();
-  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = React.useState<
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [currentTop, setCurrentTop] = useState<number>();
+  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = useState<
     number | undefined
   >(undefined);
-  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = React.useState<
+  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
   const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
     hoveredNavigationItemsAtom,
   );
+  const user = useAtomValue(userAtom);
+
+  const setHoveredNavigationItemsDerived = useUpdateAtom(
+    setHoveredNavigationItemsDerivedAtom,
+  );
+
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -82,15 +91,23 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
-    setHoveredNavigationItems({
-      ...hoveredNavigationItems,
-      level_0: currentPage,
-    });
+    setHoveredNavigationItemsDerived({ currentPage, levelName });
+    discardTimeout();
+  };
+
+  const discardTimeout = (): void => {
+    if (isNil(timeoutRef.current)) {
+      return;
+    }
+    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
-    setHoveredIndex(null);
-    setHoveredNavigationItems(null);
+    discardTimeout();
+    timeoutRef.current = setTimeout((): void => {
+      setHoveredIndex(null);
+      setHoveredNavigationItems(null);
+    }, 500);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
@@ -215,7 +232,7 @@ const NavigationMenu = ({
     setHoveredNavigationItems(null);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
       const filteredResult = flatten(searchedItems || []).filter(Boolean);
@@ -233,7 +250,11 @@ const NavigationMenu = ({
 
   return useMemoComponent({
     Component: (
-      <List className={classes.list} onMouseLeave={handleLeave}>
+      <List
+        className={classes.list}
+        onMouseEnter={discardTimeout}
+        onMouseLeave={handleLeave}
+      >
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
@@ -253,7 +274,7 @@ const NavigationMenu = ({
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
-                onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
+                onMouseEnter={(e: MouseEvent<HTMLElement>): void =>
                   hoverItem({ currentPage: item, e, index })
                 }
               />
@@ -280,6 +301,7 @@ const NavigationMenu = ({
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
       selectedNavigationItems,
+      user,
       hoveredNavigationItems,
     ],
   });

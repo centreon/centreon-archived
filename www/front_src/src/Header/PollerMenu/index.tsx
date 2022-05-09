@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
@@ -94,12 +94,12 @@ const PollerMenu = (): JSX.Element | null => {
     pollerConfigurationPageNumber,
   );
 
-  const [issues, setIssues] = React.useState<Issues | null>(null);
-  const [pollerCount, setPollerCount] = React.useState<PollerData | number>(0);
-  const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
-  const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
-  const [toggled, setToggled] = React.useState<boolean>(false);
-  const interval = React.useRef<number>();
+  const [issues, setIssues] = useState<Issues | null>(null);
+  const [pollerCount, setPollerCount] = useState<PollerData | number>(0);
+  const [isExporting, setIsExportingConfiguration] = useState<boolean>();
+  const [isAllowed, setIsAllowed] = useState<boolean>(true);
+  const [toggled, setToggled] = useState<boolean>(false);
+  const interval = useRef<number>();
   const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
     httpCodesBypassErrorSnackbar: [401],
@@ -115,7 +115,7 @@ const PollerMenu = (): JSX.Element | null => {
     setToggled(!toggled);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadPollerData();
 
     interval.current = window.setInterval(() => {
@@ -215,13 +215,14 @@ const PollerMenu = (): JSX.Element | null => {
                 );
               })
             ) : (
-              <Typography
-                className={clsx(classes.label, classes.pollerDetailRow)}
-                variant="body2"
-              >
-                <div>{t(labelAllPollers)}</div>
-                {pollerCount}
-              </Typography>
+              <div className={classes.pollerDetailRow}>
+                <Typography className={classes.label} variant="body2">
+                  {t(labelAllPollers)}
+                </Typography>
+                <Typography className={classes.label} variant="body2">
+                  {pollerCount as number}
+                </Typography>
+              </div>
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>

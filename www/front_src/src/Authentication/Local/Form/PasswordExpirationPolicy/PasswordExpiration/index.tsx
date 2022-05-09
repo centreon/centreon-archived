@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -10,7 +10,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelPasswordExpiration } from '../../../translatedLabels';
+import { labelPasswordExpiresAfter } from '../../../translatedLabels';
 import { getField } from '../../utils';
 import TimeInputs from '../../../TimeInputs';
 import { TimeInputConfiguration } from '../../../models';
@@ -51,7 +51,7 @@ const PasswordExpiration = (): JSX.Element => {
     object: errors,
   });
 
-  const minDaysOption = React.useMemo(
+  const minDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ months: 1 }).asMilliseconds(),
@@ -62,7 +62,7 @@ const PasswordExpiration = (): JSX.Element => {
     [passwordExpirationValue],
   );
 
-  const maxDaysOption = React.useMemo(
+  const maxDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ years: 1 }).asMilliseconds(),
@@ -82,10 +82,10 @@ const PasswordExpiration = (): JSX.Element => {
     Component: (
       <div className={classes.container}>
         <div className={classes.passwordExpiration}>
-          <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
+          <FormLabel>{t(labelPasswordExpiresAfter)}</FormLabel>
           <TimeInputs
             baseName={passwordExpirationFieldName}
-            inputLabel={labelPasswordExpiration}
+            inputLabel={labelPasswordExpiresAfter}
             maxDuration={twelveMonths}
             timeInputConfigurations={timeInputConfiguration}
             timeValue={passwordExpirationValue}
@@ -100,7 +100,7 @@ const PasswordExpiration = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordExpirationValue, passwordExpirationError],
+    memoProps: [passwordExpirationValue, passwordExpirationError, classes],
   });
 };
 

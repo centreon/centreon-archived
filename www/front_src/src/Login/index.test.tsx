@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Provider } from 'jotai';
 import mockDate from 'mockdate';
 import { BrowserRouter } from 'react-router-dom';
@@ -43,7 +41,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-jest.mock('../assets/centreon.png');
+jest.mock('../assets/logo-centreon-colors.png');
 jest.mock('../assets/centreon-wallpaper-xl.jpg');
 jest.mock('../assets/centreon-wallpaper-lg.jpg');
 jest.mock('../assets/centreon-wallpaper-sm.jpg');
@@ -93,6 +91,12 @@ const retrievedProvidersConfiguration = [
     name: 'ldap',
   },
 ];
+
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
+};
 
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
@@ -150,6 +154,9 @@ describe('Login Page', () => {
     mockDate.set(mockNow);
     mockedAxios.get
       .mockResolvedValueOnce({
+        data: retrievedTranslations,
+      })
+      .mockResolvedValueOnce({
         data: retrievedWeb,
       })
       .mockResolvedValueOnce({
@@ -188,7 +195,9 @@ describe('Login Page', () => {
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
-    expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    });
     expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
       'href',
       '/centreon/authentication/providers/configurations/openid',
@@ -273,7 +282,9 @@ describe('Login Page', () => {
       expect(screen.getByLabelText(labelConnect)).toBeDisabled();
     });
 
-    expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    await waitFor(() => {
+      expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    });
   });
 
   it('displays the password when the corresponding action is clicked', () => {

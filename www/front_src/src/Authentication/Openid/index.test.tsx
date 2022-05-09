@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
@@ -13,6 +11,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelActivation } from '../translatedLabels';
 
 import {
   labelAuthorizationEndpoint,
@@ -101,16 +100,20 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     expect(
       screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
     ).toBeChecked();
     expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
@@ -129,7 +132,7 @@ describe('Openid configuration form', () => {
     expect(screen.getByLabelText(labelEndSessionEndpoint)).toHaveValue(
       '/logout',
     );
-    expect(screen.getByLabelText(labelScopes)).toBeInTheDocument();
+    expect(screen.getByLabelText(`${labelScopes}`)).toBeInTheDocument();
     expect(screen.getByText('openid')).toBeInTheDocument();
     expect(screen.getByLabelText(labelLoginClaimValue)).toHaveValue('sub');
     expect(screen.getByLabelText(labelClientID)).toHaveValue('client_id');
@@ -140,7 +143,7 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(
         labelUseBasicAuthenticatonForTokenEndpointAuthentication,
       ),
-    ).toBeChecked();
+    ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
   });
 
@@ -154,6 +157,10 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelBaseUrl),
       '{selectall}{backspace}invalid base url',
@@ -165,7 +172,7 @@ describe('Openid configuration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
       'invalid domain',
     );
     userEvent.keyboard('{Enter}');
@@ -177,7 +184,7 @@ describe('Openid configuration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
       '127.0.0.1111',
     );
     userEvent.keyboard('{Enter}');
@@ -200,6 +207,10 @@ describe('Openid configuration form', () => {
         authenticationProvidersEndpoint(Provider.Openid),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -241,6 +252,10 @@ describe('Openid configuration form', () => {
         authenticationProvidersEndpoint(Provider.Openid),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(

@@ -459,6 +459,8 @@ button.ui-button::-moz-focus-inner {
 	font-size: .9em;
 	border-collapse: collapse;
 	margin: 0 0 .4em;
+	background-color: var(--ui-datepicker-table-background-color);
+	color: var(--ui-datepicker-table-font-color);
 }
 .ui-datepicker th {
 	padding: .7em .3em;

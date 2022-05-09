@@ -1,7 +1,7 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { pick } from 'ramda';
 
@@ -26,11 +26,7 @@ import {
 } from '../translatedLabels';
 import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
-
-const getPollersEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
-const wizardFormEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
+import { getPollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 interface StepTwoFormData {
   linked_remote_master: string;
@@ -45,14 +41,12 @@ const PollerWizardStepTwo = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pollers, setPollers] = React.useState<Array<PollerRemoteList>>([]);
-  const [stepTwoFormData, setStepTwoFormData] = React.useState<StepTwoFormData>(
-    {
-      linked_remote_master: '',
-      linked_remote_slaves: [],
-      open_broker_flow: false,
-    },
-  );
+  const [pollers, setPollers] = useState<Array<PollerRemoteList>>([]);
+  const [stepTwoFormData, setStepTwoFormData] = useState<StepTwoFormData>({
+    linked_remote_master: '',
+    linked_remote_slaves: [],
+    open_broker_flow: false,
+  });
 
   const { sendRequest: getPollersRequest } = useRequest<
     Array<PollerRemoteList>
@@ -131,7 +125,7 @@ const PollerWizardStepTwo = ({
     .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
     .map(pick(['id', 'name']));
 
-  React.useEffect(() => {
+  useEffect(() => {
     getPollers();
   }, []);
 

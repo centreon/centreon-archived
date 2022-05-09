@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, Suspense } from 'react';
 
 import { isNil, propOr } from 'ramda';
 import { useHref } from 'react-router-dom';
@@ -26,14 +26,14 @@ const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
         {Object.entries(hooks)
           .filter(([hook]) => hook.includes(path))
           .map(([, parameters]) => {
-            const HookComponent = React.lazy(() =>
+            const HookComponent = lazy(() =>
               dynamicImport(basename, parameters),
             );
 
             return (
-              <React.Suspense fallback={<MenuSkeleton width={29} />} key={path}>
+              <Suspense fallback={<MenuSkeleton width={29} />} key={path}>
                 <HookComponent {...rest} />
-              </React.Suspense>
+              </Suspense>
             );
           })}
       </>

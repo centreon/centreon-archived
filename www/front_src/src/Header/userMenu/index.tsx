@@ -1,16 +1,30 @@
-import * as React from 'react';
+import { MouseEvent, RefObject, useEffect, useRef, useState } from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
 
-import { Button, Typography, Paper, Badge, Tooltip } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  Badge,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText,
+  Popper,
+  ListItemButton,
+  ListItemIcon as MUIListItemIcon,
+  Fade,
+} from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
-import { makeStyles } from '@mui/styles';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { makeStyles, styled } from '@mui/styles';
 
 import {
   postData,
@@ -34,6 +48,9 @@ import {
 
 import { userEndpoint } from './api/endpoint';
 import {
+  labelCopyAutologinLink,
+  labelEditProfile,
+  labelLogout,
   labelPasswordWillExpireIn,
   labelProfile,
   labelYouHaveBeenLoggedOut,
@@ -55,12 +72,17 @@ interface UserData {
   username: string | null;
 }
 
+const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
+  '& .MuiSvgIcon-root': {
+    color: theme.palette.common.white,
+  },
+}));
+
 const useStyles = makeStyles((theme) => ({
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    width: theme.spacing(14),
   },
   hiddenInput: {
     height: theme.spacing(0),
@@ -69,58 +91,23 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
-  itemLink: {
+  menu: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: theme.spacing(1),
-    textDecoration: 'none',
-  },
-  listUnstyled: {
-    listStyle: 'none',
-    margin: theme.spacing(0),
-    paddingLeft: theme.spacing(0),
-  },
-  logoutLink: {
-    display: 'grid',
-    justifyContent: 'flex-end',
-  },
-  nameAliasContainer: {
-    display: 'grid',
-    gridTemplateColumns: '2fr 1fr',
+    maxWidth: 230,
+    width: '100%',
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
-  subMenu: {
-    boxSizing: 'border-box',
-    display: 'none',
-    height: '100vh',
-    left: 0,
-    overflowY: 'auto',
-    position: 'absolute',
-    top: '100%',
-    width: '100%',
-    zIndex: theme.zIndex.mobileStepper,
+  popper: {
+    overflow: 'hidden',
+    zIndex: theme.zIndex.tooltip,
   },
-  subMenuActive: {
-    display: 'block',
-  },
-  subMenuItemContent: {
-    backgroundColor: theme.palette.common.black,
-    padding: theme.spacing(1),
-  },
-  submenuUserEdit: {
-    color: theme.palette.common.white,
-    float: 'right',
-    textDecorationLine: 'underline',
-    textTransform: 'capitalize',
-  },
-  userButton: {
-    display: 'flex',
-    marginTop: theme.spacing(1),
+  text: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   userIcon: {
     color: theme.palette.common.white,
@@ -131,7 +118,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: theme.spacing(0.75, 2.75, 0.75, 7.6),
+    marginLeft: theme.spacing(0.5),
+    padding: theme.spacing(0.75, 2.75, 0.75, 1.5),
     position: 'relative',
   },
   wrapRightUserItems: {
@@ -146,12 +134,13 @@ const UserMenu = (): JSX.Element => {
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();
 
-  const [copied, setCopied] = React.useState(false);
-  const [data, setData] = React.useState<UserData | null>(null);
-  const [toggled, setToggled] = React.useState(false);
-  const profile = React.useRef<HTMLDivElement>();
-  const autologinNode = React.useRef<HTMLTextAreaElement>();
-  const refreshTimeout = React.useRef<NodeJS.Timeout>();
+  const [copied, setCopied] = useState(false);
+  const [data, setData] = useState<UserData | null>(null);
+  const [anchorEl, setAnchorEl] = useState<SVGSVGElement | null>(null);
+  const profile = useRef<HTMLDivElement>();
+  const userMenu = useRef<HTMLDivElement>();
+  const autologinNode = useRef<HTMLTextAreaElement>();
+  const refreshTimeout = useRef<NodeJS.Timeout>();
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
   });
@@ -206,8 +195,17 @@ const UserMenu = (): JSX.Element => {
     }, 60000);
   };
 
-  const toggle = (): void => {
-    setToggled(!toggled);
+  const toggle = (event: MouseEvent<SVGSVGElement>): void => {
+    if (anchorEl) {
+      setAnchorEl(null);
+
+      return;
+    }
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeUserMenu = (): void => {
+    setAnchorEl(null);
   };
 
   const onCopy = (): void => {
@@ -222,13 +220,28 @@ const UserMenu = (): JSX.Element => {
   };
 
   const handleClick = (e): void => {
-    if (!profile.current || profile.current.contains(e.target)) {
+    const isProfileClicked =
+      !profile.current || profile.current.contains(e.target);
+    const isUserMenuClicked =
+      !userMenu.current || userMenu.current.contains(e.target);
+
+    if (isProfileClicked || isUserMenuClicked) {
       return;
     }
-    setToggled(false);
+    setAnchorEl(null);
   };
 
-  React.useEffect(() => {
+  const navigateToUserSettingsAndCloseUserMenu = (): void => {
+    navigate(`/main.php?p=${editProfileTopologyPage}&o=c`);
+    closeUserMenu();
+  };
+
+  const logoutFromSession = (e: MouseEvent): void => {
+    e.preventDefault();
+    logout();
+  };
+
+  useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
     loadUserData();
 
@@ -258,11 +271,18 @@ const UserMenu = (): JSX.Element => {
     data.password_remaining_time as number,
   );
 
+  const primaryTypographyProps = {
+    className: classes.text,
+  };
+
   return (
-    <div className={classnames(classes.wrapRightUser)}>
-      <div className={classnames(classes.wrapRightUserItems)}>
+    <div className={clsx(classes.wrapRightUser)}>
+      <div
+        className={clsx(classes.wrapRightUserItems)}
+        ref={profile as RefObject<HTMLDivElement>}
+      >
         <Clock />
-        <div ref={profile as React.RefObject<HTMLDivElement>}>
+        <div>
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire
@@ -279,107 +299,101 @@ const UserMenu = (): JSX.Element => {
             >
               <UserIcon
                 aria-label={t(labelProfile)}
-                className={classnames(classes.userIcon)}
+                className={clsx(classes.userIcon)}
                 fontSize="large"
                 onClick={toggle}
               />
             </Badge>
           </Tooltip>
-          <div
-            className={classnames(classes.subMenu, {
-              [classes.subMenuActive]: toggled,
-            })}
+          <Popper
+            transition
+            anchorEl={anchorEl}
+            className={classes.popper}
+            open={not(isNil(anchorEl))}
+            placement="bottom-end"
           >
-            <div className={classes.subMenuItemContent}>
-              <ul className={classnames(classes.listUnstyled)}>
-                <li>
-                  <div
-                    className={classnames(
-                      classes.itemLink,
-                      classes.nameAliasContainer,
-                    )}
-                  >
-                    <div>
-                      <Typography className={classes.fullname} variant="body2">
-                        {data.fullname}
-                      </Typography>
-                      <Typography
-                        style={{ wordWrap: 'break-word' }}
-                        variant="body2"
-                      >
-                        {t('as')}
-                        {` ${data.username}`}
-                      </Typography>
-                    </div>
-                    {allowEditProfile && (
-                      <Link
-                        className={classnames(classes.submenuUserEdit)}
-                        to={`/main.php?p=${editProfileTopologyPage}&o=c`}
-                        onClick={toggle}
-                      >
-                        <Typography variant="body2">
-                          {t('Edit profile')}
-                        </Typography>
-                      </Link>
-                    )}
-                  </div>
-                </li>
-                {data.autologinkey && (
-                  <Paper className={classes.userButton}>
-                    <Button
-                      fullWidth
-                      endIcon={copied ? <CheckIcon /> : <FileCopyIcon />}
-                      size="small"
-                      onClick={onCopy}
-                    >
-                      {t('Copy autologin link')}
-                    </Button>
-
-                    <textarea
-                      readOnly
-                      className={classnames(classes.hiddenInput)}
-                      id="autologin-input"
-                      ref={
-                        autologinNode as React.RefObject<HTMLTextAreaElement>
-                      }
-                      value={autolink}
-                    />
-                  </Paper>
-                )}
-              </ul>
-              {not(passwordIsNotYetAboutToExpire) && (
-                <div
-                  className={classnames(
-                    classes.subMenuItemContent,
-                    classes.passwordExpiration,
-                  )}
+            {({ TransitionProps }): JSX.Element => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper
+                  className={classes.menu}
+                  ref={userMenu as RefObject<HTMLDivElement>}
+                  sx={{
+                    display: isNil(anchorEl) ? 'none' : 'block',
+                  }}
                 >
-                  <Typography variant="body2">
-                    {t(labelPasswordWillExpireIn)}:
-                  </Typography>
-                  <Typography variant="body2">
-                    {formattedPasswordRemainingTime}
-                  </Typography>
-                </div>
-              )}
-              <div className={classnames(classes.logoutLink)}>
-                <Paper className={classes.userButton}>
-                  <Button
-                    fullWidth
-                    aria-label={t('Logout')}
-                    href="index.php"
-                    size="small"
-                    onClick={(e: React.MouseEvent): void => {
-                      e.preventDefault();
-                      logout();
-                    }}
-                  >
-                    {t('Logout')}
-                  </Button>
+                  <List dense>
+                    <ListItem>
+                      <ListItemText
+                        primaryTypographyProps={primaryTypographyProps}
+                      >
+                        {data.fullname}
+                      </ListItemText>
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primaryTypographyProps={primaryTypographyProps}
+                      >{`${t('as')} ${data.username}`}</ListItemText>
+                    </ListItem>
+                    {not(passwordIsNotYetAboutToExpire) && (
+                      <ListItem>
+                        <div className={classes.passwordExpiration}>
+                          <Typography variant="body2">
+                            {t(labelPasswordWillExpireIn)}:
+                          </Typography>
+                          <Typography variant="body2">
+                            {formattedPasswordRemainingTime}
+                          </Typography>
+                        </div>
+                      </ListItem>
+                    )}
+                    {allowEditProfile && (
+                      <ListItem disableGutters>
+                        <ListItemButton
+                          onClick={navigateToUserSettingsAndCloseUserMenu}
+                        >
+                          <ListItemIcon>
+                            <SettingsIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText>{t(labelEditProfile)}</ListItemText>
+                        </ListItemButton>
+                      </ListItem>
+                    )}
+                    {data.autologinkey && (
+                      <ListItem disableGutters>
+                        <ListItemButton onClick={onCopy}>
+                          <ListItemIcon>
+                            {copied ? (
+                              <CheckIcon fontSize="small" />
+                            ) : (
+                              <FileCopyIcon fontSize="small" />
+                            )}
+                          </ListItemIcon>
+                          <ListItemText>
+                            {t(labelCopyAutologinLink)}
+                          </ListItemText>
+                        </ListItemButton>
+                        <textarea
+                          readOnly
+                          className={clsx(classes.hiddenInput)}
+                          id="autologin-input"
+                          ref={autologinNode as RefObject<HTMLTextAreaElement>}
+                          value={autolink}
+                        />
+                      </ListItem>
+                    )}
+                    <ListItem disableGutters>
+                      <ListItemButton onClick={logoutFromSession}>
+                        <ListItemIcon>
+                          <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>{t(labelLogout)}</ListItemText>
+                      </ListItemButton>
+                    </ListItem>
+                  </List>
                 </Paper>
-              </div>
-            </div>
-          </div>
+              </Fade>
+            )}
+          </Popper>
         </div>
       </div>
     </div>
