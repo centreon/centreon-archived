@@ -1,0 +1,72 @@
+{
+    "result":[
+       {
+          "children":[
+             {
+                "groups":[
+                   
+                ],
+                "is_react":true,
+                "label":"Resources Status",
+                "options":null,
+                "page":"200",
+                "show":true,
+                "url":"/monitoring/resources"
+             },
+             {
+                "groups":[
+                   {
+                      "children":[
+                         {
+                            "is_react":false,
+                            "label":"Services Grid",
+                            "options":"&o=svcOV_pb",
+                            "page":"20204",
+                            "show":true,
+                            "url":"./include/monitoring/status/monitoringService.php"
+                         },
+                         {
+                            "is_react":false,
+                            "label":"Services by Hostgroup",
+                            "options":"&o=svcOVHG_pb",
+                            "page":"20209",
+                            "show":true,
+                            "url":"./include/monitoring/status/monitoringService.php"
+                         }
+                      ],
+                      "label":"By Status"
+                   }
+                ],
+                "is_react":false,
+                "label":"Status Details",
+                "options":null,
+                "page":"202",
+                "show":true,
+                "url":null
+             }
+          ],
+          "color":"85B446",
+          "icon":"monitoring",
+          "is_react":false,
+          "label":"Monitoring",
+          "menu_id":"Monitoring",
+          "options":"",
+          "page":"2",
+          "show":true,
+          "url":null
+       },
+       {
+         
+          "color":"319ED5",
+          "icon":"configuration",
+          "is_react":false,
+          "label":"Configuration",
+          "menu_id":"Configuration",
+          "options":null,
+          "page":"6",
+          "show":true,
+          "url":null
+       }
+    ],
+    "status":true
+ }
