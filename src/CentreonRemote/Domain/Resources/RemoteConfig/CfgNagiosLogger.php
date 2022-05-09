@@ -19,29 +19,25 @@
  *
  */
 
-declare(strict_types=1);
+namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
-interface ExternalModuleGenerationInterface
+use CentreonRemote\Domain\Resources\DefaultConfig\CfgNagiosLogger as DefaultLoggerCfg;
+
+/**
+ * Get broker configuration template
+ */
+class CfgNagiosLogger
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
+     * Get template configuration
      *
-     * @return bool
+     * @param int $nagiosId
+     * @return array<string,string|int>
      */
-    public function isEngineObject(): bool;
-
-    /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
-     */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public static function getConfiguration(int $nagiosId): array
+    {
+        $cfg = DefaultLoggerCfg::getConfiguration();
+        $cfg['cfg_nagios_id'] = $nagiosId;
+        return $cfg;
+    }
 }

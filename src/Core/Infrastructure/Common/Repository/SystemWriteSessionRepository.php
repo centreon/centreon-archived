@@ -21,27 +21,20 @@
 
 declare(strict_types=1);
 
-interface ExternalModuleGenerationInterface
+namespace Core\Infrastructure\Common\Repository;
+
+use Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface;
+
+class SystemWriteSessionRepository implements WriteSessionRepositoryInterface
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
-     *
-     * @return bool
+     * @inheritDoc
      */
-    public function isEngineObject(): bool;
-
-    /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
-     */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public function updateSession(string $sessionId, string $key, mixed $value): void
+    {
+        session_id($sessionId);
+        session_start();
+        $_SESSION[$key] = $value;
+        session_write_close();
+    }
 }

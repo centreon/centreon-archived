@@ -21,27 +21,16 @@
 
 declare(strict_types=1);
 
-interface ExternalModuleGenerationInterface
+namespace Core\Infrastructure\Common\Repository;
+
+class RepositoryException extends \Exception
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
-     *
-     * @return bool
+     * @param string $method
+     * @return self
      */
-    public function isEngineObject(): bool;
-
-    /**
-     * Indicates if this class is designed to generate something for Broker.
-     *
-     * @return bool
-     */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public static function notImplemented(string $method): self
+    {
+        return new self($method . ' not implemented');
+    }
 }

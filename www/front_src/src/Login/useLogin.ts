@@ -24,6 +24,7 @@ import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallati
 import useUser from '../Main/useUser';
 import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
 import routeMap from '../reactRoutes/routeMap';
+import useInitializeTranslation from '../Main/useInitializeTranslation';
 
 import postLogin from './api';
 import { providersConfigurationDecoder, redirectDecoder } from './api/decoder';
@@ -67,10 +68,13 @@ const useLogin = (): UseLoginState => {
     request: getData,
   });
 
+  const { getInternalTranslation, getExternalTranslation } =
+    useInitializeTranslation();
+
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
   const navigate = useNavigate();
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
   const setPasswordResetInformations = useUpdateAtom(
@@ -114,7 +118,9 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(redirectUri));
+        getInternalTranslation().finally(() =>
+          loadUser()?.then(() => navigate(redirectUri)),
+        );
       })
       .catch((error) =>
         checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
@@ -124,7 +130,9 @@ const useLogin = (): UseLoginState => {
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
   useEffect(() => {
-    i18n.changeLanguage?.(getBrowserLocale());
+    getExternalTranslation().then(() =>
+      i18n.changeLanguage?.(getBrowserLocale()),
+    );
 
     getProvidersConfiguration({
       endpoint: providersConfigurationEndpoint,

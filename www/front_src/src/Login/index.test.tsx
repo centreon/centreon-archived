@@ -89,6 +89,12 @@ const retrievedProvidersConfiguration = [
   },
 ];
 
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
+};
+
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -145,6 +151,9 @@ describe('Login Page', () => {
   beforeEach(() => {
     mockDate.set(mockNow);
     mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedTranslations,
+      })
       .mockResolvedValueOnce({
         data: retrievedProvidersConfiguration,
       })

@@ -15310,7 +15310,7 @@ msgstr ""
 # msgstr ""
 
 # msgid "This will not be used because the number of attempts is not defined"
-# msgstr "" 
+# msgstr ""
 
 # msgid "Status type"
 # msgstr ""
@@ -15529,4 +15529,25 @@ msgstr ""
 # msgstr ""
 
 # msgid "Please contact your administrator"
+# msgstr ""
+
+# msgid "Broker events"
+# msgstr ""
+
+# msgid "Events"
+# msgstr ""
+
+# msgid "Functions"
+# msgstr ""
+
+# msgid "Process"
+# msgstr ""
+
+# msgid "Runtime"
+# msgstr ""
+
+# msgid "Log destination"
+# msgstr ""
+
+# msgid "Error"
 # msgstr ""

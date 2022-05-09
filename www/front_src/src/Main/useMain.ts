@@ -1,21 +1,8 @@
 import { useEffect } from 'react';
 
-import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
-import {
-  and,
-  includes,
-  isEmpty,
-  isNil,
-  mergeAll,
-  not,
-  or,
-  pipe,
-  reduce,
-  toPairs,
-} from 'ramda';
-import { initReactI18next } from 'react-i18next';
+import { and, includes, isEmpty, isNil, not, or } from 'ramda';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { getData, useRequest, useSnackbar } from '@centreon/ui';
@@ -24,13 +11,13 @@ import { userAtom } from '@centreon/ui-context';
 import { platformInstallationStatusDecoder } from '../api/decoders';
 import { platformInstallationStatusEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
-import { translationEndpoint } from '../App/endpoint';
 import reactRoutes from '../reactRoutes/routeMap';
 import useFederatedComponents from '../federatedModules/useFederatedModules';
 
 import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import useUser, { areUserParametersLoadedAtom } from './useUser';
 import usePlatformVersions from './usePlatformVersions';
+import useInitializeTranslation from './useInitializeTranslation';
 
 const useMain = (): void => {
   const { sendRequest: getPlatformInstallationStatus } =
@@ -38,11 +25,10 @@ const useMain = (): void => {
       decoder: platformInstallationStatusDecoder,
       request: getData,
     });
-  const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
-    httpCodesBypassErrorSnackbar: [500],
-    request: getData,
-  });
   const { showErrorMessage } = useSnackbar();
+
+  const { getBrowserLocale, getInternalTranslation, i18next } =
+    useInitializeTranslation();
 
   const [platformInstallationStatus, setPlatformInstallationStatus] = useAtom(
     platformInstallationStatusAtom,
@@ -50,31 +36,12 @@ const useMain = (): void => {
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
-  const loadUser = useUser(i18next.changeLanguage);
+  const loadUser = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParameter] = useSearchParams();
   const { getPlatformVersions } = usePlatformVersions();
   useFederatedComponents();
-
-  const getBrowserLocale = (): string => navigator.language.slice(0, 2);
-
-  const initializeI18n = (retrievedTranslations?: ResourceLanguage): void => {
-    i18next.use(initReactI18next).init({
-      fallbackLng: 'en',
-      keySeparator: false,
-      lng: getBrowserLocale(),
-      nsSeparator: false,
-      resources: pipe(
-        toPairs as (t) => Array<[string, ResourceLanguage]>,
-        reduce(
-          (acc, [language, values]) =>
-            mergeAll([acc, { [language]: { translation: values } }]),
-          {},
-        ),
-      )(retrievedTranslations) as Resource,
-    });
-  };
 
   const displayAuthenticationError = (): void => {
     const authenticationError = searchParameter.get('authenticationError');
@@ -91,23 +58,12 @@ const useMain = (): void => {
 
     getPlatformVersions();
 
-    getTranslations({
-      endpoint: translationEndpoint,
-    })
-      .then((retrievedTranslations) => {
-        initializeI18n(retrievedTranslations);
-      })
-      .catch(() => {
-        initializeI18n();
-      })
-      .finally(() => {
-        getPlatformInstallationStatus({
-          endpoint: platformInstallationStatusEndpoint,
-        }).then((retrievedPlatformInstallationStatus) => {
-          console.log(retrievedPlatformInstallationStatus);
-          setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
-        });
-      });
+    getPlatformInstallationStatus({
+      endpoint: platformInstallationStatusEndpoint,
+    }).then((retrievedPlatformInstallationStatus) => {
+      console.log(retrievedPlatformInstallationStatus);
+      setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
+    });
   }, []);
 
   useEffect((): void => {
@@ -117,6 +73,14 @@ const useMain = (): void => {
 
     loadUser();
   }, [platformInstallationStatus]);
+
+  useEffect((): void => {
+    if (not(areUserParametersLoaded)) {
+      return;
+    }
+
+    getInternalTranslation();
+  }, [areUserParametersLoaded]);
 
   useEffect(() => {
     const canChangeToBrowserLanguage = and(
