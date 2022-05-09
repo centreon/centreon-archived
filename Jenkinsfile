@@ -285,23 +285,23 @@ try {
     'rpm packaging centos7': {
       node {
         checkoutCentreonBuild()
-        sh 'rm -rf output'
+        deleteDir 'output'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'
+        deleteDir 'output'
       }
     },
     'rpm packaging alma8': {
       node {
         checkoutCentreonBuild()
-        sh 'rm -rf output'
+        deleteDir 'output'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
         archiveArtifacts artifacts: "rpms-alma8.tar.gz"
         stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'
+        deleteDir 'output'
       }
     },
     'Debian 11 packaging': {
