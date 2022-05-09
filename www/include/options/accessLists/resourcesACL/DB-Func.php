@@ -196,49 +196,73 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 function duplicateGroups($idTD, $acl_id, $pearDB)
 {
     $query = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) " .
-        "SELECT '$acl_id' AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$idTD'";
-    $pearDB->query($query);
+        "SELECT :acl_id AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :acl_res_id";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
     //host categories
     $query = "INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id) " .
-        "(SELECT $acl_id, hc_id FROM acl_resources_hc_relations WHERE acl_res_id = " . $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, hc_id FROM acl_resources_hc_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
     //hostgroups
     $query = "INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) " .
-        "(SELECT $acl_id, hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = " . $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //host exceptions
     $query = "INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) " .
-        "(SELECT $acl_id, host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = " .
-        $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //hosts
     $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) " .
-        "(SELECT $acl_id, host_host_id FROM acl_resources_host_relations WHERE acl_res_id = " .
-        $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, host_host_id FROM acl_resources_host_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //meta
     $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) " .
-        "(SELECT $acl_id, meta_id FROM acl_resources_meta_relations WHERE acl_res_id = " . $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, meta_id FROM acl_resources_meta_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //poller
     $query = "INSERT INTO acl_resources_poller_relations (acl_res_id, poller_id) " .
-        "(SELECT $acl_id, poller_id FROM acl_resources_poller_relations WHERE acl_res_id = " .
-        $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, poller_id FROM acl_resources_poller_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //service categories
     $query = "INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) " .
-        "(SELECT $acl_id, sc_id FROM acl_resources_sc_relations WHERE acl_res_id = " . $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, sc_id FROM acl_resources_sc_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 
     //service groups
     $query = "INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) " .
-        "(SELECT $acl_id, sg_id FROM acl_resources_sg_relations WHERE acl_res_id = " . $pearDB->escape($idTD) . ")";
-    $pearDB->query($query);
+        "(SELECT :acl_id, sg_id FROM acl_resources_sg_relations WHERE acl_res_id = :acl_res_id)";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':acl_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->bindValue(':acl_res_id', (int) $idTD, \PDO::PARAM_INT);
+    $statement->execute();
 }
 
 /**
@@ -398,15 +422,20 @@ function updateGroups($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_res_group_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_groups");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) 
+            VALUES (:acl_res_id, :acl_group_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':acl_group_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -425,15 +454,20 @@ function updateHosts($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_host_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_host_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_hosts");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) 
+            VALUES (:acl_res_id, :host_host_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':host_host_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -452,15 +486,20 @@ function updatePollers($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_poller_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_poller_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_pollers");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_poller_relations (acl_res_id, poller_id) 
+            VALUES (:acl_res_id, :poller_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_poller_relations (acl_res_id, poller_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $res = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':poller_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -479,15 +518,20 @@ function updateHostexcludes($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_hostexclude");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) 
+                    VALUES (:acl_res_id, :host_host_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':host_host_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -506,15 +550,20 @@ function updateHostGroups($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_hostgroup");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) 
+                    VALUES (:acl_res_id, :hg_hg_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':hg_hg_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -533,15 +582,19 @@ function updateServiceCategories($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_sc");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES (:acl_res_id, :sc_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':sc_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -560,15 +613,19 @@ function updateHostCategories($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_hc_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_hc_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_hc");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id) VALUES (:acl_res_id, :hc_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':hc_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -587,15 +644,19 @@ function updateServiceGroups($acl_id = null)
         return;
     }
 
-    $pearDB->query("DELETE FROM acl_resources_sg_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_sg_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_sg");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES (:acl_res_id, :sg_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':sg_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
@@ -614,15 +675,20 @@ function updateMetaServices($acl_id = null)
         return;
     }
 
-    $dbResult = $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $statement = $pearDB->prepare("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = :acl_res_id");
+    $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+    $statement->execute();
     $ret = array();
     $ret = $form->getSubmitValue("acl_meta");
     if (isset($ret)) {
+        $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) 
+                    VALUES (:acl_res_id, :meta_id)";
+        $statement = $pearDB->prepare($query);
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('" .
-                    $acl_id . "', '" . $value . "')";
-                $dbResult = $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $acl_id, \PDO::PARAM_INT);
+                $statement->bindValue(':meta_id', (int) $value, \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }
