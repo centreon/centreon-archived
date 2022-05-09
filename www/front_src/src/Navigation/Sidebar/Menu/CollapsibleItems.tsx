@@ -112,7 +112,6 @@ const useStyles = makeStyles((theme) => ({
       collapseScrollMaxWidth
         ? theme.spacing(collapseScrollMaxWidth)
         : theme.spacing(collapseWidth),
-    overflow: 'hidden',
     position: 'fixed',
     textOverflow: 'ellipsis',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
