@@ -77,9 +77,15 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
-        $parameters['base_uri'] = trim($this->getBaseUri(), '/');
+        $parameters['base_uri'] = $this->getBaseUri();
+        if (!empty($parameters['base_uri'])) {
+            $parameters['base_uri'] .= '/';
+        }
 
-        return $this->router->generate($name, $parameters, $referenceType);
+        $generatedRoute = $this->router->generate($name, $parameters, $referenceType);
+
+        // remove double slashes
+        return preg_replace('/(?<!:)(\/{2,})/', '$2/', $generatedRoute);
     }
 
     /**

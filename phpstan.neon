@@ -7,6 +7,7 @@ parameters:
     - %currentWorkingDirectory%/src/Security
     - %currentWorkingDirectory%/src/Utility
     - %currentWorkingDirectory%/src/Core
+    - %currentWorkingDirectory%/tests/php/Core
     - %currentWorkingDirectory%/tests/php/Centreon
     - %currentWorkingDirectory%/tests/php/Security
     - %currentWorkingDirectory%/tests/php/Utility
