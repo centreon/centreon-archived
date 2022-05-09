@@ -53,12 +53,12 @@ trait HttpUrlTrait
             return '';
         }
 
-        $protocol = $this->httpServerBag?->has('HTTPS') && $this->httpServerBag->get('HTTPS') !== 'off'
+        $protocol = $this->httpServerBag->has('HTTPS') && $this->httpServerBag->get('HTTPS') !== 'off'
             ? 'https'
             : 'http';
 
         $port = null;
-        if ($this->httpServerBag?->get('SERVER_PORT')) {
+        if ($this->httpServerBag->get('SERVER_PORT')) {
             if (
                 ($protocol === 'http' && $this->httpServerBag->get('SERVER_PORT') !== '80')
                 || ($protocol === 'https' && $this->httpServerBag->get('SERVER_PORT') !== '443')
