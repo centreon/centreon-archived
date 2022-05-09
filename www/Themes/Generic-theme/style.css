@@ -683,11 +683,6 @@ a.btc {
     background: var(--bt-info-background-color) !important;
 }
 
-.bt_back_install {
-    background: none !important;
-    color: var(--color-mine-shaft) !important;
-}
-
 .bt_warning {
     background: var(--bt-warning-background-color) !important;
 }
