@@ -51,6 +51,8 @@ CentreonSession::start();
  * Already connected
  */
 if (isset($_SESSION["centreon"])) {
+    $pearDB = new CentreonDB();
+    manageRedirection($_SESSION["centreon"], $pearDB);
     return;
 }
 
@@ -158,42 +160,7 @@ if (isset($_GET["autologin"]) && $_GET["autologin"]) {
         $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
         $securityAuthenticationTokenStatement->execute();
 
-        $headerRedirection = "./main.php";
-        $argP = filter_var(
-            $_POST['p'] ?? $_GET["p"] ?? null,
-            FILTER_VALIDATE_INT
-        );
-        if ($argP !== false) {
-            $headerRedirection .= "?p=" . $argP;
-            foreach ($_GET as $parameter => $value) {
-                if (! in_array($parameter, AUTOLOGIN_FIELDS)) {
-                    $sanitizeParameter = htmlspecialchars($parameter);
-                    $sanitizeValue = filter_input(INPUT_GET, $parameter);
-                    if (! empty($sanitizeParameter) && $sanitizeValue !== false) {
-                        $headerRedirection .= '&' . $parameter . '=' . $value;
-                    }
-                }
-            }
-        } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-            // get more details about the default page
-            $stmt = $pearDB->prepare(
-                "SELECT topology_url, is_react FROM topology WHERE topology_page = ? LIMIT 0, 1"
-            );
-            $pearDB->execute($stmt, [$centreon->user->default_page]);
-
-            if ($stmt->rowCount() && ($topologyData = $stmt->fetch()) && $topologyData['is_react']) {
-                // redirect to the react path
-                $headerRedirection = '.' . $topologyData['topology_url'];
-            } else {
-                $headerRedirection .= "?p=" . $centreon->user->default_page;
-
-                $argMin = $_POST['min'] ?? $_GET["min"] ?? null;
-                if ($argMin === '1') {
-                    $headerRedirection .= '&min=1';
-                }
-            }
-        }
-        header("Location: " . $headerRedirection);
+        manageRedirection($centreon, $pearDB);
         return;
     }
 }
@@ -219,4 +186,50 @@ function updateCentreonBaseUri(): void
 
         file_put_contents($indexHtmlPath, $indexHtmlContent);
     }
+}
+
+/**
+ * Redirect to user default page
+ *
+ * @param Centreon $centreon
+ * @param CentreonDB $pearDB
+ */
+function manageRedirection(Centreon $centreon, CentreonDB $pearDB): void
+{
+    $headerRedirection = "./main.php";
+    $argP = filter_var(
+        $_POST['p'] ?? $_GET["p"] ?? null,
+        FILTER_VALIDATE_INT
+    );
+    if ($argP !== false) {
+        $headerRedirection .= "?p=" . $argP;
+        foreach ($_GET as $parameter => $value) {
+            if (! in_array($parameter, AUTOLOGIN_FIELDS)) {
+                $sanitizeParameter = htmlspecialchars($parameter);
+                $sanitizeValue = filter_input(INPUT_GET, $parameter);
+                if (! empty($sanitizeParameter) && $sanitizeValue !== false) {
+                    $headerRedirection .= '&' . $parameter . '=' . $value;
+                }
+            }
+        }
+    } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+        // get more details about the default page
+        $stmt = $pearDB->prepare(
+            "SELECT topology_url, is_react FROM topology WHERE topology_page = ? LIMIT 0, 1"
+        );
+        $pearDB->execute($stmt, [$centreon->user->default_page]);
+
+        if ($stmt->rowCount() && ($topologyData = $stmt->fetch()) && $topologyData['is_react']) {
+            // redirect to the react path
+            $headerRedirection = '.' . $topologyData['topology_url'];
+        } else {
+            $headerRedirection .= "?p=" . $centreon->user->default_page;
+
+            $argMin = $_POST['min'] ?? $_GET["min"] ?? null;
+            if ($argMin === '1') {
+                $headerRedirection .= '&min=1';
+            }
+        }
+    }
+    header("Location: " . $headerRedirection);
 }
