@@ -212,7 +212,7 @@ function manageRedirection(Centreon $centreon, CentreonDB $pearDB): void
                 }
             }
         }
-    } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+    } elseif (isset($centreon->user->default_page) && $centreon->user->default_page !== '') {
         // get more details about the default page
         $stmt = $pearDB->prepare(
             "SELECT topology_url, is_react FROM topology WHERE topology_page = ? LIMIT 0, 1"
