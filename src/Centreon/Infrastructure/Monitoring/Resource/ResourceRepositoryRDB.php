@@ -334,9 +334,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $resource->setIcon($icon);
         }
 
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $parent = null;
-        } else {
+        $parent = null;
+        if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
             // parse parent Resource object
             $parent = EntityCreator::createEntityByArray(
                 ResourceEntity::class,
