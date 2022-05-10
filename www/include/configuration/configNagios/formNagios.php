@@ -478,7 +478,7 @@ foreach ($debugLevel as $key => $val) {
         $val,
         [
             "id" => "debug" . $key,
-            "onClick" => in_array($key, ['-1', '0'], true)
+            "onClick" => in_array((string) $key, ['-1', '0'], true)
                 ? "unCheckOthers('debug-level', this.name);"
                 : "unCheckAllAndNaught('debug-level');",
             'class' => 'debug-level'
