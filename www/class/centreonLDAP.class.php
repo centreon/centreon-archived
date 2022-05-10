@@ -595,7 +595,6 @@ class CentreonLDAP
             return [];
         }
 
-
         $info = ldap_get_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . $info["count"]);
         ldap_free_result($sr);
