@@ -51,7 +51,7 @@
             <td>
                 {if !$isRemote}
                     {if $mode_access == 'w'}
-                        <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
+                        <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" isreact="true" target="_top">
                             <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
                         </a>
                         <a href="{$addBtn.link}" class="{$addBtn.class}">
