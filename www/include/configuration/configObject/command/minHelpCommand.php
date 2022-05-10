@@ -91,7 +91,6 @@ if ($commandId !== false) {
 $search = ['#S#', '#BS#', '../', "\t"];
 $replace = ['/', "\\", '/', ' '];
 $command = str_replace($search, $replace, $command);
-$command = escapeshellcmd($command);
 
 $tab = explode(' ', $command);
 $commandPath = realpath($tab[0]) === false ? $tab[0] : realpath($tab[0]);
@@ -103,6 +102,7 @@ $allowedPaths = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 $msg = "Command not allowed";
 if (preg_match('#(' . implode('|', $allowedPaths) . ')#', $commandPath)) {
     $command = $commandPath . ' ' . $plugin . ' ' . $mode . ' --help';
+    $command = escapeshellcmd($command);
     $stdout = shell_exec($command . " 2>&1");
     $msg = str_replace("\n", "<br />", $stdout);
 }
