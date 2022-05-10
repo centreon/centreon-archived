@@ -16,7 +16,6 @@ import {
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
-  labelResource,
   labelHost,
   labelState,
   labelAcknowledged,
@@ -32,6 +31,7 @@ import {
   labelSearchOptions,
   labelStatusType,
   labelSoft,
+  labelType,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
@@ -86,7 +86,7 @@ type FilterParameter = [
 ];
 
 const filterParams: Array<FilterParameter> = [
-  [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
+  [labelType, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
     labelAcknowledged,
@@ -688,7 +688,7 @@ describe(Filter, () => {
         getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
       );
 
-      userEvent.click(getByText(labelResource));
+      userEvent.click(getByText(labelType));
       expect(getByText(labelHost)).toBeInTheDocument();
 
       userEvent.click(getByText(labelState));
@@ -835,7 +835,7 @@ describe(Filter, () => {
         getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
       );
 
-      fireEvent.click(getByText(labelResource));
+      fireEvent.click(getByText(labelType));
       expect(getByText(labelHost)).toBeInTheDocument();
 
       fireEvent.click(getByText(labelState));
