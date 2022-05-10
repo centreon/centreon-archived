@@ -67,7 +67,7 @@ const PasswordCasePolicy = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordLengthError, passwordLengthValue],
+    memoProps: [passwordLengthError, passwordLengthValue, classes],
   });
 };
 

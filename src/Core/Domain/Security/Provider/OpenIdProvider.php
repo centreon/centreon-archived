@@ -55,9 +55,9 @@ class OpenIdProvider implements OpenIdProviderInterface
     private ProviderToken $providerToken;
 
     /**
-     * @var ProviderToken
+     * @var null|ProviderToken
      */
-    private ProviderToken $refreshToken;
+    private ?ProviderToken $refreshToken = null;
 
     /**
      * @var array<string,mixed>
@@ -111,7 +111,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(): ProviderToken
+    public function getProviderRefreshToken(): ?ProviderToken
     {
         return $this->refreshToken;
     }

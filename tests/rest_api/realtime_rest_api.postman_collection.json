@@ -5518,7 +5518,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=id",
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=service_id",
 									"protocol": "http",
 									"host": [
 										"{{url}}"
@@ -5543,7 +5543,7 @@
 										},
 										{
 											"key": "fields",
-											"value": "id"
+											"value": "service_id"
 										}
 									]
 								}
@@ -5624,7 +5624,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,service_id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
 									"protocol": "http",
 									"host": [
 										"{{url}}"
@@ -5649,7 +5649,7 @@
 										},
 										{
 											"key": "fields",
-											"value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality"
+											"value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,service_id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality"
 										}
 									]
 								}

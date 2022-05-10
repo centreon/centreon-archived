@@ -367,7 +367,7 @@ class Generate
                 ) {
                     $externalModule->generateFromPollerId(
                         (int) $this->current_poller['id'],
-                        $this->current_poller['localhost']
+                        (bool) $this->current_poller['localhost']
                     );
                 }
             }
