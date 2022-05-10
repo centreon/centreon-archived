@@ -66,7 +66,6 @@ module.exports = merge(baseConfig, devConfig, {
     host: '0.0.0.0',
     hot: true,
     port: devServerPort,
-
     static: modules.map(({ name, getDirectoryPath }) => ({
       directory: path.resolve(getDirectoryPath(name)),
       publicPath,

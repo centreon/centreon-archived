@@ -202,6 +202,7 @@ const HostStatusCounter = (): JSX.Element => {
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
+              data-testid="submenu-hosts"
               iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
@@ -222,8 +223,10 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu hosts count all"
                     submenuCount={numeral(data.total).format()}
                     submenuTitle={t('All')}
+                    titleTestId="submenu hosts title all"
                   />
                 </Link>
                 <Link
@@ -236,11 +239,13 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu hosts count down"
                     dotColored="red"
                     submenuCount={`${numeral(data.down.unhandled).format(
                       '0a',
                     )}/${numeral(data.down.total).format('0a')}`}
                     submenuTitle={t('Down')}
+                    titleTestId="submenu hosts title down"
                   />
                 </Link>
                 <Link
@@ -253,11 +258,13 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu hosts count unreachable"
                     dotColored="gray"
                     submenuCount={`${numeral(data.unreachable.unhandled).format(
                       '0a',
                     )}/${numeral(data.unreachable.total).format('0a')}`}
                     submenuTitle={t('Unreachable')}
+                    titleTestId="submenu hosts title unreachable"
                   />
                 </Link>
                 <Link
@@ -270,9 +277,11 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu hosts count ok"
                     dotColored="green"
                     submenuCount={numeral(data.ok).format()}
                     submenuTitle={t('Up')}
+                    titleTestId="submenu hosts title ok"
                   />
                 </Link>
                 <Link
@@ -285,9 +294,11 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu hosts count pending"
                     dotColored="blue"
                     submenuCount={numeral(data.pending).format()}
                     submenuTitle={t('Pending')}
+                    titleTestId="submenu hosts title pending"
                   />
                 </Link>
               </SubmenuItems>

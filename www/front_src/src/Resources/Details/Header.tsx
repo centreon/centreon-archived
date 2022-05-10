@@ -27,6 +27,7 @@ import {
   labelConfigure,
   labelCopyLink,
   labelLinkCopied,
+  labelShortcuts,
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import { Parent, ResourceUris } from '../models';
@@ -169,6 +170,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
               <Link
                 aria-label={`${t(labelConfigure)}_${details.name}`}
                 className={classes.resourceNameConfigurationLink}
+                data-testid={labelConfigure}
                 href={resourceConfigurationUri}
               >
                 <SettingsIcon
@@ -194,9 +196,13 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip resourceUris={resourceUris} />
+      <ShortcutsTooltip
+        data-testid={labelShortcuts}
+        resourceUris={resourceUris}
+      />
       <IconButton
         ariaLabel={t(labelCopyLink)}
+        data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
         onClick={copyResourceLink}

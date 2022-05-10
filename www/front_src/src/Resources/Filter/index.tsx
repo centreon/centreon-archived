@@ -90,6 +90,7 @@ const renderClearFilter = (onClear) => (): JSX.Element => {
   return (
     <IconButton
       ariaLabel={t(labelClearFilter)}
+      data-testid={labelClearFilter}
       size="small"
       title={t(labelClearFilter)}
       onClick={onClear}
@@ -554,7 +555,7 @@ const Filter = (): JSX.Element => {
             <Criterias />
           </Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
-            <div>
+            <div data-testid={labelClearFilter}>
               <SearchField
                 fullWidth
                 EndAdornment={renderClearFilter(clearFilter)}
