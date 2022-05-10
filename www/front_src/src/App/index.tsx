@@ -10,7 +10,6 @@ import PageLoader from '../components/PageLoader';
 
 import useApp from './useApp';
 
-
 const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
@@ -61,25 +60,25 @@ const App = (): JSX.Element => {
   const min = hasMinArgument();
 
   return (
-      <Suspense fallback={<PageLoader />}>
-        <div className={classes.wrapper}>
+    <Suspense fallback={<PageLoader />}>
+      <div className={classes.wrapper}>
+        {not(min) && (
+          <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
+            <Navigation />
+          </Suspense>
+        )}
+        <div className={classes.content} id="content">
           {not(min) && (
-            <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
-              <Navigation />
+            <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
+              <Header />
             </Suspense>
           )}
-          <div className={classes.content} id="content">
-            {not(min) && (
-              <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
-                <Header />
-              </Suspense>
-            )}
-            <div className={classes.mainContent}>
-              <MainRouter />
-            </div>
+          <div className={classes.mainContent}>
+            <MainRouter />
           </div>
         </div>
-      </Suspense>
+      </div>
+    </Suspense>
   );
 };
 
