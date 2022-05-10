@@ -163,17 +163,21 @@ class CentreonUser
     public function checkUserStatus($sid, $pearDB)
     {
         $query1 = "SELECT contact_admin, contact_id FROM session, contact " .
-            "WHERE session.session_id = '" . $sid .
-            "' AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
-        $dbResult = $pearDB->query($query1);
-        $admin = $dbResult->fetch();
-        $dbResult->closeCursor();
+            "WHERE session.session_id = :session_id" .
+            " AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
+        $statement = $pearDB->prepare($query1);
+        $statement->bindValue(':session_id', $sid);
+        $statement->execute();
+        $admin = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         $query2 = "SELECT count(*) FROM `acl_group_contacts_relations` " .
-            "WHERE contact_contact_id = '" . $admin["contact_id"] . "'";
-        $dbResult = $pearDB->query($query2);
-        $admin2 = $dbResult->fetch();
-        $dbResult->closeCursor();
+            "WHERE contact_contact_id = :contact_id";
+        $statement = $pearDB->prepare($query2);
+        $statement->bindValue(':contact_id', (int)$admin["contact_id"], \PDO::PARAM_INT);
+        $statement->execute();
+        $admin2 = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         if ($admin["contact_admin"]) {
             unset($admin);
