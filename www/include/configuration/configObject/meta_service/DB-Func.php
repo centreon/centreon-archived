@@ -463,7 +463,7 @@ function updateMetaServiceContact($meta_id)
     /* Purge old relation */
     $queryPurge = "DELETE FROM meta_contact WHERE meta_id = :meta_id";
     $statement = $pearDB->prepare($queryPurge);
-    $statement->bindValue('meta_id', (int) $meta_id, \PDO::PARAM_INT);
+    $statement->bindValue(':meta_id', (int) $meta_id, \PDO::PARAM_INT);
     $statement->execute();
 
     /* Add relation between metaservice and contact */
