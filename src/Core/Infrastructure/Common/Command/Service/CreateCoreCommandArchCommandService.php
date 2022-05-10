@@ -8,6 +8,8 @@ use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\CommandUseCaseTempl
 use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryTemplate;
 use Core\Infrastructure\Common\Command\Model\ControllerTemplate\CommandControllerTemplate;
+use Core\Infrastructure\Common\Command\Model\FactoryTemplate\FactoryTemplate;
+use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
 use Core\Infrastructure\Common\Command\Model\PresenterTemplate\PresenterInterfaceTemplate;
 
 class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
@@ -41,6 +43,11 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
      * @var CommandControllerTemplate
      */
     private CommandControllerTemplate $commandControllerTemplate;
+
+    /**
+     * @var FactoryTemplate
+     */
+    private FactoryTemplate $factoryTemplate;
 
     /**
      * @param string $srcPath
@@ -82,9 +89,10 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 $this->writeRepositoryTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
-                    . $this->writeRepositoryTemplate->name
+                '<info>Creating Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->writeRepositoryTemplate->name . '</info>'
             );
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
@@ -94,9 +102,10 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
-                    . $this->repositoryInterfaceTemplate->name
+                '<info>Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name . '</info>'
             );
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -138,6 +147,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Creating Request : ' . $this->requestDtoTemplate->namespace . '\\'
                     . $this->requestDtoTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->requestDtoTemplate = new RequestDtoTemplate(
                 $filePath,
@@ -149,6 +159,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Using Existing Request : ' . $this->requestDtoTemplate->namespace . '\\'
                     . $this->requestDtoTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 
@@ -190,6 +201,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Creating Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
                     . $this->commandPresenterInterfaceTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
                 $filePath,
@@ -201,6 +213,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Using Existing Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
                     . $this->commandPresenterInterfaceTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 
@@ -243,6 +256,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Creating Presenter : ' . $this->commandPresenterTemplate->namespace . '\\'
                     . $this->commandPresenterTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->commandPresenterTemplate = new PresenterTemplate(
                 $filePath,
@@ -255,6 +269,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Using Existing Presenter : ' . $this->commandPresenterTemplate->namespace . '\\'
                     . $this->commandPresenterTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 
@@ -298,6 +313,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Creating Use Case : ' . $this->commandUseCaseTemplate->namespace . '\\'
                     . $this->commandUseCaseTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->commandUseCaseTemplate = new CommandUseCaseTemplate(
                 $filePath,
@@ -312,6 +328,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Using Existing Use Case : ' . $this->commandUseCaseTemplate->namespace . '\\'
                     . $this->commandUseCaseTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 
@@ -329,7 +346,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
     ): void {
         $useCaseName = $useCaseType . $modelName;
         $className = $useCaseName . 'Controller';
-        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '\\'
+        $filePath = $this->srcPath . '/Core/' . $modelName . '/Infrastructure/Api/' . $useCaseName . '/'
             . $className . '.php';
         $namespace = 'Core\\' . $modelName . '\\Infrastructure\\Api\\' . $useCaseName;
         if (!file_exists($filePath)) {
@@ -356,6 +373,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Creating Controller : ' . $this->commandControllerTemplate->namespace . '\\'
                     . $this->commandControllerTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->commandControllerTemplate = new CommandControllerTemplate(
                 $filePath,
@@ -370,21 +388,58 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
                 'Using Existing Controller : ' . $this->commandControllerTemplate->namespace . '\\'
                     . $this->commandControllerTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 
     /**
-     * Create the Unit tests files if they don't exist
+     * Create the Factory file if it doesn't exist
      *
      * @param OutputInterface $output
-     * @param string $modelName
-     * @param string $repositoryType
+     * @param ModelTemplate $modelTemplate
      */
     public function createFactoryIfNotExist(
         OutputInterface $output,
-        string $modelName,
-        string $repositoryType
+        ModelTemplate $modelTemplate,
     ): void {
-
+        $className = $modelTemplate->name . 'Factory';
+        $filePath = $this->srcPath . '/Core/' . $modelTemplate->name . '/Domain/Model/' . $className . '.php';
+        $namespace = 'Core\\' . $modelTemplate->name . '\\Domain\\Model';
+        if (!file_exists($filePath)) {
+            $this->factoryTemplate = new FactoryTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $modelTemplate
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->factoryTemplate->filePath,
+                $this->factoryTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Factory : ' . $this->factoryTemplate->namespace . '\\'
+                    . $this->factoryTemplate->name
+            );
+            $output->writeln($filePath);
+        } else {
+            $this->factoryTemplate = new FactoryTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                $modelTemplate,
+                true
+            );
+            $output->writeln(
+                'Using Existing Factory : ' . $this->factoryTemplate->namespace . '\\'
+                    . $this->factoryTemplate->name
+            );
+            $output->writeln($filePath);
+        }
     }
 }

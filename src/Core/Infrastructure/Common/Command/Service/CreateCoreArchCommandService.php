@@ -6,7 +6,6 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Core\Infrastructure\Common\Command\CreateCoreArchCommand;
 use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
@@ -61,48 +60,17 @@ class CreateCoreArchCommandService
         //Search for already existing models.
         $foundModels = $this->searchExistingModel($modelName);
         if (!empty($foundModels)) {
-            $output->writeln('');
-            $output->writeln('Some Models for [' . $modelName . '] has been found:');
-
-            // Extract namespace from files
-            $existingNamespace = [];
-            foreach ($foundModels as $foundModel) {
-                $output->writeln('- ' . $foundModel['namespace'] . '\\' . $modelName);
-                $existingNamespace[] = $foundModel['namespace'] . '\\' . $modelName;
-            }
-            $output->writeln('');
-
-            $questionUseExistingModel = new ConfirmationQuestion('would you like to use one of those models ? ', false);
-            $useExistingModel = $questionHelper->ask($input, $output, $questionUseExistingModel, false);
-
-            // Use an existing model.
-            if ($useExistingModel === true) {
-                $questionWhichExistingModelUsed = new ChoiceQuestion(
-                    'Which models would you like to use ?',
-                    $existingNamespace
-                );
-                $modelNamespace = $questionHelper->ask($input, $output, $questionWhichExistingModelUsed);
-                $namespaceValue = preg_replace('/\\\\' . $modelName . '$/', '', $modelNamespace);
-                $namespaceIndex = null;
-                foreach ($foundModels as $key => $foundModel) {
-                    if ($foundModel['namespace'] === $namespaceValue) {
-                        $namespaceIndex = $key;
-                        break;
-                    }
-                }
-
-                return new ModelTemplate(
-                    $foundModels[$namespaceIndex]['path'],
-                    $foundModels[$namespaceIndex]['namespace'],
-                    $modelName,
-                    true
-                );
-            }
+            return new ModelTemplate(
+                $foundModels['path'],
+                $foundModels['namespace'],
+                $modelName,
+                true
+            );
+            // }
         }
 
         // If the model doesn't exist or if the user want to create a new one.
-        $questionNewNamespace = new Question('In which namespace would you like to create your Model ? ');
-        $newNamespace = $questionHelper->ask($input, $output, $questionNewNamespace);
+        $newNamespace = 'Core\\' . $modelName . '\\Domain\\Model';
         $filePath = $this->srcPath . DIRECTORY_SEPARATOR . preg_replace("/\\\\/", DIRECTORY_SEPARATOR, $newNamespace) .
             DIRECTORY_SEPARATOR . $modelName . '.php';
 
@@ -113,7 +81,7 @@ class CreateCoreArchCommandService
      * Look for existing model with the same name.
      *
      * @param string $modelName
-     * @return array<int,array<string,string>>
+     * @return array<string,string>
      */
     private function searchExistingModel(string $modelName): array
     {
@@ -123,27 +91,26 @@ class CreateCoreArchCommandService
                 $this->srcPath . '/Core/' . $modelName . '/Domain/Model/' . $modelName . '.php'
             )
         );
+        $modelInfo = [];
+        if (! empty($modelsInfos)) {
+            $foundModel = array_shift($modelsInfos);
 
-        $foundModels = [];
-        $index = 0;
-        // Set file informations
-        foreach ($modelsInfos as $model) {
-            $foundModels[$index]['path'] = $model->getRealPath();
-            $fileContent = file($model->getRealPath());
+            // Set file informations
+            $modelInfo['path'] = $foundModel->getRealPath();
+            $fileContent = file($foundModel->getRealPath());
 
             // extract namespace
             foreach ($fileContent as $fileLine) {
                 if (strpos($fileLine, 'namespace') !== false) {
                     $parts = explode(' ', $fileLine);
                     $namespace = rtrim(trim($parts[1]), ';\n');
-                    $foundModels[$index]['namespace'] = $namespace;
+                    $modelInfo['namespace'] = $namespace;
                     break;
                 }
             }
-            $index++;
         }
 
-        return $foundModels;
+        return $modelInfo;
     }
 
     /**
@@ -177,8 +144,9 @@ class CreateCoreArchCommandService
         string $modelName,
         string $repositoryType
     ): void {
-        $filePath = $this->srcPath . '/Core/' . $modelName . '/Application/Repository/' . $repositoryType .
-        $modelName . 'RepositoryInterface.php';
+        $filePath = $this->srcPath . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . $modelName
+            . 'DIRECTORY_SEPARATOR' . 'Application' . 'DIRECTORY_SEPARATOR' . 'Repository' . DIRECTORY_SEPARATOR
+            . $repositoryType . $modelName . 'RepositoryInterface.php';
         $namespace = 'Core\\' . $modelName . '\\Application\\Repository';
         if (!file_exists($filePath)) {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
@@ -202,6 +170,7 @@ class CreateCoreArchCommandService
                 'Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
                     . $this->repositoryInterfaceTemplate->name
             );
+            $output->writeln($filePath);
         } else {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
@@ -213,6 +182,7 @@ class CreateCoreArchCommandService
                 'Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
                     . $this->repositoryInterfaceTemplate->name
             );
+            $output->writeln($filePath);
         }
     }
 }

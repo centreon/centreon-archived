@@ -81,10 +81,12 @@ class CreateCoreArchCommand extends Command
         if ($this->modelTemplate->exists === false) {
             $this->commandService->createModel($this->modelTemplate);
             $output->writeln('Creating Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
+            $output->writeln($this->modelTemplate->filePath);
         } else {
             $output->writeln(
                 'Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name
             );
+            $output->writeln($this->modelTemplate->filePath);
         }
         if ($this->isACommandUseCase()) {
             $this->createCommandArch($output);
@@ -115,6 +117,10 @@ class CreateCoreArchCommand extends Command
             $output,
             $this->modelTemplate->name,
             self::WRITE_REPOSITORY_TYPE
+        );
+        $this->commandArchCommandService->createFactoryIfNotExist(
+            $output,
+            $this->modelTemplate
         );
         $this->commandArchCommandService->createWriteRepositoryTemplateIfNotExist(
             $output,
@@ -153,6 +159,10 @@ class CreateCoreArchCommand extends Command
             $output,
             $this->modelTemplate->name,
             self::READ_REPOSITORY_TYPE
+        );
+        $this->queryArchCommandService->createFactoryIfNotExist(
+            $output,
+            $this->modelTemplate
         );
         $this->queryArchCommandService->createReadRepositoryTemplateIfNotExist(
             $output,
