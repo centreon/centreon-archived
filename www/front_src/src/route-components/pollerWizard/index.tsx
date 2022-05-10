@@ -1,6 +1,7 @@
 import { lazy, useState, Suspense } from 'react';
 
 import { equals, isNil, path } from 'ramda';
+import { Responsive } from '@visx/visx';
 
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -47,7 +48,7 @@ const steps = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  formContainer: {
+  wrapper: {
     margin: theme.spacing(2, 4),
   },
 }));
@@ -82,13 +83,19 @@ const PollerWizard = (): JSX.Element | null => {
   return (
     <BaseWizard>
       <ProgressBar activeStep={currentStep} steps={steps} />
-      <div className={classes.formContainer}>
+      <div className={classes.wrapper}>
         <Suspense fallback={<LoadingSkeleton />}>
-          <Form
-            changeServerType={changeServerType}
-            goToNextStep={goToNextStep}
-            goToPreviousStep={goToPreviousStep}
-          />
+          <Responsive.ParentSize>
+            {({ height }): JSX.Element => (
+              <div style={{ height }}>
+                <Form
+                  changeServerType={changeServerType}
+                  goToNextStep={goToNextStep}
+                  goToPreviousStep={goToPreviousStep}
+                />
+              </div>
+            )}
+          </Responsive.ParentSize>
         </Suspense>
       </div>
     </BaseWizard>
