@@ -188,4 +188,6 @@
     --service-unknown-font-color: var(--color-black);
     --list-ack-background-color: var(--color-horses-neck);
     --list-ack-hover-background-color: var(--list-one-hover-background-color);
+    --md-checkbox--disabled-border-color-before: var(--color-black-rgba-6);
+    --md-checkbox--disabled-checked-background-color-before: var(--color-black-rgba-54);
 }
