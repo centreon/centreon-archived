@@ -16641,6 +16641,12 @@ msgstr "Votre mot de passe expirera dans"
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
 
+msgid "Invalid event provided (%s)"
+msgstr "Evénement fourni invalide (%s)"
+
+msgid "Error when searching for the central engine configuration"
+msgstr "Erreur lors de la recherche de la configuration du moteur de collecte central"
+
 msgid "The value '%s' was expected to be a valid ip address"
 msgstr "La valeur '%s' devait être une adresse ip valide"
 
