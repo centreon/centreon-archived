@@ -64,6 +64,7 @@ class CentreonCustomView
     public const TOPOLOGY_PAGE_SET_ROTATE = 10305;
     public const TOPOLOGY_PAGE_DELETE_VIEW = 10306;
     public const TOPOLOGY_PAGE_ADD_VIEW = 10307;
+    public const TOPOLOGY_PAGE_UNLOAD_VIEW = 10307;
     public const TOPOLOGY_PAGE_SET_DEFAULT_VIEW = 10308;
 
     /**
@@ -208,6 +209,7 @@ class CentreonCustomView
         /* associate the called action with the toplogy page.
          * Special behaviour for the deleteWidget action which does not have any possible configuration in ACL Menus.
          * We do consider through that if user can create a widget then he also can delete it.
+         * Same concept for adding and unloading a custom view
          * Also "defaultEditMode" action has no link with ACL this action is authorized for all.
          */
         if ($action == 'defaultEditMode') {
@@ -222,6 +224,7 @@ class CentreonCustomView
             'setRotate' => self::TOPOLOGY_PAGE_SET_ROTATE,
             'deleteView' => self::TOPOLOGY_PAGE_DELETE_VIEW,
             'add' => self::TOPOLOGY_PAGE_ADD_VIEW,
+            'unload' => self::TOPOLOGY_PAGE_UNLOAD_VIEW,
             'setDefault' => self::TOPOLOGY_PAGE_SET_DEFAULT_VIEW
         ];
 
@@ -712,6 +715,54 @@ class CentreonCustomView
         }
 
         return $viewLoadId;
+    }
+
+    /**
+     * Unloads the Custom View attached to the customViewId
+     * @param int $customViewId
+     * @param bool $authorized
+     * @throws Exception
+     */
+    public function unloadCustomView(int $customViewId, bool $authorized)
+    {
+        if (!$authorized) {
+            throw new CentreonCustomViewException('You are not allowed to unload a custom view');
+        }
+
+        $isOwner = false;
+        $query = 'SELECT is_owner FROM custom_view_user_relation WHERE ' .
+                ' custom_view_id = :customViewId AND user_id = :userId';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customViewId', $customViewId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        if ($row = $stmt->fetch()) {
+            if ($row['is_owner'] == "1") {
+                $isOwner = true;
+            }
+        }
+
+        if ($isOwner) {
+            $query = 'UPDATE custom_view_user_relation SET is_consumed=0 WHERE ' .
+                ' custom_view_id = :customViewId AND user_id = :userId';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':customViewId', $customViewId, PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+        } else {
+            $query = 'DELETE FROM custom_view_user_relation WHERE ' .
+            ' custom_view_id = :customViewId AND user_id = :userId';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':customViewId', $customViewId, PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+        }
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
     }
 
     /**

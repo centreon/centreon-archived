@@ -109,6 +109,11 @@
         <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
         {/if}
 
+        <!-- Button for hiding a view -->
+        {if $aclAddView == 1}
+        <button class='hideView btnExtraAction btc bt_warning'>{t}Hide view{/t}</button>
+        {/if}
+
         <!-- Button for set default a view -->
         {if $aclSetDefault == 1}
         <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
@@ -441,6 +446,30 @@ function submitAddWidget() {
   });
 }
 
+/* Hide action */
+function submitHideView() {
+  var viewId = jQuery(
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
+  ).data('cvId');
+  jQuery.ajax({
+    type: "POST",
+    dataType: "xml",
+    url: "./include/home/customViews/action.php",
+    data: {
+      action: "unload",
+      custom_view_id: viewId
+    },
+    success :	function(response) {
+      var view = response.getElementsByTagName('custom_view_id');
+      if (typeof(view) != 'undefined') {
+        deleteTab(viewId);
+      } else if (typeof(error) != 'undefined') {
+        var errorMsg = error.item(0).firstChild.data;
+      }
+    }
+  });
+}
+
 /* Delete action */
 function submitDeleteView() {
   var viewId = jQuery(
@@ -703,6 +732,10 @@ jQuery(function () {
         jQuery("#deleteViewConfirm").centreonPopin({
             open: true
         });
+    });
+
+    jQuery('.hideView').button({ icons : { primary: 'ui-icon-closethick'}}).on('click', function () {
+        submitHideView();
     });
 
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {

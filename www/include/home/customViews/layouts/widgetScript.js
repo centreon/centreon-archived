@@ -53,10 +53,11 @@ jQuery(function () {
 
         if (!ownership) {
             jQuery('.shareView').button('disable');
+            jQuery('.deleteView').button('disable');
         } else {
             jQuery('.shareView').button('enable');
+            jQuery('.deleteView').button('enable');
         }
-        jQuery('.deleteView').button('enable');
 
         jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
             .find(".portlet-header")

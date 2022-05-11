@@ -217,6 +217,9 @@ try {
                 }
             }
             break;
+        case 'unload':
+            $viewObj->unloadCustomView($postInputs['custom_view_id'], $authorized);
+            break;
         case 'edit':
             if ($postInputs['custom_view_id']) {
                 $viewObj->updateCustomView(
