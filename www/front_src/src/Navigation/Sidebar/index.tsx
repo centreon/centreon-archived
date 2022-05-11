@@ -68,7 +68,7 @@ export interface Props {
   navigationData?: Array<Page>;
 }
 
-export default ({ navigationData }: Props): JSX.Element => {
+const SideBar = ({ navigationData }: Props): JSX.Element => {
   const [open, setOpen] = React.useState(false);
 
   const toggleNavigation = (): void => {
@@ -90,3 +90,5 @@ export default ({ navigationData }: Props): JSX.Element => {
     </Box>
   );
 };
+
+export default SideBar;
