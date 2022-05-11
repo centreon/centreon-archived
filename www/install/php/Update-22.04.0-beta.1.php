@@ -115,28 +115,6 @@ try {
         );
     }
 
-    // Centengine logger v2
-    if (
-        $pearDB->isColumnExist('cfg_nagios', 'log_archive_path') === 1
-        && $pearDB->isColumnExist('cfg_nagios', 'log_rotation_method') === 1
-        && $pearDB->isColumnExist('cfg_nagios', 'daemon_dumps_core') === 1
-    ) {
-        $errorMessage = "Unable to remove log_archive_path,log_rotation_method,daemon_dumps_core from cfg_nagios table";
-        $pearDB->query(
-            "ALTER TABLE `cfg_nagios`
-            DROP COLUMN `log_archive_path`,
-            DROP COLUMN `log_rotation_method`,
-            DROP COLUMN `daemon_dumps_core`"
-        );
-    }
-    if ($pearDB->isColumnExist('cfg_nagios', 'logger_version') === 1) {
-        $errorMessage = "Unable to add logger_version to cfg_nagios table";
-        $pearDB->query(
-            "ALTER TABLE `cfg_nagios`
-            ADD COLUMN `logger_version` enum('log_v2_enabled', 'log_legacy_enabled') DEFAULT 'log_v2_enabled'"
-        );
-    }
-
     /**
      * Transactional queries
      */
@@ -193,11 +171,6 @@ try {
 
     $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
     excludeUsersFromPasswordPolicy($pearDB);
-
-    $errorMessage = "Unable to update logger_version from cfg_nagios table";
-    $pearDB->query(
-        "UPDATE `cfg_nagios` set logger_version = 'log_legacy_enabled'"
-    );
 
     $pearDB->commit();
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {

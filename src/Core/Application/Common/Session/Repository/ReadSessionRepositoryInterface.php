@@ -21,27 +21,28 @@
 
 declare(strict_types=1);
 
-interface ExternalModuleGenerationInterface
+namespace Core\Application\Common\Session\Repository;
+
+interface ReadSessionRepositoryInterface
 {
     /**
-     * Indicates if this class is designed to generate something for Engine.
+     * Find the session id using the user id.
      *
-     * @return bool
+     * @param int $userId
+     * @return string[]
+     *
+     * @throws \Throwable
      */
-    public function isEngineObject(): bool;
+    public function findSessionIdsByUserId(int $userId): array;
 
     /**
-     * Indicates if this class is designed to generate something for Broker.
+     * Get a value from session using a key.
      *
-     * @return bool
+     * @param string $sessionId
+     * @param string $key
+     * @return mixed
+     *
+     * @throws \Throwable
      */
-    public function isBrokerObject(): bool;
-
-    /**
-     * @param int $pollerId
-     * @param bool $isLocalhost
-     */
-    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
-
-    public function reset(): void;
+    public function getValueFromSession(string $sessionId, string $key): mixed;
 }

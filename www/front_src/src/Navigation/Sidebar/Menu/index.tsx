@@ -1,6 +1,6 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
-import { equals, flatten, isEmpty, isNil } from 'ramda';
+import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -56,6 +56,7 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -91,11 +92,22 @@ const NavigationMenu = ({
     setCurrentTop(top);
     setHoveredIndex(index);
     setHoveredNavigationItemsDerived({ currentPage, levelName });
+    discardTimeout();
+  };
+
+  const discardTimeout = (): void => {
+    if (isNil(timeoutRef.current)) {
+      return;
+    }
+    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
-    setHoveredIndex(null);
-    setHoveredNavigationItems(null);
+    discardTimeout();
+    timeoutRef.current = setTimeout((): void => {
+      setHoveredIndex(null);
+      setHoveredNavigationItems(null);
+    }, 500);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
@@ -115,7 +127,6 @@ const NavigationMenu = ({
       return;
     }
     navigate(getUrlFromEntry(currentPage) as string);
-    setSelectedNavigationItems(hoveredNavigationItems);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
@@ -174,28 +185,41 @@ const NavigationMenu = ({
     return [parentItem, ...args].reverse();
   };
 
+  const getItemHoveredByDefault = (
+    currentPage,
+    ...args
+  ): Array<Page> | null => {
+    if (!currentPage.is_react && searchItemsWithPhpUrl(currentPage, ...args)) {
+      return searchItemsWithPhpUrl(currentPage, ...args);
+    }
+
+    if (currentPage.is_react && searchItemsWithReactUrl(currentPage, ...args)) {
+      return searchItemsWithReactUrl(currentPage, ...args);
+    }
+
+    return null;
+  };
+
   const searchItemsHoveredByDefault = (
     currentPage,
     ...args
   ): Array<Page> | null => {
+    const hoveredCurrentPage = getItemHoveredByDefault(currentPage, ...args);
+    if (hoveredCurrentPage) {
+      return hoveredCurrentPage;
+    }
+
     const childPage = currentPage?.children;
     if (isNil(childPage) || !isArrayItem(childPage)) {
-      if (
-        !currentPage.is_react &&
-        searchItemsWithPhpUrl(currentPage, ...args)
-      ) {
-        return searchItemsWithPhpUrl(currentPage, ...args);
-      }
-
-      if (
-        currentPage.is_react &&
-        searchItemsWithReactUrl(currentPage, ...args)
-      ) {
-        return searchItemsWithReactUrl(currentPage, ...args);
-      }
+      return getItemHoveredByDefault(currentPage, ...args);
     }
 
     return childPage?.map((item) => {
+      const hoveredItem = getItemHoveredByDefault(item, ...args);
+      if (hoveredItem && equals(length(hoveredItem as Array<Page>), 1)) {
+        return [currentPage, ...hoveredItem];
+      }
+
       const grandsonPage = item?.groups;
       if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
         if (args.length > 0) {
@@ -236,9 +260,26 @@ const NavigationMenu = ({
     return () => window.removeEventListener('beforeunload', handleWindowClose);
   }, []);
 
+  useEffect(() => {
+    navigationData?.forEach((item) => {
+      const searchedItems = searchItemsHoveredByDefault(item);
+      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+
+      if (isEmpty(filteredResult)) {
+        return;
+      }
+
+      addSelectedNavigationItemsByDefault(filteredResult);
+    });
+  }, [pathname, search]);
+
   return useMemoComponent({
     Component: (
-      <List className={classes.list} onMouseLeave={handleLeave}>
+      <List
+        className={classes.list}
+        onMouseEnter={discardTimeout}
+        onMouseLeave={handleLeave}
+      >
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
