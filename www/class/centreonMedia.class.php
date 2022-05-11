@@ -148,28 +148,44 @@ class CentreonMedia
     }
 
     /**
-     * Add directory
+     * Add media directory
+     *
      * @param string $dirname
      * @param string $dirAlias
      * @return int
      * @throws \Exception
      */
-    public function addDirectory($dirname, $dirAlias = null)
+    public function addDirectory($dirName, $dirAlias = null)
     {
-        $dirname = $this->sanitizePath($dirname);
-        if (is_null($this->getDirectoryId($dirname))) {
+        $dirName = $this->sanitizePath($dirName);
+
+        if (is_null($this->getDirectoryId($dirName))) {
             if (is_null($dirAlias)) {
-                $dirAlias = $dirname;
+                $dirAlias = $dirName;
             }
-            $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES ('" . $dirname . "', '" . $dirAlias . "')";
+
             try {
-                $result = $this->db->query($query);
+                $statement = $this->db->prepare(
+                    "INSERT INTO `view_img_dir` (:dirName, :dirAlias)
+                    SELECT :dirName, :dirAlias FROM DUAL
+                    WHERE NOT EXISTS (
+                        SELECT dir_id FROM `view_img_dir`
+                        WHERE `dir_name` = :dirName
+                        AND `dir_alias` = :dirAlias
+                        LIMIT 1
+                    )"
+                );
+                $statement->bindValue(':dirName', $dirName, \PDO::PARAM_STR);
+                $statement->bindValue(':dirAlias', $dirAlias, \PDO::PARAM_STR);
+                $statement->execute();
             } catch (\PDOException $e) {
-                throw new \Exception('Error while creating directory ' . $dirname);
+                throw new \Exception('Error while creating directory ' . $dirName, (int) $e->getCode(), $e);
             }
         }
-        $this->createDirectory($dirname);
-        return $this->getDirectoryId($dirname);
+
+        $this->createDirectory($dirName);
+
+        return $this->getDirectoryId($dirName);
     }
 
     /**
