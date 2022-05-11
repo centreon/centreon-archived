@@ -110,21 +110,26 @@ class CentreonMedia
 
     /**
      * Returns ID of target directory
-     * @param string $dirname
-     * @return int
+     *
+     * @param string $dirName
+     * @return int|null
      */
-    public function getDirectoryId($dirname)
+    public function getDirectoryId($dirName): ?int
     {
-        $dirname = $this->sanitizePath($dirname);
+        $dirName = $this->sanitizePath($dirName);
 
-        $query = "SELECT dir_id FROM view_img_dir WHERE dir_name = '" . $dirname . "' LIMIT 1";
-        $RES = $this->db->query($query);
-        $dir_id = null;
-        if ($RES->rowCount()) {
-            $row = $RES->fetchRow();
-            $dir_id = $row['dir_id'];
+        $statement = $this->db->prepare(
+            "SELECT dir_id FROM view_img_dir WHERE dir_name = :dirName LIMIT 1"
+        );
+        $statement->bindValue(':dirName', $dirName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        $dirId = null;
+        if ($row = $statement->fetch()) {
+            $dirId = (int) $row['dir_id'];
         }
-        return $dir_id;
+
+        return $dirId;
     }
 
     /**
@@ -150,7 +155,7 @@ class CentreonMedia
     /**
      * Add media directory
      *
-     * @param string $dirname
+     * @param string $dirName
      * @param string $dirAlias
      * @return int
      * @throws \Exception
@@ -159,28 +164,26 @@ class CentreonMedia
     {
         $dirName = $this->sanitizePath($dirName);
 
-        if (is_null($this->getDirectoryId($dirName))) {
-            if (is_null($dirAlias)) {
-                $dirAlias = $dirName;
-            }
+        if (is_null($dirAlias)) {
+            $dirAlias = $dirName;
+        }
 
-            try {
-                $statement = $this->db->prepare(
-                    "INSERT INTO `view_img_dir` (:dirName, :dirAlias)
-                    SELECT :dirName, :dirAlias FROM DUAL
-                    WHERE NOT EXISTS (
-                        SELECT dir_id FROM `view_img_dir`
-                        WHERE `dir_name` = :dirName
-                        AND `dir_alias` = :dirAlias
-                        LIMIT 1
-                    )"
-                );
-                $statement->bindValue(':dirName', $dirName, \PDO::PARAM_STR);
-                $statement->bindValue(':dirAlias', $dirAlias, \PDO::PARAM_STR);
-                $statement->execute();
-            } catch (\PDOException $e) {
-                throw new \Exception('Error while creating directory ' . $dirName, (int) $e->getCode(), $e);
-            }
+        try {
+            $statement = $this->db->prepare(
+                "INSERT INTO `view_img_dir` (:dirName, :dirAlias)
+                SELECT :dirName, :dirAlias FROM DUAL
+                WHERE NOT EXISTS (
+                    SELECT dir_id FROM `view_img_dir`
+                    WHERE `dir_name` = :dirName
+                    AND `dir_alias` = :dirAlias
+                    LIMIT 1
+                )"
+            );
+            $statement->bindValue(':dirName', $dirName, \PDO::PARAM_STR);
+            $statement->bindValue(':dirAlias', $dirAlias, \PDO::PARAM_STR);
+            $statement->execute();
+        } catch (\PDOException $e) {
+            throw new \Exception('Error while creating directory ' . $dirName, (int) $e->getCode(), $e);
         }
 
         $this->createDirectory($dirName);
