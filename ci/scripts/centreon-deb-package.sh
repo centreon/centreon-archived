@@ -14,7 +14,9 @@ ls -lart
 tar czpf centreon-$VERSION.tar.gz centreon
 cd centreon/
 cp -rf ci/debian .
+sed -i "s/^centreon:version=.*$/centreon:version=${VERSION}/" debian/substvars
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "$RELEASE"
 debuild-pbuilder
 cd ../
+ls -lart
 #mv *.deb /src
