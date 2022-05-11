@@ -190,4 +190,16 @@
     --list-ack-hover-background-color: var(--list-one-hover-background-color);
     --md-checkbox--disabled-border-color-before: var(--color-black-rgba-6);
     --md-checkbox--disabled-checked-background-color-before: var(--color-black-rgba-54);
+    --btc-color: var(--color-black);
+    --ui-button-focus-font-color: var(--btc-color);
+    --input-submit-color: var(--btc-color);
+    --a-btc-color: var(--btc-color);
+    --bt-action-color: var(--btc-color);
+    --bt-default-ui-state-hover-color: var(--btc-color);
+    --bt-success-ui-state-hover-color: var(--btc-color);
+    --bt-danger-ui-state-hover-color: var(--btc-color);
+    --bt-info-ui-state-hover-color: var(--btc-color);
+    --bt-warning-ui-state-hover-color: var(--btc-color);
+    --button-group-input-color: var(--btc-color);
+    --button-icons-fill-color: var(--btc-color);
 }
