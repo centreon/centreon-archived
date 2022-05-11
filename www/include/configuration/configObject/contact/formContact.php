@@ -502,7 +502,6 @@ $tab = [];
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
-
 $form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
 if ($o != MASSIVE_CHANGE) {
     $form->setDefaults(array('contact_enable_notifications' => '2'));
@@ -734,6 +733,7 @@ if ($o != MASSIVE_CHANGE) {
         $form->addRule('contact_admin', _("Required Field"), 'required');
     }
     $form->addRule('contact_auth_type', _("Required Field"), 'required');
+
     if (
         (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
