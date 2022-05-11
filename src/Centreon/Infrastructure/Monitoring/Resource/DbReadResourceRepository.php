@@ -549,10 +549,13 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             $statement->execute(array_values($iconIds));
 
             while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $resourceIndex = array_search((int) $record['icon_id'], $iconIds);
-                $resources[$resourceIndex]->getIcon()
-                    ?->setName($record['icon_name'])
-                    ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
+                $resourceIndexes = array_keys($iconIds, (int) $record['icon_id']);
+
+                foreach ($resourceIndexes as $resourceIndex) {
+                    $resources[$resourceIndex]->getIcon()
+                        ?->setName($record['icon_name'])
+                        ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
+                }
             }
         }
 
