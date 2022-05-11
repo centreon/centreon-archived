@@ -57,18 +57,18 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
-     * @param ResourceRepositoryInterface $resourceRepository
-     * @param MonitoringRepositoryInterface $monitoringRepository,
+     * @param MonitoringRepositoryInterface $monitoringRepository ,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ResourceRepositoryInterface $resourceRepository
      */
     public function __construct(
-        ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        ResourceRepositoryInterface $resourceRepository
     ) {
-        $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->resourceRepository = $resourceRepository;
     }
 
     /**
