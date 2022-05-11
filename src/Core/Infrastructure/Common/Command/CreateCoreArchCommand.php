@@ -80,14 +80,13 @@ class CreateCoreArchCommand extends Command
     {
         if ($this->modelTemplate->exists === false) {
             $this->commandService->createModel($this->modelTemplate);
-            $output->writeln('Creating Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
-            $output->writeln($this->modelTemplate->filePath);
+            $output->writeln('<info>Creating Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name . '</info>');
         } else {
             $output->writeln(
-                'Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name
+                '<info>Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name . '</info>'
             );
-            $output->writeln($this->modelTemplate->filePath);
         }
+        $output->writeln('<comment>' . $this->modelTemplate->filePath . '</comment>');
         if ($this->isACommandUseCase()) {
             $this->createCommandArch($output);
         } else {

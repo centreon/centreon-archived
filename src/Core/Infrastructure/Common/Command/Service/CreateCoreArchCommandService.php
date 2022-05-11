@@ -14,7 +14,6 @@ class CreateCoreArchCommandService
 {
     protected RepositoryInterfaceTemplate $repositoryInterfaceTemplate;
 
-
     /**
      * @param string $srcPath
      */
@@ -39,7 +38,8 @@ class CreateCoreArchCommandService
 
         $questionUseCaseType->setErrorMessage('Type %s is invalid.');
         $useCaseType = $questionHelper->ask($input, $output, $questionUseCaseType);
-        $output->writeln('You have selected: [' . $useCaseType . '] Use Case Type.');
+        $output->writeln('<info>You have selected: [' . $useCaseType . '] Use Case Type.</info>');
+        $output->writeln("");
         return $useCaseType;
     }
 
@@ -55,8 +55,8 @@ class CreateCoreArchCommandService
     {
         $questionModelName = new Question('For which model is this use case intended ? ');
         $modelName = $questionHelper->ask($input, $output, $questionModelName);
-        $output->writeln('You have selected: [' . $modelName . '] Model.');
-
+        $output->writeln('<info>You have selected: [' . $modelName . '] Model.</info>');
+        $output->writeln("");
         //Search for already existing models.
         $foundModels = $this->searchExistingModel($modelName);
         if (!empty($foundModels)) {
@@ -88,7 +88,9 @@ class CreateCoreArchCommandService
         //Search for all model with the same name.
         $modelsInfos = iterator_to_array(
             new \GlobIterator(
-                $this->srcPath . '/Core/' . $modelName . '/Domain/Model/' . $modelName . '.php'
+                $this->srcPath . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . $modelName
+                    . DIRECTORY_SEPARATOR . 'Domain' . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR
+                    . $modelName . '.php'
             )
         );
         $modelInfo = [];
@@ -145,7 +147,7 @@ class CreateCoreArchCommandService
         string $repositoryType
     ): void {
         $filePath = $this->srcPath . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . $modelName
-            . 'DIRECTORY_SEPARATOR' . 'Application' . 'DIRECTORY_SEPARATOR' . 'Repository' . DIRECTORY_SEPARATOR
+            . DIRECTORY_SEPARATOR . 'Application' . DIRECTORY_SEPARATOR . 'Repository' . DIRECTORY_SEPARATOR
             . $repositoryType . $modelName . 'RepositoryInterface.php';
         $namespace = 'Core\\' . $modelName . '\\Application\\Repository';
         if (!file_exists($filePath)) {
@@ -167,10 +169,10 @@ class CreateCoreArchCommandService
                 $this->repositoryInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
-                    . $this->repositoryInterfaceTemplate->name
+                '<info>Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
@@ -179,10 +181,10 @@ class CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
-                    . $this->repositoryInterfaceTemplate->name
+                '<info>Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 }

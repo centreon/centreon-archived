@@ -51,10 +51,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->repositoryInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
-                    . $this->repositoryInterfaceTemplate->name
+                '<info>Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
@@ -63,10 +63,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
-                    . $this->repositoryInterfaceTemplate->name
+                '<info>Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
+                    . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -103,10 +103,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->writeRepositoryTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
-                    . $this->writeRepositoryTemplate->name
+                '<info>Creating Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->writeRepositoryTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->writeRepositoryTemplate = new RepositoryTemplate(
                 $filePath,
@@ -116,10 +116,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
-                    . $this->writeRepositoryTemplate->name
+                '<info>Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->writeRepositoryTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -159,10 +159,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->responseDtoTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Response : ' . $this->responseDtoTemplate->namespace . '\\'
-                    . $this->responseDtoTemplate->name
+                '<info>Creating Response : ' . $this->responseDtoTemplate->namespace . '\\'
+                    . $this->responseDtoTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->responseDtoTemplate = new ResponseDtoTemplate(
                 $filePath,
@@ -171,10 +171,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Response : ' . $this->responseDtoTemplate->namespace . '\\'
-                    . $this->responseDtoTemplate->name
+                '<info>Using Existing Response : ' . $this->responseDtoTemplate->namespace . '\\'
+                    . $this->responseDtoTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -206,10 +206,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->commandPresenterInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
-                    . $this->commandPresenterInterfaceTemplate->name
+                '<info>Creating Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->commandPresenterInterfaceTemplate = new PresenterInterfaceTemplate(
                 $filePath,
@@ -218,10 +218,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
-                    . $this->commandPresenterInterfaceTemplate->name
+                '<info>Using Existing Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -254,10 +254,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->CommandPresenterTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
-                    . $this->CommandPresenterTemplate->name
+                '<info>Creating Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->CommandPresenterTemplate = new PresenterTemplate(
                 $filePath,
@@ -267,10 +267,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
-                    . $this->CommandPresenterTemplate->name
+                '<info>Using Existing Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -305,10 +305,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->queryUseCaseTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
-                    . $this->queryUseCaseTemplate->name
+                '<info>Creating Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
+                    . $this->queryUseCaseTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->queryUseCaseTemplate = new QueryUseCaseTemplate(
                 $filePath,
@@ -321,10 +321,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $modelTemplate
             );
             $output->writeln(
-                'Using Existing Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
-                    . $this->queryUseCaseTemplate->name
+                '<info>Using Existing Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
+                    . $this->queryUseCaseTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -358,10 +358,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->queryControllerTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Controller : ' . $this->queryControllerTemplate->namespace . '\\'
-                    . $this->queryControllerTemplate->name
+                '<info>Creating Controller : ' . $this->queryControllerTemplate->namespace . '\\'
+                    . $this->queryControllerTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->queryControllerTemplate = new QueryControllerTemplate(
                 $filePath,
@@ -372,10 +372,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Controller : ' . $this->queryControllerTemplate->namespace . '\\'
-                    . $this->queryControllerTemplate->name
+                '<info>Using Existing Controller : ' . $this->queryControllerTemplate->namespace . '\\'
+                    . $this->queryControllerTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 
@@ -411,10 +411,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 $this->factoryTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Factory : ' . $this->factoryTemplate->namespace . '\\'
-                    . $this->factoryTemplate->name
+                '<info>Creating Factory : ' . $this->factoryTemplate->namespace . '\\'
+                    . $this->factoryTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->factoryTemplate = new FactoryTemplate(
                 $filePath,
@@ -424,10 +424,10 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Factory : ' . $this->factoryTemplate->namespace . '\\'
-                    . $this->factoryTemplate->name
+                '<info>Using Existing Factory : ' . $this->factoryTemplate->namespace . '\\'
+                    . $this->factoryTemplate->name . '</info>'
             );
-            $output->writeln($filePath);
+            $output->writeln('<comment>' . $filePath . '</comment>');
         }
     }
 }
