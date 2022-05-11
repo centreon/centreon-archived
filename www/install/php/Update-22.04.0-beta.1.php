@@ -129,7 +129,7 @@ try {
             DROP COLUMN `daemon_dumps_core`"
         );
     }
-    if ($pearDB->isColumnExist('cfg_nagios', 'logger_version') === 1) {
+    if ($pearDB->isColumnExist('cfg_nagios', 'logger_version') !== 1) {
         $errorMessage = "Unable to add logger_version to cfg_nagios table";
         $pearDB->query(
             "ALTER TABLE `cfg_nagios`
