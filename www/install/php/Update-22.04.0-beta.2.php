@@ -55,10 +55,6 @@ try {
         "UPDATE `cfg_nagios` set logger_version = 'log_legacy_enabled'"
     );
 } catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
-
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
