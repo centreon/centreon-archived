@@ -50,4 +50,5 @@ sed -i "s/^centreon:version=.*$/centreon:version=${MAJOR_VERSION}/" debian/subst
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "${DISTRIB}"
 debuild-pbuilder
 cd ../
+ls -lart
 #mv *.deb /src

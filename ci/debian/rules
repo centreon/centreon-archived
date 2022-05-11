@@ -5,6 +5,9 @@ export DH_VERBOSE=1
 %:
 	dh $@
 
+override_dh_gencontrol:
+	dh_gencontrol -- -Tdebian/substvars
+
 override_dh_clean:
 
 override_dh_auto_build:
