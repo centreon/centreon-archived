@@ -6,7 +6,11 @@
       "./types",
       "./node_modules/@types"
     ],
-    "module": "esnext"
+    "module": "esnext",
+    "types": [
+      "cypress",
+      "@percy/cypress"
+  ]
   },
   "include": [
     "./www/front_src/src"
