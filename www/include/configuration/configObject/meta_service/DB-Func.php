@@ -170,23 +170,23 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     /* Duplicate contacts */
                     $query = "SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
-                    while ($Contact = $dbResult->fetch()) {
+                    while ($contact = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contact VALUES (:max_mc_id, :contact_id)";
                         $statement = $pearDB->prepare($query);
                         $statement->bindValue(':max_mc_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
-                        $statement->bindValue(':contact_id', (int) $Contact["contact_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':contact_id', (int) $contact["contact_id"], \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     /* Duplicate contactgroups */
                     $query = "SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
 
-                    while ($Cg = $dbResult->fetch()) {
+                    while ($cg = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contactgroup_relation " .
                             "VALUES (:max_mg_id, :cg_id)";
                         $statement = $pearDB->prepare($query);
                         $statement->bindValue(':max_mg_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
-                        $statement->bindValue(':cg_id', (int) $Cg["cg_cg_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':cg_id', (int) $cg["cg_cg_id"], \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
