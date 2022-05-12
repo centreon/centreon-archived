@@ -223,6 +223,7 @@ const CollapsibleItems = ({
       <Collapse
         unmountOnExit
         className={clsx(classes.root, classes.toggled)}
+        data-cy="collapse"
         enter={false}
         exit={false}
         in={isCollapsed}

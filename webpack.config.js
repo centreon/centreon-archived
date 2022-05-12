@@ -12,9 +12,6 @@ module.exports = merge(baseConfig, {
     rules: [
       {
         parser: { system: false },
-        resolve: {
-          fullySpecified: false,
-        },
         test: /\.[cm]?(j|t)sx?$/,
       },
       {
