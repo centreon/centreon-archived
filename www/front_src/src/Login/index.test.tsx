@@ -147,12 +147,13 @@ const mockPostLoginPasswordExpired = (): void => {
   });
 };
 
+const labelError = 'This is an error from the server';
+
 const mockPostLoginServerError = (): void => {
   mockedAxios.post.mockRejectedValue({
     response: {
       data: {
-        password_is_expired: true,
-        redirect_uri: '/monitoring/resources',
+        message: labelError,
       },
       status: 500,
     },
@@ -339,9 +340,10 @@ describe('Login Page', () => {
     userEvent.click(screen.getByLabelText(labelConnect));
 
     await waitFor(() => {
-      expect(window.location.href).not.toBe('http://localhost/reset-password');
+      expect(screen.getByText(labelError)).toBeInTheDocument();
     });
 
+    expect(window.location.href).not.toBe('http://localhost/reset-password');
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
   });
 });
