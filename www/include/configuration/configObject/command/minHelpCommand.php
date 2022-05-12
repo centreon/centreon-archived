@@ -39,7 +39,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once $path . "minHelpCommandFunctions.php";
+require_once __DIR__ . "/minHelpCommandFunctions.php";
 
 $commandId = filter_var(
     $_GET["command_id"] ?? $_POST["command_id"] ?? null,
