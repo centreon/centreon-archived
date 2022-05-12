@@ -138,23 +138,26 @@ const PollerWizardStepTwo = ({
       </div>
       <form onSubmit={handleSubmit}>
         <div className={classes.form}>
-          <SelectField
-            fullWidth
-            label={t(labelLinkedRemoteMaster)}
-            name="linked_remote_master"
-            options={linkedRemoteMasterOption || []}
-            selectedOptionId={stepTwoFormData.linked_remote_master}
-            onChange={handleChange}
-          />
-          {stepTwoFormData.linked_remote_master && (
-            <MultiAutocompleteField
+          {linkedRemoteMasterOption.length !== 0 && (
+            <SelectField
               fullWidth
-              label={t(labelLinkedadditionalRemote)}
-              options={linkedRemoteSlavesOption || []}
-              value={stepTwoFormData.linked_remote_slaves}
-              onChange={changeValue}
+              label={t(labelLinkedRemoteMaster)}
+              name="linked_remote_master"
+              options={linkedRemoteMasterOption}
+              selectedOptionId={stepTwoFormData.linked_remote_master}
+              onChange={handleChange}
             />
           )}
+          {stepTwoFormData.linked_remote_master &&
+            linkedRemoteSlavesOption.length >= 2 && (
+              <MultiAutocompleteField
+                fullWidth
+                label={t(labelLinkedadditionalRemote)}
+                options={linkedRemoteSlavesOption}
+                value={stepTwoFormData.linked_remote_slaves}
+                onChange={changeValue}
+              />
+            )}
           <FormControlLabel
             control={
               <Checkbox

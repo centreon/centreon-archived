@@ -119,13 +119,15 @@ const RemoteServerWizardStepTwo = ({
         </Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
-        <MultiAutocompleteField
-          fullWidth
-          label={t(labelRemoteServers)}
-          options={remoteServersOption || []}
-          value={linkedPollers}
-          onChange={changeValue}
-        />
+        {remoteServersOption && (
+          <MultiAutocompleteField
+            fullWidth
+            label={t(labelRemoteServers)}
+            options={remoteServersOption}
+            value={linkedPollers}
+            onChange={changeValue}
+          />
+        )}
         <WizardButtons
           disabled={loading}
           goToPreviousStep={goToPreviousStep}
