@@ -1,7 +1,5 @@
 import { atom } from 'jotai';
 
-import { FederatedComponent } from './models';
+import { FederatedModule } from './models';
 
-export const federatedComponentsAtom = atom<Array<FederatedComponent> | null>(
-  null,
-);
+export const federatedModulesAtom = atom<Array<FederatedModule> | null>(null);

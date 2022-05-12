@@ -387,7 +387,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <FederatedComponents path="/administration/extensions/manager" />
+          <FederatedComponents path="/lm/administration/extensions/manager" />
         </Stack>
       </div>
       {extensions && (

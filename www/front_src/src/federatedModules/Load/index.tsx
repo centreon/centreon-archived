@@ -74,24 +74,26 @@ const useDynamicLoadRemoteEntry = ({
 
 interface LoadComponentProps {
   component: string;
-  isHook?: boolean;
-  name: string;
+  isFederatedModule?: boolean;
+  moduleFederationName: string;
 }
 
 const LoadComponent = ({
-  name,
+  moduleFederationName,
   component,
-  isHook,
+  isFederatedModule,
   ...props
 }: LoadComponentProps): JSX.Element => {
   const Component = useMemo(
-    () => lazy(loadComponent({ component, moduleName: name })),
-    [name],
+    () => lazy(loadComponent({ component, moduleFederationName })),
+    [moduleFederationName],
   );
 
   return (
     <Suspense
-      fallback={isHook ? <MenuSkeleton width={29} /> : <PageSkeleton />}
+      fallback={
+        isFederatedModule ? <MenuSkeleton width={29} /> : <PageSkeleton />
+      }
     >
       <Component {...props} />
     </Suspense>
@@ -100,7 +102,7 @@ const LoadComponent = ({
 
 const MemoizedLoadComponent = memoizeComponent<LoadComponentProps>({
   Component: LoadComponent,
-  memoProps: ['name', 'component', 'isHook'],
+  memoProps: ['name', 'component', 'isFederatedModule'],
 });
 
 interface RemoteProps extends LoadComponentProps {
@@ -112,8 +114,8 @@ export const Remote = ({
   component,
   remoteEntry,
   moduleName,
-  name,
-  isHook,
+  moduleFederationName,
+  isFederatedModule,
   ...props
 }: RemoteProps): JSX.Element => {
   const { ready, failed } = useDynamicLoadRemoteEntry({
@@ -122,7 +124,7 @@ export const Remote = ({
   });
 
   if (!ready) {
-    return isHook ? <MenuSkeleton width={29} /> : <PageSkeleton />;
+    return isFederatedModule ? <MenuSkeleton width={29} /> : <PageSkeleton />;
   }
 
   if (failed) {
@@ -132,8 +134,8 @@ export const Remote = ({
   return (
     <MemoizedLoadComponent
       component={component}
-      isHook={isHook}
-      name={name}
+      isFederatedModule={isFederatedModule}
+      moduleFederationName={moduleFederationName}
       {...props}
     />
   );

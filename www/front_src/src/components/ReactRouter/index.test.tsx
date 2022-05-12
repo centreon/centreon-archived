@@ -11,8 +11,8 @@ import {
   retrievedNavigation,
   retrievedNavigationWithAnEmptySet,
 } from '../../Navigation/mocks';
-import { retrievedFederatedComponent } from '../../federatedModules/mocks';
-import { federatedComponentsAtom } from '../../federatedModules/atoms';
+import { retrievedFederatedModule } from '../../federatedModules/mocks';
+import { federatedModulesAtom } from '../../federatedModules/atoms';
 import { labelYouAreNotAllowedToSeeThisPage } from '../../FallbackPages/NotAllowedPage/translatedLabels';
 import { labelCentreonLogo } from '../../Login/translatedLabels';
 
@@ -37,7 +37,7 @@ const renderReactRouter = (navigation = retrievedNavigation): RenderResult =>
       <Provider
         initialValues={[
           [navigationAtom, navigation],
-          [federatedComponentsAtom, [retrievedFederatedComponent]],
+          [federatedModulesAtom, [retrievedFederatedModule]],
         ]}
       >
         <ReactRouter />

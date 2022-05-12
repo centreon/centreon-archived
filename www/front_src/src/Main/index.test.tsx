@@ -15,7 +15,7 @@ import {
   internalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
-import { retrievedFederatedComponent } from '../federatedModules/mocks';
+import { retrievedFederatedModule } from '../federatedModules/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
 
 import { labelCentreonIsLoading } from './translatedLabels';
@@ -134,7 +134,7 @@ const mockDefaultGetRequests = (): void => {
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
-      data: retrievedFederatedComponent,
+      data: retrievedFederatedModule,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,

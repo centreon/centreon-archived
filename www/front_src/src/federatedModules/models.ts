@@ -1,11 +1,11 @@
-export interface FederatedComponent {
-  hooksConfiguration: {
-    hooks: Array<string>;
+export interface FederatedModule {
+  federatedComponentsConfiguration: {
+    federatedComponents: Array<string>;
     path: string;
   };
+  federatedPages: Array<PageComponent>;
+  moduleFederationName: string;
   moduleName: string;
-  name: string;
-  pages: Array<PageComponent>;
   remoteEntry: string;
 }
 

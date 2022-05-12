@@ -5,41 +5,48 @@ import { useAtomValue } from 'jotai/utils';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { federatedComponentsAtom } from '../../federatedModules/atoms';
+import { federatedModulesAtom } from '../../federatedModules/atoms';
 import { Remote } from '../../federatedModules/Load';
-import { FederatedComponent } from '../../federatedModules/models';
+import { FederatedModule } from '../../federatedModules/models';
 
 interface Props {
-  federatedComponents: Array<FederatedComponent>;
+  federatedModulesConfigurations: Array<FederatedModule>;
 }
 
-const FederatedComponents = ({
-  federatedComponents,
+const FederatedModules = ({
+  federatedModulesConfigurations,
   ...rest
 }: Props): JSX.Element | null => {
   return useMemoComponent({
     Component: (
       <>
-        {federatedComponents.map(
-          ({ remoteEntry, name, hooksConfiguration, moduleName }) => {
-            return hooksConfiguration.hooks.map((component) => {
-              return (
-                <Remote
-                  isHook
-                  component={component}
-                  key={component}
-                  moduleName={moduleName}
-                  name={name}
-                  remoteEntry={remoteEntry}
-                  {...rest}
-                />
-              );
-            });
+        {federatedModulesConfigurations.map(
+          ({
+            remoteEntry,
+            moduleFederationName,
+            federatedComponentsConfiguration,
+            moduleName,
+          }) => {
+            return federatedComponentsConfiguration.federatedComponents.map(
+              (component) => {
+                return (
+                  <Remote
+                    isFederatedModule
+                    component={component}
+                    key={component}
+                    moduleFederationName={moduleFederationName}
+                    moduleName={moduleName}
+                    remoteEntry={remoteEntry}
+                    {...rest}
+                  />
+                );
+              },
+            );
           },
         )}
       </>
     ),
-    memoProps: [federatedComponents],
+    memoProps: [federatedModulesConfigurations],
   });
 };
 
@@ -48,20 +55,23 @@ interface LoadableComponentsContainerProps {
 }
 
 interface LoadableComponentsProps extends LoadableComponentsContainerProps {
-  federatedComponents: Array<FederatedComponent> | null;
+  federatedModules: Array<FederatedModule> | null;
 }
 
 const getLoadableComponents = ({
   path,
-  federatedComponents,
-}: LoadableComponentsProps): Array<FederatedComponent> | null => {
-  if (isNil(federatedComponents)) {
+  federatedModules,
+}: LoadableComponentsProps): Array<FederatedModule> | null => {
+  if (isNil(federatedModules)) {
     return null;
   }
 
   const components = path
-    ? filter(pathEq(['hooksConfiguration', 'path'], path), federatedComponents)
-    : federatedComponents;
+    ? filter(
+        pathEq(['federatedComponentsConfiguration', 'path'], path),
+        federatedModules,
+      )
+    : federatedModules;
 
   return components;
 };
@@ -70,18 +80,23 @@ const LoadableComponentsContainer = ({
   path,
   ...props
 }: LoadableComponentsContainerProps): JSX.Element | null => {
-  const federatedComponents = useAtomValue(federatedComponentsAtom);
+  const federatedModules = useAtomValue(federatedModulesAtom);
 
-  const components = useMemo(
-    () => getLoadableComponents({ federatedComponents, path }),
-    [federatedComponents, path],
+  const federatedModulesToDisplay = useMemo(
+    () => getLoadableComponents({ federatedModules, path }),
+    [federatedModules, path],
   );
 
-  if (isNil(components)) {
+  if (isNil(federatedModulesToDisplay)) {
     return null;
   }
 
-  return <FederatedComponents federatedComponents={components} {...props} />;
+  return (
+    <FederatedModules
+      federatedModulesConfigurations={federatedModulesToDisplay}
+      {...props}
+    />
+  );
 };
 
 export default LoadableComponentsContainer;

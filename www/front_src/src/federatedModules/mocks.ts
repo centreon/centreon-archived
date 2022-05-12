@@ -1,13 +1,11 @@
-import { FederatedComponent } from './models';
+import { FederatedModule } from './models';
 
-export const retrievedFederatedComponent: FederatedComponent = {
-  hooksConfiguration: {
-    hooks: ['./monitoring/hooks/topCounter'],
+export const retrievedFederatedModule: FederatedModule = {
+  federatedComponentsConfiguration: {
+    federatedComponents: ['./monitoring/hooks/topCounter'],
     path: '/header/topCounter',
   },
-  moduleName: 'centreon-bam-server',
-  name: 'bam',
-  pages: [
+  federatedPages: [
     {
       component: './configuration/pages/bas',
       route: '/configuration/bam/bas',
@@ -17,5 +15,7 @@ export const retrievedFederatedComponent: FederatedComponent = {
       route: '/configuration/bam/bvs',
     },
   ],
+  moduleFederationName: 'bam',
+  moduleName: 'centreon-bam-server',
   remoteEntry: 'remoteEntry.js',
 };

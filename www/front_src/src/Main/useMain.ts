@@ -12,7 +12,7 @@ import { platformInstallationStatusDecoder } from '../api/decoders';
 import { platformInstallationStatusEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
 import reactRoutes from '../reactRoutes/routeMap';
-import useFederatedComponents from '../federatedModules/useFederatedModules';
+import useFederatedModules from '../federatedModules/useFederatedModules';
 
 import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import useUser, { areUserParametersLoadedAtom } from './useUser';
@@ -41,7 +41,7 @@ const useMain = (): void => {
   const navigate = useNavigate();
   const [searchParameter] = useSearchParams();
   const { getPlatformVersions } = usePlatformVersions();
-  useFederatedComponents();
+  useFederatedModules();
 
   const displayAuthenticationError = (): void => {
     const authenticationError = searchParameter.get('authenticationError');

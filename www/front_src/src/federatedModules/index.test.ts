@@ -4,8 +4,8 @@ import { waitFor } from '@testing-library/dom';
 
 import usePlatformVersions from '../Main/usePlatformVersions';
 
-import useFederatedComponents from './useFederatedModules';
-import { retrievedFederatedComponent } from './mocks';
+import useFederatedModules from './useFederatedModules';
+import { retrievedFederatedModule } from './mocks';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -25,15 +25,15 @@ describe('external components', () => {
     mockedAxios.get.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedWebVersions })
-      .mockResolvedValue({ data: retrievedFederatedComponent });
+      .mockResolvedValue({ data: retrievedFederatedModule });
   });
   it('populates the federated components atom with the data retrieved from the API', async () => {
     const { result } = renderHook(() => ({
-      ...useFederatedComponents(),
+      ...useFederatedModules(),
       ...usePlatformVersions(),
     }));
 
-    expect(result.current.federatedComponents).toEqual(null);
+    expect(result.current.federatedModules).toEqual(null);
 
     act(() => {
       result.current.getPlatformVersions();
@@ -44,12 +44,12 @@ describe('external components', () => {
     });
 
     act(() => {
-      result.current.getFederatedComponents();
+      result.current.getFederatedModulesConfigurations();
     });
 
     await waitFor(() => {
-      expect(result.current.federatedComponents).toEqual([
-        retrievedFederatedComponent,
+      expect(result.current.federatedModules).toEqual([
+        retrievedFederatedModule,
       ]);
     });
   });

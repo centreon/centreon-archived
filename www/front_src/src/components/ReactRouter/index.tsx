@@ -11,8 +11,8 @@ import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 import internalPagesRoutes from '../../reactRoutes';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
-import { federatedComponentsAtom } from '../../federatedModules/atoms';
-import { FederatedComponent } from '../../federatedModules/models';
+import { federatedModulesAtom } from '../../federatedModules/atoms';
+import { FederatedModule } from '../../federatedModules/models';
 import { Remote } from '../../federatedModules/Load';
 
 const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
@@ -28,47 +28,49 @@ const PageContainer = styled('div')(({ theme }) => ({
 
 const getExternalPageRoutes = ({
   allowedPages,
-  federatedComponents,
+  federatedModules,
 }): Array<JSX.Element> => {
   const isAllowedPage = (path): boolean =>
     allowedPages?.find((allowedPage) => path.includes(allowedPage));
 
-  return federatedComponents.map(({ pages, remoteEntry, name, moduleName }) => {
-    return pages?.map(({ component, route }) => {
-      if (not(isAllowedPage(route))) {
-        return null;
-      }
+  return federatedModules.map(
+    ({ federatedPages, remoteEntry, moduleFederationName, moduleName }) => {
+      return federatedPages?.map(({ component, route }) => {
+        if (not(isAllowedPage(route))) {
+          return null;
+        }
 
-      return (
-        <Route
-          element={
-            <PageContainer>
-              <BreadcrumbTrail path={route} />
-              <Remote
-                component={component}
-                key={component}
-                moduleName={moduleName}
-                name={name}
-                remoteEntry={remoteEntry}
-              />
-            </PageContainer>
-          }
-          key={route}
-          path={route}
-        />
-      );
-    });
-  });
+        return (
+          <Route
+            element={
+              <PageContainer>
+                <BreadcrumbTrail path={route} />
+                <Remote
+                  component={component}
+                  key={component}
+                  moduleFederationName={moduleFederationName}
+                  moduleName={moduleName}
+                  remoteEntry={remoteEntry}
+                />
+              </PageContainer>
+            }
+            key={route}
+            path={route}
+          />
+        );
+      });
+    },
+  );
 };
 
 interface Props {
   allowedPages: Array<string | Array<string>>;
   externalPagesFetched: boolean;
-  federatedComponents: Array<FederatedComponent>;
+  federatedModules: Array<FederatedModule>;
 }
 
 const ReactRouterContent = ({
-  federatedComponents,
+  federatedModules,
   externalPagesFetched,
   allowedPages,
 }: Props): JSX.Element => {
@@ -93,22 +95,22 @@ const ReactRouterContent = ({
               {...rest}
             />
           ))}
-          {getExternalPageRoutes({ allowedPages, federatedComponents })}
+          {getExternalPageRoutes({ allowedPages, federatedModules })}
           {externalPagesFetched && (
             <Route element={<NotFoundPage />} path="*" />
           )}
         </Routes>
       </Suspense>
     ),
-    memoProps: [externalPagesFetched, federatedComponents, allowedPages],
+    memoProps: [externalPagesFetched, federatedModules, allowedPages],
   });
 };
 
 const ReactRouter = (): JSX.Element => {
-  const federatedComponents = useAtomValue(federatedComponentsAtom);
+  const federatedModules = useAtomValue(federatedModulesAtom);
   const { allowedPages } = useNavigation();
 
-  const externalPagesFetched = not(isNil(federatedComponents));
+  const externalPagesFetched = not(isNil(federatedModules));
 
   if (!externalPagesFetched || !allowedPages) {
     return <PageSkeleton />;
@@ -118,7 +120,7 @@ const ReactRouter = (): JSX.Element => {
     <ReactRouterContent
       allowedPages={allowedPages}
       externalPagesFetched={externalPagesFetched}
-      federatedComponents={federatedComponents as Array<FederatedComponent>}
+      federatedModules={federatedModules as Array<FederatedModule>}
     />
   );
 };
