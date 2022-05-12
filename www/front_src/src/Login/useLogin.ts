@@ -101,13 +101,14 @@ const useLogin = (): UseLoginState => {
   const checkPasswordExpiration = useCallback(
     ({ error, alias, setSubmitting }) => {
       const isUserNotAllowed = pathEq(['response', 'status'], 401, error);
+      const isServerError = pathEq(['response', 'status'], 500, error);
 
       const { password_is_expired: passwordIsExpired } = path(
         ['response', 'data'],
         error,
       ) as RedirectAPI;
 
-      if (isUserNotAllowed && not(passwordIsExpired)) {
+      if ((isUserNotAllowed && not(passwordIsExpired)) || isServerError) {
         setSubmitting(false);
         showErrorMessage(
           path(['response', 'data', 'message'], error) as string,
