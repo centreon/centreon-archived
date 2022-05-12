@@ -8,12 +8,6 @@ const baseConfig = require('centreon-frontend/packages/frontend-config/webpack/b
 
 module.exports = merge(baseConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
-  externals: {
-    bufferutil: 'bufferutil',
-    net: 'net',
-    tls: 'tls',
-    'utf-8-validate': 'utf-8-validate',
-  },
   module: {
     rules: [
       {
@@ -58,15 +52,4 @@ module.exports = merge(baseConfig, {
     }),
     new HtmlWebpackHarddiskPlugin(),
   ],
-  resolve: {
-    fallback: {
-      assert: require.resolve('assert'),
-      crypto: require.resolve('crypto-browserify'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      stream: require.resolve('stream-browserify'),
-      url: require.resolve('url'),
-      zlib: require.resolve('browserify-zlib'),
-    },
-  },
 });

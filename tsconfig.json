@@ -8,9 +8,8 @@
     ],
     "module": "esnext",
     "types": [
-      "cypress",
-      "@percy/cypress"
-  ]
+      "cypress"
+    ]
   },
   "include": [
     "./www/front_src/src"

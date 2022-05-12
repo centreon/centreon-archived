@@ -23,7 +23,6 @@ describe('Visual testing for menu: ', () => {
       .each(($li) => {
         cy.wrap($li).get('svg').should('be.visible');
       });
-    cy.percySnapshot();
   });
 
   it('menu should expanded after clicking on logo', () => {
@@ -39,7 +38,6 @@ describe('Visual testing for menu: ', () => {
           cy.get('@element').contains('Configuration');
         }
       });
-    cy.percySnapshot();
   });
 
   it('collapse should be visible when item is hovered and this item should be colored', () => {
@@ -52,14 +50,12 @@ describe('Visual testing for menu: ', () => {
           .trigger('mouseover');
         cy.get('.MuiCollapse-root').should('be.visible');
       }
-      cy.percySnapshot();
     });
   });
 
   it('item of menu should be colored after double click', () => {
     cy.get('li').first().as('element').trigger('mouseover');
     cy.get('@element').trigger('dblclick');
-    cy.percySnapshot();
   });
 
   it('when item of collapse is clicked , the item and parent item should be colored', () => {
@@ -79,7 +75,6 @@ describe('Visual testing for menu: ', () => {
             .trigger('mouseover')
             .trigger('click');
         }
-        cy.percySnapshot();
       });
   });
 });

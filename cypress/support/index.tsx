@@ -1,5 +1,3 @@
-import '@percy/cypress';
-
 import React from 'react';
 
 import { mount as cypressMount, MountReturn } from '@cypress/react';
