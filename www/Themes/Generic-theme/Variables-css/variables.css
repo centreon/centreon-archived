@@ -772,6 +772,7 @@
     --help-tool-tip-icon-fill-color: var(--color-primary-dark);
     --icons-fill-color: var(--color-primary-dark);
     --icons-disabled-fill-color: var(--color-teal-blue);
+    --button-icons-fill-color: var(--color-white);
     /* ------ END : New Icons variables -----*/
     /* ------ START : Plugin pack variables -----*/
     --pluginpack-block-h2-font-color: var(--body-color);

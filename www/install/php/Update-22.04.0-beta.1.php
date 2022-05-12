@@ -106,15 +106,6 @@ try {
         );
     }
 
-    // Add contact_theme column to contact table
-    if ($pearDB->isColumnExist('contact', 'contact_theme') !== 1) {
-        $errorMessage = "Unable to add column 'contact_theme' to table 'contact'";
-        $pearDB->query(
-            "ALTER TABLE `contact` ADD COLUMN "
-            . "`contact_theme` enum('light','dark') DEFAULT 'light' AFTER `contact_js_effects`"
-        );
-    }
-
     /**
      * Transactional queries
      */
