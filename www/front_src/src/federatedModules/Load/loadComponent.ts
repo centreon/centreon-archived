@@ -15,9 +15,9 @@ const loadComponent = ({ moduleFederationName, component }) => {
     await container.init(__webpack_share_scopes__.default);
 
     const factory = await container.get(component);
-    const Component = factory();
+    const Module = factory();
 
-    return Component;
+    return Module;
   };
 };
 
