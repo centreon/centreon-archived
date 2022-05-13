@@ -5,7 +5,7 @@
     "videosFolder": "cypress/results/videos",
     "component": {
       "componentFolder": "./www/front_src/src",
-      "testFiles": "./**/*.cypress.test.{ts,tsx}"
+      "testFiles": "./**/*.cypress.spec.{ts,tsx}"
     },
     "viewportWidth": 600,
   "viewportHeight": 600

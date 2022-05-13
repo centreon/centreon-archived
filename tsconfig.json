@@ -7,11 +7,9 @@
       "./node_modules/@types"
     ],
     "module": "esnext",
-    "types": [
-      "cypress"
-    ]
   },
   "include": [
     "./www/front_src/src"
-  ]
+  ],
+  "exclude": ["./www/front_src/src/**/*.spec.tsx"]
 }
