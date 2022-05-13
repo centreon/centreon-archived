@@ -5,13 +5,13 @@
   "scripts": {
     "build": "webpack --mode production --config ./webpack.config.prod.js",
     "build:analyze": "webpack --mode production --config ./webpack.config.analyze.js",
-    "build:dev": "webpack --mode development --config ./webpack.config.dev.js",
-    "watch": "webpack --mode=development --config ./webpack.config.dev.js --watch",
+    "build:dev": "cross-env WEBPACK_ENV=development webpack serve --mode development --config ./webpack.config.dev.js",
     "eslint": "eslint ./www/front_src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "start:dev": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js"
+    "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
