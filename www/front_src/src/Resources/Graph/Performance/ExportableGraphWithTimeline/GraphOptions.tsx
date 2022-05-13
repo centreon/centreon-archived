@@ -86,7 +86,6 @@ const GraphOptions = (): JSX.Element => {
                     onChange={changeGraphOptions(id)}
                   />
                 }
-                data-testid={label}
                 key={label}
                 label={t(label)}
                 labelPlacement="start"

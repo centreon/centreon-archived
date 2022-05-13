@@ -46,13 +46,11 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
   const shortcuts = [
     {
       Icon: LogsIcon,
-      id: 'Logs',
       name: labelViewLogs,
       uri: prop('logs', resourceUris),
     },
     {
       Icon: ReportIcon,
-      id: 'Reporting',
       name: labelViewReport,
       uri: prop('reporting', resourceUris),
     },
@@ -65,12 +63,12 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
     >
       {(): JSX.Element => (
         <List dense>
-          {shortcuts.map(({ Icon, uri, name, id }) => (
+          {shortcuts.map(({ Icon, uri, name }) => (
             <Tooltip
               key={name}
               title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
             >
-              <div data-testid={id}>
+              <div data-testid={name}>
                 <Link
                   aria-label={t(name)}
                   className={classes.link}

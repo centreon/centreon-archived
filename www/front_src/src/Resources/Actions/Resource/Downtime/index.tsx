@@ -65,6 +65,7 @@ const DowntimeForm = ({
   } = useRequest({
     request: setDowntimeOnResources,
   });
+
   const { alias, downtime } = useUserContext();
 
   const currentDate = new Date();

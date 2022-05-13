@@ -228,7 +228,7 @@ class CentreonCeip extends CentreonWebService
                 }
             }
         } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage, ['context' => $exception]);
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
 
         return [

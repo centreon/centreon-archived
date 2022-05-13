@@ -95,10 +95,11 @@ class MonitoringResourceController extends AbstractController
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
-    private const SERVICE_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_service';
-    private const HOST_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_host';
+
     private const HOSTGROUP_CONFIGURATION_URI = '/main.php?p=60102&o=c&hg_id={resource_group_id}';
     private const SERVICEGROUP_CONFIGURATION_URI = '/main.php?p=60203&o=c&sg_id={resource_group_id}';
+    private const SERVICE_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_service';
+    private const HOST_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_host';
 
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 

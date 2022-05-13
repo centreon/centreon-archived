@@ -45,7 +45,6 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-
 $id = filter_var($_GET['host'] ?? $_POST['hostElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*
@@ -64,10 +63,11 @@ $hostsRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonHost',
     'availableDatasetRoute' =>
-        './api/internal.php?object=centreon_configuration_host&action=list',
+
+    './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
     'defaultDatasetRoute' =>
-        './api/internal.php?object=centreon_configuration_host
-        &action=defaultValues&target=host&field=host_id&id=' . $id,
+    './include/common/webServices/rest/internal.php?object=centreon_configuration_host
+    &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
 
 $selHost = $formPeriod->addElement(
