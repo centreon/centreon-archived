@@ -135,4 +135,13 @@ interface HostConfigurationReadRepositoryInterface
      * @throws \Throwable
      */
     public function findHostByName(string $hostName): ?Host;
+
+    /**
+     * Find host template by its id
+     *
+     * @param int $hostTemplateId
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostTemplateById(int $hostTemplateId): ?Host;
 }

@@ -1065,4 +1065,34 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
         return null;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostTemplateById(int $hostTemplateId): ?Host
+    {
+        $request = $this->translateDbName(
+            'SELECT
+                host.host_id AS id,
+                host.host_name AS name,
+                host.host_alias AS alias,
+                host.host_register AS type,
+                host.host_activate AS is_activated
+            FROM `:db`.host
+            WHERE
+                host.host_id = :host_id AND
+                host.host_register = \'0\''
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $hostTemplateId, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return EntityCreator::createEntityByArray(
+                    Host::class,
+                    $record
+                );
+        }
+        return null;
+    }
 }
