@@ -14,7 +14,7 @@ describe('Navigation menu visual testing: ', () => {
       );
     });
   });
-  it('Should match previous screenshot "initial menu"', () => {
+  it('matches the current snapshot "initial menu"', () => {
     cy.get("[alt='mini logo']").should('be.visible');
     cy.get('li').each(($li) => {
       cy.wrap($li).get('svg').should('be.visible');
