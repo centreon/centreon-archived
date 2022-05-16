@@ -15100,3 +15100,6 @@ msgstr ""
 
 # msgid "Error"
 # msgstr ""
+
+# msgid "Do not use configured proxy to connect to this server"
+# msgstr ""

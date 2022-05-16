@@ -16811,3 +16811,6 @@ msgstr "Destination du journal"
 
 msgid "Error"
 msgstr "Erreur"
+
+msgid "Do not use configured proxy to connect to this server"
+msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
