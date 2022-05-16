@@ -80,6 +80,7 @@ function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod)
         "WHERE `host_id` = " . $host_id . " AND `date_start` >=  " . $start_date . " AND `date_end` <= " . $end_date .
         " " . "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (" . $days_of_week . ") " .
         "GROUP BY `host_id` ";
+
     $dbResult = $pearDBO->query($rq);
     if ($row = $dbResult->fetch()) {
         $hostStats = $row;
@@ -283,9 +284,9 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
+        $aclCondition = 'AND EXISTS (SELECT 1 FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
-            'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
+            'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') LIMIT 1)';
     }
     $rq = "SELECT DISTINCT las.service_id, " .
         "sum(OKTimeScheduled) as OK_T, " .
@@ -324,7 +325,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
                     + $hostServiceStats[$id]["UNDETERMINED_T"]
                     + $hostServiceStats[$id]["MAINTENANCE_T"]);
         } else {
-            foreach ($status as $key => $value) {
+            foreach ($status as $value) {
                 $hostServiceStats[$id][$value . "_T"] = 0;
             }
             $hostServiceStats[$id]["UNDETERMINED_T"] = $timeTab["totalTime"];
@@ -339,7 +340,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             + $hostServiceStats[$id]["UNDETERMINED_T"]
             + $hostServiceStats[$id]["MAINTENANCE_T"];
         $time = $hostServiceStats[$id]["TOTAL_TIME"];
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             $hostServiceStats[$id][$value . "_TP"] = round($hostServiceStats[$id][$value . "_T"] / $time * 100, 2);
         }
         /*
@@ -351,11 +352,11 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             + $hostServiceStats[$id]["UNKNOWN_T"];
         $time = $hostServiceStats[$id]["MEAN_TIME"];
         if ($hostServiceStats[$id]["MEAN_TIME"] <= 0) {
-            foreach ($status as $key => $value) {
+            foreach ($status as $value) {
                 $hostServiceStats[$id][$value . "_MP"] = 0;
             }
         } else {
-            foreach ($status as $key => $value) {
+            foreach ($status as $value) {
                 if ($value != "UNDETERMINED") {
                     $hostServiceStats[$id][$value . "_MP"] = round(
                         $hostServiceStats[$id][$value . "_T"] / $time * 100,
@@ -369,14 +370,14 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
          */
         $hostServiceStats[$id]["MEAN_TIME_F"] = getTimeString($hostServiceStats[$id]["MEAN_TIME"], $reportTimePeriod);
         $hostServiceStats[$id]["TOTAL_TIME_F"] = getTimeString($hostServiceStats[$id]["TOTAL_TIME"], $reportTimePeriod);
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             $hostServiceStats[$id][$value . "_TF"] =
                 getTimeString($hostServiceStats[$id][$value . "_T"], $reportTimePeriod);
         }
         /*
          * Services status time sum and alerts sum
          */
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             $hostServiceStats["average"][$value . "_TP"] += $hostServiceStats[$id][$value . "_TP"];
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
                 $hostServiceStats["average"][$value . "_MP"] += $hostServiceStats[$id][$value . "_MP"];
@@ -390,7 +391,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      * Services status time average
      */
     if ($i) {
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             $hostServiceStats["average"][$value . "_TP"] = round($hostServiceStats["average"][$value . "_TP"] / $i, 2);
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
                 $hostServiceStats["average"][$value . "_MP"] = round(
@@ -401,7 +402,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         }
     }
 
-    return ($hostServiceStats);
+    return $hostServiceStats;
 }
 
 /*
