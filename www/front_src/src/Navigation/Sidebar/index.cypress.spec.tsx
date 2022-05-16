@@ -38,7 +38,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('collapse should be visible when item of menu is hovered, and it should be colored', () => {
+  it('displays the direct child items and highlights the item when hovered ', () => {
     cy.get('li').eq(2).trigger('mouseover');
     cy.get('[data-cy=collapse]').should('be.visible');
     cy.matchImageSnapshot();
