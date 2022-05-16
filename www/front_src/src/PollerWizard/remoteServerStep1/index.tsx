@@ -283,16 +283,14 @@ const RemoteServerWizardStepOne = ({
           </div>
         ) : (
           <div className={classes.form}>
-            {waitListOption && waitListOption.length !== 0 ? (
-              <SelectField
-                fullWidth
-                label={t(labelSelectRemoteLinks)}
-                name="server_ip"
-                options={waitListOption}
-                selectedOptionId={stepOneFormData.server_ip}
-                onChange={handleChange}
-              />
-            ) : null}
+            <SelectField
+              fullWidth
+              label={t(labelSelectRemoteLinks)}
+              name="server_ip"
+              options={waitListOption || []}
+              selectedOptionId={stepOneFormData.server_ip}
+              onChange={handleChange}
+            />
             <TextField
               fullWidth
               required
