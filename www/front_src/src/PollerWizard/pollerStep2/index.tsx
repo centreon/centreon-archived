@@ -1,43 +1,67 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
-import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { useUpdateAtom, useAtomValue } from 'jotai/utils';
+import { pick } from 'ramda';
 
-import { useRequest, postData } from '@centreon/ui';
+import { Typography, FormControlLabel, Checkbox } from '@mui/material';
 
-import Form from '../forms/poller/PollerFormStepTwo';
+import {
+  postData,
+  useRequest,
+  MultiAutocompleteField,
+  SelectField,
+  SelectEntry,
+} from '@centreon/ui';
+
+import { pollerAtom, setWizardDerivedAtom, PollerData } from '../pollerAtoms';
+import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
-import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import { WizardFormProps } from '../models';
+import {
+  labelAdvancedServerConfiguration,
+  labelLinkedRemoteMaster,
+  labelLinkedadditionalRemote,
+  labelOpenBrokerFlow,
+} from '../translatedLabels';
+import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
+import WizardButtons from '../forms/wizardButtons';
+import { getPollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
-const getPollersEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
-const wizardFormEndpoint =
-  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
-interface Props
-  extends Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'> {
-  pollerData: Record<string, unknown>;
-  setWizard: (data) => void;
+interface StepTwoFormData {
+  linked_remote_master: string;
+  linked_remote_slaves: Array<SelectEntry>;
+  open_broker_flow: boolean;
 }
-
-const FormPollerStepTwo = ({
-  setWizard,
-  pollerData,
+const PollerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
-  const [pollers, setPollers] = React.useState<Array<unknown>>([]);
+  const classes = useStyles();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const { sendRequest: getPollersRequest } = useRequest<Array<unknown>>({
+  const [pollers, setPollers] = useState<Array<PollerRemoteList>>([]);
+  const [stepTwoFormData, setStepTwoFormData] = useState<StepTwoFormData>({
+    linked_remote_master: '',
+    linked_remote_slaves: [],
+    open_broker_flow: false,
+  });
+
+  const { sendRequest: getPollersRequest } = useRequest<
+    Array<PollerRemoteList>
+  >({
     request: postData,
   });
-  const { sendRequest: postWizardFormRequest } = useRequest<{
+
+  const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
     success: boolean;
   }>({
     request: postData,
   });
 
-  const navigate = useNavigate();
+  const pollerData = useAtomValue<PollerData | null>(pollerAtom);
+  const setWizard = useUpdateAtom(setWizardDerivedAtom);
 
   const getPollers = (): void => {
     getPollersRequest({ data: null, endpoint: getPollersEndpoint }).then(
@@ -45,11 +69,38 @@ const FormPollerStepTwo = ({
     );
   };
 
-  React.useEffect(() => {
-    getPollers();
-  }, []);
+  const handleChange = (event): void => {
+    const { value, name } = event.target;
 
-  const handleSubmit = (data): void => {
+    if (name === 'open_broker_flow') {
+      setStepTwoFormData({
+        ...stepTwoFormData,
+        open_broker_flow: !stepTwoFormData.open_broker_flow,
+      });
+
+      return;
+    }
+    setStepTwoFormData({
+      ...stepTwoFormData,
+      [name]: value,
+    });
+  };
+
+  const changeValue = (_, slaves): void => {
+    setStepTwoFormData({
+      ...stepTwoFormData,
+      linked_remote_slaves: slaves,
+    });
+  };
+
+  const handleSubmit = (event): void => {
+    event.preventDefault();
+    const data = {
+      ...stepTwoFormData,
+      linked_remote_slaves: stepTwoFormData.linked_remote_slaves.map(
+        ({ id }) => id,
+      ),
+    };
     const dataToPost = { ...data, ...pollerData };
     dataToPost.server_type = 'poller';
 
@@ -59,7 +110,7 @@ const FormPollerStepTwo = ({
     })
       .then(({ success }) => {
         setWizard({ submitStatus: success });
-        if (pollerData.linked_remote_master) {
+        if (pollerData?.linked_remote_master) {
           goToNextStep();
         } else {
           navigate(routeMap.pollerList);
@@ -68,31 +119,61 @@ const FormPollerStepTwo = ({
       .catch(() => undefined);
   };
 
+  const linkedRemoteMasterOption = pollers.map(pick(['id', 'name']));
+
+  const linkedRemoteSlavesOption = pollers
+    .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
+    .map(pick(['id', 'name']));
+
+  useEffect(() => {
+    getPollers();
+  }, []);
+
   return (
-    <Form
-      goToPreviousStep={goToPreviousStep}
-      initialValues={pollerData}
-      pollers={pollers}
-      onSubmit={handleSubmit}
-    />
+    <div>
+      <div className={classes.formHeading}>
+        <Typography variant="h6">
+          {t(labelAdvancedServerConfiguration)}
+        </Typography>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <div className={classes.form}>
+          <SelectField
+            fullWidth
+            label={t(labelLinkedRemoteMaster)}
+            name="linked_remote_master"
+            options={linkedRemoteMasterOption || []}
+            selectedOptionId={stepTwoFormData.linked_remote_master}
+            onChange={handleChange}
+          />
+          {stepTwoFormData.linked_remote_master && (
+            <MultiAutocompleteField
+              fullWidth
+              label={t(labelLinkedadditionalRemote)}
+              options={linkedRemoteSlavesOption || []}
+              value={stepTwoFormData.linked_remote_slaves}
+              onChange={changeValue}
+            />
+          )}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={stepTwoFormData.open_broker_flow}
+                name="open_broker_flow"
+                onChange={handleChange}
+              />
+            }
+            label={`${t(labelOpenBrokerFlow)}`}
+          />
+          <WizardButtons
+            disabled={loading}
+            goToPreviousStep={goToPreviousStep}
+            type={WizardButtonsTypes.Apply}
+          />
+        </div>
+      </form>
+    </div>
   );
 };
 
-const mapStateToProps = ({ pollerForm }): Pick<Props, 'pollerData'> => ({
-  pollerData: pollerForm,
-});
-
-const mapDispatchToProps = {
-  setWizard: setPollerWizard,
-};
-
-const PollwerStepTwo = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FormPollerStepTwo);
-
-export default (
-  props: Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'>,
-): JSX.Element => {
-  return <PollwerStepTwo {...props} />;
-};
+export default PollerWizardStepTwo;

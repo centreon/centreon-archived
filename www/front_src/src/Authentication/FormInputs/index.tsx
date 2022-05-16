@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import {
   always,
@@ -46,10 +46,14 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
 ]);
 
 const useStyles = makeStyles((theme) => ({
+  additionalLabel: {
+    marginBottom: theme.spacing(0.5),
+  },
   category: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  inputWrapper: { width: '100%' },
   inputs: {
     display: 'flex',
     flexDirection: 'column',
@@ -69,7 +73,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
 
   const categoriesName = pluck('name', categories);
 
-  const inputsByCategory = React.useMemo(
+  const inputsByCategory = useMemo(
     () =>
       groupBy(
         ({ category }) => find(equals(category), categoriesName) as string,
@@ -78,7 +82,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const sortedCategoryNames = React.useMemo(() => {
+  const sortedCategoryNames = useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
     const usedCategories = filter(
@@ -89,7 +93,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     return pluck('name', usedCategories);
   }, []);
 
-  const sortedInputsByCategory = React.useMemo(
+  const sortedInputsByCategory = useMemo(
     () =>
       reduce<string, Record<string, Array<InputProps>>>(
         (acc, value) => ({
@@ -105,7 +109,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const lastCategory = React.useMemo(() => last(sortedCategoryNames), []);
+  const lastCategory = useMemo(() => last(sortedCategoryNames), []);
 
   return (
     <div>
@@ -125,6 +129,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   required,
                   getDisabled,
                   getRequired,
+                  additionalLabel,
                 }) => {
                   const Input = getInput(type);
 
@@ -141,7 +146,19 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                     type,
                   };
 
-                  return <Input key={label} {...props} />;
+                  return (
+                    <div className={classes.inputWrapper} key={label}>
+                      {additionalLabel && (
+                        <Typography
+                          className={classes.additionalLabel}
+                          variant="body1"
+                        >
+                          {t(additionalLabel)}
+                        </Typography>
+                      )}
+                      <Input {...props} />
+                    </div>
+                  );
                 },
               )}
             </div>

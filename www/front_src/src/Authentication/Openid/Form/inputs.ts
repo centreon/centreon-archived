@@ -3,6 +3,7 @@ import { FormikValues } from 'formik';
 
 import {
   labelAliasAttributeToBind,
+  labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
   labelBaseUrl,
@@ -100,22 +101,17 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'introspectionTokenEndpoint',
-    label: labelIntrospectionTokenEndpoint,
+    fieldName: 'clientId',
+    label: labelClientID,
     required: true,
     type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'userInformationEndpoint',
-    label: labelUserInformationEndpoint,
-    type: InputType.Text,
-  },
-  {
-    category: labelIdentityProvider,
-    fieldName: 'endSessionEndpoint',
-    label: labelEndSessionEndpoint,
-    type: InputType.Text,
+    fieldName: 'clientSecret',
+    label: labelClientSecret,
+    required: true,
+    type: InputType.Password,
   },
   {
     category: labelIdentityProvider,
@@ -131,17 +127,22 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'clientId',
-    label: labelClientID,
-    required: true,
+    fieldName: 'endSessionEndpoint',
+    label: labelEndSessionEndpoint,
+    type: InputType.Text,
+  },
+  {
+    additionalLabel: labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
+    category: labelIdentityProvider,
+    fieldName: 'introspectionTokenEndpoint',
+    label: labelIntrospectionTokenEndpoint,
     type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'clientSecret',
-    label: labelClientSecret,
-    required: true,
-    type: InputType.Password,
+    fieldName: 'userinfoEndpoint',
+    label: labelUserInformationEndpoint,
+    type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
@@ -149,12 +150,12 @@ export const inputs: Array<InputProps> = [
       setFieldValue(
         'authenticationType',
         value
-          ? AuthenticationType.ClientSecretPost
-          : AuthenticationType.ClientSecretBasic,
+          ? AuthenticationType.ClientSecretBasic
+          : AuthenticationType.ClientSecretPost,
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value) => equals(AuthenticationType.ClientSecretPost, value),
+    getChecked: (value) => equals(AuthenticationType.ClientSecretBasic, value),
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },

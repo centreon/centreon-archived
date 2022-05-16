@@ -14745,7 +14745,7 @@ msgid "Clear filter"
 msgstr ""
 
 msgid "Last check with OK status"
-msgstr "" 
+msgstr ""
 
 # msgid "Define the password security policy"
 # msgstr ""
@@ -14792,7 +14792,19 @@ msgstr ""
 # msgid "Password expires after"
 # msgstr ""
 
+# msgid "Choose a duration between 7 days and 12 months"
+# msgstr ""
+
 # msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Reset the form"
+# msgstr ""
+
+# msgid "Do you want to reset the form?"
+# msgstr ""
+
+# msgid "Excluded users"
 # msgstr ""
 
 # msgid "Month"
@@ -14847,7 +14859,7 @@ msgstr ""
 # msgstr ""
 
 # msgid "This will not be used because the number of attempts is not defined"
-# msgstr "" 
+# msgstr ""
 
 # msgid "Status type"
 # msgstr ""
@@ -14897,7 +14909,7 @@ msgstr ""
 # msgid "OpenID Connect Configuration"
 # msgstr ""
 
-# msgid "Define OpenID Connect Configuration"
+# msgid "Define OpenID Connect configuration"
 # msgstr ""
 
 # msgid "Invalid URL"
@@ -14912,16 +14924,10 @@ msgstr ""
 # msgid "OpenID Connect configuration saved"
 # msgstr ""
 
-# msgid "Enable OpenID Connect Authentication"
+# msgid "Enable OpenID Connect authentication"
 # msgstr ""
 
 # msgid "Authentication mode"
-# msgstr ""
-
-# msgid "Trusted client addresses"
-# msgstr ""
-
-# msgid "Blacklist client addresses"
 # msgstr ""
 
 # msgid "Base URL"
@@ -15024,4 +15030,88 @@ msgstr ""
 # msgstr ""
 
 # msgid "Auto import"
+# msgstr ""
+
+# msgid "You are not authorized to access the configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace login (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
+# msgstr ""
+
+# msgid "Do you want to save the changes?"
+# msgstr ""
+
+# msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+# msgstr ""
+
+# msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+# msgstr ""
+
+# msgid "Discard"
+# msgstr ""
+
+# msgid "No contacts are configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups are configured for this resource"
+# msgstr ""
+
+# msgid "At least one of the two following fields must be filled"
+# msgstr ""
+
+# msgid "Press Enter to accept"
+# msgstr ""
+
+# msgid "License invalid or expired"
+# msgstr ""
+
+# msgid "Please contact your administrator"
+# msgstr ""
+
+# msgid "Broker events"
+# msgstr ""
+
+# msgid "Events"
+# msgstr ""
+
+# msgid "Functions"
+# msgstr ""
+
+# msgid "Process"
+# msgstr ""
+
+# msgid "Runtime"
+# msgstr ""
+
+# msgid "Log destination"
+# msgstr ""
+
+# msgid "Error"
 # msgstr ""

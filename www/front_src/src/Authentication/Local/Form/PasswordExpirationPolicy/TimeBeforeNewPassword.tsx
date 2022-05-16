@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -36,7 +36,7 @@ const TimeBeforeNewPassword = (): JSX.Element => {
     object: errors,
   });
 
-  const maxHoursOption = React.useMemo(
+  const maxHoursOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ days: 7 }).asMilliseconds(),

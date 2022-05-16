@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { lazy, useEffect, Suspense } from 'react';
 
 import 'dayjs/locale/en';
 import 'dayjs/locale/pt';
@@ -37,10 +37,10 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
 
-const LoginPage = React.lazy(() => import('../Login'));
-const ResetPasswordPage = React.lazy(() => import('../ResetPassword'));
+const LoginPage = lazy(() => import('../Login'));
+const ResetPasswordPage = lazy(() => import('../ResetPassword'));
 
-const AppPage = React.lazy(() => import('./InitializationPage'));
+const AppPage = lazy(() => import('./InitializationPage'));
 
 const Main = (): JSX.Element => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const Main = (): JSX.Element => {
     window.location.reload();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(platformInstallationStatus) || isNil(areUserParametersLoaded)) {
       return;
     }
@@ -89,7 +89,7 @@ const Main = (): JSX.Element => {
   }
 
   return (
-    <React.Suspense fallback={<MainLoaderWithoutTranslation />}>
+    <Suspense fallback={<MainLoaderWithoutTranslation />}>
       <Routes>
         <Route element={<LoginPage />} path={reactRoutes.login} />
         <Route
@@ -98,7 +98,7 @@ const Main = (): JSX.Element => {
         />
         <Route element={<AppPage />} path="*" />
       </Routes>
-    </React.Suspense>
+    </Suspense>
   );
 };
 

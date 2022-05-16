@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -53,7 +53,7 @@ const Graph = ({
     timePeriod: lastDayPeriod,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsListingGraphOpen(true);
 
     return (): void => {

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  infiniteScrollTriggerRef: RefObject<HTMLDivElement>;
   timeline: Array<TimelineEvent>;
 }
 

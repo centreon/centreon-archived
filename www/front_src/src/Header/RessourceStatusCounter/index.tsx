@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import axios from 'axios';
 import * as yup from 'yup';
@@ -11,9 +11,27 @@ import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import MenuLoader from '../../components/MenuLoader';
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
+  },
+  subMenuToggle: {
+    backgroundColor: theme.palette.common.black,
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggleActive: {
+    display: 'block',
+  },
+  wrapMiddleIcon: {
+    display: 'flex',
   },
 }));
 
@@ -34,11 +52,11 @@ const RessourceStatusCounter = <
   children,
   loaderWidth,
 }: Props): JSX.Element | null => {
-  const [data, setData] = React.useState<StatusCount>();
-  const [toggled, setToggled] = React.useState<boolean>();
-  const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
+  const [data, setData] = useState<StatusCount>();
+  const [toggled, setToggled] = useState<boolean>();
+  const [isAllowed, setIsAllowed] = useState<boolean>(true);
 
-  const interval = React.useRef<number>();
+  const interval = useRef<number>();
 
   const refreshInterval = useAtomValue(refreshIntervalAtom);
 
@@ -57,7 +75,7 @@ const RessourceStatusCounter = <
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getData();
 
     interval.current = window.setInterval(() => {

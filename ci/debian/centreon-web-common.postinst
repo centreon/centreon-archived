@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ] ; then
+    update-alternatives --set php /usr/bin/php8.0
+fi
+
+exit 0

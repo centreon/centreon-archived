@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, isNil, map, prop, type } from 'ramda';
@@ -12,6 +12,8 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
+import { labelPressEnterToAccept } from '../translatedLabels';
+
 import { InputProps } from './models';
 
 const Multiple = ({
@@ -22,6 +24,8 @@ const Multiple = ({
   getRequired,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const [inputText, setInputText] = useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
@@ -45,12 +49,14 @@ const Multiple = ({
           return undefined;
         }
 
-        return `${selectedValues.at(index)}: ${errorText}`;
+        return `${selectedValues[index]}: ${errorText}`;
       })
       .filter(Boolean) as Array<string>;
 
     return error || undefined;
   };
+
+  const textChange = (event): void => setInputText(event.target.value);
 
   const normalizedValues = selectedValues.map((value) => ({
     id: value,
@@ -61,25 +67,26 @@ const Multiple = ({
 
   const disabled = getDisabled?.(values) || false;
   const isRequired = required || getRequired?.(values) || false;
+  const additionalLabel = inputText ? ` (${labelPressEnterToAccept})` : '';
 
   return useMemoComponent({
     Component: (
       <div>
         <MultiAutocompleteField
-          clearOnBlur
           freeSolo
-          handleHomeEndKeys
           disabled={disabled}
+          inputValue={inputText}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
-          label={t(label)}
+          label={`${t(label)}${additionalLabel}`}
           open={false}
           options={[]}
           popupIcon={null}
           required={isRequired}
           value={normalizedValues}
           onChange={change}
+          onTextChange={textChange}
         />
         {inputErrors && (
           <Stack>
@@ -92,7 +99,7 @@ const Multiple = ({
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors, isRequired, disabled],
+    memoProps: [normalizedValues, inputErrors, additionalLabel, disabled],
   });
 };
 

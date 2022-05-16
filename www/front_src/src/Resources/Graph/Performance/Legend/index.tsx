@@ -1,5 +1,5 @@
 /* eslint-disable hooks/sort */
-import * as React from 'react';
+import { MouseEvent } from 'react';
 
 import clsx from 'clsx';
 import { equals, find, gt, includes, isNil, length, slice, split } from 'ramda';
@@ -110,7 +110,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   },
   minMaxAvgValue: { fontWeight: 600 },
   normal: {
-    color: alpha(theme.palette.common.black, 0.6),
+    color: theme.palette.text.primary,
   },
   toggable: {
     cursor: 'pointer',
@@ -277,7 +277,7 @@ const LegendContent = ({
               },
             ];
 
-            const selectMetricLine = (event: React.MouseEvent): void => {
+            const selectMetricLine = (event: MouseEvent): void => {
               if (!toggable) {
                 return;
               }

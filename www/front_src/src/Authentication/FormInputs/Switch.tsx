@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { prop } from 'ramda';
@@ -21,9 +21,7 @@ const Switch = ({
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const changeSwitchValue = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
+  const changeSwitchValue = (event: ChangeEvent<HTMLInputElement>): void => {
     if (change) {
       change({ setFieldValue, value: event.target.checked });
 

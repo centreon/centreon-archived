@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { createContext } from 'react';
 
 import { FilterState } from '../../Filter/useFilter';
 import { ActionsState } from '../useActions';
@@ -10,6 +10,6 @@ export type ResourceContext = Partial<FilterState> &
   Partial<DetailsState> &
   Partial<ListingState>;
 
-const Context = React.createContext<ResourceContext | undefined>(undefined);
+const Context = createContext<ResourceContext | undefined>(undefined);
 
 export default Context;

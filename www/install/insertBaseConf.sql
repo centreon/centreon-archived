@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '22.04.0-beta.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '22.04.0-beta.2');
 
 --
 -- Contenu de la table `contact`
@@ -89,7 +89,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
-('template','Centreon-2'),
 ('color_up','#88b917'),
 ('color_down','#e00b3d'),
 ('color_unreachable','#818285'),
@@ -1419,7 +1418,7 @@ INSERT INTO `provider_configuration` (type, name, custom_configuration, is_activ
 VALUES (
   'local',
   'local',
-  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
+  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 15552000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
   true,
   true
 ),

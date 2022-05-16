@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import Navigation from './models';
 
+export const retrievedNavigationWithAnEmptySet: Navigation = {
+  result: [],
+  status: true,
+};
+
 export const retrievedNavigation: Navigation = {
   result: [
     {

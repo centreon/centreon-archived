@@ -10,6 +10,7 @@ export enum InputType {
 }
 
 export interface InputProps {
+  additionalLabel?: string;
   category: string;
   change?: ({ setFieldValue, value }) => void;
   endpoint?: string;

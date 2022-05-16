@@ -47,6 +47,11 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 'contact_id',
+            'name' => 'contact_name'
+        ]);
     }
 
     /**
@@ -54,7 +59,15 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
      */
     public function findAll(): array
     {
-        $request = "SELECT SQL_CALC_FOUND_ROWS contact_id, contact_name FROM contact WHERE contact_register = 0";
+        $request = "SELECT SQL_CALC_FOUND_ROWS contact_id, contact_name FROM contact";
+
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= $searchRequest !== null
+            ? $searchRequest . ' AND '
+            : ' WHERE ';
+
+        $request .= 'contact_register = 0 ';
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
@@ -63,7 +76,15 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
-        $statement = $this->db->query($this->translateDbName($request));
+        $statement = $this->db->prepare($request);
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
+        $statement->execute();
 
         // Set total
         $result = $this->db->query('SELECT FOUND_ROWS()');

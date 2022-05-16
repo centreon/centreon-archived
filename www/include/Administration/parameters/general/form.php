@@ -130,22 +130,6 @@ $GMTList = $CentreonGMT->getGMTList();
 
 $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
-$templates = array();
-if ($handle = @opendir($oreon->optGen["oreon_path"] . "www/Themes/")) {
-    while ($file = @readdir($handle)) {
-        if (
-            !is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
-            && $file != "."
-            && $file != ".."
-            && $file != ".svn"
-        ) {
-            $templates[$file] = $file;
-        }
-    }
-    @closedir($handle);
-}
-$form->addElement('select', 'template', _("Display Template"), $templates);
-
 $globalSortType = array(
     "host_name" => _("Hosts"),
     "last_state_change" => _("Duration"),

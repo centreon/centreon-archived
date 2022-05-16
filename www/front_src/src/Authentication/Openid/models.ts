@@ -17,7 +17,7 @@ export interface OpenidConfiguration {
   emailBindAttribute?: string | null;
   endSessionEndpoint?: string | null;
   fullnameBindAttribute?: string | null;
-  introspectionTokenEndpoint: string | null;
+  introspectionTokenEndpoint?: string | null;
   isActive: boolean;
   isForced: boolean;
   loginClaim?: string | null;
@@ -41,7 +41,7 @@ export interface OpenidConfigurationToAPI {
   email_bind_attribute: string | null;
   endsession_endpoint?: string | null;
   fullname_bind_attribute: string | null;
-  introspection_token_endpoint: string | null;
+  introspection_token_endpoint?: string | null;
   is_active: boolean;
   is_forced: boolean;
   login_claim?: string | null;

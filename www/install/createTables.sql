@@ -452,6 +452,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `stats_activate` enum('0','1') DEFAULT '1',
   `daemon` TINYINT(1),
   `pool_size` int(11) DEFAULT NULL,
+  `bbdo_version` varchar(50) DEFAULT '3.0.0',
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -491,8 +492,6 @@ CREATE TABLE `cfg_nagios` (
   `execute_host_checks` enum('0','1','2') DEFAULT NULL,
   `accept_passive_host_checks` enum('0','1','2') DEFAULT NULL,
   `enable_event_handlers` enum('0','1','2') DEFAULT NULL,
-  `log_rotation_method` varchar(255) DEFAULT NULL,
-  `log_archive_path` varchar(255) DEFAULT NULL,
   `check_external_commands` enum('0','1','2') DEFAULT NULL,
   `external_command_buffer_slots` int(11) DEFAULT NULL,
   `command_check_interval` varchar(255) DEFAULT NULL,
@@ -598,11 +597,11 @@ CREATE TABLE `cfg_nagios` (
   `debug_level_opt` varchar(200) DEFAULT '0',
   `debug_verbosity` enum('0','1','2') DEFAULT NULL,
   `max_debug_file_size` int(11) DEFAULT NULL,
-  `daemon_dumps_core` enum('0','1') DEFAULT NULL,
   `cfg_file` varchar(255) NOT NULL DEFAULT 'centengine.cfg',
   `log_pid` enum('0','1') DEFAULT '1',
   `enable_macros_filter` enum('0', '1') DEFAULT '0',
   `macros_filter` TEXT DEFAULT '',
+  `logger_version` enum('log_v2_enabled', 'log_legacy_enabled') DEFAULT 'log_v2_enabled',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),
@@ -742,6 +741,7 @@ CREATE TABLE `contact` (
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
   `contact_js_effects` enum('0','1') DEFAULT '0',
+  `contact_theme` enum('light','dark') DEFAULT 'light',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -2394,6 +2394,7 @@ CREATE TABLE `provider_configuration` (
 CREATE TABLE `password_expiration_excluded_users` (
   `provider_configuration_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`provider_configuration_id`, `user_id`),
   CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
@@ -2443,6 +2444,30 @@ CREATE TABLE `contact_password` (
   CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cfg_nagios_logger` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cfg_nagios_id` int(11) NOT NULL,
+  `log_v2_logger` enum('file', 'syslog') DEFAULT 'file',
+  `log_level_functions` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_config` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_events` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_checks` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_notifications` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_eventbroker` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_commands` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_downtimes` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_comments` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_macros` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_process` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_runtime` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `cfg_nagios_logger_cfg_nagios_id_fk`
+    FOREIGN KEY (`cfg_nagios_id`)
+    REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
