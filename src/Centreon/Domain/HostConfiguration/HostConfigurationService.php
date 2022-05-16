@@ -693,10 +693,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * {@inheritDoc}
      * @throws HostConfigurationException
      */
-    public function findHostTemplateById(int $hostTemplateId): ?Host
+    public function findHostTemplate(int $hostTemplateId): ?Host
     {
         try {
-            return $this->hostConfigurationRepository->findHostTemplateById($hostTemplateId);
+            return $this->hostConfigurationRepository->findHostTemplate($hostTemplateId);
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error while searching for the host template'), 0, $ex);
         }

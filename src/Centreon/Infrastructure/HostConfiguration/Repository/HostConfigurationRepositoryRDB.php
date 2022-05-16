@@ -1067,9 +1067,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function findHostTemplateById(int $hostTemplateId): ?Host
+    public function findHostTemplate(int $hostTemplateId): ?Host
     {
         $request = $this->translateDbName(
             'SELECT

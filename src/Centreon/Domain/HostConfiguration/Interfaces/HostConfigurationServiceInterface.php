@@ -147,5 +147,5 @@ interface HostConfigurationServiceInterface
      * @param int $hostTemplateId
      * @return Host|null
      */
-    public function findHostTemplateById(int $hostTemplateId): ?Host;
+    public function findHostTemplate(int $hostTemplateId): ?Host;
 }
