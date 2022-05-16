@@ -4483,6 +4483,7 @@ components:
           example: true
         contact_template:
           type: object
+          nullable: true
           properties:
             id:
               type: integer
@@ -4492,7 +4493,6 @@ components:
               type: string
               description: "Contact template name"
               example: "Default"
-          nullable: true
         email_bind_attribute:
           type: string
           description: "Email bind attribute"

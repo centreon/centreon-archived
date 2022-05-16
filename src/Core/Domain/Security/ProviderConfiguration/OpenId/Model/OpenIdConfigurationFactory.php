@@ -56,7 +56,12 @@ class OpenIdConfigurationFactory
             $request->clientId,
             $request->clientSecret,
             $request->authenticationType,
-            $request->verifyPeer
+            $request->verifyPeer,
+            null,
+            false,
+            null,
+            null,
+            null // Hardcoded value will be replace on next ticket for the Update OpenId Configuration.
         );
     }
 }
