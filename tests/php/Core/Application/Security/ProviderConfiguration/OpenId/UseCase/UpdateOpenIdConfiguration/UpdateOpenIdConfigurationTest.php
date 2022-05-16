@@ -103,4 +103,4 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $useCase = new UpdateOpenIdConfiguration($this->repository);
 
     $useCase($this->presenter, $request);
-})->skip('should present a NoContentResponse when the use case is executed correctly');
+})->skip('Reimplement those tests while handling update openid configuration extension');
