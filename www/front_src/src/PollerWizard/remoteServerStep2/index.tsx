@@ -60,7 +60,7 @@ const RemoteServerWizardStepTwo = ({
   };
 
   const getPollers = (): void => {
-    getRPollersRequest({
+    getPollersRequest({
       data: null,
       endpoint: pollersEndpoint,
     }).then(({ items }) => {
