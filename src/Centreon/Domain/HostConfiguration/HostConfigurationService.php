@@ -690,7 +690,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @throws HostConfigurationException
      */
     public function findHostTemplateById(int $hostTemplateId): ?Host

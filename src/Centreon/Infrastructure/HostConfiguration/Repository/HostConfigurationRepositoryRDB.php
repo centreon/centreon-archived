@@ -1084,14 +1084,14 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 host.host_register = \'0\''
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostTemplateId, \PDO::PARAM_STR);
+        $statement->bindValue(':host_id', $hostTemplateId, \PDO::PARAM_INT);
         $statement->execute();
 
         if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             return EntityCreator::createEntityByArray(
-                    Host::class,
-                    $record
-                );
+                Host::class,
+                $record
+            );
         }
         return null;
     }
