@@ -73,6 +73,7 @@
                 </td>
             </tr>
             <tr class="list_one"><td class="FormRowField">{$form.stats_activate.label}</td><td class="FormRowValue">{$form.stats_activate.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.bbdo_version.label}</td><td class="FormRowValue">{$form.bbdo_version.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.pool_size.label}</td><td class="FormRowValue">{$form.pool_size.html}</td></tr>

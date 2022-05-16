@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { equals, isNil, not, propOr } from 'ramda';
 import dayjs from 'dayjs';
@@ -44,7 +44,7 @@ const useTimePeriod = ({ sending = false }: Props): void => {
   );
   const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(selectedTimePeriod) || isNil(details) || not(sending)) {
       return;
     }
@@ -55,7 +55,7 @@ const useTimePeriod = ({ sending = false }: Props): void => {
     setResourceDetailsUpdated(true);
   }, [sending]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       not(isNil(defaultSelectedTimePeriodId)) ||
       isNil(defaultSelectedCustomTimePeriod) ||
@@ -74,7 +74,7 @@ const useTimePeriod = ({ sending = false }: Props): void => {
     setSelectedTimePeriod(null);
   }, [defaultSelectedCustomTimePeriod]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       isNil(defaultSelectedTimePeriodId) ||
       equals(defaultSelectedTimePeriodId, selectedTimePeriod?.id)

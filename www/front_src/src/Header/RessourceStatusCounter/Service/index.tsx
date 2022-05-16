@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import React from 'react';
-
-import classnames from 'classnames';
+import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,7 +23,6 @@ import { userAtom } from '@centreon/ui-context';
 
 import getDefaultCriterias from '../../../Resources/Filter/Criterias/default';
 import { applyFilterDerivedAtom } from '../../../Resources/Filter/filterAtoms';
-import styles from '../../header.scss';
 import {
   getServiceResourcesUrl,
   criticalCriterias,
@@ -157,7 +154,7 @@ const ServiceStatusCounter = (): JSX.Element => {
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
-        <div className={`${styles.wrapper} wrap-right-services`}>
+        <div>
           <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={ServiceIcon}
@@ -166,7 +163,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Critical"
               to={unhandledCriticalServicesLink}
               onClick={changeFilterAndNavigate({
@@ -180,7 +177,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Warning"
               to={unhandledWarningServicesLink}
               onClick={changeFilterAndNavigate({
@@ -194,7 +191,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Unknown"
               to={unhandledUnknownServicesLink}
               onClick={changeFilterAndNavigate({
@@ -208,7 +205,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={clsx(classes.link, classes.wrapMiddleIcon)}
               data-testid="Services Ok"
               to={okServicesLink}
               onClick={changeFilterAndNavigate({
@@ -225,8 +222,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(styles['submenu-toggle'], {
-                [styles['submenu-toggle-active'] as string]: toggled,
+              className={clsx(classes.subMenuToggle, {
+                [classes.subMenuToggleActive]: toggled,
               })}
             >
               <SubmenuItems>

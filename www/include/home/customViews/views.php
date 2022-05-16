@@ -104,6 +104,10 @@ try {
         "error_msg",
         _("No widget configured in this view. Please add a new widget with the \"Add widget\" button.")
     );
+    $template->assign(
+        'helpIcon',
+        returnSvg("www/img/icons/question_2.svg", "var(--help-tool-tip-icon-fill-color)", 18, 18)
+    );
     $template->display($columnClass . ".ihtml");
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage() . "<br/>";

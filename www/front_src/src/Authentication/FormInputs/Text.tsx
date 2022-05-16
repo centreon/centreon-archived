@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useFormikContext, FormikValues } from 'formik';
@@ -18,12 +18,12 @@ const Text = ({
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const { values, setFieldValue, touched, errors, handleBlur } =
     useFormikContext<FormikValues>();
 
-  const change = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const change = (event: ChangeEvent<HTMLInputElement>): void => {
     setFieldValue(fieldName, event.target.value);
   };
 
@@ -35,7 +35,7 @@ const Text = ({
 
   const error = prop(fieldName, touched) ? prop(fieldName, errors) : undefined;
 
-  const passwordEndAdornment = React.useCallback(
+  const passwordEndAdornment = useCallback(
     (): JSX.Element | null =>
       equals(type, InputType.Password) ? (
         <PasswordEndAdornment
@@ -52,6 +52,7 @@ const Text = ({
   return useMemoComponent({
     Component: (
       <TextField
+        fullWidth
         EndAdornment={passwordEndAdornment}
         ariaLabel={t(label)}
         error={error as string | undefined}

@@ -6,18 +6,22 @@ if [ "$1" = "configure" ] ; then
       usermod -a -G www-data centreon
   fi
 
-  chown -R centreon:centreon /usr/share/centreon
+  if [ "$(getent passwd centreon)" ]; then
 
-  chmod 0775 \
-    /usr/share/centreon/src \
-    /usr/share/centreon/www \
-    /usr/share/centreon/api
+    chown -R centreon:centreon /usr/share/centreon
+
+    chmod 0775 \
+      /usr/share/centreon/src \
+      /usr/share/centreon/www \
+      /usr/share/centreon/api
+    
+    chmod -R 0775 \
+      /usr/share/centreon/www/img/media \
+      /usr/share/centreon/www/install/install.conf.php \
+      /usr/share/centreon/www/install/tmp \
+      /usr/share/centreon/GPL_LIB/SmartyCache
   
-  chmod -R 0775 \
-    /usr/share/centreon/www/img/media \
-    /usr/share/centreon/www/install/install.conf.php \
-    /usr/share/centreon/www/install/tmp \
-    /usr/share/centreon/GPL_LIB/SmartyCache
+  fi
 
   # Replace macros ----
   sed -i "s#@PHP_BIN@#/usr/bin/php#g" /usr/share/centreon/bin/centreon
@@ -43,6 +47,7 @@ if [ "$1" = "configure" ] ; then
 
 
   if [ -f "/usr/bin/pear" ]; then
+    /usr/bin/pear channel-update pear.php.net
     /usr/bin/pear install --force --alldeps db  >/dev/null
   fi
 
@@ -52,3 +57,4 @@ if [ "$1" = "configure" ] ; then
   fi
 
 fi
+exit 0

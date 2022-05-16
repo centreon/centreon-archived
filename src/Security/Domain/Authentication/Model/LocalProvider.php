@@ -105,6 +105,10 @@ class LocalProvider implements LocalProviderInterface
             ""
         );
 
+        if ($auth->userInfos === null) {
+            throw AuthenticationException::notAuthenticated();
+        }
+
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
             [
@@ -150,10 +154,8 @@ class LocalProvider implements LocalProviderInterface
             throw AuthenticationException::notAuthenticated();
         }
 
-        if ($auth->userInfos !== null) {
-            $this->contactId = (int) $auth->userInfos['contact_id'];
-            $this->setLegacySession(new \Centreon($auth->userInfos));
-        }
+        $this->contactId = (int) $auth->userInfos['contact_id'];
+        $this->setLegacySession(new \Centreon($auth->userInfos));
         $this->info('[LOCAL PROVIDER] authentication succeed');
     }
 

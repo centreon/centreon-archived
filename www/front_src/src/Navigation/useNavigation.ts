@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -68,7 +68,7 @@ const useNavigation = (): UseNavigationState => {
     }).then(setNavigation);
   };
 
-  const reduceAllowedPages = React.useCallback(
+  const reduceAllowedPages = useCallback(
     (acc: Array<string>, page: Page): Array<string> => {
       const children = pipe(
         map<string, string | null>((property) => {
@@ -115,7 +115,7 @@ const useNavigation = (): UseNavigationState => {
     return [...acc, getShowablePages(pages)];
   };
 
-  const filterNotEmptyGroup = React.useCallback((group): boolean => {
+  const filterNotEmptyGroup = useCallback((group): boolean => {
     if (not(group.children)) {
       return false;
     }
@@ -123,7 +123,7 @@ const useNavigation = (): UseNavigationState => {
     return any<Page>((page) => equals(page.show, true), group.children);
   }, []);
 
-  const removeEmptyGroups = React.useCallback((acc, page): Array<Page> => {
+  const removeEmptyGroups = useCallback((acc, page): Array<Page> => {
     if (page.children) {
       return [
         ...acc,
@@ -147,7 +147,7 @@ const useNavigation = (): UseNavigationState => {
     return [...acc, page];
   }, []);
 
-  const findReactRoutes = React.useCallback(
+  const findReactRoutes = useCallback(
     (acc, page: Page): Record<string, string> => {
       const children = mapObjIndexed((value, key) => {
         if (!includes(key, ['groups', 'children'])) {
@@ -180,7 +180,7 @@ const useNavigation = (): UseNavigationState => {
     [],
   );
 
-  const allowedPages = React.useMemo(
+  const allowedPages = useMemo(
     (): Array<string> | undefined =>
       isNil(navigation)
         ? undefined
@@ -188,7 +188,7 @@ const useNavigation = (): UseNavigationState => {
     [navigation],
   );
 
-  const menu = React.useMemo(
+  const menu = useMemo(
     (): Array<Page> | undefined =>
       isNil(navigation)
         ? undefined
@@ -198,7 +198,7 @@ const useNavigation = (): UseNavigationState => {
     [navigation],
   );
 
-  const reactRoutes = React.useMemo(
+  const reactRoutes = useMemo(
     (): Record<string, string> | undefined =>
       isNil(navigation)
         ? undefined

@@ -55,9 +55,9 @@ class OpenIdProvider implements OpenIdProviderInterface
     private ProviderToken $providerToken;
 
     /**
-     * @var ProviderToken
+     * @var null|ProviderToken
      */
-    private ProviderToken $refreshToken;
+    private ?ProviderToken $refreshToken = null;
 
     /**
      * @var array<string,mixed>
@@ -111,7 +111,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(): ProviderToken
+    public function getProviderRefreshToken(): ?ProviderToken
     {
         return $this->refreshToken;
     }
@@ -275,29 +275,38 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
+        $accessTokenLog = [
+            'provider_token' => '...' . substr($content['access_token'], -10)
+        ];
+        if (array_key_exists('refresh_token', $content)) {
+            $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
+        }
         $this->info(
             'Access Token return by external provider',
-            [
-                'provider_token' => '...' . substr($content['access_token'], -10),
-                'refresh_token' => '...' . substr($content['refresh_token'], -10),
-            ]
+            $accessTokenLog
         );
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content ['expires_in'] . 'S'));
-        $refreshTokenExpiration = (new \DateTime())
-            ->add(new \DateInterval('PT' . $content ['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
             $authenticationTokens->getProviderToken()->getId(),
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
-        $this->refreshToken = new ProviderToken(
-            $authenticationTokens->getProviderRefreshToken()->getId(),
-            $content['refresh_token'],
-            $creationDate,
-            $refreshTokenExpiration
-        );
+        if (array_key_exists('refresh_token', $content)) {
+            $expirationDelay = $content['expires_in'] + 3600;
+            if (array_key_exists('refresh_expires_in', $content)) {
+                $expirationDelay = $content['refresh_expires_in'];
+            }
+            $refreshTokenExpiration = (new \DateTime())
+                ->add(new \DateInterval('PT' . $expirationDelay . 'S'));
+            $this->refreshToken = new ProviderToken(
+                null,
+                $content['refresh_token'],
+                $creationDate,
+                $refreshTokenExpiration
+            );
+        }
 
         return new AuthenticationTokens(
             $authenticationTokens->getUserId(),
@@ -349,30 +358,39 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
+        $accessTokenLog = [
+            'provider_token' => '...' . substr($content['access_token'], -10)
+        ];
+        if (array_key_exists('refresh_token', $content)) {
+            $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
+        }
         $this->info(
             'Access Token return by external provider',
-            [
-                'provider_token' => '...' . substr($content['access_token'], -10),
-                'refresh_token' => '...' . substr($content['refresh_token'], -10),
-            ]
+            $accessTokenLog
         );
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
-        $refreshTokenExpiration = (new \DateTime())
-            ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
             null,
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
-        $this->refreshToken = new ProviderToken(
-            null,
-            $content['refresh_token'],
-            $creationDate,
-            $refreshTokenExpiration
-        );
+        if (array_key_exists('refresh_token', $content)) {
+            $expirationDelay = $content['expires_in'] + 3600;
+            if (array_key_exists('refresh_expires_in', $content)) {
+                $expirationDelay = $content['refresh_expires_in'];
+            }
+            $refreshTokenExpiration = (new \DateTime())
+                ->add(new \DateInterval('PT' . $expirationDelay . 'S'));
+            $this->refreshToken = new ProviderToken(
+                null,
+                $content['refresh_token'],
+                $creationDate,
+                $refreshTokenExpiration
+            );
+        }
     }
 
     /**
@@ -441,11 +459,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
         ];
+        $url = str_starts_with($this->configuration->getUserInformationEndpoint(), '/')
+            ? $this->configuration->getBaseUrl() . $this->configuration->getUserInformationEndpoint()
+            : $this->configuration->getUserInformationEndpoint();
         try {
             $response = $this->client->request(
                 'GET',
-                $this->configuration->getBaseUrl() . '/'
-                . ltrim($this->configuration->getUserInformationEndpoint(), '/'),
+                $url,
                 [
                     'headers' => $headers,
                     'verify_peer' => $this->configuration->verifyPeer()

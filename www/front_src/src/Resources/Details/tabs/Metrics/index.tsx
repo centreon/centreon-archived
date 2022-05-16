@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 

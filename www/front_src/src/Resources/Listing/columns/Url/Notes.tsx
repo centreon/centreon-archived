@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { path } from 'ramda';
 
 import IconLink from '@mui/icons-material/Link';

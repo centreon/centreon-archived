@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -91,7 +91,7 @@ const TimeInput = ({
     return duration;
   };
 
-  const changeInput = React.useCallback(
+  const changeInput = useCallback(
     (event: SelectChangeEvent<unknown>): void => {
       const value = parseInt(path(['target', 'value'], event) as string, 10);
 
@@ -141,7 +141,7 @@ const TimeInput = ({
     [functionGetDurationValue, unit, timeValue],
   );
 
-  const normalizedValue = React.useMemo(
+  const normalizedValue = useMemo(
     () =>
       normalizeValue({
         functionGetDurationValue,
@@ -170,7 +170,15 @@ const TimeInput = ({
         <Typography>{t(label)}</Typography>
       </div>
     ),
-    memoProps: [timeValue, unit, labels, name, required, getAbsoluteValue],
+    memoProps: [
+      timeValue,
+      unit,
+      labels,
+      name,
+      required,
+      getAbsoluteValue,
+      classes,
+    ],
   });
 };
 

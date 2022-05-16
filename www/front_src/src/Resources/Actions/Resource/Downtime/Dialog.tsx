@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -88,7 +88,7 @@ const DialogDowntime = ({
   const { t } = useTranslation();
 
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const [isPickerOpened, setIsPickerOpened] = React.useState(false);
+  const [isPickerOpened, setIsPickerOpened] = useState(false);
 
   const { locale } = useAtomValue(userAtom);
 
@@ -169,13 +169,15 @@ const DialogDowntime = ({
             {isNil(errors?.startTime) ? (
               <div />
             ) : (
-              <FormHelperText error>{errors?.startTime}</FormHelperText>
+              <FormHelperText error>
+                {errors?.startTime as string}
+              </FormHelperText>
             )}
             <div />
             {isNil(errors?.endTime) ? (
               <div />
             ) : (
-              <FormHelperText error>{errors?.endTime}</FormHelperText>
+              <FormHelperText error>{errors?.endTime as string}</FormHelperText>
             )}
           </Box>
 
@@ -184,6 +186,7 @@ const DialogDowntime = ({
 
             <Stack alignItems="center" direction="row" spacing={1}>
               <TextField
+                ariaLabel={t(labelDuration)}
                 disabled={values.fixed}
                 error={errors?.duration?.value}
                 type="number"

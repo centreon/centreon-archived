@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -87,7 +87,7 @@ const useLoadDetails = (): DetailsState => {
     setResourceDetailsUpdated(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setDetails(undefined);
     loadDetails();
   }, [selectedResourceUuid]);

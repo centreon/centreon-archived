@@ -15456,6 +15456,9 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
+# msgid "You are not authorized to access the configuration"
+# msgstr ""
+
 # msgid "Web SSO configuration"
 # msgstr ""
 
@@ -15477,7 +15480,7 @@ msgstr ""
 # msgid "Pattern match login (regex)"
 # msgstr ""
 
-# msgid "Pattern replace alias (regex)"
+# msgid "Pattern replace login (regex)"
 # msgstr ""
 
 # msgid "Login header attribute name"
@@ -15496,4 +15499,43 @@ msgstr ""
 # msgstr ""
 
 # msgid "Discard"
+# msgstr ""
+
+# msgid "No contact are configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups are configured for this resource"
+# msgstr ""
+
+# msgid "At least one of the two following fields must be filled"
+# msgstr ""
+
+# msgid "Press Enter to accept"
+# msgstr ""
+
+# msgid "License invalid or expired"
+# msgstr ""
+
+# msgid "Please contact your administrator"
+# msgstr ""
+
+# msgid "Broker events"
+# msgstr ""
+
+# msgid "Events"
+# msgstr ""
+
+# msgid "Functions"
+# msgstr ""
+
+# msgid "Process"
+# msgstr ""
+
+# msgid "Runtime"
+# msgstr ""
+
+# msgid "Log destination"
+# msgstr ""
+
+# msgid "Error"
 # msgstr ""

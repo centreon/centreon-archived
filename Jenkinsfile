@@ -116,11 +116,17 @@ def hasChanges(patterns) {
 
 def checkoutCentreonBuild() {
   dir('centreon-build') {
-    checkout resolveScm(source: [$class: 'GitSCMSource',
-      remote: 'https://github.com/centreon/centreon-build.git',
-      credentialsId: 'technique-ci',
-      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-      targets: [env.BUILD_BRANCH, 'master'])
+    retry(3) {
+      checkout resolveScm(
+        source: [
+          $class: 'GitSCMSource',
+          remote: 'https://github.com/centreon/centreon-build.git',
+          credentialsId: 'technique-ci',
+          traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]
+        ],
+        targets: [env.BUILD_BRANCH, 'master']
+      )
+    }
   }
 }
 
@@ -204,6 +210,14 @@ try {
           junit 'ut-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "coverage/lcov-report",
+            reportFiles: 'index.html',
+            reportName: 'Centreon Frontend Code Coverage',
+            reportTitles: ''
+          ])
         }
       }
     },
@@ -347,6 +361,7 @@ try {
       parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild()
+          sh 'rm -rf output'
           unstash "rpms-${osBuild}"
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }

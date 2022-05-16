@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
@@ -60,7 +60,7 @@ const mergeDefaultAndStoredCards = ({
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
   const { t } = useTranslation();
-  const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
+  const [expandedCards, setExpandedCards] = useState<Array<string>>([]);
 
   const [storedDetailsCards, storeDetailsCards] = useAtom(detailsCardsAtom);
 

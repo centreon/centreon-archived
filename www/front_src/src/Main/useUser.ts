@@ -10,9 +10,7 @@ import { userEndpoint } from '../api/endpoint';
 
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
-const useUser = (
-  changeLanguage?: (locale: string) => void,
-): (() => null | Promise<void>) => {
+const useUser = (): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
     httpCodesBypassErrorSnackbar: [403, 401, 500],
@@ -42,6 +40,7 @@ const useUser = (
           isExportButtonEnabled,
           locale,
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
           default_page: defaultPage,
@@ -53,10 +52,10 @@ const useUser = (
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
-        changeLanguage?.((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
       })
       .catch(() => {

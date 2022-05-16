@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -70,7 +70,7 @@ const DowntimeForm = ({
 
   const currentDate = new Date();
   const defaultEndDate = dayjs(currentDate)
-    .add(dayjs.duration({ seconds: downtime.default_duration }))
+    .add(dayjs.duration({ seconds: downtime.duration }))
     .toDate();
 
   const form = useFormik<DowntimeFormValues>({
@@ -78,11 +78,11 @@ const DowntimeForm = ({
       comment: undefined,
       duration: {
         unit: 'seconds',
-        value: downtime.default_duration,
+        value: downtime.duration,
       },
       endTime: defaultEndDate,
-      fixed: downtime.default_fixed,
-      isDowntimeWithServices: downtime.default_with_services,
+      fixed: downtime.fixed,
+      isDowntimeWithServices: downtime.with_services,
       startTime: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {
@@ -114,7 +114,7 @@ const DowntimeForm = ({
     validationSchema: getValidationSchema(t),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     form.setFieldValue('comment', `${t(labelDowntimeBy)} ${alias}`);
   }, []);
 

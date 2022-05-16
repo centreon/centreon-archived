@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
@@ -24,6 +24,7 @@ import { platformInstallationStatusAtom } from '../platformInstallationStatusAto
 import useUser from '../Main/useUser';
 import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
 import routeMap from '../reactRoutes/routeMap';
+import useInitializeTranslation from '../Main/useInitializeTranslation';
 
 import postLogin from './api';
 import {
@@ -60,10 +61,11 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
+
   const [platformVersions, setPlatformVersions] =
-    React.useState<PlatformVersions | null>(null);
+    useState<PlatformVersions | null>(null);
   const [providersConfiguration, setProvidersConfiguration] =
-    React.useState<Array<ProviderConfiguration> | null>(null);
+    useState<Array<ProviderConfiguration> | null>(null);
 
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
@@ -83,17 +85,20 @@ const useLogin = (): UseLoginState => {
     request: getData,
   });
 
+  const { getInternalTranslation, getExternalTranslation } =
+    useInitializeTranslation();
+
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
   const navigate = useNavigate();
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
   const setPasswordResetInformations = useUpdateAtom(
     passwordResetInformationsAtom,
   );
 
-  const checkPasswordExpiration = React.useCallback(
+  const checkPasswordExpiration = useCallback(
     ({ error, alias, setSubmitting }) => {
       const isUserNotAllowed = pathEq(['response', 'status'], 401, error);
 
@@ -102,20 +107,18 @@ const useLogin = (): UseLoginState => {
         error,
       ) as RedirectAPI;
 
-      if (isUserNotAllowed && not(passwordIsExpired)) {
-        setSubmitting(false);
-        showErrorMessage(
-          path(['response', 'data', 'message'], error) as string,
-        );
+      if (isUserNotAllowed && passwordIsExpired) {
+        setPasswordResetInformations({
+          alias,
+        });
+        navigate(routeMap.resetPassword);
+        showWarningMessage(t(labelPasswordHasExpired));
 
         return;
       }
 
-      setPasswordResetInformations({
-        alias,
-      });
-      navigate(routeMap.resetPassword);
-      showWarningMessage(t(labelPasswordHasExpired));
+      setSubmitting(false);
+      showErrorMessage(path(['response', 'data', 'message'], error) as string);
     },
     [],
   );
@@ -130,7 +133,9 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(redirectUri));
+        getInternalTranslation().finally(() =>
+          loadUser()?.then(() => navigate(redirectUri)),
+        );
       })
       .catch((error) =>
         checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
@@ -139,8 +144,10 @@ const useLogin = (): UseLoginState => {
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
-  React.useEffect(() => {
-    i18n.changeLanguage?.(getBrowserLocale());
+  useEffect(() => {
+    getExternalTranslation().then(() =>
+      i18n.changeLanguage?.(getBrowserLocale()),
+    );
 
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,
