@@ -4,7 +4,7 @@ import { mount } from '../../../../../cypress/support';
 
 import SideBar from './index';
 
-describe('Visual testing for menu: ', () => {
+describe('Navigation menu visual testing: ', () => {
   beforeEach(() => {
     cy.fixture('dataMenu').then((data) => {
       mount(
