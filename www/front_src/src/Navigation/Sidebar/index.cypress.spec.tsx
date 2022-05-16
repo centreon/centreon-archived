@@ -50,7 +50,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('when item of collapse is clicked , the item and parent item should be colored', () => {
+  it('higlights the parent item when the item is clicked', () => {
     cy.get("[alt='mini logo']").click();
     cy.get('li').eq(2).trigger('mouseover');
     cy.get('[data-testid=ExpandMoreIcon]').should('be.visible');
