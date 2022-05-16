@@ -39,7 +39,7 @@ const RemoteServerWizardStepTwo = ({
 
   const [linkedPollers, setLinkedPollers] = useState<Array<SelectEntry>>([]);
 
-  const { sendRequest: getRPollersRequest } = useRequest<{
+  const { sendRequest: getPollersRequest } = useRequest<{
     items: Array<Poller>;
   }>({
     request: getData,
