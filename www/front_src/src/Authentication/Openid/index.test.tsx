@@ -322,6 +322,12 @@ describe('Openid configuration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEmailAttributeToBind),
+      ).toBeInTheDocument();
+    });
+
     userEvent.type(screen.getByLabelText(labelEmailAttributeToBind), '');
 
     await waitFor(() => {
@@ -365,6 +371,10 @@ describe('Openid configuration form', () => {
       },
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelContactTemplate)).toBeInTheDocument();
+    });
+
     userEvent.click(screen.getByLabelText(labelContactTemplate));
 
     await waitFor(() => {
@@ -374,6 +384,10 @@ describe('Openid configuration form', () => {
         )}&search=${encodeURIComponent('{"$and":[{"id":{"$ni":[1]}}]}')}`,
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Contact Template 2')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText('Contact Template 2'));
