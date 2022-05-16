@@ -28,8 +28,12 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.1: ';
 $errorMessage = '';
 
 try {
+    $pearDB->beginTransaction();
+
     $errorMessage = "Unable to update 'custom_configuration' column on 'provider_configuration' table";
     updateOpenIdConfiguration($pearDB);
+
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -50,7 +54,6 @@ try {
  * Update OpenID Configuration with Auto Import options
  *
  * @param CentreonDB $pearDB
- * @return void
  */
 function updateOpenIdConfiguration(CentreonDB $pearDB): void
 {
