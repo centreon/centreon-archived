@@ -267,12 +267,7 @@ function insertOpenIdConfiguration(CentreonDB $pearDB): void
         "client_id" => null,
         "client_secret" => null,
         "authentication_type" => "client_secret_post",
-        "verify_peer" => true,
-        "auto_import" => false,
-        "contact_template" => null,
-        "email_bind_attribute" => null,
-        "alias_bind_attribute" => null,
-        "fullname_bind_attribute" => null,
+        "verify_peer" => true
     ];
     $isActive = false;
     $isForced = false;

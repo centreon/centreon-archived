@@ -73,6 +73,16 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 __DIR__ . '/CustomConfigurationSchema.json',
             );
             $customConfiguration = json_decode($result['custom_configuration'], true);
+            $customConfiguration['contact_template'] = null;
+            if($customConfiguration['contact_template_id'] !== null) {
+                $statement = $this->db->prepare("SELECT contact_id AS id, contact_name AS name FROM contact WHERE contact_id = :contactTemplateId AND contact_register = 0");
+                $statement->bindValue(':contactTemplateId', $customConfiguration['contact_template_id'], \PDO::PARAM_INT);
+                $statement->execute();
+                unset($customConfiguration['contact_template_id']);
+                if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                    $customConfiguration['contact_template'] = $result;
+                }
+            }
             $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
         }
 

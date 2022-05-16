@@ -19,7 +19,7 @@
         "authentication_type",
         "verify_peer",
         "auto_import",
-        "contact_template",
+        "contact_template_id",
         "email_bind_attribute",
         "alias_bind_attribute",
         "fullname_bind_attribute"
@@ -85,16 +85,8 @@
       "auto_import": {
         "type": "boolean"
       },
-      "contact_template": {
-        "type": ["object", "null"],
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
+      "contact_template_id": {
+        "type": ["number", "null"]
       },
       "email_bind_attribute": {
         "type": ["string", "null"]
