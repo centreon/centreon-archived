@@ -301,13 +301,13 @@ class Broker extends AbstractObjectJSON
                 }
 
                 // cast into arrays instead of objects with integer as key
-                $object[$key] = array_values($object[$key]);
                 foreach ($subValuesToCastInArray as $configGroupId => $subValues) {
                     foreach ($subValues as $subValue) {
                         $object[$key][$configGroupId][$subValue] =
-                            array_values($object[$key][$configGroupId][$subValue]);
+                        array_values($object[$key][$configGroupId][$subValue]);
                     }
                 }
+                $object[$key] = array_values($object[$key]);
             }
 
             // Stats parameters
