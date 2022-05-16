@@ -618,14 +618,14 @@ jQuery(function() {
         });
         jQuery(elem).find("input[name^='macroValue']").on("input",function(){
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
-			jQuery(elem).find("input[name^='macroInput']").css({
-				"color" : "var(--custom-macros-font-color)",
-				"background" : "var(--input-select-background-color)"
-			});
-			jQuery(elem).find("input[name^='macroValue']").css({
-				"color" : "var(--custom-macros-font-color)",
-				"background" : "var(--input-select-background-color)"
-			});
+        jQuery(elem).find("input[name^='macroInput']").css({
+            "color" : "var(--custom-macros-font-color)",
+            "background" : "var(--input-select-background-color)"
+        });
+        jQuery(elem).find("input[name^='macroValue']").css({
+            "color" : "var(--custom-macros-font-color)",
+            "background" : "var(--input-select-background-color)"
+        });
         });
 
         var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
