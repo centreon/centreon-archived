@@ -44,7 +44,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('item of menu should be colored after double click', () => {
+  it('hilights the menu item when double clicked', () => {
     cy.get('li').eq(1).as('element').trigger('mouseover');
     cy.get('@element').trigger('dblclick');
     cy.matchImageSnapshot();
