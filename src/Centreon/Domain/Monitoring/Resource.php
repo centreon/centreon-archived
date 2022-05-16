@@ -147,14 +147,14 @@ class Resource
     private $acknowledged = false;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $activeChecks;
+    private $activeChecks = true;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $passiveChecks;
+    private $passiveChecks = false;
 
     /**
      * @var ResourceLinks
@@ -261,6 +261,11 @@ class Resource
      * @var bool
      */
     private $notificationEnabled = false;
+
+    /**
+     * @var bool
+     */
+    private $hasGraph = false;
 
     /**
      * Resource constructor.
@@ -396,7 +401,6 @@ class Resource
     public function setAlias(?string $alias): self
     {
         $this->alias = $alias;
-
         return $this;
     }
 
@@ -647,7 +651,6 @@ class Resource
     public function setInDowntime(bool $inDowntime): self
     {
         $this->inDowntime = $inDowntime;
-
         return $this;
     }
 
@@ -666,41 +669,40 @@ class Resource
     public function setAcknowledged(bool $acknowledged): self
     {
         $this->acknowledged = $acknowledged;
-
         return $this;
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getActiveChecks(): ?bool
+    public function getActiveChecks(): bool
     {
         return $this->activeChecks;
     }
 
     /**
-     * @param bool|null $activeChecks
+     * @param bool $activeChecks
      * @return self
      */
-    public function setActiveChecks(?bool $activeChecks): self
+    public function setActiveChecks(bool $activeChecks): self
     {
         $this->activeChecks = $activeChecks;
         return $this;
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getPassiveChecks(): ?bool
+    public function getPassiveChecks(): bool
     {
         return $this->passiveChecks;
     }
 
     /**
-     * @param bool|null $passiveChecks
+     * @param bool $passiveChecks
      * @return self
      */
-    public function setPassiveChecks(?bool $passiveChecks): self
+    public function setPassiveChecks(bool $passiveChecks): self
     {
         $this->passiveChecks = $passiveChecks;
         return $this;
@@ -1083,5 +1085,23 @@ class Resource
         $this->notificationEnabled = $notificationEnabled;
 
         return $this;
+    }
+
+    /**
+     * @param bool $hasGraph
+     * @return self
+     */
+    public function setHasGraph(bool $hasGraph): self
+    {
+        $this->hasGraph = $hasGraph;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasGraph(): bool
+    {
+        return $this->hasGraph;
     }
 }

@@ -349,6 +349,8 @@ foreach ($aTab as $key => $element) {
             );
             $obj->XML->endElement();
         }
+        $obj->XML->writeElement("chartIcon", returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)", 18, 18));
+        $obj->XML->writeElement("viewIcon", returnSvg("www/img/icons/view.svg", "var(--icons-fill-color)", 18, 18));
         $obj->XML->endElement();
         $count++;
     }

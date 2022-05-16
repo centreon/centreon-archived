@@ -28,15 +28,6 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
 
-document.createRange = () => ({
-  commonAncestorContainer: {
-    nodeName: 'BODY',
-    ownerDocument: document,
-  },
-  setEnd: () => {},
-  setStart: () => {},
-});
-
 class IntersectionObserver {
   observe = jest.fn();
 
@@ -66,3 +57,8 @@ i18n.use(initReactI18next).init({
   nsSeparator: false,
   resources: {},
 });
+
+jest.mock('@centreon/ui-context', () => ({
+  ...jest.requireActual('centreon-frontend/packages/ui-context'),
+  ThemeMode: 'light',
+}));

@@ -2022,24 +2022,6 @@ msgstr ""
 "externe adéquate ou la changer via l'interface web. L'option est activée par "
 "défaut."
 
-#: centreon-web/www/include/configuration/configNagios/help.php:174
-msgid ""
-"This is the rotation method that you would like Monitoring Engine to use for "
-"your log file."
-msgstr ""
-"Méthode de rotation que vous souhaitez que le moteur de supervision utilise "
-"pour vos fichiers journaux."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:178
-msgid ""
-"This is the directory where Monitoring Engine should place log files that have "
-"been rotated. This option is ignored if you choose to not use the log rotation "
-"functionality."
-msgstr ""
-"C'est le répertoire où le moteur de supervision doit enregistrer les fichiers "
-"journaux ayant fait l'objet d'une rotation. Cette option est ignorée si vous "
-"n'avez pas activé la rotation du journal."
-
 #: centreon-web/www/include/configuration/configNagios/help.php:183
 msgid ""
 "This option determines whether or not Monitoring Engine will check the command "
@@ -3499,17 +3481,6 @@ msgstr ""
 "une extension en .old. Si le fichier .old existe déjà, il sera automatiquement "
 "effacé. Cette option vous permet de garder un contrôle sur l'espace disque que "
 "le moteur de supervision prend quand il se trouve en mode de débogage."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:481
-msgid ""
-"This option allows dumping core in case a segmentation fault occurs. Warning: "
-"Make sure that server has sufficient disk space for these dumps (ulimit). This "
-"option is discarded when using Centreon Engine."
-msgstr ""
-"Cette option autorise la création d'un fichier de débogage si une erreur de "
-"segmentation se produit. Avertissement: Assurez-vous que le serveur dispose "
-"d'un espace disque suffisant pour ces fichiers (ulimit). Cette option n'est "
-"pas utilisable avec l'ordonnanceur Centreon Engine."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:482
 msgid ""

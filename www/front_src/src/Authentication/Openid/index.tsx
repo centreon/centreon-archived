@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
@@ -31,14 +31,14 @@ const OpenidConfigurationForm = (): JSX.Element => {
     loadOpenidConfiguration,
   } = useOpenid();
 
-  const isOpenidConfigurationEmpty = React.useMemo(
+  const isOpenidConfigurationEmpty = useMemo(
     () => isNil(initialOpenidConfiguration),
     [initialOpenidConfiguration],
   );
 
   useTab(isOpenidConfigurationEmpty);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadOpenidConfiguration();
   }, []);
 

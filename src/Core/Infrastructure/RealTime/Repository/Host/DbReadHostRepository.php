@@ -63,6 +63,33 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
     }
 
     /**
+     * @inheritDoc
+     */
+    public function isAllowedToFindHostByAccessGroupIds(int $hostId, array $accessGroupIds): bool
+    {
+        if (empty($accessGroupIds)) {
+            return false;
+        }
+
+        $request = "
+            SELECT COUNT(h.host_id) AS total
+            FROM `:dbstg`.`hosts` AS h
+            INNER JOIN `:dbstg`.`centreon_acl` AS host_acl
+                ON host_acl.host_id = h.host_id
+                AND host_acl.group_id IN (" . implode(',', $accessGroupIds) . ")
+            WHERE h.host_id = :host_id AND h.enabled = 1
+        ";
+
+        $statement = $this->db->prepare($this->translateDbName($request));
+
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        return $statement->fetchColumn() > 0;
+    }
+
+    /**
      * Find host request according to accessgroups or not.
      *
      * @param int $hostId
@@ -86,6 +113,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
                 h.perfData AS `performance_data`,
                 h.output,
                 h.command_line,
+                h.notify,
                 h.notification_number,
                 h.last_state_change AS `last_status_change`,
                 h.last_notification,

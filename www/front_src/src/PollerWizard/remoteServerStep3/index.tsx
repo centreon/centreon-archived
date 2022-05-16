@@ -1,29 +1,26 @@
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 
-import { connect } from 'react-redux';
-import { useTranslation, withTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { equals, not } from 'ramda';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import WizardFormSetupStatus from '../../components/WizardFormSetupStatus';
 import routeMap from '../../reactRoutes/routeMap';
+import { remoteServerAtom, RemoteServerData } from '../pollerAtoms';
+import {
+  labelExportGenerationTimeout,
+  labelFinalStep,
+} from '../translatedLabels';
+import { exportTaskEndpoint } from '../api/endpoints';
 
-interface Props {
-  pollerData;
-}
-
-const exportTaskEndpoint =
-  'internal.php?object=centreon_task_service&action=getTaskStatus';
-
-const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
+const RemoteServerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [error, setError] = React.useState<string | null>(null);
-  const [generateStatus, setGenerateStatus] = React.useState<boolean | null>(
-    null,
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [generateStatus, setGenerateStatus] = useState<boolean | null>(null);
 
   const { sendRequest: getExportTask } = useRequest<{
     status: string | null;
@@ -34,9 +31,12 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const generationTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const generationTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const remainingGenerationTimeoutRef = React.useRef<number>(30);
+  const remainingGenerationTimeoutRef = useRef<number>(30);
+  const pollerData = useAtomValue<RemoteServerData | null>(
+    remoteServerAtom,
+  ) as RemoteServerData;
 
   const refreshGeneration = (): void => {
     const { taskId } = pollerData;
@@ -75,32 +75,22 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
 
       return;
     }
-    setError('Export generation timeout');
+    setError(t(labelExportGenerationTimeout));
     setGenerateStatus(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setGenerationTimeout();
   }, []);
 
   return (
-    <WizardFormInstallingStatus
+    <WizardFormSetupStatus
       error={error}
-      formTitle={`${t('Finalizing Setup')}`}
-      statusCreating={pollerData.submitStatus}
+      formTitle={t(labelFinalStep)}
+      statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={generateStatus}
     />
   );
 };
 
-const mapStateToProps = ({ pollerForm }): Props => ({
-  pollerData: pollerForm,
-});
-
-const mapDispatchToProps = {};
-
-const RemoteServerStepThree = withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(FormRemoteServerStepThree),
-);
-
-export default (): JSX.Element => <RemoteServerStepThree />;
+export default RemoteServerWizardStepThree;

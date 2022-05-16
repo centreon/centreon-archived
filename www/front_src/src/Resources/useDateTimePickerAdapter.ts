@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import * as React from 'react';
+import { useCallback } from 'react';
 
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
@@ -68,7 +68,7 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     );
   };
 
-  const getDSTState = React.useCallback(
+  const getDSTState = useCallback(
     (date: dayjs.Dayjs): DSTState => {
       const currentYear = toTimezonedDate({
         date: new Date(),

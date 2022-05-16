@@ -36,7 +36,7 @@
 
         <td align='right'>
         {if ($step-1)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='loadStep("previousStep");'/>
+        <input class='btc bt_back_install' type='button' id='previous' value='Back' onClick='loadStep("previousStep");'/>
         {/if}
         <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep("stepContent");'/>
         {if (!isset($validate) || $validate)}

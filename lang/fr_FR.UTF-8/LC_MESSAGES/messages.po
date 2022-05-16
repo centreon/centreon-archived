@@ -2815,10 +2815,6 @@ msgstr "Information sur le moteur de supervision"
 msgid "Admin information"
 msgstr "Informations de l'administrateur"
 
-#: centreon-web/www/install/steps/step5.php:66
-msgid "Login"
-msgstr "Login"
-
 #: centreon-web/www/install/steps/step5.php:73
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:97
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:566
@@ -5299,12 +5295,6 @@ msgstr "Afficher les commentaires sur le graphique"
 
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
-
-msgid "Trusted client addresses"
-msgstr "Adresses des clients de confiance"
-
-msgid "Blacklist client addresses"
-msgstr "Adresses des clients bloqués"
 
 msgid "Base Url"
 msgstr "URL de base"
@@ -16609,9 +16599,6 @@ msgstr "Portées"
 msgid "Login claim value"
 msgstr "Valeur de la déclaration de connexion"
 
-msgid "Client ID"
-msgstr "ID de client"
-
 msgid "Client secret"
 msgstr "Secret de client"
 
@@ -16623,9 +16610,6 @@ msgstr "Désactiver la vérification du pair"
 
 msgid "OpenID Connect only"
 msgstr "OpenID Connect seulement"
-
-msgid "Mixed"
-msgstr "Mélangé"
 
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
@@ -16656,6 +16640,12 @@ msgstr "Votre mot de passe expirera dans"
 
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
+
+msgid "Invalid event provided (%s)"
+msgstr "Evénement fourni invalide (%s)"
+
+msgid "Error when searching for the central engine configuration"
+msgstr "Erreur lors de la recherche de la configuration du moteur de collecte central"
 
 msgid "The value '%s' was expected to be a valid ip address"
 msgstr "La valeur '%s' devait être une adresse ip valide"
@@ -16729,6 +16719,21 @@ msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaratio
 msgid "Impossible to get contact templates from data storage"
 msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de données"
 
+# msgid "You are not authorized to access the configuration"
+# msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
+
+msgid "Error on updating an user"
+msgstr "Erreur lors de la mise à jour d'un utilisateur"
+
+msgid "Error in reading the themes available to the user"
+msgstr "Erreur dans la lecture des thèmes disponibles pour l'utilisateur"
+
+msgid "Error when updating the user\\'s theme"
+msgstr "Erreur lors de la mise à jour du thème de l'utilisateur"
+
+msgid "Error while searching for the user"
+msgstr "Erreur lors de la recherche de l'utilisateur"
+
 msgid "Web SSO configuration"
 msgstr "Configuration Web SSO"
 
@@ -16750,7 +16755,7 @@ msgstr "Web SSO seulement"
 msgid "Pattern match login (regex)"
 msgstr "Correspondance de login (regex)"
 
-msgid "Pattern replace alias (regex)"
+msgid "Pattern replace login (regex)"
 msgstr "Remplacement du login (regex)"
 
 msgid "Login header attribute name"
@@ -16770,3 +16775,42 @@ msgstr "Il y a des erreurs dans le formulaire. Voulez-vous quitter le formulaire
 
 msgid "Discard"
 msgstr "Annuler"
+
+msgid "No contacts are configured for this resource"
+msgstr "Aucun contact configuré pour cette ressource"
+
+msgid "No contact groups are configured for this resource"
+msgstr "Aucun contact groupe configuré pour cette ressource"
+
+msgid "At least one of the two following fields must be filled"
+msgstr "Au moins l'un des deux champs suivants doit être rempli"
+
+msgid "Press Enter to accept"
+msgstr "Appuyer sur Entrée pour accepter"
+
+msgid "License invalid or expired"
+msgstr "Licence invalide ou expirée"
+
+msgid "Please contact your administrator"
+msgstr "Veuillez contacter votre administrateur"
+
+msgid "Broker events"
+msgstr "Évènements Broker"
+
+msgid "Events"
+msgstr "Évènements"
+
+msgid "Functions"
+msgstr "Fonctions"
+
+msgid "Process"
+msgstr "Processus"
+
+msgid "Runtime"
+msgstr "Exécution"
+
+msgid "Log destination"
+msgstr "Destination du journal"
+
+msgid "Error"
+msgstr "Erreur"

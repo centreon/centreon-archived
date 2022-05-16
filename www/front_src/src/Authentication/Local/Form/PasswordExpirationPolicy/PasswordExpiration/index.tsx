@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -51,7 +51,7 @@ const PasswordExpiration = (): JSX.Element => {
     object: errors,
   });
 
-  const minDaysOption = React.useMemo(
+  const minDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ months: 1 }).asMilliseconds(),
@@ -62,7 +62,7 @@ const PasswordExpiration = (): JSX.Element => {
     [passwordExpirationValue],
   );
 
-  const maxDaysOption = React.useMemo(
+  const maxDaysOption = useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ years: 1 }).asMilliseconds(),
@@ -100,7 +100,7 @@ const PasswordExpiration = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordExpirationValue, passwordExpirationError],
+    memoProps: [passwordExpirationValue, passwordExpirationError, classes],
   });
 };
 

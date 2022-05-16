@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 
@@ -10,10 +8,6 @@ import { labelComment, labelAdd } from '../../../../translatedLabels';
 import { commentEndpoint } from '../../../../Actions/api/endpoint';
 
 import AddCommentForm from '.';
-
-jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('centreon-frontend/packages/ui-context'),
-);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

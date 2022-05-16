@@ -86,7 +86,7 @@ class ResourceStatus
      */
     public function getName(): ?string
     {
-        return $this->name ? _($this->name) : $this->name;
+        return $this->name;
     }
 
     /**
