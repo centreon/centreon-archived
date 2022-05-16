@@ -129,7 +129,7 @@ try {
             }
         }
         if (
-            (strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.2.0') >= 0)
+            (strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.5.0') >= 0)
             || (strpos($versionName, "MySQL") !== false && version_compare($versionNumber, '8.0.0') >= 0)
         ) {
             // altering the mysql's password plugin using the ALTER USER request

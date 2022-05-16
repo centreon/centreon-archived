@@ -35,6 +35,7 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
+require_once __DIR__ . '/../functions.php';
 
 $requiredParameters = array(
     'db_configuration',
@@ -78,9 +79,18 @@ try {
         $parameters['root_user'],
         $parameters['root_password']
     );
+
 } catch (\PDOException $e) {
     $err['connection'] = $e->getMessage();
 }
+
+try {
+    checkMariaDBPrerequisite($link);
+} catch (\Exception $e) {
+    $err['connection'] = $e->getMessage();
+}
+
+
 $link = null;
 
 if (!count($err['required']) && $err['password'] && trim($err['connection']) == '') {

@@ -335,3 +335,76 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
 
     return $macros;
 }
+
+/**
+ * Check PHP version and throws exception if prerequisite is not respected
+ *
+ * @param \PDO $db
+ * @throws \Exception
+ */
+function checkPhpPrerequisite(): void
+{
+    $currentPhpVersion = phpversion();
+    $minPhpVersion = '8.0';
+    $maxPhpVersion = '8.1';
+    if (
+        version_compare($currentPhpVersion, $minPhpVersion, '<')
+        || version_compare($currentPhpVersion, $maxPhpVersion, '>=')
+    ) {
+        throw new \Exception(
+            sprintf(
+                _('Please install PHP version %s instead of %s.'),
+                $minPhpVersion,
+                $currentPhpVersion,
+            ),
+        );
+    }
+}
+
+/**
+ * Check MariaDB version and throws exception if prerequisite is not respected
+ *
+ * @param \PDO $db
+ * @throws \Exception
+ */
+function checkMariaDBPrerequisite(\PDO $db): void
+{
+    $currentMariaDBVersion = getMariaDBVersion($db);
+    $requiredMariaDBVersion = '10.5';
+    if ($currentMariaDBVersion !== null && version_compare($currentMariaDBVersion, $requiredMariaDBVersion, '<')) {
+        throw new \Exception(
+            sprintf(
+                _('Please install MariaDB version %s instead of %s.'),
+                $requiredMariaDBVersion,
+                $currentMariaDBVersion,
+            ),
+        );
+    }
+}
+
+/**
+ * Get MariaDB version
+ * Returns nulls if not found or if MySQL is installed
+ *
+ * @return string|null
+ */
+function getMariaDBVersion(\PDO $db): ?string
+{
+    $version = null;
+    $dbmsName = null;
+
+    $statement = $db->query("SHOW VARIABLES WHERE Variable_name IN ('version', 'version_comment')");
+    while ($row = $statement->fetch()) {
+        if ($row['Variable_name'] === "version") {
+            $version = $row['Variable_name'];
+        } elseif ($row['Variable_name'] === "version_comment") {
+            $dbmsName = $row['Variable_name'];
+        }
+    }
+
+    if (strpos($dbmsName, "MariaDB") !== false && $version !== null) {
+        return $version;
+    }
+
+    return null;
+}
