@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2005-2022Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
