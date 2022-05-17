@@ -54,6 +54,7 @@ try {
  * Update OpenID Configuration with Auto Import options
  *
  * @param CentreonDB $pearDB
+ * @throws \Exception
  */
 function updateOpenIdConfiguration(CentreonDB $pearDB): void
 {
