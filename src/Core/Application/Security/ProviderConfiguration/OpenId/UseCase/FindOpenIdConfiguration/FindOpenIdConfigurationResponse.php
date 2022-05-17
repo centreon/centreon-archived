@@ -30,12 +30,12 @@ class FindOpenIdConfigurationResponse
     /**
      * @var boolean
      */
-    public bool $isActive;
+    public bool $isActive = false;
 
     /**
      * @var boolean
      */
-    public bool $isForced;
+    public bool $isForced = false ;
 
     /**
      * @var string[]
@@ -105,12 +105,12 @@ class FindOpenIdConfigurationResponse
     /**
      * @var boolean
      */
-    public bool $verifyPeer;
+    public bool $verifyPeer = false;
 
     /**
      * @var boolean
      */
-    public bool $isAutoImportEnabled;
+    public bool $isAutoImportEnabled = false;
 
     /**
      * @var array<string,int|string>|null
