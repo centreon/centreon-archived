@@ -78,11 +78,8 @@ $queryValues[':dbPass'] = $parameters['db_password'];
 // Compatibility adaptation for mysql 8 with php7.1 before 7.1.16, or php7.2 before 7.2.4.
 $createUser = "CREATE USER :dbUser@:host IDENTIFIED BY :dbPass";
 
-// As ALTER USER won't work on a mariaDB < 10.2, we need to check it before trying this request
-$checkMysqlVersion = "SHOW VARIABLES WHERE Variable_name LIKE 'version%'";
-
 // creating the user - mandatory for MySQL DB
-$alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
+$alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password AS :dbPass";
 
 // Set defined privileges for the user.
 $mandatoryPrivileges = [
@@ -120,7 +117,8 @@ try {
         $prepareCreate->execute();
 
         // checking mysql version before trying to alter the password plugin
-        $prepareCheckVersion = $link->query($checkMysqlVersion);
+        // As ALTER USER won't work on a mariaDB < 10.2, we need to check it before trying this request
+        $prepareCheckVersion = $link->query("SHOW VARIABLES WHERE Variable_name IN ('version', 'version_comment')");
         $versionName = $versionNumber = "";
         while ($row = $prepareCheckVersion->fetch()) {
             if ($row['Variable_name'] === "version") {
