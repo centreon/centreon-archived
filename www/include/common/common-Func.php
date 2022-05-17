@@ -51,7 +51,7 @@ function displaySvg(string $svgPath, string $color, float $height, float $width)
     if (file_exists($path)) {
         $data = file_get_contents($path);
         $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
-        echo "<span style='fill:$color'>" . $data . '</span>';
+        echo "<span style='fill:$color; vertical-align: middle'>" . $data . '</span>';
     } else {
         echo 'SVG file not found: ' . $svgPath;
     }
@@ -74,7 +74,7 @@ function returnSvg(string $svgPath, string $color, float $height, float $width):
     if (file_exists($path)) {
         $data = file_get_contents($path);
         $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
-        return "<span style='fill:$color'>" . $data . '</span>';
+        return "<span style='fill:$color ; vertical-align: middle'>" . $data . '</span>';
     } else {
         return 'SVG file not found: ' . $svgPath;
     }
