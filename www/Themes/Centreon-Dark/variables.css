@@ -202,4 +202,12 @@
     --bt-warning-ui-state-hover-color: var(--btc-color);
     --button-group-input-color: var(--btc-color);
     --button-icons-fill-color: var(--btc-color);
+    --error-message-background-color: var(--update-secu-background-color);
+    --error-message-border-color: var(--update-secu-border-color);
+    --error-message-font-color: var(--up-to-date-color);
+    --success-message-background-color: var(--up-to-date-background-color);
+    --success-message-font-color: var(--up-to-date-border-color);
+    --success-message-border-color: var(--up-to-date-color);
+    --custom-macros-placeholder-font-color: var(--color-black);
+    --custom-macros-font-color: var(--color-white);
 }
