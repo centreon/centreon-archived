@@ -47,10 +47,9 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
     {
         static $tab;
 
-        $userACL = new CentreonACL($this->userId);
-        $isContactAdmin = $userACL->admin;
-
         if (! isset($tab)) {
+            $userACL = new CentreonACL($this->userId);
+            $isContactAdmin = $userACL->admin;
             $request = 'SELECT id, name FROM nagios_server ns';
 
             if (! $isContactAdmin) {
