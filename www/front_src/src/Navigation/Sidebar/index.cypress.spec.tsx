@@ -6,7 +6,7 @@ import SideBar from './index';
 
 describe('Navigation menu visual testing: ', () => {
   beforeEach(() => {
-    cy.fixture('dataMenu').then((data) => {
+    cy.fixture('menuData').then((data) => {
       mount(
         <Router>
           <SideBar navigationData={data.result} />
