@@ -237,42 +237,42 @@
                                             <tr class='list_two'>
                                                 <td class="ListColLeft">{$m_mon_obsess_over_host}</td>
                                                 <td class="ListColLeft">
-                                                    {if isset($host_data.obsess_over_host)}
+                                                    {if $host_data.obsess_over_host != null}
                                                         <span class="badge {$color_onoff[$host_data.obsess_over_host]}"  >{$en_disable[$host_data.obsess_over_host]}</span>
                                                     {/if}
                                                 </td>
                                                 <td class="ListColRight ColPopup" id="host_obsess">
-                                                    {if isset($host_data.obsess_over_host) && (isset($aclAct.obsess_over_host)|| $admin == 1)}
+                                                    {if $host_data.obsess_over_host != null && (isset($aclAct.obsess_over_host) || $admin == 1)}
                                                     <a href="#" onClick="send_command('host_obsess', '{$en_inv[$host_data.obsess_over_host]}');"><img src={$img_en[$host_data.obsess_over_host]} class="ico-16" alt="{$en_inv_text[$host_data.obsess_over_host]} {$m_mon_obsess_over_host}" /></a>
                                                     {/if}
                                                 </td>
                                             </tr>
                                             {/if}
-                                            {if isset($aclAct.host_event_handler) || $admin == true}
+                                            {if $aclAct.host_event_handler != null || $admin == true}
                                             <tr class='list_one'>
                                                 <td class="ListColLeft">{$m_mon_event_handler}</td>
                                                 <td class="ListColLeft">
-                                                    {if isset($host_data.event_handler_enabled)}
+                                                    {if $host_data.event_handler_enabled != null}
                                                         <span class="badge {$color_onoff[$host_data.event_handler_enabled]}"  >{$en_disable[$host_data.event_handler_enabled]}</span>
                                                     {/if}
                                                 </td>
                                                 <td class="ListColRight ColPopup" id="host_event_handler">
-                                                    {if isset($host_data.event_handler_enabled) && (isset($aclAct.host_event_handler) || $admin == 1)}
+                                                    {if $host_data.event_handler_enabled != null && (isset($aclAct.host_event_handler) || $admin == 1)}
                                                     <a href="#" onClick="send_command('host_event_handler', '{$en_inv[$host_data.event_handler_enabled]}');"><img src={$img_en[$host_data.event_handler_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}" /></a>
                                                     {/if}
                                                 </td>
                                             </tr>
                                             {/if}
-                                            {if isset($aclAct.host_flap_detection) || $admin == true}
+                                            {if $aclAct.host_flap_detection != null || $admin == true}
                                             <tr class='list_two'>
                                                 <td class="ListColLeft">{$m_mon_flap_detection}</td>
                                                 <td class="ListColLeft">
-                                                    {if isset($host_data.flap_detection_enabled)}
+                                                    {if $host_data.flap_detection_enabled != null}
                                                         <span class="badge {$color_onoff[$host_data.flap_detection_enabled]}" >{$en_disable[$host_data.flap_detection_enabled]}</span>
                                                     {/if}
                                                 </td>
                                                 <td class="ListColRight ColPopup" id="host_flap_detection">
-                                                    {if isset($host_data.flap_detection_enabled) && (isset($aclAct.host_flap_detection) || $admin == 1)}
+                                                    {if $host_data.flap_detection_enabled != null && (isset($aclAct.host_flap_detection) || $admin == 1)}
                                                     <a href="#" onClick="send_command('host_flap_detection', '{$en_inv[$host_data.flap_detection_enabled]}');">
                                                         <img src={$img_en[$host_data.flap_detection_enabled]} class="ico-16" alt="{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}" /></a>
                                                     {/if}
@@ -281,9 +281,9 @@
                                             {/if}
                                             {if $host_data.current_state != 'UP'}
                                                 {if
-                                                    (isset($aclAct.host_acknowledgement) && isset($host_data.problem_has_been_acknowledged))
+                                                    ($aclAct.host_acknowledgement != null && isset($host_data.problem_has_been_acknowledged))
                                                     || (isset($aclAct.host_disacknowledgement) && isset($host_data.problem_has_been_acknowledged))
-                                                    || ($admin == true && isset($host_data.problem_has_been_acknowledged))
+                                                    || ($admin == true && $host_data.problem_has_been_acknowledged != null)
                                                 }
                                                     <tr class='list_one'>
                                                         <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
