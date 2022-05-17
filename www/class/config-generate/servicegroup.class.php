@@ -67,7 +67,7 @@ class Servicegroup extends AbstractObject
     private function getServicegroupFromId($sg_id)
     {
         if (is_null($this->stmt_sg)) {
-            $this->stmt_sg = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_sg = $this->backend_instance->db->prepare("SELECT
                 $this->attributes_select
             FROM servicegroup
             WHERE sg_id = :sg_id AND sg_activate = '1'
@@ -76,13 +76,12 @@ class Servicegroup extends AbstractObject
 
         $this->stmt_sg->bindParam(':sg_id', $sg_id, PDO::PARAM_INT);
         $this->stmt_sg->execute();
-        $results = $this->stmt_sg->fetchAll(PDO::FETCH_ASSOC);
-        $this->sg[$sg_id] = array_pop($results);
-        if (is_null($this->sg[$sg_id])) {
-            return 1;
+
+        if ($serviceGroup = $this->stmt_sg->fetch(PDO::FETCH_ASSOC)) {
+            $this->sg[$sg_id] = $serviceGroup;
+            $this->sg[$sg_id]['members_cache'] = [];
+            $this->sg[$sg_id]['members'] = [];
         }
-        $this->sg[$sg_id]['members_cache'] = array();
-        $this->sg[$sg_id]['members'] = array();
     }
 
     public function addServiceInSg($sg_id, $service_id, $service_description, $host_id, $host_name)
@@ -104,10 +103,11 @@ class Servicegroup extends AbstractObject
             return 0;
         }
 
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                  service_service_id, servicegroup_sg_id, host_host_id
-                FROM servicegroup_relation
-        ");
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT service_service_id, servicegroup_sg_id, host_host_id
+            FROM servicegroup_relation sgr, servicegroup sg
+            WHERE sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
+        );
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->sg_relation_cache[$value['service_service_id']])) {
@@ -132,11 +132,12 @@ class Servicegroup extends AbstractObject
 
         if (is_null($this->stmt_stpl_sg)) {
             # Meaning, linked with the host or hostgroup (for the null expression)
-            $this->stmt_stpl_sg = $this->backend_instance->db->prepare("SELECT 
-                    servicegroup_sg_id, host_host_id, service_service_id
-                FROM servicegroup_relation
+            $this->stmt_stpl_sg = $this->backend_instance->db->prepare(
+                "SELECT servicegroup_sg_id, host_host_id, service_service_id
+                FROM servicegroup_relation sgr, servicegroup sg
                 WHERE service_service_id = :service_id
-            ");
+                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
+            );
         }
         $this->stmt_stpl_sg->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_stpl_sg->execute();
@@ -159,11 +160,12 @@ class Servicegroup extends AbstractObject
 
         if (is_null($this->stmt_service_sg)) {
             # Meaning, linked with the host or hostgroup (for the null expression)
-            $this->stmt_service_sg = $this->backend_instance->db->prepare("SELECT 
-                    servicegroup_sg_id, host_host_id, service_service_id
-                FROM servicegroup_relation
+            $this->stmt_service_sg = $this->backend_instance->db->prepare(
+                "SELECT servicegroup_sg_id, host_host_id, service_service_id
+                FROM servicegroup_relation sgr, servicegroup sg
                 WHERE service_service_id = :service_id AND (host_host_id = :host_id OR host_host_id IS NULL)
-            ");
+                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate"
+            );
         }
         $this->stmt_service_sg->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service_sg->bindParam(':host_id', $host_id, PDO::PARAM_INT);
