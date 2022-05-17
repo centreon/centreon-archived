@@ -48,7 +48,7 @@ $title = _('Centreon Upgrade');
 $status = 0;
 $content = '';
 
-$errorMessages =[];
+$errorMessages = [];
 
 try {
     checkPhpPrerequisite();

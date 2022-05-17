@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -123,9 +124,9 @@ try {
         $versionName = $versionNumber = "";
         while ($row = $prepareCheckVersion->fetch()) {
             if ($row['Variable_name'] === "version") {
-                $versionNumber = $row['Variable_name'];
+                $versionNumber = $row['Value'];
             } elseif ($row['Variable_name'] === "version_comment") {
-                $versionName = $row['Variable_name'];
+                $versionName = $row['Value'];
             }
         }
         if (

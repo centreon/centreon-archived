@@ -396,9 +396,9 @@ function getMariaDBVersion(\PDO $db): ?string
     $statement = $db->query("SHOW VARIABLES WHERE Variable_name IN ('version', 'version_comment')");
     while ($row = $statement->fetch()) {
         if ($row['Variable_name'] === "version") {
-            $version = $row['Variable_name'];
+            $version = $row['Value'];
         } elseif ($row['Variable_name'] === "version_comment") {
-            $dbmsName = $row['Variable_name'];
+            $dbmsName = $row['Value'];
         }
     }
 
