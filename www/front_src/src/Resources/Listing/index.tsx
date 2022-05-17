@@ -161,8 +161,8 @@ const ResourceListing = (): JSX.Element => {
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
-        ...rowColorConditions(theme),
         resourceDetailsOpenCondition,
+        ...rowColorConditions(theme),
       ]}
       rows={listing?.result}
       selectedRows={selectedResources}
