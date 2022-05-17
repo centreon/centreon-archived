@@ -344,7 +344,7 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
  */
 function checkPhpPrerequisite(): void
 {
-    $currentPhpVersion = phpversion();
+    $currentPhpVersion = PHP_VERSION;
     $minPhpVersion = '8.0';
     $maxPhpVersion = '8.1';
     if (
