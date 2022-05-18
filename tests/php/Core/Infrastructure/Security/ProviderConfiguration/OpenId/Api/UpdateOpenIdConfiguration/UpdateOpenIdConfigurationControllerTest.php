@@ -93,7 +93,7 @@ it('should thrown an exception when the request body is invalid', function () {
 
         $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});
 
 it('should execute the usecase properly', function () {
         $controller = new UpdateOpenIdConfigurationController();
@@ -133,4 +133,4 @@ it('should execute the usecase properly', function () {
             ->method('__invoke');
 
         $controller($this->useCase, $this->request, $this->presenter);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});
