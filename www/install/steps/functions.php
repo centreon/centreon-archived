@@ -34,9 +34,11 @@
  *
  */
 
+require_once __DIR__ . '/../../../bootstrap.php';
 require_once __DIR__ . '/../../class/centreonAuth.class.php';
 
 use Symfony\Component\Yaml\Yaml;
+use Centreon\Domain\VersionHelper;
 
 /**
  * Checks if line is sql comment
@@ -344,16 +346,11 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
  */
 function checkPhpPrerequisite(): void
 {
-    $minPhpVersion = '8.0';
-    $maxPhpVersion = '8.1';
-    if (
-        version_compare(PHP_VERSION, $minPhpVersion, '<')
-        || version_compare(PHP_VERSION, $maxPhpVersion, '>=')
-    ) {
+    if (! VersionHelper::compare(PHP_VERSION, _CENTREON_PHP_VERSION_, '=')) {
         throw new \Exception(
             sprintf(
                 _('Please install PHP version %s instead of %s.'),
-                $minPhpVersion,
+                _CENTREON_PHP_VERSION_,
                 PHP_VERSION,
             ),
         );
@@ -369,12 +366,14 @@ function checkPhpPrerequisite(): void
 function checkMariaDBPrerequisite(\PDO $db): void
 {
     $currentMariaDBVersion = getMariaDBVersion($db);
-    $requiredMariaDBVersion = '10.5';
-    if ($currentMariaDBVersion !== null && version_compare($currentMariaDBVersion, $requiredMariaDBVersion, '<')) {
+    if (
+        $currentMariaDBVersion !== null
+        && VersionHelper::compare($currentMariaDBVersion, _CENTREON_MARIA_DB_MIN_VERSION_, '<')
+    ) {
         throw new \Exception(
             sprintf(
                 _('Please install MariaDB version %s instead of %s.'),
-                $requiredMariaDBVersion,
+                _CENTREON_MARIA_DB_MIN_VERSION_,
                 $currentMariaDBVersion,
             ),
         );
