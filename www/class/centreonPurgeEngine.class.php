@@ -57,8 +57,7 @@ class CentreonPurgeEngine
      */
     public function __construct()
     {
-        $this->purgeCommentsQuery = 'DELETE FROM comments WHERE (deletion_time is not null and deletion_time ' .
-            '< __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)';
+        $this->purgeCommentsQuery = 'DELETE FROM comments WHERE entry_time < __RETENTION__';
         $this->purgeDowntimesQuery = 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time ' .
             '< __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)';
         $this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
