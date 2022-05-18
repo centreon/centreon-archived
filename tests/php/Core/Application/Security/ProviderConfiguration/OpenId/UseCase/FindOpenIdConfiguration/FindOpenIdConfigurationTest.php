@@ -30,33 +30,16 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
 };
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use PHPUnit\Framework\TestCase;
 
-class FindOpenIdConfigurationTest extends TestCase
-{
-    /**
-     * @var ReadOpenIdConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $repository;
+beforeEach(function () {
+    $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
+    $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+});
 
-    /**
-     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $presenterFormatter;
-
-    public function setUp(): void
-    {
-        $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
-        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
-    }
-
-    /**
-     * Test that the find configuration use case is correctly executed.
-     */
-    public function testFindConfiguration(): void
-    {
+it('should present a provider configuration', function () {
         $configuration = new OpenIdConfiguration(
             true,
             true,
@@ -73,7 +56,12 @@ class FindOpenIdConfigurationTest extends TestCase
             'MyCl1ientId',
             'MyCl1ientSuperSecr3tKey',
             'client_secret_post',
-            false
+            false,
+            new ContactTemplate(1, 'contact_template'),
+            false,
+            null,
+            null,
+            null,
         );
 
         $useCase = new FindOpenIdConfiguration($this->repository);
@@ -86,60 +74,59 @@ class FindOpenIdConfigurationTest extends TestCase
 
         $useCase($presenter);
 
-        $this->assertInstanceOf(FindOpenIdConfigurationResponse::class, $presenter->response);
-        $this->assertTrue($presenter->response->isActive);
-        $this->assertTrue($presenter->response->isForced);
-        $this->assertFalse($presenter->response->verifyPeer);
-        $this->assertEquals([], $presenter->response->trustedClientAddresses);
-        $this->assertEquals([], $presenter->response->blacklistClientAddresses);
-        $this->assertEquals('http://127.0.0.1/auth/openid-connect', $presenter->response->baseUrl);
-        $this->assertEquals('/authorization', $presenter->response->authorizationEndpoint);
-        $this->assertEquals('/token', $presenter->response->tokenEndpoint);
-        $this->assertEquals('/introspect', $presenter->response->introspectionTokenEndpoint);
-        $this->assertEquals('/userinfo', $presenter->response->userInformationEndpoint);
-        $this->assertEquals('/logout', $presenter->response->endSessionEndpoint);
-        $this->assertEquals([], $presenter->response->connectionScopes);
-        $this->assertEquals('preferred_username', $presenter->response->loginClaim);
-        $this->assertEquals('MyCl1ientId', $presenter->response->clientId);
-        $this->assertEquals('MyCl1ientSuperSecr3tKey', $presenter->response->clientSecret);
-        $this->assertEquals('client_secret_post', $presenter->response->authenticationType);
-    }
+        expect($presenter->response)->toBeInstanceOf(FindOpenIdConfigurationResponse::class);
+        expect($presenter->response->isActive)->toBeTrue();
+        expect($presenter->response->isForced)->toBeTrue();
+        expect($presenter->response->verifyPeer)->toBeFalse();
+        expect($presenter->response->trustedClientAddresses)->toBeEmpty();
+        expect($presenter->response->trustedClientAddresses)->toBeArray();
+        expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
+        expect($presenter->response->blacklistClientAddresses)->toBeArray();
+        expect($presenter->response->baseUrl)->toBe('http://127.0.0.1/auth/openid-connect');
+        expect($presenter->response->authorizationEndpoint)->toBe('/authorization');
+        expect($presenter->response->tokenEndpoint)->toBe('/token');
+        expect($presenter->response->introspectionTokenEndpoint)->toBe('/introspect');
+        expect($presenter->response->userInformationEndpoint)->toBe('/userinfo');
+        expect($presenter->response->endSessionEndpoint)->toBe('/logout');
+        expect($presenter->response->connectionScopes)->toBeEmpty();
+        expect($presenter->response->connectionScopes)->toBeArray();
+        expect($presenter->response->loginClaim)->toBe('preferred_username');
+        expect($presenter->response->clientId)->toBe('MyCl1ientId');
+        expect($presenter->response->clientSecret)->toBe('MyCl1ientSuperSecr3tKey');
+        expect($presenter->response->authenticationType)->toBe('client_secret_post');
+        expect($presenter->response->contactTemplate)->toBe(['id' => 1, 'name' => 'contact_template']);
+        expect($presenter->response->isAutoImportEnabled)->toBeFalse();
+        expect($presenter->response->emailBindAttribute)->toBeNull();
+        expect($presenter->response->userAliasBindAttribute)->toBeNull();
+        expect($presenter->response->userNameBindAttribute)->toBeNull();
+});
 
-    /**
-     * Test that a NotFoundResponse is return when no configuration are found.
-     */
-    public function testFindConfigurationNotFound(): void
-    {
-        $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
+it('should present a NotFoundReponse when no configuration is found', function () {
+    $useCase = new FindOpenIdConfiguration($this->repository);
+    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willReturn(null);
+    $this->repository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn(null);
 
-        $useCase($presenter);
+    $useCase($presenter);
 
-        $this->assertInstanceOf(NotFoundResponse::class, $presenter->getResponseStatus());
-        $this->assertEquals('OpenIdConfiguration not found', $presenter->getResponseStatus()?->getMessage());
-    }
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe('OpenIdConfiguration not found');
+});
 
-    /**
-     * Test that an ErrorResponse is return when an error occured.
-     */
-    public function testFindConfigurationError(): void
-    {
-        $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
+it('should present an ErrorResponse when an error occured during the process', function () {
+    $useCase = new FindOpenIdConfiguration($this->repository);
+    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willThrowException(new \Exception('An error occured'));
+    $this->repository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willThrowException(new \Exception('An error occured'));
 
-        $useCase($presenter);
+    $useCase($presenter);
 
-        $this->assertInstanceOf(ErrorResponse::class, $presenter->getResponseStatus());
-        $this->assertEquals('An error occured', $presenter->getResponseStatus()?->getMessage());
-    }
-}
+    expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe('An error occured');
+});

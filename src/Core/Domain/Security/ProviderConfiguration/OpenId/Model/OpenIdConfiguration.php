@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Contact\Domain\Model\ContactTemplate;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 class OpenIdConfiguration implements ProviderConfigurationInterface
@@ -56,6 +57,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @param string|null $clientSecret
      * @param string|null $authenticationType
      * @param boolean $verifyPeer
+     * @param ContactTemplate|null $contactTemplate
+     * @param boolean $isAutoImportEnabled
+     * @param string|null $emailBindAttribute
+     * @param string|null $userAliasBindAttribute
+     * @param string|null $userNameBindAttribute
      */
     public function __construct(
         private bool $isActive,
@@ -73,7 +79,12 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
         private ?string $clientId,
         private ?string $clientSecret,
         private ?string $authenticationType,
-        private bool $verifyPeer
+        private bool $verifyPeer,
+        private ?ContactTemplate $contactTemplate,
+        private bool $isAutoImportEnabled,
+        private ?string $emailBindAttribute,
+        private ?string $userAliasBindAttribute,
+        private ?string $userNameBindAttribute,
     ) {
         foreach ($trustedClientAddresses as $trustedClientAddress) {
             if (
@@ -252,5 +263,45 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     public function getType(): string
     {
         return self::TYPE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoImportEnabled(): bool
+    {
+        return $this->isAutoImportEnabled;
+    }
+
+    /**
+     * @return ContactTemplate|null
+     */
+    public function getContactTemplate(): ?ContactTemplate
+    {
+        return $this->contactTemplate;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmailBindAttribute(): ?string
+    {
+        return $this->emailBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserAliasBindAttribute(): ?string
+    {
+        return $this->userAliasBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserNameBindAttribute(): ?string
+    {
+        return $this->userNameBindAttribute;
     }
 }
