@@ -86,7 +86,7 @@ const DialogAcknowledge = ({
             onChange={handleChange('comment')}
           />
         </Grid>
-        <Grid item>
+        <Grid item sx={{ marginBottom: 2 }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -99,9 +99,9 @@ const DialogAcknowledge = ({
             }
             label={t(labelNotify) as string}
           />
-          <FormHelperText sx={{ marginBottom: 1.75, marginTop: -0.5 }}>
-            {t(labelNotifyHelpCaption)}
-          </FormHelperText>
+          <Grid container item rowSpacing={1}>
+            <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
+          </Grid>
         </Grid>
         <Grid item>
           <FormControlLabel
