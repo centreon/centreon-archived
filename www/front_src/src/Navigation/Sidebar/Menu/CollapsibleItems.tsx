@@ -49,7 +49,7 @@ interface StyleProps {
   currentWidth: number;
 }
 
-const collapseWidth = 20.6;
+const collapseWidth = 24;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
-      padding: theme.spacing(0, 0.25, 0, 0.75),
+      padding: theme.spacing(0, 0.25, 0, 0.1),
     },
     '& .MuiTypography-root': {
       color: theme.palette.text.primary,
@@ -115,6 +115,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
+    whiteSpace: 'normal',
     width: theme.spacing(collapseWidth),
     zIndex: theme.zIndex.mobileStepper,
   },

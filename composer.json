@@ -7,6 +7,10 @@
         "secure-http": false,
         "platform": {
             "php": "8.0"
+        },
+        "allow-plugins": {
+            "pestphp/pest-plugin": false,
+            "symfony/flex": false
         }
     },
     "require-dev": {
