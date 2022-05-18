@@ -23,15 +23,17 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
-use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\{
     Model\OpenIdConfigurationFactory,
     Exceptions\OpenIdConfigurationException
 };
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 
 class UpdateOpenIdConfiguration
 {
@@ -40,14 +42,15 @@ class UpdateOpenIdConfiguration
     /**
      * @param WriteOpenIdConfigurationRepositoryInterface $repository
      */
-    public function __construct(private WriteOpenIdConfigurationRepositoryInterface $repository)
-    {
+    public function __construct(
+        private WriteOpenIdConfigurationRepositoryInterface $repository,
+        private ReadContactTemplateRepositoryInterface $contactTemplateRepository
+    ) {
     }
 
     /**
      * @param UpdateOpenIdConfigurationPresenterInterface $presenter
      * @param UpdateOpenIdConfigurationRequest $request
-     * @return void
      */
     public function __invoke(
         UpdateOpenIdConfigurationPresenterInterface $presenter,
@@ -56,6 +59,9 @@ class UpdateOpenIdConfiguration
         $this->info('Updating OpenID Configuration');
         try {
             $configuration = OpenIdConfigurationFactory::createFromRequest($request);
+            if ($configuration->getContactTemplate() !== null) {
+                $this->validateContactTemplateExistsOrFail($configuration->getContactTemplate());
+            }
         } catch (AssertionException | OpenIdConfigurationException $ex) {
             $this->error('Unable to create OpenID Configuration because one or many parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
@@ -64,5 +70,20 @@ class UpdateOpenIdConfiguration
         $this->repository->updateConfiguration($configuration);
 
         $presenter->setResponseStatus(new NoContentResponse());
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param ContactTemplate $contactTemplate
+     * @throws OpenIdConfigurationException
+     */
+    private function validateContactTemplateExistsOrFail(ContactTemplate $contactTemplate): void
+    {
+        if ($this->contactTemplateRepository->find($contactTemplate->getId()) === null) {
+            throw OpenIdConfigurationException::contactTemplateDoesntExist(
+                $contactTemplate->getName()
+            );
+        }
     }
 }

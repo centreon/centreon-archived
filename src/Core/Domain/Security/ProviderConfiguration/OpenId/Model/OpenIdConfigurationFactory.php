@@ -26,6 +26,7 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationRequest
 };
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfigurationFactory
@@ -38,6 +39,31 @@ class OpenIdConfigurationFactory
     {
         if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null) {
             throw OpenIdConfigurationException::missingInformationEndpoint();
+        }
+
+        $contactTemplate = null;
+        if ($request->isAutoImportEnabled === true) {
+            $missingMandatoryParameters = [];
+            if ($request->contactTemplate === null) {
+                $missingMandatoryParameters[] = 'contact_template';
+            } else {
+                $contactTemplate = new ContactTemplate(
+                    $request->contactTemplate['id'],
+                    $request->contactTemplate['name']
+                );
+            }
+            if (empty($request->emailBindAttribute)) {
+                $missingMandatoryParameters[] = 'email_bind_attribute';
+            }
+            if (empty($request->userAliasBindAttribute)) {
+                $missingMandatoryParameters[] = 'alias_bind_attribute';
+            }
+            if (empty($request->userNameBindAttribute)) {
+                $missingMandatoryParameters[] = 'fullname_bind_attribute';
+            }
+            if (! empty($missingMandatoryParameters)) {
+                throw OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingMandatoryParameters);
+            }
         }
 
         return new OpenIdConfiguration(
@@ -57,11 +83,11 @@ class OpenIdConfigurationFactory
             $request->clientSecret,
             $request->authenticationType,
             $request->verifyPeer,
-            null,
-            false,
-            null,
-            null,
-            null // Hardcoded value will be replace on next ticket for the Update OpenId Configuration.
+            $contactTemplate,
+            $request->isAutoImportEnabled,
+            $request->emailBindAttribute,
+            $request->userAliasBindAttribute,
+            $request->userNameBindAttribute
         );
     }
 }

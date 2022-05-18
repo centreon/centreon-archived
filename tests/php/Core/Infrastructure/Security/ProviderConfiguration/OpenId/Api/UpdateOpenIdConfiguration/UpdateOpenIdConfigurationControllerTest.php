@@ -115,7 +115,12 @@ it('should execute the usecase properly', function () {
             'client_id' => 'MyCl1ientId',
             'client_secret' => 'MyCl1ientSuperSecr3tKey',
             'authentication_type' => 'client_secret_post',
-            'verify_peer' => false
+            'verify_peer' => false,
+            'auto_import' => false,
+            'contact_template' => null,
+            'email_bind_attribute' => null,
+            'alias_bind_attribute' => null,
+            'fullname_bind_attribute' => null,
         ]);
 
         $this->request
