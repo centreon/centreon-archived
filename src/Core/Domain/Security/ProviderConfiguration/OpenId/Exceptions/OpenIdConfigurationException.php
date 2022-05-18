@@ -68,7 +68,8 @@ class OpenIdConfigurationException extends \Exception
     public static function contactTemplateDoesntExist(string $contactTemplateName): self
     {
         return new self(_(sprintf(
-            "The contact template: '%s' doesn't exist", $contactTemplateName
+            "The contact template: '%s' doesn't exist",
+            $contactTemplateName
         )));
     }
 }
