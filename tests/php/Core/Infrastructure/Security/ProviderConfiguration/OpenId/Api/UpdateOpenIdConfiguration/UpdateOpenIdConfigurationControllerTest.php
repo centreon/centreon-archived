@@ -35,10 +35,12 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface
 };
+use Symfony\Component\HttpFoundation\Request;
 
 beforeEach(function () {
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
     $this->useCase = $this->createMock(UpdateOpenIdConfiguration::class);
+    $this->request = $this->createMock(Request::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
