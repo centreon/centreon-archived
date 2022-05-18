@@ -3,7 +3,10 @@ const os = require('os');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { merge } = require('webpack-merge');
-const devConfig = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
+const {
+  getDevConfiguration,
+  devJscTransformConfiguration,
+} = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
 
 const getBaseConfiguration = require('./webpack.config');
 
@@ -60,13 +63,8 @@ const modules = [
 ];
 
 module.exports = merge(
-  getBaseConfiguration({
-    react: {
-      development: true,
-      refresh: true,
-    },
-  }),
-  devConfig,
+  getBaseConfiguration(devJscTransformConfiguration),
+  getDevConfiguration(),
   {
     devServer: {
       compress: true,
