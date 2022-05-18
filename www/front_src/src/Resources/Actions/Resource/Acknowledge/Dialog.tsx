@@ -99,7 +99,9 @@ const DialogAcknowledge = ({
             }
             label={t(labelNotify) as string}
           />
-          <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
+          <FormHelperText sx={{ marginBottom: 1.75, marginTop: -0.5 }}>
+            {t(labelNotifyHelpCaption)}
+          </FormHelperText>
         </Grid>
         <Grid item>
           <FormControlLabel
