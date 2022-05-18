@@ -61,6 +61,7 @@ tags:
   - name: Proxy
   - name: Service
   - name: Service group
+  - name: Service category
   - name: Topology
 security:
   - Token: []
@@ -288,6 +289,31 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.Host.Category'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/categories:
+    get:
+      tags:
+        - Service category
+      summary: "List all service categories"
+      description: |
+        List of all service categories in real time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -5217,6 +5243,17 @@ components:
           description: "Version of the server (centreon-engine)"
           example: "20.10.0"
           nullable: true
+    Monitoring.Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Category Id"
+          example: 1
+        name:
+          type: string
+          description: "Category name"
+          example: "Category name"
     Acknowledgement.Resource:
       type: object
       properties:
