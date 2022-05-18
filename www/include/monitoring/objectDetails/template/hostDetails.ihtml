@@ -172,7 +172,7 @@
                                     <td class="ListColLeft ColPopup">{t}Timezone{/t}</td>
                                     <td class="ListColLeft ListColNoWrap"><span>{$host_data.timezone}</span></td>
                                 </tr>
-                                {if isset$host_data.comments)}
+                                {if isset($host_data.comments)}
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_host_comment}</td>
                                     <td class="ListColLeft ListColNoWrap containsURI">{$host_data.comments}</td>
