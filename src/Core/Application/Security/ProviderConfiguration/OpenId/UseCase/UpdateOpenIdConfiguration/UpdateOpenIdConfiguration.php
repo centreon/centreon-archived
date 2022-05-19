@@ -73,7 +73,7 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Undocumented function
+     * Validate that contact template link to configuration exists or throw an Exception.
      *
      * @param ContactTemplate $contactTemplate
      * @throws OpenIdConfigurationException
