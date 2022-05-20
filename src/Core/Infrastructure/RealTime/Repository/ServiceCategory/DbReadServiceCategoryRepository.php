@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\ServiceCategory;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Tags;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -29,6 +30,8 @@ use Core\Application\RealTime\Repository\ReadServiceCategoryRepositoryInterface;
 
 class DbReadServiceCategoryRepository extends AbstractRepositoryDRB implements ReadServiceCategoryRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -42,6 +45,8 @@ class DbReadServiceCategoryRepository extends AbstractRepositoryDRB implements R
      */
     public function findAll(): array
     {
+        $this->info('Fetching service categories from database');
+
         $serviceCategories = [];
         $statement = $this->db->prepare(
             $this->translateDbName('SELECT id, name FROM `:dbstg`.tags WHERE type = :type')
