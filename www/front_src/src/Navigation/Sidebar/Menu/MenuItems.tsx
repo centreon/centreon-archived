@@ -12,6 +12,7 @@ import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
 } from 'react-router-dom';
+import { equals } from 'ramda';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -99,8 +100,8 @@ const MenuItems = ({
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
-  const isNotShouldNavigate =
-    Array.isArray(data?.groups) && data.groups.length > 0;
+  const cannotNavigate =
+    !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const LinkBehavior = forwardRef<any, Omit<RouterLinkProps, 'to'>>(
@@ -120,7 +121,7 @@ const MenuItems = ({
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component={!isRoot && !isNotShouldNavigate ? LinkBehavior : 'div'}
+        component={!isRoot && cannotNavigate ? LinkBehavior : 'div'}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onDoubleClick={isRoot ? onClick : undefined}
         onMouseEnter={onMouseEnter}
