@@ -22,6 +22,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { getUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
   hoveredNavigationItemsAtom,
@@ -34,7 +35,6 @@ const rootHeightItem = 37;
 
 interface Props {
   data: Page;
-  getUrlFromEntry: (item: Page) => string | null | undefined;
   hover: boolean;
   icon?: ReactNode;
   isDrawerOpen?: boolean;
@@ -93,7 +93,6 @@ const MenuItems = ({
   data,
   isDrawerOpen,
   isRoot,
-  getUrlFromEntry,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);

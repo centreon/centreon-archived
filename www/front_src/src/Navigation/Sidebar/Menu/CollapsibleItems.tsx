@@ -33,7 +33,6 @@ interface Props {
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
-  getUrlFromEntry: (item: Page) => string | null | undefined;
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
@@ -135,7 +134,6 @@ const CollapsibleItems = ({
   collapseScrollMaxWidth,
   setCollapseScrollMaxWidth,
   setCollapseScrollMaxHeight,
-  getUrlFromEntry,
 }: Props): JSX.Element => {
   const classes = useStyles({
     collapseScrollMaxHeight,
@@ -288,7 +286,6 @@ const CollapsibleItems = ({
                   return (
                     <MenuItems
                       data={content}
-                      getUrlFromEntry={getUrlFromEntry}
                       hover={nestedHover}
                       isOpen={nestedIndex === hoveredIndex}
                       key={content.label}
@@ -304,7 +301,6 @@ const CollapsibleItems = ({
               ) : (
                 <MenuItems
                   data={item}
-                  getUrlFromEntry={getUrlFromEntry}
                   hover={hover}
                   isOpen={index === hoveredIndex}
                   onClick={
@@ -324,7 +320,6 @@ const CollapsibleItems = ({
                   currentTop={itemTop}
                   currentWidth={itemWidth}
                   data={item.groups}
-                  getUrlFromEntry={getUrlFromEntry}
                   isCollapsed={index === hoveredIndex}
                   level={level + 1}
                   setCollapseScrollMaxHeight={setNestedScrollCollapsMaxHeight}
@@ -343,7 +338,6 @@ const CollapsibleItems = ({
                           currentTop={itemTop}
                           currentWidth={itemWidth}
                           data={itemGroup.children}
-                          getUrlFromEntry={getUrlFromEntry}
                           isCollapsed={index === hoveredIndex}
                           level={level + 1}
                           setCollapseScrollMaxHeight={

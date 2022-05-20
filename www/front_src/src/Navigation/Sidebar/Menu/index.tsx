@@ -19,6 +19,7 @@ import {
   setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
+import { getUrlFromEntry } from '../helpers/getUrlFromEntry';
 
 import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
@@ -94,18 +95,6 @@ const NavigationMenu = ({
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
     }, 500);
-  };
-
-  const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
-    const page = isNil(entryProps?.page) ? '' : entryProps.page;
-    const options = isNil(entryProps?.options) ? '' : entryProps.options;
-
-    const urlOptions = `${page}${options}`;
-    const url = entryProps.is_react
-      ? entryProps.url
-      : `/main.php?p=${urlOptions}`;
-
-    return url;
   };
 
   const handleClickItem = (currentPage: Page): void => {
@@ -256,7 +245,6 @@ const NavigationMenu = ({
     collapseScrollMaxWidth,
     currentTop,
     currentWidth,
-    getUrlFromEntry,
     hoveredIndex,
     isDrawerOpen,
     level: 1,
@@ -287,7 +275,6 @@ const NavigationMenu = ({
               <MenuItems
                 isRoot
                 data={item}
-                getUrlFromEntry={getUrlFromEntry}
                 hover={hover}
                 icon={<MenuIcon className={classes.icon} />}
                 isDrawerOpen={isDrawerOpen}
