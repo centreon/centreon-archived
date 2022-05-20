@@ -36,22 +36,6 @@ class DbOpenIdConfigurationFactory
     public static function createFromRecord(array $record, array $customConfiguration): OpenIdConfiguration
     {
         $configuration = new OpenIdConfiguration(
-            $record['is_active'] === '1',
-            $record['is_forced'] === '1',
-            $customConfiguration['trusted_client_addresses'],
-            $customConfiguration['blacklist_client_addresses'],
-            $customConfiguration['base_url'],
-            $customConfiguration['authorization_endpoint'],
-            $customConfiguration['token_endpoint'],
-            $customConfiguration['introspection_token_endpoint'],
-            $customConfiguration['userinfo_endpoint'],
-            $customConfiguration['endsession_endpoint'],
-            $customConfiguration['connection_scopes'],
-            $customConfiguration['login_claim'],
-            $customConfiguration['client_id'],
-            $customConfiguration['client_secret'],
-            $customConfiguration['authentication_type'],
-            $customConfiguration['verify_peer'],
             $customConfiguration['contact_template'] !== null
                 ? self::createContactTemplate($customConfiguration['contact_template'])
                 : null,
@@ -61,7 +45,24 @@ class DbOpenIdConfigurationFactory
             $customConfiguration['fullname_bind_attribute']
         );
 
-        $configuration->setId((int) $record['id']);
+        $configuration
+            ->setId((int) $record['id'])
+            ->setActive($record['is_active'] === '1')
+            ->setForced($record['is_forced'] === '1')
+            ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
+            ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
+            ->setBaseUrl($customConfiguration['base_url'])
+            ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])
+            ->setTokenEndpoint($customConfiguration['token_endpoint'])
+            ->setIntrospectionTokenEndpoint($customConfiguration['introspection_token_endpoint'])
+            ->setUserInformationEndpoint($customConfiguration['userinfo_endpoint'])
+            ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
+            ->setConnectionScopes($customConfiguration['connection_scopes'])
+            ->setLoginClaim($customConfiguration['login_claim'])
+            ->setClientId($customConfiguration['client_id'])
+            ->setClientSecret($customConfiguration['client_secret'])
+            ->setAuthenticationType($customConfiguration['authentication_type'])
+            ->setVerifyPeer($customConfiguration['verify_peer']);
 
         return $configuration;
     }
