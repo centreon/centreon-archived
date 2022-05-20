@@ -41,30 +41,9 @@ class OpenIdConfigurationFactory
             throw OpenIdConfigurationException::missingInformationEndpoint();
         }
 
-        $contactTemplate = null;
-        if ($request->isAutoImportEnabled === true) {
-            $missingMandatoryParameters = [];
-            if ($request->contactTemplate === null) {
-                $missingMandatoryParameters[] = 'contact_template';
-            } else {
-                $contactTemplate = new ContactTemplate(
-                    $request->contactTemplate['id'],
-                    $request->contactTemplate['name']
-                );
-            }
-            if (empty($request->emailBindAttribute)) {
-                $missingMandatoryParameters[] = 'email_bind_attribute';
-            }
-            if (empty($request->userAliasBindAttribute)) {
-                $missingMandatoryParameters[] = 'alias_bind_attribute';
-            }
-            if (empty($request->userNameBindAttribute)) {
-                $missingMandatoryParameters[] = 'fullname_bind_attribute';
-            }
-            if (! empty($missingMandatoryParameters)) {
-                throw OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingMandatoryParameters);
-            }
-        }
+        $contactTemplate = $request->contactTemplate !== null
+            ? new ContactTemplate($request->contactTemplate['id'], $request->contactTemplate['name'])
+            : null;
 
         return new OpenIdConfiguration(
             $request->isActive,

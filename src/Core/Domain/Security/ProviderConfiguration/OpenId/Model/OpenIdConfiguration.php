@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfiguration implements ProviderConfigurationInterface
 {
@@ -106,6 +107,25 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
                     $blacklistClientAddress,
                     'OpenIdConfiguration::blacklistClientAddresses'
                 );
+            }
+        }
+
+        if ($isAutoImportEnabled === true) {
+            $missingMandatoryParameters = [];
+            if ($contactTemplate === null) {
+                $missingMandatoryParameters[] = 'contact_template';
+            }
+            if (empty($emailBindAttribute)) {
+                $missingMandatoryParameters[] = 'email_bind_attribute';
+            }
+            if (empty($userAliasBindAttribute)) {
+                $missingMandatoryParameters[] = 'alias_bind_attribute';
+            }
+            if (empty($userNameBindAttribute)) {
+                $missingMandatoryParameters[] = 'fullname_bind_attribute';
+            }
+            if (! empty($missingMandatoryParameters)) {
+                throw OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingMandatoryParameters);
             }
         }
     }
