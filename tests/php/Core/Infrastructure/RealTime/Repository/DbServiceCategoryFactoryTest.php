@@ -25,7 +25,7 @@ namespace Tests\Core\Infrastructure\RealTime\Repository;
 
 use Core\Infrastructure\RealTime\Repository\ServiceCategory\DbServiceCategoryFactory;
 
-it('DbServiceFactory creation test', function () {
+it('DbServiceCategoryFactory creation test', function () {
     $record = [
         'id' => 1,
         'name' => 'Service category test name'
