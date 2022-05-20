@@ -225,11 +225,6 @@ const NavigationMenu = ({
     });
   };
 
-  const handleWindowClose = (): void => {
-    setSelectedNavigationItems(null);
-    setHoveredNavigationItems(null);
-  };
-
   useEffect(() => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
