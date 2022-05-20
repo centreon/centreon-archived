@@ -241,9 +241,6 @@ const NavigationMenu = ({
 
       addSelectedNavigationItemsByDefault(filteredResult);
     });
-    window.addEventListener('beforeunload', handleWindowClose);
-
-    return () => window.removeEventListener('beforeunload', handleWindowClose);
   }, []);
 
   useEffect(() => {
