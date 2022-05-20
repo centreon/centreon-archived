@@ -26,6 +26,7 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationRequest
 };
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfigurationFactory
@@ -39,6 +40,10 @@ class OpenIdConfigurationFactory
         if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null) {
             throw OpenIdConfigurationException::missingInformationEndpoint();
         }
+
+        $contactTemplate = $request->contactTemplate !== null
+            ? new ContactTemplate($request->contactTemplate['id'], $request->contactTemplate['name'])
+            : null;
 
         return new OpenIdConfiguration(
             $request->isActive,
@@ -57,11 +62,11 @@ class OpenIdConfigurationFactory
             $request->clientSecret,
             $request->authenticationType,
             $request->verifyPeer,
-            null,
-            false,
-            null,
-            null,
-            null // Hardcoded value will be replace on next ticket for the Update OpenId Configuration.
+            $contactTemplate,
+            $request->isAutoImportEnabled,
+            $request->emailBindAttribute,
+            $request->userAliasBindAttribute,
+            $request->userNameBindAttribute
         );
     }
 }

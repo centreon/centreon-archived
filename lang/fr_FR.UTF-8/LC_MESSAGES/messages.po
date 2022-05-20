@@ -16814,3 +16814,9 @@ msgstr "Destination du journal"
 
 msgid "Error"
 msgstr "Erreur"
+
+msgid "Missing auto import mandatory parameters: %s"
+msgstr "Paramètres obligatoires manquants pour l'importation automatique : %s"
+
+msgid "The contact template '%s' doesn't exist"
+msgstr "Le modèle de contact '%s' n'existe pas"

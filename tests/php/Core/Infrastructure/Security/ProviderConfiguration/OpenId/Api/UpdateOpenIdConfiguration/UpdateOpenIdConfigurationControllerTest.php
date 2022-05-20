@@ -35,10 +35,12 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface
 };
+use Symfony\Component\HttpFoundation\Request;
 
 beforeEach(function () {
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
     $this->useCase = $this->createMock(UpdateOpenIdConfiguration::class);
+    $this->request = $this->createMock(Request::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
@@ -93,7 +95,7 @@ it('should thrown an exception when the request body is invalid', function () {
 
         $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});
 
 it('should execute the usecase properly', function () {
         $controller = new UpdateOpenIdConfigurationController();
@@ -115,7 +117,12 @@ it('should execute the usecase properly', function () {
             'client_id' => 'MyCl1ientId',
             'client_secret' => 'MyCl1ientSuperSecr3tKey',
             'authentication_type' => 'client_secret_post',
-            'verify_peer' => false
+            'verify_peer' => false,
+            'auto_import' => false,
+            'contact_template' => null,
+            'email_bind_attribute' => null,
+            'alias_bind_attribute' => null,
+            'fullname_bind_attribute' => null,
         ]);
 
         $this->request
@@ -128,4 +135,4 @@ it('should execute the usecase properly', function () {
             ->method('__invoke');
 
         $controller($this->useCase, $this->request, $this->presenter);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});

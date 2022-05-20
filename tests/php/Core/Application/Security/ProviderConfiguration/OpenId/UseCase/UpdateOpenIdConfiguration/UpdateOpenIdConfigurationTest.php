@@ -31,47 +31,51 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
 };
+use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
 
 beforeEach(function () {
     $this->repository = $this->createMock(WriteOpenIdConfigurationRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
+    $this->contactTemplateRepository = $this->createMock(ReadContactTemplateRepositoryInterface::class);
 });
 
 it('should present a NoContentResponse when the use case is executed correctly', function () {
-        $request = new UpdateOpenIdConfigurationRequest();
-        $request->isActive = true;
-        $request->isForced = true;
-        $request->trustedClientAddresses = [];
-        $request->blacklistClientAddresses = [];
-        $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
-        $request->authorizationEndpoint = '/authorization';
-        $request->tokenEndpoint = '/token';
-        $request->introspectionTokenEndpoint = '/introspect';
-        $request->userInformationEndpoint = '/userinfo';
-        $request->endSessionEndpoint = '/logout';
-        $request->connectionScopes = [];
-        $request->loginClaim = 'preferred_username';
-        $request->clientId = 'MyCl1ientId';
-        $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
-        $request->authenticationType = 'client_secret_post';
-        $request->verifyPeer = false;
+    $request = new UpdateOpenIdConfigurationRequest();
+    $request->isActive = true;
+    $request->isForced = true;
+    $request->trustedClientAddresses = [];
+    $request->blacklistClientAddresses = [];
+    $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
+    $request->authorizationEndpoint = '/authorization';
+    $request->tokenEndpoint = '/token';
+    $request->introspectionTokenEndpoint = '/introspect';
+    $request->userInformationEndpoint = '/userinfo';
+    $request->endSessionEndpoint = '/logout';
+    $request->connectionScopes = [];
+    $request->loginClaim = 'preferred_username';
+    $request->clientId = 'MyCl1ientId';
+    $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
+    $request->authenticationType = 'client_secret_post';
+    $request->verifyPeer = false;
+    $request->isAutoImportEnabled = false;
 
-        $openIdConfiguration = OpenIdConfigurationFactory::createFromRequest($request);
+    $openIdConfiguration = OpenIdConfigurationFactory::createFromRequest($request);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('updateConfiguration')
-            ->with($openIdConfiguration);
+    $this->repository
+        ->expects($this->once())
+        ->method('updateConfiguration')
+        ->with($openIdConfiguration);
 
-        $this->presenter
-            ->expects($this->once())
-            ->method('setResponseStatus')
-            ->with(new NoContentResponse());
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new NoContentResponse());
 
-        $useCase = new UpdateOpenIdConfiguration($this->repository);
-        $useCase($this->presenter, $request);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+    $useCase($this->presenter, $request);
+});
 
 it('should present an ErrorResponse when an error occured during the use case execution', function () {
     $request = new UpdateOpenIdConfigurationRequest();
@@ -91,6 +95,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
+    $request->isAutoImportEnabled = false;
 
     $this->presenter
         ->expects($this->once())
@@ -100,7 +105,88 @@ it('should present an ErrorResponse when an error occured during the use case ex
             . 'was expected to be a valid ip address or domain name'
         ));
 
-    $useCase = new UpdateOpenIdConfiguration($this->repository);
+    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
 
     $useCase($this->presenter, $request);
-})->skip('Reimplement those tests while handling update openid configuration extension');
+});
+
+it('should present an Error Response when auto import is enable and mandatory parameters are missing', function () {
+    $request = new UpdateOpenIdConfigurationRequest();
+    $request->isActive = true;
+    $request->isForced = true;
+    $request->trustedClientAddresses = [];
+    $request->blacklistClientAddresses = [];
+    $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
+    $request->authorizationEndpoint = '/authorization';
+    $request->tokenEndpoint = '/token';
+    $request->introspectionTokenEndpoint = '/introspect';
+    $request->userInformationEndpoint = '/userinfo';
+    $request->endSessionEndpoint = '/logout';
+    $request->connectionScopes = [];
+    $request->loginClaim = 'preferred_username';
+    $request->clientId = 'MyCl1ientId';
+    $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
+    $request->authenticationType = 'client_secret_post';
+    $request->verifyPeer = false;
+    $request->isAutoImportEnabled = true;
+
+    $missingParameters = [
+        'contact_template',
+        'email_bind_attribute',
+        'alias_bind_attribute',
+        'fullname_bind_attribute',
+    ];
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse(
+            OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingParameters)->getMessage()
+        ));
+
+    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+
+    $useCase($this->presenter, $request);
+});
+
+it('should present an Error Response when auto import is enable and the contact template doesn\'t exist', function () {
+    $request = new UpdateOpenIdConfigurationRequest();
+    $request->isActive = true;
+    $request->isForced = true;
+    $request->trustedClientAddresses = [];
+    $request->blacklistClientAddresses = [];
+    $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
+    $request->authorizationEndpoint = '/authorization';
+    $request->tokenEndpoint = '/token';
+    $request->introspectionTokenEndpoint = '/introspect';
+    $request->userInformationEndpoint = '/userinfo';
+    $request->endSessionEndpoint = '/logout';
+    $request->connectionScopes = [];
+    $request->loginClaim = 'preferred_username';
+    $request->clientId = 'MyCl1ientId';
+    $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
+    $request->authenticationType = 'client_secret_post';
+    $request->verifyPeer = false;
+    $request->isAutoImportEnabled = true;
+    $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
+    $request->emailBindAttribute = 'email';
+    $request->userAliasBindAttribute = 'alias';
+    $request->userNameBindAttribute = 'name';
+
+    $this->contactTemplateRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with($request->contactTemplate['id'])
+        ->willReturn(null);
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse(
+            OpenIdConfigurationException::contactTemplateNotFound($request->contactTemplate['name'])->getMessage()
+        ));
+
+    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+
+    $useCase($this->presenter, $request);
+});
