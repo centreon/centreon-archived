@@ -123,9 +123,8 @@ if ($id !== false) {
     /*
      * Getting host and his services stats
      */
-    $hostStats = [];
     $hostStats = getLogInDbForHost($id, $startDate, $endDate, $reportingTimePeriod);
-    $hostServicesStats = [];
+
     $hostServicesStats = getLogInDbForHostSVC($id, $startDate, $endDate, $reportingTimePeriod);
 
     /*
@@ -143,7 +142,7 @@ if ($id !== false) {
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
-    $tpl->assign("components_avg", array_pop($hostServicesStats));
+    $tpl->assign("components_avg", array_shift($hostServicesStats));
     $tpl->assign("components", $hostServicesStats);
     $tpl->assign("period_name", _("From"));
     $tpl->assign("date_start", $startDate);

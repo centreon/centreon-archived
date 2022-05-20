@@ -8,6 +8,7 @@ import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { Typography } from '@mui/material';
 
 import {
+  getData,
   postData,
   useRequest,
   SelectEntry,
@@ -25,8 +26,8 @@ import {
   labelAdvancedServerConfiguration,
   labelRemoteServers,
 } from '../translatedLabels';
-import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
-import { getRemoteServersEndpoint, wizardFormEndpoint } from '../api/endpoints';
+import { Props, WizardButtonsTypes, Poller } from '../models';
+import { pollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 const RemoteServerWizardStepTwo = ({
   goToNextStep,
@@ -34,15 +35,14 @@ const RemoteServerWizardStepTwo = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [remoteServers, setRemoteServers] =
-    useState<Array<PollerRemoteList> | null>(null);
+  const [pollers, setPollers] = useState<Array<Poller> | null>(null);
 
   const [linkedPollers, setLinkedPollers] = useState<Array<SelectEntry>>([]);
 
-  const { sendRequest: getRemoteServersRequest } = useRequest<
-    Array<PollerRemoteList>
-  >({
-    request: postData,
+  const { sendRequest: getPollersRequest } = useRequest<{
+    items: Array<Poller>;
+  }>({
+    request: getData,
   });
   const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
     s;
@@ -55,19 +55,21 @@ const RemoteServerWizardStepTwo = ({
   const pollerData = useAtomValue(remoteServerAtom);
   const setWizard = useUpdateAtom(setRemoteServerWizardDerivedAtom);
 
-  const filterOutDefaultPoller = (itemArr): Array<PollerRemoteList> => {
+  const filterOutDefaultPoller = (itemArr): Array<Poller> => {
     return itemArr.filter(({ id }) => id !== '1');
   };
 
-  const getRemoteServers = (): void => {
-    getRemoteServersRequest({
+  const getPollers = (): void => {
+    getPollersRequest({
       data: null,
-      endpoint: getRemoteServersEndpoint,
-    }).then((retrievedRemoteServers) => {
-      setRemoteServers(
-        isEmpty(retrievedRemoteServers)
+      endpoint: pollersEndpoint,
+    }).then(({ items }) => {
+      setPollers(
+        isEmpty(items)
           ? null
-          : filterOutDefaultPoller(retrievedRemoteServers),
+          : filterOutDefaultPoller(
+              items.map(({ id, text }) => ({ id, name: text })),
+            ),
       );
     });
   };
@@ -105,10 +107,12 @@ const RemoteServerWizardStepTwo = ({
       .catch(() => undefined);
   };
 
-  const remoteServersOption = remoteServers?.map(pick(['id', 'name']));
+  const pollersOptions = pollers?.map(
+    pick(['id', 'name']),
+  ) as Array<SelectEntry>;
 
   useEffect(() => {
-    getRemoteServers();
+    getPollers();
   }, []);
 
   return (
@@ -122,7 +126,7 @@ const RemoteServerWizardStepTwo = ({
         <MultiAutocompleteField
           fullWidth
           label={t(labelRemoteServers)}
-          options={remoteServersOption || []}
+          options={pollersOptions || []}
           value={linkedPollers}
           onChange={changeValue}
         />
