@@ -422,7 +422,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 FROM host_hostparent_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_parents"] = "";
-                    $statement = $pearDB->query("INSERT INTO host_hostparent_relation
+                    $statement = $pearDB->prepare("INSERT INTO host_hostparent_relation
                               VALUES (:host_parent_hp_id, :host_host_id)");
                     while ($host = $dbResult->fetch()) {
                         $statement->bindValue(':host_parent_hp_id', (int) $host["host_parent_hp_id"], \PDO::PARAM_INT);
