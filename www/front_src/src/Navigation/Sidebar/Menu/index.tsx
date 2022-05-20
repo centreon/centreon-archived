@@ -72,20 +72,6 @@ const NavigationMenu = ({
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
-  const props = {
-    collapseScrollMaxHeight,
-    collapseScrollMaxWidth,
-    currentTop,
-    currentWidth,
-    hoveredIndex,
-    isDrawerOpen,
-    level: 1,
-    pathname,
-    search,
-    setCollapseScrollMaxHeight,
-    setCollapseScrollMaxWidth,
-  };
-
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
@@ -273,6 +259,21 @@ const NavigationMenu = ({
     });
   }, [pathname, search]);
 
+  const props = {
+    collapseScrollMaxHeight,
+    collapseScrollMaxWidth,
+    currentTop,
+    currentWidth,
+    getUrlFromEntry,
+    hoveredIndex,
+    isDrawerOpen,
+    level: 1,
+    pathname,
+    search,
+    setCollapseScrollMaxHeight,
+    setCollapseScrollMaxWidth,
+  };
+
   return useMemoComponent({
     Component: (
       <List
@@ -294,6 +295,7 @@ const NavigationMenu = ({
               <MenuItems
                 isRoot
                 data={item}
+                getUrlFromEntry={getUrlFromEntry}
                 hover={hover}
                 icon={<MenuIcon className={classes.icon} />}
                 isDrawerOpen={isDrawerOpen}

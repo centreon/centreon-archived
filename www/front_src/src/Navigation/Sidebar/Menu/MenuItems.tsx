@@ -1,7 +1,17 @@
-import { MouseEvent, MouseEventHandler, ReactNode } from 'react';
+import {
+  forwardRef,
+  MouseEvent,
+  MouseEventHandler,
+  ReactNode,
+  useMemo,
+} from 'react';
 
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+} from 'react-router-dom';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -23,12 +33,13 @@ const rootHeightItem = 37;
 
 interface Props {
   data: Page;
+  getUrlFromEntry: (item: Page) => string | null | undefined;
   hover: boolean;
   icon?: ReactNode;
   isDrawerOpen?: boolean;
   isOpen: boolean;
   isRoot?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
   onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
 }
 
@@ -81,11 +92,27 @@ const MenuItems = ({
   data,
   isDrawerOpen,
   isRoot,
+  getUrlFromEntry,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
+
+  const isShouldNavigate =
+    Array.isArray(data?.groups) && data.groups.length > 0;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const LinkBehavior = forwardRef<any, Omit<RouterLinkProps, 'to'>>(
+    (props, ref) => (
+      <RouterLink
+        ref={ref}
+        to={useMemo(() => getUrlFromEntry(data) as string, [data])}
+        {...props}
+        role={undefined}
+      />
+    ),
+  );
 
   return useMemoComponent({
     Component: (
@@ -93,9 +120,8 @@ const MenuItems = ({
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component="div"
+        component={!isRoot && !isShouldNavigate ? LinkBehavior : 'div'}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
-        onClick={!isRoot ? onClick : undefined}
         onDoubleClick={isRoot ? onClick : undefined}
         onMouseEnter={onMouseEnter}
       >
