@@ -99,7 +99,7 @@ const MenuItems = ({
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
-  const cannotNavigate =
+  const canNavigate =
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
   const LinkBehavior = forwardRef<
@@ -120,7 +120,7 @@ const MenuItems = ({
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component={!isRoot && cannotNavigate ? LinkBehavior : 'div'}
+        component={!isRoot && canNavigate ? LinkBehavior : 'div'}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onDoubleClick={isRoot ? onClick : undefined}
         onMouseEnter={onMouseEnter}
