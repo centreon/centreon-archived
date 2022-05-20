@@ -103,17 +103,17 @@ const MenuItems = ({
   const cannotNavigate =
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const LinkBehavior = forwardRef<any, Omit<RouterLinkProps, 'to'>>(
-    (props, ref) => (
-      <RouterLink
-        ref={ref}
-        to={useMemo(() => getUrlFromEntry(data) as string, [data])}
-        {...props}
-        role={undefined}
-      />
-    ),
-  );
+  const LinkBehavior = forwardRef<
+    HTMLAnchorElement,
+    Omit<RouterLinkProps, 'to'>
+  >((props, ref) => (
+    <RouterLink
+      ref={ref}
+      to={useMemo(() => getUrlFromEntry(data) as string, [data])}
+      {...props}
+      role={undefined}
+    />
+  ));
 
   return useMemoComponent({
     Component: (
