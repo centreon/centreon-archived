@@ -235,11 +235,11 @@ function duplicateLoggerV2Cfg(CentreonDB $pearDB, int $originalNagiosId, int $du
 {
     $statement = $pearDB->prepare(
         'INSERT INTO cfg_nagios_logger 
-        SELECT (:duplicatedNagiosId, `log_v2_logger`, `log_level_functions`, 
+        SELECT null, :duplicatedNagiosId, `log_v2_logger`, `log_level_functions`, 
                `log_level_config`, `log_level_events`, `log_level_checks`, 
                `log_level_notifications`, `log_level_eventbroker`, `log_level_external_command`,
                `log_level_commands`, `log_level_downtimes`, `log_level_comments`, 
-               `log_level_macros`, `log_level_process`, `log_level_runtime`)
+               `log_level_macros`, `log_level_process`, `log_level_runtime`
                FROM cfg_nagios_logger 
                WHERE cfg_nagios_id = :originalNagiosId'
     );
