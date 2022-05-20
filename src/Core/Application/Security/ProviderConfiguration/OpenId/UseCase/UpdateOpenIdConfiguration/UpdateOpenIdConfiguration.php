@@ -82,7 +82,7 @@ class UpdateOpenIdConfiguration
     private function validateContactTemplateExistsOrFail(ContactTemplate $contactTemplate): void
     {
         if ($this->contactTemplateRepository->find($contactTemplate->getId()) === null) {
-            throw OpenIdConfigurationException::contactTemplateDoesntExist(
+            throw OpenIdConfigurationException::contactTemplateNotFound(
                 $contactTemplate->getName()
             );
         }
