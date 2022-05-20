@@ -59,10 +59,10 @@ class FindServiceCategory
     }
 
     /**
-     * @param ServiceCategory[] $serviceCategories
+     * @param \Traversable<int, ServiceCategory> $serviceCategories
      * @return FindServiceCategoryResponse
      */
-    private function createResponse(array $serviceCategories): FindServiceCategoryResponse
+    private function createResponse(\Traversable $serviceCategories): FindServiceCategoryResponse
     {
         return new FindServiceCategoryResponse($serviceCategories);
     }

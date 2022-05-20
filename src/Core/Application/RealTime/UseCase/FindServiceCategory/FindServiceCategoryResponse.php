@@ -32,9 +32,9 @@ class FindServiceCategoryResponse
     public array $serviceCategories;
 
     /**
-     * @param ServiceCategory[] $serviceCategories
+     * @param \Traversable<int, ServiceCategory> $serviceCategories
      */
-    public function __construct(array $serviceCategories)
+    public function __construct(\Traversable $serviceCategories)
     {
         $this->serviceCategories = $this->serviceCategoriesToArray($serviceCategories);
     }
@@ -42,17 +42,17 @@ class FindServiceCategoryResponse
     /**
      * Convert array of ServiceCategory models into an array made of scalars
      *
-     * @param ServiceCategory[] $serviceCategories
+     * @param \Traversable<int, ServiceCategory> $serviceCategories
      * @return array<int, array<string, int|string>>
      */
-    private function serviceCategoriesToArray(array $serviceCategories): array
+    private function serviceCategoriesToArray(\Traversable $serviceCategories): array
     {
         return array_map(
             fn (ServiceCategory $serviceCategory) => [
                 'id' => $serviceCategory->getId(),
                 'name' => $serviceCategory->getName()
             ],
-            $serviceCategories
+            iterator_to_array($serviceCategories)
         );
     }
 }

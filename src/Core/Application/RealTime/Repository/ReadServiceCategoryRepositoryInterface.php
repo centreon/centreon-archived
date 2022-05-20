@@ -30,7 +30,7 @@ interface ReadServiceCategoryRepositoryInterface
     /**
      * Find all service categories
      *
-     * @return ServiceCategory[]
+     * @return \Traversable<int, ServiceCategory>
      */
-    public function findAll(): array;
+    public function findAll(): \Traversable;
 }
