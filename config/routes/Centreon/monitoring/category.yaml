@@ -1,5 +1,7 @@
+---
 centreon_application_monitoring_services_find_categories:
     methods: "GET"
     path: "/monitoring/services/categories"
-    controller: "Core\Infrastructure\RealTime\Api\FindServiceCategory\FindServiceCategoryController"
+    controller: >-
+        Core\Infrastructure\RealTime\Api\FindServiceCategory\FindServiceCategoryController
     condition: "request.attributes.get('version') >= 22.04"
