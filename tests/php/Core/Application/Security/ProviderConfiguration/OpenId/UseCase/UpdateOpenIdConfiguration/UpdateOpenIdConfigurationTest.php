@@ -183,7 +183,7 @@ it('should present an Error Response when auto import is enable and the contact 
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new ErrorResponse(
-            OpenIdConfigurationException::contactTemplateDoesntExist($request->contactTemplate['name'])->getMessage()
+            OpenIdConfigurationException::contactTemplateNotFound($request->contactTemplate['name'])->getMessage()
         ));
 
     $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
