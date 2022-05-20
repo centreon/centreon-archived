@@ -292,7 +292,6 @@ const NavigationMenu = ({
                     {...props}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onClick={handleClickItem}
                     onLeave={handleLeave}
                   />
                 )}
