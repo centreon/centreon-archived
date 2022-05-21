@@ -6,6 +6,7 @@ const { merge } = require('webpack-merge');
 const {
   getDevConfiguration,
   devJscTransformConfiguration,
+  devRefreshJscTransformConfiguration,
 } = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
 
 const getBaseConfiguration = require('./webpack.config');
@@ -63,7 +64,11 @@ const modules = [
 ];
 
 module.exports = merge(
-  getBaseConfiguration(devJscTransformConfiguration),
+  getBaseConfiguration(
+    isServeMode
+      ? devRefreshJscTransformConfiguration
+      : devJscTransformConfiguration,
+  ),
   getDevConfiguration(),
   {
     devServer: {
