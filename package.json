@@ -101,6 +101,7 @@
     "@mui/lab": "^5.0.0-alpha.63",
     "@mui/material": "^5.4.0",
     "@mui/styles": "^5.3.0",
+    "@types/cypress-image-snapshot": "^3.1.6",
     "@visx/visx": "2.9.0",
     "axios": "^0.25.0",
     "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
