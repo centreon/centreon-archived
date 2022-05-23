@@ -43,9 +43,6 @@ it('should present a provider configuration', function () {
         $configuration = new OpenIdConfiguration(
             false,
             new ContactTemplate(1, 'contact_template'),
-            null,
-            null,
-            null,
         );
 
         $configuration

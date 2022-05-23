@@ -228,6 +228,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      */
     public function setTrustedClientAddresses(array $trustedClientAddresses): self
     {
+        $this->trustedClientAddresses = [];
         foreach ($trustedClientAddresses as $trustedClientAddress) {
             $this->addTrustedClientAddress($trustedClientAddress);
         }
@@ -262,6 +263,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      */
     public function setBlacklistClientAddresses(array $blacklistClientAddresses): self
     {
+        $this->blacklistClientAddresses = [];
         foreach ($blacklistClientAddresses as $blacklistClientAddress) {
             $this->addBlacklistClientAddress($blacklistClientAddress);
         }
@@ -427,6 +429,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      */
     public function setConnectionScopes(array $connectionScopes): self
     {
+        $this->connectionScopes = [];
         foreach ($connectionScopes as $connectionScope) {
             $this->addConnectionScope($connectionScope);
         }

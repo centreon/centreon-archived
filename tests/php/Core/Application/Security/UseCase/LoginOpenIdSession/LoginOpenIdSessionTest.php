@@ -74,10 +74,7 @@ beforeEach(function () {
 
     $this->validOpenIdConfiguration = new OpenIdConfiguration(
         false,
-        new ContactTemplate(1, 'contact_template'),
-        null,
-        null,
-        null,
+        new ContactTemplate(1, 'contact_template')
     );
 
     $this->validOpenIdConfiguration
