@@ -18,7 +18,7 @@ import {
   labelDbPassword,
   labelDbUser,
   labelServerName,
-  labelOpenBrokerFlow,
+  labelDoNotUseConfiguredProxy,
   labelSelectRemoteLinks,
   labelSelectRemoteServer,
   labelServerIp,
@@ -278,7 +278,7 @@ const RemoteServerWizardStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(labelOpenBrokerFlow)}`}
+              label={`${t(labelDoNotUseConfiguredProxy)}`}
             />
           </div>
         ) : (
@@ -370,7 +370,7 @@ const RemoteServerWizardStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(labelOpenBrokerFlow)}`}
+              label={`${t(labelDoNotUseConfiguredProxy)}`}
             />
           </div>
         )}

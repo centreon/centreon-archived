@@ -31,3 +31,8 @@ export interface PollerRemoteList {
   ip: string;
   name: string;
 }
+
+export interface Poller {
+  id: string;
+  text: string;
+}
