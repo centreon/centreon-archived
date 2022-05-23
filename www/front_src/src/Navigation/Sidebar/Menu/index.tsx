@@ -98,10 +98,10 @@ const NavigationMenu = ({
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry(currentPage))) {
+    if (isNil(getUrlFromEntry({ entryProps: currentPage }))) {
       return;
     }
-    navigate(getUrlFromEntry(currentPage) as string);
+    navigate(getUrlFromEntry({ entryProps: currentPage }) as string);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {

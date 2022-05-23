@@ -102,16 +102,16 @@ const MenuItems = ({
   const canNavigate =
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
+  const memoizedUrl = useMemo(
+    () => getUrlFromEntry({ entryProps: data }) as string,
+    [data],
+  );
+
   const LinkBehavior = forwardRef<
     HTMLAnchorElement,
     Omit<RouterLinkProps, 'to'>
   >((props, ref) => (
-    <RouterLink
-      ref={ref}
-      to={useMemo(() => getUrlFromEntry(data) as string, [data])}
-      {...props}
-      role={undefined}
-    />
+    <RouterLink ref={ref} to={memoizedUrl} {...props} role={undefined} />
   ));
 
   return useMemoComponent({
