@@ -164,7 +164,7 @@ class Servicegroup extends AbstractObject
                 "SELECT servicegroup_sg_id, host_host_id, service_service_id
                 FROM servicegroup_relation sgr, servicegroup sg
                 WHERE service_service_id = :service_id AND (host_host_id = :host_id OR host_host_id IS NULL)
-                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate"
+                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
             );
         }
         $this->stmt_service_sg->bindParam(':service_id', $service_id, PDO::PARAM_INT);
