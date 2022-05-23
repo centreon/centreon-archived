@@ -1,6 +1,10 @@
 import { BrowserRouter as Router } from 'react-router-dom';
+import { renderHook, act } from '@testing-library/react-hooks/dom';
+import { useAtom } from 'jotai';
 
 import { mount } from '../../../../../cypress/support';
+
+import { selectedNavigationItemsAtom } from './sideBarAtoms';
 
 import SideBar from './index';
 
@@ -12,6 +16,10 @@ describe('Navigation menu visual testing: ', () => {
           <SideBar navigationData={data.result} />
         </Router>,
       );
+    });
+    const { result } = renderHook(() => useAtom(selectedNavigationItemsAtom));
+    act(() => {
+      result.current[1](null);
     });
   });
   it('matches the current snapshot "initial menu"', () => {
