@@ -45,28 +45,32 @@ class OpenIdConfigurationFactory
             ? new ContactTemplate($request->contactTemplate['id'], $request->contactTemplate['name'])
             : null;
 
-        return new OpenIdConfiguration(
-            $request->isActive,
-            $request->isForced,
-            $request->trustedClientAddresses,
-            $request->blacklistClientAddresses,
-            $request->baseUrl,
-            $request->authorizationEndpoint,
-            $request->tokenEndpoint,
-            $request->introspectionTokenEndpoint,
-            $request->userInformationEndpoint,
-            $request->endSessionEndpoint,
-            $request->connectionScopes,
-            $request->loginClaim,
-            $request->clientId,
-            $request->clientSecret,
-            $request->authenticationType,
-            $request->verifyPeer,
-            $contactTemplate,
+        $configuration = new OpenIdConfiguration(
             $request->isAutoImportEnabled,
+            $contactTemplate,
             $request->emailBindAttribute,
             $request->userAliasBindAttribute,
             $request->userNameBindAttribute
         );
+
+        $configuration
+            ->setActive($request->isActive)
+            ->setForced($request->isForced)
+            ->setTrustedClientAddresses($request->trustedClientAddresses)
+            ->setBlacklistClientAddresses($request->blacklistClientAddresses)
+            ->setBaseUrl($request->baseUrl)
+            ->setAuthorizationEndpoint($request->authorizationEndpoint)
+            ->setTokenEndpoint($request->tokenEndpoint)
+            ->setIntrospectionTokenEndpoint($request->introspectionTokenEndpoint)
+            ->setUserInformationEndpoint($request->userInformationEndpoint)
+            ->setEndSessionEndpoint($request->endSessionEndpoint)
+            ->setConnectionScopes($request->connectionScopes)
+            ->setLoginClaim($request->loginClaim)
+            ->setClientId($request->clientId)
+            ->setClientSecret($request->clientSecret)
+            ->setAuthenticationType($request->authenticationType)
+            ->setVerifyPeer($request->verifyPeer);
+
+        return $configuration;
     }
 }

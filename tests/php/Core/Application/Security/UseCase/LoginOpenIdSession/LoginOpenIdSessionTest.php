@@ -26,10 +26,10 @@ namespace Tests\Core\Application\Security\UseCase\LoginOpenIdSession;
 use CentreonDB;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Core\Contact\Domain\Model\ContactTemplate;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Core\Infrastructure\Common\Presenter\JsonPresenter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
@@ -72,29 +72,28 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
-    $this->validOpenIdConfiguration = (new OpenIdConfiguration(
-        true,
+    $this->validOpenIdConfiguration = new OpenIdConfiguration(
         false,
-        [],
-        [],
-        'http://127.0.0.2/',
-        '/auth',
-        '/token',
-        '/introspection',
-        '/userinfo',
-        '/logout',
-        [],
-        null,
-        'client-id',
-        'client-secret',
-        'client_secret_post',
-        false,
-        null,
-        false,
-        null,
-        null,
-        null
-    ))->setId(1);
+        new ContactTemplate(1, 'contact_template')
+    );
+
+    $this->validOpenIdConfiguration
+        ->setActive(true)
+        ->setForced(true)
+        ->setTrustedClientAddresses([])
+        ->setBlacklistClientAddresses([])
+        ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
+        ->setAuthorizationEndpoint('/authorization')
+        ->setTokenEndpoint('/token')
+        ->setIntrospectionTokenEndpoint('/introspect')
+        ->setUserInformationEndpoint('/userinfo')
+        ->setEndSessionEndpoint('/logout')
+        ->setConnectionScopes([])
+        ->setLoginClaim('preferred_username')
+        ->setClientId('MyCl1ientId')
+        ->setClientSecret('MyCl1ientSuperSecr3tKey')
+        ->setAuthenticationType('client_secret_post')
+        ->setVerifyPeer(false);
 });
 
 it('expects to return an error message in presenter when no provider configuration are found', function () {

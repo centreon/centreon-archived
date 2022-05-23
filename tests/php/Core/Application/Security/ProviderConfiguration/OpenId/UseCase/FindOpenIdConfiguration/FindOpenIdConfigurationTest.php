@@ -41,28 +41,27 @@ beforeEach(function () {
 
 it('should present a provider configuration', function () {
         $configuration = new OpenIdConfiguration(
-            true,
-            true,
-            [],
-            [],
-            'http://127.0.0.1/auth/openid-connect',
-            '/authorization',
-            '/token',
-            '/introspect',
-            '/userinfo',
-            '/logout',
-            [],
-            'preferred_username',
-            'MyCl1ientId',
-            'MyCl1ientSuperSecr3tKey',
-            'client_secret_post',
             false,
             new ContactTemplate(1, 'contact_template'),
-            false,
-            null,
-            null,
-            null,
         );
+
+        $configuration
+            ->setActive(true)
+            ->setForced(true)
+            ->setTrustedClientAddresses([])
+            ->setBlacklistClientAddresses([])
+            ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
+            ->setAuthorizationEndpoint('/authorization')
+            ->setTokenEndpoint('/token')
+            ->setIntrospectionTokenEndpoint('/introspect')
+            ->setUserInformationEndpoint('/userinfo')
+            ->setEndSessionEndpoint('/logout')
+            ->setConnectionScopes([])
+            ->setLoginClaim('preferred_username')
+            ->setClientId('MyCl1ientId')
+            ->setClientSecret('MyCl1ientSuperSecr3tKey')
+            ->setAuthenticationType('client_secret_post')
+            ->setVerifyPeer(false);
 
         $useCase = new FindOpenIdConfiguration($this->repository);
         $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
