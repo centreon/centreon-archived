@@ -18,7 +18,7 @@ import {
   labelDbPassword,
   labelDbUser,
   labelServerName,
-  labelOpenBrokerFlow,
+  labelDoNotUseConfiguredProxy,
   labelSelectRemoteLinks,
   labelSelectRemoteServer,
   labelServerIp,
@@ -278,21 +278,19 @@ const RemoteServerWizardStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(labelOpenBrokerFlow)}`}
+              label={`${t(labelDoNotUseConfiguredProxy)}`}
             />
           </div>
         ) : (
           <div className={classes.form}>
-            {waitListOption && waitListOption.length !== 0 ? (
-              <SelectField
-                fullWidth
-                label={t(labelSelectRemoteLinks)}
-                name="server_ip"
-                options={waitListOption}
-                selectedOptionId={stepOneFormData.server_ip}
-                onChange={handleChange}
-              />
-            ) : null}
+            <SelectField
+              fullWidth
+              label={t(labelSelectRemoteLinks)}
+              name="server_ip"
+              options={waitListOption || []}
+              selectedOptionId={stepOneFormData.server_ip}
+              onChange={handleChange}
+            />
             <TextField
               fullWidth
               required
@@ -372,7 +370,7 @@ const RemoteServerWizardStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(labelOpenBrokerFlow)}`}
+              label={`${t(labelDoNotUseConfiguredProxy)}`}
             />
           </div>
         )}

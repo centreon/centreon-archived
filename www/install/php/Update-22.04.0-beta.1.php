@@ -93,25 +93,11 @@ try {
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 
-    if ($pearDB->isColumnExist('cfg_centreonbroker', 'bbdo_version') !== 1) {
-        $errorMessage = "Unable to add 'bbdo_version' column to 'cfg_centreonbroker' table";
-        $pearDB->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
-    }
-
     if ($pearDB->isColumnExist('provider_configuration', 'custom_configuration') !== 1) {
         // Add custom_configuration to provider configurations
         $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
         $pearDB->query(
             "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
-        );
-    }
-
-    // Add contact_theme column to contact table
-    if ($pearDB->isColumnExist('contact', 'contact_theme') !== 1) {
-        $errorMessage = "Unable to add column 'contact_theme' to table 'contact'";
-        $pearDB->query(
-            "ALTER TABLE `contact` ADD COLUMN "
-            . "`contact_theme` enum('light','dark') DEFAULT 'light' AFTER `contact_js_effects`"
         );
     }
 
@@ -204,7 +190,7 @@ function insertWebSSOConfiguration(CentreonDB $pearDB): void
     $customConfiguration = [
         "trusted_client_addresses" => [],
         "blacklist_client_addresses" => [],
-        "login_header_attribute" => null,
+        "login_header_attribute" => "HTTP_AUTH_USER",
         "pattern_matching_login" => null,
         "pattern_replace_login" => null
     ];

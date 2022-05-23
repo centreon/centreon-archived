@@ -26,80 +26,105 @@ class UpdateOpenIdConfigurationRequest
     /**
      * @var boolean
      */
-    public bool $isActive;
+    public bool $isActive = false;
 
     /**
      * @var boolean
      */
-    public bool $isForced;
+    public bool $isForced = false;
 
     /**
      * @var string[]
      */
-    public array $trustedClientAddresses;
+    public array $trustedClientAddresses = [];
 
     /**
      * @var string[]
      */
-    public array $blacklistClientAddresses;
+    public array $blacklistClientAddresses = [];
 
     /**
      * @var string|null
      */
-    public ?string $baseUrl;
+    public ?string $baseUrl = null;
 
     /**
      * @var string|null
      */
-    public ?string $authorizationEndpoint;
+    public ?string $authorizationEndpoint = null;
 
     /**
      * @var string|null
      */
-    public ?string $tokenEndpoint;
+    public ?string $tokenEndpoint = null;
 
     /**
      * @var string|null
      */
-    public ?string $introspectionTokenEndpoint;
+    public ?string $introspectionTokenEndpoint = null;
 
     /**
      * @var string|null
      */
-    public ?string $userInformationEndpoint;
+    public ?string $userInformationEndpoint = null;
 
     /**
      * @var string|null
      */
-    public ?string $endSessionEndpoint;
+    public ?string $endSessionEndpoint = null;
 
     /**
      * @var string[]
      */
-    public array $connectionScopes;
+    public array $connectionScopes = [];
 
     /**
      * @var string|null
      */
-    public ?string $loginClaim;
+    public ?string $loginClaim = null;
 
     /**
      * @var string|null
      */
-    public ?string $clientId;
+    public ?string $clientId = null;
 
     /**
      * @var string|null
      */
-    public ?string $clientSecret;
+    public ?string $clientSecret = null;
 
     /**
      * @var string|null
      */
-    public ?string $authenticationType;
+    public ?string $authenticationType = null;
 
     /**
      * @var boolean
      */
-    public bool $verifyPeer;
+    public bool $verifyPeer = false;
+
+    /**
+     * @var boolean
+     */
+    public bool $isAutoImportEnabled = false;
+
+    /**
+     * @var array{id: int, name: string}|null
+     */
+    public ?array $contactTemplate = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $emailBindAttribute = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userAliasBindAttribute = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userNameBindAttribute = null;
 }

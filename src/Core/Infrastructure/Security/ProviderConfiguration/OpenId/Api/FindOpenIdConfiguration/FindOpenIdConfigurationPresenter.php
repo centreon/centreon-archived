@@ -53,7 +53,12 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'client_id' => $response->clientId,
             'client_secret' => $response->clientSecret,
             'authentication_type' => $response->authenticationType,
-            'verify_peer' => $response->verifyPeer
+            'verify_peer' => $response->verifyPeer,
+            'auto_import' => $response->isAutoImportEnabled,
+            'contact_template' => $response->contactTemplate,
+            'email_bind_attribute' => $response->emailBindAttribute,
+            'alias_bind_attribute' => $response->userAliasBindAttribute,
+            'fullname_bind_attribute' => $response->userNameBindAttribute,
         ];
 
         $this->presenterFormatter->present($presenterResponse);
