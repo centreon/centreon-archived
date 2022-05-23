@@ -1,7 +1,7 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
-import { OpenidConfiguration } from '../Openid/models';
+import { ContactTemplate, OpenidConfiguration } from '../Openid/models';
 import { WebSSOConfiguration } from '../WebSSO/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
@@ -43,11 +43,21 @@ export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
   },
 );
 
+const contactTemplateDecoder = JsonDecoder.object<ContactTemplate>(
+  {
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
+  },
+  'Contact template decoder',
+);
+
 export const openidConfigurationDecoder =
   JsonDecoder.object<OpenidConfiguration>(
     {
+      aliasBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
+      autoImport: JsonDecoder.boolean,
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
       blacklistClientAddresses: JsonDecoder.array(
         JsonDecoder.string,
@@ -59,7 +69,10 @@ export const openidConfigurationDecoder =
         JsonDecoder.string,
         'connectionScopes',
       ),
+      contactTemplate: JsonDecoder.nullable(contactTemplateDecoder),
+      emailBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       endSessionEndpoint: JsonDecoder.nullable(JsonDecoder.string),
+      fullnameBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       introspectionTokenEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       isActive: JsonDecoder.boolean,
       isForced: JsonDecoder.boolean,
@@ -74,14 +87,19 @@ export const openidConfigurationDecoder =
     },
     'Open ID Configuration',
     {
+      aliasBindAttribute: 'alias_bind_attribute',
       authenticationType: 'authentication_type',
       authorizationEndpoint: 'authorization_endpoint',
+      autoImport: 'auto_import',
       baseUrl: 'base_url',
       blacklistClientAddresses: 'blacklist_client_addresses',
       clientId: 'client_id',
       clientSecret: 'client_secret',
       connectionScopes: 'connection_scopes',
+      contactTemplate: 'contact_template',
+      emailBindAttribute: 'email_bind_attribute',
       endSessionEndpoint: 'endsession_endpoint',
+      fullnameBindAttribute: 'fullname_bind_attribute',
       introspectionTokenEndpoint: 'introspection_token_endpoint',
       isActive: 'is_active',
       isForced: 'is_forced',

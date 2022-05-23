@@ -65,8 +65,6 @@ const Form = ({
       .finally(() => setSubmitting(false));
 
   const validate = (formikValues): object => {
-    const baseErrors = validationSchema.validate(values);
-
     const isUserInfoOrIntrospectionTokenEmpty = pipe(
       pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
       values,
@@ -74,11 +72,10 @@ const Form = ({
     )(formikValues);
 
     if (not(isUserInfoOrIntrospectionTokenEmpty)) {
-      return baseErrors;
+      return {};
     }
 
     return {
-      ...baseErrors,
       introspectionTokenEndpoint: t(labelRequired),
       userinfoEndpoint: t(labelRequired),
     };
