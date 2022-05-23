@@ -2,9 +2,6 @@ import { isNil } from 'ramda';
 
 import { Page } from '../../models';
 
-interface EntryProps {
-  entryProps: Page;
-}
 
 export const getUrlFromEntry = ({ page, options }: Page): string | null | undefined => {
   const page = isNil(entryProps?.page) ? '' : entryProps.page;
