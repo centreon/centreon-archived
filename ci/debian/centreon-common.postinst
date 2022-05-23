@@ -5,9 +5,7 @@ if [ "$1" = "configure" ] ; then
     # User will have a shell. Not secure but require refactoring otherwise.
     adduser --system --group --shell /bin/bash --home /var/lib/centreon centreon
   fi
-  if [ "$(getent passwd www-data)" ]; then
-      usermod -a -G centreon www-data
-  fi
+
   chown -vR centreon:centreon \
     /etc/centreon \
     /var/cache/centreon
