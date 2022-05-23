@@ -6,9 +6,7 @@ interface EntryProps {
   entryProps: Page;
 }
 
-export const getUrlFromEntry = ({
-  entryProps,
-}: EntryProps): string | null | undefined => {
+export const getUrlFromEntry = ({ page, options }: Page): string | null | undefined => {
   const page = isNil(entryProps?.page) ? '' : entryProps.page;
   const options = isNil(entryProps?.options) ? '' : entryProps.options;
 
