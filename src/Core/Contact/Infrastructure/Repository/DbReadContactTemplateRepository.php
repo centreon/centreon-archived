@@ -28,6 +28,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Contact\Domain\Model\ContactTemplate;
 
 class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements ReadContactTemplateRepositoryInterface
 {
@@ -98,5 +99,26 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
         }
 
         return $contactTemplates;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(int $id): ?ContactTemplate
+    {
+        $statement = $this->db->prepare(
+            "SELECT contact_id, contact_name FROM contact
+                WHERE contact_id = :id
+                AND contact_register = 0"
+        );
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $contactTemplate = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $contactTemplate = DbContactTemplateFactory::createFromRecord($result);
+        }
+
+        return $contactTemplate;
     }
 }
