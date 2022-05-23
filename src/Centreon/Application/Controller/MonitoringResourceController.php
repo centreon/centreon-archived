@@ -60,6 +60,8 @@ class MonitoringResourceController extends AbstractController
         'hostgroup_names',
         'servicegroup_names',
         'monitoring_server_names',
+        'service_category_names',
+        'host_category_names',
         'status_types',
     ];
 
