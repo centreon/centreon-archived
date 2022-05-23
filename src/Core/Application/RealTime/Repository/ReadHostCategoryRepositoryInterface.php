@@ -18,14 +18,19 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Domain\RealTime\Model;
+namespace Core\Application\RealTime\Repository;
 
-abstract class Tags
+use Core\Domain\RealTime\Model\HostCategory;
+
+interface ReadHostCategoryRepositoryInterface
 {
-    public const SERVICE_GROUP_TYPE_ID = 0,
-                 HOST_GROUP_TYPE_ID = 1,
-                 SERVICE_CATEGORY_TYPE_ID = 2,
-                 HOST_CATEGORY_TYPE_ID = 3;
+    /**
+     * Find all host categories
+     *
+     * @return \Traversable<int, HostCategory>
+     */
+    public function findAll(): \Traversable;
 }

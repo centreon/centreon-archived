@@ -20,12 +20,10 @@
  */
 declare(strict_types=1);
 
-namespace Core\Domain\RealTime\Model;
+namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
-abstract class Tags
+use Core\Application\Common\UseCase\PresenterInterface;
+
+interface FindHostCategoryPresenterInterface extends PresenterInterface
 {
-    public const SERVICE_GROUP_TYPE_ID = 0,
-                 HOST_GROUP_TYPE_ID = 1,
-                 SERVICE_CATEGORY_TYPE_ID = 2,
-                 HOST_CATEGORY_TYPE_ID = 3;
 }
