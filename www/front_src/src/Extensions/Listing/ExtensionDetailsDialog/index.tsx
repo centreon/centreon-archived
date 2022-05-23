@@ -3,9 +3,8 @@ import { useState, useEffect } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
 import { useTranslation } from 'react-i18next';
+import { equals, length } from 'ramda';
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Chip,
   Typography,
@@ -47,6 +46,11 @@ interface Props {
   onUpdate: (id: string, type: string) => void;
   type: string;
 }
+
+const hasOneImage = (images: Array<string>): boolean =>
+  equals(1, length(images));
+
+const imageHeight = 280;
 
 const ExtensionDetailPopup = ({
   id,
@@ -106,28 +110,41 @@ const ExtensionDetailPopup = ({
   };
 
   return (
-    <Dialog open labelConfirm="Close" onClose={onClose} onConfirm={onClose}>
-      <Grid container direction="column" spacing={2} style={{ width: 520 }}>
-        <Grid item style={{ height: 300 }}>
+    <Dialog
+      open
+      labelConfirm="Close"
+      labelTitle=""
+      onClose={onClose}
+      onConfirm={onClose}
+    >
+      <Grid container direction="column" spacing={2} sx={{ width: 540 }}>
+        <Grid item>
           <Responsive.ParentSize>
             {({ width }): JSX.Element =>
-              loading ? (
-                <SliderSkeleton width={width} />
-              ) : (
+              extensionDetails.images ? (
                 <Carousel
+                  cycleNavigation
                   fullHeightHover
-                  NextIcon={<ChevronRightIcon />}
-                  PrevIcon={<ChevronLeftIcon />}
                   animation="slide"
                   autoPlay={false}
-                  sx={{
-                    height: '100%',
-                  }}
+                  height={imageHeight}
+                  indicators={!hasOneImage(extensionDetails.images)}
+                  navButtonsAlwaysInvisible={hasOneImage(
+                    extensionDetails.images,
+                  )}
                 >
                   {extensionDetails.images?.map((image) => (
-                    <img alt={image} key={image} src={image} width={width} />
+                    <img
+                      alt={image}
+                      height="100%"
+                      key={image}
+                      src={image}
+                      width="100%"
+                    />
                   ))}
                 </Carousel>
+              ) : (
+                <SliderSkeleton width={width} />
               )
             }
           </Responsive.ParentSize>
