@@ -68,7 +68,7 @@ class Hostgroup extends AbstractObject
         $this->stmt_hg->execute();
         if ($hostGroup = $this->stmt_hg->fetch(\PDO::FETCH_ASSOC)) {
             $this->hg[$hg_id] = $hostGroup;
-            $this->hg[$hg_id]['members'] = array();
+            $this->hg[$hg_id]['members'] = [];
         }
     }
 
