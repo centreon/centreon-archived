@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Core\Domain\Configuration\User\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
-use Centreon\Domain\Common\Assertion\AssertionException;
 
 class User
 {
@@ -33,7 +32,9 @@ class User
                  MIN_NAME_LENGTH = 1,
                  MAX_NAME_LENGTH = 255,
                  MIN_EMAIL_LENGTH = 1,
-                 MAX_EMAIL_LENGTH = 255;
+                 MAX_EMAIL_LENGTH = 255,
+                 MIN_THEME_LENGTH = 1,
+                 MAX_THEME_LENGTH = 100;
 
     /**
      * @param int $id
@@ -41,7 +42,8 @@ class User
      * @param string $name
      * @param string $email
      * @param bool $isAdmin
-     * @throws AssertionException
+     * @param string $theme
+     * @throws \Assert\AssertionFailedException
      */
     public function __construct(
         private int $id,
@@ -49,16 +51,12 @@ class User
         private string $name,
         private string $email,
         private bool $isAdmin,
+        private string $theme,
     ) {
-        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'User::alias');
-        Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'User::alias');
-
-        Assertion::minLength($name, self::MIN_ALIAS_LENGTH, 'User::name');
-        Assertion::maxLength($name, self::MAX_ALIAS_LENGTH, 'User::name');
-
-        // Email format validation cannot be done here until legacy form does not check it
-        Assertion::minLength($email, self::MIN_EMAIL_LENGTH, 'User::email');
-        Assertion::maxLength($email, self::MAX_EMAIL_LENGTH, 'User::email');
+        $this->setAlias($alias);
+        $this->setName($name);
+        $this->setEmail($email);
+        $this->setTheme($theme);
     }
 
     /**
@@ -67,17 +65,6 @@ class User
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return self
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -91,11 +78,13 @@ class User
     /**
      * @param string $alias
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setAlias(string $alias): self
     {
+        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'User::alias');
+        Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'User::alias');
         $this->alias = $alias;
-
         return $this;
     }
 
@@ -110,11 +99,13 @@ class User
     /**
      * @param string $name
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setName(string $name): self
     {
+        Assertion::minLength($name, self::MIN_ALIAS_LENGTH, 'User::name');
+        Assertion::maxLength($name, self::MAX_ALIAS_LENGTH, 'User::name');
         $this->name = $name;
-
         return $this;
     }
 
@@ -129,11 +120,14 @@ class User
     /**
      * @param string $email
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setEmail(string $email): self
     {
+        // Email format validation cannot be done here until legacy form does not check it
+        Assertion::minLength($email, self::MIN_EMAIL_LENGTH, 'User::email');
+        Assertion::maxLength($email, self::MAX_EMAIL_LENGTH, 'User::email');
         $this->email = $email;
-
         return $this;
     }
 
@@ -152,6 +146,27 @@ class User
     public function setAdmin(bool $isAdmin): self
     {
         $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    /**
+     * @param string $theme
+     * @return self
+     * @throws \Assert\AssertionFailedException
+     */
+    public function setTheme(string $theme): self
+    {
+        Assertion::minLength($theme, self::MIN_THEME_LENGTH, 'User::theme');
+        Assertion::maxLength($theme, self::MAX_THEME_LENGTH, 'User::theme');
+        $this->theme = $theme;
         return $this;
     }
 }

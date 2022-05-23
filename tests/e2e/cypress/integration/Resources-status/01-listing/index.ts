@@ -46,10 +46,8 @@ Then(
 );
 
 Given('a saved custom filter', () => {
-  cy.reload();
-  cy.get(stateFilterContainer)
-    .click()
-    .then(() => cy.contains('OK services').should('exist'));
+  cy.get(stateFilterContainer).click();
+  cy.contains('OK services').should('exist');
 });
 
 When('I select the custom filter', () => {

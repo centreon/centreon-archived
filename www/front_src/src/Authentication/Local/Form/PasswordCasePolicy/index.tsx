@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +8,7 @@ import { TextField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelPasswordCasePolicy,
-  labelPasswordLength,
+  labelMinimumPasswordLength,
 } from '../../translatedLabels';
 import { getField } from '../utils';
 
@@ -56,10 +54,10 @@ const PasswordCasePolicy = (): JSX.Element => {
             error={passwordLengthError}
             helperText={passwordLengthError}
             inputProps={{
-              'aria-label': t(labelPasswordLength),
+              'aria-label': t(labelMinimumPasswordLength),
               min: 0,
             }}
-            label={t(labelPasswordLength)}
+            label={t(labelMinimumPasswordLength)}
             name={passwordMinLengthFieldName}
             type="number"
             value={passwordLengthValue}
@@ -69,7 +67,7 @@ const PasswordCasePolicy = (): JSX.Element => {
         </div>
       </div>
     ),
-    memoProps: [passwordLengthError, passwordLengthValue],
+    memoProps: [passwordLengthError, passwordLengthValue, classes],
   });
 };
 

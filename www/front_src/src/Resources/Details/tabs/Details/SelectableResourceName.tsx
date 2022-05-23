@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Typography, TypographyVariant } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

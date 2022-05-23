@@ -675,22 +675,61 @@ class CentreonConfigCentreonBroker
     }
 
     /**
+     * @param array<string,mixed> $values
+     * @return string[]
+     */
+    private function getColumnNamesForQuery(array $values): array
+    {
+        $columnNames = [
+            'config_name',
+            'config_filename',
+            'ns_nagios_server',
+            'config_activate',
+            'daemon',
+            'cache_directory',
+            'event_queue_max_size',
+            'command_file',
+            'pool_size',
+            'log_directory',
+            'log_filename',
+        ];
+        if (isset($values['write_timestamp']['write_timestamp'])) {
+            $columnNames[] = 'config_write_timestamp';
+        }
+        if (isset($values['write_thread_id']['write_thread_id'])) {
+            $columnNames[] = 'config_write_thread_id';
+        }
+        if (isset($values['stats_activate']['stats_activate'])) {
+            $columnNames[] = 'stats_activate';
+        }
+        if (isset($values['log_max_size'])) {
+            $columnNames[] = 'log_max_size';
+        }
+        if (isset($values['bbdo_version'])) {
+            $columnNames[] = 'bbdo_version';
+        }
+
+        return $columnNames;
+    }
+
+    /**
      * Insert a configuration into the database
      *
      * @param array $values The post array
      * @return bool
      */
-    public function insertConfig($values)
+    public function insertConfig(array $values): bool
     {
         $objMain = new CentreonMainCfg();
         // Insert the Centreon Broker configuration
-        $query = "INSERT INTO cfg_centreonbroker "
-            . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
-            . "config_write_thread_id, stats_activate, cache_directory, event_queue_max_size, command_file, "
-            . "pool_size, log_directory, log_filename, log_max_size) "
-            . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
-            . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
-            . ":event_queue_max_size, :command_file, :pool_size, :log_directory, :log_filename, :log_max_size)";
+        $columnNames = $this->getColumnNamesForQuery($values);
+
+        $query = 'INSERT INTO cfg_centreonbroker ('
+            . implode(', ', $columnNames)
+            . ') VALUES (:'
+            . implode(', :', $columnNames)
+            . ')';
+
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -698,24 +737,44 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':ns_nagios_server', $values['ns_nagios_server'], \PDO::PARAM_STR);
             $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
-            $stmt->bindValue(':config_write_timestamp', $values['write_timestamp']['write_timestamp'], \PDO::PARAM_STR);
-            $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
-            $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
+            $stmt->bindValue(':log_directory', $values['log_directory'] ?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'] ?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
-                (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
+                (int) $this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
                 \PDO::PARAM_INT
             );
-            $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
+            $stmt->bindValue(':command_file', $values['command_file'] ?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':pool_size',
-                !empty($values['pool_size']) ? (int)$values['pool_size'] : null,
+                ! empty($values['pool_size']) ? (int) $values['pool_size'] : null,
                 \PDO::PARAM_INT
             );
+            if (in_array('config_write_timestamp', $columnNames)) {
+                $stmt->bindValue(
+                    ':config_write_timestamp',
+                    $values['write_timestamp']['write_timestamp'],
+                    \PDO::PARAM_STR
+                );
+            }
+            if (in_array('config_write_thread_id', $columnNames)) {
+                $stmt->bindValue(
+                    ':config_write_thread_id',
+                    $values['write_thread_id']['write_thread_id'],
+                    \PDO::PARAM_STR
+                );
+            }
+            if (in_array('stats_activate', $columnNames)) {
+                $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
+            }
+            if (in_array('log_max_size', $columnNames)) {
+                $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
+            }
+            if (in_array('bbdo_version', $columnNames)) {
+                $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
+            }
+
             $stmt->execute();
         } catch (\PDOException $e) {
             return false;
@@ -725,6 +784,7 @@ class CentreonConfigCentreonBroker
         $iId = $objMain->insertServerInCfgNagios(-1, $iIdServer, $values['name']);
         if (!empty($iId)) {
             $objMain->insertBrokerDefaultDirectives($iId, 'wizard');
+            $objMain->insertDefaultCfgNagiosLogger($iId);
         }
 
         /*
@@ -753,7 +813,8 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
             foreach ($logs as $logId => $logName) {
                 $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
-                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+                $logValue = $values['log_' . $logName] ?? null;
+                $stmt->bindValue(':level_' . $logId, (int) $logValue, \PDO::PARAM_INT);
             }
             $stmt->execute();
         } catch (\PDOException $e) {
@@ -779,7 +840,7 @@ class CentreonConfigCentreonBroker
             . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
             . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
             . "log_directory = :log_directory, log_filename = :log_filename , log_max_size = :log_max_size , "
-            . "pool_size = :pool_size WHERE config_id = " . $id;
+            . "pool_size = :pool_size, bbdo_version = :bbdo_version WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -794,6 +855,7 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
+            $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -836,6 +898,101 @@ class CentreonConfigCentreonBroker
     }
 
     /**
+     * Find a broker config original value based on fieldIndex
+     *
+     * @param int $configId
+     * @param string $configKey
+     * @param int $fieldIndex
+     * @return string|null
+     */
+    private function findOriginalValueWithFieldIndex(int $configId, string $configKey, int $fieldIndex): ?string
+    {
+        $stmt = $this->db->prepare(
+            'SELECT config_value FROM cfg_centreonbroker_info
+            WHERE config_id = :configId
+            AND config_key = :configKey
+            AND fieldIndex = :fieldIndex'
+        );
+        $stmt->bindValue(':configId', $configId, \PDO::PARAM_INT);
+        $stmt->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
+        $stmt->bindValue(':fieldIndex', $fieldIndex, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['config_value'] ?? null;
+    }
+
+    /**
+     * Retrieve lua original password if it hasn't change
+     *
+     * @param int $configId
+     * @param array<string,mixed> $values
+     */
+    private function revealLuaPasswords(int $configId, array &$values): void
+    {
+        foreach ($values['output'] as &$output) {
+            foreach (array_keys($output) as $key) {
+                if (
+                    preg_match('/^lua_parameter__value_(\\d+)$/', (string) $key, $matches)
+                    && $output["lua_parameter__value_{$matches[1]}"] === \CentreonAuth::PWS_OCCULTATION
+                ) {
+                    $originalPassword = $this->findOriginalValueWithFieldIndex(
+                        $configId,
+                        "lua_parameter__value",
+                        $matches[1]
+                    );
+                    $output["lua_parameter__value_{$matches[1]}"] = $originalPassword;
+                }
+            }
+        }
+    }
+
+    /**
+     * Find a broker config original value based on group id
+     *
+     * @param int $configId
+     * @param int $groupId
+     * @param string $configKey
+     * @return string|null
+     */
+    private function findOriginalValueWithGroupId(int $configId, int $groupId, string $configKey): ?string
+    {
+        $stmt = $this->db->prepare(
+            'SELECT config_value FROM cfg_centreonbroker_info
+            WHERE config_id = :configId
+            AND config_key = :configKey
+            AND config_group_id = :groupId'
+        );
+        $stmt->bindValue(':configId', $configId, \PDO::PARAM_INT);
+        $stmt->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
+        $stmt->bindValue(':groupId', $groupId, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['config_value'] ?? null;
+    }
+
+    /**
+     * Retrieve original db_password if it hasn't change
+     *
+     * @param int $configId
+     * @param array<string,mixed> $values
+     */
+    private function revealPasswords(int $configId, array &$values): void
+    {
+        if (isset($values['output'])) {
+            foreach ($values['output'] as $key => &$output) {
+                if (isset($output['db_password']) && $output['db_password'] === \CentreonAuth::PWS_OCCULTATION) {
+                    $originalPassword = $this->findOriginalValueWithGroupId($configId, $key, 'db_password');
+                    $output['db_password'] = $originalPassword;
+                }
+            }
+        }
+    }
+
+    /**
      * Update the information for a configuration
      *
      * @param int $id The configuration id
@@ -856,6 +1013,10 @@ class CentreonConfigCentreonBroker
                 }
             }
         }
+
+        $this->revealLuaPasswords($id, $values);
+        $this->revealPasswords($id, $values);
+
         // Clean the informations for this id
         $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
             . (int) $id
@@ -903,7 +1064,8 @@ class CentreonConfigCentreonBroker
                         $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
-                            foreach ($fieldvalue as $index => $value) {
+                            $index = 0;
+                            foreach ($fieldvalue as $key => $value) {
                                 if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
                                     $value = $value[$fieldname];
                                 }
@@ -937,6 +1099,7 @@ class CentreonConfigCentreonBroker
                                     $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
                                     $stmt->execute();
                                 }
+                                $index++;
                             }
                             continue;
                         }
@@ -1062,6 +1225,7 @@ class CentreonConfigCentreonBroker
         }
         $formsInfos = array();
         $arrayMultipleValues = array();
+        $isTypePassword = false;
         while ($row = $res->fetch()) {
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
                 $this->getConfigFieldName($config_id, $tag, $row) . ']';
@@ -1075,7 +1239,14 @@ class CentreonConfigCentreonBroker
                     $suffix = '';
                 }
                 $arrayMultipleValues[$fieldname]['suffix'] = $suffix;
-                $arrayMultipleValues[$fieldname]['values'][] = $row['config_value'];
+                $arrayMultipleValues[$fieldname]['values'][] =
+                    $isTypePassword && $suffix === 'value' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
+
+                if ($suffix === 'type' && $row['config_value'] === 'password') {
+                    $isTypePassword = true;
+                } elseif ($isTypePassword && $suffix === 'value') {
+                    $isTypePassword = false;
+                }
             } else {
                 if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
                     if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
@@ -1083,11 +1254,15 @@ class CentreonConfigCentreonBroker
                             $formsInfos[$row['config_group_id']]['defaults'][$fieldname]
                         );
                     }
-                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] = $row['config_value'];
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname][] =
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                 } else {
-                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
+                    $formsInfos[$row['config_group_id']]['defaults'][$fieldname] =
+                        $row['config_key'] === 'db_password' ? \CentreonAuth::PWS_OCCULTATION : $row['config_value'];
                     $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] =
-                        $row['config_value']; // Radio button
+                        $row['config_key'] === 'db_password'
+                        ? \CentreonAuth::PWS_OCCULTATION
+                        : $row['config_value']; // Radio button
                 }
                 if ($row['config_key'] == 'blockId') {
                     $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];

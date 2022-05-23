@@ -458,7 +458,7 @@ while ($data = $dbResult->fetch()) {
     } else {
         $obj->XML->writeElement("hau", "none");
     }
-
+    $obj->XML->writeElement("chartIcon", returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)", 18, 18));
     $obj->XML->endElement();
 }
 $dbResult->closeCursor();

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { omit } from 'ramda';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -63,7 +63,7 @@ const useFilter = (): void => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadCustomFilters();
   }, []);
 
@@ -71,7 +71,7 @@ const useFilter = (): void => {
     setSearch(build(currentFilter.criterias));
   }, [currentFilter.criterias]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (getUrlQueryParameters().fromTopCounter) {
       return;
     }
@@ -88,7 +88,7 @@ const useFilter = (): void => {
     setUrlQueryParameters(queryParameters);
   }, [filterWithParsedSearch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!getUrlQueryParameters().fromTopCounter) {
       return;
     }
@@ -103,7 +103,7 @@ const useFilter = (): void => {
     applyFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSendingFilter(sending);
   }, [sending]);
 };

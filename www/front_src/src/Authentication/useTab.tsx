@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useAtom, useAtomValue } from 'jotai';
 import { equals, not } from 'ramda';
@@ -9,7 +9,7 @@ const useTab = (isConfigurationEmpty: boolean): void => {
   const [appliedTab, setAppliedTab] = useAtom(appliedTabAtom);
   const tab = useAtomValue(tabAtom);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (not(isConfigurationEmpty) || equals(tab, appliedTab)) {
       return;
     }

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
 
@@ -16,13 +14,13 @@ import {
 } from '../defaults';
 import {
   labelBlockingDurationMustBeLessThanOrEqualTo7Days,
-  labelBlockingTimeBeforeNewConnectionAttempt,
+  labelTimeThatMustPassBeforeNewConnection,
   labelChooseAValueBetween1and10,
   labelDay,
   labelDays,
   labelGood,
   labelMinutes,
-  labelNumberOfAttemptsBeforeBlockingNewAttempts,
+  labelNumberOfAttemptsBeforeUserIsBlocked,
   labelPasswordBlockingPolicy,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
@@ -70,16 +68,16 @@ describe('Password Blocking Policy', () => {
     });
 
     expect(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
     ).toHaveValue(5);
 
     expect(
-      screen.getByText(labelBlockingTimeBeforeNewConnectionAttempt),
+      screen.getByText(labelTimeThatMustPassBeforeNewConnection),
     ).toBeInTheDocument();
 
     expect(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`,
       ),
     ).toHaveTextContent('15');
 
@@ -94,7 +92,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '0',
     );
 
@@ -105,7 +103,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}8',
     );
 
@@ -116,7 +114,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '11',
     );
 
@@ -135,7 +133,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}',
     );
 
@@ -172,7 +170,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}2',
     );
 
@@ -181,7 +179,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeUserIsBlocked),
       '{selectall}{backspace}4',
     );
 
@@ -199,7 +197,7 @@ describe('Password Blocking Policy', () => {
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelDay}`,
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelDay}`,
       ),
     );
     userEvent.click(screen.getByText('6'));
@@ -210,14 +208,14 @@ describe('Password Blocking Policy', () => {
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelDays}`,
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelDays}`,
       ),
     );
     userEvent.click(screen.getByText('3'));
 
     userEvent.click(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
+        `${labelTimeThatMustPassBeforeNewConnection} ${labelMinutes}`,
       ),
     );
     userEvent.click(screen.getAllByText('0')[1]);

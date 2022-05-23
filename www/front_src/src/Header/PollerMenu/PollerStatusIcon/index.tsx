@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 import clsx from 'clsx';

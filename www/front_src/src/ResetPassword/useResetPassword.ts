@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router';
 import { putData, useRequest, useSnackbar } from '@centreon/ui';
 
 import useUser from '../Main/useUser';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import useLogin from '../Login/useLogin';
 import { labelLoginSucceeded } from '../Login/translatedLabels';
 
@@ -39,7 +38,7 @@ function differentPasswords(this, newPassword?: string): boolean {
 }
 
 const useResetPassword = (): UseResetPasswordState => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { showSuccessMessage } = useSnackbar();
@@ -47,12 +46,9 @@ const useResetPassword = (): UseResetPasswordState => {
     request: putData,
   });
 
-  const platformInstallationStatus = useAtomValue(
-    platformInstallationStatusAtom,
-  );
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
 
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
   const { sendLogin } = useLogin();
 
   const submitResetPassword = (
@@ -75,9 +71,7 @@ const useResetPassword = (): UseResetPasswordState => {
           password: values.newPassword,
         }).then(({ redirectUri }) => {
           showSuccessMessage(t(labelLoginSucceeded));
-          loadUser(platformInstallationStatus)?.then(() =>
-            navigate(redirectUri),
-          );
+          loadUser()?.then(() => navigate(redirectUri));
         });
       })
       .catch(() => {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { useMemoComponent } from '@centreon/ui';
 
 import TimeInputs from '../../TimeInputs';
 import {
-  labelBlockingTimeBeforeNewConnectionAttempt,
+  labelTimeThatMustPassBeforeNewConnection,
   labelGood,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
@@ -64,7 +64,7 @@ const BlockingDuration = (): JSX.Element => {
     object: values,
   });
 
-  const thresholds = React.useMemo(
+  const thresholds = useMemo(
     () => [
       {
         color: theme.palette.error.main,
@@ -87,7 +87,7 @@ const BlockingDuration = (): JSX.Element => {
 
   const areAttemptsEmpty = isNil(attemptsValue);
 
-  const displayStrengthProgress = React.useMemo(
+  const displayStrengthProgress = useMemo(
     () =>
       isNil(blockingDurationError) &&
       not(isNil(blockingDurationValue)) &&
@@ -95,7 +95,7 @@ const BlockingDuration = (): JSX.Element => {
     [blockingDurationError, blockingDurationValue, areAttemptsEmpty],
   );
 
-  const maxHoursAndMinutesOption = React.useMemo(
+  const maxHoursAndMinutesOption = useMemo(
     (): number | undefined =>
       lte(dayjs.duration({ days: 7 }).asMilliseconds(), blockingDurationValue)
         ? 0
@@ -112,10 +112,10 @@ const BlockingDuration = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.passwordBlockingDuration}>
-        <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
+        <FormLabel>{t(labelTimeThatMustPassBeforeNewConnection)}</FormLabel>
         <TimeInputs
           baseName={blockingDurationFieldName}
-          inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
+          inputLabel={labelTimeThatMustPassBeforeNewConnection}
           maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={blockingDurationValue}

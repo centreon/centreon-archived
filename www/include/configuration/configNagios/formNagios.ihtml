@@ -8,7 +8,6 @@
 			<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 			<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 			<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
-			<li class="b" id='c7'><a href="#" onclick="javascript:montre('7');">{$sort7}</a></li>
 		</ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c"}
@@ -176,14 +175,100 @@
           <h4>{$LoggingOptions}</h4>
         </td>
       </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_syslog">&nbsp;{$form.use_syslog.label}</td><td class="FormRowValue">{$form.use_syslog.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_notifications">&nbsp;{$form.log_notifications.label}</td><td class="FormRowValue">{$form.log_notifications.html}</td></tr>
+      <tr class="list_one">
+        <td class="FormRowField"><img class="helpTooltip" name="logger_version">&nbsp;{$form.logger_version.label}</td>
+        <td class="FormRowValue">{$form.logger_version.html}</td>
+      </tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_syslog">&nbsp;{$form.use_syslog.label}</td><td class="FormRowValue">{$form.use_syslog.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_notifications">&nbsp;{$form.log_notifications.label}</td><td class="FormRowValue">{$form.log_notifications.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_service_retries">&nbsp;{$form.log_service_retries.label}</td><td class="FormRowValue">{$form.log_service_retries.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_host_retries">&nbsp;{$form.log_host_retries.label}</td><td class="FormRowValue">{$form.log_host_retries.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_event_handlers">&nbsp;{$form.log_event_handlers.label}</td><td class="FormRowValue">{$form.log_event_handlers.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_external_commands">&nbsp;{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_passive_checks">&nbsp;{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
+
+      <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$DebugConfiguration}</h4>
+        </td>
+      </tr>
+      <!-- LOGGER V1 OPTIONS -->
+      <tr class="list_one logger_v1_option">
+        <td class="FormRowField"><img class="helpTooltip" name="debug_file">&nbsp;{$form.debug_file.label}</td>
+        <td class="FormRowValue">{$form.debug_file.html}</td>
+      </tr>
+      <tr class="list_two logger_v1_option">
+        <td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}
+        </td>
+        <td class="FormRowValue">{$form.nagios_debug_level.html}</td>
+      </tr>
+      <tr class="list_one logger_v1_option">
+        <td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td>
+        <td class="FormRowValue">{$form.debug_verbosity.html}</td>
+      </tr>
+      <tr class="list_two logger_v1_option">
+        <td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}
+        </td>
+        <td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td>
+      </tr>
+      <!-- LOGGER V2 OPTIONS -->
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_v2_logger.label}</td>
+        <td class="FormRowValue">{$form.log_v2_logger.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_checks.label}</td>
+        <td class="FormRowValue">{$form.log_level_checks.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_commands.label}</td>
+        <td class="FormRowValue">{$form.log_level_commands.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_comments.label}</td>
+        <td class="FormRowValue">{$form.log_level_comments.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_config.label}</td>
+        <td class="FormRowValue">{$form.log_level_config.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_downtimes.label}</td>
+        <td class="FormRowValue">{$form.log_level_downtimes.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_eventbroker.label}</td>
+        <td class="FormRowValue">{$form.log_level_eventbroker.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_events.label}</td>
+        <td class="FormRowValue">{$form.log_level_events.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_external_command.label}</td>
+        <td class="FormRowValue">{$form.log_level_external_command.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_functions.label}</td>
+        <td class="FormRowValue">{$form.log_level_functions.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_macros.label}</td>
+        <td class="FormRowValue">{$form.log_level_macros.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_notifications.label}</td>
+        <td class="FormRowValue">{$form.log_level_notifications.html}</td>
+      </tr>
+      <tr class="list_one logger_v2_option">
+        <td class="FormRowField">{$form.log_level_process.label}</td>
+        <td class="FormRowValue">{$form.log_level_process.html}</td>
+      </tr>
+      <tr class="list_two logger_v2_option">
+        <td class="FormRowField">{$form.log_level_runtime.label}</td>
+        <td class="FormRowValue">{$form.log_level_runtime.html}</td>
+      </tr>
 
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
@@ -197,13 +282,6 @@
 
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
-          <h4>{$Archives}</h4>
-        </td>
-      </tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_archive_path">&nbsp;{$form.log_archive_path.label}</td><td class="FormRowValue">{$form.log_archive_path.html}</td></tr>
-
-			<tr class="list_lvl_1">
-        <td class="ListColLvl1_name" colspan="2">
           <h4>{$StatesRetention}</h4>
         </td>
       </tr>
@@ -212,8 +290,14 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Minutes}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_retained_program_state">&nbsp;{$form.use_retained_program_state.label}</td><td class="FormRowValue">{$form.use_retained_program_state.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_retained_scheduling_info">&nbsp;{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_host_attribute_mask">&nbsp;{$form.retained_contact_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_service_attribute_mask">&nbsp;{$form.retained_contact_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_service_attribute_mask.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_process_host_attribute_mask">&nbsp;{$form.retained_process_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_process_service_attribute_mask">&nbsp;{$form.retained_process_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_service_attribute_mask.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
 
-      {if $o == "a" || $o == "c"}
+     {if $o == "a" || $o == "c"}
           <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
           {if isset($form.required)}
               {$form.required._note}
@@ -371,32 +455,6 @@
       {/if}
 		</table>
 	</div>
-	<div id='tab7' class='tab'>
-		<table class="formTable table">
-		 	<tr class="ListHeader">
-        <td class="FormHeader" colspan="2">
-          <h3>| {$Debug}</h3>
-        </td>
-      </tr>
-			<tr class="list_lvl_1">
-        <td class="ListColLvl1_name" colspan="2">
-          <h4>{$DebugConfiguration}</h4>
-        </td>
-      </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_file">&nbsp;{$form.debug_file.label}</td><td class="FormRowValue">{$form.debug_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}</td><td class="FormRowValue">{$form.nagios_debug_level.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="daemon_dumps_core">&nbsp;{$form.daemon_dumps_core.label}</td><td class="FormRowValue">{$form.daemon_dumps_core.html}&nbsp;</td></tr>
-      {if $o == "a" || $o == "c"}
-          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-          {if isset($form.required)}
-              {$form.required._note}
-          {/if}
-          </td></tr>
-      {/if}
-		</table>
-	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">
@@ -432,6 +490,21 @@ jQuery(document).ready(function() {
         }
     });
     jQuery('input[name=event_broker_options]').trigger('change');
+
+    $('input[name="logger_version[logger_version]"]').change(function (e) {
+      var $this = $(this);
+      if (! $this.is(':checked')) {
+        return;
+      }
+      if ($this.attr('value') === 'log_legacy_enabled') {
+        $(".logger_v1_option").show();
+        $(".logger_v2_option").hide();
+      } else {
+        $(".logger_v2_option").show();
+        $(".logger_v1_option").hide();
+      }
+    });
+    $('input[name="logger_version[logger_version]"]').trigger('change');
 });
 </script>
 {/literal}

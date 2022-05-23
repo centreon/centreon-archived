@@ -77,7 +77,6 @@ class CentreonEngineCfg extends CentreonObject
             'execute_host_checks' => '2',
             'accept_passive_host_checks' => '2',
             'enable_event_handlers' => '1',
-            'log_archive_path' => '/var/log/centreon-engine/archives/',
             'check_external_commands' => '1',
             'command_check_interval' => '1s',
             'command_file' => '/var/log/centreon-engine/rw/nagios.cmd',
@@ -131,7 +130,8 @@ class CentreonEngineCfg extends CentreonObject
             'debug_level' => '0',
             'debug_level_opt' => '0',
             'debug_verbosity' => '2',
-            'cached_host_check_horizon' => '60'
+            'cached_host_check_horizon' => '60',
+            'logger_version' => 'log_v2_enabled',
         );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
@@ -198,11 +198,29 @@ class CentreonEngineCfg extends CentreonObject
                 'global_host_event_handler',
                 'global_service_event_handler'
             );
+            $loggerColumns = [
+                'log_v2_logger',
+                'log_level_functions',
+                'log_level_config',
+                'log_level_events',
+                'log_level_checks',
+                'log_level_notifications',
+                'log_level_eventbroker',
+                'log_level_external_command',
+                'log_level_commands',
+                'log_level_downtimes',
+                'log_level_comments',
+                'log_level_macros',
+                'log_level_process',
+                'log_level_runtime',
+            ];
+            $canUpdateParams = true;
             if ($params[1] == "instance" || $params[1] == "nagios_server_id") {
                 $params[1] = "nagios_server_id";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
+                $canUpdateParams = false;
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
@@ -215,8 +233,13 @@ class CentreonEngineCfg extends CentreonObject
                 } else {
                     $params[2] = null;
                 }
+            } elseif ($params[1] === 'logger_version' && $params[2] === 'log_v2_enabled') {
+                $this->createLoggerV2Cfg($objectId);
+            } elseif (preg_match('/(' . implode('|', $loggerColumns) . ')/', $params[1], $matches)) {
+                $this->updateLoggerV2Param($objectId, $params);
+                $canUpdateParams = false;
             }
-            if ($params[1] != "broker_module") {
+            if ($canUpdateParams) {
                 $p = strtolower($params[1]);
                 if ($params[2] == "") {
                     if (isset($this->params[$p]) && $this->params[$p] == 2) {
@@ -291,6 +314,8 @@ class CentreonEngineCfg extends CentreonObject
         );
 
         foreach ($elements as $element) {
+            $element = array_merge($element, $this->getLoggerV2Cfg($element['nagios_id']));
+
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -431,5 +456,81 @@ class CentreonEngineCfg extends CentreonObject
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $bkModule);
             }
         }
+    }
+
+    /**
+     * This method is automatically called in CentreonObject
+     *
+     * @param int $nagiosId
+     */
+    public function insertRelations(int $nagiosId): void
+    {
+        $this->createLoggerV2Cfg($nagiosId);
+    }
+
+    /**
+     * @param int $nagiosId
+     * @return bool
+     */
+    private function doesLoggerV2CfgExist(int $nagiosId): bool
+    {
+        $statement = $this->db->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetch() !== false;
+    }
+
+    /**
+     * Create logger V2 config if it doesn't already exist
+     *
+     * @param int $nagiosId
+     */
+    private function createLoggerV2Cfg(int $nagiosId): void
+    {
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
+            $statement = $this->db->prepare('INSERT INTO cfg_nagios_logger (cfg_nagios_id) VALUES (:cfgNagiosId)');
+            $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+            $statement->execute();
+        }
+    }
+
+    /**
+     * @param int $nagiosId
+     * @return array<mixed>
+     */
+    private function getLoggerV2Cfg(int $nagiosId): array
+    {
+        $statement = $this->db->prepare('SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($result = $statement->fetch()) {
+            unset($result['cfg_nagios_id']);
+            unset($result['id']);
+        }
+
+        return empty($result) ? [] : $result;
+    }
+
+    /**
+     * Update loggerV2 config
+     *
+     * @param int $nagiosId
+     * @param string[] $params
+     * @throws CentreonClapiException if config isn't found in cfg_nagios_logger table
+     */
+    private function updateLoggerV2Param(int $nagiosId, array $params): void
+    {
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        $statement = $this->db->prepare(
+            "UPDATE cfg_nagios_logger SET `{$params[1]}` = :paramValue WHERE cfg_nagios_id = :cfgNagiosId"
+        );
+        $statement->bindValue(':paramValue', $params[2], \PDO::PARAM_STR);
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 }

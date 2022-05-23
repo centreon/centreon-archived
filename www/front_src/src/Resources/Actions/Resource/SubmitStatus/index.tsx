@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -46,9 +46,9 @@ const SubmitStatusForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
-  const [selectedStatusId, setSelectedStatusId] = React.useState(0);
-  const [output, setOutput] = React.useState('');
-  const [performanceData, setPerformanceData] = React.useState('');
+  const [selectedStatusId, setSelectedStatusId] = useState(0);
+  const [output, setOutput] = useState('');
+  const [performanceData, setPerformanceData] = useState('');
 
   const serviceStatuses = [
     {

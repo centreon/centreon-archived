@@ -1,7 +1,6 @@
-import * as React from 'react';
-
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { isEmpty, isNil, pick, pipe, values, or, all, not } from 'ramda';
 
 import { makeStyles } from '@mui/styles';
 
@@ -11,6 +10,7 @@ import useValidationSchema from '../useValidationSchema';
 import {
   labelFailedToSaveOpenidConfiguration,
   labelOpenIDConnectConfigurationSaved,
+  labelRequired,
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
 import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
@@ -33,6 +33,8 @@ interface Props {
   loadOpenidConfiguration: () => void;
 }
 
+const isNilOrEmpty = (value): boolean => or(isNil(value), isEmpty(value));
+
 const Form = ({
   initialValues,
   loadOpenidConfiguration,
@@ -52,15 +54,35 @@ const Form = ({
   const validationSchema = useValidationSchema();
 
   const submit = (
-    values: OpenidConfiguration,
+    formikValues: OpenidConfiguration,
     { setSubmitting },
   ): Promise<void> =>
-    sendRequest(values)
+    sendRequest(formikValues)
       .then(() => {
         loadOpenidConfiguration();
         showSuccessMessage(t(labelOpenIDConnectConfigurationSaved));
       })
       .finally(() => setSubmitting(false));
+
+  const validate = (formikValues): object => {
+    const baseErrors = validationSchema.validate(values);
+
+    const isUserInfoOrIntrospectionTokenEmpty = pipe(
+      pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
+      values,
+      all(isNilOrEmpty),
+    )(formikValues);
+
+    if (not(isUserInfoOrIntrospectionTokenEmpty)) {
+      return baseErrors;
+    }
+
+    return {
+      ...baseErrors,
+      introspectionTokenEndpoint: t(labelRequired),
+      userinfoEndpoint: t(labelRequired),
+    };
+  };
 
   return (
     <Formik
@@ -68,6 +90,7 @@ const Form = ({
       validateOnBlur
       validateOnMount
       initialValues={initialValues}
+      validate={validate}
       validationSchema={validationSchema}
       onSubmit={submit}
     >

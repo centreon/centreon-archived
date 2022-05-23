@@ -12,7 +12,6 @@ UPDATE `cfg_nagios` SET `accept_passive_service_checks` = '1';
 UPDATE `cfg_nagios` SET `execute_host_checks` = '1';
 UPDATE `cfg_nagios` SET `accept_passive_host_checks` = '1';
 UPDATE `cfg_nagios` SET `enable_event_handlers` = '1';
-UPDATE `cfg_nagios` SET `log_archive_path` = '@monitoring_varlog@/archives/';
 UPDATE `cfg_nagios` SET `check_external_commands` = '1';
 UPDATE `cfg_nagios` SET `external_command_buffer_slots` = '4096';
 UPDATE `cfg_nagios` SET `command_check_interval` = '1s';
@@ -82,9 +81,12 @@ UPDATE `cfg_nagios` SET `debug_level` = '0';
 UPDATE `cfg_nagios` SET `debug_level_opt` = '0';
 UPDATE `cfg_nagios` SET `debug_verbosity` = '1';
 UPDATE `cfg_nagios` SET `max_debug_file_size` = '1000000000';
-UPDATE `cfg_nagios` SET `daemon_dumps_core` = '0';
 UPDATE `cfg_nagios` SET `log_pid` = '1';
 UPDATE `cfg_nagios` SET `cfg_file` = 'centengine.cfg';
+UPDTAE `cfg_nagios` SET `logger_version` = 'log_v2_enabled';
+
+INSERT INTO `cfg_nagios_logger` (`cfg_nagios_id`, `log_v2_logger`, `log_level_functions`, `log_level_config`, `log_level_events`, `log_level_checks`, `log_level_notifications`, `log_level_eventbroker`, `log_level_external_command`, `log_level_commands`, `log_level_downtimes`, `log_level_comments`, `log_level_macros`, `log_level_process`, `log_level_runtime`) VALUES
+(1, 'file', 'err', 'info', 'info', 'info', 'err', 'err', 'info', 'err', 'err', 'err', 'err', 'info', 'err');
 
 INSERT INTO `cfg_nagios_broker_module` (`cfg_nagios_id`, `broker_module`) VALUES (1, '@centreon_engine_lib@/externalcmd.so');
 

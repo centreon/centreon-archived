@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { isNil } from 'ramda';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
@@ -32,7 +32,7 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
 interface ContentProps extends CardsLayout {
   attributes;
   isDragging: boolean;
-  itemRef: React.RefObject<HTMLDivElement>;
+  itemRef: RefObject<HTMLDivElement>;
   listeners: DraggableSyntheticListeners;
   style;
 }

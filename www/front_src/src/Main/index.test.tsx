@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import axios from 'axios';
 import { Provider } from 'jotai';
 
@@ -10,7 +8,8 @@ import { labelConnect } from '../Login/translatedLabels';
 import {
   aclEndpoint,
   parametersEndpoint,
-  translationEndpoint,
+  externalTranslationEndpoint,
+  internalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
 import { retrievedExternalComponents } from '../externalComponents/mocks';
@@ -84,13 +83,13 @@ const retrievedProvidersConfiguration = [
 ];
 
 jest.mock('../Header', () => {
-  const Footer = (): JSX.Element => {
+  const Header = (): JSX.Element => {
     return <div />;
   };
 
   return {
     __esModule: true,
-    default: Footer,
+    default: Header,
   };
 });
 
@@ -115,9 +114,6 @@ const renderMain = (): RenderResult =>
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
@@ -125,6 +121,9 @@ const mockDefaultGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -146,22 +145,25 @@ const mockDefaultGetRequests = (): void => {
 const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
       },
     })
     .mockResolvedValueOnce({
-      data: retrievedUser,
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -183,9 +185,6 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
 const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
@@ -193,6 +192,9 @@ const mockNotConnectedGetRequests = (): void => {
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedWeb,
@@ -204,9 +206,6 @@ const mockNotConnectedGetRequests = (): void => {
 
 const mockInstallGetRequests = (): void => {
   mockedAxios.get
-    .mockRejectedValueOnce({
-      data: retrievedTranslations,
-    })
     .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
@@ -221,9 +220,6 @@ const mockInstallGetRequests = (): void => {
 const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
         is_installed: true,
@@ -237,9 +233,6 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
 const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
-    })
-    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
         is_installed: true,
@@ -247,6 +240,9 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -288,7 +284,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        translationEndpoint,
+        externalTranslationEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -301,7 +297,10 @@ describe('Main', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/login');
-    expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
+    });
   });
 
   it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {
@@ -319,10 +318,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -346,10 +347,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -373,10 +376,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -400,10 +405,12 @@ describe('Main', () => {
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -428,7 +435,7 @@ describe('Main', () => {
     );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      translationEndpoint,
+      internalTranslationEndpoint,
       cancelTokenRequestParam,
     );
   });

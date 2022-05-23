@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Axis } from '@visx/visx';
 import { isNil } from 'ramda';
 import { ScaleLinear } from 'd3-scale';
@@ -84,6 +82,12 @@ const YAxes = ({
             orientation="right"
             scale={rightScale}
             tickFormat={formatTick({ unit: secondUnit })}
+            tickLabelProps={(): Record<string, unknown> => ({
+              ...commonTickLabelProps,
+              dx: 4,
+              dy: 4,
+              textAnchor: 'start',
+            })}
             tickLength={2}
           />
           <UnitLabel unit={secondUnit} x={graphWidth} />

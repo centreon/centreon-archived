@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent, useCallback, useMemo } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { TextField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelGood,
-  labelNumberOfAttemptsBeforeBlockingNewAttempts,
+  labelNumberOfAttemptsBeforeUserIsBlocked,
   labelStrong,
   labelUnknown,
   labelWeak,
@@ -33,8 +33,8 @@ const Attempts = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const changeInput = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const changeInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>): void => {
       const value = path(['target', 'value'], event) as string;
 
       if (isEmpty(value)) {
@@ -58,7 +58,7 @@ const Attempts = (): JSX.Element => {
     object: values,
   });
 
-  const thresholds = React.useMemo(
+  const thresholds = useMemo(
     () => [
       { color: theme.palette.success.main, label: labelStrong, value: 0 },
       { color: theme.palette.warning.main, label: labelGood, value: 3 },
@@ -68,7 +68,7 @@ const Attempts = (): JSX.Element => {
     [],
   );
 
-  const displayStrengthProgress = React.useMemo(
+  const displayStrengthProgress = useMemo(
     () => isNil(attemptsError) && not(isNil(attemptsValue)),
     [attemptsError, attemptsValue],
   );
@@ -81,10 +81,10 @@ const Attempts = (): JSX.Element => {
           error={attemptsError}
           helperText={attemptsError}
           inputProps={{
-            'aria-label': t(labelNumberOfAttemptsBeforeBlockingNewAttempts),
+            'aria-label': t(labelNumberOfAttemptsBeforeUserIsBlocked),
             min: 1,
           }}
-          label={t(labelNumberOfAttemptsBeforeBlockingNewAttempts)}
+          label={t(labelNumberOfAttemptsBeforeUserIsBlocked)}
           name={attemptsFieldName}
           type="number"
           value={attemptsValue || ''}

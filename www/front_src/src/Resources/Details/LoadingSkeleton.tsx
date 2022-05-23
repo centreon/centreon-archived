@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { styled } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 

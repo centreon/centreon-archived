@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Tdebian/substvars
+
+override_dh_clean:
+
+override_dh_auto_build:
+	composer install --no-dev --optimize-autoloader -n
+	npm ci
+	npm run build
+	find . -type f | xargs -d '\n' sed -i -f debian/extra/centreon-web/centreon-macroreplacement.txt
+	mv config/centreon.config.php.template config/centreon.config.php

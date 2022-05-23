@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -197,8 +195,8 @@ const ResourceListing = (): JSX.Element => {
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
-        ...rowColorConditions(theme),
         resourceDetailsOpenCondition,
+        ...rowColorConditions(theme),
       ]}
       rows={listing?.result}
       selectedRows={selectedResources}

@@ -36,26 +36,24 @@
 
 class Servicegroup extends AbstractObject
 {
+    private const TAG_TYPE = 'servicegroup';
+    private const SERVICEGROUP_FILENAME = 'servicegroups.cfg';
+    private const SERVICEGROUP_OBJECT_NAME = 'servicegroup';
+    private const TAG_FILENAME = 'tags.cfg';
+    private const TAG_OBJECT_NAME = 'tag';
+
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $sg = array();
-    private $sg_relation_cache = array();
-    protected $generate_filename = 'servicegroups.cfg';
-    protected $object_name = 'servicegroup';
+    private $sg = [];
+    private $sg_relation_cache = [];
+    protected $generate_filename = self::SERVICEGROUP_FILENAME;
+    protected $object_name = self::SERVICEGROUP_OBJECT_NAME;
     protected $attributes_select = '
         sg_id,
         sg_name as servicegroup_name,
         sg_alias as alias
     ';
-    protected $attributes_write = array(
-        'servicegroup_id',
-        'servicegroup_name',
-        'alias',
-    );
-    protected $attributes_array = array(
-        'members'
-    );
     protected $stmt_sg = null;
     protected $stmt_service_sg = null;
     protected $stmt_stpl_sg = null;
@@ -177,8 +175,34 @@ class Servicegroup extends AbstractObject
         return $this->sg_relation_cache[$service_id];
     }
 
-    public function generateObjects()
+    /**
+     * Generate service groups / tags and write in file
+     */
+    public function generateObjects(): void
     {
+        $this->generateServiceGroups();
+        $this->generateTags();
+    }
+
+    /**
+     * Generate service groups and write in file
+     */
+    private function generateServiceGroups(): void
+    {
+        $this->generate_filename = self::SERVICEGROUP_FILENAME;
+        $this->object_name = self::SERVICEGROUP_OBJECT_NAME;
+        $this->attributes_write = [
+            'servicegroup_id',
+            'servicegroup_name',
+            'alias',
+        ];
+        $this->attributes_array = [
+            'members',
+        ];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
         foreach ($this->sg as $id => &$value) {
             if (count($value['members_cache']) == 0) {
                 continue;
@@ -190,6 +214,38 @@ class Servicegroup extends AbstractObject
                 array_push($this->sg[$id]['members'], $content[0], $content[1]);
             }
             $this->generateObjectInFile($this->sg[$id], $id);
+        }
+    }
+
+    /**
+     * Generate tags and write in file
+     */
+    private function generateTags(): void
+    {
+        $this->generate_filename = self::TAG_FILENAME;
+        $this->object_name = self::TAG_OBJECT_NAME;
+        $this->attributes_write = [
+            'id',
+            'name',
+            'type',
+        ];
+        $this->attributes_array = [];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
+        foreach ($this->sg as $id => &$value) {
+            if (count($value['members_cache']) == 0) {
+                continue;
+            }
+
+            $tag = [
+                'id' => $value['servicegroup_id'],
+                'name' => $value['servicegroup_name'],
+                'type' => self::TAG_TYPE,
+            ];
+
+            $this->generateObjectInFile($tag, $id);
         }
     }
 
