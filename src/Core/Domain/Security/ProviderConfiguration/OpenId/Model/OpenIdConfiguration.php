@@ -130,11 +130,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @throws OpenIdConfigurationException
      */
     public function __construct(
-        private ?ContactTemplate $contactTemplate,
         private bool $isAutoImportEnabled,
-        private ?string $emailBindAttribute,
-        private ?string $userAliasBindAttribute,
-        private ?string $userNameBindAttribute,
+        private ?ContactTemplate $contactTemplate = null,
+        private ?string $emailBindAttribute = null,
+        private ?string $userAliasBindAttribute = null,
+        private ?string $userNameBindAttribute = null,
     ) {
         if ($isAutoImportEnabled === true) {
             $missingMandatoryParameters = [];

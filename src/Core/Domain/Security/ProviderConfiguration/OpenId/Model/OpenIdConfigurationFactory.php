@@ -46,8 +46,8 @@ class OpenIdConfigurationFactory
             : null;
 
         $configuration = new OpenIdConfiguration(
-            $contactTemplate,
             $request->isAutoImportEnabled,
+            $contactTemplate,
             $request->emailBindAttribute,
             $request->userAliasBindAttribute,
             $request->userNameBindAttribute

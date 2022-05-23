@@ -41,8 +41,8 @@ beforeEach(function () {
 
 it('should present a provider configuration', function () {
         $configuration = new OpenIdConfiguration(
-            new ContactTemplate(1, 'contact_template'),
             false,
+            new ContactTemplate(1, 'contact_template'),
             null,
             null,
             null,

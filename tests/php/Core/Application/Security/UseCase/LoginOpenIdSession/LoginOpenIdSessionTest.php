@@ -73,8 +73,8 @@ beforeEach(function () {
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
     $this->validOpenIdConfiguration = new OpenIdConfiguration(
-        new ContactTemplate(1, 'contact_template'),
         false,
+        new ContactTemplate(1, 'contact_template'),
         null,
         null,
         null,

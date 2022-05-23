@@ -36,10 +36,10 @@ class DbOpenIdConfigurationFactory
     public static function createFromRecord(array $record, array $customConfiguration): OpenIdConfiguration
     {
         $configuration = new OpenIdConfiguration(
+            $customConfiguration['auto_import'] === '1',
             $customConfiguration['contact_template'] !== null
                 ? self::createContactTemplate($customConfiguration['contact_template'])
                 : null,
-            $customConfiguration['auto_import'] === '1',
             $customConfiguration['email_bind_attribute'],
             $customConfiguration['alias_bind_attribute'],
             $customConfiguration['fullname_bind_attribute']
