@@ -8,6 +8,7 @@ import {
   Grid,
   Alert,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { Dialog, TextField } from '@centreon/ui';
 
@@ -36,6 +37,12 @@ interface Props extends Pick<FormikHandlers, 'handleChange'> {
   values: FormikValues;
 }
 
+const useStyles = makeStyles((theme) => ({
+  notify: {
+    marginBottom: theme.spacing(2),
+  },
+}));
+
 const DialogAcknowledge = ({
   resources,
   canConfirm,
@@ -46,6 +53,8 @@ const DialogAcknowledge = ({
   submitting,
   handleChange,
 }: Props): JSX.Element => {
+  const classes = useStyles();
+
   const { t } = useTranslation();
 
   const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =
@@ -86,19 +95,21 @@ const DialogAcknowledge = ({
             onChange={handleChange('comment')}
           />
         </Grid>
-        <Grid item sx={{ marginBottom: 2 }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.notify}
-                color="primary"
-                inputProps={{ 'aria-label': t(labelNotify) }}
-                size="small"
-                onChange={handleChange('notify')}
-              />
-            }
-            label={t(labelNotify) as string}
-          />
+        <Grid container item className={classes.notify}>
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.notify}
+                  color="primary"
+                  inputProps={{ 'aria-label': t(labelNotify) }}
+                  size="small"
+                  onChange={handleChange('notify')}
+                />
+              }
+              label={t(labelNotify) as string}
+            />
+          </Grid>
           <Grid container item rowSpacing={1}>
             <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
           </Grid>
