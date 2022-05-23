@@ -3,13 +3,12 @@
 namespace Core\Infrastructure\Common\Command\Model\UnitTestTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
-use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\CommandUseCaseTemplate;
 
 class UnitTestTemplate extends FileTemplate
 {
-    public function generateContentForUseCase(CommandUseCaseTemplate $useCase)
+    public function generateContentForUnitTest(string $fileNamespace)
     {
-        $namespace = $useCase->namespace;
+        $namespace = $fileNamespace;
 
         $content = <<<EOF
         <?php
@@ -19,8 +18,8 @@ class UnitTestTemplate extends FileTemplate
         namespace $namespace;
 
         it('should be erased or throw an error', function () {
-            expect(false)-toBeTrue();
-        })
+            expect(false)->toBeTrue();
+        });
 
         EOF;
 

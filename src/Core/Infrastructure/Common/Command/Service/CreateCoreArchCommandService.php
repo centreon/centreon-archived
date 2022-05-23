@@ -6,8 +6,10 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Core\Infrastructure\Common\Command\Model\FileTemplate;
 use Core\Infrastructure\Common\Command\CreateCoreArchCommand;
 use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
+use Core\Infrastructure\Common\Command\Model\UnitTestTemplate\UnitTestTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
 
 class CreateCoreArchCommandService
@@ -186,5 +188,42 @@ class CreateCoreArchCommandService
             );
             $output->writeln('<comment>' . $filePath . '</comment>');
         }
+    }
+
+    /**
+     * Create Unit Test File
+     *
+     * @param OutputInterface $output
+     * @param FileTemplate $fileTemplate
+     * @return void
+     */
+    protected function createUnitTestFileIfNotExists(OutputInterface $output, FileTemplate $fileTemplate): void
+    {
+        $className = $fileTemplate->name . 'Test';
+        $filePath = $this->srcPath . '/../tests/php' . DIRECTORY_SEPARATOR
+            . preg_replace("/\\\\/", DIRECTORY_SEPARATOR, $fileTemplate->namespace)
+            . DIRECTORY_SEPARATOR . $className . '.php';
+        if (! file_exists($filePath)) {
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $filePath,
+                (new UnitTestTemplate())->generateContentForUnitTest('Test\\' . $fileTemplate->namespace)
+            );
+            $output->writeln(
+                '<info>Creating Test file : ' . 'Test\\' . $fileTemplate->namespace . '\\'
+                    . $className . '</info>'
+            );
+        } else {
+            $output->writeln(
+                '<info>Using Test file : ' . 'Test\\' . $fileTemplate->namespace . '\\'
+                . $className . '</info>'
+            );
+        }
+        $output->writeln('<comment>' . $filePath . '</comment>');
     }
 }
