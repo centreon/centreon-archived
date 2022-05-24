@@ -16814,3 +16814,6 @@ msgstr "Erreur"
 
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
+
+msgid "Error while searching for the host template %d"
+msgstr "Erreur lors de la recherche du modèle d'hôte %d"
