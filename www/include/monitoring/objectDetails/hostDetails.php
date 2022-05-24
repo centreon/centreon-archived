@@ -343,11 +343,7 @@ if (!$is_admin && !$haveAccess) {
         ];
 
         if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                if (!empty($value)) {
-                    $host_status[$host_name][$key] = $value;
-                }
-            }
+            $host_status[$host_name] = $data;
 
             // Get host timezone
             if (empty($host_status[$host_name]["timezone"])) {

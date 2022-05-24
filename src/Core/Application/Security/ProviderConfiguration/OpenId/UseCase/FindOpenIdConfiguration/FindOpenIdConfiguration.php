@@ -80,6 +80,13 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->clientSecret = $configuration->getClientSecret();
         $findOpenIdConfigurationResponse->authenticationType = $configuration->getAuthenticationType();
         $findOpenIdConfigurationResponse->verifyPeer = $configuration->verifyPeer();
+        $findOpenIdConfigurationResponse->isAutoImportEnabled = $configuration->isAutoImportEnabled();
+        $findOpenIdConfigurationResponse->contactTemplate = $configuration->getContactTemplate() === null
+            ? null
+            : $findOpenIdConfigurationResponse::contactTemplateToArray($configuration->getContactTemplate());
+        $findOpenIdConfigurationResponse->emailBindAttribute = $configuration->getEmailBindAttribute();
+        $findOpenIdConfigurationResponse->userAliasBindAttribute = $configuration->getUserAliasBindAttribute();
+        $findOpenIdConfigurationResponse->userNameBindAttribute = $configuration->getUserNameBindAttribute();
 
         return $findOpenIdConfigurationResponse;
     }
