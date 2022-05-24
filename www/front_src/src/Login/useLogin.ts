@@ -90,20 +90,18 @@ const useLogin = (): UseLoginState => {
         error,
       ) as RedirectAPI;
 
-      if (isUserNotAllowed && not(passwordIsExpired)) {
-        setSubmitting(false);
-        showErrorMessage(
-          path(['response', 'data', 'message'], error) as string,
-        );
+      if (isUserNotAllowed && passwordIsExpired) {
+        setPasswordResetInformations({
+          alias,
+        });
+        navigate(routeMap.resetPassword);
+        showWarningMessage(t(labelPasswordHasExpired));
 
         return;
       }
 
-      setPasswordResetInformations({
-        alias,
-      });
-      navigate(routeMap.resetPassword);
-      showWarningMessage(t(labelPasswordHasExpired));
+      setSubmitting(false);
+      showErrorMessage(path(['response', 'data', 'message'], error) as string);
     },
     [],
   );

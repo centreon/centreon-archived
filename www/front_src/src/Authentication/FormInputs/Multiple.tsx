@@ -16,7 +16,13 @@ import { labelPressEnterToAccept } from '../translatedLabels';
 
 import { InputProps } from './models';
 
-const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
+const Multiple = ({
+  fieldName,
+  label,
+  required,
+  getDisabled,
+  getRequired,
+}: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const [inputText, setInputText] = useState('');
@@ -59,6 +65,8 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
 
   const inputErrors = getError();
 
+  const disabled = getDisabled?.(values) || false;
+  const isRequired = required || getRequired?.(values) || false;
   const additionalLabel = inputText ? ` (${labelPressEnterToAccept})` : '';
 
   return useMemoComponent({
@@ -66,6 +74,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
       <div>
         <MultiAutocompleteField
           freeSolo
+          disabled={disabled}
           inputValue={inputText}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
@@ -74,7 +83,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           open={false}
           options={[]}
           popupIcon={null}
-          required={required}
+          required={isRequired}
           value={normalizedValues}
           onChange={change}
           onTextChange={textChange}
@@ -90,7 +99,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors, additionalLabel],
+    memoProps: [normalizedValues, inputErrors, additionalLabel, disabled],
   });
 };
 

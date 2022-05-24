@@ -26,20 +26,50 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions;
 class OpenIdConfigurationException extends \Exception
 {
     /**
-     * Exception thrown when token endpoint is needed but missing.
+     * Exception thrown when token endpoint is needed but missing
+     *
      * @return self
      */
-    public static function missingTokenEndpoint()
+    public static function missingTokenEndpoint(): self
     {
         return new self(_('Missing token endpoint in your configuration'));
     }
 
     /**
-     * Exception thrown when both user information endpoints are missing.
+     * Exception thrown when both user information endpoints are missing
+     *
      * @return self
      */
-    public static function missingInformationEndpoint()
+    public static function missingInformationEndpoint(): self
     {
         return new self(_('Missing userinfo and introspection token endpoint'));
+    }
+
+    /**
+     * Exception thrown when auto import is enabled but mandatory parameters are missing
+     *
+     * @param string[] $missingAutoImportParameters
+     * @return self
+     */
+    public static function missingAutoImportMandatoryParameters(array $missingAutoImportParameters): self
+    {
+        return new self(_(sprintf(
+            'Missing auto import mandatory parameters: %s',
+            implode(', ', $missingAutoImportParameters)
+        )));
+    }
+
+    /**
+     * Exception thrown when contact template link to configuration doesn't exist
+     *
+     * @param string $contactTemplateName
+     * @return self
+     */
+    public static function contactTemplateNotFound(string $contactTemplateName): self
+    {
+        return new self(_(sprintf(
+            "The contact template '%s' doesn't exist",
+            $contactTemplateName
+        )));
     }
 }

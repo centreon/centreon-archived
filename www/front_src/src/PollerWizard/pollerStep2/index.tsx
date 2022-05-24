@@ -26,7 +26,7 @@ import {
 } from '../translatedLabels';
 import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
-import { getPollersEndpoint, wizardFormEndpoint } from '../api/endpoints';
+import { remoteServersEndpoint, wizardFormEndpoint } from '../api/endpoints';
 
 interface StepTwoFormData {
   linked_remote_master: string;
@@ -41,14 +41,16 @@ const PollerWizardStepTwo = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pollers, setPollers] = useState<Array<PollerRemoteList>>([]);
+  const [remoteServers, setRemoteServers] = useState<Array<PollerRemoteList>>(
+    [],
+  );
   const [stepTwoFormData, setStepTwoFormData] = useState<StepTwoFormData>({
     linked_remote_master: '',
     linked_remote_slaves: [],
     open_broker_flow: false,
   });
 
-  const { sendRequest: getPollersRequest } = useRequest<
+  const { sendRequest: getRemoteServersRequest } = useRequest<
     Array<PollerRemoteList>
   >({
     request: postData,
@@ -63,10 +65,11 @@ const PollerWizardStepTwo = ({
   const pollerData = useAtomValue<PollerData | null>(pollerAtom);
   const setWizard = useUpdateAtom(setWizardDerivedAtom);
 
-  const getPollers = (): void => {
-    getPollersRequest({ data: null, endpoint: getPollersEndpoint }).then(
-      setPollers,
-    );
+  const getRemoteServers = (): void => {
+    getRemoteServersRequest({
+      data: null,
+      endpoint: remoteServersEndpoint,
+    }).then(setRemoteServers);
   };
 
   const handleChange = (event): void => {
@@ -119,14 +122,17 @@ const PollerWizardStepTwo = ({
       .catch(() => undefined);
   };
 
-  const linkedRemoteMasterOption = pollers.map(pick(['id', 'name']));
+  const linkedRemoteMasterOption = remoteServers.map(pick(['id', 'name']));
 
-  const linkedRemoteSlavesOption = pollers
-    .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
+  const linkedRemoteSlavesOption = remoteServers
+    .filter(
+      (remoteServer) =>
+        remoteServer.id !== stepTwoFormData.linked_remote_master,
+    )
     .map(pick(['id', 'name']));
 
   useEffect(() => {
-    getPollers();
+    getRemoteServers();
   }, []);
 
   return (
@@ -138,26 +144,23 @@ const PollerWizardStepTwo = ({
       </div>
       <form onSubmit={handleSubmit}>
         <div className={classes.form}>
-          {linkedRemoteMasterOption.length !== 0 && (
-            <SelectField
+          <SelectField
+            fullWidth
+            label={t(labelLinkedRemoteMaster)}
+            name="linked_remote_master"
+            options={linkedRemoteMasterOption || []}
+            selectedOptionId={stepTwoFormData.linked_remote_master}
+            onChange={handleChange}
+          />
+          {stepTwoFormData.linked_remote_master && (
+            <MultiAutocompleteField
               fullWidth
-              label={t(labelLinkedRemoteMaster)}
-              name="linked_remote_master"
-              options={linkedRemoteMasterOption}
-              selectedOptionId={stepTwoFormData.linked_remote_master}
-              onChange={handleChange}
+              label={t(labelLinkedadditionalRemote)}
+              options={linkedRemoteSlavesOption || []}
+              value={stepTwoFormData.linked_remote_slaves}
+              onChange={changeValue}
             />
           )}
-          {stepTwoFormData.linked_remote_master &&
-            linkedRemoteSlavesOption.length >= 2 && (
-              <MultiAutocompleteField
-                fullWidth
-                label={t(labelLinkedadditionalRemote)}
-                options={linkedRemoteSlavesOption}
-                value={stepTwoFormData.linked_remote_slaves}
-                onChange={changeValue}
-              />
-            )}
           <FormControlLabel
             control={
               <Checkbox

@@ -145,6 +145,19 @@ const mockPostLoginPasswordExpired = (): void => {
   });
 };
 
+const labelError = 'This is an error from the server';
+
+const mockPostLoginServerError = (): void => {
+  mockedAxios.post.mockRejectedValue({
+    response: {
+      data: {
+        message: labelError,
+      },
+      status: 500,
+    },
+  });
+};
+
 const labelInvalidCredentials = 'Invalid credentials';
 
 describe('Login Page', () => {
@@ -307,5 +320,22 @@ describe('Login Page', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/reset-password');
+  });
+
+  it('stays on the login page when the login request returns a 500 error', async () => {
+    mockPostLoginServerError();
+    renderLoginPage();
+
+    userEvent.type(screen.getByLabelText(labelAlias), 'admin');
+    userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
+
+    userEvent.click(screen.getByLabelText(labelConnect));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelError)).toBeInTheDocument();
+    });
+
+    expect(window.location.href).not.toBe('http://localhost/reset-password');
+    expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
   });
 });

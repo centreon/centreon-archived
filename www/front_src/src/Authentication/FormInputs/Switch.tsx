@@ -15,6 +15,7 @@ const Switch = ({
   change,
   label,
   getChecked,
+  getDisabled,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -32,6 +33,7 @@ const Switch = ({
 
   const value =
     getChecked?.(prop(fieldName, values)) ?? prop(fieldName, values);
+  const disabled = getDisabled?.(values) || false;
 
   return useMemoComponent({
     Component: (
@@ -39,6 +41,7 @@ const Switch = ({
         control={
           <MUISwitch
             checked={value}
+            disabled={disabled}
             inputProps={{ 'aria-label': t(label) }}
             onChange={changeSwitchValue}
           />
@@ -46,7 +49,7 @@ const Switch = ({
         label={t(label) as string}
       />
     ),
-    memoProps: [value],
+    memoProps: [value, disabled],
   });
 };
 

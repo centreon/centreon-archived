@@ -23,8 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
+use Core\Contact\Domain\Model\ContactTemplate;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfiguration implements ProviderConfigurationInterface
 {
@@ -37,64 +39,119 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     /**
      * @var int|null
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
-     * @param boolean $isActive
-     * @param boolean $isForced
-     * @param string[] $trustedClientAddresses
-     * @param string[] $blacklistClientAddresses
-     * @param string|null $baseUrl
-     * @param string|null $authorizationEndpoint
-     * @param string|null $tokenEndpoint
-     * @param string|null $introspectionTokenEndpoint
-     * @param string|null $userInformationEndpoint
-     * @param string|null $endSessionEndpoint
-     * @param string[] $connectionScopes
-     * @param string|null $loginClaim
-     * @param string|null $clientId
-     * @param string|null $clientSecret
-     * @param string|null $authenticationType
-     * @param boolean $verifyPeer
+     * @var bool
+     */
+    private bool $isActive = false;
+
+    /**
+     * @var bool
+     */
+    private bool $isForced = false;
+
+    /**
+     * @var string[]
+     */
+    private array $trustedClientAddresses = [];
+
+    /**
+     * @var string[]
+     */
+    private array $blacklistClientAddresses = [];
+
+    /**
+     * @var string|null
+     */
+    private ?string $baseUrl = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $authorizationEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $tokenEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $introspectionTokenEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $userInformationEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $endSessionEndpoint = null;
+
+    /**
+     * @var string[]
+     */
+    private array $connectionScopes = [];
+
+    /**
+     * @var string|null
+     */
+    private ?string $loginClaim = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $clientId = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $clientSecret = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $authenticationType = null;
+
+    /**
+     * @var bool
+     */
+    private bool $verifyPeer = false;
+
+    /**
+     * @param ContactTemplate|null $contactTemplate
+     * @param bool $isAutoImportEnabled
+     * @param string|null $emailBindAttribute
+     * @param string|null $userAliasBindAttribute
+     * @param string|null $userNameBindAttribute
+     * @throws OpenIdConfigurationException
      */
     public function __construct(
-        private bool $isActive,
-        private bool $isForced,
-        private array $trustedClientAddresses,
-        private array $blacklistClientAddresses,
-        private ?string $baseUrl,
-        private ?string $authorizationEndpoint,
-        private ?string $tokenEndpoint,
-        private ?string $introspectionTokenEndpoint,
-        private ?string $userInformationEndpoint,
-        private ?string $endSessionEndpoint,
-        private array $connectionScopes,
-        private ?string $loginClaim,
-        private ?string $clientId,
-        private ?string $clientSecret,
-        private ?string $authenticationType,
-        private bool $verifyPeer
+        private bool $isAutoImportEnabled,
+        private ?ContactTemplate $contactTemplate = null,
+        private ?string $emailBindAttribute = null,
+        private ?string $userAliasBindAttribute = null,
+        private ?string $userNameBindAttribute = null,
     ) {
-        foreach ($trustedClientAddresses as $trustedClientAddress) {
-            if (
-                filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false
-                && filter_var($trustedClientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-            ) {
-                throw AssertionException::ipOrDomain(
-                    $trustedClientAddress,
-                    'OpenIdConfiguration::trustedClientAddresses'
-                );
+        if ($isAutoImportEnabled === true) {
+            $missingMandatoryParameters = [];
+            if ($contactTemplate === null) {
+                $missingMandatoryParameters[] = 'contact_template';
             }
-        }
-        foreach ($blacklistClientAddresses as $blacklistClientAddress) {
-            if (
-                filter_var($blacklistClientAddress, FILTER_VALIDATE_IP) === false
-                && filter_var($blacklistClientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-            ) {
-                throw AssertionException::ipOrDomain(
-                    $blacklistClientAddress,
-                    'OpenIdConfiguration::blacklistClientAddresses'
-                );
+            if (empty($emailBindAttribute)) {
+                $missingMandatoryParameters[] = 'email_bind_attribute';
+            }
+            if (empty($userAliasBindAttribute)) {
+                $missingMandatoryParameters[] = 'alias_bind_attribute';
+            }
+            if (empty($userNameBindAttribute)) {
+                $missingMandatoryParameters[] = 'fullname_bind_attribute';
+            }
+            if (! empty($missingMandatoryParameters)) {
+                throw OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingMandatoryParameters);
             }
         }
     }
@@ -119,7 +176,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isActive(): bool
     {
@@ -127,11 +184,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return boolean
+     * @param bool $isActive
+     * @return self
+     */
+    public function setActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
      */
     public function isForced(): bool
     {
         return $this->isForced;
+    }
+
+    /**
+     * @param bool $isForced
+     * @return self
+     */
+    public function setForced(bool $isForced): self
+    {
+        $this->isForced = $isForced;
+
+        return $this;
     }
 
     /**
@@ -143,11 +222,83 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string[] $trustedClientAddresses
+     * @return self
+     * @throws AssertionException
+     */
+    public function setTrustedClientAddresses(array $trustedClientAddresses): self
+    {
+        $this->trustedClientAddresses = [];
+        foreach ($trustedClientAddresses as $trustedClientAddress) {
+            $this->addTrustedClientAddress($trustedClientAddress);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $trustedClientAddress
+     * @return self
+     * @throws AssertionException
+     */
+    public function addTrustedClientAddress(string $trustedClientAddress): self
+    {
+        $this->validateClientAddressOrFail($trustedClientAddress, 'trustedClientAddresses');
+        $this->trustedClientAddresses[] = $trustedClientAddress;
+
+        return $this;
+    }
+
+    /**
      * @return string[]
      */
     public function getBlacklistClientAddresses(): array
     {
         return $this->blacklistClientAddresses;
+    }
+
+    /**
+     * @param string[] $blacklistClientAddresses
+     * @return self
+     */
+    public function setBlacklistClientAddresses(array $blacklistClientAddresses): self
+    {
+        $this->blacklistClientAddresses = [];
+        foreach ($blacklistClientAddresses as $blacklistClientAddress) {
+            $this->addBlacklistClientAddress($blacklistClientAddress);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $blacklistClientAddress
+     * @return self
+     */
+    public function addBlacklistClientAddress(string $blacklistClientAddress): self
+    {
+        $this->validateClientAddressOrFail($blacklistClientAddress, 'blacklistClientAddresses');
+        $this->blacklistClientAddresses[] = $blacklistClientAddress;
+
+        return $this;
+    }
+
+    /**
+     * @param string $clientAddress
+     * @param string $fieldName
+     * @throws AssertionException
+     */
+    private function validateClientAddressOrFail(string $clientAddress, string $fieldName): void
+    {
+        if (
+            filter_var($clientAddress, FILTER_VALIDATE_IP) === false
+            && filter_var($clientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+        ) {
+            throw AssertionException::ipOrDomain(
+                $clientAddress,
+                'OpenIdConfiguration::' . $fieldName
+            );
+        }
     }
 
     /**
@@ -159,11 +310,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string|null $baseUrl
+     * @return self
+     */
+    public function setBaseUrl(?string $baseUrl): self
+    {
+        $this->baseUrl = $baseUrl;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getAuthorizationEndpoint(): ?string
     {
         return $this->authorizationEndpoint;
+    }
+
+    /**
+     * @param string|null $authorizationEndpoint
+     * @return self
+     */
+    public function setAuthorizationEndpoint(?string $authorizationEndpoint): self
+    {
+        $this->authorizationEndpoint = $authorizationEndpoint;
+
+        return $this;
     }
 
     /**
@@ -175,11 +348,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string|null $tokenEndpoint
+     * @return self
+     */
+    public function setTokenEndpoint(?string $tokenEndpoint): self
+    {
+        $this->tokenEndpoint = $tokenEndpoint;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getIntrospectionTokenEndpoint(): ?string
     {
         return $this->introspectionTokenEndpoint;
+    }
+
+    /**
+     * @param string|null $introspectionTokenEndpoint
+     * @return self
+     */
+    public function setIntrospectionTokenEndpoint(?string $introspectionTokenEndpoint): self
+    {
+        $this->introspectionTokenEndpoint = $introspectionTokenEndpoint;
+
+        return $this;
     }
 
     /**
@@ -191,11 +386,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string|null $userInformationEndpoint
+     * @return self
+     */
+    public function setUserInformationEndpoint(?string $userInformationEndpoint): self
+    {
+        $this->userInformationEndpoint = $userInformationEndpoint;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getEndSessionEndpoint(): ?string
     {
         return $this->endSessionEndpoint;
+    }
+
+    /**
+     * @param string|null $endSessionEndpoint
+     * @return self
+     */
+    public function setEndSessionEndpoint(?string $endSessionEndpoint): self
+    {
+        $this->endSessionEndpoint = $endSessionEndpoint;
+
+        return $this;
     }
 
     /**
@@ -207,11 +424,47 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string[] $connectionScopes
+     * @return self
+     */
+    public function setConnectionScopes(array $connectionScopes): self
+    {
+        $this->connectionScopes = [];
+        foreach ($connectionScopes as $connectionScope) {
+            $this->addConnectionScope($connectionScope);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $connectionScope
+     * @return self
+     */
+    public function addConnectionScope(string $connectionScope): self
+    {
+        $this->connectionScopes[] = $connectionScope;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getLoginClaim(): ?string
     {
         return $this->loginClaim;
+    }
+
+    /**
+     * @param string|null $loginClaim
+     * @return self
+     */
+    public function setLoginClaim(?string $loginClaim): self
+    {
+        $this->loginClaim = $loginClaim;
+
+        return $this;
     }
 
     /**
@@ -223,11 +476,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
+     * @param string|null $clientId
+     * @return self
+     */
+    public function setClientId(?string $clientId): self
+    {
+        $this->clientId = $clientId;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getClientSecret(): ?string
     {
         return $this->clientSecret;
+    }
+
+    /**
+     * @param string|null $clientSecret
+     * @return self
+     */
+    public function setClientSecret(?string $clientSecret): self
+    {
+        $this->clientSecret = $clientSecret;
+
+        return $this;
     }
 
     /**
@@ -239,11 +514,33 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return boolean
+     * @param string|null $authenticationType
+     * @return self
+     */
+    public function setAuthenticationType(?string $authenticationType): self
+    {
+        $this->authenticationType = $authenticationType;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
      */
     public function verifyPeer(): bool
     {
         return $this->verifyPeer;
+    }
+
+    /**
+     * @param bool $verifyPeer
+     * @return self
+     */
+    public function setVerifyPeer(bool $verifyPeer): self
+    {
+        $this->verifyPeer = $verifyPeer;
+
+        return $this;
     }
 
     /**
@@ -252,5 +549,45 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     public function getType(): string
     {
         return self::TYPE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoImportEnabled(): bool
+    {
+        return $this->isAutoImportEnabled;
+    }
+
+    /**
+     * @return ContactTemplate|null
+     */
+    public function getContactTemplate(): ?ContactTemplate
+    {
+        return $this->contactTemplate;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmailBindAttribute(): ?string
+    {
+        return $this->emailBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserAliasBindAttribute(): ?string
+    {
+        return $this->userAliasBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserNameBindAttribute(): ?string
+    {
+        return $this->userNameBindAttribute;
     }
 }
