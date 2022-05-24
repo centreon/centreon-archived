@@ -20,6 +20,11 @@ if [ "$1" = "configure" ] ; then
     usermod -a -G www-data centreon
   fi
 
+  if [ "$(getent passwd centreon-gorgone)" ]; then
+    usermod -a -G centreon-gorgone www-data
+    usermod -a -G www-data centreon-gorgone
+  fi
+
 fi
 
 exit 0
