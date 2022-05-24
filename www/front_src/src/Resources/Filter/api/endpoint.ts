@@ -7,13 +7,15 @@ import {
 import { baseEndpoint } from '../../../api/endpoint';
 import { monitoringEndpoint } from '../../api/endpoint';
 
-const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
+const hostCategoriesEndpoint = `${monitoringEndpoint}/hostcategories`;
+const serviceCategoriesEndpoint = `${monitoringEndpoint}/servicecategories`;
+const hostGroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;
 
 const buildHostGroupsEndpoint = (parameters: ListingParameters): string => {
   return buildListingEndpoint({
-    baseEndpoint: hostgroupsEndpoint,
+    baseEndpoint: hostGroupsEndpoint,
     parameters,
   });
 };
@@ -36,7 +38,27 @@ const buildMonitoringServersEndpoint = (
   });
 };
 
+const buildHostCategoriesEndpoint = (
+  parameters: BuildListingEndpointParameters,
+): string => {
+  return buildListingEndpoint({
+    baseEndpoint: hostCategoriesEndpoint,
+    parameters,
+  });
+};
+
+const buildServiceCategoriesEndpoint = (
+  parameters: BuildListingEndpointParameters,
+): string => {
+  return buildListingEndpoint({
+    baseEndpoint: serviceCategoriesEndpoint,
+    parameters,
+  });
+};
+
 export {
+  buildHostCategoriesEndpoint,
+  buildServiceCategoriesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
   buildMonitoringServersEndpoint,
