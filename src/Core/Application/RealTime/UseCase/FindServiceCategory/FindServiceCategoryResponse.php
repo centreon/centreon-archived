@@ -22,37 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindServiceCategory;
 
-use Core\Domain\RealTime\Model\ServiceCategory;
+use Core\Application\RealTime\UseCase\FindTag\FindTagResponse;
 
-class FindServiceCategoryResponse
+class FindServiceCategoryResponse extends FindTagResponse
 {
-    /**
-     * @var array<int, array<string, int|string>>
-     */
-    public array $serviceCategories;
-
-    /**
-     * @param ServiceCategory[] $serviceCategories
-     */
-    public function __construct(array $serviceCategories)
-    {
-        $this->serviceCategories = $this->serviceCategoriesToArray($serviceCategories);
-    }
-
-    /**
-     * Convert array of ServiceCategory models into an array made of scalars
-     *
-     * @param ServiceCategory[] $serviceCategories
-     * @return array<int, array<string, int|string>>
-     */
-    private function serviceCategoriesToArray(array $serviceCategories): array
-    {
-        return array_map(
-            fn (ServiceCategory $serviceCategory) => [
-                'id' => $serviceCategory->getId(),
-                'name' => $serviceCategory->getName()
-            ],
-            $serviceCategories
-        );
-    }
 }

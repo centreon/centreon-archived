@@ -25,18 +25,18 @@ namespace Core\Application\RealTime\UseCase\FindServiceCategory;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Domain\RealTime\Model\ServiceCategory;
-use Core\Application\RealTime\Repository\ReadServiceCategoryRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
+use Core\Domain\RealTime\Model\Tag;
 
 class FindServiceCategory
 {
     use LoggerTrait;
 
     /**
-     * @param ReadServiceCategoryRepositoryInterface $repository
+     * @param ReadTagRepositoryInterface $repository
      */
-    public function __construct(
-        private ReadServiceCategoryRepositoryInterface $repository
-    ) {
+    public function __construct(private ReadTagRepositoryInterface $repository)
+    {
     }
 
     /**
@@ -47,7 +47,7 @@ class FindServiceCategory
         $this->info('Searching for service categories');
 
         try {
-            $serviceCategories = $this->repository->findAll();
+            $serviceCategories = $this->repository->findAllByType(Tag::SERVICE_CATEGORY_TYPE_ID);
         } catch (\Throwable $e) {
             $this->error('An error occured while retrieving service categories: ' . $e->getMessage());
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));

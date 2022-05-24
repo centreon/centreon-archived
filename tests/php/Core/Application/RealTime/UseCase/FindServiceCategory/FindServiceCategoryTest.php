@@ -24,12 +24,12 @@ namespace Tests\Core\Application\RealTime\UseCase\FindServiceCategory;
 
 use Core\Domain\RealTime\Model\ServiceCategory;
 use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
-use Core\Application\RealTime\Repository\ReadServiceCategoryRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategoryPresenterStub;
 
 it('Find all service categories', function () {
     $category = new ServiceCategory(1, 'category-name');
-    $repository = $this->createMock(ReadServiceCategoryRepositoryInterface::class);
+    $repository = $this->createMock(ReadTagRepositoryInterface::class);
     $repository->expects($this->once())
         ->method('findAll')
         ->willReturn([$category]);

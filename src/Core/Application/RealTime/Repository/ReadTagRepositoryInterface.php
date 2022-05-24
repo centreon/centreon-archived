@@ -18,23 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\FindHostCategory;
+namespace Core\Application\RealTime\Repository;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryResponse;
-use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterInterface;
+use Core\Domain\RealTime\Model\Tag;
 
-class FindHostCategoryPresenter extends AbstractPresenter implements FindHostCategoryPresenterInterface
+interface ReadTagRepositoryInterface
 {
     /**
-     * {@inheritDoc}
-     * @param FindHostCategoryResponse $data
+     * Find all tags
+     *
+     * @return Tag[]
+     * @throws \Throwable
      */
-    public function present(mixed $data): void
-    {
-        $presenterResponse = $data->tags;
-        parent::present($presenterResponse);
-    }
+    public function findAllByType(int $typeId): array;
 }

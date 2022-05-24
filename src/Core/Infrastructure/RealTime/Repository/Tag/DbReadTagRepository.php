@@ -20,15 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\HostCategory;
+namespace Core\Infrastructure\RealTime\Repository\Tag;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Domain\RealTime\Model\Tags;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\RealTime\Repository\ReadHostCategoryRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 
-class DbReadHostCategoryRepository extends AbstractRepositoryDRB implements ReadHostCategoryRepositoryInterface
+class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagRepositoryInterface
 {
     use LoggerTrait;
 
@@ -41,26 +40,26 @@ class DbReadHostCategoryRepository extends AbstractRepositoryDRB implements Read
     }
 
     /**
-     * @inheritDoc
+     * Retrieves tags by type ID
+     *
+     * @param int $typeId
+     * @return array
      */
-    public function findAll(): array
+    public function findAllByType(int $typeId): array
     {
-        $this->info('Fetching categories from database');
+        $this->info('Fetching tags from database');
 
-        $categories = [];
-
-        $statement = $this->db->prepare(
-            $this->translateDbName('SELECT id, name FROM `:dbstg`.tags WHERE type = :type')
-        );
-
-        $statement->bindValue(':type', Tags::HOST_CATEGORY_TYPE_ID, \PDO::PARAM_INT);
-
+        $query = $this->translateDbName('SELECT id, name, `type` FROM `:dbstg`.tags WHERE type = :type');
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':type', $typeId, \PDO::PARAM_INT);
         $statement->execute();
 
+        $tags = [];
         while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $categories[] = DbHostCategoryFactory::createFromRecord($record);
+            $tags[] = DbTagFactory::createFromRecord($record);
         }
 
-        return $categories;
+        return $tags;
     }
+
 }

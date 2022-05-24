@@ -22,37 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
-use Core\Domain\RealTime\Model\HostCategory;
+use Core\Application\RealTime\UseCase\FindTag\FindTagResponse;
 
-class FindHostCategoryResponse
+class FindHostCategoryResponse extends FindTagResponse
 {
-    /**
-     * @var array<int, array<string, int|string>>
-     */
-    public array $categories;
-
-    /**
-     * @param hostCategory[] $categories
-     */
-    public function __construct(array $categories)
-    {
-        $this->categories = $this->categoriesToArray($categories);
-    }
-
-    /**
-     * Convert array of HostCategory models into an array made of scalars
-     *
-     * @param HostCategory[] $hostCategories
-     * @return array<int, array<string, int|string>>
-     */
-    private function categoriesToArray(array $hostCategories): array
-    {
-        return array_map(
-            fn (HostCategory $hostCategory) => [
-                'id' => $hostCategory->getId(),
-                'name' => $hostCategory->getName()
-            ],
-            $hostCategories
-        );
-    }
 }

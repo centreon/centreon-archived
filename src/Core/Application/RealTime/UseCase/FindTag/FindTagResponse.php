@@ -20,20 +20,39 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\HostCategory;
+namespace Core\Application\RealTime\UseCase\FindTag;
 
-use Core\Domain\RealTime\Model\HostCategory;
+use Core\Domain\RealTime\Model\Tag;
 
-class DbHostCategoryFactory
+class FindTagResponse
 {
     /**
-     * Create HostCategory model using data from database
-     *
-     * @param array<string, mixed> $data
-     * @return HostCategory
+     * @var array<int, array<string, int|string>>
      */
-    public static function createFromRecord(array $data): HostCategory
+    public array $tags;
+
+    /**
+     * @param Tag[] $tags
+     */
+    public function __construct(array $tags)
     {
-        return new HostCategory((int) $data['id'], $data['name']);
+        $this->tags = $this->tagsToArray($tags);
+    }
+
+    /**
+     * Convert array of HostCategory models into an array made of scalars
+     *
+     * @param Tag[] $tags
+     * @return array<int, array<string, int|string>>
+     */
+    private function tagsToArray(array $tags): array
+    {
+        return array_map(
+            fn (Tag $tag) => [
+                'id' => $tag->getId(),
+                'name' => $tag->getName()
+            ],
+            $tags
+        );
     }
 }

@@ -24,17 +24,17 @@ namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Domain\RealTime\Model\HostCategory;
-use Core\Application\RealTime\Repository\ReadHostCategoryRepositoryInterface;
+use Core\Domain\RealTime\Model\Tag;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 
 class FindHostCategory
 {
     use LoggerTrait;
 
     /**
-     * @param ReadHostCategoryRepositoryInterface $repository
+     * @param ReadTagRepositoryInterface $repository
      */
-    public function __construct(private ReadHostCategoryRepositoryInterface $repository)
+    public function __construct(private ReadTagRepositoryInterface $repository)
     {
     }
 
@@ -46,7 +46,7 @@ class FindHostCategory
         $this->info('Searching for host categories');
 
         try {
-            $categories = $this->repository->findAll();
+            $categories = $this->repository->findAllByType(Tag::HOST_CATEGORY_TYPE_ID);
         } catch (\Throwable $e) {
             $this->error('An error occurred while retrieving host categories: ' . $e->getMessage());
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
@@ -59,7 +59,7 @@ class FindHostCategory
     }
 
     /**
-     * @param HostCategory[] $categories
+     * @param Tag[] $categories
      * @return FindServiceCategoryResponse
      */
     private function createResponse(array $categories): FindHostCategoryResponse
