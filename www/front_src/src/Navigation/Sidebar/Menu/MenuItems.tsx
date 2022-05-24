@@ -103,7 +103,7 @@ const MenuItems = ({
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
   const memoizedUrl = useMemo(
-    () => getUrlFromEntry({ entryProps: data }) as string,
+    () => getUrlFromEntry(data) as string,
     [data],
   );
 
