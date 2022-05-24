@@ -102,10 +102,7 @@ const MenuItems = ({
   const canNavigate =
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
-  const memoizedUrl = useMemo(
-    () => getUrlFromEntry({ entryProps: data }) as string,
-    [data],
-  );
+  const memoizedUrl = useMemo(() => getUrlFromEntry(data) as string, [data]);
 
   const LinkBehavior = forwardRef<
     HTMLAnchorElement,
