@@ -98,7 +98,7 @@ const NavigationMenu = ({
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry({ entryProps: currentPage }))) {
+    if (isNil(getUrlFromEntry(currentPage))) {
       return;
     }
     navigate(getUrlFromEntry({ entryProps: currentPage }) as string);
