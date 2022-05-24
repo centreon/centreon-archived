@@ -15,6 +15,10 @@ export interface Group extends NamedEntity {
   configuration_uri: string | null;
 }
 
+export interface Categorie extends NamedEntity {
+  configuration_uri: string | null;
+}
+
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
