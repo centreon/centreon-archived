@@ -48,6 +48,7 @@ class FindHostCategory
         try {
             $categories = $this->repository->findAll();
         } catch (\Throwable $e) {
+            $this->error('An error occurred while retrieving host categories: ' . $e->getMessage());
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
             return;
         }
@@ -58,10 +59,10 @@ class FindHostCategory
     }
 
     /**
-     * @param \Traversable<int, HostCategory> $categories
-     * @return FindHostCategoryResponse
+     * @param HostCategory[] $categories
+     * @return FindServiceCategoryResponse
      */
-    private function createResponse(\Traversable $categories): FindHostCategoryResponse
+    private function createResponse(array $categories): FindHostCategoryResponse
     {
         return new FindHostCategoryResponse($categories);
     }

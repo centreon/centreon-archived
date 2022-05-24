@@ -30,7 +30,8 @@ interface ReadHostCategoryRepositoryInterface
     /**
      * Find all host categories
      *
-     * @return \Traversable<int, HostCategory>
+     * @return HostCategory[]
+     * @throws \Throwable
      */
-    public function findAll(): \Traversable;
+    public function findAll(): array;
 }

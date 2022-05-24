@@ -43,9 +43,11 @@ class DbReadHostCategoryRepository extends AbstractRepositoryDRB implements Read
     /**
      * @inheritDoc
      */
-    public function findAll(): \Traversable
+    public function findAll(): array
     {
         $this->info('Fetching categories from database');
+
+        $categories = [];
 
         $statement = $this->db->prepare(
             $this->translateDbName('SELECT id, name FROM `:dbstg`.tags WHERE type = :type')
@@ -56,7 +58,9 @@ class DbReadHostCategoryRepository extends AbstractRepositoryDRB implements Read
         $statement->execute();
 
         while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            yield DbHostCategoryFactory::createFromRecord($record);
+            $categories[] = DbHostCategoryFactory::createFromRecord($record);
         }
+
+        return $categories;
     }
 }

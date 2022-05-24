@@ -32,9 +32,9 @@ class FindHostCategoryResponse
     public array $categories;
 
     /**
-     * @param \Traversable<int, HostCategory> $categories
+     * @param hostCategory[] $categories
      */
-    public function __construct(\Traversable $categories)
+    public function __construct(array $categories)
     {
         $this->categories = $this->categoriesToArray($categories);
     }
@@ -42,17 +42,17 @@ class FindHostCategoryResponse
     /**
      * Convert array of HostCategory models into an array made of scalars
      *
-     * @param \Traversable<int, HostCategory> $hostCategories
+     * @param HostCategory[] $hostCategories
      * @return array<int, array<string, int|string>>
      */
-    private function categoriesToArray(\Traversable $hostCategories): array
+    private function categoriesToArray(array $hostCategories): array
     {
         return array_map(
             fn (HostCategory $hostCategory) => [
                 'id' => $hostCategory->getId(),
                 'name' => $hostCategory->getName()
             ],
-            iterator_to_array($hostCategories)
+            $hostCategories
         );
     }
 }
