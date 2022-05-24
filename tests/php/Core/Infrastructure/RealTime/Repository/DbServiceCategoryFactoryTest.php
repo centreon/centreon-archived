@@ -23,16 +23,19 @@ declare(strict_types=1);
 
 namespace Tests\Core\Infrastructure\RealTime\Repository;
 
-use Core\Infrastructure\RealTime\Repository\ServiceCategory\DbServiceCategoryFactory;
+use Core\Domain\RealTime\Model\Tag;
+use Core\Infrastructure\RealTime\Repository\Tag\DbTagFactory;
 
-it('DbServiceCategoryFactory creation test', function () {
+it('DbTagFactory creation test', function () {
     $record = [
         'id' => 1,
-        'name' => 'Service category test name'
+        'name' => 'Name of the tag',
+        'type' => Tag::SERVICE_CATEGORY_TYPE_ID
     ];
 
-    $category = DbServiceCategoryFactory::createFromRecord($record);
+    $category = DbTagFactory::createFromRecord($record);
 
     expect($category->getId())->toBe((int) $record['id']);
     expect($category->getName())->toBe($record['name']);
+    expect($category->getType())->toBe($record['type']);
 });

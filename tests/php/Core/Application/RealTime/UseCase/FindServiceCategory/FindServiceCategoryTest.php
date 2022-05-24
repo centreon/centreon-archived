@@ -22,16 +22,16 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindServiceCategory;
 
-use Core\Domain\RealTime\Model\ServiceCategory;
-use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
+use Core\Domain\RealTime\Model\Tag;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
+use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
 use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategoryPresenterStub;
 
 it('Find all service categories', function () {
-    $category = new ServiceCategory(1, 'category-name');
+    $category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
     $repository->expects($this->once())
-        ->method('findAll')
+        ->method('findAllByType')
         ->willReturn([$category]);
 
     $findServiceCategoryUseCase = new FindServiceCategory($repository);
@@ -39,7 +39,7 @@ it('Find all service categories', function () {
     $findServiceCategoryPresenter = new FindServiceCategoryPresenterStub();
     $findServiceCategoryUseCase($findServiceCategoryPresenter);
 
-    expect($findServiceCategoryPresenter->response->serviceCategories)->toHaveCount(1);
-    expect($findServiceCategoryPresenter->response->serviceCategories[0]['id'])->toBe($category->getId());
-    expect($findServiceCategoryPresenter->response->serviceCategories[0]['name'])->toBe($category->getName());
+    expect($findServiceCategoryPresenter->response->tags)->toHaveCount(1);
+    expect($findServiceCategoryPresenter->response->tags[0]['id'])->toBe($category->getId());
+    expect($findServiceCategoryPresenter->response->tags[0]['name'])->toBe($category->getName());
 });
