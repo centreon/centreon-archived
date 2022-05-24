@@ -172,7 +172,7 @@ class Service extends AbstractService
             $cg = array();
             $loop = array();
             while (!is_null($serviceId)) {
-                if (isset($loop[$serviceId])) {
+                if (isset($loop[$serviceId]) || ! isset($servicesTpl[$serviceId])) {
                     break;
                 }
                 $loop[$serviceId] = 1;
