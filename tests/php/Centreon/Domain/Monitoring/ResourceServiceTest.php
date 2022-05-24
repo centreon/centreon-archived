@@ -45,14 +45,13 @@ it('find resources and build uuids', function () {
         ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
 
     $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
-
     $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
     $resourceService = new ResourceService(
         $monitoringRepository,
         $accessGroup,
+        $resourceRepository
     );
-    $resourceService->setResourceRepository($resourceRepository);
 
     $resourcesFound = $resourceService->findResources(new ResourceFilter());
 
