@@ -43,10 +43,11 @@ class DbReadServiceCategoryRepository extends AbstractRepositoryDRB implements R
     /**
      * @inheritDoc
      */
-    public function findAll(): \Traversable
+    public function findAll(): array
     {
         $this->info('Fetching service categories from database');
 
+        $serviceCategories = [];
         $statement = $this->db->prepare(
             $this->translateDbName('SELECT id, name FROM `:dbstg`.tags WHERE type = :type')
         );
@@ -56,7 +57,9 @@ class DbReadServiceCategoryRepository extends AbstractRepositoryDRB implements R
         $statement->execute();
 
         while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            yield DbServiceCategoryFactory::createFromRecord($record);
+            $serviceCategories[] = DbServiceCategoryFactory::createFromRecord($record);
         }
+
+        return $serviceCategories;
     }
 }
