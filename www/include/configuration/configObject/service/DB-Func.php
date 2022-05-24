@@ -604,18 +604,39 @@ function multipleServiceInDB(
                             $dbResult = $pearDB->query($query);
                             $fields["service_hPars"] = "";
                             $fields["service_hgPars"] = "";
+                            $query = "INSERT INTO host_service_relation VALUES (NULL, NULL, :host_host_id, 
+                                          NULL, :service_id)";
+                            $query = "INSERT INTO host_service_relation VALUES (NULL, :hostgroup_hg_id, 
+                                          NULL, NULL, :service_id)";
+                            $insert1Statement = $pearDB->prepare($query);
+                            $insert2Statement = $pearDB->prepare($query);
                             while ($service = $dbResult->fetch()) {
                                 if ($service["host_host_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES (NULL, NULL, '" .
-                                        $service["host_host_id"] . "', NULL, '" . $maxId["MAX(service_id)"] . "')";
-                                    $pearDB->query($query);
+                                    $insert1Statement->bindValue(
+                                        ':host_host_id',
+                                        (int) $service["host_host_id"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $insert1Statement->bindValue(
+                                        ':service_id',
+                                        (int) $maxId["MAX(service_id)"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $insert1Statement->execute();
                                     setHostChangeFlag($pearDB, $service['host_host_id'], null);
                                     $fields["service_hPars"] .= $service["host_host_id"] . ",";
                                 } elseif ($service["hostgroup_hg_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES (NULL, '" .
-                                        $service["hostgroup_hg_id"] . "', NULL, NULL, '" .
-                                        $maxId["MAX(service_id)"] . "')";
-                                    $pearDB->query($query);
+                                    $insert2Statement->bindValue(
+                                        ':hostgroup_hg_id',
+                                        (int) $service["hostgroup_hg_id"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $insert2Statement->bindValue(
+                                        ':service_id',
+                                        (int) $maxId["MAX(service_id)"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $insert2Statement->execute();
                                     setHostChangeFlag($pearDB, null, $service["hostgroup_hg_id"]);
                                     $fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
                                 }
@@ -761,19 +782,26 @@ function multipleServiceInDB(
                         $mTpRq1 = "SELECT * FROM `service_categories_relation` " .
                             "WHERE `service_service_id` = '" . $key . "'";
                         $dbResult3 = $pearDB->query($mTpRq1);
+                        $mTpRq2 = "INSERT INTO `service_categories_relation` (`service_service_id`, `sc_id`) " .
+                            "VALUES (:service_service_id, :sc_id)";
+                        $statement = $pearDB->prepare($mTpRq2);
                         while ($sv = $dbResult3->fetch()) {
-                            $mTpRq2 = "INSERT INTO `service_categories_relation` (`service_service_id`, `sc_id`) " .
-                                "VALUES ('" . $maxId["MAX(service_id)"] . "', '" . $sv['sc_id'] . "')";
-                            $dbResult4 = $pearDB->query($mTpRq2);
+                            $statement->bindValue(
+                                ':service_service_id',
+                                (int)$maxId["MAX(service_id)"],
+                                \PDO::PARAM_INT
+                            );
+                            $statement->bindValue(':sc_id', (int)$sv['sc_id'], \PDO::PARAM_INT);
+                            $statement->execute();
                         }
 
                         /*
                          *  get svc desc
                          */
                         $query = "SELECT service_description FROM service " .
-                            "WHERE service_id = '" . $maxId["MAX(service_id)"] . "' LIMIT 1";
+                            "WHERE service_id = :service_id LIMIT 1";
                         $statement = $pearDB->prepare($query);
-                        $statement->bindValue(':service_id', (int)$maxId["MAX(service_id)"], PDO::PARAM_INT);
+                        $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
                         $statement->execute();
                         if ($statement->rowCount()) {
                             $row2 = $statement->fetch(PDO::FETCH_ASSOC);
@@ -1158,10 +1186,12 @@ function insertService($ret = array(), $macro_on_demand = null)
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
                     $rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`, " .
-                        "`macro_order` ) VALUES (\$_SERVICE :svc_macro_name \$, :svc_macro_value, " . $service_id["MAX(service_id)"] . ", " . $i . ")";
+                        "`macro_order` ) VALUES (:svc_macro_name, :svc_macro_value, :svc_svc_id, :macro_order)";
                     $statement = $pearDB->prepare($rq);
-                    $statement->bindValue(':svc_macro_name', CentreonDB::escape(strtoupper($macName)));
-                    $statement->bindValue(':svc_macro_value', CentreonDB::escape($macVal));
+                    $statement->bindValue(':svc_macro_name', '$_SERVICE' . strtoupper($macName) . '$', \PDO::PARAM_STR);
+                    $statement->bindValue(':svc_macro_value', $macVal, \PDO::PARAM_STR);
+                    $statement->bindValue(':svc_svc_id', (int) $service_id["MAX(service_id)"], \PDO::PARAM_INT);
+                    $statement->bindValue(':macro_order', $i, \PDO::PARAM_INT);
                     $statement->execute();
                     $fields["_" . strtoupper($my_tab[$macInput]) . "_"] = $my_tab[$macValue];
                     $already_stored[strtolower($my_tab[$macInput])] = 1;
