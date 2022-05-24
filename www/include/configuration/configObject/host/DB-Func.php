@@ -1026,7 +1026,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
                     $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
-                    $statement->bindValue(':host_macro_name', '\$_HOST' . strtoupper($macName) . '\$', \PDO::PARAM_STR);
+                    $statement->bindValue(':host_macro_name', '$_HOST' . strtoupper($macName) . '$', \PDO::PARAM_STR);
                     $statement->bindValue(':host_macro_value', $macVal, \PDO::PARAM_STR);
                     $statement->bindValue(':host_host_id', (int) $host_id['MAX(host_id)'], \PDO::PARAM_INT);
                     $statement->bindValue(':macro_order', $i, \PDO::PARAM_INT);
@@ -1182,7 +1182,7 @@ function getHostListInUse($hst_list, $hst)
     $statement->bindValue(':host_host_id', (int) $hst, \PDO::PARAM_INT);
     $statement->execute();
     while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-        $str .= ",'" . $result['host_tpl_id'] . "'";
+        $str .= "," . $result['host_tpl_id'] . "";
         $str = getHostListInUse($str, $result['host_tpl_id']);
     }
     $statement->closeCursor();
@@ -1205,9 +1205,9 @@ function serviceIsInUse($svc_id, $host_list)
     foreach ($host_list as $val) {
         if (isset($val)) {
             if (!$flag_first) {
-                $hst_list .= ",'" . $val . "'";
+                $hst_list .= "," . $val . "";
             } else {
-                $hst_list .= "'" . $val . "'";
+                $hst_list .= "" . $val . "";
                 $flag_first = 0;
             }
             $hst_list = getHostListInUse($hst_list, $val);
@@ -1216,6 +1216,7 @@ function serviceIsInUse($svc_id, $host_list)
     if ($hst_list == "") {
         $hst_list = "NULL";
     }
+    $hstListExploded = explode(',', $hst_list);
     $rq = "SELECT service_id " .
         "FROM service svc, host_service_relation hsr " .
         "WHERE hsr.service_service_id = svc.service_template_model_stm_id " .
@@ -1223,8 +1224,10 @@ function serviceIsInUse($svc_id, $host_list)
         "AND hsr.host_host_id IN (:hsr_list)";
     $statement = $pearDB->prepare($rq);
     $statement->bindValue(':service_service_id', (int) $svc_id, \PDO::PARAM_INT);
-    $statement->bindValue(':hsr_list', $hst_list, \PDO::PARAM_STR);
-    $statement->execute();
+    foreach ($hstListExploded as $hostId) {
+        $statement->bindValue(':hsr_list', (int) $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+    }
     if ($statement->rowCount() >= 1) {
         return true;
     }
@@ -1287,7 +1290,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
         "WHERE hsr.service_service_id = svc.service_id " .
         "AND svc.service_template_model_stm_id = :service_template_model_stm_id " .
         "AND svc.service_register = '1' " .
-        "AND hsr.host_host_id = :service_template_model_stm_id";
+        "AND hsr.host_host_id = :host_host_id";
     $deleteStatement = $pearDB->prepare($rq2);
     while ($result = $dbResult->fetch()) {
         $selectStatement->bindValue(':host_host_id', (int) $result["host_tpl_id"], \PDO::PARAM_INT);
@@ -1299,7 +1302,7 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
                 \PDO::PARAM_INT
             );
             $deleteStatement->bindValue(
-                ':service_template_model_stm_id',
+                ':host_host_id',
                 (int) $hID,
                 \PDO::PARAM_INT
             );
