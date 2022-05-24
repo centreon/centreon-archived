@@ -15558,5 +15558,5 @@ msgstr ""
 # msgid "Do not use configured proxy to connect to this server"
 # msgstr ""
 
-#  msgid "Error while searching for the host template"
+#  msgid "Error while searching for the host template %d"
 #  msgstr ""

@@ -698,14 +698,15 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         try {
             return $this->hostConfigurationRepository->findHostTemplate($hostTemplateId);
         } catch (\Throwable $ex) {
+            $message = sprintf(
+                _('Error while searching for the host template %d'),
+                $hostTemplateId
+            );
             $this->error(
-                sprintf(
-                    _('Error while searching for the host template %d'),
-                    $hostTemplateId
-                ),
+                $message,
                 [ 'message' => $ex->getMessage()]
             );
-            throw new HostConfigurationException(_('Error while searching for the host template'), 0, $ex);
+            throw new HostConfigurationException($message, 0, $ex);
         }
     }
 }
