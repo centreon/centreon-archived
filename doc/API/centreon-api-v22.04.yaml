@@ -967,6 +967,58 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/contacts/groups:
+    get:
+      tags:
+      - User
+      summary: "List contact groups"
+      description: "List configured contact groups"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.ContactGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/access-groups:
+    get:
+      tags:
+      - Access Control
+      summary: "List access groups"
+      description: "List access groups available for a user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.AccessGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -4390,6 +4442,7 @@ components:
         - email_bind_attribute
         - alias_bind_attribute
         - fullname_bind_attribute
+        - contact_group
       properties:
         is_active:
           type: boolean
@@ -4493,6 +4546,29 @@ components:
               type: string
               description: "Contact template name"
               example: "Default"
+        contact_group:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              description: "Contact group ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact group name"
+              example: "Default"
+        authorization_claim:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: "Authorization claim name"
+                example: "scope"
+              access_group:
+                $ref: '#/components/schemas/Configuration.AccessGroup'
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
@@ -4869,6 +4945,34 @@ components:
           type: string
           description: "Contact template name"
           example: "Contact Template"
+    Configuration.ContactGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Contact group id"
+          example: 1
+        name:
+          type: string
+          description: "Contact group name"
+          example: "Contact group"
+    Configuration.AccessGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Access group id"
+          example: 1
+        name:
+          type: string
+          description: "Access group name"
+          example: "Access group"
     Media.NullableImage:
       type: object
       nullable: true
