@@ -49,6 +49,7 @@ class FindServiceCategory
         try {
             $serviceCategories = $this->repository->findAll();
         } catch (\Throwable $e) {
+            $this->error('An error occured while retrieving service categories: ' . $e->getMessage());
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
             return;
         }
