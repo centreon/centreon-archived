@@ -36,7 +36,9 @@ access notConfigGroup \"\" any noauth exact centreon none none" \
     fi
 
     # Fix centreon configuration permissions
-    chmod -v 0775 /etc/centreon
+    chmod -v 0775 \
+        /etc/centreon \
+        /etc/centreon/config.d
     chmod -v 0664 \
         /etc/centreon/centreon.conf.php \
         /etc/centreon/centreontrapd.pm \
