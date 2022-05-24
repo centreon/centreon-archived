@@ -31,6 +31,7 @@ interface ReadServiceCategoryRepositoryInterface
      * Find all service categories
      *
      * @return ServiceCategory[]
+     * @throws \Throwable
      */
     public function findAll(): array;
 }
