@@ -62,5 +62,4 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
 
         return $tags;
     }
-
 }
