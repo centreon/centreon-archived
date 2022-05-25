@@ -16841,3 +16841,19 @@ msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
 
 msgid "Error while searching for the host template %d"
 msgstr "Erreur lors de la recherche du modèle d'hôte %d"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Could not change resource status mode."
+msgstr "Le mode pour Resource Status n'a pas pu être changé"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Reason: error when updating PHP environment file"
+msgstr "Raison: erreur lors de la mise à jour du fichier PHP d'environnement"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Reason: PHP environment file is not writable"
+msgstr "Raison: le fichier PHP d'environnement n'est pas éditable"
+
+#: www/include/Administration/parameters/engine/form.php
+msgid "Resource Status mod"
+msgstr "Mode pour Resource Status"
