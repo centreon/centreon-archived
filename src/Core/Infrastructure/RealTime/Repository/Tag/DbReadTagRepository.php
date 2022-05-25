@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\Tag;
 
+use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -43,7 +44,7 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
      * Retrieves tags by type ID
      *
      * @param int $typeId
-     * @return array
+     * @return Tag[]
      */
     public function findAllByType(int $typeId): array
     {

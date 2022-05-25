@@ -60,7 +60,7 @@ class FindHostCategory
 
     /**
      * @param Tag[] $categories
-     * @return FindServiceCategoryResponse
+     * @return FindHostCategoryResponse
      */
     private function createResponse(array $categories): FindHostCategoryResponse
     {

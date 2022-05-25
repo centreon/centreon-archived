@@ -60,7 +60,7 @@ class FindServiceCategory
     }
 
     /**
-     * @param ServiceCategory[] $serviceCategories
+     * @param Tag[] $serviceCategories
      * @return FindServiceCategoryResponse
      */
     private function createResponse(array $serviceCategories): FindServiceCategoryResponse
