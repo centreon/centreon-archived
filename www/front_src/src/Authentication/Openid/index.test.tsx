@@ -66,6 +66,15 @@ const renderOpenidConfigurationForm = (): RenderResult =>
 const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
   alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
+  authorization_claim: [
+    {
+      access_group: {
+        id: 1,
+        name: 'Access group',
+      },
+      name: 'Authorization claim',
+    },
+  ],
   authorization_endpoint: '/authorize',
   auto_import: true,
   base_url: 'https://localhost:8080',
@@ -73,6 +82,10 @@ const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
+  contact_group: {
+    id: 1,
+    name: 'Contact group',
+  },
   contact_template: {
     id: 1,
     name: 'Contant template',

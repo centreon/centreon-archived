@@ -1,11 +1,22 @@
-export interface ContactTemplate {
+export interface NamedEntity {
   id: number;
+  name: string;
+}
+
+export interface Authorization {
+  accessGroup: NamedEntity;
+  name: string;
+}
+
+export interface AuthorizationToAPI {
+  access_group: NamedEntity;
   name: string;
 }
 
 export interface OpenidConfiguration {
   aliasBindAttribute?: string | null;
   authenticationType: string | null;
+  authorizationClaim: Array<Authorization>;
   authorizationEndpoint: string | null;
   autoImport: boolean;
   baseUrl: string | null;
@@ -13,7 +24,8 @@ export interface OpenidConfiguration {
   clientId: string | null;
   clientSecret: string | null;
   connectionScopes: Array<string>;
-  contactTemplate: ContactTemplate | null;
+  contactGroup: NamedEntity | null;
+  contactTemplate: NamedEntity | null;
   emailBindAttribute?: string | null;
   endSessionEndpoint?: string | null;
   fullnameBindAttribute?: string | null;
@@ -30,6 +42,7 @@ export interface OpenidConfiguration {
 export interface OpenidConfigurationToAPI {
   alias_bind_attribute: string | null;
   authentication_type: string | null;
+  authorization_claim: Array<AuthorizationToAPI>;
   authorization_endpoint: string | null;
   auto_import: boolean;
   base_url: string | null;
@@ -37,7 +50,8 @@ export interface OpenidConfigurationToAPI {
   client_id: string | null;
   client_secret: string | null;
   connection_scopes: Array<string>;
-  contact_template: ContactTemplate | null;
+  contact_group: NamedEntity | null;
+  contact_template: NamedEntity | null;
   email_bind_attribute: string | null;
   endsession_endpoint?: string | null;
   fullname_bind_attribute: string | null;

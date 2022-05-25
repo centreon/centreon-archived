@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { OpenidConfiguration, ContactTemplate } from './models';
+import { OpenidConfiguration, NamedEntity } from './models';
 import {
   labelRequired,
   labelInvalidURL,
@@ -15,9 +15,14 @@ const urlRegexp = /https?:\/\/(\S+)/;
 const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   const { t } = useTranslation();
 
-  const contactTemplateSchema: Yup.SchemaOf<ContactTemplate> = Yup.object({
+  const namedEntitySchema: Yup.SchemaOf<NamedEntity> = Yup.object({
     id: Yup.number().required(),
     name: Yup.string().required(),
+  });
+
+  const authorizationSchema = Yup.object({
+    accessGroup: namedEntitySchema.required(t(labelRequired)),
+    name: Yup.string().required(t(labelRequired)),
   });
 
   return Yup.object({
@@ -30,6 +35,13 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       },
     ),
     authenticationType: Yup.string().required(t(labelRequired)),
+    authorizationClaim: Yup.array()
+      .of(authorizationSchema)
+      .when('contactGroup', (contactGroup, schema) => {
+        return contactGroup
+          ? schema.required(t(labelRequired))
+          : schema.nullable();
+      }),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
     autoImport: Yup.boolean().required(t(labelRequired)),
     baseUrl: Yup.string()
@@ -44,7 +56,8 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     clientId: Yup.string().nullable().required(t(labelRequired)),
     clientSecret: Yup.string().nullable().required(t(labelRequired)),
     connectionScopes: Yup.array().of(Yup.string().required(t(labelRequired))),
-    contactTemplate: contactTemplateSchema
+    contactGroup: namedEntitySchema.nullable().defined(),
+    contactTemplate: namedEntitySchema
       .when('autoImport', (autoImport, schema) => {
         return autoImport
           ? schema.nullable().required(t(labelRequired))

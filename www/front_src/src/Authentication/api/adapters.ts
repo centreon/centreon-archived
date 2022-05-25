@@ -1,8 +1,12 @@
+import { map } from 'ramda';
+
 import {
   PasswordSecurityPolicy,
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
+  Authorization,
+  AuthorizationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
 } from '../Openid/models';
@@ -66,6 +70,17 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   };
 };
 
+const adaptAuthorizationClaimToAPI = (
+  authorizationClaim: Array<Authorization>,
+): Array<AuthorizationToAPI> =>
+  map(
+    ({ name, accessGroup }: Authorization) => ({
+      access_group: accessGroup,
+      name,
+    }),
+    authorizationClaim,
+  );
+
 export const adaptOpenidConfigurationToAPI = ({
   authenticationType,
   authorizationEndpoint,
@@ -88,9 +103,12 @@ export const adaptOpenidConfigurationToAPI = ({
   emailBindAttribute,
   aliasBindAttribute,
   fullnameBindAttribute,
+  contactGroup,
+  authorizationClaim,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   alias_bind_attribute: aliasBindAttribute || null,
   authentication_type: authenticationType || null,
+  authorization_claim: adaptAuthorizationClaimToAPI(authorizationClaim) || [],
   authorization_endpoint: authorizationEndpoint || null,
   auto_import: autoImport,
   base_url: baseUrl || null,
@@ -98,6 +116,7 @@ export const adaptOpenidConfigurationToAPI = ({
   client_id: clientId || null,
   client_secret: clientSecret || null,
   connection_scopes: connectionScopes,
+  contact_group: contactGroup || null,
   contact_template: contactTemplate || null,
   email_bind_attribute: emailBindAttribute || null,
   endsession_endpoint: endSessionEndpoint || null,
