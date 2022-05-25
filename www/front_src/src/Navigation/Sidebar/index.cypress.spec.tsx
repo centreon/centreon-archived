@@ -64,7 +64,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('higlights the parent item when the item is clicked', () => {
+  it('hilights the parent item when the item is clicked', () => {
     cy.get("[alt='mini logo']").click();
     cy.get('li').eq(2).trigger('mouseover');
     cy.get('[data-testid=ExpandMoreIcon]').should('be.visible');
