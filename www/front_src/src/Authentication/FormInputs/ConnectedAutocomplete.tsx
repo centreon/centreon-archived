@@ -1,7 +1,5 @@
-import * as React from 'react';
-
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, isEmpty, prop } from 'ramda';
+import { equals, isEmpty, path, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -10,7 +8,7 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import { InputProps } from './models';
+import { InputPropsWithoutCategory } from './models';
 
 const ConnectedAutocomplete = ({
   getDisabled,
@@ -20,7 +18,9 @@ const ConnectedAutocomplete = ({
   label,
   filterKey = 'name',
   endpoint,
-}: InputProps): JSX.Element => {
+  change,
+  additionalMemoProps,
+}: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, touched, errors, setFieldValue, setFieldTouched } =
@@ -35,12 +35,21 @@ const ConnectedAutocomplete = ({
       },
     });
 
-  const change = (_, value): void => {
-    setFieldValue(fieldName, value);
+  const fieldNamePath = split('.', fieldName);
 
-    if (prop(fieldName, touched)) {
+  const changeAutocomplete = (_, value): void => {
+    if (change) {
+      change({ setFieldValue, value });
+
       return;
     }
+
+    setFieldValue(fieldName, value);
+
+    if (path(fieldNamePath, touched)) {
+      return;
+    }
+
     setFieldTouched(fieldName, true);
   };
 
@@ -50,9 +59,11 @@ const ConnectedAutocomplete = ({
     return isEmpty(value) ? false : equals(option[filterKey], value[filterKey]);
   };
 
-  const value = prop(fieldName, values);
+  const value = path(fieldNamePath, values);
 
-  const error = prop(fieldName, touched) ? prop(fieldName, errors) : undefined;
+  const error = path(fieldNamePath, touched)
+    ? path(fieldNamePath, errors)
+    : undefined;
 
   const disabled = getDisabled?.(values) || false;
   const isRequired = required || getRequired?.(values) || false;
@@ -70,12 +81,12 @@ const ConnectedAutocomplete = ({
         label={t(label)}
         name={fieldName}
         required={isRequired}
-        value={value}
+        value={value ?? null}
         onBlur={blur}
-        onChange={change}
+        onChange={changeAutocomplete}
       />
     ),
-    memoProps: [value, error, disabled, required],
+    memoProps: [value, error, disabled, isRequired, additionalMemoProps],
   });
 };
 

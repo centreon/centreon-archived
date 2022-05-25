@@ -27,6 +27,14 @@ const getSkeleton = cond<InputType, JSX.Element>([
     equals(InputType.Password) as (b: InputType) => boolean,
     always(<LoadingSkeleton height={52} />),
   ],
+  [
+    equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
+    always(<LoadingSkeleton height={52} />),
+  ],
+  [
+    equals(InputType.FieldsTable) as (b: InputType) => boolean,
+    always(<LoadingSkeleton height={52} />),
+  ],
 ]);
 
 const useStyles = makeStyles((theme) => ({

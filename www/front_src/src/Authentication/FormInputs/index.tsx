@@ -23,14 +23,23 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
 import { Divider, Typography } from '@mui/material';
 
-import { Category, InputProps, InputType } from './models';
+import {
+  Category,
+  InputProps,
+  InputPropsWithoutCategory,
+  InputType,
+} from './models';
 import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
 import ConnectedAutocomplete from './ConnectedAutocomplete';
+import FieldsTable from './FieldsTable';
 
-export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
+export const getInput = cond<
+  InputType,
+  (props: InputPropsWithoutCategory) => JSX.Element
+>([
   [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
   [equals(InputType.Radio) as (b: InputType) => boolean, always(RadioInput)],
   [equals(InputType.Text) as (b: InputType) => boolean, always(TextInput)],
@@ -42,6 +51,10 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [
     equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
     always(ConnectedAutocomplete),
+  ],
+  [
+    equals(InputType.FieldsTable) as (b: InputType) => boolean,
+    always(FieldsTable),
   ],
 ]);
 
@@ -118,51 +131,23 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
           <div className={classes.category}>
             <Typography variant="h5">{t(category)}</Typography>
             <div className={classes.inputs}>
-              {categorizedInputs.map(
-                ({
-                  fieldName,
-                  label,
-                  type,
-                  options,
-                  change,
-                  getChecked,
-                  required,
-                  getDisabled,
-                  getRequired,
-                  additionalLabel,
-                  endpoint,
-                }) => {
-                  const Input = getInput(type);
+              {categorizedInputs.map((inputProps) => {
+                const Input = getInput(inputProps.type);
 
-                  const props = {
-                    category,
-                    change,
-                    endpoint,
-                    fieldName,
-                    getChecked,
-                    getDisabled,
-                    getRequired,
-                    label,
-                    options,
-                    required,
-                    type,
-                  };
-
-                  return (
-                    <div className={classes.inputWrapper} key={label}>
-                      {additionalLabel && (
-                        <Typography
-                          className={classes.additionalLabel}
-                          variant="body1"
-                        >
-                          {t(additionalLabel)}
-                        </Typography>
-                      )}
-                      <Input {...props} />
-                    </div>
-                  );
-                },
-              )}
+                return (
+                  <div className={classes.inputWrapper} key={inputProps.label}>
+                    {inputProps.additionalLabel && (
+                      <Typography
+                        className={classes.additionalLabel}
+                        variant="body1"
+                      >
+                        {t(inputProps.additionalLabel)}
+                      </Typography>
+                    )}
+                    <Input {...inputProps} />
+                  </div>
+                );
+              })}
             </div>
           </div>
           {not(equals(lastCategory, category)) && <Divider />}

@@ -2,13 +2,13 @@ import { ChangeEvent, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useFormikContext, FormikValues } from 'formik';
-import { equals, not, prop } from 'ramda';
+import { equals, not, path, split } from 'ramda';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
 import PasswordEndAdornment from '../../Login/PasswordEndAdornment';
 
-import { InputProps, InputType } from './models';
+import { InputPropsWithoutCategory, InputType } from './models';
 
 const Text = ({
   label,
@@ -17,7 +17,9 @@ const Text = ({
   required,
   getDisabled,
   getRequired,
-}: InputProps): JSX.Element => {
+  change,
+  additionalMemoProps,
+}: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -25,7 +27,15 @@ const Text = ({
   const { values, setFieldValue, touched, errors, handleBlur } =
     useFormikContext<FormikValues>();
 
-  const change = (event: ChangeEvent<HTMLInputElement>): void => {
+  const fieldNamePath = split('.', fieldName);
+
+  const changeText = (event: ChangeEvent<HTMLInputElement>): void => {
+    if (change) {
+      change({ setFieldValue, value: event.target.value });
+
+      return;
+    }
+
     setFieldValue(fieldName, event.target.value);
   };
 
@@ -33,9 +43,11 @@ const Text = ({
     setIsVisible((currentIsVisible) => !currentIsVisible);
   };
 
-  const value = prop(fieldName, values);
+  const value = path(fieldNamePath, values);
 
-  const error = prop(fieldName, touched) ? prop(fieldName, errors) : undefined;
+  const error = path(fieldNamePath, touched)
+    ? path(fieldNamePath, errors)
+    : undefined;
 
   const passwordEndAdornment = useCallback(
     (): JSX.Element | null =>
@@ -67,10 +79,17 @@ const Text = ({
         type={inputType}
         value={value || ''}
         onBlur={handleBlur(fieldName)}
-        onChange={change}
+        onChange={changeText}
       />
     ),
-    memoProps: [error, value, isVisible, disabled, isRequired],
+    memoProps: [
+      error,
+      value,
+      isVisible,
+      disabled,
+      isRequired,
+      additionalMemoProps,
+    ],
   });
 };
 

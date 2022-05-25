@@ -12,24 +12,38 @@ import {
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { InputProps } from './models';
+import { InputPropsWithoutCategory } from './models';
 
 const Radio = ({
   fieldName,
   label,
   options,
   getDisabled,
-}: InputProps): JSX.Element => {
+  change,
+}: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const change = (_, value): void => {
+  const changeRadio = (_, value): void => {
     if (includes(value, ['true', 'false'])) {
+      if (change) {
+        change({ setFieldValue, value: equals(value, 'true') });
+
+        return;
+      }
+
       setFieldValue(fieldName, equals(value, 'true'));
 
       return;
     }
+
+    if (change) {
+      change({ setFieldValue, value });
+
+      return;
+    }
+
     setFieldValue(fieldName, value);
   };
 
@@ -41,7 +55,7 @@ const Radio = ({
     Component: (
       <FormGroup>
         <FormLabel>{t(label)}</FormLabel>
-        <RadioGroup value={value} onChange={change}>
+        <RadioGroup value={value} onChange={changeRadio}>
           {options?.map(({ value: optionValue, label: optionLabel }) => (
             <FormControlLabel
               control={

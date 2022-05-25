@@ -7,14 +7,26 @@ export enum InputType {
   Multiple,
   Password,
   ConnectedAutocomplete,
+  FieldsTable,
+}
+
+interface FieldsTableGetRequiredProps {
+  index: number;
+  values: FormikValues;
 }
 
 export interface InputProps {
   additionalLabel?: string;
+  additionalMemoProps?: Array<unknown>;
   category: string;
   change?: ({ setFieldValue, value }) => void;
   endpoint?: string;
   fieldName: string;
+  fieldsTableConfiguration?: {
+    columns: Array<Omit<InputProps, 'category'>>;
+    defaultRowValue: object;
+    getRequired?: ({ values, index }: FieldsTableGetRequiredProps) => boolean;
+  };
   filterKey?: string;
   getChecked?: (value) => boolean;
   getDisabled?: (values: FormikValues) => boolean;
@@ -28,6 +40,8 @@ export interface InputProps {
   required?: boolean;
   type: InputType;
 }
+
+export type InputPropsWithoutCategory = Omit<InputProps, 'category'>;
 
 export interface Category {
   name: string;

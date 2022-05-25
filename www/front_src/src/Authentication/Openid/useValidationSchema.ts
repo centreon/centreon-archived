@@ -17,12 +17,12 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   const { t } = useTranslation();
 
   const namedEntitySchema: Yup.SchemaOf<NamedEntity> = Yup.object({
-    id: Yup.number().required(),
-    name: Yup.string().required(),
+    id: Yup.number().required(t(labelRequired)),
+    name: Yup.string().required(t(labelRequired)),
   });
 
   const authorizationSchema = Yup.object({
-    accessGroup: namedEntitySchema.required(t(labelRequired)),
+    accessGroup: namedEntitySchema.nullable().required(t(labelRequired)),
     name: Yup.string().required(t(labelRequired)),
   });
 
@@ -40,7 +40,9 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       .of(authorizationSchema)
       .when('contactGroup', (contactGroup, schema) => {
         return contactGroup
-          ? schema.min(1, t(labelAtLeastOneAuthorizationIsRequired))
+          ? schema
+              .min(1, t(labelAtLeastOneAuthorizationIsRequired))
+              .required(t(labelRequired))
           : schema.nullable();
       }),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),

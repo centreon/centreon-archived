@@ -14,7 +14,7 @@ import {
 
 import { labelPressEnterToAccept } from '../translatedLabels';
 
-import { InputProps } from './models';
+import { InputPropsWithoutCategory } from './models';
 
 const Multiple = ({
   fieldName,
@@ -22,14 +22,15 @@ const Multiple = ({
   required,
   getDisabled,
   getRequired,
-}: InputProps): JSX.Element => {
+  change,
+}: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
   const [inputText, setInputText] = useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
-  const change = (_, newValues): void => {
+  const changeMultiple = (_, newValues): void => {
     const normalizedNewValues = map((newValue: SelectEntry | string) => {
       if (equals(type(newValue), 'String')) {
         return newValue;
@@ -37,6 +38,13 @@ const Multiple = ({
 
       return prop('name', newValue as SelectEntry);
     }, newValues);
+
+    if (change) {
+      change({ setFieldValue, value: normalizedNewValues });
+
+      return;
+    }
+
     setFieldValue(fieldName, normalizedNewValues);
   };
 
@@ -85,7 +93,7 @@ const Multiple = ({
           popupIcon={null}
           required={isRequired}
           value={normalizedValues}
-          onChange={change}
+          onChange={changeMultiple}
           onTextChange={textChange}
         />
         {inputErrors && (

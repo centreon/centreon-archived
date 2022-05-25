@@ -71,13 +71,15 @@ const Form = ({
       all(isNilOrEmpty),
     )(formikValues);
 
-    if (not(isUserInfoOrIntrospectionTokenEmpty)) {
+    const contactGroupError =
+      not(isEmpty(formikValues.authorizationClaim)) &&
+      isNil(formikValues.contactGroup)
+        ? { contactGroup: t(labelRequired) }
+        : undefined;
+
+    if (not(isUserInfoOrIntrospectionTokenEmpty) && isNil(contactGroupError)) {
       return {};
     }
-
-    const contactGroupError = isEmpty(formikValues.authorizationClaim)
-      ? undefined
-      : { contactGroup: t(labelRequired) };
 
     return {
       introspectionTokenEndpoint: t(labelRequired),

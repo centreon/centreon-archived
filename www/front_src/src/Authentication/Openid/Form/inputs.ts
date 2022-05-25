@@ -1,11 +1,13 @@
-import { equals, isEmpty, not, prop } from 'ramda';
+import { equals, isEmpty, isNil, not, path, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import {
+  labelAccessGroup,
   labelAliasAttributeToBind,
   labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
+  labelAuthorizationsToClaim,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
@@ -27,8 +29,9 @@ import {
   labelTrustedClientAddresses,
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
+  labelValueToClaim,
 } from '../translatedLabels';
-import { AuthenticationType } from '../models';
+import { AuthenticationType, Authorization } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
@@ -38,6 +41,7 @@ import {
   labelIdentityProvider,
 } from '../../translatedLabels';
 import {
+  accessGroupsEndpoint,
   contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../../api/endpoints';
@@ -219,5 +223,43 @@ export const inputs: Array<InputProps> = [
     getRequired: isAuthorizationClaimFilled,
     label: labelContactGroup,
     type: InputType.ConnectedAutocomplete,
+  },
+  {
+    category: labelAuthorization,
+    fieldName: 'authorizationClaim',
+    fieldsTableConfiguration: {
+      columns: [
+        {
+          fieldName: 'name',
+          label: labelValueToClaim,
+          type: InputType.Text,
+        },
+        {
+          endpoint: accessGroupsEndpoint,
+          fieldName: 'accessGroup',
+          label: labelAccessGroup,
+          type: InputType.ConnectedAutocomplete,
+        },
+      ],
+      defaultRowValue: {
+        accessGroup: null,
+        name: '',
+      },
+      getRequired: ({ values, index }): boolean => {
+        const rowValues = path<Authorization>(
+          ['authorizationClaim', index],
+          values,
+        );
+
+        return (
+          not(isNil(rowValues)) &&
+          (not(isNil(prop('contactGroup', values))) ||
+            isEmpty(rowValues?.name) ||
+            isNil(rowValues?.accessGroup))
+        );
+      },
+    },
+    label: labelAuthorizationsToClaim,
+    type: InputType.FieldsTable,
   },
 ];

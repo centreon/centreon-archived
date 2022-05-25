@@ -38,3 +38,6 @@ export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
 export const labelContactGroup = 'Contact group';
 export const labelAtLeastOneAuthorizationIsRequired =
   'At least one authorization is required';
+export const labelAuthorizationsToClaim = 'Authorizations to claim';
+export const labelValueToClaim = 'Value to claim';
+export const labelAccessGroup = 'Access group';
