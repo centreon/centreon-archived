@@ -83,7 +83,7 @@ UPDATE `cfg_nagios` SET `debug_verbosity` = '1';
 UPDATE `cfg_nagios` SET `max_debug_file_size` = '1000000000';
 UPDATE `cfg_nagios` SET `log_pid` = '1';
 UPDATE `cfg_nagios` SET `cfg_file` = 'centengine.cfg';
-UPDTAE `cfg_nagios` SET `logger_version` = 'log_v2_enabled';
+UPDATE `cfg_nagios` SET `logger_version` = 'log_v2_enabled';
 
 INSERT INTO `cfg_nagios_logger` (`cfg_nagios_id`, `log_v2_logger`, `log_level_functions`, `log_level_config`, `log_level_events`, `log_level_checks`, `log_level_notifications`, `log_level_eventbroker`, `log_level_external_command`, `log_level_commands`, `log_level_downtimes`, `log_level_comments`, `log_level_macros`, `log_level_process`, `log_level_runtime`) VALUES
 (1, 'file', 'err', 'info', 'info', 'info', 'err', 'err', 'info', 'err', 'err', 'err', 'err', 'info', 'err');
