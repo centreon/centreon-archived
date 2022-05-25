@@ -16,6 +16,7 @@ const Switch = ({
   label,
   getChecked,
   getDisabled,
+  additionalMemoProps,
 }: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
@@ -49,7 +50,7 @@ const Switch = ({
         label={t(label) as string}
       />
     ),
-    memoProps: [value, disabled],
+    memoProps: [value, disabled, additionalMemoProps],
   });
 };
 

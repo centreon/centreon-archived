@@ -23,6 +23,7 @@ const Multiple = ({
   getDisabled,
   getRequired,
   change,
+  additionalMemoProps,
 }: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
@@ -107,7 +108,13 @@ const Multiple = ({
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors, additionalLabel, disabled],
+    memoProps: [
+      normalizedValues,
+      inputErrors,
+      additionalLabel,
+      disabled,
+      additionalMemoProps,
+    ],
   });
 };
 

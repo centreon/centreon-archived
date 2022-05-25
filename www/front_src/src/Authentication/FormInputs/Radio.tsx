@@ -20,6 +20,7 @@ const Radio = ({
   options,
   getDisabled,
   change,
+  additionalMemoProps,
 }: InputPropsWithoutCategory): JSX.Element => {
   const { t } = useTranslation();
 
@@ -72,7 +73,7 @@ const Radio = ({
         </RadioGroup>
       </FormGroup>
     ),
-    memoProps: [value, disabled],
+    memoProps: [value, disabled, additionalMemoProps],
   });
 };
 
