@@ -58,20 +58,18 @@ class Hostgroup extends AbstractObject
     private function getHostgroupFromId($hg_id)
     {
         if (is_null($this->stmt_hg)) {
-            $this->stmt_hg = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
+            $this->stmt_hg = $this->backend_instance->db->prepare(
+                "SELECT  $this->attributes_select
                 FROM hostgroup
-                WHERE hg_id = :hg_id AND hg_activate = '1'
-                ");
+                WHERE hg_id = :hg_id AND hg_activate = '1'"
+            );
         }
         $this->stmt_hg->bindParam(':hg_id', $hg_id, PDO::PARAM_INT);
         $this->stmt_hg->execute();
-        $results = $this->stmt_hg->fetchAll(PDO::FETCH_ASSOC);
-        $this->hg[$hg_id] = array_pop($results);
-        if (is_null($this->hg[$hg_id])) {
-            return null;
+        if ($hostGroup = $this->stmt_hg->fetch(\PDO::FETCH_ASSOC)) {
+            $this->hg[$hg_id] = $hostGroup;
+            $this->hg[$hg_id]['members'] = [];
         }
-        $this->hg[$hg_id]['members'] = array();
     }
 
     public function addHostInHg($hg_id, $host_id, $host_name)

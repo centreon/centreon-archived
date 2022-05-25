@@ -7214,3 +7214,8 @@ msgstr ""
 
 msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
 msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"
+
+msgid "Mode used to retrieve information displayed in Resource Status page."
+"The optimized mode will only be available and functional when using the BBDO 3.0.0 protocol for the collect engine."
+msgstr "Mode utilisé pour récupérer les données affichées dans la page Resource Status."
+"Le mode optimisé pourra être utilisé et fonctionnel que si le moteur de supervision utilise le protocole BBDO 3.0.0"

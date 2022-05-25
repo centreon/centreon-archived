@@ -20,12 +20,16 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
     display: 'flex',
     height: '100%',
   }),
+  paper: {
+    height: '100%',
+  },
   tile: {
     '&:hover': {
       boxShadow: theme.shadows[3],
     },
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
+    height: '100%',
   },
 }));
 
@@ -67,7 +71,7 @@ const Content = ({
       ref={itemRef}
       style={style}
     >
-      <Paper>
+      <Paper className={classes.paper}>
         <div className={classes.tile}>
           <div {...listeners} className={classes.handler}>
             <MoreVertIcon fontSize="small" />

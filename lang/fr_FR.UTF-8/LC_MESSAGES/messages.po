@@ -16716,6 +16716,24 @@ msgstr "Se connecter avec"
 msgid "Can't resolve username from login claim using configured regular expression"
 msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant l'expression régulière configurée"
 
+msgid "Impossible to get contact templates from data storage"
+msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de données"
+
+msgid "Enable auto import"
+msgstr "Activer l'importation automatique"
+
+msgid "Email attribute to bind"
+msgstr "Attribut de mail à lier"
+
+msgid "Alias attribute to bind"
+msgstr "Attribut d'alias à lier"
+
+msgid "Fullname attribute to bind"
+msgstr "Attribut de nom complet à lier"
+
+msgid "Auto import"
+msgstr "Importation automatique"
+
 # msgid "You are not authorized to access the configuration"
 # msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
 
@@ -16812,5 +16830,30 @@ msgstr "Destination du journal"
 msgid "Error"
 msgstr "Erreur"
 
+msgid "Missing auto import mandatory parameters: %s"
+msgstr "Paramètres obligatoires manquants pour l'importation automatique : %s"
+
+msgid "The contact template '%s' doesn't exist"
+msgstr "Le modèle de contact '%s' n'existe pas"
+
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
+
+msgid "Error while searching for the host template %d"
+msgstr "Erreur lors de la recherche du modèle d'hôte %d"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Could not change resource status mode."
+msgstr "Le mode pour Resource Status n'a pas pu être changé"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Reason: error when updating PHP environment file"
+msgstr "Raison: erreur lors de la mise à jour du fichier PHP d'environnement"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "Reason: PHP environment file is not writable"
+msgstr "Raison: le fichier PHP d'environnement n'est pas éditable"
+
+#: www/include/Administration/parameters/engine/form.php
+msgid "Resource Status mod"
+msgstr "Mode pour Resource Status"

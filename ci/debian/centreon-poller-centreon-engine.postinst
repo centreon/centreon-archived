@@ -34,5 +34,19 @@ view centreon included .1.3.6.1" \
 access notConfigGroup \"\" any noauth exact centreon none none" \
         /etc/snmp/snmpd.conf
     fi
+
+    # Fix centreon configuration permissions
+    chmod -v 0775 \
+        /etc/centreon \
+        /etc/centreon/config.d
+    chmod -v 0664 \
+        /etc/centreon/centreon.conf.php \
+        /etc/centreon/centreontrapd.pm \
+        /etc/centreon/config.yaml \
+        /etc/centreon/conf.pm
+    chown -v centreon:centreon \
+        /etc/centreon/centreontrapd.pm \
+        /etc/centreon/conf.pm
+
 fi
 exit 0
