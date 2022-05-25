@@ -45,6 +45,7 @@ describe('Navigation menu visual testing: ', () => {
       } else {
         cy.get('@element').contains('Configuration');
       }
+
     });
     cy.matchImageSnapshot();
   });
