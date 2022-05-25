@@ -34,7 +34,7 @@ class FindServiceCategoryPresenter extends AbstractPresenter implements FindServ
      */
     public function present(mixed $data): void
     {
-        $presenterResponse = $data->serviceCategories;
+        $presenterResponse = $data->tags;
         parent::present($presenterResponse);
     }
 }
