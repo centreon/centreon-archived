@@ -30,9 +30,6 @@ class Engine extends AbstractObject
     protected $engine = null;
     protected $table = 'cfg_nagios';
     protected $generateFilename = 'cfg_nagios.infile';
-
-    //skipped nagios parameters : temp_file, nagios_user, nagios_group,
-    // lock_file
     protected $attributesSelect = '
         nagios_server_id,
         nagios_id,
