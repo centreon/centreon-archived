@@ -113,11 +113,8 @@ class CentreonMainCfg
         $this->aInstanceDefaultValues = [
             'log_file' => '/var/log/centreon-engine/centengine.log',
             'cfg_dir' => '/etc/centreon-engine/',
-            'temp_file' => '/var/log/centreon-engine/centengine.tmp',
             'status_file' => '/var/log/centreon-engine/status.dat',
             'status_update_interval' => '30',
-            'nagios_user' => 'centreon-engine',
-            'nagios_group' => 'centreon-engine',
             'enable_notifications' => '1',
             'execute_service_checks' => '1',
             'accept_passive_service_checks' => '1',
@@ -128,7 +125,6 @@ class CentreonMainCfg
             'external_command_buffer_slots' => '4096',
             'command_check_interval' => '1s',
             'command_file' => '/var/lib/centreon-engine/rw/centengine.cmd',
-            'lock_file' => '/var/lock/subsys/centengine.lock',
             'retain_state_information' => '1',
             'state_retention_file' => '/var/log/centreon-engine/retention.dat',
             'retention_update_interval' => '60',
@@ -149,8 +145,6 @@ class CentreonMainCfg
             'max_service_check_spread' => '15',
             'max_host_check_spread' => '15',
             'check_result_reaper_frequency' => '5',
-            'max_check_result_reaper_time' => '10',
-            'interval_length' => '60',
             'auto_reschedule_checks' => '0',
             'enable_flap_detection' => '0',
             'low_service_flap_threshold' => '25.0',
@@ -162,14 +156,6 @@ class CentreonMainCfg
             'host_check_timeout' => '10',
             'event_handler_timeout' => '30',
             'notification_timeout' => '30',
-            'ocsp_timeout' => '5',
-            'ochp_timeout' => '5',
-            'perfdata_timeout' => '5',
-            'obsess_over_services' => '0',
-            'obsess_over_hosts' => '0',
-            'process_performance_data' => '0',
-            'host_perfdata_file_mode' => '2',
-            'service_perfdata_file_mode' => '2',
             'check_for_orphaned_services' => '0',
             'check_for_orphaned_hosts' => '0',
             'check_service_freshness' => '2',
@@ -184,14 +170,11 @@ class CentreonMainCfg
             'nagios_comment' => 'Centreon Engine configuration file',
             'nagios_activate' => '1',
             'event_broker_options' => '-1',
-            'translate_passive_host_checks' => '2',
             'nagios_server_id' => '1',
             'enable_predictive_host_dependency_checks' => '1',
             'enable_predictive_service_dependency_checks' => '1',
             'passive_host_checks_are_soft' => '2',
-            'use_large_installation_tweaks' => '1',
             'enable_environment_macros' => '2',
-            'use_setpgid' => '2',
             'debug_file' => '/var/log/centreon-engine/centengine.debug',
             'debug_level' => '0',
             'debug_level_opt' => '0',
@@ -329,48 +312,57 @@ class CentreonMainCfg
             $baseValues = $res->fetch();
         }
 
-        $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `temp_file`, " .
-            "`status_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, " .
-            "`execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, " .
-            "`accept_passive_host_checks`, `enable_event_handlers`, " .
-            "`check_external_commands`, `external_command_buffer_slots`, `command_check_interval`, `command_file`, " .
-            "`lock_file`, `retain_state_information`, `state_retention_file`,`retention_update_interval`, " .
-            "`use_retained_program_state`, `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, " .
-            "`log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_external_commands`, " .
-            "`log_passive_checks`, `sleep_time`, `service_inter_check_delay_method`, " .
-            "`host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, " .
-            "`max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, " .
-            "`max_check_result_reaper_time`, `interval_length`, `auto_reschedule_checks`, " .
-            "`enable_flap_detection`, `low_service_flap_threshold`, " .
-            "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, " .
-            "`soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, " .
-            "`notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, " .
-            "`obsess_over_hosts`, `process_performance_data`, `host_perfdata_file_mode`, " .
-            "`service_perfdata_file_mode`, `check_for_orphaned_services`, `check_for_orphaned_hosts`, " .
-            "`check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`, " .
-            "`illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, " .
-            "`admin_pager`, `nagios_comment`, `nagios_activate`, `event_broker_options`, " .
-            "`translate_passive_host_checks`, `enable_predictive_host_dependency_checks`, " .
-            "`enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, " .
-            "`use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`, " .
-            "`debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, " .
-            "`cfg_file`) " .
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $rq = "INSERT INTO `cfg_nagios` (
+            `nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`,
+            `status_file`, `status_update_interval`, `enable_notifications`,
+            `execute_service_checks`, `accept_passive_service_checks`,
+
+            `execute_host_checks`,
+            `accept_passive_host_checks`, `enable_event_handlers`, `check_external_commands`,
+            `external_command_buffer_slots`, `command_check_interval`, `command_file`,
+            `retain_state_information`, `state_retention_file`,`retention_update_interval`,
+
+            `use_retained_program_state`, `use_retained_scheduling_info`, `use_syslog`, `log_notifications`,
+            `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_external_commands`,
+            `log_passive_checks`, `sleep_time`,
+
+            `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`,
+            `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`,
+            `auto_reschedule_checks`, `enable_flap_detection`, `low_service_flap_threshold`,
+
+            `high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`,
+            `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`,
+            `notification_timeout`, `check_for_orphaned_services`, `check_for_orphaned_hosts`,
+
+            `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`,
+            `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`,
+            `admin_pager`,
+
+            `nagios_comment`, `nagios_activate`, `event_broker_options`,
+            `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`,
+            `passive_host_checks_are_soft`, `enable_environment_macros`, `debug_file`, `debug_level`,
+            `debug_level_opt`,
+
+            `debug_verbosity`, `max_debug_file_size`, `cfg_file`
+            )
+            VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?)";
 
         $params = array(
             'Centreon Engine ' . $sName,
             $iId,
             $baseValues['log_file'],
             $baseValues['cfg_dir'],
-            $baseValues['temp_file'],
             $baseValues['status_file'],
             $baseValues['status_update_interval'],
-            $baseValues['nagios_user'],
-            $baseValues['nagios_group'],
             $baseValues['enable_notifications'],
-
             $baseValues['execute_service_checks'],
             $baseValues['accept_passive_service_checks'],
             $baseValues['execute_host_checks'],
@@ -380,7 +372,6 @@ class CentreonMainCfg
             $baseValues['external_command_buffer_slots'],
             $baseValues['command_check_interval'],
             $baseValues['command_file'],
-            $baseValues['lock_file'],
             $baseValues['retain_state_information'],
             $baseValues['state_retention_file'],
             $baseValues['retention_update_interval'],
@@ -393,7 +384,6 @@ class CentreonMainCfg
             $baseValues['log_event_handlers'],
             $baseValues['log_external_commands'],
             $baseValues['log_passive_checks'],
-
             $baseValues['sleep_time'],
             $baseValues['service_inter_check_delay_method'],
             $baseValues['host_inter_check_delay_method'],
@@ -402,8 +392,6 @@ class CentreonMainCfg
             $baseValues['max_service_check_spread'],
             $baseValues['max_host_check_spread'],
             $baseValues['check_result_reaper_frequency'],
-            $baseValues['max_check_result_reaper_time'],
-            $baseValues['interval_length'],
             $baseValues['auto_reschedule_checks'],
             $baseValues['enable_flap_detection'],
             $baseValues['low_service_flap_threshold'],
@@ -415,14 +403,6 @@ class CentreonMainCfg
             $baseValues['host_check_timeout'],
             $baseValues['event_handler_timeout'],
             $baseValues['notification_timeout'],
-            $baseValues['ocsp_timeout'],
-            $baseValues['ochp_timeout'],
-            $baseValues['perfdata_timeout'],
-            $baseValues['obsess_over_services'],
-            $baseValues['obsess_over_hosts'],
-            $baseValues['process_performance_data'],
-            $baseValues['host_perfdata_file_mode'],
-            $baseValues['service_perfdata_file_mode'],
             $baseValues['check_for_orphaned_services'],
             $baseValues['check_for_orphaned_hosts'],
             $baseValues['check_service_freshness'],
@@ -437,13 +417,10 @@ class CentreonMainCfg
             $baseValues['nagios_comment'],
             $baseValues['nagios_activate'],
             $baseValues['event_broker_options'],
-            $baseValues['translate_passive_host_checks'],
             $baseValues['enable_predictive_host_dependency_checks'],
             $baseValues['enable_predictive_service_dependency_checks'],
             $baseValues['passive_host_checks_are_soft'],
-            $baseValues['use_large_installation_tweaks'],
             $baseValues['enable_environment_macros'],
-            $baseValues['use_setpgid'],
             $baseValues['debug_file'],
             $baseValues['debug_level'],
             $baseValues['debug_level_opt'],
@@ -453,6 +430,7 @@ class CentreonMainCfg
         );
         foreach ($params as &$param) {
             if (empty($param)) {
+                // TODO : change to DEFAULT
                 $param = null;
             }
         }
