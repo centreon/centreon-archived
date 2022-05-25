@@ -8,6 +8,9 @@
       "testFiles": "./**/*.cypress.spec.{ts,tsx}"
     },
     "viewportWidth": 720,
-    "viewportHeight":  576
-}
+    "viewportHeight":  576,
+    "env":{
+      "CYPRESS_CACHE_FOLDER":"~/Desktop/cypress_cache"
+    }
+} 
 
