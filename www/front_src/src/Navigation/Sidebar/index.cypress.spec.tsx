@@ -83,6 +83,7 @@ describe('Navigation menu visual testing: ', () => {
       .first()
       .trigger('mouseover')
       .trigger('click');
+
     cy.matchImageSnapshot();
   });
 });
