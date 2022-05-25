@@ -12,7 +12,8 @@ override_dh_clean:
 
 override_dh_auto_build:
 	composer install --no-dev --optimize-autoloader -n
-	npm ci --allow-root cypress
+	export CYPRESS_CACHE_FOLDER=/tmp/
+	npm ci
 	npm run build
 	find . -type f | xargs -d '\n' sed -i -f debian/extra/centreon-web/centreon-macroreplacement.txt
 	mv config/centreon.config.php.template config/centreon.config.php
