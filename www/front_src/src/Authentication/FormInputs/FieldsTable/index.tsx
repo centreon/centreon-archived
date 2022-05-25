@@ -1,5 +1,5 @@
 import { FormikValues, useFormikContext } from 'formik';
-import { dec, equals, length, pipe, prop, type } from 'ramda';
+import { equals, length, pipe, prop, type } from 'ramda';
 import { useAtomValue } from 'jotai';
 
 import { FormHelperText, Theme } from '@mui/material';
