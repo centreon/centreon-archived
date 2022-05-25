@@ -10,8 +10,6 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import { contactTemplatesEndpoint } from '../api/endpoints';
-
 import { InputProps } from './models';
 
 const ConnectedAutocomplete = ({
@@ -21,6 +19,7 @@ const ConnectedAutocomplete = ({
   fieldName,
   label,
   filterKey = 'name',
+  endpoint,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -29,7 +28,7 @@ const ConnectedAutocomplete = ({
 
   const getEndpoint = (parameters): string =>
     buildListingEndpoint({
-      baseEndpoint: contactTemplatesEndpoint,
+      baseEndpoint: endpoint,
       parameters: {
         ...parameters,
         sort: { [filterKey]: 'ASC' },

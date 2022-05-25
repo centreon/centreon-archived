@@ -35,3 +35,6 @@ export const labelAliasAttributeToBind = 'Alias attribute to bind';
 export const labelFullnameAttributeToBind = 'Fullname attribute to bind';
 export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
+export const labelContactGroup = 'Contact group';
+export const labelAtLeastOneAuthorizationIsRequired =
+  'At least one authorization is required';

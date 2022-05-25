@@ -1,4 +1,4 @@
-import { equals, not, prop } from 'ramda';
+import { equals, isEmpty, not, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import {
@@ -10,6 +10,7 @@ import {
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactGroup,
   labelContactTemplate,
   labelDisableVerifyPeer,
   labelEmailAttributeToBind,
@@ -31,15 +32,22 @@ import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
+  labelAuthorization,
   labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from '../../translatedLabels';
+import {
+  contactGroupsEndpoint,
+  contactTemplatesEndpoint,
+} from '../../api/endpoints';
 
 const isAutoImportDisabled = (values: FormikValues): boolean =>
   not(prop('autoImport', values));
 const isAutoImportEnabled = (values: FormikValues): boolean =>
   prop('autoImport', values);
+const isAuthorizationClaimFilled = (values: FormikValues): boolean =>
+  not(isEmpty(prop('authorizationClaim', values)));
 
 export const inputs: Array<InputProps> = [
   {
@@ -173,6 +181,7 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelAutoImport,
+    endpoint: contactTemplatesEndpoint,
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
@@ -202,5 +211,13 @@ export const inputs: Array<InputProps> = [
     getRequired: isAutoImportEnabled,
     label: labelFullnameAttributeToBind,
     type: InputType.Text,
+  },
+  {
+    category: labelAuthorization,
+    endpoint: contactGroupsEndpoint,
+    fieldName: 'contactGroup',
+    getRequired: isAuthorizationClaimFilled,
+    label: labelContactGroup,
+    type: InputType.ConnectedAutocomplete,
   },
 ];

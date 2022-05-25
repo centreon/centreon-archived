@@ -130,12 +130,14 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   getDisabled,
                   getRequired,
                   additionalLabel,
+                  endpoint,
                 }) => {
                   const Input = getInput(type);
 
                   const props = {
                     category,
                     change,
+                    endpoint,
                     fieldName,
                     getChecked,
                     getDisabled,
