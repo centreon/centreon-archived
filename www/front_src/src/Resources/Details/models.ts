@@ -15,7 +15,7 @@ export interface Group extends NamedEntity {
   configuration_uri: string | null;
 }
 
-export interface Categorie extends NamedEntity {
+export interface Category extends NamedEntity {
   configuration_uri: string | null;
 }
 
@@ -25,6 +25,7 @@ export interface ResourceDetails extends NamedEntity {
   active_checks: boolean;
   alias?: string;
   calculation_type?: string;
+  category: Array<Category>;
   command_line?: string;
   downtimes: Array<Downtime>;
   duration: string;

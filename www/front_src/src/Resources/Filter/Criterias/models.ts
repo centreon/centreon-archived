@@ -25,12 +25,12 @@ import {
   labelStatusType,
   labelHard,
   labelSoft,
-  labelHostCategorie,
-  labelServiceCategorie,
+  labelHostCategory,
+  labelServiceCategory,
 } from '../../translatedLabels';
 import {
-  buildHostCategoriesEndpoint,
-  buildServiceCategoriesEndpoint,
+  buildHostCategoryEndpoint,
+  buildServiceCategoryEndpoint,
   buildHostGroupsEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
@@ -187,11 +187,11 @@ export interface CriteriaById {
 }
 
 export enum CriteriaNames {
-  hostCategories = 'host_categorie',
+  hostCategory = 'host_category',
   hostGroups = 'host_groups',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
-  serviceCategories = 'service_categorie',
+  serviceCategory = 'service_category',
   serviceGroups = 'service_groups',
   states = 'states',
   statusTypes = 'status_types',
@@ -228,13 +228,13 @@ const selectableCriterias: CriteriaById = {
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
   },
-  [CriteriaNames.hostCategories]: {
-    buildAutocompleteEndpoint: buildHostCategoriesEndpoint,
-    label: labelHostCategorie,
+  [CriteriaNames.hostCategory]: {
+    buildAutocompleteEndpoint: buildHostCategoryEndpoint,
+    label: labelHostCategory,
   },
-  [CriteriaNames.serviceCategories]: {
-    buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
-    label: labelServiceCategorie,
+  [CriteriaNames.serviceCategory]: {
+    buildAutocompleteEndpoint: buildServiceCategoryEndpoint,
+    label: labelServiceCategory,
   },
 };
 

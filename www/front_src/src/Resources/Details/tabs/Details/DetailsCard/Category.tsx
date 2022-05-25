@@ -9,7 +9,7 @@ import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
 
-import CategorieChip from './CategorieChip';
+import CategorieChip from './CategoryChip';
 
 interface Props {
   details: ResourceDetails | undefined;
@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ details }: Props): JSX.Element => {
+const Category = ({ details }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const categorieType = equals(details?.type, ResourceType.host)
-    ? CriteriaNames.hostCategories
-    : CriteriaNames.serviceCategories;
+  const categoryType = equals(details?.type, ResourceType.host)
+    ? CriteriaNames.hostCategory
+    : CriteriaNames.serviceCategory;
 
   return (
     <Grid container className={classes.categories} spacing={1}>
@@ -38,12 +38,12 @@ const Groups = ({ details }: Props): JSX.Element => {
           {t(labelCategorie)}
         </Typography>
       </Grid>
-      {details?.groups?.map((categorie) => {
+      {details?.groups?.map((category) => {
         return (
           <CategorieChip
-            categorie={categorie}
-            key={categorie.id}
-            type={categorieType}
+            category={category}
+            key={category.id}
+            type={categoryType}
           />
         );
       })}
@@ -51,4 +51,4 @@ const Groups = ({ details }: Props): JSX.Element => {
   );
 };
 
-export default Groups;
+export default Category;

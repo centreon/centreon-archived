@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 
 import { labelConfigure, labelFilter } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
-import { Categorie } from '../../../models';
+import { Category } from '../../../models';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -44,11 +44,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  categorie: Categorie;
+  category: Category;
   type: string;
 }
 
-const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
+const CategoryChip = ({ category, type }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -61,7 +61,7 @@ const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
   const filterByGroup = (): void => {
     setCriteriaAndNewFilter({
       name: type,
-      value: [categorie],
+      value: [category],
     });
   };
   const mouseEnter = (): void => {
@@ -73,17 +73,17 @@ const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
   };
 
   const configureGroup = (): void => {
-    window.location.href = categorie.configuration_uri as string;
+    window.location.href = category.configuration_uri as string;
   };
 
   return (
-    <Grid item className={classes.chip} key={categorie.id}>
+    <Grid item className={classes.chip} key={category.id}>
       <Chip
-        aria-label={`${categorie.name} Chip`}
+        aria-label={`${category.name} Chip`}
         color="primary"
         label={
           <div className={classes.chipLabel}>
-            <Tooltip title={categorie.name}>
+            <Tooltip title={category.name}>
               <Typography
                 className={clsx(
                   classes.chipAction,
@@ -91,13 +91,13 @@ const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
                 )}
                 variant="body2"
               >
-                {categorie.name}
+                {category.name}
               </Typography>
             </Tooltip>
             {isHovered && (
               <Grid className={classes.chipHover}>
                 <IconButton
-                  aria-label={`${categorie.name} Filter`}
+                  aria-label={`${category.name} Filter`}
                   className={classes.chipIconColor}
                   size="small"
                   title={t(labelFilter)}
@@ -106,7 +106,7 @@ const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
                   <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
-                  aria-label={`${categorie.name} Configure`}
+                  aria-label={`${category.name} Configure`}
                   className={classes.chipIconColor}
                   size="small"
                   title={t(labelConfigure)}
@@ -125,4 +125,4 @@ const CategorieChip = ({ categorie, type }: Props): JSX.Element => {
   );
 };
 
-export default CategorieChip;
+export default CategoryChip;

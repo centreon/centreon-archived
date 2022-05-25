@@ -5,9 +5,11 @@ import { SortOrder } from '../../models';
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
+  hostCategory?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
   monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
+  serviceCategory?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statusTypes?: Array<SelectEntry>;
@@ -26,10 +28,14 @@ const getDefaultCriterias = (
     serviceGroups = [],
     monitoringServers = [],
     statusTypes = [],
+    serviceCategory = [],
+    hostCategory = [],
   }: DefaultCriteriaValues = {
+    hostCategory: [],
     hostGroups: [],
     monitoringServers: [],
     resourceTypes: [],
+    serviceCategory: [],
     serviceGroups: [],
     states: [],
     statusTypes: [],
@@ -72,6 +78,18 @@ const getDefaultCriterias = (
       object_type: 'service_groups',
       type: 'multi_select',
       value: serviceGroups,
+    },
+    {
+      name: 'service_category',
+      object_type: 'service_category',
+      type: 'multi_select',
+      value: serviceCategory,
+    },
+    {
+      name: 'host_category',
+      object_type: 'host_category',
+      type: 'multi_select',
+      value: hostCategory,
     },
     {
       name: 'monitoring_servers',

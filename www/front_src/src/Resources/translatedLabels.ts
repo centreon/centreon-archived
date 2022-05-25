@@ -250,5 +250,5 @@ export const labelNoContactIsConfiguredForThisResource =
 export const labelNoContactGroupsIsConfiguredForThisResource =
   'No contact groups are configured for this resource';
 export const labelCategorie = 'Categorie';
-export const labelHostCategorie = 'Host categorie';
-export const labelServiceCategorie = 'Service categorie';
+export const labelHostCategory = 'Host categorie';
+export const labelServiceCategory = 'Service categorie';
