@@ -8,7 +8,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main,
   },
   container: {
-    height: 65,
     overflow: 'hidden',
   },
   title: {
