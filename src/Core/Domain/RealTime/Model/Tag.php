@@ -29,12 +29,16 @@ class Tag
         SERVICE_CATEGORY_TYPE_ID = 2,
         HOST_CATEGORY_TYPE_ID = 3;
 
+    private int $type;
+
     /**
      * @param int $id
      * @param string $name
+     * @param int $type
      */
-    public function __construct(private int $id, private string $name, private int $type)
+    public function __construct(private int $id, private string $name, int $type)
     {
+        $this->setType($type);
     }
 
     /**
@@ -54,10 +58,55 @@ class Tag
     }
 
     /**
+     * Setter for $type property
+     *
+     * @param int $type
+     * @return Tag
+     */
+    public function setType(int $type): Tag
+    {
+        $this->validateTypeId($type);
+
+        $this->type = $type;
+
+        return $this;
+    }
+
+
+    /**
      * @return int
      */
     public function getType(): int
     {
         return $this->type;
+    }
+
+    /**
+     * Checks that $typeId argument is valid. Throws InvalidArgumentException if not
+     *
+     * @param int $typeId
+     * @return void
+     * @throws \InvalidArgumentException
+     */
+    private function validateTypeId(int $typeId): void
+    {
+        if (! in_array($typeId, self::getAvailableTypeIds())) {
+            throw new \InvalidArgumentException('Type Id is not valid');
+        }
+    }
+
+    /**
+     * Retrieves the list of available type ids
+     *
+     * @return int[]
+     */
+    private static function getAvailableTypeIds(): array
+    {
+        return [
+            self::SERVICE_GROUP_TYPE_ID,
+            self::HOST_GROUP_TYPE_ID,
+            self::SERVICE_CATEGORY_TYPE_ID,
+            self::HOST_CATEGORY_TYPE_ID,
+        ];
     }
 }
