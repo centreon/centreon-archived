@@ -304,10 +304,10 @@ try {
     },
     'Debian 11 packaging': {
       node {
+        sh 'rm -rf *'
         dir('centreon') {
           checkout scm
         }
-        sh 'rm -rf *.deb'
         sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
@@ -405,6 +405,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
+            sh 'rm -rf *'
             checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'cypress-node-modules'
