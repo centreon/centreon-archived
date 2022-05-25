@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,7 +34,9 @@
  *
  */
 
- /**
+require_once __DIR__ . '/../../../../bootstrap.php';
+
+/**
  * Used to update fields in the 'centreon.options' table
  *
  * @param \CentreonDB $pearDB : database connection
@@ -145,6 +147,44 @@ function is_writable_file_if_exist($path = null)
 function isSessionDurationValid(int $value = null)
 {
     return ($value > 0 && $value <= SESSION_DURATION_LIMIT);
+}
+
+/**
+ * rule to check if resource status optimized mode is allowed
+ *
+ * @param int $value
+ * @return bool
+ */
+function canUseResourceStatusOptimized($value)
+{
+    global $pearDB;
+
+    $mode = $value['resource_status_mode'];
+
+    $kernel = \App\Kernel::createForWeb();
+    $legacyMode = $kernel->getContainer()->getparameter('resource.status.repository.legacy');
+
+    if ($mode === $legacyMode) {
+        return true;
+    }
+
+    $statement = $pearDB->query(
+        "SELECT 1
+        FROM cfg_centreonbroker cb
+        INNER JOIN cfg_centreonbroker_info cbi ON cbi.config_id = cb.config_id
+        AND config_group = 'output'
+        AND config_key = 'type'
+        AND config_value = 'unified_sql'
+        WHERE cb.daemon = 1
+        AND cb.bbdo_version = '3.0.0'
+        LIMIT 1"
+    );
+
+    if ($statement->fetch()) {
+        return true;
+    }
+
+    return false;
 }
 
 function updateGeneralOptInDB($gopt_id = null)
@@ -511,7 +551,7 @@ function updateLdapConfigData($gopt_id = null)
     $centreon->initOptGen($pearDB);
 }
 
-function updateGeneralConfigData($gopt_id = null)
+function updateGeneralConfigData()
 {
     global $form, $pearDB, $centreon;
 
@@ -691,6 +731,41 @@ function updateGeneralConfigData($gopt_id = null)
     );
 
     $centreon->initOptGen($pearDB);
+}
+
+/**
+ * Update Resource Status environment variable in PHP file.
+ *
+ * @throws \Exception
+ */
+function updateResourceStatusMode(): void
+{
+    global $form;
+
+    $ret = $form->getSubmitValues();
+
+    $dotenvPath = __DIR__ . '/../../../../.env.local.php';
+    $dotenvVars = is_file($dotenvPath) ? include $dotenvPath : [];
+    $dotenvVars['APP_RESOURCE_STATUS_REPOSITORY_MODE'] = !empty($ret['resource_status_mode']['resource_status_mode'])
+        ? $ret['resource_status_mode']['resource_status_mode']
+        : 'legacy';
+    $dotenvVars = var_export($dotenvVars, true);
+    $dotenvVars = <<<EOF
+    <?php
+
+    return $dotenvVars;
+
+    EOF;
+
+    $errorMsg = _('Could not change Resource Status mode.');
+
+    if (is_writable($dotenvPath)) {
+        if (! file_put_contents($dotenvPath, $dotenvVars, \LOCK_EX)) {
+            throw new \Exception($errorMsg . _('Reason: error when updating PHP environment file'));
+        }
+    } else {
+        throw new \Exception($errorMsg . _('Reason: PHP environment file is not writable'));
+    }
 }
 
 function updateRRDToolConfigData($gopt_id = null)
