@@ -61,12 +61,6 @@ $help["cfg_dir"] = dgettext(
     "Directory where Centreon will export Monitoring Engine object configuration files to. "
     . "Monitoring Engine will parse all .cfg files in this directory."
 );
-$help["temp_file"] = dgettext(
-    "help",
-    "This is a temporary file that Monitoring Engine periodically creates and "
-    . "uses when updating comment data, status data, etc. "
-    . "The file is deleted when it is no longer needed."
-);
 $help["enable_notifications"] = dgettext(
     "help",
     "This option determines whether or not Monitoring Engine will send out notifications "
@@ -360,12 +354,6 @@ $help["check_result_reaper_frequency"] = dgettext(
     "This option allows you to control the frequency in seconds of check result \"reaper\" events. " .
     "\"Reaper\" events process the results from host and service checks that have finished executing. These events " .
     "constitute the core of the monitoring logic in Monitoring Engine."
-);
-$help["translate_passive_host_checks"] = dgettext(
-    "help",
-    "This option determines whether or not Monitoring Engine will translate DOWN/UNREACHABLE passive host " .
-    "check results to their \"correct\" state from the viewpoint of the local Monitoring Engine instance. " .
-    "This can be very useful in distributed and failover monitoring installations. Option is disabled by default."
 );
 $help["passive_host_checks_are_soft"] = dgettext(
     "help",
@@ -681,8 +669,6 @@ status_update_interval
 check_for_updates
 bare_update_checks
 retained_*_attribute_mask
-max_check_result_reaper_time
-*_perfdata_file_mode are missing p (pipe) mode
 use_timezone
 
 */;
