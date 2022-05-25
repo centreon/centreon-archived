@@ -31,7 +31,7 @@ it('Find all service categories', function () {
     $category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
     $repository->expects($this->once())
-        ->method('findAllByType')
+        ->method('findAllByTypeId')
         ->willReturn([$category]);
 
     $findServiceCategoryUseCase = new FindServiceCategory($repository);

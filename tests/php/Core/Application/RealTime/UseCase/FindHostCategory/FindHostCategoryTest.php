@@ -31,7 +31,7 @@ it('Find all host categories', function () {
     $category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
     $repository->expects($this->once())
-        ->method('findAllByType')
+        ->method('findAllByTypeId')
         ->willReturn([$category]);
 
     $findHostCategoryUseCase = new FindHostCategory($repository);
