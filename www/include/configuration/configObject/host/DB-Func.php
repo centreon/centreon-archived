@@ -1182,7 +1182,7 @@ function getHostListInUse($hst_list, $hst)
     $statement->bindValue(':host_host_id', (int) $hst, \PDO::PARAM_INT);
     $statement->execute();
     while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-        $str .= "," . $result['host_tpl_id'] . "";
+        $str .= "," . $result['host_tpl_id'];
         $str = getHostListInUse($str, $result['host_tpl_id']);
     }
     $statement->closeCursor();
@@ -1205,9 +1205,9 @@ function serviceIsInUse($svc_id, $host_list)
     foreach ($host_list as $val) {
         if (isset($val)) {
             if (!$flag_first) {
-                $hst_list .= "," . $val . "";
+                $hst_list .= "," . $val;
             } else {
-                $hst_list .= "" . $val . "";
+                $hst_list .= $val;
                 $flag_first = 0;
             }
             $hst_list = getHostListInUse($hst_list, $val);
