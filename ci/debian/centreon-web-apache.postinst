@@ -18,6 +18,12 @@ if [ "$1" = "configure" ] ; then
   if [ "$(getent passwd www-data)" ]; then
     usermod -a -G centreon www-data
     usermod -a -G www-data centreon
+    chown www-data:www-data /etc/centreon/centreon.conf.php
+  fi
+
+  if [ "$(getent passwd centreon-gorgone)" ]; then
+    usermod -a -G centreon-gorgone www-data
+    usermod -a -G www-data centreon-gorgone
   fi
 
 fi
