@@ -17,6 +17,7 @@ describe('Navigation menu visual testing: ', () => {
         </Router>,
       );
     });
+    
     const { result } = renderHook(() => useAtom(selectedNavigationItemsAtom));
     act(() => {
       result.current[1](null);
