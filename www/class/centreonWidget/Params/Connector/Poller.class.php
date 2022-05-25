@@ -50,7 +50,7 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
         if (! isset($tab)) {
             $userACL = new CentreonACL($this->userId);
             $isContactAdmin = $userACL->admin;
-            $request = 'SELECT id, name FROM nagios_server ns';
+            $request = 'SELECT SQL_CALC_FOUND_ROWS id, name FROM nagios_server ns';
 
             if (! $isContactAdmin) {
                 $request .= ' INNER JOIN acl_resources_poller_relations arpr
@@ -78,9 +78,9 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
                 $statement->bindValue(':userId', $this->userId, \PDO::PARAM_INT);
             }
             $statement->execute();
-            $result = $this->db->query('SELECT FOUND_ROWS()');
+            $entriesCount = $this->db->query('SELECT FOUND_ROWS()');
 
-            if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            if ($entriesCount !== false && ($total = $entriesCount->fetchColumn()) !== false) {
                 // it means here that there is poller relations with this user
                 if ((int) $total > 0) {
                     while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
