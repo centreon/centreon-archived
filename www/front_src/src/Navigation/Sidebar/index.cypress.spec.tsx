@@ -19,6 +19,7 @@ describe('Navigation menu visual testing: ', () => {
     });
     
     const { result } = renderHook(() => useAtom(selectedNavigationItemsAtom));
+    
     act(() => {
       result.current[1](null);
     });
