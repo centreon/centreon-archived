@@ -1217,17 +1217,22 @@ function serviceIsInUse($svc_id, $host_list)
         $hst_list = "NULL";
     }
     $hstListExploded = explode(',', $hst_list);
+    $queryBindValues = [];
+    foreach ($hstListExploded as $index => $hostId) {
+        $queryBindValues[':host_' . $index] = (int) $hostId;
+    }
+    $bindIds = implode(', ', array_keys($queryBindValues));
     $rq = "SELECT service_id " .
         "FROM service svc, host_service_relation hsr " .
         "WHERE hsr.service_service_id = svc.service_template_model_stm_id " .
         "AND hsr.service_service_id = :service_service_id " .
-        "AND hsr.host_host_id IN (:hsr_list)";
+        "AND hsr.host_host_id IN ($bindIds)";
     $statement = $pearDB->prepare($rq);
     $statement->bindValue(':service_service_id', (int) $svc_id, \PDO::PARAM_INT);
-    foreach ($hstListExploded as $hostId) {
-        $statement->bindValue(':hsr_list', (int) $hostId, \PDO::PARAM_INT);
-        $statement->execute();
+    foreach ($queryBindValues as $bindKey => $hostId) {
+        $statement->bindValue($bindKey, $hostId, \PDO::PARAM_INT);
     }
+    $statement->execute();
     if ($statement->rowCount() >= 1) {
         return true;
     }
