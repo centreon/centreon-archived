@@ -30,6 +30,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.get('li').each(($li) => {
       cy.wrap($li).get('svg').should('be.visible');
     });
+    
     cy.matchImageSnapshot();
   });
 
