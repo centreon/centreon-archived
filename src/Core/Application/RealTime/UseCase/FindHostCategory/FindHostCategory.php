@@ -46,7 +46,7 @@ class FindHostCategory
         $this->info('Searching for host categories');
 
         try {
-            $categories = $this->repository->findAllByType(Tag::HOST_CATEGORY_TYPE_ID);
+            $categories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
         } catch (\Throwable $e) {
             $this->error('An error occurred while retrieving host categories: ' . $e->getMessage());
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));

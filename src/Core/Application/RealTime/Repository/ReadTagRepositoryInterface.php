@@ -33,5 +33,5 @@ interface ReadTagRepositoryInterface
      * @return Tag[]
      * @throws \Throwable
      */
-    public function findAllByType(int $typeId): array;
+    public function findAllByTypeId(int $typeId): array;
 }

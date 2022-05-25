@@ -46,7 +46,7 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
      * @param int $typeId
      * @return Tag[]
      */
-    public function findAllByType(int $typeId): array
+    public function findAllByTypeId(int $typeId): array
     {
         $this->info('Fetching tags from database');
 
