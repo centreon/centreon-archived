@@ -38,7 +38,7 @@ const Category = ({ details }: Props): JSX.Element => {
           {t(labelCategory)}
         </Typography>
       </Grid>
-      {details?.groups?.map((category) => {
+      {details?.category?.map((category) => {
         return (
           <CategorieChip
             category={category}
