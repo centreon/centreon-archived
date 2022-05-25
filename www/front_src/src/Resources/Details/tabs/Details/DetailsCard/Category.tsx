@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelCategorie } from '../../../../translatedLabels';
+import { labelCategory } from '../../../../translatedLabels';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
@@ -35,7 +35,7 @@ const Category = ({ details }: Props): JSX.Element => {
     <Grid container className={classes.categories} spacing={1}>
       <Grid item xs={12}>
         <Typography color="textSecondary" variant="body1">
-          {t(labelCategorie)}
+          {t(labelCategory)}
         </Typography>
       </Grid>
       {details?.groups?.map((category) => {
