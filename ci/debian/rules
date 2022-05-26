@@ -12,6 +12,7 @@ override_dh_clean:
 
 override_dh_auto_build:
 	composer install --no-dev --optimize-autoloader -n
+	export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
 	export
 	npm ci
 	npm run build
