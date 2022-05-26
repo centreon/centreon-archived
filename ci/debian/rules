@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 export DH_VERBOSE=1
-export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
+export CYPRESS_CACHE_FOLDER=$PWD/cypress_cache
 
 %:
 	dh $@
