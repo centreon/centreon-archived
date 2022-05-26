@@ -10,6 +10,7 @@ echo "################################################## PACKAGING WEB #########
 
 AUTHOR="Luiz Costa"
 AUTHOR_EMAIL="me@luizgustavo.pro.br"
+export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
 export
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
