@@ -10,13 +10,14 @@ echo "################################################## PACKAGING WEB #########
 
 AUTHOR="Luiz Costa"
 AUTHOR_EMAIL="me@luizgustavo.pro.br"
-export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
-export
+
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 
 tar czpf centreon-$VERSION.tar.gz centreon
 cd centreon/
+export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
+export
 cp -rf ci/debian .
 sed -i "s/^centreon:version=.*$/centreon:version=$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')/" debian/substvars
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "${DISTRIB}"
