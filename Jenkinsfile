@@ -308,6 +308,10 @@ try {
         dir('centreon') {
           checkout scm
         }
+         withEnv(['CYPRESS_CACHE_FOLDER=/Desktop/cypress_cache']) {
+            echo 'CYPRESS_CACHE_FOLDER = ${env.CYPRESS_CACHE_FOLDER}' 
+        }
+        sh 'printenv'
         sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
