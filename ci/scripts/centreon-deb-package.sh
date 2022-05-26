@@ -17,6 +17,7 @@ VERSION="$(echo $VERSION | sed 's/-/./g')"
 tar czpf centreon-$VERSION.tar.gz centreon
 cd centreon/
 export CYPRESS_CACHE_FOLDER=~/Desktop/cypress_cache
+echo "##"
 export
 cp -rf ci/debian .
 sed -i "s/^centreon:version=.*$/centreon:version=$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')/" debian/substvars
