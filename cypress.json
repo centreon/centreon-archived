@@ -1,0 +1,12 @@
+{
+    "supportFile": "cypress/support/index.tsx",
+    "pluginsFile": "cypress/plugins/index.ts",
+    "video": true,
+    "videosFolder": "cypress/results/videos",
+    "component": {
+      "componentFolder": "./www/front_src/src",
+      "testFiles": "./**/*.cypress.spec.{ts,tsx}"
+    },
+    "viewportWidth": 720,
+    "viewportHeight":  576
+} 

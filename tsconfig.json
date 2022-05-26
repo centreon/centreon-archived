@@ -10,5 +10,6 @@
   },
   "include": [
     "./www/front_src/src"
-  ]
+  ],
+  "exclude": ["./www/front_src/src/**/*.spec.tsx"]
 }
