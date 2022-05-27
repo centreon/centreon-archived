@@ -26,6 +26,7 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
+  labelCategory,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -37,6 +38,7 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
+import Category from './Category';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -188,6 +190,13 @@ const getDetailCardLines = ({
       line: <Groups details={details} />,
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: <Category details={details} />,
+      shouldBeDisplayed: !isEmpty(details.categories),
+      title: labelCategory,
       xs: 12,
     },
     {

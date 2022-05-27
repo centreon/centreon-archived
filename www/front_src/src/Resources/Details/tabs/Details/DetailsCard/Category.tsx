@@ -9,7 +9,7 @@ import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
 
-import CategorieChip from './CategoryChip';
+import CategoryChip from './CategoryChip';
 
 interface Props {
   details: ResourceDetails | undefined;
@@ -38,9 +38,10 @@ const Category = ({ details }: Props): JSX.Element => {
           {t(labelCategory)}
         </Typography>
       </Grid>
-      {details?.category?.map((category) => {
+
+      {details?.categories?.map((category) => {
         return (
-          <CategorieChip
+          <CategoryChip
             category={category}
             key={category.id}
             type={categoryType}

@@ -58,7 +58,7 @@ const CategoryChip = ({ category, type }: Props): JSX.Element => {
     setCriteriaAndNewFilterDerivedAtom,
   );
 
-  const filterByGroup = (): void => {
+  const filterByCategory = (): void => {
     setCriteriaAndNewFilter({
       name: type,
       value: [category],
@@ -72,7 +72,7 @@ const CategoryChip = ({ category, type }: Props): JSX.Element => {
     setIsHovered(false);
   };
 
-  const configureGroup = (): void => {
+  const configureCategory = (): void => {
     window.location.href = category.configuration_uri as string;
   };
 
@@ -101,7 +101,7 @@ const CategoryChip = ({ category, type }: Props): JSX.Element => {
                   className={classes.chipIconColor}
                   size="small"
                   title={t(labelFilter)}
-                  onClick={filterByGroup}
+                  onClick={filterByCategory}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
@@ -110,7 +110,7 @@ const CategoryChip = ({ category, type }: Props): JSX.Element => {
                   className={classes.chipIconColor}
                   size="small"
                   title={t(labelConfigure)}
-                  onClick={configureGroup}
+                  onClick={configureCategory}
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
