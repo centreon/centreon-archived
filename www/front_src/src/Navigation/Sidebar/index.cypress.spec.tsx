@@ -71,7 +71,7 @@ describe('Navigation menu', () => {
     cy.get('@collapse')
       .find('ul')
       .first()
-      .as('first_ele_collapse')
+      .as('first_element_collapse')
       .trigger('mouseover');
     cy.get('@first_ele_collapse')
       .find('[data-testid=ExpandMoreIcon]')
