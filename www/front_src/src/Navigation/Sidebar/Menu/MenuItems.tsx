@@ -112,11 +112,11 @@ const MenuItems = ({
   ));
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
-    if (isRoot || !canNavigate) {
-      return e.preventDefault();
+    if (!isRoot && canNavigate) {
+      return;
     }
 
-    return undefined;
+    e.preventDefault();
   };
 
   return useMemoComponent({
