@@ -29,21 +29,21 @@ export const searchUrlFromEntry = (item: Page): string | null | undefined => {
   const childPage = item?.children;
   const groupPage = item?.groups;
 
-  if (isArrayItem(childPage) && Array.isArray(childPage)) {
-    const grandsonGroup = childPage[0]?.groups;
-    if (isArrayItem(grandsonGroup) && Array.isArray(grandsonGroup)) {
-      return searchUrlFromEntry(grandsonGroup[0]);
+  if (isArrayItem(childPage)) {
+    const grandsonGroup = childPage?.[0]?.groups;
+    if (isArrayItem(grandsonGroup)) {
+      return searchUrlFromEntry(grandsonGroup?.[0] as Page);
     }
 
-    return searchUrlFromEntry(childPage[0]);
+    return searchUrlFromEntry(childPage?.[0] as Page);
   }
-  if (isArrayItem(groupPage) && Array.isArray(groupPage)) {
-    const grandsonPage = groupPage[0]?.children;
+  if (isArrayItem(groupPage)) {
+    const grandsonPage = groupPage?.[0]?.children;
     if (isArrayItem(grandsonPage) && Array.isArray(grandsonPage)) {
       return searchUrlFromEntry(grandsonPage[0]);
     }
 
-    return searchUrlFromEntry(groupPage[0]);
+    return searchUrlFromEntry(groupPage?.[0] as Page);
   }
 
   return getUrlFromEntry(item);
