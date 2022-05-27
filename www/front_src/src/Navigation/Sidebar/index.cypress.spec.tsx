@@ -57,7 +57,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('hilights the menu item when double clicked', () => {
+  it('highlights the menu item when double clicked', () => {
     cy.get('li').eq(1).as('element').trigger('mouseover');
     cy.get('@element').trigger('dblclick');
     cy.matchImageSnapshot();
