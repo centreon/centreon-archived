@@ -76,7 +76,7 @@ describe('Navigation menu', () => {
     cy.get('@first_element_collapse')
       .find('[data-testid=ExpandMoreIcon]')
       .should('be.visible');
-    cy.get('@first_ele_collapse')
+    cy.get('@first_element_collapse')
       .find('[data-cy=collapse]')
       .as('second_collapse')
       .should('be.visible');
