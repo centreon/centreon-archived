@@ -55,8 +55,9 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   };
 
   if (isNil(options)) {
-    const isOptionEqualToValue = (option, selectedValue): boolean =>
-      isNil(option) ? false : equals(option.name, selectedValue.name);
+    const isOptionEqualToValue = (option, selectedValue): boolean => {
+      return isNil(option) ? false : equals(option.name, selectedValue.name);
+    };
 
     const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({
