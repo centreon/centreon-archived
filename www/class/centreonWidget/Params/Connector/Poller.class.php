@@ -88,10 +88,9 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
                     }
                 } else {
                     // if no relations found for this user it means that he can see all poller available
-                    $statement = $this->db->prepare(
+                    $statement = $this->db->query(
                         "SELECT id, name FROM nagios_server WHERE ns_activate = '1'"
                     );
-                    $statement->execute();
 
                     while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
                         $tab[$record['id']] = $record['name'];
