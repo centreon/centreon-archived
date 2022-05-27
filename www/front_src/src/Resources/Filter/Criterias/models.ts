@@ -187,11 +187,11 @@ export interface CriteriaById {
 }
 
 export enum CriteriaNames {
-  hostCategory = 'host_category',
+  hostCategories = 'host_categories',
   hostGroups = 'host_groups',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
-  serviceCategory = 'service_category',
+  serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
   states = 'states',
   statusTypes = 'status_types',
@@ -228,11 +228,11 @@ const selectableCriterias: CriteriaById = {
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
   },
-  [CriteriaNames.hostCategory]: {
+  [CriteriaNames.hostCategories]: {
     buildAutocompleteEndpoint: buildHostCategoryEndpoint,
     label: labelHostCategory,
   },
-  [CriteriaNames.serviceCategory]: {
+  [CriteriaNames.serviceCategories]: {
     buildAutocompleteEndpoint: buildServiceCategoryEndpoint,
     label: labelServiceCategory,
   },

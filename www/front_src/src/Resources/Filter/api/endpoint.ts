@@ -7,8 +7,8 @@ import {
 import { baseEndpoint } from '../../../api/endpoint';
 import { monitoringEndpoint } from '../../api/endpoint';
 
-const hostCategoryEndpoint = `http://localhost:3000/monitoring/hosts/categories`;
-const serviceCategoryEndpoint = `http://localhost:3000/monitoring/services/categories`;
+const hostCategoryEndpoint = `http://localhost:5003/centreon/api/latest/monitoring/hosts/categories`;
+const serviceCategoryEndpoint = `http://localhost:5003/centreon/api/latest/monitoring/services/categories`;
 const hostGroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;

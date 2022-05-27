@@ -5,11 +5,11 @@ import { SortOrder } from '../../models';
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
-  hostCategory?: Array<SelectEntry>;
+  hostCategories?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
   monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
-  serviceCategory?: Array<SelectEntry>;
+  serviceCategories?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statusTypes?: Array<SelectEntry>;
@@ -28,14 +28,14 @@ const getDefaultCriterias = (
     serviceGroups = [],
     monitoringServers = [],
     statusTypes = [],
-    serviceCategory = [],
-    hostCategory = [],
+    serviceCategories = [],
+    hostCategories = [],
   }: DefaultCriteriaValues = {
-    hostCategory: [],
+    hostCategories: [],
     hostGroups: [],
     monitoringServers: [],
     resourceTypes: [],
-    serviceCategory: [],
+    serviceCategories: [],
     serviceGroups: [],
     states: [],
     statusTypes: [],
@@ -80,16 +80,16 @@ const getDefaultCriterias = (
       value: serviceGroups,
     },
     {
-      name: 'service_category',
-      object_type: 'service_category',
+      name: 'service_categories',
+      object_type: 'service_categories',
       type: 'multi_select',
-      value: serviceCategory,
+      value: serviceCategories,
     },
     {
-      name: 'host_category',
-      object_type: 'host_category',
+      name: 'host_categories',
+      object_type: 'host_categories',
       type: 'multi_select',
-      value: hostCategory,
+      value: hostCategories,
     },
     {
       name: 'monitoring_servers',

@@ -28,8 +28,8 @@ const Category = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const categoryType = equals(details?.type, ResourceType.host)
-    ? CriteriaNames.hostCategory
-    : CriteriaNames.serviceCategory;
+    ? CriteriaNames.hostCategories
+    : CriteriaNames.serviceCategories;
 
   return (
     <Grid container className={classes.categories} spacing={1}>
