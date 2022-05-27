@@ -1,8 +1,9 @@
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, length, pipe, prop, type } from 'ramda';
 import { useAtomValue } from 'jotai';
+import { useTranslation } from 'react-i18next';
 
-import { FormHelperText, Theme } from '@mui/material';
+import { FormHelperText, Theme, Typography } from '@mui/material';
 import { CreateCSSProperties, makeStyles } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -14,6 +15,11 @@ import { Authorization } from '../../Openid/models';
 import Row from './Row';
 
 const useStyles = makeStyles<Theme, { columns }, string>((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: theme.spacing(1),
+  },
   icon: {
     marginTop: theme.spacing(0.5),
   },
@@ -37,6 +43,7 @@ const FieldsTable = ({
   const classes = useStyles({
     columns: fieldsTableConfiguration?.columns.length,
   });
+  const { t } = useTranslation();
 
   const { themeMode } = useAtomValue(userAtom);
 
@@ -48,7 +55,8 @@ const FieldsTable = ({
 
   return useMemoComponent({
     Component: (
-      <div>
+      <div className={classes.container}>
+        <Typography>{t(label)}</Typography>
         <div className={classes.table}>
           {[...Array(tableValues.length + 1).keys()].map((idx): JSX.Element => {
             const getRequired = (): boolean =>
@@ -64,6 +72,7 @@ const FieldsTable = ({
               <Row
                 columns={fieldsTableConfiguration?.columns}
                 defaultRowValue={fieldsTableConfiguration?.defaultRowValue}
+                deleteLabel={fieldsTableConfiguration?.deleteLabel}
                 getRequired={getRequired}
                 index={idx}
                 isLastElement={isLastElement}

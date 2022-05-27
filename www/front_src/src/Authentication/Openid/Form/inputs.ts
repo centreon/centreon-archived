@@ -7,7 +7,6 @@ import {
   labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
-  labelAuthorizationsToClaim,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
@@ -29,7 +28,9 @@ import {
   labelTrustedClientAddresses,
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
-  labelValueToClaim,
+  labelAuthorizationValue,
+  labelDefineRelationAuthorizationValueAndAccessGroup,
+  labelDeleteRelation,
 } from '../translatedLabels';
 import { AuthenticationType, Authorization } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
@@ -231,7 +232,7 @@ export const inputs: Array<InputProps> = [
       columns: [
         {
           fieldName: 'name',
-          label: labelValueToClaim,
+          label: labelAuthorizationValue,
           type: InputType.Text,
         },
         {
@@ -245,6 +246,7 @@ export const inputs: Array<InputProps> = [
         accessGroup: null,
         name: '',
       },
+      deleteLabel: labelDeleteRelation,
       getRequired: ({ values, index }): boolean => {
         const rowValues = path<Authorization>(
           ['authorizationClaim', index],
@@ -259,7 +261,7 @@ export const inputs: Array<InputProps> = [
         );
       },
     },
-    label: labelAuthorizationsToClaim,
+    label: labelDefineRelationAuthorizationValueAndAccessGroup,
     type: InputType.FieldsTable,
   },
 ];

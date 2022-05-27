@@ -1,5 +1,6 @@
 import { FormikValues, useFormikContext } from 'formik';
 import { not, prop, remove } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Theme } from '@mui/material';
 import { CreateCSSProperties, makeStyles } from '@mui/styles';
@@ -24,6 +25,7 @@ const useStyles = makeStyles<Theme, { columns }, string>((theme) => ({
 interface Props {
   columns?: Array<InputPropsWithoutCategory>;
   defaultRowValue?: object;
+  deleteLabel?: string;
   getRequired: () => boolean;
   index: number;
   isLastElement: boolean;
@@ -39,8 +41,10 @@ const Row = ({
   defaultRowValue,
   getRequired,
   isLastElement,
+  deleteLabel,
 }: Props): JSX.Element => {
   const classes = useStyles({ columns: columns?.length });
+  const { t } = useTranslation();
 
   const { setFieldValue, values } = useFormikContext<FormikValues>();
 
@@ -82,7 +86,12 @@ const Row = ({
         );
       })}
       {not(isLastElement) && (
-        <IconButton className={classes.icon} onClick={deleteRow}>
+        <IconButton
+          ariaLabel={deleteLabel && t(deleteLabel)}
+          className={classes.icon}
+          title={deleteLabel && t(deleteLabel)}
+          onClick={deleteRow}
+        >
           <DeleteIcon />
         </IconButton>
       )}

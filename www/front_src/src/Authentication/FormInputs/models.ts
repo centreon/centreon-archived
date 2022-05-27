@@ -25,6 +25,7 @@ export interface InputProps {
   fieldsTableConfiguration?: {
     columns: Array<Omit<InputProps, 'category'>>;
     defaultRowValue: object;
+    deleteLabel: string;
     getRequired?: ({ values, index }: FieldsTableGetRequiredProps) => boolean;
   };
   filterKey?: string;
