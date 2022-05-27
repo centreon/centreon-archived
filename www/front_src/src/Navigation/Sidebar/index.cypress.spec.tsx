@@ -34,7 +34,7 @@ describe('Navigation menu visual testing: ', () => {
     cy.matchImageSnapshot();
   });
 
-  it('expands when the logo is clicked', () => {
+  it('expands the menu when the logo is clicked', () => {
     cy.get("[alt='mini logo']").click();
     cy.get("[alt='logo']").should('be.visible');
     cy.get('li').each(($li, index) => {
