@@ -8,7 +8,7 @@ import { selectedNavigationItemsAtom } from './sideBarAtoms';
 
 import SideBar from './index';
 
-describe('Navigation menu visual testing: ', () => {
+describe('Navigation menu', () => {
   beforeEach(() => {
     cy.fixture('menuData').then((data) => {
       mount(
