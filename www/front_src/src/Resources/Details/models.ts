@@ -25,7 +25,7 @@ export interface ResourceDetails extends NamedEntity {
   active_checks: boolean;
   alias?: string;
   calculation_type?: string;
-  category: Array<Category>;
+  categories?: Array<Category>;
   command_line?: string;
   downtimes: Array<Downtime>;
   duration: string;

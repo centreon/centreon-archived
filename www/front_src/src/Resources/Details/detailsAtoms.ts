@@ -81,7 +81,7 @@ export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
     return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
   }
 
-  return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
+  return `http://localhost:3000/centreon/api/latest/monitoring/resources/hosts/14`;
 });
 
 export const sendingDetailsAtom = atom(false);
