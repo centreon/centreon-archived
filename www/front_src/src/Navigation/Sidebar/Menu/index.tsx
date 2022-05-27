@@ -19,7 +19,7 @@ import {
   setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
-import { getUrlFromEntry } from '../helpers/getUrlFromEntry';
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 
 import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
@@ -98,10 +98,10 @@ const NavigationMenu = ({
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry(currentPage))) {
+    if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
-    navigate(getUrlFromEntry(currentPage) as string);
+    navigate(searchUrlFromEntry(currentPage) as string);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {

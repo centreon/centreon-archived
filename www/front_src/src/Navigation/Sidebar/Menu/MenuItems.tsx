@@ -22,7 +22,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
-import { getUrlFromEntry } from '../helpers/getUrlFromEntry';
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
   hoveredNavigationItemsAtom,
@@ -102,7 +102,7 @@ const MenuItems = ({
   const canNavigate =
     !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
 
-  const memoizedUrl = useMemo(() => getUrlFromEntry(data) as string, [data]);
+  const memoizedUrl = useMemo(() => searchUrlFromEntry(data) as string, [data]);
 
   const LinkBehavior = forwardRef<
     HTMLAnchorElement,
