@@ -111,14 +111,24 @@ const MenuItems = ({
     <RouterLink ref={ref} to={memoizedUrl} {...props} role={undefined} />
   ));
 
+  const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
+    if (isRoot || !canNavigate) {
+      return e.preventDefault();
+    }
+
+    return undefined;
+  };
+
   return useMemoComponent({
     Component: (
       <ListItemButton
+        disableTouchRipple
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component={!isRoot && canNavigate ? LinkBehavior : 'div'}
+        component={LinkBehavior}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
+        onClick={handleClickItem}
         onDoubleClick={isRoot ? onClick : undefined}
         onMouseEnter={onMouseEnter}
       >
