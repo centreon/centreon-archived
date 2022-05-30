@@ -27,6 +27,11 @@ use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 
 class FindHostCategoryController extends AbstractController
 {
+    /**
+     * @param FindHostCategory $useCase
+     * @param FindHostCategoryPresenter $presenter
+     * @return object
+     */
     public function __invoke(FindHostCategory $useCase, FindHostCategoryPresenter $presenter): object
     {
         $this->denyAccessUnlessGrantedForApiRealtime();

@@ -27,10 +27,12 @@ use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
 
 class FindServiceCategoryController extends AbstractController
 {
-    public function __invoke(
-        FindServiceCategory $useCase,
-        FindServiceCategoryPresenter $presenter
-    ): object {
+    /**
+     * @param FindServiceCategory $useCase
+     * @param FindServiceCategoryPresenter $presenter
+     * @return object
+     */
+    public function __invoke(FindServiceCategory $useCase, FindServiceCategoryPresenter $presenter): object {
         /**
          * Access denied if no rights given to the realtime for the current user
          */

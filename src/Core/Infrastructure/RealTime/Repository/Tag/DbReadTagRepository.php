@@ -41,10 +41,7 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
     }
 
     /**
-     * Retrieves tags by type ID
-     *
-     * @param int $typeId
-     * @return Tag[]
+     * @inheritDoc
      */
     public function findAllByTypeId(int $typeId): array
     {

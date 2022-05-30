@@ -30,6 +30,7 @@ interface ReadTagRepositoryInterface
     /**
      * Find all tags
      *
+     * @param int $typeId
      * @return Tag[]
      * @throws \Throwable
      */
