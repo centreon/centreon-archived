@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class ImcompatibilityResponse implements ResponseStatusInterface
+class IncompatibilityResponse implements ResponseStatusInterface
 {
     /**
      * @param string $message

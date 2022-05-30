@@ -22,20 +22,18 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
-use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\Broker\BrokerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\ImcompatibilityResponse;
+use Core\Application\Common\UseCase\IncompatibilityResponse;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
-use Core\Infrastructure\RealTime\Api\FindHostCategory\FindHostCategoryPresenter;
 
 class FindHostCategory
 {
     use LoggerTrait;
-
-    private const MINIMUM_BBDO_VERSION_SUPPORTED = '3.0.0',
-                  BBDO_VERSION_CONFIG_KEY = 'bbdo_version';
+    use BrokerTrait;
 
     /**
      * @param ReadTagRepositoryInterface $repository
@@ -62,12 +60,7 @@ class FindHostCategory
                 }
             }
         } catch (\Throwable $e) {
-            $this->error(
-                'An error occured while retrieving host categories',
-                [
-                    'trace' => $e->getTraceAsString()
-                ]
-            );
+            $this->error('An error occured while retrieving host categories');
             $presenter->setResponseStatus(new ErrorResponse('An error occured while retrieving host categories'));
             return;
         }
@@ -90,32 +83,11 @@ class FindHostCategory
      * @param FindHostCategoryPresenterInterface $presenter
      * @return void
      */
-    private function handleImcompatibleBBDOVersion(FindHostCategoryPresenterInterface $presenter): void
+    private function handleIncompatibleBBDOVersion(FindHostCategoryPresenterInterface $presenter): void
     {
         $message = 'BBDO protocol version enabled not compatible with this feature. Version needed '
-            . self::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
+            . $this->brokerRepository::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
         $this->error($message);
-        $presenter->setResponseStatus(new ImcompatibilityResponse($message));
-    }
-
-    /**
-     * Checks if at least on monitoring server has BBDO protocol in version 3.0.0
-     *
-     * @return boolean
-     */
-    private function isBBDOVersionCompatible(): bool
-    {
-        $brokerConfigurations = $this->brokerRepository->findAllByParameterName(self::BBDO_VERSION_CONFIG_KEY);
-        foreach ($brokerConfigurations as $brokerConfiguration) {
-            if (
-                version_compare(
-                    $brokerConfiguration->getConfigurationValue(),
-                    self::MINIMUM_BBDO_VERSION_SUPPORTED
-                ) > 0
-            ) {
-                return true;
-            }
-        }
-        return false;
+        $presenter->setResponseStatus(new IncompatibilityResponse($message));
     }
 }

@@ -62,16 +62,18 @@ class Tag
      *
      * @param int $type
      * @return Tag
+     * @throws \InvalidArgumentException
      */
     public function setType(int $type): Tag
     {
-        $this->validateTypeId($type);
+        if (! in_array($type, self::getAvailableTypeIds())) {
+            throw new \InvalidArgumentException('Type Id is not valid');
+        }
 
         $this->type = $type;
 
         return $this;
     }
-
 
     /**
      * @return int
@@ -79,20 +81,6 @@ class Tag
     public function getType(): int
     {
         return $this->type;
-    }
-
-    /**
-     * Checks that $typeId argument is valid. Throws InvalidArgumentException if not
-     *
-     * @param int $typeId
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    private function validateTypeId(int $typeId): void
-    {
-        if (! in_array($typeId, self::getAvailableTypeIds())) {
-            throw new \InvalidArgumentException('Type Id is not valid');
-        }
     }
 
     /**

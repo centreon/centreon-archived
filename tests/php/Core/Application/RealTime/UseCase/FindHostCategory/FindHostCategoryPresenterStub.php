@@ -40,9 +40,6 @@ class FindHostCategoryPresenterStub extends AbstractPresenter implements FindHos
      */
     protected $responseStatus;
 
-    /**
-     * constructor
-     */
     public function __construct()
     {
     }
