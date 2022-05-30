@@ -34,12 +34,19 @@ class FindContactGroups
 {
     use LoggerTrait;
 
+    /**
+     * @param ReadContactGroupRepositoryInterface $repository
+     * @param ContactInterface $user
+     */
     public function __construct(
         private ReadContactGroupRepositoryInterface $repository,
         private ContactInterface $user
     ) {
     }
 
+    /**
+     * @param FindContactGroupsPresenterInterface $presenter
+     */
     public function __invoke(FindContactGroupsPresenterInterface $presenter): void
     {
         try {
