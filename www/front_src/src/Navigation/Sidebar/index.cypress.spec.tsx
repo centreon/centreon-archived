@@ -50,7 +50,7 @@ describe('Navigation menu', () => {
     cy.matchImageSnapshot();
   });
 
-  it('displays the direct child items and highlights the item when hovered ', () => {
+  it('displays the direct child items and highlights the item when hovered', () => {
     cy.get('li').eq(2).trigger('mouseover');
     cy.get('[data-cy=collapse]').should('be.visible');
 
