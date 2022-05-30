@@ -21,11 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Application\UseCase;
+namespace Tests\Core\Contact\Application\UseCase\FindContactTemplates;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Tests\Core\Contact\Application\UseCase\FindContactTemplatesPresenterStub;
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
 use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesResponse;

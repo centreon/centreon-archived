@@ -31,6 +31,11 @@ use Core\Contact\Application\UseCase\FindContactGroups\{
 
 class FindContactGroupsController extends AbstractController
 {
+    /**
+     * @param FindContactGroups $useCase
+     * @param FindContactGroupsPresenterInterface $presenter
+     * @return object
+     */
     public function __invoke(FindContactGroups $useCase, FindContactGroupsPresenterInterface $presenter): object
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();

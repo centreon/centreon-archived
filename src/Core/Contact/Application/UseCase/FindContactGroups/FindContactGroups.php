@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Contact\Application\UseCase\FindContactGroups;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
@@ -31,14 +32,18 @@ class FindContactGroups
 {
     use LoggerTrait;
 
-    public function __construct(private ReadContactGroupRepositoryInterface $repository)
+    public function __construct(private ReadContactGroupRepositoryInterface $repository, private ContactInterface $user)
     {
     }
 
     public function __invoke(FindContactGroupsPresenterInterface $presenter): void
     {
         try {
-            $contactGroups = $this->repository->findAll();
+            if ($this->user->isAdmin()) {
+                $contactGroups = $this->repository->findAll();
+            } else {
+                $contactGroups = $this->repository->findAllForCurrentUser($this->user->getId());
+            }
         } catch(\Throwable $ex) {
             $this->error('An error occured in data storage while getting contact groups', [
                 'trace' => $ex->getTraceAsString()
