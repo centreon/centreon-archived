@@ -6,7 +6,7 @@
 /project/       @centreon/centreon-build
 *.sh            @centreon/centreon-build
 
-/.snyk				            @centreon/centreon-security
+/.snyk				        @centreon/centreon-security
 /sonar-project.properties	@centreon/centreon-security
 
 # @ghost seems deprecated
