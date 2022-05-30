@@ -16857,8 +16857,8 @@ msgstr "Supprimer la relation"
 msgid "Authorization key"
 msgstr "Clé d'autorisation"
 
-msgid "Authorization"
-msgstr "Autorisation"
+msgid "Authorizations"
+msgstr "Autorisations"
 
 msgid "Error while searching for the host template %d"
 msgstr "Erreur lors de la recherche du modèle d'hôte %d"

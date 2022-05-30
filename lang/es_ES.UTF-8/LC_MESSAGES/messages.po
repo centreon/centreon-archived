@@ -15137,7 +15137,7 @@ msgstr ""
 # msgid "Authorization key"
 # msgstr ""
 
-# msgid "Authorization"
+# msgid "Authorizations"
 # msgstr ""
 
 #  msgid "Error while searching for the host template %d"
