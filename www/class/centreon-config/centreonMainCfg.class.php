@@ -153,18 +153,18 @@ class CentreonMainCfg
             'high_host_flap_threshold' => '50.0',
             'soft_state_dependencies' => '0',
             'service_check_timeout' => '60',
-            'host_check_timeout' => '10',
+            'host_check_timeout' => '12',
             'event_handler_timeout' => '30',
             'notification_timeout' => '30',
             'check_for_orphaned_services' => '0',
             'check_for_orphaned_hosts' => '0',
-            'check_service_freshness' => '2',
-            'check_host_freshness' => '2',
+            'check_service_freshness' => '1',
+            'check_host_freshness' => '0',
             'date_format' => 'euro',
             'illegal_object_name_chars' => "~!$%^&*\"|'<>?,()=",
             'illegal_macro_output_chars' => "`~$^&\"|'<>",
-            'use_regexp_matching' => '2',
-            'use_true_regexp_matching' => '2',
+            'use_regexp_matching' => '0',
+            'use_true_regexp_matching' => '0',
             'admin_email' => 'admin@localhost',
             'admin_pager' => 'admin',
             'nagios_comment' => 'Centreon Engine configuration file',
@@ -173,8 +173,8 @@ class CentreonMainCfg
             'nagios_server_id' => '1',
             'enable_predictive_host_dependency_checks' => '1',
             'enable_predictive_service_dependency_checks' => '1',
-            'passive_host_checks_are_soft' => '2',
-            'enable_environment_macros' => '2',
+            'passive_host_checks_are_soft' => '0',
+            'enable_environment_macros' => '0',
             'debug_file' => '/var/log/centreon-engine/centengine.debug',
             'debug_level' => '0',
             'debug_level_opt' => '0',
@@ -430,7 +430,6 @@ class CentreonMainCfg
         );
         foreach ($params as &$param) {
             if (empty($param)) {
-                // TODO : change to DEFAULT
                 $param = null;
             }
         }

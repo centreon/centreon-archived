@@ -63,7 +63,7 @@ UPDATE cfg_nagios set `check_for_orphaned_hosts` = '1' WHERE `check_for_orphaned
 UPDATE cfg_nagios set `check_for_orphaned_services` = '1' WHERE `check_for_orphaned_services` = '2';
 UPDATE cfg_nagios set `soft_state_dependencies` = '0' WHERE `soft_state_dependencies` = '2';
 UPDATE cfg_nagios set `check_host_freshness` = '0' WHERE `check_host_freshness` = '2';
-UPDATE cfg_nagios set `check_service_freshness` = '0' WHERE `check_service_freshness` = '2';
+UPDATE cfg_nagios set `check_service_freshness` = '1' WHERE `check_service_freshness` = '2';
 UPDATE cfg_nagios set `enable_flap_detection` = '0' WHERE `enable_flap_detection` = '2';
 UPDATE cfg_nagios set `enable_notifications` = '1' WHERE `enable_notifications` = '2';
 UPDATE cfg_nagios set `execute_service_checks` = '1' WHERE `execute_service_checks` = '2';

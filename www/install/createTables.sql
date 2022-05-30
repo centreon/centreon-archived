@@ -476,7 +476,6 @@ CREATE TABLE `cfg_centreonbroker_info` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_nagios` (
-  /* TODO : change default to actual default value */
   `nagios_id` int(11) NOT NULL AUTO_INCREMENT,
   `nagios_name` varchar(255) DEFAULT NULL,
   `use_timezone` int(11) unsigned DEFAULT NULL,
