@@ -1,15 +1,16 @@
-/.github/       @centreon/centreon-ci
-/.git*          @centreon/centreon-ci
-/.project       @centreon/centreon-ci
-/Jenkinsfile    @centreon/centreon-ci
-/selinux/       @centreon/centreon-ci
-/project/       @centreon/centreon-ci
-*.sh            @centreon/centreon-ci
+/.github/       @centreon/centreon-build
+/.git*          @centreon/centreon-build
+/.project       @centreon/centreon-build
+/Jenkinsfile    @centreon/centreon-build
+/selinux/       @centreon/centreon-build
+/project/       @centreon/centreon-build
+*.sh            @centreon/centreon-build
 
-.snyk				@centreon/centreon-security
-sonar-project.properties	@centreon/centreon-security
+/.snyk				            @centreon/centreon-security
+/sonar-project.properties	@centreon/centreon-security
 
-*.po            @ghost
+# @ghost seems deprecated
+# *.po            @ghost
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php
