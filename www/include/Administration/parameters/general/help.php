@@ -70,6 +70,15 @@ $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring con
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
 
 /**
+ * Monitoring
+ */
+$help['tip_resource_status_mode'] = dgettext(
+    'help',
+    'Mode used to retrieve information displayed in Resource Status page. The optimized mode will only be available '
+    . ' and functional when using the BBDO 3.0.0 protocol for the collect engine.'
+);
+
+/**
  * Notification
  */
 
