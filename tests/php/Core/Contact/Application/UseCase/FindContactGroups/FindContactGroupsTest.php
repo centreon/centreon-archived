@@ -23,8 +23,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\Contact\Application\UseCase\FindContactGroups;
 
+use Centreon\Domain\Contact\Contact;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Application\Common\UseCase\ForbiddenResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroups;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
@@ -56,6 +58,28 @@ it('should present an ErrorResponse while an exception occured', function () {
     );
 });
 
+it('should present an ForbiddenResponse if the user doesnt have the read menu access to contact group', function () {
+    $useCase = new FindContactGroups($this->repository, $this->user);
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->user
+        ->expects($this->once())
+        ->method('hasTopologyRole')
+        ->with(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)
+        ->willReturn(false);
+
+    $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
+    $useCase($presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(ForbiddenResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'You are not allowed to reach this resource'
+    );
+});
+
 
 it('should call the method findAll if the user is admin', function () {
     $useCase = new FindContactGroups($this->repository, $this->user);
@@ -72,7 +96,7 @@ it('should call the method findAll if the user is admin', function () {
     $useCase($presenter);
 });
 
-it('should call the method findAllForCurrentUser if the user is not admin', function () {
+it('should call the method FindAllByUserId if the user is not admin', function () {
     $useCase = new FindContactGroups($this->repository, $this->user);
     $this->user
         ->expects($this->once())
@@ -81,12 +105,18 @@ it('should call the method findAllForCurrentUser if the user is not admin', func
 
     $this->user
         ->expects($this->once())
+        ->method('hasTopologyRole')
+        ->with(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)
+        ->willReturn(true);
+
+    $this->user
+        ->expects($this->once())
         ->method('isAdmin')
         ->willReturn(false);
 
     $this->repository
         ->expects($this->once())
-        ->method('findAllForCurrentUser')
+        ->method('FindAllByUserId')
         ->with(1);
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);

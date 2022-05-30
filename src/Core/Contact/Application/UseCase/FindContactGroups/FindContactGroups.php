@@ -23,17 +23,21 @@ declare(strict_types=1);
 
 namespace Core\Contact\Application\UseCase\FindContactGroups;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Application\Common\UseCase\ForbiddenResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 
 class FindContactGroups
 {
     use LoggerTrait;
 
-    public function __construct(private ReadContactGroupRepositoryInterface $repository, private ContactInterface $user)
-    {
+    public function __construct(
+        private ReadContactGroupRepositoryInterface $repository,
+        private ContactInterface $user
+    ) {
     }
 
     public function __invoke(FindContactGroupsPresenterInterface $presenter): void
@@ -42,7 +46,11 @@ class FindContactGroups
             if ($this->user->isAdmin()) {
                 $contactGroups = $this->repository->findAll();
             } else {
-                $contactGroups = $this->repository->findAllForCurrentUser($this->user->getId());
+                if (! $this->user->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)) {
+                    $presenter->setResponseStatus(new ForbiddenResponse('You are not allowed to reach this resource'));
+                    return;
+                }
+                $contactGroups = $this->repository->findAllByUserId($this->user->getId());
             }
         } catch (\Throwable $ex) {
             $this->error('An error occured in data storage while getting contact groups', [

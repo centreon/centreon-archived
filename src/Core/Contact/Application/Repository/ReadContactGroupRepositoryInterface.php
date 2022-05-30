@@ -35,9 +35,10 @@ interface ReadContactGroupRepositoryInterface
     public function findAll(): array;
 
     /**
-     * Get all contact groups where user is member of
+     * Get all contact groups of a contact.
      *
+     * @param integer $userId
      * @return array<ContactGroup>
      */
-    public function findAllForCurrentUser(int $contactId): array;
+    public function findAllByUserId(int $userId): array;
 }
