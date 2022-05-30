@@ -3,12 +3,12 @@ export interface NamedEntity {
   name: string;
 }
 
-export interface Authorization {
+export interface AuthorizationRelation {
   accessGroup: NamedEntity;
   name: string;
 }
 
-export interface AuthorizationToAPI {
+export interface AuthorizationRelationToAPI {
   access_group: NamedEntity;
   name: string;
 }
@@ -16,8 +16,9 @@ export interface AuthorizationToAPI {
 export interface OpenidConfiguration {
   aliasBindAttribute?: string | null;
   authenticationType: string | null;
-  authorizationClaim: Array<Authorization>;
+  authorizationClaim?: string | null;
   authorizationEndpoint: string | null;
+  authorizationRelations: Array<AuthorizationRelation>;
   autoImport: boolean;
   baseUrl: string | null;
   blacklistClientAddresses: Array<string>;
@@ -42,8 +43,9 @@ export interface OpenidConfiguration {
 export interface OpenidConfigurationToAPI {
   alias_bind_attribute: string | null;
   authentication_type: string | null;
-  authorization_claim: Array<AuthorizationToAPI>;
+  authorization_claim: string | null;
   authorization_endpoint: string | null;
+  authorization_relations: Array<AuthorizationRelationToAPI>;
   auto_import: boolean;
   base_url: string | null;
   blacklist_client_addresses: Array<string>;

@@ -72,7 +72,7 @@ const Form = ({
     )(formikValues);
 
     const contactGroupError =
-      not(isEmpty(formikValues.authorizationClaim)) &&
+      not(isEmpty(formikValues.authorizationRelations)) &&
       isNil(formikValues.contactGroup)
         ? { contactGroup: t(labelRequired) }
         : undefined;

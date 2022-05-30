@@ -16,6 +16,7 @@ interface FieldsTableGetRequiredProps {
 }
 
 export interface InputProps {
+  additionalFieldsToMemoize?: Array<string>;
   additionalLabel?: string;
   additionalMemoProps?: Array<unknown>;
   category: string;

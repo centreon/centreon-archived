@@ -31,8 +31,9 @@ import {
   labelAuthorizationValue,
   labelDefineRelationAuthorizationValueAndAccessGroup,
   labelDeleteRelation,
+  labelAuthorizationKey,
 } from '../translatedLabels';
-import { AuthenticationType, Authorization } from '../models';
+import { AuthenticationType, AuthorizationRelation } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
@@ -49,10 +50,12 @@ import {
 
 const isAutoImportDisabled = (values: FormikValues): boolean =>
   not(prop('autoImport', values));
+
 const isAutoImportEnabled = (values: FormikValues): boolean =>
   prop('autoImport', values);
-const isAuthorizationClaimFilled = (values: FormikValues): boolean =>
-  not(isEmpty(prop('authorizationClaim', values)));
+
+const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
+  not(isEmpty(prop('authorizationRelations', values)));
 
 export const inputs: Array<InputProps> = [
   {
@@ -168,7 +171,8 @@ export const inputs: Array<InputProps> = [
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value) => equals(AuthenticationType.ClientSecretBasic, value),
+    getChecked: (value): boolean =>
+      equals(AuthenticationType.ClientSecretBasic, value),
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },
@@ -221,13 +225,20 @@ export const inputs: Array<InputProps> = [
     category: labelAuthorization,
     endpoint: contactGroupsEndpoint,
     fieldName: 'contactGroup',
-    getRequired: isAuthorizationClaimFilled,
+    getRequired: isAuthorizationRelationsFilled,
     label: labelContactGroup,
     type: InputType.ConnectedAutocomplete,
   },
   {
     category: labelAuthorization,
     fieldName: 'authorizationClaim',
+    label: labelAuthorizationKey,
+    type: InputType.Text,
+  },
+  {
+    additionalFieldsToMemoize: ['contactGroup'],
+    category: labelAuthorization,
+    fieldName: 'authorizationRelations',
     fieldsTableConfiguration: {
       columns: [
         {
@@ -248,17 +259,18 @@ export const inputs: Array<InputProps> = [
       },
       deleteLabel: labelDeleteRelation,
       getRequired: ({ values, index }): boolean => {
-        const rowValues = path<Authorization>(
-          ['authorizationClaim', index],
+        const tableValues = prop('authorizationRelations', values);
+
+        const rowValues = path<AuthorizationRelation>(
+          ['authorizationRelations', index],
           values,
         );
 
-        return (
-          not(isNil(rowValues)) &&
-          (not(isNil(prop('contactGroup', values))) ||
-            isEmpty(rowValues?.name) ||
-            isNil(rowValues?.accessGroup))
-        );
+        return isNil(prop('contactGroup', values))
+          ? not(isNil(rowValues))
+          : isNil(tableValues) ||
+              isEmpty(rowValues?.name) ||
+              isNil(rowValues?.accessGroup);
       },
     },
     label: labelDefineRelationAuthorizationValueAndAccessGroup,

@@ -2,7 +2,7 @@ import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 import {
-  Authorization,
+  AuthorizationRelation,
   NamedEntity,
   OpenidConfiguration,
 } from '../Openid/models';
@@ -58,7 +58,7 @@ const getNamedEntityDecoder = (
     title,
   );
 
-const authorization = JsonDecoder.object<Authorization>(
+const authorization = JsonDecoder.object<AuthorizationRelation>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
     name: JsonDecoder.string,
@@ -74,11 +74,12 @@ export const openidConfigurationDecoder =
     {
       aliasBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
-      authorizationClaim: JsonDecoder.array(
-        authorization,
-        'Authorization claim',
-      ),
+      authorizationClaim: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
+      authorizationRelations: JsonDecoder.array(
+        authorization,
+        'Authorization relations',
+      ),
       autoImport: JsonDecoder.boolean,
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
       blacklistClientAddresses: JsonDecoder.array(
@@ -118,6 +119,7 @@ export const openidConfigurationDecoder =
       authenticationType: 'authentication_type',
       authorizationClaim: 'authorization_claim',
       authorizationEndpoint: 'authorization_endpoint',
+      authorizationRelations: 'authorization_relations',
       autoImport: 'auto_import',
       baseUrl: 'base_url',
       blacklistClientAddresses: 'blacklist_client_addresses',

@@ -5,8 +5,8 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
-  Authorization,
-  AuthorizationToAPI,
+  AuthorizationRelation,
+  AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
 } from '../Openid/models';
@@ -70,15 +70,15 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   };
 };
 
-const adaptAuthorizationClaimToAPI = (
-  authorizationClaim: Array<Authorization>,
-): Array<AuthorizationToAPI> =>
+const adaptAuthorizationRelationsToAPI = (
+  authorizationRelations: Array<AuthorizationRelation>,
+): Array<AuthorizationRelationToAPI> =>
   map(
-    ({ name, accessGroup }: Authorization) => ({
+    ({ name, accessGroup }: AuthorizationRelation) => ({
       access_group: accessGroup,
       name,
     }),
-    authorizationClaim,
+    authorizationRelations,
   );
 
 export const adaptOpenidConfigurationToAPI = ({
@@ -105,11 +105,14 @@ export const adaptOpenidConfigurationToAPI = ({
   fullnameBindAttribute,
   contactGroup,
   authorizationClaim,
+  authorizationRelations,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   alias_bind_attribute: aliasBindAttribute || null,
   authentication_type: authenticationType || null,
-  authorization_claim: adaptAuthorizationClaimToAPI(authorizationClaim) || [],
+  authorization_claim: authorizationClaim || null,
   authorization_endpoint: authorizationEndpoint || null,
+  authorization_relations:
+    adaptAuthorizationRelationsToAPI(authorizationRelations) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
   blacklist_client_addresses: blacklistClientAddresses,

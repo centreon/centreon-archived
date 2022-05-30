@@ -1,5 +1,5 @@
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, length, pipe, prop, type } from 'ramda';
+import { equals, length, pick, pipe, prop, type } from 'ramda';
 import { useAtomValue } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,6 @@ import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { InputPropsWithoutCategory } from '../models';
-import { Authorization } from '../../Openid/models';
 
 import Row from './Row';
 
@@ -39,6 +38,7 @@ const FieldsTable = ({
   fieldsTableConfiguration,
   fieldName,
   label,
+  additionalFieldsToMemoize,
 }: InputPropsWithoutCategory): JSX.Element => {
   const classes = useStyles({
     columns: fieldsTableConfiguration?.columns.length,
@@ -49,9 +49,12 @@ const FieldsTable = ({
 
   const { values, errors } = useFormikContext<FormikValues>();
 
-  const tableValues = prop(fieldName, values) as Array<Authorization | null>;
+  const tableValues = prop(fieldName, values);
 
   const fieldsTableError = prop(fieldName, errors) as string | undefined;
+
+  const fieldsToMemoize =
+    additionalFieldsToMemoize && pick(additionalFieldsToMemoize, values);
 
   return useMemoComponent({
     Component: (
@@ -88,7 +91,7 @@ const FieldsTable = ({
         )}
       </div>
     ),
-    memoProps: [tableValues, fieldsTableError, themeMode],
+    memoProps: [tableValues, fieldsTableError, themeMode, fieldsToMemoize],
   });
 };
 

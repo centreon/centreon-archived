@@ -36,7 +36,9 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       },
     ),
     authenticationType: Yup.string().required(t(labelRequired)),
-    authorizationClaim: Yup.array()
+    authorizationClaim: Yup.string().nullable(),
+    authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
+    authorizationRelations: Yup.array()
       .of(authorizationSchema)
       .when('contactGroup', (contactGroup, schema) => {
         return contactGroup
@@ -45,7 +47,6 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
               .required(t(labelRequired))
           : schema.nullable();
       }),
-    authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
     autoImport: Yup.boolean().required(t(labelRequired)),
     baseUrl: Yup.string()
       .matches(urlRegexp, t(labelInvalidURL))
