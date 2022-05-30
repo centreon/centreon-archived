@@ -44,7 +44,7 @@ class FindContactGroups
             } else {
                 $contactGroups = $this->repository->findAllForCurrentUser($this->user->getId());
             }
-        } catch(\Throwable $ex) {
+        } catch (\Throwable $ex) {
             $this->error('An error occured in data storage while getting contact groups', [
                 'trace' => $ex->getTraceAsString()
             ]);
@@ -54,6 +54,6 @@ class FindContactGroups
             return;
         }
 
-        $presenter->present(new FindContactGroupsResponse($contactGroups));
+        $presenter->present(new FindContactGroupsResponse());
     }
 }

@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Contact\Application\UseCase\FindContactGroups;
 
-use Core\Contact\Domain\Model\ContactGroup;
-
 class FindContactGroupsResponse
 {
 }

@@ -48,7 +48,7 @@ it('should present an ErrorResponse while an exception occured', function () {
         ->willThrowException(new \Exception());
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
-    $useCase($presenter, $this->user);
+    $useCase($presenter);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
@@ -69,7 +69,7 @@ it('should call the method findAll if the user is admin', function () {
         ->method('findAll');
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
-    $useCase($presenter, $this->user);
+    $useCase($presenter);
 });
 
 it('should call the method findAllForCurrentUser if the user is not admin', function () {
@@ -90,5 +90,5 @@ it('should call the method findAllForCurrentUser if the user is not admin', func
         ->with(1);
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
-    $useCase($presenter, $this->user);
+    $useCase($presenter);
 });
