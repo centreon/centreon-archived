@@ -15569,3 +15569,24 @@ msgstr ""
 
 # msgid "Do not use configured proxy to connect to this server"
 # msgstr ""
+
+# msgid "At least one authorization relation is required"
+# msgstr ""
+
+# msgid "Authorization value"
+# msgstr ""
+
+# msgid "Access group"
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group"
+# msgstr ""
+
+# msgid "Delete the relation"
+# msgstr ""
+
+# msgid "Authorization key"
+# msgstr ""
+
+# msgid "Authorization"
+# msgstr ""

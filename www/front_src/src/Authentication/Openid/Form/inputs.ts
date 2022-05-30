@@ -37,7 +37,7 @@ import { AuthenticationType, AuthorizationRelation } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
-  labelAuthorization,
+  labelAuthorizations,
   labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
@@ -222,7 +222,7 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
-    category: labelAuthorization,
+    category: labelAuthorizations,
     endpoint: contactGroupsEndpoint,
     fieldName: 'contactGroup',
     getRequired: isAuthorizationRelationsFilled,
@@ -230,14 +230,14 @@ export const inputs: Array<InputProps> = [
     type: InputType.ConnectedAutocomplete,
   },
   {
-    category: labelAuthorization,
+    category: labelAuthorizations,
     fieldName: 'authorizationClaim',
     label: labelAuthorizationKey,
     type: InputType.Text,
   },
   {
     additionalFieldsToMemoize: ['contactGroup'],
-    category: labelAuthorization,
+    category: labelAuthorizations,
     fieldName: 'authorizationRelations',
     fieldsTableConfiguration: {
       columns: [

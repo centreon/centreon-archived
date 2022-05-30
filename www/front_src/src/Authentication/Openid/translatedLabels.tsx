@@ -37,11 +37,10 @@ export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
 export const labelContactGroup = 'Contact group';
 export const labelAtLeastOneAuthorizationIsRequired =
-  'At least one authorization is required';
-export const labelAuthorizationsToClaim = 'Authorizations to claim';
+  'At least one authorization relation is required';
 export const labelAuthorizationValue = 'Authorization value';
 export const labelAccessGroup = 'Access group';
 export const labelDefineRelationAuthorizationValueAndAccessGroup =
-  'Define relation between authorization value and access group';
-export const labelDeleteRelation = 'Delete relation';
+  'Define the relation between authorization value and access group';
+export const labelDeleteRelation = 'Delete the relation';
 export const labelAuthorizationKey = 'Authorization key';

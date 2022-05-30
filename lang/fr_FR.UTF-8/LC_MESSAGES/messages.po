@@ -16838,3 +16838,24 @@ msgstr "Le modèle de contact '%s' n'existe pas"
 
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
+
+msgid "At least one authorization relation is required"
+msgstr "Au moins une relation d'autorisation est requise"
+
+msgid "Authorization value"
+msgstr "Valeur d'autorisation"
+
+msgid "Access group"
+msgstr "Groupe d'accès"
+
+msgid "Define the relation between authorization value and access group"
+msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès"
+
+msgid "Delete the relation"
+msgstr "Supprimer la relation"
+
+msgid "Authorization key"
+msgstr "Clé d'autorisation"
+
+msgid "Authorization"
+msgstr "Autorisation"
