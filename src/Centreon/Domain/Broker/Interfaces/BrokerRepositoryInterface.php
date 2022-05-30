@@ -41,6 +41,7 @@ interface BrokerRepositoryInterface
      * Returns value of the parameter on all monitoring servers
      *
      * @return BrokerConfiguration[]
+     * @throws \Throwable
      */
     public function findAllByParameterName(string $parameterName): array;
 }
