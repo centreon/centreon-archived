@@ -22,7 +22,11 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindServiceCategory;
 
+use Centreon\Domain\Broker\BrokerConfiguration;
 use Core\Domain\RealTime\Model\Tag;
+use Core\Application\Common\UseCase\ErrorResponse;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
+use Core\Application\Common\UseCase\ImcompatibilityResponse;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
 use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategoryPresenterStub;
@@ -30,16 +34,62 @@ use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCateg
 it('Find all service categories', function () {
     $category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
     $repository->expects($this->once())
         ->method('findAllByTypeId')
         ->willReturn([$category]);
 
-    $findServiceCategoryUseCase = new FindServiceCategory($repository);
+    $useCase = new FindServiceCategory($repository, $brokerRepository);
 
-    $findServiceCategoryPresenter = new FindServiceCategoryPresenterStub();
-    $findServiceCategoryUseCase($findServiceCategoryPresenter);
+    $presenter = new FindServiceCategoryPresenterStub();
+    $useCase($presenter);
 
-    expect($findServiceCategoryPresenter->response->tags)->toHaveCount(1);
-    expect($findServiceCategoryPresenter->response->tags[0]['id'])->toBe($category->getId());
-    expect($findServiceCategoryPresenter->response->tags[0]['name'])->toBe($category->getName());
+    expect($presenter->response->tags)->toHaveCount(1);
+    expect($presenter->response->tags[0]['id'])->toBe($category->getId());
+    expect($presenter->response->tags[0]['name'])->toBe($category->getName());
+});
+
+it('Find all service categories repository error', function () {
+    $repository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+    $repository->expects($this->once())
+        ->method('findAllByTypeId')
+        ->willThrowException(new \Exception());
+
+    $useCase = new FindServiceCategory($repository, $brokerRepository);
+
+    $presenter = new FindServiceCategoryPresenterStub();
+    $useCase($presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'An error occured while retrieving service categories'
+    );
+});
+
+it('Find all service categories repository bbdo version imcompatible', function () {
+    $repository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+    $repository->expects($this->once())
+        ->method('findAllByTypeId')
+        ->willReturn([]);
+
+    $brokerConfiguration = (new BrokerConfiguration())
+        ->setConfigurationKey('bbdo_version')
+        ->setConfigurationValue('2.0.0');
+
+    $brokerRepository->expects($this->once())
+        ->method('findAllByParameterName')
+        ->with('bbdo_version')
+        ->willReturn([$brokerConfiguration]);
+
+    $useCase = new FindServiceCategory($repository, $brokerRepository);
+
+    $presenter = new FindServiceCategoryPresenterStub();
+    $useCase($presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(ImcompatibilityResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'BBDO protocol version enabled not compatible with this feature. Version needed 3.0.0 or higher'
+    );
 });

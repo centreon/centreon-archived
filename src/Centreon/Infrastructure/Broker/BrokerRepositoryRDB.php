@@ -76,4 +76,31 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
 
         return $brokerConfigurations;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllByParameterName(string $parameterName): array
+    {
+        $statement = $this->db->prepare('
+            SELECT config_value, cfgbi.config_id AS id
+            FROM cfg_centreonbroker_info cfgbi
+            INNER JOIN cfg_centreonbroker AS cfgb
+                ON cfgbi.config_id = cfgb.config_id
+            WHERE config_key = :configKey
+        ');
+
+        $statement->bindValue(':configKey', $parameterName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        $brokerConfigurations = [];
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $brokerConfigurations[] = (new BrokerConfiguration())
+                ->setId((int) $result['id'])
+                ->setConfigurationKey($parameterName)
+                ->setConfigurationValue($result['config_value']);
+        }
+
+        return $brokerConfigurations;
+    }
 }

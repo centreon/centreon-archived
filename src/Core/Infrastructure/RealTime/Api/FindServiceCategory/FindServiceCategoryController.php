@@ -32,7 +32,8 @@ class FindServiceCategoryController extends AbstractController
      * @param FindServiceCategoryPresenter $presenter
      * @return object
      */
-    public function __invoke(FindServiceCategory $useCase, FindServiceCategoryPresenter $presenter): object {
+    public function __invoke(FindServiceCategory $useCase, FindServiceCategoryPresenter $presenter): object
+    {
         /**
          * Access denied if no rights given to the realtime for the current user
          */

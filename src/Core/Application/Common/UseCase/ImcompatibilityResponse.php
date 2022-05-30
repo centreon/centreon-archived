@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,26 +21,22 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\Broker\Interfaces;
+namespace Core\Application\Common\UseCase;
 
-use Centreon\Domain\Broker\BrokerConfiguration;
-
-interface BrokerRepositoryInterface
+class ImcompatibilityResponse implements ResponseStatusInterface
 {
     /**
-     * @param integer $monitoringServerId
-     * @param string $configKey
-     * @return BrokerConfiguration[]
+     * @param string $message
      */
-    public function findByMonitoringServerAndParameterName(
-        int $monitoringServerId,
-        string $configKey
-    ): array;
+    public function __construct(private string $message)
+    {
+    }
 
     /**
-     * Returns value of the parameter on all monitoring servers
-     *
-     * @return BrokerConfiguration[]
+     * @inheritDoc
      */
-    public function findAllByParameterName(string $parameterName): array;
+    public function getMessage(): string
+    {
+        return _($this->message);
+    }
 }
