@@ -57,7 +57,7 @@ class FindHostCategory
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
             if (empty($hostCategories)) {
                 if (! $this->isBBDOVersionCompatible()) {
-                    $this->handleImcompatibleBBDOVersion($presenter);
+                    $this->handleIncompatibleBBDOVersion($presenter);
                     return;
                 }
             }
