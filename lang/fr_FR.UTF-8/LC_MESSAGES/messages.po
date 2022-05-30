@@ -16838,3 +16838,6 @@ msgstr "Le modèle de contact '%s' n'existe pas"
 
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
+
+msgid "You are not allowed to access contact groups"
+msgstr "Vous n'êtes pas autorisé à accéder aux groupes de contacts"

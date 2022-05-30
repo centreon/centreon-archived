@@ -76,7 +76,7 @@ it('should present an ForbiddenResponse if the user doesnt have the read menu ac
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ForbiddenResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'You are not allowed to reach this resource'
+        'You are not allowed to access contact groups'
     );
 });
 

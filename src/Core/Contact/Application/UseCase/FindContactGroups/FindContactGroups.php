@@ -47,7 +47,10 @@ class FindContactGroups
                 $contactGroups = $this->repository->findAll();
             } else {
                 if (! $this->user->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)) {
-                    $presenter->setResponseStatus(new ForbiddenResponse('You are not allowed to reach this resource'));
+                    $this->error('User doesn\'t have sufficient right to see contact groups');
+                    $presenter->setResponseStatus(
+                        new ForbiddenResponse('You are not allowed to access contact groups')
+                    );
                     return;
                 }
                 $contactGroups = $this->repository->findAllByUserId($this->user->getId());
