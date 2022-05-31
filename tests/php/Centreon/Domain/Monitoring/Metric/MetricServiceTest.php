@@ -27,7 +27,7 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface;
 use Centreon\Domain\Monitoring\Metric\MetricService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class MetricServiceTest extends TestCase

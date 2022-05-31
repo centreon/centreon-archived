@@ -25,7 +25,7 @@ namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindHostNotificationPolicy;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadHostNotificationRepositoryInterface;

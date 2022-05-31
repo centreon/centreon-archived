@@ -32,8 +32,8 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
 /**

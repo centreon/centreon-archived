@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Security;
+namespace Core\Security\Domain\AccessGroup\Model;
 
 class AccessGroup
 {

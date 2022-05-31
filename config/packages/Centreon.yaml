@@ -86,8 +86,8 @@ services:
         public: true
 
     # Authentication
-    Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
-        class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
+    Core\Security\Application\Repository\AccessGroupRepositoryInterface:
+        class: Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters

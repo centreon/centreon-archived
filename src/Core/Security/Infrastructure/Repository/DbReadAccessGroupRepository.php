@@ -19,11 +19,11 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Security;
+namespace Core\Security\Infrastructure\Repository;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 /**
@@ -31,7 +31,7 @@ use Centreon\Infrastructure\DatabaseConnection;
  *
  * @package Centreon\Infrastructure\Security
  */
-final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface
+final class DbReadAccessGroupRepository implements AccessGroupRepositoryInterface
 {
     /**
      * @var DatabaseConnection
@@ -39,7 +39,7 @@ final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface
     private $pdo;
 
     /**
-     * AccessGroupRepositoryRDB constructor.
+     * DbReadAccessGroupRepository constructor.
      *
      * @param DatabaseConnection $pdo
      */

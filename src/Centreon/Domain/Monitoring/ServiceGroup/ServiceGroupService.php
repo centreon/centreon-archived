@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
 
 final class ServiceGroupService extends AbstractCentreonService implements ServiceGroupServiceInterface
 {
