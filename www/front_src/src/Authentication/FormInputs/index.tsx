@@ -14,6 +14,7 @@ import {
   not,
   pluck,
   prop,
+  propEq,
   reduce,
   sort,
   toPairs,
@@ -21,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@mui/styles';
-import { Divider, Typography } from '@mui/material';
+import { Divider, IconButton, Tooltip, Typography } from '@mui/material';
 
 import {
   Category,
@@ -66,12 +67,21 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  categoryTitle: {
+    alignItems: 'center',
+    columnGap: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'row',
+  },
   inputWrapper: { width: '100%' },
   inputs: {
     display: 'flex',
     flexDirection: 'column',
     marginTop: theme.spacing(1),
     rowGap: theme.spacing(2),
+  },
+  tooltip: {
+    maxWidth: theme.spacing(60),
   },
 }));
 
@@ -126,33 +136,58 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
 
   return (
     <div>
-      {toPairs(sortedInputsByCategory).map(([category, categorizedInputs]) => (
-        <div key={category}>
-          <div className={classes.category}>
-            <Typography variant="h5">{t(category)}</Typography>
-            <div className={classes.inputs}>
-              {categorizedInputs.map((inputProps) => {
-                const Input = getInput(inputProps.type);
+      {toPairs(sortedInputsByCategory).map(
+        ([categoryName, categorizedInputs]) => {
+          const { EndIcon, TooltipContent } = find(
+            propEq('name', categoryName),
+            categories,
+          ) as Category;
 
-                return (
-                  <div className={classes.inputWrapper} key={inputProps.label}>
-                    {inputProps.additionalLabel && (
-                      <Typography
-                        className={classes.additionalLabel}
-                        variant="body1"
+          return (
+            <div key={categoryName}>
+              <div className={classes.category}>
+                <div className={classes.categoryTitle}>
+                  <Typography variant="h5">{t(categoryName)}</Typography>
+                  <Tooltip
+                    classes={{
+                      tooltip: classes.tooltip,
+                    }}
+                    placement="top"
+                    title={TooltipContent ? <TooltipContent /> : ''}
+                  >
+                    <IconButton size="small">
+                      {EndIcon && <EndIcon fontSize="small" />}
+                    </IconButton>
+                  </Tooltip>
+                </div>
+                <div className={classes.inputs}>
+                  {categorizedInputs.map((inputProps) => {
+                    const Input = getInput(inputProps.type);
+
+                    return (
+                      <div
+                        className={classes.inputWrapper}
+                        key={inputProps.label}
                       >
-                        {t(inputProps.additionalLabel)}
-                      </Typography>
-                    )}
-                    <Input {...inputProps} />
-                  </div>
-                );
-              })}
+                        {inputProps.additionalLabel && (
+                          <Typography
+                            className={classes.additionalLabel}
+                            variant="body1"
+                          >
+                            {t(inputProps.additionalLabel)}
+                          </Typography>
+                        )}
+                        <Input {...inputProps} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              {not(equals(lastCategory, categoryName)) && <Divider />}
             </div>
-          </div>
-          {not(equals(lastCategory, category)) && <Divider />}
-        </div>
-      ))}
+          );
+        },
+      )}
     </div>
   );
 };

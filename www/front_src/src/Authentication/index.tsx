@@ -8,6 +8,7 @@ import { Responsive } from '@visx/visx';
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
 
@@ -29,6 +30,7 @@ import { Category } from './FormInputs/models';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
+import Description from './Openid/Description';
 
 const panels = [
   {
@@ -69,6 +71,8 @@ export const categories: Array<Category> = [
     order: 3,
   },
   {
+    EndIcon: HelpOutlineIcon,
+    TooltipContent: Description,
     name: labelAuthorizations,
     order: 4,
   },

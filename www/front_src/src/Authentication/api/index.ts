@@ -34,7 +34,8 @@ export const getProviderConfiguration =
   (cancelToken: CancelToken) =>
   (): Promise<Configuration> =>
     getData<Configuration>(cancelToken)({
-      endpoint: authenticationProvidersEndpoint(type),
+      endpoint:
+        'http://localhost:5004/centreon/api/latest/administration/authentication/providers/openid',
     });
 
 interface PutProviderConfiguration<Configuration, ConfigurationToAPI> {

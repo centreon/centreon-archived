@@ -1,5 +1,7 @@
 import { FormikValues } from 'formik';
 
+import { SvgIconProps } from '@mui/material';
+
 export enum InputType {
   Switch,
   Radio,
@@ -46,6 +48,8 @@ export interface InputProps {
 export type InputPropsWithoutCategory = Omit<InputProps, 'category'>;
 
 export interface Category {
+  EndIcon?: (props: SvgIconProps) => JSX.Element;
+  TooltipContent?: () => JSX.Element;
   name: string;
   order: number;
 }
