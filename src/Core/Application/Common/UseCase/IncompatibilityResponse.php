@@ -23,20 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class IncompatibilityResponse implements ResponseStatusInterface
+class IncompatibilityResponse extends ErrorResponse
 {
-    /**
-     * @param string $message
-     */
-    public function __construct(private string $message)
-    {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMessage(): string
-    {
-        return _($this->message);
-    }
 }
