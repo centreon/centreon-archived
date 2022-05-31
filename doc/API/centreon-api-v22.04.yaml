@@ -4559,6 +4559,11 @@ components:
               description: "Contact group name"
               example: "Default"
         authorization_claim:
+          type: string
+          description: "Authorization claim"
+          example: "groups"
+          nullable: true
+        authorization_relations:
           type: array
           items:
             type: object

@@ -16,6 +16,9 @@ parameters:
     debug_log_file: '%log_path%/centreon-web.log'
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
     curl.timeout: 60
+    resource.status.repository.legacy: 'legacy'
+    env(APP_RESOURCE_STATUS_REPOSITORY_MODE): '%resource.status.repository.legacy%'
+    resource.status.repository: '%env(APP_RESOURCE_STATUS_REPOSITORY_MODE)%'
     debug_level: "%env(int:DEBUG_LEVEL)%"
     env(DEBUG_CONTACT): null
 
@@ -233,8 +236,14 @@ services:
         Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
 
-    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
-        class: Centreon\Domain\Monitoring\ResourceService
+    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+        factory: ['@Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory', 'createResourceRepository']
+
+    Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory:
+        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory
+        arguments: ['@=parameter("resource.status.repository") === parameter("resource.status.repository.legacy")
+                ? service("Centreon\\Infrastructure\\Monitoring\\Resource\\ResourceRepositoryRDB")
+                : service("Centreon\\Infrastructure\\Monitoring\\Resource\\DbReadResourceRepository")']
 
     Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurations:
         arguments:
@@ -244,19 +253,18 @@ services:
     Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']
 
-    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
+
+    Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
 
-#    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-#        class: Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository
-#        calls:
-#            - method: setSqlRequestTranslator
-#              arguments: ['@sqlRequestTranslator']
+    Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository:
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
 
     Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
         class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
