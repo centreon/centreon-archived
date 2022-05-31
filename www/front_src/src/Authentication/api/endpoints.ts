@@ -6,5 +6,5 @@ export const authenticationProvidersEndpoint = (provider: Provider): string =>
   `${baseEndpoint}/administration/authentication/providers/${provider}`;
 export const contactsEndpoint = `${baseEndpoint}/configuration/users`;
 export const contactTemplatesEndpoint = `${baseEndpoint}/configuration/contacts/templates`;
-export const contactGroupsEndpoint = `http://localhost:5004/centreon/api/latest/configuration/contacts/groups`;
-export const accessGroupsEndpoint = `http://localhost:5004/centreon/api/latest/configuration/access-groups`;
+export const contactGroupsEndpoint = `${baseEndpoint}/configuration/contacts/groups`;
+export const accessGroupsEndpoint = `${baseEndpoint}/configuration/access-groups`;
