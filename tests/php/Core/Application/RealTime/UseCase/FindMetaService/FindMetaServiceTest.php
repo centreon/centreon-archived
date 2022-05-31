@@ -32,7 +32,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaService;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServicePresenter;
@@ -55,7 +55,7 @@ class FindMetaServiceTest extends TestCase
     private $configurationRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadAccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
@@ -83,7 +83,7 @@ class FindMetaServiceTest extends TestCase
     {
         $this->repository = $this->createMock(ReadMetaServiceRepositoryInterface::class);
         $this->configurationRepository = $this->createMock(ReadMetaServiceConfigurationRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
         $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
         $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);

@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\User\Repository;
 
-use Core\Domain\Security\User\Model\User;
-use Core\Domain\Security\User\Model\UserPassword;
+use Core\Security\Domain\User\Model\User;
+use Core\Security\Domain\User\Model\UserPassword;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbUserFactory
