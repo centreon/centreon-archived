@@ -4,12 +4,16 @@ if [ "$1" = "configure" ] ; then
 
   if [ "$(getent passwd centreon)" ]; then
 
-    chown -R centreon:centreon /usr/share/centreon
+    chown -R centreon:centreon \
+      /usr/share/centreon \
+      /var/log/centreon
 
     chmod 0775 \
       /usr/share/centreon/src \
       /usr/share/centreon/www \
-      /usr/share/centreon/api
+      /usr/share/centreon/api \
+      /var/cache/centreon \
+      /var/log/centreon
     
     chmod -R 0775 \
       /usr/share/centreon/www/img/media \
