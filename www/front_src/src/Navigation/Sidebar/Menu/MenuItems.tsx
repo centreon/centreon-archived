@@ -126,7 +126,7 @@ const MenuItems = ({
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component={LinkBehavior}
+        component={ItemLink}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onClick={handleClickItem}
         onDoubleClick={isRoot ? onClick : undefined}
