@@ -114,11 +114,11 @@ const ExtensionsHolder = ({
       };
     }
 
-    if (
-      dayjs()
-        .tz(timezone)
-        .isAfter(dayjs(licenseInfo.expiration_date).tz(timezone))
-    ) {
+    const isLicenseExpired = dayjs()
+      .tz(timezone)
+      .isAfter(dayjs(licenseInfo.expiration_date).tz(timezone));
+
+    if (isLicenseExpired) {
       return {
         isInvalid: true,
         label: t(labelLicenseExpired),
