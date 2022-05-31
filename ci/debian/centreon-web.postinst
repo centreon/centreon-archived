@@ -6,7 +6,8 @@ if [ "$1" = "configure" ] ; then
 
     chown -R centreon:centreon \
       /usr/share/centreon \
-      /var/log/centreon
+      /var/log/centreon \
+      /var/lib/centreon
 
     chmod 0775 \
       /usr/share/centreon/src \
@@ -14,7 +15,8 @@ if [ "$1" = "configure" ] ; then
       /usr/share/centreon/api
     chmod -R 0775 \
       /var/cache/centreon \
-      /var/log/centreon
+      /var/log/centreon \
+      /var/lib/centreon
     
     chmod -R 0775 \
       /usr/share/centreon/www/img/media \
