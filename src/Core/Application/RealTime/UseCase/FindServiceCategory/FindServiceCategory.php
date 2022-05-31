@@ -54,11 +54,9 @@ class FindServiceCategory extends BrokerBBDO
 
         try {
             $serviceCategories = $this->repository->findAllByTypeId(Tag::SERVICE_CATEGORY_TYPE_ID);
-            if (empty($serviceCategories)) {
-                if (! $this->isBBDOVersionCompatible()) {
-                    $this->handleIncompatibleBBDOVersion($presenter);
-                    return;
-                }
+            if (empty($serviceCategories) && ! $this->isBBDOVersionCompatible()) {
+                $this->handleIncompatibleBBDOVersion($presenter);
+                return;
             }
         } catch (\Throwable $e) {
             $this->error('An error occured while retrieving service categories');
