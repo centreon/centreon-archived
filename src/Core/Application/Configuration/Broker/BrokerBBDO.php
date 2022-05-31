@@ -20,12 +20,22 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Common\Broker;
+namespace Core\Application\Configuration\Broker;
 
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 
-trait BrokerTrait
+class BrokerBBDO
 {
+    public const MINIMUM_BBDO_VERSION_SUPPORTED = '3.0.0',
+                 BBDO_VERSION_CONFIG_KEY = 'bbdo_version';
+
+    /**
+     * @param BrokerRepositoryInterface $brokerRepository
+     */
+    public function __construct(private BrokerRepositoryInterface $brokerRepository)
+    {
+        $this->brokerRepository = $brokerRepository;
+    }
     /**
      * Checks if at least on monitoring server has BBDO protocol in version 3.0.0
      *
@@ -33,12 +43,12 @@ trait BrokerTrait
      */
     public function isBBDOVersionCompatible(): bool
     {
-        $brokerConfigurations = $this->brokerRepository->findAllByParameterName(BrokerRepositoryInterface::BBDO_VERSION_CONFIG_KEY);
+        $brokerConfigurations = $this->brokerRepository->findAllByParameterName(self::BBDO_VERSION_CONFIG_KEY);
         foreach ($brokerConfigurations as $brokerConfiguration) {
             if (
                 version_compare(
                     $brokerConfiguration->getConfigurationValue(),
-                    BrokerRepositoryInterface::MINIMUM_BBDO_VERSION_SUPPORTED
+                    self::MINIMUM_BBDO_VERSION_SUPPORTED
                 ) > 0
             ) {
                 return true;

@@ -24,16 +24,14 @@ namespace Core\Application\RealTime\UseCase\FindServiceCategory;
 
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
-use Core\Application\Common\Broker\BrokerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 
 class FindServiceCategory
 {
     use LoggerTrait;
-    use BrokerTrait;
 
     /**
      * @param ReadTagRepositoryInterface $repository
@@ -41,7 +39,7 @@ class FindServiceCategory
      */
     public function __construct(
         private ReadTagRepositoryInterface $repository,
-        private BrokerRepositoryInterface $brokerRepository
+        private BrokerBBDO $brokerBBDO
     ) {
     }
 
@@ -55,7 +53,7 @@ class FindServiceCategory
         try {
             $serviceCategories = $this->repository->findAllByTypeId(Tag::SERVICE_CATEGORY_TYPE_ID);
             if (empty($serviceCategories)) {
-                if (! $this->isBBDOVersionCompatible()) {
+                if (! $this->brokerBBDO->isBBDOVersionCompatible()) {
                     $this->handleIncompatibleBBDOVersion($presenter);
                     return;
                 }
@@ -87,7 +85,7 @@ class FindServiceCategory
     private function handleIncompatibleBBDOVersion(FindServiceCategoryPresenterInterface $presenter): void
     {
         $message = 'BBDO protocol version enabled not compatible with this feature. Version needed '
-            . $this->brokerRepository::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
+            . $this->brokerBBDO::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
         $this->error($message);
         $presenter->setResponseStatus(new IncompatibilityResponse($message));
     }

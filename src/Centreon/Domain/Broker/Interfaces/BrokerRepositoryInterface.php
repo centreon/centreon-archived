@@ -27,8 +27,6 @@ use Centreon\Domain\Broker\BrokerConfiguration;
 
 interface BrokerRepositoryInterface
 {
-    public const MINIMUM_BBDO_VERSION_SUPPORTED = '3.0.0',
-                 BBDO_VERSION_CONFIG_KEY = 'bbdo_version';
     /**
      * @param integer $monitoringServerId
      * @param string $configKey
