@@ -61,6 +61,8 @@ tags:
   - name: Proxy
   - name: Service
   - name: Service group
+  - name: Service category
+  - name: Host category
   - name: Topology
 security:
   - Token: []
@@ -288,6 +290,31 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.Host.Category'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/categories:
+    get:
+      tags:
+        - Service category
+      summary: "List all service categories"
+      description: |
+        List of all service categories in real time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -1257,6 +1284,8 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterStatus'
         - $ref: '#/components/parameters/ResourceFilterHostgroupName'
         - $ref: '#/components/parameters/ResourceFilterServicegroupName'
+        - $ref: '#/components/parameters/ResourceFilterServiceCategoryName'
+        - $ref: '#/components/parameters/ResourceFilterHostCategoryName'
         - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
         - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
@@ -1547,6 +1576,31 @@ paths:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/categories:
+    get:
+      tags:
+        - Host category
+      summary: "List all host categories"
+      description: |
+        List of all host categories in real time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -4023,6 +4077,26 @@ components:
         items:
           type: string
         example: '["Memory-Services", "Ping-Services"]'
+    ResourceFilterServiceCategoryName:
+      in: query
+      name: service_category_names
+      required: false
+      description: "Filter the resources by service category names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Ping", "CPUs"]'
+    ResourceFilterHostCategoryName:
+      in: query
+      name: host_category_names
+      required: false
+      description: "Filter the resources by host category names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Linux", "Windows"]'
     ResourceFilterMonitoringServerName:
       in: query
       name: monitoring_server_names
@@ -5311,6 +5385,17 @@ components:
           description: "Version of the server (centreon-engine)"
           example: "20.10.0"
           nullable: true
+    Monitoring.Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Category Id"
+          example: 1
+        name:
+          type: string
+          description: "Category name"
+          example: "Category name"
     Acknowledgement.Resource:
       type: object
       properties:

@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 interface HypermediaProviderInterface
 {
@@ -49,8 +49,16 @@ interface HypermediaProviderInterface
     /**
      * Create internal redirection uris for the Resource group(s)
      *
-     * @param mixed $response
-     * @return array<array<string, string|null>>
+     * @param array<int, array<string, string|int>> $groups
+     * @return array<array<string, string|int|null>>
      */
-    public function createInternalGroupsUri(mixed $response): array;
+    public function convertGroupsForPresenter(array $groups): array;
+
+    /**
+     * Create internal redirection uris for the Resource categories
+     *
+     * @param array<int, array<string, string|int>> $categories
+     * @return array<int, array<string, string|int|null>>
+     */
+    public function convertCategoriesForPresenter(array $categories): array;
 }
