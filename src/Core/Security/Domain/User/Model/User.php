@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\User\Model;
+namespace Core\Security\Domain\User\Model;
 
 class User
 {

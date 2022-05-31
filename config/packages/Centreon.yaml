@@ -372,11 +372,11 @@ services:
         public: true
 
     Security\Domain\Authentication\Interfaces\OpenIdProviderInterface:
-        class: Core\Domain\Security\Provider\OpenIdProvider
+        class: Core\Security\Domain\Provider\OpenIdProvider
         tags: ['authentication.providers']
 
     Security\Domain\Authentication\Interfaces\WebSSOProviderInterface:
-        class: Core\Domain\Security\Provider\WebSSOProvider
+        class: Core\Security\Domain\Provider\WebSSOProvider
         tags: ['authentication.providers']
 
     Centreon\Domain\Authentication\UseCase\AuthenticateApi:

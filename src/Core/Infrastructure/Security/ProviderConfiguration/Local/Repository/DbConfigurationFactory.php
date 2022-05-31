@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 
 class DbConfigurationFactory
 {

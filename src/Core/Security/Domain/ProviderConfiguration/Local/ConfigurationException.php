@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\Local;
+namespace Core\Security\Domain\ProviderConfiguration\Local;
 
 class ConfigurationException extends \Exception
 {

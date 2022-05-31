@@ -25,7 +25,7 @@ namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpe
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 class FindOpenIdConfiguration

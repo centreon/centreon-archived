@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\Provider;
+namespace Core\Security\Domain\Provider;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 use Security\Domain\Authentication\Interfaces\WebSSOProviderInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;

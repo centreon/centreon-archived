@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\Local\Model;
+namespace Core\Security\Domain\ProviderConfiguration\Local\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Common\Assertion\AssertionException;

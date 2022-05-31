@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\Authentication;
+namespace Core\Security\Domain\Authentication;
 
 class SSOAuthenticationException extends \Exception
 {

@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
+namespace Core\Security\Domain\ProviderConfiguration\WebSSO\Model;
 
 use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
     UpdateWebSSOConfigurationRequest

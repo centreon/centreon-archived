@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse;
 
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class OpenIdProviderResponse implements ProviderResponseInterface
 {

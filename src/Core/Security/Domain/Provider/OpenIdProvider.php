@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\Provider;
+namespace Core\Security\Domain\Provider;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,10 +32,10 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use CentreonUserLog;
-use Core\Domain\Security\Authentication\SSOAuthenticationException;
+use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;

@@ -21,12 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
+namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
 use Core\Contact\Domain\Model\ContactTemplate;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfiguration implements ProviderConfigurationInterface
 {

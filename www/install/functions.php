@@ -36,7 +36,7 @@
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 
 /**
  * Generate random password

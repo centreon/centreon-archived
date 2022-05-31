@@ -28,7 +28,7 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
 use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
 
 beforeEach(function () {
     $this->readProviderConfigurationRepository = $this->createMock(

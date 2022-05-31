@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Repository;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 
 class DbWebSSOConfigurationFactory
 {

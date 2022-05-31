@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
+namespace Core\Security\Domain\ProviderConfiguration\WebSSO\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;

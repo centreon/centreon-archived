@@ -21,14 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\User\Model;
+namespace Core\Security\Domain\User\Model;
 
-use Core\Domain\Security\User\Model\User;
+use Core\Security\Domain\User\Model\User;
 use Centreon\Domain\Common\Assertion\Assertion;
-use Core\Domain\Security\User\Model\UserPassword;
+use Core\Security\Domain\User\Model\UserPassword;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Security\Exception\UserPasswordException;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
 
 class UserPasswordFactory

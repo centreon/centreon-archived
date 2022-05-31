@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions;
+namespace Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions;
 
 class OpenIdConfigurationException extends \Exception
 {

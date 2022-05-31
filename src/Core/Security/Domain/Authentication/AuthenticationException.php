@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Domain\Security\Authentication;
+namespace Core\Security\Domain\Authentication;
 
 class AuthenticationException extends \Exception
 {
