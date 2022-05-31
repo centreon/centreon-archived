@@ -62,6 +62,7 @@ tags:
   - name: Service
   - name: Service group
   - name: Service category
+  - name: Host category
   - name: Topology
 security:
   - Token: []
