@@ -24,7 +24,7 @@ namespace Core\Application\Configuration\Broker;
 
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 
-class BrokerBBDO
+abstract class BrokerBBDO
 {
     public const MINIMUM_BBDO_VERSION_SUPPORTED = '3.0.0',
                  BBDO_VERSION_CONFIG_KEY = 'bbdo_version';
@@ -32,7 +32,7 @@ class BrokerBBDO
     /**
      * @param BrokerRepositoryInterface $brokerRepository
      */
-    public function __construct(private BrokerRepositoryInterface $brokerRepository)
+    public function __construct(protected BrokerRepositoryInterface $brokerRepository)
     {
         $this->brokerRepository = $brokerRepository;
     }
@@ -47,7 +47,7 @@ class BrokerBBDO
         foreach ($brokerConfigurations as $brokerConfiguration) {
             if (
                 version_compare(
-                    $brokerConfiguration->getConfigurationValue(),
+                    (string) $brokerConfiguration->getConfigurationValue(),
                     self::MINIMUM_BBDO_VERSION_SUPPORTED
                 ) > 0
             ) {

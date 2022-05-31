@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
@@ -29,17 +30,19 @@ use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 
-class FindHostCategory
+class FindHostCategory extends BrokerBBDO
 {
     use LoggerTrait;
 
     /**
      * @param ReadTagRepositoryInterface $repository
+     * @param BrokerRepositoryInterface $brokerRepository
      */
     public function __construct(
         private ReadTagRepositoryInterface $repository,
-        private BrokerBBDO $brokerBBDO
+        protected BrokerRepositoryInterface $brokerRepository
     ) {
+        parent::__construct($brokerRepository);
     }
 
     /**
@@ -52,7 +55,7 @@ class FindHostCategory
         try {
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
             if (empty($hostCategories)) {
-                if (! $this->brokerBBDO->isBBDOVersionCompatible()) {
+                if (! $this->isBBDOVersionCompatible()) {
                     $this->handleIncompatibleBBDOVersion($presenter);
                     return;
                 }
@@ -84,7 +87,7 @@ class FindHostCategory
     private function handleIncompatibleBBDOVersion(FindHostCategoryPresenterInterface $presenter): void
     {
         $message = 'BBDO protocol version enabled not compatible with this feature. Version needed '
-            . $this->brokerBBDO::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
+            . self::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
         $this->error($message);
         $presenter->setResponseStatus(new IncompatibilityResponse($message));
     }

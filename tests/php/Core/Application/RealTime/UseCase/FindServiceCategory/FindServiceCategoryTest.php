@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindServiceCategory;
 
 use Centreon\Domain\Broker\BrokerConfiguration;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Domain\RealTime\Model\Tag;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
@@ -34,12 +35,12 @@ use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCateg
 it('Find all service categories', function () {
     $category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
     $repository->expects($this->once())
         ->method('findAllByTypeId')
         ->willReturn([$category]);
 
-    $useCase = new FindServiceCategory($repository, $brokerBBDO);
+    $useCase = new FindServiceCategory($repository, $brokerRepository);
 
     $presenter = new FindServiceCategoryPresenterStub();
     $useCase($presenter);
@@ -51,12 +52,12 @@ it('Find all service categories', function () {
 
 it('Find all service categories repository error', function () {
     $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
     $repository->expects($this->once())
         ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $useCase = new FindServiceCategory($repository, $brokerBBDO);
+        $useCase = new FindServiceCategory($repository, $brokerRepository);
 
     $presenter = new FindServiceCategoryPresenterStub();
     $useCase($presenter);
@@ -68,17 +69,23 @@ it('Find all service categories repository error', function () {
 });
 
 it('Find all service categories repository bbdo version imcompatible', function () {
-    $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
-    $repository->expects($this->once())
+    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+
+    $brokerConfiguration = (new BrokerConfiguration())
+        ->setConfigurationKey('bbdo_version')
+        ->setConfigurationValue('2.0.0');
+
+    $tagRepository->expects($this->once())
         ->method('findAllByTypeId')
         ->willReturn([]);
 
-    $brokerBBDO->expects($this->once())
-        ->method('isBBDOVersionCompatible')
-        ->willReturn(false);
+    $brokerRepository->expects($this->once())
+        ->method('findAllByParameterName')
+        ->with('bbdo_version')
+        ->willReturn([$brokerConfiguration]);
 
-    $useCase = new FindServiceCategory($repository, $brokerBBDO);
+    $useCase = new FindServiceCategory($tagRepository, $brokerRepository);
 
     $presenter = new FindServiceCategoryPresenterStub();
     $useCase($presenter);

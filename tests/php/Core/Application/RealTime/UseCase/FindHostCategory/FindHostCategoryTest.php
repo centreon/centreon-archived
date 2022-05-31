@@ -27,36 +27,37 @@ use Centreon\Domain\Broker\BrokerConfiguration;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterStub;
 
 it('Find all host categories', function () {
-    $category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
-    $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
-    $repository->expects($this->once())
+    $hostCategory = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
+    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+    $tagRepository->expects($this->once())
         ->method('findAllByTypeId')
-        ->willReturn([$category]);
+        ->willReturn([$hostCategory]);
 
-    $useCase = new FindHostCategory($repository, $brokerBBDO);
+    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
 
     expect($presenter->response->tags)->toHaveCount(1);
-    expect($presenter->response->tags[0]['id'])->toBe($category->getId());
-    expect($presenter->response->tags[0]['name'])->toBe($category->getName());
+    expect($presenter->response->tags[0]['id'])->toBe($hostCategory->getId());
+    expect($presenter->response->tags[0]['name'])->toBe($hostCategory->getName());
 });
 
 it('Find all service categories repository error', function () {
-    $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
-    $repository->expects($this->once())
+    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+    $tagRepository->expects($this->once())
         ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $useCase = new FindHostCategory($repository, $brokerBBDO);
+    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
@@ -68,17 +69,22 @@ it('Find all service categories repository error', function () {
 });
 
 it('Find all host categories repository bbdo version imcompatible', function () {
-    $repository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerBBDO = $this->createMock(BrokerBBDO::class);
-    $repository->expects($this->once())
+    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+    $tagRepository->expects($this->once())
         ->method('findAllByTypeId')
         ->willReturn([]);
 
-    $brokerBBDO->expects($this->once())
-        ->method('isBBDOVersionCompatible')
-        ->willReturn(false);
+    $brokerConfiguration = (new BrokerConfiguration())
+        ->setConfigurationKey('bbdo_version')
+        ->setConfigurationValue('2.0.0');
 
-    $useCase = new FindHostCategory($repository, $brokerBBDO);
+    $brokerRepository->expects($this->once())
+        ->method('findAllByParameterName')
+        ->with('bbdo_version')
+        ->willReturn([$brokerConfiguration]);
+
+    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
