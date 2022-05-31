@@ -16897,8 +16897,8 @@ msgstr "la clé est définie par défaut. Vous pouvez en définir une autre."
 msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
 msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès : Vous pouvez lier une valeur d'autorisation à un groupe d'accès."
 
-msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the Authorization value"
-msgstr "Si nous considérons l'exemple suivant dans le JSON reçu depuis le point d'accès d'autorisation, une relation est définie entre la Valeur d'autorisation"
+msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+msgstr "Si nous considérons l'exemple suivant dans le JSON reçu depuis le point d'accès d'autorisation, une relation est définie entre la valeur"
 
-msgid "and an Access group:"
-msgstr "et un Groupe d'accès :"
+msgid "and an access group:"
+msgstr "et un groupe d'accès :"
