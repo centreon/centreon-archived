@@ -37,7 +37,7 @@ class Tag
      * @param int $id
      * @param string $name
      * @param int $type
-     * @throw \Assert\AssertionFailedException
+     * @throws \Assert\AssertionFailedException
      */
     public function __construct(private int $id, private string $name, int $type)
     {
