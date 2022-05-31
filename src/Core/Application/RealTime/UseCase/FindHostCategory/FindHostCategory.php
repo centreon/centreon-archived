@@ -54,11 +54,9 @@ class FindHostCategory extends BrokerBBDO
 
         try {
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
-            if (empty($hostCategories)) {
-                if (! $this->isBBDOVersionCompatible()) {
-                    $this->handleIncompatibleBBDOVersion($presenter);
-                    return;
-                }
+            if (empty($hostCategories) && ! $this->isBBDOVersionCompatible()) {
+                $this->handleIncompatibleBBDOVersion($presenter);
+                return;
             }
         } catch (\Throwable $e) {
             $this->error('An error occured while retrieving host categories');
