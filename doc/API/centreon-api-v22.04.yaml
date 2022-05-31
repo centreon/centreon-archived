@@ -1527,6 +1527,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/categories:
+    get:
+      tags:
+        - Host category
+      summary: "List all host categories"
+      description: |
+        List of all host categories in real time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
