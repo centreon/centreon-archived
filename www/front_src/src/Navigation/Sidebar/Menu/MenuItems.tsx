@@ -104,7 +104,7 @@ const MenuItems = ({
 
   const memoizedUrl = useMemo(() => searchUrlFromEntry(data) as string, [data]);
 
-  const LinkBehavior = forwardRef<
+  const ItemLink = forwardRef<
     HTMLAnchorElement,
     Omit<RouterLinkProps, 'to'>
   >((props, ref) => (
