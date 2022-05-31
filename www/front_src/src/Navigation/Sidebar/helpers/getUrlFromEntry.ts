@@ -18,11 +18,7 @@ export const getUrlFromEntry = ({
 };
 
 const isArrayItem = (item: unknown): boolean => {
-  if (isNil(item) || !Array.isArray(item) || equals(item?.length, 0)) {
-    return false;
-  }
-
-  return true;
+  return !isNil(item) && Array.isArray(item) && !equals(item?.length, 0);
 };
 
 export const searchUrlFromEntry = (item: Page): string | null | undefined => {

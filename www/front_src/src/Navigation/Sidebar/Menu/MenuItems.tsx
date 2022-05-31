@@ -104,12 +104,9 @@ const MenuItems = ({
 
   const memoizedUrl = useMemo(() => searchUrlFromEntry(data) as string, [data]);
 
-  const ItemLink = forwardRef<
-    HTMLAnchorElement,
-    Omit<RouterLinkProps, 'to'>
-  >((props, ref) => (
-    <RouterLink ref={ref} to={memoizedUrl} {...props} />
-  ));
+  const ItemLink = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>(
+    (props, ref) => <RouterLink ref={ref} to={memoizedUrl} {...props} />,
+  );
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
     if (!isRoot && canNavigate) {
