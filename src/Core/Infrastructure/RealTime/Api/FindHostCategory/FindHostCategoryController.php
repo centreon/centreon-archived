@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,26 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Centreon\Domain\Broker\Interfaces;
+namespace Core\Infrastructure\RealTime\Api\FindHostCategory;
 
-use Centreon\Domain\Broker\BrokerConfiguration;
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 
-interface BrokerRepositoryInterface
+class FindHostCategoryController extends AbstractController
 {
     /**
-     * @param integer $monitoringServerId
-     * @param string $configKey
-     * @return BrokerConfiguration[]
+     * @param FindHostCategory $useCase
+     * @param FindHostCategoryPresenter $presenter
+     * @return object
      */
-    public function findByMonitoringServerAndParameterName(
-        int $monitoringServerId,
-        string $configKey
-    ): array;
+    public function __invoke(FindHostCategory $useCase, FindHostCategoryPresenter $presenter): object
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
-    /**
-     * Returns value of the parameter on all monitoring servers
-     *
-     * @return BrokerConfiguration[]
-     * @throws \Throwable
-     */
-    public function findAllByParameterName(string $parameterName): array;
+        $useCase($presenter);
+
+        return $presenter->show();
+    }
 }

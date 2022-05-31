@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,27 +21,18 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\Broker\Interfaces;
+namespace Core\Application\RealTime\Repository;
 
-use Centreon\Domain\Broker\BrokerConfiguration;
+use Core\Domain\RealTime\Model\Tag;
 
-interface BrokerRepositoryInterface
+interface ReadTagRepositoryInterface
 {
     /**
-     * @param integer $monitoringServerId
-     * @param string $configKey
-     * @return BrokerConfiguration[]
-     */
-    public function findByMonitoringServerAndParameterName(
-        int $monitoringServerId,
-        string $configKey
-    ): array;
-
-    /**
-     * Returns value of the parameter on all monitoring servers
+     * Find all tags
      *
-     * @return BrokerConfiguration[]
+     * @param int $typeId
+     * @return Tag[]
      * @throws \Throwable
      */
-    public function findAllByParameterName(string $parameterName): array;
+    public function findAllByTypeId(int $typeId): array;
 }
