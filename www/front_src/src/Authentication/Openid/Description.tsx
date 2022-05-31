@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 import {
   labelAndAnAccessGroup,
   labelAuthorizationKeyDefinedByDefault,
-  labelAuthorizationKeyWithPunctuation,
+  labelAuthorizationKeyIsDefined,
   labelAuthorizationSummary,
   labelContactGroupFieldDescription,
   labelDefineRelationsDescription,
@@ -23,8 +23,8 @@ const Description = (): JSX.Element => {
       <br />
       <Typography>- {t(labelContactGroupFieldDescription)}</Typography>
       <Typography>
-        - {t(labelAuthorizationKeyWithPunctuation)}{' '}
-        <code>{t(labelGroups)}</code> {t(labelAuthorizationKeyDefinedByDefault)}
+        - {t(labelAuthorizationKeyIsDefined)} <code>{t(labelGroups)}</code>{' '}
+        {t(labelAuthorizationKeyDefinedByDefault)}
       </Typography>
       <Typography>- {t(labelDefineRelationsDescription)}</Typography>
       <br />

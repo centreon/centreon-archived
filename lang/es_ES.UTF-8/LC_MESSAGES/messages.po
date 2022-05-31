@@ -15149,7 +15149,7 @@ msgstr ""
 # msgid "Contact group: Define a contact group for the imported user."
 # msgstr ""
 
-# msgid "Authorization key: "
+# msgid "Authorization key: The key"
 # msgstr ""
 
 # msgid "key is defined by default. You can define another one."

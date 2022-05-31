@@ -16888,11 +16888,11 @@ msgstr "Cette section vous permet de donner des autorisations afin de lier un ut
 msgid "Contact group: Define a contact group for the imported user."
 msgstr "Groupe de contact : Définir un groupe de contact pour l'utilisateur importé."
 
-msgid "Authorization key: "
-msgstr "Clé d'autorisation : "
+msgid "Authorization key: The key"
+msgstr "Clé d'autorisation : La clé"
 
-msgid "key is defined by default. You can define another one."
-msgstr "la clé est définie par défaut. Vous pouvez en définir une autre."
+msgid "is defined by default. You can define another one."
+msgstr "est définie par défaut. Vous pouvez en définir une autre."
 
 msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
 msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès : Vous pouvez lier une valeur d'autorisation à un groupe d'accès."

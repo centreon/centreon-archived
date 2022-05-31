@@ -47,10 +47,10 @@ export const labelAuthorizationKey = 'Authorization key';
 export const labelAuthorizationSummary =
   'This section allows you to give authorizations in order to link an imported user to an access group.';
 export const labelContactGroupFieldDescription = `${labelContactGroup}: Define a contact group for the imported user.`;
-export const labelAuthorizationKeyWithPunctuation = `${labelAuthorizationKey}: `;
+export const labelAuthorizationKeyIsDefined = `${labelAuthorizationKey}: The key`;
 export const labelGroups = 'groups';
 export const labelAuthorizationKeyDefinedByDefault =
-  'key is defined by default. You can define another one.';
+  'is defined by default. You can define another one.';
 export const labelDefineRelationsDescription = `${labelDefineRelationAuthorizationValueAndAccessGroup}: You can link an authorization value to an access group.`;
 export const labelIfWeConsiderTheFollowingExample =
   'If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value';
