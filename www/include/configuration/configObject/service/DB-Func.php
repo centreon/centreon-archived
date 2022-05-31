@@ -668,7 +668,8 @@ function multipleServiceInDB(
                         $dbResult = $pearDB->query($query);
                         $fields["service_cgs"] = "";
                         while ($Cg = $dbResult->fetch()) {
-                            $query = "INSERT INTO contactgroup_service_relation VALUES (:contactgroup_cg_id,:service_id)";
+                            $query = "INSERT INTO contactgroup_service_relation 
+                            VALUES (:contactgroup_cg_id,:service_id)";
                             $statement = $pearDB->prepare($query);
                             $statement->bindValue(
                                 ':contactgroup_cg_id',
@@ -700,7 +701,8 @@ function multipleServiceInDB(
                                 $Sg["hostgroup_hg_id"] ? $hg_id = "'" . $Sg["hostgroup_hg_id"] . "'" : $hg_id = "NULL";
                             }
                             $query = "INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, " .
-                                "service_service_id, servicegroup_sg_id) VALUES (:host_host_id,:hostgroup_hg_id,:service_service_id,:servicegroup_sg_id)";
+                                "service_service_id, servicegroup_sg_id)
+                                 VALUES (:host_host_id,:hostgroup_hg_id,:service_service_id,:servicegroup_sg_id)";
                             $statement = $pearDB->prepare($query);
                             $statement->bindValue(':host_host_id', (int)$host_id, PDO::PARAM_INT);
                             $statement->bindValue(':hostgroup_hg_id', (int)$hg_id, PDO::PARAM_INT);
@@ -776,7 +778,8 @@ function multipleServiceInDB(
                                 $sv["is_password"] = '0';
                             }
                             $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, " .
-                                "`svc_macro_value`, `is_password`) VALUES (:svc_svc_id, \$:svc_macro_name\$,:svc_macro_value , :is_password)";
+                                "`svc_macro_value`, `is_password`) 
+                                VALUES (:svc_svc_id, \$:svc_macro_name\$,:svc_macro_value , :is_password)";
                             $statement = $pearDB->prepare($mTpRq2);
                             $statement->bindValue(':svc_svc_id', $maxId["MAX(service_id)"]);
                             $statement->bindValue(':svc_macro_name', $pearDB->escape($macName));
