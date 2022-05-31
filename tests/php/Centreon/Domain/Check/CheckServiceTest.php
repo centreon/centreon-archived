@@ -57,6 +57,7 @@ class CheckServiceTest extends TestCase
     protected $entityValidator;
 
     protected $violationList;
+    protected $accessGroupRepository;
 
     protected function setUp(): void
     {
