@@ -33,7 +33,7 @@ use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
 /**
@@ -47,7 +47,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     public const VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME = ['Default', 'downtime_service'];
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
     /**
@@ -72,13 +72,13 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     /**
      * DowntimeService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineServiceInterface $engineService
      * @param DowntimeRepositoryInterface $downtimeRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         EngineServiceInterface $engineService,
         DowntimeRepositoryInterface $downtimeRepository,
         MonitoringRepositoryInterface $monitoringRepository

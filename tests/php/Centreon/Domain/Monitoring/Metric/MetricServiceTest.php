@@ -27,7 +27,7 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface;
 use Centreon\Domain\Monitoring\Metric\MetricService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class MetricServiceTest extends TestCase
@@ -77,7 +77,7 @@ class MetricServiceTest extends TestCase
         $this->end = new \DateTime('2020-02-18T12:00:00');
 
         $this->metricRepository = $this->createMock(metricRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
     }
 

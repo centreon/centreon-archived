@@ -26,7 +26,7 @@ namespace Core\Security\Application\Repository;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
-interface AccessGroupRepositoryInterface
+interface ReadAccessGroupRepositoryInterface
 {
     /**
      * Find all access groups according to a contact.

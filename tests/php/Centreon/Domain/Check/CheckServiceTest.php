@@ -28,7 +28,7 @@ use Centreon\Domain\Check\CheckService;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -94,7 +94,7 @@ class CheckServiceTest extends TestCase
             ->setResourceId(1)
             ->setParentResourceId(1);
 
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
         $this->engineService = $this->createMock(EngineServiceInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);

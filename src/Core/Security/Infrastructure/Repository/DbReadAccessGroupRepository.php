@@ -23,7 +23,7 @@ namespace Core\Security\Infrastructure\Repository;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 /**
@@ -31,7 +31,7 @@ use Centreon\Infrastructure\DatabaseConnection;
  *
  * @package Centreon\Infrastructure\Security
  */
-final class DbReadAccessGroupRepository implements AccessGroupRepositoryInterface
+final class DbReadAccessGroupRepository implements ReadAccessGroupRepositoryInterface
 {
     /**
      * @var DatabaseConnection

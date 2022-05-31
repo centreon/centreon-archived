@@ -29,7 +29,7 @@ use Core\Domain\RealTime\Model\MetaService;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Domain\Configuration\Model\MetaService as MetaServiceConfiguration;
@@ -47,7 +47,7 @@ class FindMetaService
      * @param ReadMetaServiceRepositoryInterface $repository
      * @param ReadMetaServiceConfigurationRepositoryInterface $configurationRepository
      * @param ContactInterface $contact
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      */
@@ -55,7 +55,7 @@ class FindMetaService
         private ReadMetaServiceRepositoryInterface $repository,
         private ReadMetaServiceConfigurationRepositoryInterface $configurationRepository,
         private ContactInterface $contact,
-        private AccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
     ) {

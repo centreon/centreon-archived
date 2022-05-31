@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
 final class HostGroupService extends AbstractCentreonService implements HostGroupServiceInterface
 {
@@ -35,17 +35,17 @@ final class HostGroupService extends AbstractCentreonService implements HostGrou
     private $hostGroupRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param HostGroupRepositoryInterface $hostGroupRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         HostGroupRepositoryInterface $hostGroupRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        ReadAccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->hostGroupRepository = $hostGroupRepository;
         $this->accessGroupRepository = $accessGroupRepository;

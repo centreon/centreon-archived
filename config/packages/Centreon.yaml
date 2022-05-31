@@ -86,7 +86,7 @@ services:
         public: true
 
     # Authentication
-    Core\Security\Application\Repository\AccessGroupRepositoryInterface:
+    Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface:
         class: Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:

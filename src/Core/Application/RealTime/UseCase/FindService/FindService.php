@@ -36,7 +36,7 @@ use Centreon\Domain\Monitoring\Service as LegacyService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
@@ -52,7 +52,7 @@ class FindService
      * @param ReadHostRepositoryInterface $hostRepository
      * @param ReadServicegroupRepositoryInterface $servicegroupRepository
      * @param ContactInterface $contact
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      * @param MonitoringServiceInterface $monitoringService
@@ -62,7 +62,7 @@ class FindService
         private ReadHostRepositoryInterface $hostRepository,
         private ReadServicegroupRepositoryInterface $servicegroupRepository,
         private ContactInterface $contact,
-        private AccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService

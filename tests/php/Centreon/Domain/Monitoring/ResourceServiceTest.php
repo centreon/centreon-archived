@@ -25,7 +25,7 @@ use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 it('find resources and build uuids', function () {
@@ -45,7 +45,7 @@ it('find resources and build uuids', function () {
         ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
 
     $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
-    $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+    $accessGroup = $this->createMock(ReadAccessGroupRepositoryInterface::class);
 
     $resourceService = new ResourceService(
         $monitoringRepository,

@@ -31,7 +31,7 @@ use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 /**
@@ -52,18 +52,18 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository ,
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ResourceRepositoryInterface $resourceRepository
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         ResourceRepositoryInterface $resourceRepository
     ) {
         $this->monitoringRepository = $monitoringRepository;

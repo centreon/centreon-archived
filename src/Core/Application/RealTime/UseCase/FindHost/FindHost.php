@@ -33,7 +33,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
@@ -47,14 +47,14 @@ class FindHost
      * @param ReadHostRepositoryInterface $repository
      * @param ReadHostgroupRepositoryInterface $hostgroupRepository
      * @param ContactInterface $contact
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
      */
     public function __construct(
         private ReadHostRepositoryInterface $repository,
         private ReadHostgroupRepositoryInterface $hostgroupRepository,
         private ContactInterface $contact,
-        private AccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService,

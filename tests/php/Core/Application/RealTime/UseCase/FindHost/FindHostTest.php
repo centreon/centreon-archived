@@ -37,7 +37,7 @@ use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindHost\FindHostPresenterStub;
@@ -59,7 +59,7 @@ class FindHostTest extends TestCase
     private $hostgroupRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadAccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
@@ -92,7 +92,7 @@ class FindHostTest extends TestCase
     {
         $this->repository = $this->createMock(ReadHostRepositoryInterface::class);
         $this->hostgroupRepository = $this->createMock(ReadHostgroupRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
         $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
         $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);

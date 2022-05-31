@@ -33,7 +33,7 @@ use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\Comment\CommentException;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
 
@@ -63,7 +63,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
@@ -75,14 +75,14 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     /**
      * CommentService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
      * @param MonitoringServiceInterface $monitoringService
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
         MonitoringServiceInterface $monitoringService,

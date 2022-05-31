@@ -25,7 +25,7 @@ namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindServiceNotificationPolicy;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
@@ -53,7 +53,7 @@ beforeEach(function () {
     $this->hostRepository = $this->createMock(HostConfigurationRepositoryInterface::class);
     $this->serviceRepository = $this->createMock(ServiceConfigurationRepositoryInterface::class);
     $this->engineService = $this->createMock(EngineConfigurationServiceInterface::class);
-    $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+    $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
     $this->contact = $this->createMock(ContactInterface::class);
     $this->readRealTimeHostRepository = $this->createMock(ReadRealTimeHostRepositoryInterface::class);
     $this->readRealTimeServiceRepository = $this->createMock(ReadRealTimeServiceRepositoryInterface::class);

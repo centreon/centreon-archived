@@ -27,7 +27,7 @@ use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Security\Application\Repository\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Exception\ServiceConfigurationServiceException;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
@@ -42,7 +42,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      */
     private $serviceRepository;
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
     /**
@@ -58,13 +58,13 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      * ServiceConfigurationService constructor.
      *
      * @param ServiceConfigurationRepositoryInterface $serviceConfigurationRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param HostConfigurationServiceInterface $hostConfigurationService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
      */
     public function __construct(
         ServiceConfigurationRepositoryInterface $serviceConfigurationRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         HostConfigurationServiceInterface $hostConfigurationService,
         EngineConfigurationServiceInterface $engineConfigurationService
     ) {
