@@ -23,16 +23,21 @@ declare(strict_types=1);
 
 namespace Core\Contact\Domain\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Common\Assertion\AssertionException;
+
 class ContactGroup
 {
     /**
      * @param integer $id
      * @param string $name
+     * @throws AssertionException
      */
     public function __construct(
         private int $id,
         private string $name
     ) {
+        Assertion::notEmpty($name, 'ContactGroup::name');
     }
 
     /**
