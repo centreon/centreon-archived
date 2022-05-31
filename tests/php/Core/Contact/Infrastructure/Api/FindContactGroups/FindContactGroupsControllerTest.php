@@ -21,12 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Infrastructure\Api\FindContactTemplates;
+    namespace Tests\Core\Contact\Infrastructure\Api\FindContactGroups;
 
 use Centreon\Domain\Contact\Contact;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesPresenterInterface;
-use Core\Contact\Infrastructure\Api\FindContactTemplates\FindContactTemplatesController;
+use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroups;
+use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroupsPresenterInterface;
+use Core\Contact\Infrastructure\Api\FindContactGroups\FindContactGroupsController;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -34,8 +34,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 beforeEach(function () {
-    $this->useCase = $this->createMock(FindContactTemplates::class);
-    $this->presenter = $this->createMock(FindContactTemplatesPresenterInterface::class);
+    $this->useCase = $this->createMock(FindContactGroups::class);
+    $this->presenter = $this->createMock(FindContactGroupsPresenterInterface::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
@@ -78,7 +78,7 @@ beforeEach(function () {
 });
 
 it('should call the use case', function () {
-    $controller = new FindContactTemplatesController();
+    $controller = new FindContactGroupsController();
     $controller->setContainer($this->container);
 
     $this->useCase

@@ -30,6 +30,8 @@ use Core\Application\Common\UseCase\ForbiddenResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroups;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
+use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroupsResponse;
+use Core\Contact\Domain\Model\ContactGroup;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadContactGroupRepositoryInterface::class);
@@ -66,9 +68,12 @@ it('should present an ForbiddenResponse if the user doesnt have the read menu ac
         ->willReturn(false);
 
     $this->user
-        ->expects($this->once())
+        ->expects($this->any())
         ->method('hasTopologyRole')
-        ->with(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)
+        ->withConsecutive(
+            [Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ],
+            [Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ_WRITE]
+        )
         ->willReturn(false);
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
@@ -121,4 +126,30 @@ it('should call the method FindAllByUserId if the user is not admin', function (
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
+});
+
+it('should present a FindContactGroupsResponse when no error occured', function () {
+    $useCase = new FindContactGroups($this->repository, $this->user);
+
+    $contactGroup = new ContactGroup(1, 'contact_group');
+    $this->repository
+        ->expects($this->once())
+        ->method('findAll')
+        ->willReturn([$contactGroup]);
+
+    $this->user
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
+
+    $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
+    $useCase($presenter);
+    dump($presenter);
+    expect($presenter->response)->toBeInstanceOf(FindContactGroupsResponse::class);
+    expect($presenter->response->contactGroups[0])->toBe(
+        [
+            'id' => 1,
+            'name' => 'contact_group'
+        ]
+    );
 });
