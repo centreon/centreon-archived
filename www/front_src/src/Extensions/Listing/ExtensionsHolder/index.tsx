@@ -169,7 +169,7 @@ const ExtensionsHolder = ({
                 item
                 id={`${type}-${entity.id}`}
                 key={entity.id}
-                style={{ width: 200 }}
+                style={{ width: 220 }}
                 onClick={(): void => {
                   onCard(entity.id, type);
                 }}
