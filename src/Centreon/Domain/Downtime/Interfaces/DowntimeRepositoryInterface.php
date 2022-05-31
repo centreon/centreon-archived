@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Downtime\Interfaces;
 
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
 interface DowntimeRepositoryInterface
 {

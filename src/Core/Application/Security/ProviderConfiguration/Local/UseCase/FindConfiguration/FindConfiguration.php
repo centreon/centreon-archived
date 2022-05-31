@@ -26,7 +26,7 @@ namespace Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConf
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
 
 class FindConfiguration
 {
