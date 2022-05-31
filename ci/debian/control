@@ -40,8 +40,9 @@ Depends:
     ntp,
     rrdtool,
     bsd-mailx,
-    sudo
-Description: Centreon installation entry point.
+    sudo,
+    nagios-images
+Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
 Depends:    
