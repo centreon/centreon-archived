@@ -108,7 +108,7 @@ const MenuItems = ({
     HTMLAnchorElement,
     Omit<RouterLinkProps, 'to'>
   >((props, ref) => (
-    <RouterLink ref={ref} to={memoizedUrl} {...props} role={undefined} />
+    <RouterLink ref={ref} to={memoizedUrl} {...props} />
   ));
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
