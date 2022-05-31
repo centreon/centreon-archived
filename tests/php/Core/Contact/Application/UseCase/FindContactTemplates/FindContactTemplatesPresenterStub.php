@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Application\UseCase;
+namespace Tests\Core\Contact\Application\UseCase\FindContactTemplates;
 
 use Symfony\Component\HttpFoundation\Response;
 use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesResponse;
