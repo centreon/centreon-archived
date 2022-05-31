@@ -14,13 +14,37 @@ const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
-    justifyContent: 'space-between',
   },
   header: {
     background: theme.palette.common.black,
+    width: '100%',
+  },
+  hostStatusContainer: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  pollerContainer: {
+    display: 'flex',
+    flex: 0.75,
   },
   rightContainer: {
     display: 'flex',
+    flex: 3,
+  },
+  serviceStatusContainer: {
+    display: 'flex',
+    flex: 1,
+  },
+  switchModeContainer: {
+    display: 'flex',
+    flex: 0.25,
+    justifyContent: 'flex-end',
+  },
+  userMenuContainer: {
+    display: 'flex',
+    flex: 0.35,
+    justifyContent: 'flex-end',
   },
 }));
 
@@ -30,15 +54,23 @@ const Header = (): JSX.Element => {
   return (
     <header className={classes.header}>
       <div className={classes.container}>
-        <div>
+        <div className={classes.pollerContainer}>
           <PollerMenu />
         </div>
         <div className={classes.rightContainer}>
           <HookComponent path="/header/topCounter" />
-          <HostStatusCounter />
-          <ServiceStatusCounter />
-          <SwitchMode />
-          <UserMenu />
+          <div className={classes.hostStatusContainer}>
+            <HostStatusCounter />
+          </div>
+          <div className={classes.serviceStatusContainer}>
+            <ServiceStatusCounter />
+          </div>
+          <div className={classes.switchModeContainer}>
+            <SwitchMode />
+          </div>
+          <div className={classes.userMenuContainer}>
+            <UserMenu />
+          </div>
         </div>
       </div>
     </header>

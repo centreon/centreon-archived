@@ -5,6 +5,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
+import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
 
 import {
   Typography,
@@ -35,7 +36,6 @@ import {
 } from '@centreon/ui';
 
 import Clock from '../Clock';
-import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 import { areUserParametersLoadedAtom } from '../../Main/useUser';
 import { logoutEndpoint } from '../../api/endpoint';
@@ -91,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
+  loaderUserMenu: {
+    marginRight: 22,
+  },
   menu: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -119,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     marginLeft: theme.spacing(0.5),
-    padding: theme.spacing(0.75, 2.75, 0.75, 1.5),
+    padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
   },
   wrapRightUserItems: {
@@ -254,7 +257,7 @@ const UserMenu = (): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuLoader width={21} />;
+    return <MenuLoader className={classes.loaderUserMenu} width="70%" />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);
@@ -276,124 +279,128 @@ const UserMenu = (): JSX.Element => {
   };
 
   return (
-    <div className={clsx(classes.wrapRightUser)}>
-      <div
-        className={clsx(classes.wrapRightUserItems)}
-        ref={profile as RefObject<HTMLDivElement>}
-      >
-        <Clock />
-        <div>
-          <Tooltip
-            title={
-              passwordIsNotYetAboutToExpire
-                ? ''
-                : `${t(
-                    labelPasswordWillExpireIn,
-                  )}: ${formattedPasswordRemainingTime}`
-            }
-          >
-            <Badge
-              color="warning"
-              invisible={passwordIsNotYetAboutToExpire}
-              variant="dot"
+    <div>
+      <div className={clsx(classes.wrapRightUser)}>
+        <div
+          className={clsx(classes.wrapRightUserItems)}
+          ref={profile as RefObject<HTMLDivElement>}
+        >
+          <Clock />
+          <div>
+            <Tooltip
+              title={
+                passwordIsNotYetAboutToExpire
+                  ? ''
+                  : `${t(
+                      labelPasswordWillExpireIn,
+                    )}: ${formattedPasswordRemainingTime}`
+              }
             >
-              <UserIcon
-                aria-label={t(labelProfile)}
-                className={clsx(classes.userIcon)}
-                fontSize="large"
-                onClick={toggle}
-              />
-            </Badge>
-          </Tooltip>
-          <Popper
-            transition
-            anchorEl={anchorEl}
-            className={classes.popper}
-            open={not(isNil(anchorEl))}
-            placement="bottom-end"
-          >
-            {({ TransitionProps }): JSX.Element => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper
-                  className={classes.menu}
-                  ref={userMenu as RefObject<HTMLDivElement>}
-                  sx={{
-                    display: isNil(anchorEl) ? 'none' : 'block',
-                  }}
-                >
-                  <List dense>
-                    <ListItem>
-                      <ListItemText
-                        primaryTypographyProps={primaryTypographyProps}
-                      >
-                        {data.fullname}
-                      </ListItemText>
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primaryTypographyProps={primaryTypographyProps}
-                      >{`${t('as')} ${data.username}`}</ListItemText>
-                    </ListItem>
-                    {not(passwordIsNotYetAboutToExpire) && (
+              <Badge
+                color="warning"
+                invisible={passwordIsNotYetAboutToExpire}
+                variant="dot"
+              >
+                <UserIcon
+                  aria-label={t(labelProfile)}
+                  className={clsx(classes.userIcon)}
+                  fontSize="large"
+                  onClick={toggle}
+                />
+              </Badge>
+            </Tooltip>
+            <Popper
+              transition
+              anchorEl={anchorEl}
+              className={classes.popper}
+              open={not(isNil(anchorEl))}
+              placement="bottom-end"
+            >
+              {({ TransitionProps }): JSX.Element => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <Paper
+                    className={classes.menu}
+                    ref={userMenu as RefObject<HTMLDivElement>}
+                    sx={{
+                      display: isNil(anchorEl) ? 'none' : 'block',
+                    }}
+                  >
+                    <List dense>
                       <ListItem>
-                        <div className={classes.passwordExpiration}>
-                          <Typography variant="body2">
-                            {t(labelPasswordWillExpireIn)}:
-                          </Typography>
-                          <Typography variant="body2">
-                            {formattedPasswordRemainingTime}
-                          </Typography>
-                        </div>
-                      </ListItem>
-                    )}
-                    {allowEditProfile && (
-                      <ListItem disableGutters>
-                        <ListItemButton
-                          onClick={navigateToUserSettingsAndCloseUserMenu}
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
                         >
-                          <ListItemIcon>
-                            <SettingsIcon fontSize="small" />
-                          </ListItemIcon>
-                          <ListItemText>{t(labelEditProfile)}</ListItemText>
-                        </ListItemButton>
+                          {data.fullname}
+                        </ListItemText>
                       </ListItem>
-                    )}
-                    {data.autologinkey && (
+                      <ListItem>
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
+                        >{`${t('as')} ${data.username}`}</ListItemText>
+                      </ListItem>
+                      {not(passwordIsNotYetAboutToExpire) && (
+                        <ListItem>
+                          <div className={classes.passwordExpiration}>
+                            <Typography variant="body2">
+                              {t(labelPasswordWillExpireIn)}:
+                            </Typography>
+                            <Typography variant="body2">
+                              {formattedPasswordRemainingTime}
+                            </Typography>
+                          </div>
+                        </ListItem>
+                      )}
+                      {allowEditProfile && (
+                        <ListItem disableGutters>
+                          <ListItemButton
+                            onClick={navigateToUserSettingsAndCloseUserMenu}
+                          >
+                            <ListItemIcon>
+                              <SettingsIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{t(labelEditProfile)}</ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                      )}
+                      {data.autologinkey && (
+                        <ListItem disableGutters>
+                          <ListItemButton onClick={onCopy}>
+                            <ListItemIcon>
+                              {copied ? (
+                                <CheckIcon fontSize="small" />
+                              ) : (
+                                <FileCopyIcon fontSize="small" />
+                              )}
+                            </ListItemIcon>
+                            <ListItemText>
+                              {t(labelCopyAutologinLink)}
+                            </ListItemText>
+                          </ListItemButton>
+                          <textarea
+                            readOnly
+                            className={clsx(classes.hiddenInput)}
+                            id="autologin-input"
+                            ref={
+                              autologinNode as RefObject<HTMLTextAreaElement>
+                            }
+                            value={autolink}
+                          />
+                        </ListItem>
+                      )}
                       <ListItem disableGutters>
-                        <ListItemButton onClick={onCopy}>
+                        <ListItemButton onClick={logoutFromSession}>
                           <ListItemIcon>
-                            {copied ? (
-                              <CheckIcon fontSize="small" />
-                            ) : (
-                              <FileCopyIcon fontSize="small" />
-                            )}
+                            <LogoutIcon fontSize="small" />
                           </ListItemIcon>
-                          <ListItemText>
-                            {t(labelCopyAutologinLink)}
-                          </ListItemText>
+                          <ListItemText>{t(labelLogout)}</ListItemText>
                         </ListItemButton>
-                        <textarea
-                          readOnly
-                          className={clsx(classes.hiddenInput)}
-                          id="autologin-input"
-                          ref={autologinNode as RefObject<HTMLTextAreaElement>}
-                          value={autolink}
-                        />
                       </ListItem>
-                    )}
-                    <ListItem disableGutters>
-                      <ListItemButton onClick={logoutFromSession}>
-                        <ListItemIcon>
-                          <LogoutIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t(labelLogout)}</ListItemText>
-                      </ListItemButton>
-                    </ListItem>
-                  </List>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
+                    </List>
+                  </Paper>
+                </Fade>
+              )}
+            </Popper>
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
+import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
@@ -19,7 +20,6 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 
 import { Issues } from './models';
@@ -126,7 +126,7 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = 27;
+  const loaderWidth = '45%';
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 

@@ -3,13 +3,12 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
+import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
 
 import { ClickAwayListener } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { refreshIntervalAtom } from '@centreon/ui-context';
-
-import MenuLoader from '../../components/MenuLoader';
 
 export const useStyles = makeStyles((theme) => ({
   link: {
@@ -38,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
 interface Props {
   children: (props) => JSX.Element;
   endpoint: string;
-  loaderWidth: number;
+  loaderWidth: number | string;
   schema: yup.AnySchema;
 }
 
