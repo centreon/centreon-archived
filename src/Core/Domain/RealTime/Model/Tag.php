@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class Tag
 {
     public const SERVICE_GROUP_TYPE_ID = 0,
@@ -35,9 +37,12 @@ class Tag
      * @param int $id
      * @param string $name
      * @param int $type
+     * @throw \Assert\AssertionFailedException
      */
     public function __construct(private int $id, private string $name, int $type)
     {
+        Assertion::notEmpty($name, 'Tag::name');
+        $this->name = $name;
         $this->setType($type);
     }
 
