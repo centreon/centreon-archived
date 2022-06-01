@@ -26,6 +26,11 @@ if [ "$1" = "configure" ] ; then
     usermod -a -G www-data centreon-gorgone
   fi
 
+  if [ "$(getent passwd centreon-broker)" ]; then
+    usermod -a -G centreon-broker www-data
+    usermod -a -G www-data centreon-broker
+  fi
+
 fi
 
 exit 0
