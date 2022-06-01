@@ -60,9 +60,9 @@ function setHostChangeFlag($db, $hostId = null, $hostgroupId = null)
     }
     $query = "UPDATE acl_resources SET changed = 1 " .
         "WHERE acl_res_id IN (" .
-        "SELECT acl_res_id FROM $table WHERE $field = :field";
+        "SELECT acl_res_id FROM $table WHERE $field = :fieldValue)";
     $statement = $db->prepare($query);
-    $statement->bindValue(':field', (int)$db->escape($val), PDO::PARAM_INT);
+    $statement->bindValue(':fieldValue', (int) $val, \PDO::PARAM_INT);
     $statement->execute();
     return null;
 }
@@ -286,17 +286,19 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         }
         $dbResult->closeCursor();
     }
+    $query = "SELECT service_id FROM service, host_service_relation hsr " .
+             "WHERE hsr.hostgroup_hg_id = :hostgroup_hg_id AND hsr.service_service_id = service_id " .
+             "AND service.service_description = :service_description";
+    $statement = $pearDB->prepare($query);
     foreach ($hgPars as $hostgroup) {
-        $query = "SELECT service_id FROM service, host_service_relation hsr " .
-            "WHERE hsr.hostgroup_hg_id = '" . $hostgroup . "' AND hsr.service_service_id = service_id " .
-            "AND service.service_description = '" . $escapeName . "'";
-        $dbResult = $pearDB->query($query);
-        $service = $dbResult->fetch();
+        $statement->bindValue(':hostgroup_hg_id', (int) $hostgroup, \PDO::PARAM_INT);
+        $statement->bindValue(':service_description', $centreon->checkIllegalChar($name), \PDO::PARAM_STR);
+        $service = $statement->fetch(\PDO::FETCH_ASSOC);
         #Duplicate entry
-        if ($dbResult->rowCount() >= 1 && $service["service_id"] != $id) {
+        if ($statement->rowCount() >= 1 && $service["service_id"] != $id) {
             return (false == $returnId) ? false : $service['service_id'];
         }
-        $dbResult->closeCursor();
+        $statement->closeCursor();
     }
     return (false == $returnId) ? true : 0;
 }
@@ -377,14 +379,15 @@ function deleteServiceInDB($services = array())
 {
     global $pearDB, $centreon;
 
+    $query = 'UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = :service_id';
+    $statement = $pearDB->prepare($query);
     foreach ($services as $key => $value) {
         removeRelationLastServiceDependency((int)$key);
         $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
         $dbResult = $pearDB->query($query);
         while ($row = $dbResult->fetch()) {
-            $query = "UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = '" .
-                $row["service_id"] . "'";
-            $pearDB->query($query);
+            $statement->bindValue(':service_id', (int) $row["service_id"], \PDO::PARAM_INT);
+            $statement->execute();
         }
         $query = "SELECT service_description FROM `service` WHERE `service_id` = '" . $key . "' LIMIT 1";
         $dbResult3 = $pearDB->query($query);
@@ -449,6 +452,10 @@ function divideHostGroupsToHostGroup($service_id)
     $query = "SELECT hostgroup_hg_id FROM host_service_relation " .
         "WHERE service_service_id = '" . $service_id . "' AND hostgroup_hg_id IS NOT NULL";
     $dbResult3 = $pearDB->query($query);
+    $query = "UPDATE index_data 
+              SET service_id = :sv_id 
+              WHERE host_id = :host_id AND service_id = :service_id";
+    $statement = $pearDBO->prepare($query);
     while ($data = $dbResult3->fetch()) {
         $sv_id = multipleServiceInDB(
             array($service_id => "1"),
@@ -461,9 +468,10 @@ function divideHostGroupsToHostGroup($service_id)
         );
         $hosts = getMyHostGroupHosts($data["hostgroup_hg_id"]);
         foreach ($hosts as $host_id) {
-            $query = "UPDATE index_data SET service_id = '" . $sv_id . "' WHERE host_id = '" . $host_id .
-                "' AND service_id = '" . $service_id . "'";
-            $pearDBO->query($query);
+            $statement->bindValue(':sv_id', (int) $sv_id, \PDO::PARAM_INT);
+            $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+            $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+            $statement->execute();
             setHostChangeFlag($pearDB, $host_id, null);
         }
     }
@@ -475,6 +483,10 @@ function divideHostGroupsToHost($service_id)
     global $pearDB, $pearDBO;
 
     $dbResult = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '" . $service_id . "'");
+    $query = "UPDATE index_data 
+              SET service_id = :sv_id 
+              WHERE host_id = :host_id AND service_id = :service_id";
+    $statement = $pearDBO->prepare($query);
     while ($relation = $dbResult->fetch()) {
         $hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
 
@@ -488,9 +500,10 @@ function divideHostGroupsToHost($service_id)
                 array(),
                 array($relation["hostgroup_hg_id"] => null)
             );
-            $query = "UPDATE index_data SET service_id = '" . $sv_id . "' WHERE host_id = '" . $host_id .
-                "' AND service_id = '" . $service_id . "'";
-            $pearDBO->query($query);
+            $statement->bindValue(':sv_id', (int) $sv_id, \PDO::PARAM_INT);
+            $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+            $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+            $statement->execute();
             setHostChangeFlag($pearDB, $host_id, null);
         }
     }
@@ -502,6 +515,8 @@ function divideHostsToHost($service_id)
     global $pearDB, $pearDBO;
 
     $dbResult = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '" . $service_id . "'");
+    $query = "UPDATE index_data SET service_id = :sv_id WHERE host_id = :host_id AND service_id = :service_id";
+    $statement = $pearDBO->prepare($query);
     while ($relation = $dbResult->fetch()) {
         $sv_id = multipleServiceInDB(
             array($service_id => "1"),
@@ -512,10 +527,10 @@ function divideHostsToHost($service_id)
             array(),
             array($relation["hostgroup_hg_id"] => null)
         );
-
-        $query = "UPDATE index_data SET service_id = '" . $sv_id . "' WHERE host_id = '" .
-            $relation["host_host_id"] . "' AND service_id = '" . $service_id . "'";
-        $pearDBO->query($query);
+        $statement->bindValue(':sv_id', (int) $sv_id, \PDO::PARAM_INT);
+        $statement->bindValue(':host_id', (int) $relation["host_host_id"], \PDO::PARAM_INT);
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->execute();
         setHostChangeFlag($pearDB, $relation["host_host_id"], null);
     }
 }
@@ -588,14 +603,22 @@ function multipleServiceInDB(
                     if (isset($maxId["MAX(service_id)"])) {
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
-                            $query = "INSERT INTO host_service_relation VALUES (NULL, NULL, '" . $host . "', NULL, '" .
-                                $maxId["MAX(service_id)"] . "')";
-                            $pearDB->query($query);
+                            $query = "INSERT INTO host_service_relation 
+                                      VALUES (NULL, NULL, :host_id, 
+                                              NULL, service_id)";
+                            $statement = $pearDB->prepare($query);
+                            $statement->bindValue(':host_id', (int) $host, \PDO::PARAM_INT);
+                            $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
+                            $statement->execute();
                             setHostChangeFlag($pearDB, $host, null);
                         } elseif ($hostgroup) {
-                            $query = "INSERT INTO host_service_relation VALUES (NULL, '" . $hostgroup .
-                                "', NULL, NULL, '" . $maxId["MAX(service_id)"] . "')";
-                            $pearDB->query($query);
+                            $query = "INSERT INTO host_service_relation 
+                                      VALUES (NULL, :hostgroup_id, NULL, 
+                                              NULL, :service_id)";
+                            $statement = $pearDB->prepare($query);
+                            $statement->bindValue(':hostgroup_id', (int) $hostgroup, \PDO::PARAM_INT);
+                            $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
+                            $statement->execute();
                             setHostChangeFlag($pearDB, null, $hostgroup);
                         } else {
                             // Service duplication case -> Duplicate the Service for each relation the base Service have
@@ -604,37 +627,48 @@ function multipleServiceInDB(
                             $dbResult = $pearDB->query($query);
                             $fields["service_hPars"] = "";
                             $fields["service_hgPars"] = "";
-                            $query = "INSERT INTO host_service_relation VALUES (NULL, :hostgroup_hg_id, 
-                                          NULL, NULL, :service_id)";
-                            $insert1Statement = $pearDB->prepare($query);
-                            $insert2Statement = $pearDB->prepare($query);
+                            $query = "INSERT INTO host_service_relation 
+                                      VALUES (NULL, :hostgroup_hg_id, :host_host_id, 
+                                              NULL, :service_id)";
+                            $statement = $pearDB->prepare($query);
                             while ($service = $dbResult->fetch()) {
                                 if ($service["host_host_id"]) {
-                                    $insert1Statement->bindValue(
-                                        ':host_host_id',
-                                        (int)$service["host_host_id"],
-                                        \PDO::PARAM_INT
-                                    );
-                                    $insert1Statement->bindValue(
-                                        ':service_id',
-                                        (int)$maxId["MAX(service_id)"],
-                                        \PDO::PARAM_INT
-                                    );
-                                    $insert1Statement->execute();
-                                    setHostChangeFlag($pearDB, $service['host_host_id'], null);
-                                    $fields["service_hPars"] .= $service["host_host_id"] . ",";
-                                } elseif ($service["hostgroup_hg_id"]) {
-                                    $insert2Statement->bindValue(
+                                    $statement->bindValue(
                                         ':hostgroup_hg_id',
-                                        (int)$service["hostgroup_hg_id"],
+                                        null,
+                                        \PDO::PARAM_NULL
+                                    );
+                                    $statement->bindValue(
+                                        ':host_host_id',
+                                        (int) $service["host_host_id"],
                                         \PDO::PARAM_INT
                                     );
-                                    $insert2Statement->bindValue(
+                                    $statement->bindValue(
                                         ':service_id',
-                                        (int)$maxId["MAX(service_id)"],
+                                        (int) $maxId["MAX(service_id)"],
                                         \PDO::PARAM_INT
                                     );
-                                    $insert2Statement->execute();
+                                    $statement->execute();
+                                    setHostChangeFlag($pearDB, $service['host_host_id'], null);
+                                    $fields["service_hPars"] .= $service["
+                                    host_host_id"] . ",";
+                                } elseif ($service["hostgroup_hg_id"]) {
+                                    $statement->bindValue(
+                                        ':hostgroup_hg_id',
+                                        (int) $service["hostgroup_hg_id"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $statement->bindValue(
+                                        ':host_host_id',
+                                        null,
+                                        \PDO::PARAM_NULL
+                                    );
+                                    $statement->bindValue(
+                                        ':service_id',
+                                        (int) $maxId["MAX(service_id)"],
+                                        \PDO::PARAM_INT
+                                    );
+                                    $statement->execute();
                                     setHostChangeFlag($pearDB, null, $service["hostgroup_hg_id"]);
                                     $fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
                                 }
