@@ -38,7 +38,7 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
-import Category from './Category';
+import Categories from './Categories';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -194,7 +194,7 @@ const getDetailCardLines = ({
     },
     {
       isCustomCard: true,
-      line: <Category details={details} />,
+      line: <Categories details={details} />,
       shouldBeDisplayed: !isEmpty(details.categories),
       title: labelCategory,
       xs: 12,
