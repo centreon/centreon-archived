@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Common;
 
+use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Status;
 use Core\Domain\RealTime\Model\Downtime;
@@ -29,6 +30,23 @@ use Core\Domain\RealTime\Model\Acknowledgement;
 
 trait RealTimeResponseTrait
 {
+    /**
+     * Convert array of HostCategory models into an array made of scalars
+     *
+     * @param Tag[] $tags
+     * @return array<int, array<string, int|string>>
+     */
+    private function tagsToArray(array $tags): array
+    {
+        return array_map(
+            fn (Tag $tag) => [
+                'id' => $tag->getId(),
+                'name' => $tag->getName(),
+            ],
+            $tags
+        );
+    }
+
     /**
      * Converts an Icon model into an array
      *

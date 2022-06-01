@@ -25,8 +25,10 @@ namespace Core\Infrastructure\RealTime\Repository\Tag;
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagRepositoryInterface
 {
@@ -35,9 +37,13 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
     /**
      * @param DatabaseConnection $db
      */
-    public function __construct(DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
+        $this->sqlRequestTranslator = $sqlRequestTranslator;
+        $this->sqlRequestTranslator
+            ->getRequestParameters()
+            ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
 
     /**
@@ -45,11 +51,64 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
      */
     public function findAllByTypeId(int $typeId): array
     {
-        $this->info('Fetching tags from database');
+        $this->info('Fetching tags from database of type', ['type' => $typeId]);
 
-        $query = $this->translateDbName('SELECT id, name, `type` FROM `:dbstg`.tags WHERE type = :type');
-        $statement = $this->db->prepare($query);
+        $request = 'SELECT id, name, `type`
+            FROM `:dbstg`.tags
+            WHERE type = :type AND EXISTS (
+                SELECT 1 FROM `:dbstg`.resources_tags AS rtags
+                WHERE rtags.tag_id = tags.tag_id
+            )';
+
+        // Handle search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= $searchRequest === null ? '' : ' AND ' . $searchRequest;
+
+        // Handle sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= $sortRequest !== null ? $sortRequest : ' ORDER BY name ASC';
+
+        // Handle pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($this->translateDbName($request));
         $statement->bindValue(':type', $typeId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $tags = [];
+        while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $tags[] = DbTagFactory::createFromRecord($record);
+        }
+
+        return $tags;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllByResourceAndTypeId(int $id, int $parentId, int $typeId): array
+    {
+        $this->info(
+            'Fetching tags from database for specified resource id, parentId and typeId',
+            [
+                'id' => $id,
+                'parentId' => $parentId,
+                'type' => $typeId
+            ]
+        );
+
+        $request = 'SELECT tags.id AS id, tags.name AS name, tags.`type` AS `type`
+            FROM `:dbstg`.tags
+            LEFT JOIN `:dbstg`.resources_tags
+                ON tags.tag_id = resources_tags.tag_id
+            LEFT JOIN `:dbstg`.resources
+                ON resources_tags.resource_id = resources.resource_id
+            WHERE resources.id = :id AND resources.parent_id = :parentId AND tags.type = :typeId';
+
+        $statement = $this->db->prepare($this->translateDbName($request));
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->bindValue(':parentId', $parentId, \PDO::PARAM_INT);
+        $statement->bindValue(':typeId', $typeId, \PDO::PARAM_INT);
         $statement->execute();
 
         $tags = [];

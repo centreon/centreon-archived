@@ -22,23 +22,25 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindService;
 
+use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Service;
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Core\Domain\RealTime\Model\Acknowledgement;
-use Core\Application\Common\UseCase\NotFoundResponse;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
+use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Service as LegacyService;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
@@ -56,6 +58,7 @@ class FindService
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      * @param MonitoringServiceInterface $monitoringService
+     * @param ReadTagRepositoryInterface $tagRepository
      */
     public function __construct(
         private ReadServiceRepositoryInterface $repository,
@@ -65,7 +68,8 @@ class FindService
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
-        private MonitoringServiceInterface $monitoringService
+        private MonitoringServiceInterface $monitoringService,
+        private ReadTagRepositoryInterface $tagRepository,
     ) {
     }
 
@@ -80,6 +84,7 @@ class FindService
         FindServicePresenterInterface $presenter
     ): void {
         $servicegroups = [];
+        $serviceCategories = [];
 
         $this->info(
             "Searching details for service",
@@ -130,6 +135,16 @@ class FindService
                 $serviceId,
                 $accessGroupIds
             );
+        }
+
+        $serviceCategories = $this->tagRepository->findAllByResourceAndTypeId(
+            $serviceId,
+            $hostId,
+            Tag::SERVICE_CATEGORY_TYPE_ID
+        );
+
+        foreach ($serviceCategories as $serviceCategory) {
+            $service->addCategory($serviceCategory);
         }
 
         foreach ($servicegroups as $servicegroup) {
@@ -212,7 +227,8 @@ class FindService
             $service->getServicegroups(),
             $downtimes,
             $acknowledgement,
-            $host
+            $host,
+            $service->getCategories(),
         );
 
         $findServiceResponse->isFlapping = $service->isFlapping();

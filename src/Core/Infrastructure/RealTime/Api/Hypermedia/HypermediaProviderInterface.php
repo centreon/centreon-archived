@@ -53,4 +53,12 @@ interface HypermediaProviderInterface
      * @return array<array<string, string|null>>
      */
     public function createInternalGroupsUri(mixed $response): array;
+
+    /**
+     * Create internal redirection uris for the Resource categories
+     *
+     * @param mixed $response
+     * @return array<array<string, string|null>>
+     */
+    public function createInternalCategoriesUri(mixed $response): array;
 }

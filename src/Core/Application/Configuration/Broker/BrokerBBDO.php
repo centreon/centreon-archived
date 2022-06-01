@@ -49,7 +49,7 @@ abstract class BrokerBBDO
                 version_compare(
                     (string) $brokerConfiguration->getConfigurationValue(),
                     self::MINIMUM_BBDO_VERSION_SUPPORTED
-                ) > 0
+                ) >= 0
             ) {
                 return true;
             }

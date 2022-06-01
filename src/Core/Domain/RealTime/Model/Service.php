@@ -152,6 +152,11 @@ class Service
     private $hasGraphData = false;
 
     /**
+     * @var Tag[]
+     */
+    private $categories = [];
+
+    /**
      * @param int $id
      * @param int $hostId
      * @param string $name
@@ -631,6 +636,24 @@ class Service
     public function setHasGraphData(bool $hasGraphData): self
     {
         $this->hasGraphData = $hasGraphData;
+        return $this;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Tag $category
+     * @return self
+     */
+    public function addCategory(Tag $category): self
+    {
+        $this->categories[] = $category;
         return $this;
     }
 }

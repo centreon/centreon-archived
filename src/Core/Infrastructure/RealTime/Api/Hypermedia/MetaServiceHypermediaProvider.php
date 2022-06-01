@@ -202,6 +202,14 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function createInternalCategoriesUri(mixed $response): array
+    {
+        return [];
+    }
+
+    /**
      * Create Notification policy endpoint URI for the Meta Service Resource
      *
      * @param FindMetaServiceResponse $response

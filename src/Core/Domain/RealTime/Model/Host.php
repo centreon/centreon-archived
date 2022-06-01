@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
+use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Core\Domain\RealTime\Model\HostStatus;
@@ -162,6 +163,11 @@ class Host
      * @var int|null
      */
     private $checkAttempts;
+
+    /**
+     * @var Tag[]
+     */
+    private $categories = [];
 
     /**
      * Host constructor
@@ -680,5 +686,23 @@ class Host
     public function getCheckAttempts(): ?int
     {
         return $this->checkAttempts;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Tag $category
+     * @return self
+     */
+    public function addCategory(Tag $category): self
+    {
+        $this->categories[] = $category;
+        return $this;
     }
 }

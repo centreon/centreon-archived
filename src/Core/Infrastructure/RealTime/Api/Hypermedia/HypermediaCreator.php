@@ -116,4 +116,30 @@ class HypermediaCreator
         }
         return [];
     }
+
+    /**
+     * This method will add the redirection uri to the category configuration page.
+     * This will be done regarding the Users rights and the Resource Type.
+     * ex: For a Host resource type will add the redirection link to the host category
+     * configuration page.
+     * [
+     *   [
+     *      'id' => 1,
+     *      'name' => ALL,
+     *      'configuration_uri' => 'http://localhost:8080/centreon/main.php?p=60104&o=c&hc_id=53'
+     *   ]
+     * ]
+     *
+     * @param mixed $response
+     * @return array<array<string, string|null>>
+     */
+    public function createInternalCategoriesUri(mixed $response): array
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createInternalCategoriesUri($response);
+            }
+        }
+        return [];
+    }
 }

@@ -37,6 +37,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
+                 URI_HOST_CATEGORY_CONFIGURATION = '/main.php?p=60104&o=c&hc_id={hostCategoryId}',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
                  ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy';
 
@@ -153,6 +154,27 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     }
 
     /**
+     * Create host category configuration redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
+     */
+    public function createForCategory(array $parameters): ?string
+    {
+        return (
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ)
+            || $this->contact->isAdmin()
+        )
+        ? $this->getBaseUri() . str_replace(
+            '{hostCategoryId}',
+            (string) $parameters['categoryId'],
+            self::URI_HOST_CATEGORY_CONFIGURATION
+        )
+        : null;
+    }
+
+    /**
      * Create Timeline endpoint URI for the Host Resource
      *
      * @param array<string, int> $parameters
@@ -186,6 +208,21 @@ class HostHypermediaProvider implements HypermediaProviderInterface
                 'configuration_uri' => $this->createForGroup(['hostgroupId' => $group['id']])
             ],
             $response->hostgroups
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createInternalCategoriesUri(mixed $response): array
+    {
+        return array_map(
+            fn (array $category) => [
+                'id' => $category['id'],
+                'name' => $category['name'],
+                'configuration_uri' => $this->createForCategory(['categoryId' => $category['id']])
+            ],
+            $response->categories
         );
     }
 }
