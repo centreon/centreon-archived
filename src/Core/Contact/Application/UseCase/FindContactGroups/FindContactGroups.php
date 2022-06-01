@@ -68,8 +68,11 @@ class FindContactGroups
                 }
                 $contactGroups = $this->repository->findAllByUserId($this->user->getId());
             }
-        } catch (\Throwable) {
-            $this->error('An error occured in data storage while getting contact groups');
+        } catch (\Throwable $ex) {
+            $this->error(
+                'An error occured in data storage while getting contact groups',
+                ['trace' => $ex->getTraceAsString()]
+            );
             $presenter->setResponseStatus(new ErrorResponse(
                 'Impossible to get contact groups from data storage'
             ));
