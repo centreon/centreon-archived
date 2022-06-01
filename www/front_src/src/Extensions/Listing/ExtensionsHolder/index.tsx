@@ -1,4 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import { useAtomValue } from 'jotai';
+import { useLocaleDateTimeFormat } from 'centreon-frontend/packages/centreon-ui/src';
+import { equals, isNil } from 'ramda';
+import clsx from 'clsx';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -19,10 +24,13 @@ import {
   Divider,
 } from '@mui/material';
 
+import { userAtom } from '@centreon/ui-context';
+
 import { Entity, ExtensionsStatus, LicenseProps } from '../models';
 import {
   labelLicenseRequired,
-  labelLicenseExpires,
+  labelLicenseEndDate,
+  labelLicenseExpired,
   labelLicenseNotValid,
 } from '../../translatedLabels';
 
@@ -37,6 +45,19 @@ const useStyles = makeStyles((theme) => ({
   },
   extensionsTypes: {
     color: theme.palette.text.primary,
+  },
+  license: {
+    alignItems: 'center',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    minHeight: '20px',
+  },
+  licenseInvalid: {
+    backgroundColor: theme.palette.error.main,
+  },
+  licenseValid: {
+    backgroundColor: theme.palette.success.main,
   },
 }));
 
@@ -67,37 +88,47 @@ const ExtensionsHolder = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { timezone } = useAtomValue(userAtom);
+  const { toDate } = useLocaleDateTimeFormat();
 
   const parseDescription = (description): string => {
     return description.replace(/^centreon\s+(\w+)/i, (_, $1) => $1);
   };
 
   const getPropsFromLicense = (licenseInfo): LicenseProps | undefined => {
-    if (licenseInfo && licenseInfo.required) {
-      if (!licenseInfo.expiration_date) {
-        return {
-          color: '#f90026',
-          label: t(labelLicenseRequired),
-        };
-      }
-      if (!Number.isNaN(Date.parse(licenseInfo.expiration_date))) {
-        const expirationDate = new Date(licenseInfo.expiration_date);
+    if (!licenseInfo || !licenseInfo.required) {
+      return undefined;
+    }
 
-        return {
-          color: '#84BD00',
-          label: `${t(labelLicenseExpires)} ${expirationDate
-            .toISOString()
-            .slice(0, 10)}`,
-        };
-      }
-
+    if (isNil(licenseInfo.expiration_date)) {
       return {
-        color: '#f90026',
+        isInvalid: true,
+        label: t(labelLicenseRequired),
+      };
+    }
+
+    if (Number.isNaN(Date.parse(licenseInfo.expiration_date))) {
+      return {
+        isInvalid: true,
         label: t(labelLicenseNotValid),
       };
     }
 
-    return undefined;
+    const isLicenseExpired = dayjs()
+      .tz(timezone)
+      .isAfter(dayjs(licenseInfo.expiration_date).tz(timezone));
+
+    if (isLicenseExpired) {
+      return {
+        isInvalid: true,
+        label: t(labelLicenseExpired),
+      };
+    }
+
+    return {
+      isInvalid: false,
+      label: `${t(labelLicenseEndDate)} ${toDate(licenseInfo.expiration_date)}`,
+    };
   };
 
   return (
@@ -138,7 +169,7 @@ const ExtensionsHolder = ({
                 item
                 id={`${type}-${entity.id}`}
                 key={entity.id}
-                style={{ width: 200 }}
+                style={{ width: 220 }}
                 onClick={(): void => {
                   onCard(entity.id, type);
                 }}
@@ -218,17 +249,17 @@ const ExtensionsHolder = ({
                   </CardActions>
                   <Paper
                     square
+                    className={clsx(classes.license, {
+                      [classes.licenseValid]: equals(
+                        licenseInfo?.isInvalid,
+                        false,
+                      ),
+                      [classes.licenseInvalid]: equals(
+                        licenseInfo?.isInvalid,
+                        true,
+                      ),
+                    })}
                     elevation={0}
-                    style={{
-                      alignItems: 'center',
-                      ...(licenseInfo?.color && {
-                        backgroundColor: licenseInfo.color,
-                      }),
-                      cursor: 'pointer',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      minHeight: '20px',
-                    }}
                   >
                     {licenseInfo?.label && (
                       <Typography style={{ color: '#FFFFFF' }} variant="body2">

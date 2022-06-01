@@ -15560,3 +15560,9 @@ msgstr ""
 
 #  msgid "Error while searching for the host template %d"
 #  msgstr ""
+
+# msgid "License end date:"
+# msgstr ""
+
+# msgid "License expired"
+# msgstr ""
