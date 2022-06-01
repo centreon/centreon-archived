@@ -200,8 +200,8 @@ $nagios_comment["sleep_time"] = "This is the number of seconds to sleep between 
 $nagios_comment["timeout"] = "These options control how much time Nagios will allow various "
     . "types of commands to execute before killing them off.  Options "
     . "are available for controlling maximum time allotted for "
-    . "service checks, host checks, event handlers, notifications, "
-    . "and performance data commands.  All values are in "
+    . "service checks, host checks, event handlers, notifications, the "
+    . "ocsp command, and performance data commands.  All values are in "
     . "seconds. ";
 
 $nagios_comment["retain_state_information"] = "This setting determines whether or not Nagios will save state "

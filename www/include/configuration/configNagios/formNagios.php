@@ -562,7 +562,7 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     $eventBrokerOptionsData[] = $form->createElement(
         'checkbox',
         $bit,
-        '&nbsp;',
+        '',
         _($label),
         [
             'onClick' => $onClick,
@@ -570,7 +570,7 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
         ]
     );
 }
-$form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '<br/>');
+$form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
 
 // New options for enable whitelist of macros sent to Centreon Broker
 $enableMacrosFilter = [];
