@@ -307,9 +307,9 @@ function removeRelationLastHostDependency(int $hostId): void
     $res = $pearDB->query($query);
 
     $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id
-              FROM dependency_serviceParent_relation
-              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation
-                                         WHERE service_service_id =  :service_service_id)';
+        FROM dependency_serviceParent_relation
+        WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation
+        WHERE service_service_id =  :service_service_id)';
     $countStatement = $pearDB->prepare($query);
     $deleteStatement = $pearDB->prepare("DELETE FROM dependency WHERE dep_id = :dep_id");
     while ($row = $res->fetch()) {
@@ -422,8 +422,10 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 FROM host_hostparent_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_parents"] = "";
-                    $statement = $pearDB->prepare("INSERT INTO host_hostparent_relation
-                              VALUES (:host_parent_hp_id, :host_host_id)");
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO host_hostparent_relation
+                              VALUES (:host_parent_hp_id, :host_host_id)"
+                    );
                     while ($host = $dbResult->fetch()) {
                         $statement->bindValue(':host_parent_hp_id', (int) $host["host_parent_hp_id"], \PDO::PARAM_INT);
                         $statement->bindValue(':host_host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
@@ -438,7 +440,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_childs"] = "";
                     $statement = $pearDB->prepare(
                         "INSERT INTO host_hostparent_relation (host_parent_hp_id, host_host_id)
-                                        VALUES (:host_parent_hp_id, :host_host_id)"
+                         VALUES (:host_parent_hp_id, :host_host_id)"
                     );
                     while ($host = $res->fetch()) {
                         $statement->bindValue(':host_parent_hp_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
@@ -462,9 +464,11 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $dbResult = $pearDB->query("SELECT DISTINCT service_service_id
                                               FROM host_service_relation
                                               WHERE host_host_id = '" . (int)$key . "'");
-                    $countStatement = $pearDB->prepare("SELECT COUNT(*)
-                                                FROM host_service_relation
-                                                WHERE service_service_id = :service_service_id");
+                    $countStatement = $pearDB->prepare(
+                        "SELECT COUNT(*)
+                        FROM host_service_relation
+                        WHERE service_service_id = :service_service_id"
+                    );
                     $insertStatement = $pearDB->prepare(
                         "INSERT INTO host_service_relation
                         VALUES (NULL, NULL, :host_id, NULL, :service_service_id)"
@@ -522,8 +526,10 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 FROM contactgroup_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_cgs"] = "";
-                    $statement = $pearDB->prepare("INSERT INTO contactgroup_host_relation
-                                VALUES (:host_id, :contactgroup_cg_id)");
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO contactgroup_host_relation
+                         VALUES (:host_id, :contactgroup_cg_id)"
+                    );
                     while ($cg = $dbResult->fetch()) {
                         $statement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
                         $statement->bindValue(':contactgroup_cg_id', (int) $cg["contactgroup_cg_id"], \PDO::PARAM_INT);
@@ -539,8 +545,10 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 FROM contact_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_cs"] = "";
-                    $statement = $pearDB->prepare("INSERT INTO contact_host_relation
-                                        VALUES (:host_id, :contact_id)");
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO contact_host_relation
+                         VALUES (:host_id, :contact_id)"
+                    );
                     while ($c = $dbResult->fetch()) {
                         $statement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
                         $statement->bindValue(':contact_id', (int) $c["contact_id"], \PDO::PARAM_INT);
@@ -555,8 +563,10 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $dbResult = $pearDB->query("SELECT DISTINCT hostgroup_hg_id
                                                 FROM hostgroup_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
-                    $statement = $pearDB->prepare("INSERT INTO hostgroup_relation
-                                    VALUES (NULL, :hostgroup_hg_id, :host_id)");
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO hostgroup_relation
+                         VALUES (NULL, :hostgroup_hg_id, :host_id)"
+                    );
                     while ($hg = $dbResult->fetch()) {
                         $statement->bindValue(':hostgroup_hg_id', (int) $hg["hostgroup_hg_id"], \PDO::PARAM_INT);
                         $statement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
@@ -594,8 +604,10 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 FROM ns_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["nagios_server_id"] = "";
-                    $statement = $pearDB->prepare("INSERT INTO ns_host_relation
-                                      VALUES (:nagios_server_id, :host_id)");
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO ns_host_relation
+                         VALUES (:nagios_server_id, :host_id)"
+                    );
                     while ($hg = $dbResult->fetch()) {
                         $statement->bindValue(':nagios_server_id', (int) $hg["nagios_server_id"], \PDO::PARAM_INT);
                         $statement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
