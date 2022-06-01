@@ -126,7 +126,7 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = '45%';
+  const loaderWidth = '40%';
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 

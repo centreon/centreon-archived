@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pollerContainer: {
     display: 'flex',
-    flex: 0.75,
+    flex: 1,
   },
   rightContainer: {
     display: 'flex',
@@ -34,16 +34,16 @@ const useStyles = makeStyles((theme) => ({
   },
   serviceStatusContainer: {
     display: 'flex',
-    flex: 1,
+    flex: 0.5,
   },
   switchModeContainer: {
     display: 'flex',
-    flex: 0.25,
+    flex: 0.2,
     justifyContent: 'flex-end',
   },
   userMenuContainer: {
     display: 'flex',
-    flex: 0.35,
+    flex: 0.3,
     justifyContent: 'flex-end',
   },
 }));
