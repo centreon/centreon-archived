@@ -21,37 +21,23 @@
 
 declare(strict_types=1);
 
-namespace Core\Contact\Application\UseCase\FindContactGroups;
+namespace Core\Contact\Infrastructure\Repository;
 
 use Core\Contact\Domain\Model\ContactGroup;
+use Centreon\Domain\Common\Assertion\AssertionException;
 
-class FindContactGroupsResponse
+class DbContactGroupFactory
 {
     /**
-     * @var array<array<string,string|int>>
+     * @param array<string,string> $record
+     * @return ContactGroup
+     * @throws AssertionException
      */
-    public array $contactGroups;
-
-    /**
-     * @param array<ContactGroup> $contactGroups
-     */
-    public function __construct(array $contactGroups)
+    public static function createFromRecord(array $record): ContactGroup
     {
-        $this->contactGroups = $this->contactGroupsToArray($contactGroups);
-    }
-
-    /**
-     * @param array<ContactGroup> $contactGroups
-     * @return array<array<string,string|int>>
-     */
-    private function contactGroupsToArray(array $contactGroups): array
-    {
-        return array_map(
-            fn (ContactGroup $contactGroup) => [
-                'id' => $contactGroup->getId(),
-                'name' => $contactGroup->getName(),
-            ],
-            $contactGroups
+        return new ContactGroup(
+            (int) $record['cg_id'],
+            $record['cg_name']
         );
     }
 }

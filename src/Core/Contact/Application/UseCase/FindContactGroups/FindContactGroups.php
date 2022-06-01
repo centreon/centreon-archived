@@ -53,7 +53,10 @@ class FindContactGroups
             if ($this->user->isAdmin()) {
                 $contactGroups = $this->repository->findAll();
             } else {
-                if (! $this->user->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)) {
+                if (
+                    ! $this->user->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ)
+                    && ! $this->user->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ_WRITE)
+                ) {
                     $this->error('User doesn\'t have sufficient right to see contact groups', [
                         'user_id' => $this->user->getId(),
                     ]);
@@ -66,7 +69,10 @@ class FindContactGroups
                 $contactGroups = $this->repository->findAllByUserId($this->user->getId());
             }
         } catch (\Throwable $ex) {
-            $this->error('An error occured in data storage while getting contact groups');
+            $this->error(
+                'An error occured in data storage while getting contact groups',
+                ['trace' => $ex->getTraceAsString()]
+            );
             $presenter->setResponseStatus(new ErrorResponse(
                 'Impossible to get contact groups from data storage'
             ));
@@ -74,6 +80,6 @@ class FindContactGroups
             return;
         }
 
-        $presenter->present(new FindContactGroupsResponse());
+        $presenter->present(new FindContactGroupsResponse($contactGroups));
     }
 }
