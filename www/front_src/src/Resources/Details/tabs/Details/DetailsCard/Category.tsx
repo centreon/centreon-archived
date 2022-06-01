@@ -1,50 +1,73 @@
+import { useCallback } from 'react';
+
 import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Grid, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelCategory } from '../../../../translatedLabels';
+import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
+import { labelGroups } from '../../../../translatedLabels';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
-import { ResourceDetails } from '../../../models';
+import { Category, ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
 
-import CategoryChip from './CategoryChip';
+import DetailsChip from './DetailsChip';
 
 interface Props {
+  category: Category;
   details: ResourceDetails | undefined;
 }
 
 const useStyles = makeStyles((theme) => ({
-  categories: {
+  groups: {
     display: 'flex',
     padding: theme.spacing(1),
   },
 }));
 
-const Category = ({ details }: Props): JSX.Element => {
+const Categories = ({ details, category }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
-  const categoryType = equals(details?.type, ResourceType.host)
-    ? CriteriaNames.hostCategories
-    : CriteriaNames.serviceCategories;
+  const filterByCategory = useCallback(
+    (type: CriteriaNames) => (): void => {
+      const categoryType = equals(details?.type, ResourceType.host)
+        ? CriteriaNames.hostGroups
+        : CriteriaNames.serviceGroups;
+
+      setCriteriaAndNewFilter({
+        name: type,
+        value: [category],
+      });
+    },
+    [category, details?.type],
+  );
+
+  const configureCategory = useCallback((): void => {
+    window.location.href = category.configuration_uri as string;
+  }, [category.configuration_uri]);
 
   return (
-    <Grid container className={classes.categories} spacing={1}>
+    <Grid container className={classes.groups} spacing={1}>
       <Grid item xs={12}>
         <Typography color="textSecondary" variant="body1">
-          {t(labelCategory)}
+          {t(labelGroups)}
         </Typography>
       </Grid>
-
-      {details?.categories?.map((category) => {
+      {details?.groups?.map(({ id, name }) => {
         return (
-          <CategoryChip
-            category={category}
-            key={category.id}
-            type={categoryType}
+          <DetailsChip
+            filterByTypeResource={filterByCategory(categoryType)}
+            goToConfiguration={configureCategory}
+            id={id}
+            key={id}
+            name={name}
           />
         );
       })}
@@ -52,4 +75,4 @@ const Category = ({ details }: Props): JSX.Element => {
   );
 };
 
-export default Category;
+export default Categories;

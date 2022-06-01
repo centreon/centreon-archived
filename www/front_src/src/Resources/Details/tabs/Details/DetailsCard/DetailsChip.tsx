@@ -1,18 +1,13 @@
 import { useState } from 'react';
 
-import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-import { Grid, Chip, Tooltip, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import makeStyles from '@mui/styles/makeStyles';
 import IconButton from '@mui/material/IconButton';
-
-import { labelConfigure, labelFilter } from '../../../../translatedLabels';
-import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
-import { Group } from '../../../models';
+import { Chip, Grid, Tooltip, Typography } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -44,26 +39,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  group: Group;
-  type: string;
+  filterByTypeResource: () => void;
+  goToConfiguration: () => void;
+  id: number;
+  name: string;
 }
 
-const GroupChip = ({ group, type }: Props): JSX.Element => {
+const DetailsChip = ({
+  name,
+  filterByTypeResource,
+  id,
+  goToConfiguration,
+}: Props): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
-  const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
-  );
-
-  const filterByGroup = (): void => {
-    setCriteriaAndNewFilter({
-      name: type,
-      value: [group],
-    });
-  };
   const mouseEnter = (): void => {
     setIsHovered(true);
   };
@@ -72,18 +64,14 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
     setIsHovered(false);
   };
 
-  const configureGroup = (): void => {
-    window.location.href = group.configuration_uri as string;
-  };
-
   return (
-    <Grid item className={classes.chip} key={group.id}>
+    <Grid item className={classes.chip} key={id}>
       <Chip
-        aria-label={`${group.name} Chip`}
+        aria-label={`${name} Chip`}
         color="primary"
         label={
           <div className={classes.chipLabel}>
-            <Tooltip title={group.name}>
+            <Tooltip title={name}>
               <Typography
                 className={clsx(
                   classes.chipAction,
@@ -91,26 +79,26 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
                 )}
                 variant="body2"
               >
-                {group.name}
+                {name}
               </Typography>
             </Tooltip>
             {isHovered && (
               <Grid className={classes.chipHover}>
                 <IconButton
-                  aria-label={`${group.name} Filter`}
+                  aria-label={`${name} Filter`}
                   className={classes.chipIconColor}
                   size="small"
-                  title={t(labelFilter)}
-                  onClick={filterByGroup}
+                  title={t(name)}
+                  onClick={filterByTypeResource}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
-                  aria-label={`${group.name} Configure`}
+                  aria-label={`${name} Configure`}
                   className={classes.chipIconColor}
                   size="small"
-                  title={t(labelConfigure)}
-                  onClick={configureGroup}
+                  title={t(name)}
+                  onClick={goToConfiguration}
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
@@ -125,4 +113,4 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
   );
 };
 
-export default GroupChip;
+export default DetailsChip;
