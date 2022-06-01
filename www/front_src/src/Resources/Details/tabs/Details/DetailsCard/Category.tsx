@@ -63,11 +63,11 @@ const Categories = ({ details, category }: Props): JSX.Element => {
       {details?.groups?.map(({ id, name }) => {
         return (
           <DetailsChip
-            filterByTypeResource={filterByCategory(categoryType)}
             goToConfiguration={configureCategory}
             id={id}
             key={id}
             name={name}
+            setFilter={filterByCategory(categoryType)}
           />
         );
       })}

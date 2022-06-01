@@ -42,7 +42,7 @@ const Groups = ({ details, group }: Props): JSX.Element => {
         : CriteriaNames.serviceGroups;
 
       setCriteriaAndNewFilter({
-        name: type,
+        name: groupType,
         value: [group],
       });
     },
@@ -63,11 +63,11 @@ const Groups = ({ details, group }: Props): JSX.Element => {
       {details?.groups?.map(({ id, name }) => {
         return (
           <DetailsChip
-            filterByTypeResource={filterByGroup(groupType)}
             goToConfiguration={configureGroup}
             id={id}
             key={id}
             name={name}
+            setFilter={filterByGroup(groupType)}
           />
         );
       })}

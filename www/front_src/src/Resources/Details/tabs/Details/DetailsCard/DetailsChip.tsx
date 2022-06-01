@@ -39,15 +39,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  filterByTypeResource: () => void;
   goToConfiguration: () => void;
   id: number;
   name: string;
+  setFilter: () => void;
 }
 
 const DetailsChip = ({
   name,
-  filterByTypeResource,
+  setFilter,
   id,
   goToConfiguration,
 }: Props): JSX.Element => {
@@ -89,7 +89,7 @@ const DetailsChip = ({
                   className={classes.chipIconColor}
                   size="small"
                   title={t(name)}
-                  onClick={filterByTypeResource}
+                  onClick={setFilter}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
