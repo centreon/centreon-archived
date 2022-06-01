@@ -328,12 +328,14 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler'
+                    if (
+                        $parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
                     ) {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
-                    } elseif ($parameter == 'illegal_object_name_chars'
+                    } elseif (
+                        $parameter == 'illegal_object_name_chars'
                         || $parameter == 'illegal_macro_output_chars'
                     ) {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);

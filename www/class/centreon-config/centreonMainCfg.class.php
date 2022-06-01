@@ -315,45 +315,31 @@ class CentreonMainCfg
         $rq = "INSERT INTO `cfg_nagios` (
             `nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`,
             `status_file`, `status_update_interval`, `enable_notifications`,
-            `execute_service_checks`, `accept_passive_service_checks`,
-
-            `execute_host_checks`,
+            `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`,
             `accept_passive_host_checks`, `enable_event_handlers`, `check_external_commands`,
             `external_command_buffer_slots`, `command_check_interval`, `command_file`,
             `retain_state_information`, `state_retention_file`,`retention_update_interval`,
-
             `use_retained_program_state`, `use_retained_scheduling_info`, `use_syslog`, `log_notifications`,
             `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_external_commands`,
-            `log_passive_checks`, `sleep_time`,
-
-            `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`,
+            `log_passive_checks`, `sleep_time`, `service_inter_check_delay_method`,
+            `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`,
             `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`,
             `auto_reschedule_checks`, `enable_flap_detection`, `low_service_flap_threshold`,
-
             `high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`,
             `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`,
             `notification_timeout`, `check_for_orphaned_services`, `check_for_orphaned_hosts`,
-
             `check_service_freshness`, `check_host_freshness`, `date_format`, `illegal_object_name_chars`,
             `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`,
-            `admin_pager`,
-
-            `nagios_comment`, `nagios_activate`, `event_broker_options`,
+            `admin_pager`, `nagios_comment`, `nagios_activate`, `event_broker_options`,
             `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`,
             `passive_host_checks_are_soft`, `enable_environment_macros`, `debug_file`, `debug_level`,
-            `debug_level_opt`,
-
-            `debug_verbosity`, `max_debug_file_size`, `cfg_file`
+            `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `cfg_file`
             )
             VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?)";
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )";
 
         $params = array(
             'Centreon Engine ' . $sName,
