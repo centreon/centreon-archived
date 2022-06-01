@@ -37,17 +37,17 @@ const Groups = ({ details, group }: Props): JSX.Element => {
 
   const filterByGroup = useCallback(
     (type: CriteriaNames) => (): void => {
-      const groupType = equals(details?.type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups;
-
       setCriteriaAndNewFilter({
-        name: groupType,
+        name: type,
         value: [group],
       });
     },
     [group, details?.type],
   );
+
+  const groupType = equals(details?.type, ResourceType.host)
+    ? CriteriaNames.hostGroups
+    : CriteriaNames.serviceGroups;
 
   const configureGroup = useCallback((): void => {
     window.location.href = group.configuration_uri as string;

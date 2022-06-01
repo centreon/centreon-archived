@@ -37,10 +37,6 @@ const Categories = ({ details, category }: Props): JSX.Element => {
 
   const filterByCategory = useCallback(
     (type: CriteriaNames) => (): void => {
-      const categoryType = equals(details?.type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups;
-
       setCriteriaAndNewFilter({
         name: type,
         value: [category],
@@ -48,6 +44,9 @@ const Categories = ({ details, category }: Props): JSX.Element => {
     },
     [category, details?.type],
   );
+  const categoryType = equals(details?.type, ResourceType.host)
+    ? CriteriaNames.hostCategories
+    : CriteriaNames.serviceCategories;
 
   const configureCategory = useCallback((): void => {
     window.location.href = category.configuration_uri as string;
