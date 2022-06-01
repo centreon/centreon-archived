@@ -20,6 +20,7 @@ ALTER TABLE cfg_nagios drop CONSTRAINT `cfg_nagios_ibfk_22`;
 ALTER TABLE cfg_nagios DROP KEY `cmd5_index`;
 ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_command`;
 ALTER TABLE cfg_nagios drop CONSTRAINT `cfg_nagios_ibfk_15`;
+ALTER TABLE cfg_nagios DROP FOREIGN KEY `cfg_nagios_ibfk_23`;
 ALTER TABLE cfg_nagios DROP KEY `cmd6_index`;
 ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_command`;
 ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file`;
