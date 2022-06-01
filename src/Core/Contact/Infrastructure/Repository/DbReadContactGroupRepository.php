@@ -100,6 +100,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         return $contactGroups;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findAllByUserId(int $userId): array
     {
         $request = "SELECT SQL_CALC_FOUND_ROWS cg_id, cg_name FROM contactgroup cg " .

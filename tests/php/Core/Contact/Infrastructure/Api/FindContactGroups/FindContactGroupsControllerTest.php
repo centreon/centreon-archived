@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-    namespace Tests\Core\Contact\Infrastructure\Api\FindContactGroups;
+namespace Tests\Core\Contact\Infrastructure\Api\FindContactGroups;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Contact\Application\UseCase\FindContactGroups\FindContactGroups;

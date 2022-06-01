@@ -144,7 +144,6 @@ it('should present a FindContactGroupsResponse when no error occured', function 
 
     $presenter = new FindContactGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
-    dump($presenter);
     expect($presenter->response)->toBeInstanceOf(FindContactGroupsResponse::class);
     expect($presenter->response->contactGroups[0])->toBe(
         [
