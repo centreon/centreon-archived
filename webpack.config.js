@@ -3,11 +3,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
-const {
-  getBasicConfig,
-} = require('centreon-frontend/packages/frontend-config/webpack/base');
+const getBaseConfiguration = require('centreon-frontend/packages/frontend-config/webpack/base');
 
-module.exports = merge(getBasicConfig({ moduleName: 'centreon' }), {
+module.exports = merge(getBaseConfiguration({ moduleName: 'centreon' }), {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   module: {
     rules: [
