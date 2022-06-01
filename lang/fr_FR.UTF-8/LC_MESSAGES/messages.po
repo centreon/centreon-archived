@@ -16860,3 +16860,9 @@ msgstr "Raison: le fichier PHP d'environnement n'est pas éditable"
 #: www/include/Administration/parameters/engine/form.php
 msgid "Resource Status mod"
 msgstr "Mode pour Resource Status"
+
+msgid "License end date:"
+msgstr "Date de fin de licence :"
+
+msgid "License expired"
+msgstr "Licence expirée"
