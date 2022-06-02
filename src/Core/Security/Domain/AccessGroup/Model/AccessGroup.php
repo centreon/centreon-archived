@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -17,28 +18,33 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Core\Security\Domain\AccessGroup\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class AccessGroup
 {
     /**
-     * @var int Id of access group
-     */
-    private $id;
-    /**
-     * @var string Name of the access group
-     */
-    private $name;
-    /**
      * @var string Alias of the access group
      */
-    private $alias;
+    private $alias = '';
+
     /**
      * @var bool Indicates whether this contact is enabled or disabled
      */
-    private $isActivate;
+    private $isActivate = false;
+
+    /**
+     * @param integer $id
+     * @param string $name
+     */
+    public function __construct(private int $id, private string $name)
+    {
+        Assertion::notEmpty($name, 'AccessGroup::name');
+    }
 
     /**
      * @return int
@@ -49,31 +55,11 @@ class AccessGroup
     }
 
     /**
-     * @param int $id
-     * @return AccessGroup
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return AccessGroup
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
     }
 
     /**
