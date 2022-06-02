@@ -19,31 +19,37 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.common.black,
     width: '100%',
   },
-  hostStatusContainer: {
+  hookComponent: {
     display: 'flex',
-    flex: 1,
+    flex: 0.4,
     justifyContent: 'flex-end',
   },
-  pollerContainer: {
+  hostStatusContainer: {
     display: 'flex',
-    flex: 1,
+    flex: 0.35,
+    justifyContent: 'center',
+  },
+  pollerContainer: {
+    flex: 0.5,
   },
   rightContainer: {
+    alignItems: 'center',
     display: 'flex',
-    flex: 3,
+    flex: 1.1,
   },
   serviceStatusContainer: {
     display: 'flex',
-    flex: 0.5,
+    flex: 0.45,
   },
-  switchModeContainer: {
+  userMenu: {
     display: 'flex',
-    flex: 0.2,
+    flex: 0.8,
     justifyContent: 'flex-end',
   },
   userMenuContainer: {
+    alignItems: 'center',
     display: 'flex',
-    flex: 0.3,
+    flex: 0.4,
     justifyContent: 'flex-end',
   },
 }));
@@ -58,18 +64,20 @@ const Header = (): JSX.Element => {
           <PollerMenu />
         </div>
         <div className={classes.rightContainer}>
-          <HookComponent path="/header/topCounter" />
+          <div className={classes.hookComponent}>
+            <HookComponent path="/header/topCounter" />
+          </div>
           <div className={classes.hostStatusContainer}>
             <HostStatusCounter />
           </div>
           <div className={classes.serviceStatusContainer}>
             <ServiceStatusCounter />
           </div>
-          <div className={classes.switchModeContainer}>
-            <SwitchMode />
-          </div>
           <div className={classes.userMenuContainer}>
-            <UserMenu />
+            <SwitchMode />
+            <div className={classes.userMenu}>
+              <UserMenu />
+            </div>
           </div>
         </div>
       </div>
