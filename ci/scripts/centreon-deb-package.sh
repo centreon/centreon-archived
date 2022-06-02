@@ -15,8 +15,6 @@ AUTHOR_EMAIL="me@luizgustavo.pro.br"
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
 
-ls -lart
-tar czpf centreon-$VERSION.tar.gz centreon
 cd centreon/
 
 # Replace basic macros.
@@ -39,6 +37,12 @@ rm -rf lang
 apt install -y npm && sleep 30
 npm install -g redoc-cli
 /usr/local/bin/redoc-cli bundle --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
+
+# Make tar with original content
+cd ..
+ls -lart
+tar czpf centreon-$VERSION.tar.gz centreon
+cd centreon/
 
 # make debian config
 cp -rf ci/debian .
