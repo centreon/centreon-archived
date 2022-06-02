@@ -26,6 +26,7 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
+  labelParentAlias,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -37,6 +38,7 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
+import ParentAlias from './ParentAlias';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -182,6 +184,16 @@ const getDetailCardLines = ({
       line: <DetailsLine line={details.calculation_type} />,
       shouldBeDisplayed: !isNil(details.calculation_type),
       title: labelCalculationType,
+    },
+    {
+      line: <DetailsLine line={details.parent.uuid} />,
+      shouldBeDisplayed: !isNil(details.calculation_type),
+      title: labelCalculationType,
+    },
+    {
+      line: <ParentAlias details={details} />,
+      shouldBeDisplayed: !isNil(details.parent.name),
+      title: labelParentAlias,
     },
     {
       isCustomCard: true,
