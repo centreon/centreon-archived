@@ -13,7 +13,7 @@ AUTHOR_EMAIL="me@luizgustavo.pro.br"
 
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
-$MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
+MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
 
 ls -lart
 tar czpf centreon-$VERSION.tar.gz centreon
