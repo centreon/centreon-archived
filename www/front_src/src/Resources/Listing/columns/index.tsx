@@ -36,7 +36,7 @@ import ResourceColumn from './Resource';
 import ParentResourceColumn from './Parent';
 import NotificationColumn from './Notification';
 import ChecksColumn from './Checks';
-import ParentAlias from './ParentAlias';
+import ParentAliasColumn from './ParentAlias';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -197,12 +197,13 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.string,
   },
   {
-    Component: ParentAlias,
+    Component: ParentAliasColumn,
     getRenderComponentOnRowUpdateCondition: T,
     id: 'parent_alias',
     label: t(labelParentAlias),
-    rowMemoProps: ['parent_alias'],
-    sortable: false,
+    rowMemoProps: ['parent'],
+    sortField: 'parent_alias',
+    sortable: true,
     type: ColumnType.component,
   },
   {
