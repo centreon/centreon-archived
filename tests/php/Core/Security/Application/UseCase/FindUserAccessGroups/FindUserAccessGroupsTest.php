@@ -84,7 +84,7 @@ it('should call the method findByContact if the user is not admin', function () 
 
     $this->repository
         ->expects($this->once())
-        ->method('findByContact')
+        ->method('findByContactWithFilter')
         ->with($this->user);
 
     $presenter = new FindUserAccessGroupsPresenterStub($this->presenterFormatter);

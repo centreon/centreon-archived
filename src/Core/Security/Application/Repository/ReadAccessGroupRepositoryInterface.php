@@ -42,4 +42,13 @@ interface ReadAccessGroupRepositoryInterface
      * @return AccessGroup[]
      */
     public function findByContact(ContactInterface $contact): array;
+
+
+    /**
+     * Find all access groups according to a contact with filter
+     *
+     * @param ContactInterface $contact
+     * @return AccessGroup[]
+     */
+    public function findByContactWithFilter(ContactInterface $contact): array;
 }

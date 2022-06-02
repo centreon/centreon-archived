@@ -50,7 +50,7 @@ class FindUserAccessGroups
             if ($this->user->isAdmin()) {
                 $accessGroups = $this->repository->findAll();
             } else {
-                $accessGroups = $this->repository->findByContact($this->user);
+                $accessGroups = $this->repository->findByContactWithFilter($this->user);
             }
         } catch (\Throwable $ex) {
             $this->error(
