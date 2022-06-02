@@ -31,14 +31,15 @@ import {
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
 import { ChangeExpandedCardsProps } from '../SortableCards/models';
+import { ResourceType } from '../../../../models';
+import { CriteriaNames } from '../../../../Filter/Criterias/models';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
-import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
-import Categories from './Categories';
+import DetailsChips from './DetailsChips';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -187,14 +188,34 @@ const getDetailCardLines = ({
     },
     {
       isCustomCard: true,
-      line: <Groups details={details} />,
+      line: (
+        <DetailsChips
+          getType={() =>
+            equals(details?.type, ResourceType.host)
+              ? CriteriaNames.hostGroups
+              : CriteriaNames.serviceGroups
+          }
+          metaResources={details?.groups}
+          title={labelGroups}
+        />
+      ),
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
       xs: 12,
     },
     {
       isCustomCard: true,
-      line: <Categories details={details} />,
+      line: (
+        <DetailsChips
+          getType={() =>
+            equals(details?.type, ResourceType.host)
+              ? CriteriaNames.hostCategories
+              : CriteriaNames.serviceCategories
+          }
+          metaResources={details?.categories}
+          title={labelCategory}
+        />
+      ),
       shouldBeDisplayed: !isEmpty(details.categories),
       title: labelCategory,
       xs: 12,

@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
+import { useUpdateAtom } from 'jotai/utils';
+import { CriteriaNames } from '../../../Resources/Filter/Criterias/models';
 
 import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
 import { Chip, Grid, Tooltip, Typography } from '@mui/material';
+
+import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
+import { Group, Category } from '../../../models';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -39,22 +44,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  goToConfiguration: () => void;
-  id: number;
-  name: string;
-  setFilter: () => void;
+  metaResourceType: Group | Category;
+  type: CriteriaNames;
 }
 
-const DetailsChip = ({
-  name,
-  setFilter,
-  id,
-  goToConfiguration,
-}: Props): JSX.Element => {
+const DetailsChip = ({ metaResourceType, type }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
   const mouseEnter = (): void => {
     setIsHovered(true);
@@ -63,6 +65,19 @@ const DetailsChip = ({
   const mouseLeave = (): void => {
     setIsHovered(false);
   };
+
+  const filterByMetaResourceType = useCallback((): void => {
+    setCriteriaAndNewFilter({
+      name: type,
+      value: [metaResourceType],
+    });
+  }, [metaResourceType, type]);
+
+  const configureMetaResourceType = useCallback((): void => {
+    window.location.href = metaResourceType.configuration_uri as string;
+  }, [metaResourceType]);
+
+  const { name, id } = metaResourceType;
 
   return (
     <Grid item className={classes.chip} key={id}>
@@ -89,7 +104,7 @@ const DetailsChip = ({
                   className={classes.chipIconColor}
                   size="small"
                   title={t(name)}
-                  onClick={setFilter}
+                  onClick={filterByMetaResourceType}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
@@ -98,7 +113,7 @@ const DetailsChip = ({
                   className={classes.chipIconColor}
                   size="small"
                   title={t(name)}
-                  onClick={goToConfiguration}
+                  onClick={configureMetaResourceType}
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
