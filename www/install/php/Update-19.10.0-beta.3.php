@@ -409,13 +409,10 @@ if ($cache['value']) {
             $statement = $pearDB->prepare(
                 "DELETE FROM cfg_centreonbroker_info WHERE `config_id` = :config_id"
                 . " AND config_group_id = :config_group_id"
-                . " AND config_group = :config_group AND ( config_key = :config_key_1 OR config_key = :config_key_2) "
+                . " AND config_group = 'output' AND ( config_key = 'port' OR config_key = 'path') "
             );
             $statement->bindValue(':config_id', (int) $row['config_id'], \PDO::PARAM_INT);
             $statement->bindValue(':config_group_id', (int) $row['config_group_id'], \PDO::PARAM_INT);
-            $statement->bindValue(':config_group', 'output');
-            $statement->bindValue(':config_key_1', 'port');
-            $statement->bindValue(':config_key_2', 'path');
             $statement->execute();
         }
         $pearDB->query(
