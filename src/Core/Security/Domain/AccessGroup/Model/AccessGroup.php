@@ -30,12 +30,12 @@ class AccessGroup
     /**
      * @var string Alias of the access group
      */
-    private $alias = '';
+    private string $alias = '';
 
     /**
      * @var bool Indicates whether this contact is enabled or disabled
      */
-    private $isActivate = false;
+    private bool $isActivate = false;
 
     /**
      * @param integer $id
