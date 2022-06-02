@@ -31,17 +31,17 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Security\Domain\Authentication\AuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
-use Core\Domain\Security\Authentication\SSOAuthenticationException;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\Domain\Authentication\SSOAuthenticationException;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class LoginOpenIdSession
 {

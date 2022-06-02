@@ -31,7 +31,7 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
     FindOpenIdConfigurationResponse
 };
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 beforeEach(function () {

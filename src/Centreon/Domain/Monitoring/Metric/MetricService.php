@@ -27,7 +27,7 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
 /**
@@ -48,19 +48,19 @@ class MetricService extends AbstractCentreonService implements MetricServiceInte
     private $metricRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param MetricRepositoryInterface $metricRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
         MetricRepositoryInterface $metricRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        ReadAccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->metricRepository = $metricRepository;

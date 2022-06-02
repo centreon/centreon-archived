@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\User\Repository;
 
-use Core\Domain\Security\User\Model\User;
+use Core\Security\Domain\User\Model\User;
 
 interface ReadUserRepositoryInterface
 {

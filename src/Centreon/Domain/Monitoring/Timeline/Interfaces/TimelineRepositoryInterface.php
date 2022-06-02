@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Timeline\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;

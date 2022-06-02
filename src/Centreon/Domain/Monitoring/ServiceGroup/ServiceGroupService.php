@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
 final class ServiceGroupService extends AbstractCentreonService implements ServiceGroupServiceInterface
 {
@@ -35,17 +35,17 @@ final class ServiceGroupService extends AbstractCentreonService implements Servi
     private $serviceGroupRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param ServiceGroupRepositoryInterface $serviceGroupRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         ServiceGroupRepositoryInterface $serviceGroupRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        ReadAccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->serviceGroupRepository = $serviceGroupRepository;
         $this->accessGroupRepository = $accessGroupRepository;
