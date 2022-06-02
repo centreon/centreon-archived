@@ -108,6 +108,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -162,6 +163,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -216,6 +218,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -272,6 +275,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -331,6 +335,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->commandUseCaseTemplate);
     }
@@ -393,6 +398,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->commandControllerTemplate);
     }
@@ -447,6 +453,7 @@ class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->factoryTemplate);
     }

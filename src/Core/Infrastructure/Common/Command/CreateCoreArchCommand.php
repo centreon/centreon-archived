@@ -87,6 +87,7 @@ class CreateCoreArchCommand extends Command
             );
         }
         $output->writeln('<comment>' . $this->modelTemplate->filePath . '</comment>');
+        $output->writeln("");
         if ($this->isACommandUseCase()) {
             $this->createCommandArch($output);
         } else {

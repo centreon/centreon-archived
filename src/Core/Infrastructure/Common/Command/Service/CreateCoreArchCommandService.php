@@ -174,7 +174,6 @@ class CreateCoreArchCommandService
                 '<info>Creating Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
                     . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln('<comment>' . $filePath . '</comment>');
         } else {
             $this->repositoryInterfaceTemplate = new RepositoryInterfaceTemplate(
                 $filePath,
@@ -186,8 +185,9 @@ class CreateCoreArchCommandService
                 '<info>Using Existing Repository Interface : ' . $this->repositoryInterfaceTemplate->namespace . '\\'
                     . $this->repositoryInterfaceTemplate->name . '</info>'
             );
-            $output->writeln('<comment>' . $filePath . '</comment>');
         }
+        $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -225,5 +225,6 @@ class CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 }
