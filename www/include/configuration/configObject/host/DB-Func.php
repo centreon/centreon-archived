@@ -2541,7 +2541,7 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'mc_contact_additive_inheritance':
             case 'mc_cg_additive_inheritance':
-                $bindParams[':' . ltrim($inputName, 'mc_')] = [
+                $bindParams[':' . str_replace('mc_', '', $inputName)] = [
                     \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
                 ];
                 break;
