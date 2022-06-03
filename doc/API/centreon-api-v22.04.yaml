@@ -4969,6 +4969,9 @@ components:
       required:
         - id
         - name
+        - alias
+        - is_activated
+        - has_changed
       properties:
         id:
           type: integer
@@ -4978,6 +4981,16 @@ components:
           type: string
           description: "Access group name"
           example: "Access group"
+        alias:
+          type: string
+          description: "Access group alias"
+          example: "Access group alias"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the access group is activated or not"
+        has_changed:
+          type: boolean
+          description: "Indicates whether the access group has changed or not"
     Media.NullableImage:
       type: object
       nullable: true
