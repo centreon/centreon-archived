@@ -5,7 +5,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
-import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
+import { MenuSkeleton } from '@centreon/ui';
 
 import {
   Typography,
