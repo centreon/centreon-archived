@@ -186,17 +186,17 @@ try {
         "SELECT config_id FROM cfg_centreonbroker"
     );
     $statement = $pearDB->prepare(
-        'INSERT INTO `cfg_centreonbroker_log` (`id_centreonbroker`, `id_log`, `id_level`)
-        VALUES (:id_centreonbroker,1,5),
-               (:id_centreonbroker,2,3),
-               (:id_centreonbroker,3,3),
-               (:id_centreonbroker,4,3),
-               (:id_centreonbroker,5,3),
-               (:id_centreonbroker,6,3),
-               (:id_centreonbroker,7,3),
-               (:id_centreonbroker,8,3),
-               (:id_centreonbroker,9,3),
-               (:id_centreonbroker,10,3)'
+        'INSERT INTO `cfg_centreonbroker_log` (`id_centreonbroker`, `id_log`, `id_level`) 
+        VALUES  (:id_centreonbroker,1,5),
+                (:id_centreonbroker,2,3),
+                (:id_centreonbroker,3,3),
+                (:id_centreonbroker,4,3),
+                (:id_centreonbroker,5,3),
+                (:id_centreonbroker,6,3),
+                (:id_centreonbroker,7,3),
+                (:id_centreonbroker,8,3),
+                (:id_centreonbroker,9,3),
+                (:id_centreonbroker,10,3)'
     );
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         $statement->bindValue(':id_centreonbroker', (int) $row['config_id'], \PDO::PARAM_INT);
