@@ -935,7 +935,7 @@ class CentreonDowntime
     private function createDownTime(array $params): int
     {
         $rq = 'INSERT INTO downtime (dt_name, dt_description, dt_activate)
-			VALUES (:dt_name, :dt_description, :dt_activate)';
+			   VALUES (:dt_name, :dt_description, :dt_activate)';
         $statement = $this->db->prepare($rq);
         $statement->bindValue(':dt_name', $params['dt_name'] . '_' . $params['index'], \PDO::PARAM_STR);
         $statement->bindValue(':dt_description', $params['dt_description'], \PDO::PARAM_STR);
