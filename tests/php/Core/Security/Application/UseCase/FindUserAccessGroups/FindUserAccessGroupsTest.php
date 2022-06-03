@@ -94,7 +94,9 @@ it('should call the method findByContact if the user is not admin', function () 
 it('should present a FindUserAccessGroupsResponse when no error occured', function () {
     $useCase = new FindUserAccessGroups($this->repository, $this->user);
 
-    $accessGroup = (new AccessGroup(1, 'access_group'));
+    $accessGroup = (new AccessGroup(1, 'access_group', 'access_group_alias'))
+        ->setActivate(true)
+        ->setChanged(false);
     $this->repository
         ->expects($this->once())
         ->method('findAll')
@@ -111,7 +113,10 @@ it('should present a FindUserAccessGroupsResponse when no error occured', functi
     expect($presenter->response->accessGroups[0])->toBe(
         [
             'id' => 1,
-            'name' => 'access_group'
+            'name' => 'access_group',
+            'alias' => 'access_group_alias',
+            'has_changed' => false,
+            'is_activated' => true
         ]
     );
 });
