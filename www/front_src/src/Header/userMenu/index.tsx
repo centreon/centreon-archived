@@ -5,7 +5,6 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
-import { MenuSkeleton } from '@centreon/ui';
 
 import {
   Typography,
@@ -28,6 +27,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles, styled } from '@mui/styles';
 
 import {
+  MenuSkeleton,
   postData,
   getData,
   useRequest,
@@ -257,7 +257,7 @@ const UserMenu = (): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuLoader className={classes.loaderUserMenu} width={14} />;
+    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);

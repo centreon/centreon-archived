@@ -3,11 +3,11 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
-import { MenuSkeleton } from '@centreon/ui';
 
 import { ClickAwayListener } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
+import { MenuSkeleton } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
 export const useStyles = makeStyles((theme) => ({
@@ -95,7 +95,7 @@ const RessourceStatusCounter = <
   }
 
   if (!data) {
-    return <MenuLoader width={loaderWidth} />;
+    return <MenuSkeleton width={loaderWidth} />;
   }
 
   const hasPending = data.pending > 0;

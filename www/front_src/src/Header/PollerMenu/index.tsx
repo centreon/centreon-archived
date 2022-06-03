@@ -5,13 +5,13 @@ import { isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
-import { MenuSkeleton } from '@centreon/ui';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
+  MenuSkeleton,
   getData,
   useRequest,
   IconHeader,
@@ -157,7 +157,7 @@ const PollerMenu = (): JSX.Element | null => {
   }
 
   if (isNil(issues)) {
-    return <MenuLoader width={loaderWidth} />;
+    return <MenuSkeleton width={loaderWidth} />;
   }
 
   const redirectToPollerConfiguration = (): void => {
