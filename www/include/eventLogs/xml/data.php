@@ -41,6 +41,7 @@ include_once "../../../../config/centreon.config.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once realpath(__DIR__ . "/../../../../bootstrap.php");
+require_once realpath(__DIR__ . "/../Query.php");
 
 // Connect to DB
 $pearDB = $dependencyInjector['configuration_db'];
@@ -95,6 +96,7 @@ define('HOST_ACKNOWLEDGEMENT_MSG_TYPE', 11);
 include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 $defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
@@ -210,6 +212,9 @@ if (isset($sid) && $sid) {
         "LcaSG" => $access->getServiceGroups()
     );
 }
+
+$query = new Query();
+$query->setIsAdmin($is_admin);
 
 // binding limit value
 $limit = $inputs['limit'];
@@ -407,11 +412,13 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
+    $query->addOutputFilter($output);
     $queryValues[':output'] = [\PDO::PARAM_STR => '%' . $output . '%'];
     $whereOutput = " AND logs.output like :output ";
 }
 
 $innerJoinEngineLog = "";
+$pollerIds = [];
 if ($engine == "true" && isset($openid) && $openid != "") {
     // filtering poller ids and keeping only real ids
     $pollerIds = explode(',', $openid);
@@ -427,13 +434,16 @@ if ($engine == "true" && isset($openid) && $openid != "") {
             $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
             $pollerIds[] = $key;
         }
+        $pollerIds = array_values($pollerIds);
         $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
-            . ' AND i.instance_id IN ( ' . implode(',', array_values($pollerIds)) . ')';
+            . ' AND i.instance_id IN ( ' . implode(',', $pollerIds) . ')';
     }
 }
+$query->setPollerIds($pollerIds);
 
 if ($notification == 'true') {
     if (count($host_msg_status_set)) {
+        $query->addNotificationHostStatusIds($host_msg_status_set);
         $msg_req .= "(";
         $flag_begin = 1;
         $msg_req .= " (`msg_type` = '3' ";
@@ -441,6 +451,7 @@ if ($notification == 'true') {
         $msg_req .= ") ";
     }
     if (count($svc_msg_status_set)) {
+        $query->addNotificationServiceStatusIds($svc_msg_status_set);
         if ($flag_begin == 0) {
             $msg_req .= "(";
         } else {
@@ -456,6 +467,7 @@ if ($notification == 'true') {
 }
 if ($alert == 'true') {
     if (count($host_msg_status_set)) {
+        $query->addAlertHostStatusIds($host_msg_status_set);
         if ($flag_begin) {
             $msg_req .= " OR ";
         }
@@ -469,6 +481,7 @@ if ($alert == 'true') {
         $msg_req .= ") ";
     }
     if (count($svc_msg_status_set)) {
+        $query->addAlertServiceStatusIds($svc_msg_status_set);
         if ($flag_begin) {
             $msg_req .= " OR ";
         }
@@ -570,6 +583,13 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
+
+$query->setAccessGroupString($access->getAccessGroupsString());
+$query->setStart($start);
+$query->setEnd($end);
+$query->setMsgReq($msg_req);
+$newReq = $query->getQuery();
+
 $req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
         logs.ctime,
         logs.host_id,
@@ -593,6 +613,10 @@ $req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
         "WHERE "
     )
     . " logs.ctime > '{$start}' AND logs.ctime <= '{$end}' {$whereOutput} {$msg_req}";
+
+
+print_r($newReq);
+exit(__LINE__);
 
 /*
  * Add Host
