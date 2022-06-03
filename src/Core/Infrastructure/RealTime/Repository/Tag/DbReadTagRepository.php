@@ -48,6 +48,9 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'name' => 'tags.name'
+        ]);
     }
 
     /**
@@ -58,15 +61,16 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
         $this->info('Fetching tags from database of type', ['type' => $typeId]);
 
         $request = 'SELECT id, name, `type`
-            FROM `:dbstg`.tags
-            WHERE type = :type AND EXISTS (
-                SELECT 1 FROM `:dbstg`.resources_tags AS rtags
-                WHERE rtags.tag_id = tags.tag_id
-            )';
+            FROM `:dbstg`.tags';
 
         // Handle search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= $searchRequest === null ? '' : ' AND ' . $searchRequest;
+        $request .= $searchRequest === null ? ' WHERE ' : $searchRequest . ' AND ';
+
+        $request .= ' type = :type AND EXISTS (
+            SELECT 1 FROM `:dbstg`.resources_tags AS rtags
+            WHERE rtags.tag_id = tags.tag_id
+        )';
 
         // Handle sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
@@ -76,6 +80,13 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
         $statement = $this->db->prepare($this->translateDbName($request));
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
         $statement->bindValue(':type', $typeId, \PDO::PARAM_INT);
         $statement->execute();
 
