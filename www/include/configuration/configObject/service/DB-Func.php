@@ -813,9 +813,9 @@ function multipleServiceInDB(
                                 VALUES (:svc_svc_id, \$:svc_macro_name\$,:svc_macro_value , :is_password)";
                             $statement = $pearDB->prepare($mTpRq2);
                             $statement->bindValue(':svc_svc_id', $maxId["MAX(service_id)"]);
-                            $statement->bindValue(':svc_macro_name', $pearDB->escape($macName));
-                            $statement->bindValue(':svc_macro_value', $pearDB->escape($macVal));
-                            $statement->bindValue(':is_password', $pearDB->escape($sv["is_password"]));
+                            $statement->bindValue(':svc_macro_name', $macName);
+                            $statement->bindValue(':svc_macro_value', $macVal);
+                            $statement->bindValue(':is_password', $sv["is_password"]);
                             $statement->execute();
                             $fields["_" . strtoupper($macName) . "_"] = $sv['svc_macro_value'];
                         }
@@ -2583,15 +2583,15 @@ function setServiceCriticality($serviceId, $criticalityId)
                     WHERE sc.sc_id = service_categories_relation.sc_id
                     AND sc.level IS NULL)"
     );
-    $statement->bindValue(':service_service_id', $pearDB->escape($serviceId));
+    $statement->bindValue(':service_service_id', $serviceId, \PDO::PARAM_INT);
     $statement->execute();
     if ($criticalityId) {
         $statement = $pearDB->prepare(
             "INSERT INTO service_categories_relation (sc_id, service_service_id)
                                 VALUES (:sc_id,:service_service_id)"
         );
-        $statement->bindValue(':sc_id', $pearDB->escape($criticalityId));
-        $statement->bindValue(':service_service_id', $pearDB->escape($serviceId));
+        $statement->bindValue(':sc_id', $criticalityId, \PDO::PARAM_INT);
+        $statement->bindValue(':service_service_id', $serviceId, \PDO::PARAM_INT);
         $statement->execute();
     }
 }
