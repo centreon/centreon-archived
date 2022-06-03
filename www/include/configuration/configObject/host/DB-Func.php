@@ -625,9 +625,8 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                               ORDER BY `order`";
                     $dbResult3 = $pearDB->query($mTpRq1);
                     $multiTP_logStr = "";
-                    $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, 
-                                      `host_tpl_id`, `order`)
-                                       VALUES (:host_host_id, :host_tpl_id, :order)";
+                    $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`)
+                               VALUES (:host_host_id, :host_tpl_id, :order)";
                     $statement = $pearDB->prepare($mTpRq2);
                     while ($hst = $dbResult3->fetch()) {
                         if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
@@ -992,8 +991,8 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         $already_stored = array();
         $tplTab = preg_split("/\,/", $ret["use"]);
         $j = 0;
-        $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`)
-                        VALUES (:host_host_id, :host_tpl_id, :order)";
+        $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) 
+               VALUES (:host_host_id, :host_tpl_id, :order)";
         $statement = $pearDB->prepare($rq);
         foreach ($tplTab as $val) {
             $tplId = getMyHostID($val);
@@ -1023,9 +1022,9 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         $my_tab = $macro_on_demand;
         if (isset($my_tab['nbOfMacro'])) {
             $already_stored = array();
-            $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`,
-                           `description`, `host_host_id`, `macro_order`)
-                           VALUES (:host_macro_name, :host_macro_value, :host_host_id, :macro_order)";
+            $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `description`, 
+                                                     `host_host_id`, `macro_order`)
+                   VALUES (:host_macro_name, :host_macro_value, :host_host_id, :macro_order)";
             $statement = $pearDB->prepare($rq);
             for ($i = 0; $i <= $my_tab['nbOfMacro']; $i++) {
                 $macInput = "macroInput_" . $i;
@@ -2546,7 +2545,7 @@ function setHostCriticality($hostId, $criticalityId)
     if ($criticalityId) {
         $statement = $pearDB->prepare(
             "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id)
-                                VALUES (:hostcategories_hc_id, :host_host_id)"
+            VALUES (:hostcategories_hc_id, :host_host_id)"
         );
         $statement->bindValue(':hostcategories_hc_id', (int) $criticalityId, \PDO::PARAM_INT);
         $statement->bindValue(':host_host_id', (int) $hostId, \PDO::PARAM_INT);
