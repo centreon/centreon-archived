@@ -63,7 +63,7 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function findAll(): array
+    public function findAllWithFilter(): array
     {
         $request = "SELECT SQL_CALC_FOUND_ROWS * FROM acl_groups";
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();

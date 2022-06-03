@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Application\UseCase\FindUserAccessGroups;
+namespace Core\Security\Application\UseCase\FindLocalUserAccessGroups;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
-interface FindUserAccessGroupsPresenterInterface extends PresenterInterface
+interface FindLocalUserAccessGroupsPresenterInterface extends PresenterInterface
 {
 }

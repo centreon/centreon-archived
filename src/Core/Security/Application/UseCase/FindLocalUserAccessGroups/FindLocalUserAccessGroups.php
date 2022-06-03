@@ -21,14 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Application\UseCase\FindUserAccessGroups;
+namespace Core\Security\Application\UseCase\FindLocalUserAccessGroups;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
-class FindUserAccessGroups
+class FindLocalUserAccessGroups
 {
     use LoggerTrait;
 
@@ -41,13 +41,13 @@ class FindUserAccessGroups
     }
 
     /**
-     * @param FindUserAccessGroupsPresenterInterface $presenter
+     * @param FindLocalUserAccessGroupsPresenterInterface $presenter
      */
-    public function __invoke(FindUserAccessGroupsPresenterInterface $presenter): void
+    public function __invoke(FindLocalUserAccessGroupsPresenterInterface $presenter): void
     {
         try {
             if ($this->user->isAdmin()) {
-                $accessGroups = $this->repository->findAll();
+                $accessGroups = $this->repository->findAllWithFilter();
             } else {
                 $accessGroups = $this->repository->findByContactWithFilter($this->user);
             }
@@ -63,6 +63,6 @@ class FindUserAccessGroups
             return;
         }
 
-        $presenter->present(new FindUserAccessGroupsResponse($accessGroups));
+        $presenter->present(new FindLocalUserAccessGroupsResponse($accessGroups));
     }
 }

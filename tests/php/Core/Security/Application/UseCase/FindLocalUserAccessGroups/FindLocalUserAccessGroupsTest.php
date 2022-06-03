@@ -21,16 +21,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Security\Application\UseCase\FindUserAccessGroups;
+namespace Tests\Core\Security\Application\UseCase\FindLocalUserAccessGroups;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroups;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsResponse;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroups;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsResponse;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
-use Tests\Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsPresenterStub;
+use Tests\Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterStub;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
@@ -39,7 +39,7 @@ beforeEach(function () {
 });
 
 it('should present an ErrorResponse while an exception occured', function () {
-    $useCase = new FindUserAccessGroups($this->repository, $this->user);
+    $useCase = new FindLocalUserAccessGroups($this->repository, $this->user);
     $this->user
         ->expects($this->once())
         ->method('isAdmin')
@@ -47,10 +47,10 @@ it('should present an ErrorResponse while an exception occured', function () {
 
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllWithFilter')
         ->willThrowException(new \Exception());
 
-    $presenter = new FindUserAccessGroupsPresenterStub($this->presenterFormatter);
+    $presenter = new FindLocalUserAccessGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
@@ -59,8 +59,8 @@ it('should present an ErrorResponse while an exception occured', function () {
     );
 });
 
-it('should call the method findAll if the user is admin', function () {
-    $useCase = new FindUserAccessGroups($this->repository, $this->user);
+it('should call the method findAllWithFilter if the user is admin', function () {
+    $useCase = new FindLocalUserAccessGroups($this->repository, $this->user);
     $this->user
         ->expects($this->once())
         ->method('isAdmin')
@@ -68,14 +68,14 @@ it('should call the method findAll if the user is admin', function () {
 
     $this->repository
         ->expects($this->once())
-        ->method('findAll');
+        ->method('findAllWithFilter');
 
-    $presenter = new FindUserAccessGroupsPresenterStub($this->presenterFormatter);
+    $presenter = new FindLocalUserAccessGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
 });
 
 it('should call the method findByContact if the user is not admin', function () {
-    $useCase = new FindUserAccessGroups($this->repository, $this->user);
+    $useCase = new FindLocalUserAccessGroups($this->repository, $this->user);
 
     $this->user
         ->expects($this->once())
@@ -87,19 +87,19 @@ it('should call the method findByContact if the user is not admin', function () 
         ->method('findByContactWithFilter')
         ->with($this->user);
 
-    $presenter = new FindUserAccessGroupsPresenterStub($this->presenterFormatter);
+    $presenter = new FindLocalUserAccessGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
 });
 
-it('should present a FindUserAccessGroupsResponse when no error occured', function () {
-    $useCase = new FindUserAccessGroups($this->repository, $this->user);
+it('should present a FindLocalUserAccessGroupsResponse when no error occured', function () {
+    $useCase = new FindLocalUserAccessGroups($this->repository, $this->user);
 
     $accessGroup = (new AccessGroup(1, 'access_group', 'access_group_alias'))
         ->setActivate(true)
         ->setChanged(false);
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllWithFilter')
         ->willReturn([$accessGroup]);
 
     $this->user
@@ -107,9 +107,9 @@ it('should present a FindUserAccessGroupsResponse when no error occured', functi
         ->method('isAdmin')
         ->willReturn(true);
 
-    $presenter = new FindUserAccessGroupsPresenterStub($this->presenterFormatter);
+    $presenter = new FindLocalUserAccessGroupsPresenterStub($this->presenterFormatter);
     $useCase($presenter);
-    expect($presenter->response)->toBeInstanceOf(FindUserAccessGroupsResponse::class);
+    expect($presenter->response)->toBeInstanceOf(FindLocalUserAccessGroupsResponse::class);
     expect($presenter->response->accessGroups[0])->toBe(
         [
             'id' => 1,

@@ -21,12 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Infrastructure\Api\FindUserAccessGroups;
+namespace Tests\Core\Contact\Infrastructure\Api\FindLocalUserAccessGroups;
 
 use Centreon\Domain\Contact\Contact;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroups;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsPresenterInterface;
-use Core\Security\Infrastructure\Api\FindUserAccessGroups\FindUserAccessGroupsController;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroups;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterInterface;
+use Core\Security\Infrastructure\Api\FindLocalUserAccessGroups\FindLocalUserAccessGroupsController;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -34,8 +34,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 beforeEach(function () {
-    $this->useCase = $this->createMock(FindUserAccessGroups::class);
-    $this->presenter = $this->createMock(FindUserAccessGroupsPresenterInterface::class);
+    $this->useCase = $this->createMock(FindLocalUserAccessGroups::class);
+    $this->presenter = $this->createMock(FindLocalUserAccessGroupsPresenterInterface::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
@@ -78,7 +78,7 @@ beforeEach(function () {
 });
 
 it('should call the use case', function () {
-    $controller = new FindUserAccessGroupsController();
+    $controller = new FindLocalUserAccessGroupsController();
     $controller->setContainer($this->container);
 
     $this->useCase

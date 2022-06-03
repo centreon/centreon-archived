@@ -21,14 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Infrastructure\Api\FindUserAccessGroups;
+namespace Core\Security\Infrastructure\Api\FindLocalUserAccessGroups;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsPresenterInterface;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterInterface;
 
-class FindUserAccessGroupsPresenter extends AbstractPresenter implements FindUserAccessGroupsPresenterInterface
+class FindLocalUserAccessGroupsPresenter extends AbstractPresenter implements FindLocalUserAccessGroupsPresenterInterface
 {
     /**
      * @param RequestParametersInterface $requestParameters

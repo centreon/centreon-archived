@@ -21,11 +21,11 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Application\UseCase\FindUserAccessGroups;
+namespace Core\Security\Application\UseCase\FindLocalUserAccessGroups;
 
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
-class FindUserAccessGroupsResponse
+class FindLocalUserAccessGroupsResponse
 {
     /**
      * @var array<array<string,string|int>>

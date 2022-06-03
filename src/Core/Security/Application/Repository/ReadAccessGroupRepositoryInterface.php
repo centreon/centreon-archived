@@ -33,7 +33,7 @@ interface ReadAccessGroupRepositoryInterface
      *
      * @return AccessGroup[]
      */
-    public function findAll(): array;
+    public function findAllWithFilter(): array;
 
     /**
      * Find all access groups according to a contact.

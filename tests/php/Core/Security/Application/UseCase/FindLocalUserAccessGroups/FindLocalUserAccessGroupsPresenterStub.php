@@ -21,24 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Security\Application\UseCase\FindUserAccessGroups;
+namespace Tests\Core\Security\Application\UseCase\FindLocalUserAccessGroups;
 
 use Symfony\Component\HttpFoundation\Response;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsResponse;
-use Core\Security\Application\UseCase\FindUserAccessGroups\FindUserAccessGroupsPresenterInterface;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsResponse;
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterInterface;
 use Core\Application\Common\UseCase\{
     AbstractPresenter
 };
 
-class FindUserAccessGroupsPresenterStub extends AbstractPresenter implements FindUserAccessGroupsPresenterInterface
+class FindLocalUserAccessGroupsPresenterStub extends AbstractPresenter implements FindLocalUserAccessGroupsPresenterInterface
 {
     /**
-     * @var FindUserAccessGroupsResponse
+     * @var FindLocalUserAccessGroupsResponse
      */
     public $response;
 
     /**
-     * @param FindUserAccessGroupsResponse $response
+     * @param FindLocalUserAccessGroupsResponse $response
      */
     public function present(mixed $response): void
     {

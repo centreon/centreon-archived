@@ -21,22 +21,22 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Infrastructure\Api\FindUserAccessGroups;
+namespace Core\Security\Infrastructure\Api\FindLocalUserAccessGroups;
 
 use Centreon\Application\Controller\AbstractController;
-use Core\Security\Application\UseCase\FindUserAccessGroups\{
-    FindUserAccessGroups,
-    FindUserAccessGroupsPresenterInterface
+use Core\Security\Application\UseCase\FindLocalUserAccessGroups\{
+    FindLocalUserAccessGroups,
+    FindLocalUserAccessGroupsPresenterInterface
 };
 
-class FindUserAccessGroupsController extends AbstractController
+class FindLocalUserAccessGroupsController extends AbstractController
 {
     /**
-     * @param FindUserAccessGroups $useCase
-     * @param FindUserAccessGroupsPresenterInterface $presenter
+     * @param FindLocalUserAccessGroups $useCase
+     * @param FindLocalUserAccessGroupsPresenterInterface $presenter
      * @return object
      */
-    public function __invoke(FindUserAccessGroups $useCase, FindUserAccessGroupsPresenterInterface $presenter): object
+    public function __invoke(FindLocalUserAccessGroups $useCase, FindLocalUserAccessGroupsPresenterInterface $presenter): object
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
         $useCase($presenter);
