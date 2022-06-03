@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\Tag;
 
-use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -33,6 +32,11 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagRepositoryInterface
 {
     use LoggerTrait;
+
+    /**
+     * @var SqlRequestParametersTranslator
+     */
+    private SqlRequestParametersTranslator $sqlRequestTranslator;
 
     /**
      * @param DatabaseConnection $db
