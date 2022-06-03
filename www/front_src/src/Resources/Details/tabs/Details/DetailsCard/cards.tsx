@@ -191,11 +191,6 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
-      line: <ParentAlias details={details} />,
-      shouldBeDisplayed: !isNil(details.parent.name),
-      title: labelParentAlias,
-    },
-    {
       isCustomCard: true,
       line: <Groups details={details} />,
       shouldBeDisplayed: !isEmpty(details.groups),
