@@ -30,7 +30,8 @@ use Core\Application\Common\UseCase\{
     AbstractPresenter
 };
 
-class FindLocalUserAccessGroupsPresenterStub extends AbstractPresenter implements FindLocalUserAccessGroupsPresenterInterface
+class FindLocalUserAccessGroupsPresenterStub extends AbstractPresenter implements
+    FindLocalUserAccessGroupsPresenterInterface
 {
     /**
      * @var FindLocalUserAccessGroupsResponse
