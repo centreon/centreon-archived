@@ -257,7 +257,7 @@ const UserMenu = (): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuLoader className={classes.loaderUserMenu} width="70%" />;
+    return <MenuLoader className={classes.loaderUserMenu} width={14} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);

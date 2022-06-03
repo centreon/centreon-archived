@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
 interface Props {
   children: (props) => JSX.Element;
   endpoint: string;
-  loaderWidth: number | string;
+  loaderWidth: number;
   schema: yup.AnySchema;
 }
 
