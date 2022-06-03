@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
 
+import Divider from '@mui/material/Divider';
 import {
   Typography,
   Paper,
@@ -79,6 +80,9 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  divider: {
+    backgroundColor: '#FFFFFF1F',
+  },
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -91,11 +95,19 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
+  icon: {
+    minWidth: theme.spacing(3.75),
+  },
+  itemMenu: {
+    padding: theme.spacing(0.25, 2, 0.25, 2),
+  },
   menu: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
-    maxWidth: 230,
-    width: '100%',
+
+    minWidth: 190,
+    // maxWidth: 230,
+    // width: '100%',
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
@@ -241,6 +253,14 @@ const UserMenu = (): JSX.Element => {
     logout();
   };
 
+  const capitalizeFirstLetter = (input: string | null): string => {
+    if (!input) {
+      return '';
+    }
+
+    return input.charAt(0).toUpperCase() + input.slice(1);
+  };
+
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
     loadUserData();
@@ -309,6 +329,14 @@ const UserMenu = (): JSX.Element => {
             transition
             anchorEl={anchorEl}
             className={classes.popper}
+            modifiers={[
+              {
+                name: 'offset',
+                options: {
+                  offset: [22, 10],
+                },
+              },
+            ]}
             open={not(isNil(anchorEl))}
             placement="bottom-end"
           >
@@ -322,20 +350,17 @@ const UserMenu = (): JSX.Element => {
                   }}
                 >
                   <List dense>
-                    <ListItem>
+                    <ListItem className={classes.itemMenu}>
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
-                        {data.fullname}
+                        {capitalizeFirstLetter(data.username)}
                       </ListItemText>
                     </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primaryTypographyProps={primaryTypographyProps}
-                      >{`${t('as')} ${data.username}`}</ListItemText>
-                    </ListItem>
+                    <Divider className={classes.divider} variant="middle" />
+
                     {not(passwordIsNotYetAboutToExpire) && (
-                      <ListItem>
+                      <ListItem className={classes.itemMenu}>
                         <div className={classes.passwordExpiration}>
                           <Typography variant="body2">
                             {t(labelPasswordWillExpireIn)}:
@@ -351,17 +376,17 @@ const UserMenu = (): JSX.Element => {
                         <ListItemButton
                           onClick={navigateToUserSettingsAndCloseUserMenu}
                         >
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             <SettingsIcon fontSize="small" />
                           </ListItemIcon>
                           <ListItemText>{t(labelEditProfile)}</ListItemText>
                         </ListItemButton>
                       </ListItem>
                     )}
-                    {data.autologinkey && (
+                    {true && (
                       <ListItem disableGutters>
                         <ListItemButton onClick={onCopy}>
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             {copied ? (
                               <CheckIcon fontSize="small" />
                             ) : (
@@ -381,9 +406,11 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
+                    <Divider className={classes.divider} variant="middle" />
+
                     <ListItem disableGutters>
                       <ListItemButton onClick={logoutFromSession}>
-                        <ListItemIcon>
+                        <ListItemIcon className={classes.icon}>
                           <LogoutIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>{t(labelLogout)}</ListItemText>
