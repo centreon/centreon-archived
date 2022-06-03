@@ -28,7 +28,7 @@ use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 class FindLocalUserAccessGroupsResponse
 {
     /**
-     * @var array<array<string,string|int>>
+     * @var array<array<string,mixed>>
      */
     public array $accessGroups;
 
@@ -42,7 +42,7 @@ class FindLocalUserAccessGroupsResponse
 
     /**
      * @param array<AccessGroup> $accessGroups
-     * @return array<array<string,string|int>>
+     * @return array<array<string,mixed>>
      */
     private function accessGroupsToArray(array $accessGroups): array
     {

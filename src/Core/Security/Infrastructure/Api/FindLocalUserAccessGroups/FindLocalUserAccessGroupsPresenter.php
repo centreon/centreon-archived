@@ -28,7 +28,8 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Core\Security\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterInterface;
 
-class FindLocalUserAccessGroupsPresenter extends AbstractPresenter implements FindLocalUserAccessGroupsPresenterInterface
+class FindLocalUserAccessGroupsPresenter extends AbstractPresenter implements
+    FindLocalUserAccessGroupsPresenterInterface
 {
     /**
      * @param RequestParametersInterface $requestParameters

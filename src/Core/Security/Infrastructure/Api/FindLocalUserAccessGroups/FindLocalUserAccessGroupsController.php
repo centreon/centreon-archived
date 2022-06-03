@@ -36,8 +36,10 @@ class FindLocalUserAccessGroupsController extends AbstractController
      * @param FindLocalUserAccessGroupsPresenterInterface $presenter
      * @return object
      */
-    public function __invoke(FindLocalUserAccessGroups $useCase, FindLocalUserAccessGroupsPresenterInterface $presenter): object
-    {
+    public function __invoke(
+        FindLocalUserAccessGroups $useCase,
+        FindLocalUserAccessGroupsPresenterInterface $presenter
+    ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
         $useCase($presenter);
 

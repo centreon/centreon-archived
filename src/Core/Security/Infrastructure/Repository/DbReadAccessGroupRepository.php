@@ -147,60 +147,54 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
      */
     public function findByContactWithFilter(ContactInterface $contact): array
     {
+        $request = "SELECT SQL_CALC_FOUND_ROWS * FROM acl_groups";
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= $searchRequest !== null
+            ? $searchRequest . ' AND '
+            : ' WHERE ';
+
+        $request .= "acl_group_activate = '1'
+        AND (
+            acl_group_id IN (
+            SELECT acl_group_id FROM acl_group_contacts_relations
+            WHERE contact_contact_id = :contact_id
+            )
+            OR acl_group_id IN (
+            SELECT acl_group_id FROM acl_group_contactgroups_relations agcr
+            INNER JOIN contactgroup_contact_relation cgcr
+                ON cgcr.contactgroup_cg_id = agcr.cg_cg_id
+            WHERE cgcr.contact_contact_id = :contact_id
+            )
+        )";
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= $sortRequest !== null ? $sortRequest : ' ORDER BY acl_group_id ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($request);
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        $statement->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        // Set total
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
         $accessGroups = [];
-            /**
-             * Retrieve all access group from contact
-             * and contact groups linked to contact
-             */
-
-            $request = "SELECT SQL_CALC_FOUND_ROWS * FROM acl_groups";
-            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-            $request .= $searchRequest !== null
-                ? $searchRequest . ' AND '
-                : ' WHERE ';
-
-            $request .= "acl_group_activate = '1'
-            AND (
-                acl_group_id IN (
-                SELECT acl_group_id FROM acl_group_contacts_relations
-                WHERE contact_contact_id = :contact_id
-                )
-                OR acl_group_id IN (
-                SELECT acl_group_id FROM acl_group_contactgroups_relations agcr
-                INNER JOIN contactgroup_contact_relation cgcr
-                    ON cgcr.contactgroup_cg_id = agcr.cg_cg_id
-                WHERE cgcr.contact_contact_id = :contact_id
-                )
-            )";
-
-            // Sort
-            $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-            $request .= $sortRequest !== null ? $sortRequest : ' ORDER BY acl_group_id ASC';
-
-            // Pagination
-            $request .= $this->sqlRequestTranslator->translatePaginationToSql();
-
-            $statement = $this->db->prepare($request);
-
-            foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-                $type = key($data);
-                $value = $data[$type];
-                $statement->bindValue($key, $value, $type);
-            }
-            $statement->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
-
-            $statement->execute();
-
-            // Set total
-            $result = $this->db->query('SELECT FOUND_ROWS()');
-            if ($result !== false && ($total = $result->fetchColumn()) !== false) {
-                $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
-            }
-
-            $accessGroups = [];
-            while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
-            }
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
+        }
 
         return $accessGroups;
     }
