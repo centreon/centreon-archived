@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
-import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
+import { MenuSkeleton } from '@centreon/ui';
 
 import { ClickAwayListener } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
