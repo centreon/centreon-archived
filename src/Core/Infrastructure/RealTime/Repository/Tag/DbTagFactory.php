@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Centreon\Domain\Broker\Interfaces;
+namespace Core\Infrastructure\RealTime\Repository\Tag;
 
-use Centreon\Domain\Broker\BrokerConfiguration;
+use Core\Domain\RealTime\Model\Tag;
 
-interface BrokerRepositoryInterface
+class DbTagFactory
 {
     /**
-     * @param integer $monitoringServerId
-     * @param string $configKey
-     * @return BrokerConfiguration[]
-     */
-    public function findByMonitoringServerAndParameterName(
-        int $monitoringServerId,
-        string $configKey
-    ): array;
-
-    /**
-     * Returns value of the parameter on all monitoring servers
+     * Create ServiceCategory model using data from database
      *
-     * @return BrokerConfiguration[]
-     * @throws \Throwable
+     * @param array<string, mixed> $data
+     * @return Tag
      */
-    public function findAllByParameterName(string $parameterName): array;
+    public static function createFromRecord(array $data): Tag
+    {
+        return new Tag((int) $data['id'], $data['name'], (int) $data['type']);
+    }
 }
