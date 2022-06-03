@@ -5,7 +5,7 @@ import { isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
-import MenuLoader from 'centreon-frontend/packages/centreon-ui/src/MenuSkeleton';
+import { MenuSkeleton } from '@centreon/ui';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
