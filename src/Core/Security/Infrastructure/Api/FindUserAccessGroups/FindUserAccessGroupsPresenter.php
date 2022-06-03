@@ -42,7 +42,6 @@ class FindUserAccessGroupsPresenter extends AbstractPresenter implements FindUse
 
     /**
      * @param mixed $presentedData
-     * @return void
      */
     public function present(mixed $presentedData): void
     {

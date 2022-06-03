@@ -42,7 +42,6 @@ class FindUserAccessGroups
 
     /**
      * @param FindUserAccessGroupsPresenterInterface $presenter
-     * @return void
      */
     public function __invoke(FindUserAccessGroupsPresenterInterface $presenter): void
     {
