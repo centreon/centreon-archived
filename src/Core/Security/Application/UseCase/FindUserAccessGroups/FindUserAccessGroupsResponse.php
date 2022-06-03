@@ -50,6 +50,9 @@ class FindUserAccessGroupsResponse
             fn (AccessGroup $accessGroup) => [
                 'id' => $accessGroup->getId(),
                 'name' => $accessGroup->getName(),
+                'alias' => $accessGroup->getAlias(),
+                'has_changed' => $accessGroup->hasChanged(),
+                'is_activated' => $accessGroup->isActivate()
             ],
             $accessGroups
         );

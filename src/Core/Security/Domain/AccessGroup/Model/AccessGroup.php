@@ -28,22 +28,23 @@ use Centreon\Domain\Common\Assertion\Assertion;
 class AccessGroup
 {
     /**
-     * @var string Alias of the access group
-     */
-    private string $alias = '';
-
-    /**
-     * @var bool Indicates whether this contact is enabled or disabled
+     * @var bool Indicates whether this access group is enabled or disabled
      */
     private bool $isActivate = false;
+
+    /**
+     * @var bool Indicates whether this access group has changed or not
+     */
+    private bool $hasChanged = false;
 
     /**
      * @param integer $id
      * @param string $name
      */
-    public function __construct(private int $id, private string $name)
+    public function __construct(private int $id, private string $name, private string $alias)
     {
         Assertion::notEmpty($name, 'AccessGroup::name');
+        Assertion::notEmpty($alias, 'AccessGroup::alias');
     }
 
     /**
@@ -71,16 +72,6 @@ class AccessGroup
     }
 
     /**
-     * @param string $alias
-     * @return AccessGroup
-     */
-    public function setAlias(string $alias): self
-    {
-        $this->alias = $alias;
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function isActivate(): bool
@@ -95,6 +86,24 @@ class AccessGroup
     public function setActivate(bool $isActivate): self
     {
         $this->isActivate = $isActivate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
+    }
+
+    /**
+     * @param bool $hasChanged
+     * @return AccessGroup
+     */
+    public function setChanged(bool $hasChanged): self
+    {
+        $this->hasChanged = $hasChanged;
         return $this;
     }
 }

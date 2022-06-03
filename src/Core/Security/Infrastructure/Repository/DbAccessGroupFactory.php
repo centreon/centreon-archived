@@ -33,8 +33,8 @@ class DbAccessGroupFactory
      */
     public static function createFromRecord(array $record): AccessGroup
     {
-        return (new AccessGroup((int) $record['acl_group_id'], $record['acl_group_name']))
-            ->setAlias($record['acl_group_alias'])
-            ->setActivate($record['acl_group_activate'] === '1');
+        return (new AccessGroup((int) $record['acl_group_id'], $record['acl_group_name'], $record['acl_group_alias']))
+            ->setActivate($record['acl_group_activate'] === '1')
+            ->setChanged($record['acl_group_changed'] === '1' );
     }
 }
