@@ -239,6 +239,22 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: string
                     groups: [Default]
+        hostCategoryNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        serviceCategoryNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
         monitoringServerNames:
             - Type:
                 type: array
