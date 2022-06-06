@@ -4443,6 +4443,8 @@ components:
         - alias_bind_attribute
         - fullname_bind_attribute
         - contact_group
+        - authorization_claim
+        - authorization_relations
       properties:
         is_active:
           type: boolean
@@ -4573,7 +4575,17 @@ components:
                 description: "Authorization claim name"
                 example: "scope"
               access_group:
-                $ref: '#/components/schemas/Configuration.AccessGroup'
+                type: object
+                description: "Access group"
+                properties:
+                  id:
+                    type: integer
+                    description: "Access group ID"
+                    example: 1
+                  name:
+                    type: string
+                    description: "Access group name"
+                    example: "Default"
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
