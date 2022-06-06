@@ -11,6 +11,7 @@ use Core\Infrastructure\Common\Command\CreateCoreArchCommand;
 use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
 use Core\Infrastructure\Common\Command\Model\UnitTestTemplate\UnitTestTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\RepositoryInterfaceTemplate;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class CreateCoreArchCommandService
 {
@@ -68,10 +69,14 @@ class CreateCoreArchCommandService
                 $modelName,
                 true
             );
-            // }
         }
 
-        // If the model doesn't exist or if the user want to create a new one.
+        // If the model doesn't exist or if the user want to create a new one. Asks to valid the name to avoid typos.
+        $confirmationQuestion = new ConfirmationQuestion("You're going to create a model : " . $modelName . " [Y/n]");
+        $confirmation = $questionHelper->ask($input, $output, $confirmationQuestion);
+        if ($confirmation === false) {
+            return $this->askForModel($input, $output, $questionHelper);
+        }
         $newNamespace = 'Core\\' . $modelName . '\\Domain\\Model';
         $filePath = $this->srcPath . DIRECTORY_SEPARATOR . preg_replace("/\\\\/", DIRECTORY_SEPARATOR, $newNamespace) .
             DIRECTORY_SEPARATOR . $modelName . '.php';

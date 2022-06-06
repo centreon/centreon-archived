@@ -67,6 +67,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -119,6 +120,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     /**
@@ -173,6 +175,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     public function createPresenterInterfaceIfNotExist(
@@ -219,6 +222,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     public function createPresenterIfNotExist(
@@ -267,6 +271,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
     }
 
     public function createUseCaseIfNotExist(
@@ -320,6 +325,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->queryUseCaseTemplate);
     }
@@ -372,6 +378,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->queryControllerTemplate);
     }
@@ -425,6 +432,7 @@ class CreateCoreQueryArchCommandService extends CreateCoreArchCommandService
             );
         }
         $output->writeln('<comment>' . $filePath . '</comment>');
+        $output->writeln("");
 
         $this->createUnitTestFileIfNotExists($output, $this->factoryTemplate);
     }
