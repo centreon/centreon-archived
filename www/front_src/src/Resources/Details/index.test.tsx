@@ -76,6 +76,7 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
   labelNotificationStatus,
+  labelCategory,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -125,6 +126,13 @@ const groups = [
   },
 ];
 
+const categories = [
+  {
+    configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
+    id: 0,
+    name: 'Windows',
+  },
+];
 const serviceDetailsUrlParameters = {
   id: 1,
   parentId: 1,
@@ -205,6 +213,7 @@ const retrievedDetails = {
   },
   active_checks: false,
   alias: 'Central-Centreon',
+  categories,
   checked: true,
   command_line: 'base_host_alive',
   downtimes: [
@@ -676,6 +685,9 @@ describe(Details, () => {
 
     expect(getByText(labelGroups)).toBeInTheDocument();
     expect(getByText('Linux-servers')).toBeInTheDocument();
+
+    expect(getByText(labelCategory)).toBeInTheDocument();
+    expect(getByText('Windows')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
