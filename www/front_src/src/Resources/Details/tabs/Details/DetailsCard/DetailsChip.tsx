@@ -3,7 +3,6 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { useUpdateAtom } from 'jotai/utils';
-import { CriteriaNames } from '../../../Resources/Filter/Criterias/models';
 
 import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -11,6 +10,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
 import { Chip, Grid, Tooltip, Typography } from '@mui/material';
 
+import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { Group, Category } from '../../../models';
 
