@@ -27,7 +27,7 @@ use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
     FindWebSSOConfiguration,

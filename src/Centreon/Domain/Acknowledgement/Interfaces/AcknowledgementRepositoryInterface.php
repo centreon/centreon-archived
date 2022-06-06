@@ -24,7 +24,7 @@ namespace Centreon\Domain\Acknowledgement\Interfaces;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 
 interface AcknowledgementRepositoryInterface

@@ -28,7 +28,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Domain\Security\ProviderConfiguration\OpenId\{
+use Core\Security\Domain\ProviderConfiguration\OpenId\{
     Model\OpenIdConfigurationFactory,
     Exceptions\OpenIdConfigurationException
 };

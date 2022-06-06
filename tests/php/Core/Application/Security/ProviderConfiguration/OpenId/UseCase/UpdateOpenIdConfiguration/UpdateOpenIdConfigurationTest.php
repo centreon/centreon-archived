@@ -33,8 +33,8 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationRequest
 };
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
 
 beforeEach(function () {
     $this->repository = $this->createMock(WriteOpenIdConfigurationRepositoryInterface::class);

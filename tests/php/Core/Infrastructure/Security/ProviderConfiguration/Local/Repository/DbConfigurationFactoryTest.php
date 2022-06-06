@@ -25,7 +25,7 @@ namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\Local\Reposit
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Repository\DbConfigurationFactory;
 
 class DbConfigurationFactoryTest extends TestCase

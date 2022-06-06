@@ -26,7 +26,7 @@ namespace Core\Application\Security\UseCase\RenewPassword;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Domain\Security\User\Model\UserPasswordFactory;
+use Core\Security\Domain\User\Model\UserPasswordFactory;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
