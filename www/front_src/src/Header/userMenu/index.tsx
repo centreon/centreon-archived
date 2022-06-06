@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(3.75),
   },
   itemMenu: {
-    padding: theme.spacing(0, 2, 0, 2),
+    padding: theme.spacing(0, 2, 0.25, 2),
   },
   menu: {
     backgroundColor: theme.palette.common.black,
