@@ -6,7 +6,6 @@ import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
-import SwitchMode from './SwitchThemeMode';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   rightContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 1.1,
+    flex: 0.9,
   },
   serviceStatusContainer: {
     display: 'flex',
@@ -49,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   userMenuContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 0.4,
+    flex: 0.3,
     justifyContent: 'flex-end',
   },
 }));
@@ -74,10 +73,7 @@ const Header = (): JSX.Element => {
             <ServiceStatusCounter />
           </div>
           <div className={classes.userMenuContainer}>
-            {/* <SwitchMode /> */}
-            {/* <div className={classes.userMenu}> */}
             <UserMenu />
-            {/* </div> */}
           </div>
         </div>
       </div>
