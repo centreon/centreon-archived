@@ -39,6 +39,7 @@ import {
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
 
 export interface Criteria {
+  isOptimizedModeEnabled?: boolean;
   name: string;
   object_type: string | null;
   type: string;
@@ -178,6 +179,7 @@ const selectableStateTypes = [hardStateType, softStateType];
 export interface CriteriaDisplayProps {
   autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
+  enable?: boolean;
   label: string;
   options?: Array<SelectEntry>;
 }

@@ -80,12 +80,14 @@ const getDefaultCriterias = (
       value: serviceGroups,
     },
     {
+      isOptimizedModeEnabled: true,
       name: 'service_categories',
       object_type: 'service_categories',
       type: 'multi_select',
       value: serviceCategories,
     },
     {
+      isOptimizedModeEnabled: true,
       name: 'host_categories',
       object_type: 'host_categories',
       type: 'multi_select',
