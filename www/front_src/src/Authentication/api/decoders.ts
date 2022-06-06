@@ -2,7 +2,7 @@ import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 import {
-  AuthorizationRelation,
+  AuthorizationRule,
   NamedEntity,
   OpenidConfiguration,
 } from '../Openid/models';
@@ -58,14 +58,15 @@ const getNamedEntityDecoder = (
     title,
   );
 
-const authorization = JsonDecoder.object<AuthorizationRelation>(
+const authorization = JsonDecoder.object<AuthorizationRule>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
-    name: JsonDecoder.string,
+    claimValue: JsonDecoder.string,
   },
   'Authorization',
   {
     accessGroup: 'access_group',
+    claimValue: 'claim_value',
   },
 );
 
@@ -74,9 +75,8 @@ export const openidConfigurationDecoder =
     {
       aliasBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
-      authorizationClaim: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-      authorizationRelations: JsonDecoder.array(
+      authorizationRules: JsonDecoder.array(
         authorization,
         'Authorization relations',
       ),
@@ -86,6 +86,7 @@ export const openidConfigurationDecoder =
         JsonDecoder.string,
         'blacklist client addresses',
       ),
+      claimName: JsonDecoder.nullable(JsonDecoder.string),
       clientId: JsonDecoder.nullable(JsonDecoder.string),
       clientSecret: JsonDecoder.nullable(JsonDecoder.string),
       connectionScopes: JsonDecoder.array(
@@ -117,12 +118,12 @@ export const openidConfigurationDecoder =
     {
       aliasBindAttribute: 'alias_bind_attribute',
       authenticationType: 'authentication_type',
-      authorizationClaim: 'authorization_claim',
       authorizationEndpoint: 'authorization_endpoint',
-      authorizationRelations: 'authorization_relations',
+      authorizationRules: 'authorization_rules',
       autoImport: 'auto_import',
       baseUrl: 'base_url',
       blacklistClientAddresses: 'blacklist_client_addresses',
+      claimName: 'claim_name',
       clientId: 'client_id',
       clientSecret: 'client_secret',
       connectionScopes: 'connection_scopes',

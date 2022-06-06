@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
+import { omit } from 'ramda';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
@@ -49,7 +50,6 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from './translatedLabels';
-import { OpenidConfigurationToAPI } from './models';
 
 import OpenidConfigurationForm from '.';
 
@@ -69,23 +69,23 @@ const cancelTokenPutParams = {
 const renderOpenidConfigurationForm = (): RenderResult =>
   render(<OpenidConfigurationForm />);
 
-const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
+const retrievedOpenidConfiguration = {
   alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
-  authorization_claim: 'groups',
   authorization_endpoint: '/authorize',
-  authorization_relations: [
+  authorization_rules: [
     {
       access_group: {
         id: 1,
         name: 'Access group',
       },
-      name: 'Authorization relation',
+      claim_value: 'Authorization relation',
     },
   ],
   auto_import: true,
   base_url: 'https://localhost:8080',
   blacklist_client_addresses: ['127.0.0.1'],
+  claim_name: 'groups',
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
@@ -110,33 +110,32 @@ const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
   verify_peer: false,
 };
 
-const retrievedOpenidConfigurationWithEmptyAuthorization: OpenidConfigurationToAPI =
-  {
-    alias_bind_attribute: 'firstname',
-    authentication_type: 'client_secret_post',
-    authorization_claim: null,
-    authorization_endpoint: '/authorize',
-    authorization_relations: [],
-    auto_import: true,
-    base_url: 'https://localhost:8080',
-    blacklist_client_addresses: ['127.0.0.1'],
-    client_id: 'client_id',
-    client_secret: 'client_secret',
-    connection_scopes: ['openid'],
-    contact_group: null,
-    contact_template: null,
-    email_bind_attribute: 'email',
-    endsession_endpoint: '/logout',
-    fullname_bind_attribute: 'lastname',
-    introspection_token_endpoint: '/introspect',
-    is_active: true,
-    is_forced: false,
-    login_claim: 'sub',
-    token_endpoint: '/token',
-    trusted_client_addresses: ['127.0.0.1'],
-    userinfo_endpoint: '/userinfo',
-    verify_peer: false,
-  };
+const retrievedOpenidConfigurationWithEmptyAuthorization = {
+  alias_bind_attribute: 'firstname',
+  authentication_type: 'client_secret_post',
+  authorization_endpoint: '/authorize',
+  authorization_rules: [],
+  auto_import: true,
+  base_url: 'https://localhost:8080',
+  blacklist_client_addresses: ['127.0.0.1'],
+  claim_name: null,
+  client_id: 'client_id',
+  client_secret: 'client_secret',
+  connection_scopes: ['openid'],
+  contact_group: null,
+  contact_template: null,
+  email_bind_attribute: 'email',
+  endsession_endpoint: '/logout',
+  fullname_bind_attribute: 'lastname',
+  introspection_token_endpoint: '/introspect',
+  is_active: true,
+  is_forced: false,
+  login_claim: 'sub',
+  token_endpoint: '/token',
+  trusted_client_addresses: ['127.0.0.1'],
+  userinfo_endpoint: '/userinfo',
+  verify_peer: false,
+};
 
 const getRetrievedEntities = (label: string): unknown => ({
   meta: {
@@ -343,8 +342,15 @@ describe('Openid configuration form', () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
         {
-          ...retrievedOpenidConfiguration,
+          ...omit(['contact_group'], retrievedOpenidConfiguration),
+          authorization_rules: [
+            {
+              access_group_id: 1,
+              claim_value: 'Authorization relation',
+            },
+          ],
           base_url: 'http://localhost:8081/login',
+          contact_group_id: 1,
         },
         cancelTokenPutParams,
       );

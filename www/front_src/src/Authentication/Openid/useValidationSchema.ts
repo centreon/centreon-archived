@@ -23,7 +23,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
 
   const authorizationSchema = Yup.object({
     accessGroup: namedEntitySchema.nullable().required(t(labelRequired)),
-    name: Yup.string().required(t(labelRequired)),
+    claimValue: Yup.string().required(t(labelRequired)),
   });
 
   return Yup.object({
@@ -36,9 +36,8 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       },
     ),
     authenticationType: Yup.string().required(t(labelRequired)),
-    authorizationClaim: Yup.string().nullable(),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
-    authorizationRelations: Yup.array()
+    authorizationRules: Yup.array()
       .of(authorizationSchema)
       .when('contactGroup', (contactGroup, schema) => {
         return contactGroup
@@ -57,6 +56,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
+    claimName: Yup.string().nullable(),
     clientId: Yup.string().nullable().required(t(labelRequired)),
     clientSecret: Yup.string().nullable().required(t(labelRequired)),
     connectionScopes: Yup.array().of(Yup.string().required(t(labelRequired))),

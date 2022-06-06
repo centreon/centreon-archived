@@ -3,25 +3,25 @@ export interface NamedEntity {
   name: string;
 }
 
-export interface AuthorizationRelation {
+export interface AuthorizationRule {
   accessGroup: NamedEntity;
-  name: string;
+  claimValue: string;
 }
 
 export interface AuthorizationRelationToAPI {
-  access_group: NamedEntity;
-  name: string;
+  access_group_id: number;
+  claim_value: string;
 }
 
 export interface OpenidConfiguration {
   aliasBindAttribute?: string | null;
   authenticationType: string | null;
-  authorizationClaim?: string | null;
   authorizationEndpoint: string | null;
-  authorizationRelations: Array<AuthorizationRelation>;
+  authorizationRules: Array<AuthorizationRule>;
   autoImport: boolean;
   baseUrl: string | null;
   blacklistClientAddresses: Array<string>;
+  claimName?: string | null;
   clientId: string | null;
   clientSecret: string | null;
   connectionScopes: Array<string>;
@@ -43,16 +43,16 @@ export interface OpenidConfiguration {
 export interface OpenidConfigurationToAPI {
   alias_bind_attribute: string | null;
   authentication_type: string | null;
-  authorization_claim: string | null;
   authorization_endpoint: string | null;
-  authorization_relations: Array<AuthorizationRelationToAPI>;
+  authorization_rules: Array<AuthorizationRelationToAPI>;
   auto_import: boolean;
   base_url: string | null;
   blacklist_client_addresses: Array<string>;
+  claim_name: string | null;
   client_id: string | null;
   client_secret: string | null;
   connection_scopes: Array<string>;
-  contact_group: NamedEntity | null;
+  contact_group_id: number;
   contact_template: NamedEntity | null;
   email_bind_attribute: string | null;
   endsession_endpoint?: string | null;

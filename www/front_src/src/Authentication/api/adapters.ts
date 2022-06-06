@@ -5,7 +5,7 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
-  AuthorizationRelation,
+  AuthorizationRule,
   AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
@@ -71,14 +71,14 @@ export const adaptPasswordSecurityPolicyToAPI = ({
 };
 
 const adaptAuthorizationRelationsToAPI = (
-  authorizationRelations: Array<AuthorizationRelation>,
+  authorizationRules: Array<AuthorizationRule>,
 ): Array<AuthorizationRelationToAPI> =>
   map(
-    ({ name, accessGroup }: AuthorizationRelation) => ({
-      access_group: accessGroup,
-      name,
+    ({ claimValue, accessGroup }: AuthorizationRule) => ({
+      access_group_id: accessGroup.id,
+      claim_value: claimValue,
     }),
-    authorizationRelations,
+    authorizationRules,
   );
 
 export const adaptOpenidConfigurationToAPI = ({
@@ -104,22 +104,22 @@ export const adaptOpenidConfigurationToAPI = ({
   aliasBindAttribute,
   fullnameBindAttribute,
   contactGroup,
-  authorizationClaim,
-  authorizationRelations,
+  claimName,
+  authorizationRules,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   alias_bind_attribute: aliasBindAttribute || null,
   authentication_type: authenticationType || null,
-  authorization_claim: authorizationClaim || null,
   authorization_endpoint: authorizationEndpoint || null,
-  authorization_relations:
-    adaptAuthorizationRelationsToAPI(authorizationRelations) || [],
+  authorization_rules:
+    adaptAuthorizationRelationsToAPI(authorizationRules) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
   blacklist_client_addresses: blacklistClientAddresses,
+  claim_name: claimName || null,
   client_id: clientId || null,
   client_secret: clientSecret || null,
   connection_scopes: connectionScopes,
-  contact_group: contactGroup || null,
+  contact_group_id: contactGroup?.id || 0,
   contact_template: contactTemplate || null,
   email_bind_attribute: emailBindAttribute || null,
   endsession_endpoint: endSessionEndpoint || null,

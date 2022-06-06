@@ -33,7 +33,7 @@ import {
   labelDeleteRelation,
   labelAuthorizationKey,
 } from '../translatedLabels';
-import { AuthenticationType, AuthorizationRelation } from '../models';
+import { AuthenticationType, AuthorizationRule } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
@@ -55,7 +55,7 @@ const isAutoImportEnabled = (values: FormikValues): boolean =>
   prop('autoImport', values);
 
 const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
-  not(isEmpty(prop('authorizationRelations', values)));
+  not(isEmpty(prop('authorizationRules', values)));
 
 export const inputs: Array<InputProps> = [
   {
@@ -231,18 +231,18 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelAuthorizations,
-    fieldName: 'authorizationClaim',
+    fieldName: 'claimName',
     label: labelAuthorizationKey,
     type: InputType.Text,
   },
   {
     additionalFieldsToMemoize: ['contactGroup'],
     category: labelAuthorizations,
-    fieldName: 'authorizationRelations',
+    fieldName: 'authorizationRules',
     fieldsTableConfiguration: {
       columns: [
         {
-          fieldName: 'name',
+          fieldName: 'claimValue',
           label: labelAuthorizationValue,
           type: InputType.Text,
         },
@@ -255,21 +255,21 @@ export const inputs: Array<InputProps> = [
       ],
       defaultRowValue: {
         accessGroup: null,
-        name: '',
+        claimValue: '',
       },
       deleteLabel: labelDeleteRelation,
       getRequired: ({ values, index }): boolean => {
-        const tableValues = prop('authorizationRelations', values);
+        const tableValues = prop('authorizationRules', values);
 
-        const rowValues = path<AuthorizationRelation>(
-          ['authorizationRelations', index],
+        const rowValues = path<AuthorizationRule>(
+          ['authorizationRules', index],
           values,
         );
 
         return isNil(prop('contactGroup', values))
           ? not(isNil(rowValues))
           : isNil(tableValues) ||
-              isEmpty(rowValues?.name) ||
+              isEmpty(rowValues?.claimValue) ||
               isNil(rowValues?.accessGroup);
       },
     },
