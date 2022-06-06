@@ -23,18 +23,19 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\Resource;
 
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Domain\RealTime\Model\Tag;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 class DbReadResourceRepository extends AbstractRepositoryDRB implements ResourceRepositoryInterface
 {
@@ -258,8 +259,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
          * Resource tag filter by name
          * - servicegroups
          * - hostgroups
-         * - @todo servicecategories
-         * - @todo hostcategories
+         * - servicecategories
+         * - hostcategories
          */
         $request .= $this->addResourceTagsSubRequest($filter, $collector);
 
@@ -454,16 +455,30 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $searchedTags = [];
 
         if (! empty($filter->getHostgroupNames())) {
-            $searchedTagTypes[] = 1;
+            $searchedTagTypes[] = Tag::HOST_GROUP_TYPE_ID;
             foreach ($filter->getHostgroupNames() as $hostgroupName) {
                 $searchedTagNames[] = $hostgroupName;
             }
         }
 
         if (! empty($filter->getServicegroupNames())) {
-            $searchedTagTypes[] = 0;
+            $searchedTagTypes[] = Tag::SERVICE_GROUP_TYPE_ID;
             foreach ($filter->getServicegroupNames() as $servicegroupName) {
                 $searchedTagNames[] = $servicegroupName;
+            }
+        }
+
+        if (! empty($filter->getServiceCategoryNames())) {
+            $searchedTagTypes[] = Tag::SERVICE_CATEGORY_TYPE_ID;
+            foreach ($filter->getServiceCategoryNames() as $serviceCategoryName) {
+                $searchedTagNames[] = $serviceCategoryName;
+            }
+        }
+
+        if (! empty($filter->getHostCategoryNames())) {
+            $searchedTagTypes[] = Tag::HOST_CATEGORY_TYPE_ID;
+            foreach ($filter->getHostCategoryNames() as $hostCategoryName) {
+                $searchedTagNames[] = $hostCategoryName;
             }
         }
 

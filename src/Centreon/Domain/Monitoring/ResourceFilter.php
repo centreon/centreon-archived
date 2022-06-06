@@ -124,6 +124,16 @@ class ResourceFilter
     private $monitoringServerNames = [];
 
     /**
+     * @var string[]
+     */
+    private $serviceCategoryNames = [];
+
+    /**
+     * @var string[]
+     */
+    private $hostCategoryNames = [];
+
+    /**
      * @var int[]
      */
     private $hostIds = [];
@@ -420,5 +430,41 @@ class ResourceFilter
     {
         $this->statusTypes = $statusTypes;
         return $this;
+    }
+
+    /**
+     * @param string[] $serviceCategoryNames
+     * @return self
+     */
+    public function setServiceCategoryNames(array $serviceCategoryNames): self
+    {
+        $this->serviceCategoryNames = $serviceCategoryNames;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getServiceCategoryNames(): array
+    {
+        return $this->serviceCategoryNames;
+    }
+
+    /**
+     * @param string[] $hostCategoryNames
+     * @return self
+     */
+    public function setHostCategoryNames(array $hostCategoryNames): self
+    {
+        $this->hostCategoryNames = $hostCategoryNames;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getHostCategoryNames(): array
+    {
+        return $this->hostCategoryNames;
     }
 }
