@@ -394,7 +394,7 @@ const UserMenu = (): JSX.Element => {
                         </ListItemButton>
                       </ListItem>
                     )}
-                    {true && (
+                    {data.autologinkey && (
                       <ListItem disableGutters disablePadding>
                         <ListItemButton onClick={onCopy}>
                           <ListItemIcon className={classes.icon}>
