@@ -165,7 +165,7 @@ class ParametersController extends AbstractController
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_FIXED]] = $isDowntimeFixed;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_WITH_SERVICES]] = $isDowntimeWithServices;
 
-        $parameters['monitoring_resource_status_optimized_mode'] =
+        $parameters['use_resource_storage_optimization'] =
             $this->getParameter('resource.status.repository') === self::RESOURCE_STATUS_OPTIMIZED_REPOSITORY;
 
         return $this->view($parameters);
