@@ -10,6 +10,7 @@ export interface DefaultParameters {
   monitoring_default_downtime_fixed: boolean;
   monitoring_default_downtime_with_services: boolean;
   monitoring_default_refresh_interval: string;
+  monitoring_resource_status_optimized_mode: boolean;
 }
 
 type Translation = KeyValuePair<string, string>;
