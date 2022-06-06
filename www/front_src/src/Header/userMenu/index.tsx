@@ -124,9 +124,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
   },
-  switchMode: {
-    paddingLeft: theme.spacing(1),
-  },
   text: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -417,7 +414,7 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
-                    <div className={classes.switchMode}>
+                    <div className={classes.itemMenu}>
                       <SwitchMode />
                     </div>
 
