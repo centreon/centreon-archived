@@ -35,6 +35,7 @@ import {
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
+import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
@@ -80,8 +81,17 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+  },
+  containerList: {
+    padding: theme.spacing(0.5, 0, 0.5, 0),
+  },
   divider: {
-    backgroundColor: '#FFFFFF1F',
+    borderColor: '#A7A7A7',
+    margin: theme.spacing(0, 1.25, 0, 1.25),
   },
   fullname: {
     overflow: 'hidden',
@@ -99,15 +109,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(3.75),
   },
   itemMenu: {
-    padding: theme.spacing(0.25, 2, 0.25, 2),
+    padding: theme.spacing(0, 2, 0, 2),
   },
   menu: {
     backgroundColor: theme.palette.common.black,
+    borderRadius: 0,
     color: theme.palette.common.white,
-
     minWidth: 190,
-    // maxWidth: 230,
-    // width: '100%',
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
@@ -115,6 +123,9 @@ const useStyles = makeStyles((theme) => ({
   popper: {
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
+  },
+  switchMode: {
+    paddingLeft: theme.spacing(1),
   },
   text: {
     overflow: 'hidden',
@@ -333,7 +344,7 @@ const UserMenu = (): JSX.Element => {
               {
                 name: 'offset',
                 options: {
-                  offset: [22, 10],
+                  offset: [22, 12],
                 },
               },
             ]}
@@ -349,7 +360,7 @@ const UserMenu = (): JSX.Element => {
                     display: isNil(anchorEl) ? 'none' : 'block',
                   }}
                 >
-                  <List dense>
+                  <List dense className={classes.containerList}>
                     <ListItem className={classes.itemMenu}>
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
@@ -357,7 +368,7 @@ const UserMenu = (): JSX.Element => {
                         {capitalizeFirstLetter(data.username)}
                       </ListItemText>
                     </ListItem>
-                    <Divider className={classes.divider} variant="middle" />
+                    <Divider className={classes.divider} />
 
                     {not(passwordIsNotYetAboutToExpire) && (
                       <ListItem className={classes.itemMenu}>
@@ -372,7 +383,7 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {allowEditProfile && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton
                           onClick={navigateToUserSettingsAndCloseUserMenu}
                         >
@@ -384,7 +395,7 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {true && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton onClick={onCopy}>
                           <ListItemIcon className={classes.icon}>
                             {copied ? (
@@ -406,10 +417,17 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
-                    <Divider className={classes.divider} variant="middle" />
+                    <div className={classes.switchMode}>
+                      <SwitchMode />
+                    </div>
 
-                    <ListItem disableGutters>
-                      <ListItemButton onClick={logoutFromSession}>
+                    <Divider className={classes.divider} />
+
+                    <ListItem disableGutters disablePadding>
+                      <ListItemButton
+                        className={classes.button}
+                        onClick={logoutFromSession}
+                      >
                         <ListItemIcon className={classes.icon}>
                           <LogoutIcon fontSize="small" />
                         </ListItemIcon>
