@@ -4586,6 +4586,10 @@ components:
                     type: string
                     description: "Access group name"
                     example: "Default"
+                  alias:
+                    type: string
+                    description: "Access group alias"
+                    example: "default"
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
