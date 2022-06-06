@@ -61,11 +61,6 @@ export const dynamicImport = (basename, parameters) =>
     }
 
     try {
-      // dynamically import css if external component needs one
-      // if (css && css.length > 0) {
-      //   await systemCss.fetch({ address: basename + css });
-      // }
-
       // import commons and vendor chunks
       await importModules({
         basename,
