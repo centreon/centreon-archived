@@ -44,11 +44,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  metaResourceType: Group | Category;
+  group: Group | Category;
   type: CriteriaNames;
 }
 
-const DetailsChip = ({ metaResourceType, type }: Props): JSX.Element => {
+const DetailsChip = ({ group, type }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -69,15 +69,15 @@ const DetailsChip = ({ metaResourceType, type }: Props): JSX.Element => {
   const filterByMetaResourceType = useCallback((): void => {
     setCriteriaAndNewFilter({
       name: type,
-      value: [metaResourceType],
+      value: [group],
     });
-  }, [metaResourceType, type]);
+  }, [group, type]);
 
   const configureMetaResourceType = useCallback((): void => {
-    window.location.href = metaResourceType.configuration_uri as string;
-  }, [metaResourceType]);
+    window.location.href = group.configuration_uri as string;
+  }, [group]);
 
-  const { name, id } = metaResourceType;
+  const { name, id } = group;
 
   return (
     <Grid item className={classes.chip} key={id}>

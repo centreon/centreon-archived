@@ -9,8 +9,8 @@ import { Category, Group } from '../../../models';
 import DetailsChip from './DetailsChip';
 
 interface Props {
-  chips?: Array<Category | Group>;
   getType: () => CriteriaNames;
+  groups?: Array<Category | Group>;
   title: string;
 }
 
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DetailsChips = ({ chips = [], title, getType }: Props): JSX.Element => {
+const DetailsChips = ({ groups = [], title, getType }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -33,14 +33,8 @@ const DetailsChips = ({ chips = [], title, getType }: Props): JSX.Element => {
           {t(title)}
         </Typography>
       </Grid>
-      {chips?.map((metaResourceType) => {
-        return (
-          <DetailsChip
-            key={metaResourceType.id}
-            metaResourceType={metaResourceType}
-            type={getType()}
-          />
-        );
+      {groups?.map((group) => {
+        return <DetailsChip group={group} key={group.id} type={getType()} />;
       })}
     </Grid>
   );
