@@ -30,10 +30,10 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Centreon\Domain\Contact\Contact;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration\UpdateConfigurationController;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
     UpdateConfigurationPresenterInterface
 };
 

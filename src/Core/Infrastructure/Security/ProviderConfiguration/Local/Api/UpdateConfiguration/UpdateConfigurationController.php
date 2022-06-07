@@ -25,9 +25,9 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateCon
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
     UpdateConfigurationPresenterInterface
 };
 

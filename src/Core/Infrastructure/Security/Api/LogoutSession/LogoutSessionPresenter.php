@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\LogoutSession;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSessionPresenterInterface;
+use Core\Security\Application\UseCase\LogoutSession\LogoutSessionPresenterInterface;
 
 class LogoutSessionPresenter extends AbstractPresenter implements LogoutSessionPresenterInterface
 {

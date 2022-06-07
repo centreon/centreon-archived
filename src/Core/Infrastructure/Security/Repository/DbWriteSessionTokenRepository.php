@@ -24,7 +24,7 @@ namespace Core\Infrastructure\Security\Repository;
 
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
-use Core\Application\Security\Repository\WriteSessionTokenRepositoryInterface;
+use Core\Security\Application\Repository\WriteSessionTokenRepositoryInterface;
 
 class DbWriteSessionTokenRepository extends AbstractRepositoryDRB implements WriteSessionTokenRepositoryInterface
 {

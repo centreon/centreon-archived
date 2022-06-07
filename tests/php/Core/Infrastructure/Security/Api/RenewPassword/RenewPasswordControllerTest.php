@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure\Security\Api\RenewPassword;
 
-use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
-use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
+use Core\Security\Application\UseCase\RenewPassword\RenewPassword;
+use Core\Security\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 use Core\Infrastructure\Security\Api\RenewPassword\RenewPasswordController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;

@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
 
 use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
+use Core\Security\Application\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
     FindWebSSOConfiguration,
     FindWebSSOConfigurationPresenterInterface
 };

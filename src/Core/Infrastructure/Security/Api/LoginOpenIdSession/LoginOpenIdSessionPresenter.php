@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\LoginOpenIdSession;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
+use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
 
 class LoginOpenIdSessionPresenter extends AbstractPresenter implements LoginOpenIdSessionPresenterInterface
 {

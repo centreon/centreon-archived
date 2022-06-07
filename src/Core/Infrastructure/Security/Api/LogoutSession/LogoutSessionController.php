@@ -24,8 +24,8 @@ namespace Core\Infrastructure\Security\Api\LogoutSession;
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSessionPresenterInterface;
+use Core\Security\Application\UseCase\LogoutSession\LogoutSession;
+use Core\Security\Application\UseCase\LogoutSession\LogoutSessionPresenterInterface;
 
 class LogoutSessionController extends AbstractController
 {

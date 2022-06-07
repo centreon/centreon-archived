@@ -24,7 +24,7 @@ namespace Core\Infrastructure\Security\Repository;
 
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
-use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Application\Repository\WriteTokenRepositoryInterface;
 use Centreon\Domain\Log\LoggerTrait;
 
 class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteTokenRepositoryInterface
