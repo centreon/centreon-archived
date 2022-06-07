@@ -75,10 +75,10 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
             'active_checks' => $response->hasActiveChecks,
             'severity_level' => $response->severityLevel,
             'icon' => $response->icon,
-            'groups' => $response->servicegroups,
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
             'parent' => $response->host,
             'monitoring_server_name' => $response->host['monitoring_server_name'],
-            'categories' => $this->hypermediaCreator->createInternalCategoriesUri($response),
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
         ];
 
         $acknowledgement = null;

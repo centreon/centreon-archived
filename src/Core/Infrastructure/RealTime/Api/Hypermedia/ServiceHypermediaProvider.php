@@ -25,14 +25,11 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 
 class ServiceHypermediaProvider implements HypermediaProviderInterface
 {
-    use HttpUrlTrait;
-
     public const URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}',
                  URI_REPORTING = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}',
@@ -46,11 +43,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
 
     /**
      * @param ContactInterface $contact
-     * @param UrlGeneratorInterface $router
+     * @param HypermediaCreatorHelper $helper
      */
     public function __construct(
         private ContactInterface $contact,
-        protected UrlGeneratorInterface $router
+        private HypermediaCreatorHelper $helper
     ) {
     }
 
@@ -65,94 +62,66 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
     /**
      * Create configuration redirection uri for Service resource
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForConfiguration(array $parameters): ?string
     {
-        $configurationUri = null;
-        if (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
-            || $this->contact->isAdmin()
-        ) {
-            $configurationUri = $this->getBaseUri()
-                . str_replace('{serviceId}', (string) $parameters['serviceId'], self::URI_CONFIGURATION);
+        $roles = [
+            Contact::ROLE_CONFIGURATION_SERVICES_WRITE,
+            Contact::ROLE_CONFIGURATION_SERVICES_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
         }
-        return $configurationUri;
+
+        return $this->helper->generateUri(
+            self::URI_CONFIGURATION,
+            ['{serviceId}' => $parameters['serviceId']]
+        );
     }
 
     /**
      * Create reporting redirection uri for Service resource
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForReporting(array $parameters): ?string
     {
-        $reportingUri = null;
-        if (
-            $this->contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)
-            || $this->contact->isAdmin()
-        ) {
-            $reportingUri = str_replace('{hostId}', (string) $parameters['hostId'], self::URI_REPORTING);
-            $reportingUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $reportingUri);
-            $reportingUri = $this->getBaseUri() . $reportingUri;
+        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_SERVICES])) {
+            return null;
         }
-        return $reportingUri;
+
+        return $this->helper->generateUri(
+            self::URI_REPORTING,
+            [
+                '{serviceId}' => $parameters['serviceId'],
+                '{hostId}' => $parameters['hostId']
+            ]
+        );
     }
 
     /**
      * Create event logs redirection uri for Service resource
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForEventLog(array $parameters): ?string
     {
-        $eventLogsUri = null;
-        if (
-            $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
-            || $this->contact->isAdmin()
-        ) {
-            $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], self::URI_EVENT_LOGS);
-            $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
-            $eventLogsUri = $this->getBaseUri() . $eventLogsUri;
+        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+            return null;
         }
-        return $eventLogsUri;
-    }
 
-    /**
-     * Create Timeline endpoint URI for the Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForTimelineEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_SERVICE_TIMELINE, $parameters);
-    }
-
-    /**
-     * Create Status Graph endpoint URI for the Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForStatusGraphEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_STATUS_GRAPH, $parameters);
-    }
-
-    /**
-     * Create Performance Data endpoint URI for the Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForPerformanceDataEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters);
+        return $this->helper->generateUri(
+            self::URI_EVENT_LOGS,
+            [
+                '{serviceId}' => $parameters['serviceId'],
+                '{hostId}' => $parameters['hostId']
+            ]
+        );
     }
 
     /**
@@ -166,12 +135,15 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
         ];
 
         return [
-            'timeline' => $this->createForTimelineEndpoint($parameters),
-            'status_graph' => $this->createForStatusGraphEndpoint($parameters),
+            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parameters),
+            'status_graph' => $this->helper->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
             'performance_graph' => $response->hasGraphData
-                ? $this->createForPerformanceDataEndpoint($parameters)
+                ? $this->helper->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
                 : null,
-            'notification_policy' => $this->createNotificationPolicyEndpoint($parameters),
+            'notification_policy' => $this->helper->generateEndpoint(
+                self::ENDPOINT_SERVICE_NOTIFICATION_POLICY,
+                $parameters
+            ),
         ];
     }
 
@@ -194,28 +166,30 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
     /**
      * Create servicegroup configuration redirection uri
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForGroup(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace(
-            '{servicegroupId}',
-            (string) $parameters['servicegroupId'],
-            self::URI_SERVICEGROUP_CONFIGURATION
-        )
-        : null;
+        $roles = [
+            Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE,
+            Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_SERVICEGROUP_CONFIGURATION,
+            ['{servicegroupId}' => $parameters['servicegroupId']]
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalGroupsUri(mixed $response): array
+    public function convertGroupsForPresenter(array $groups): array
     {
         return array_map(
             fn (array $group) => [
@@ -223,35 +197,37 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
                 'name' => $group['name'],
                 'configuration_uri' => $this->createForGroup(['servicegroupId' => $group['id']])
             ],
-            $response->servicegroups
+            $groups
         );
     }
 
     /**
      * Create service category configuration redirection uri
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForCategory(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace(
-            '{serviceCategoryId}',
-            (string) $parameters['categoryId'],
-            self::URI_SERVICE_CATEGORY_CONFIGURATION
-        )
-        : null;
+        $roles = [
+            Contact::ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ_WRITE,
+            Contact::ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_SERVICE_CATEGORY_CONFIGURATION,
+            ['{serviceCategoryId}' => $parameters['categoryId']]
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalCategoriesUri(mixed $response): array
+    public function convertCategoriesForPresenter(array $categories): array
     {
         return array_map(
             fn (array $category) => [
@@ -259,18 +235,7 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
                 'name' => $category['name'],
                 'configuration_uri' => $this->createForCategory(['categoryId' => $category['id']])
             ],
-            $response->categories
+            $categories
         );
-    }
-
-    /**
-     * Create Notification policy endpoint URI for the Service Resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createNotificationPolicyEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_SERVICE_NOTIFICATION_POLICY, $parameters);
     }
 }

@@ -656,4 +656,30 @@ class Service
         $this->categories[] = $category;
         return $this;
     }
+
+    /**
+     * @param Tag[] $categories
+     * @return self
+     */
+    public function setCategories(array $categories): self
+    {
+        foreach ($categories as $category) {
+            $this->addCategory($category);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Servicegroup[] $servicegroups
+     * @return self
+     */
+    public function setServicegroups(array $servicegroups): self
+    {
+        foreach ($servicegroups as $servicegroup) {
+            $this->addServicegroup($servicegroup);
+        }
+
+        return $this;
+    }
 }

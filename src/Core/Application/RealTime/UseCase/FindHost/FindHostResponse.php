@@ -152,7 +152,7 @@ class FindHostResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $hostgroups;
+    public $groups;
 
     /**
      * @var array<string, mixed>
@@ -200,7 +200,7 @@ class FindHostResponse
     ) {
         $this->icon = $this->iconToArray($icon);
         $this->status = $this->statusToArray($status);
-        $this->hostgroups = $this->hostgroupsToArray($hostgroups);
+        $this->groups = $this->hostgroupsToArray($hostgroups);
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->categories = $this->tagsToArray($categories);

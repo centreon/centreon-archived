@@ -143,7 +143,7 @@ class FindServiceResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $servicegroups;
+    public $groups;
 
     /**
      * @var array<array<string, mixed>>
@@ -199,7 +199,7 @@ class FindServiceResponse
         Host $host,
         array $serviceCategories
     ) {
-        $this->servicegroups = $this->servicegroupsToArray($servicegroups);
+        $this->groups = $this->servicegroupsToArray($servicegroups);
         $this->status = $this->statusToArray($status);
         $this->icon = $this->iconToArray($icon);
         $this->downtimes = $this->downtimesToArray($downtimes);

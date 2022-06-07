@@ -137,19 +137,15 @@ class FindService
             );
         }
 
+        $service->setServicegroups($servicegroups);
+
         $serviceCategories = $this->tagRepository->findAllByResourceAndTypeId(
             $serviceId,
             $hostId,
             Tag::SERVICE_CATEGORY_TYPE_ID
         );
 
-        foreach ($serviceCategories as $serviceCategory) {
-            $service->addCategory($serviceCategory);
-        }
-
-        foreach ($servicegroups as $servicegroup) {
-            $service->addServicegroup($servicegroup);
-        }
+        $service->setCategories($serviceCategories);
 
         /**
          * Obfuscate the passwords in Service commandLine

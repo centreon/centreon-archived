@@ -24,10 +24,11 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
-use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class MetaServiceHypermediaProvider implements HypermediaProviderInterface
 {
@@ -48,7 +49,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function __construct(
         private ContactInterface $contact,
-        protected UrlGeneratorInterface $router
+        private HypermediaCreatorHelper $helper
     ) {
     }
 
@@ -68,20 +69,19 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForConfiguration(array $parameters): ?string
     {
-        $configurationUri = null;
-        if (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
-            || $this->contact->isAdmin()
-        ) {
-            return $this->getBaseUri() .
-                str_replace(
-                    '{metaId}',
-                    (string) $parameters['metaId'],
-                    static::URI_CONFIGURATION
-                );
+        $roles = [
+            Contact::ROLE_CONFIGURATION_SERVICES_WRITE,
+            Contact::ROLE_CONFIGURATION_SERVICES_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
         }
-        return $configurationUri;
+
+        return $this->helper->generateUri(
+            self::URI_CONFIGURATION,
+            ['{metaId}' => $parameters['metaId']]
+        );
     }
 
     /**
@@ -103,60 +103,17 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        $eventLogsUri = null;
-        if (
-            $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
-            || $this->contact->isAdmin()
-        ) {
-            $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], static::URI_EVENT_LOGS);
-            $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
-            return $this->getBaseUri() . $eventLogsUri;
+        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+            return null;
         }
-        return $eventLogsUri;
-    }
 
-    /**
-     * Create Timeline endpoint URI for the Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForTimelineEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_TIMELINE, $parameters);
-    }
-
-    /**
-     * Create Status graph endpoint URI for the Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForStatusGraphEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_STATUS_GRAPH, $parameters);
-    }
-
-    /**
-     * Create Performance Data endpoint URI for the Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForPerformanceDataEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters);
-    }
-
-    /**
-     * Create Metric List endpoint URI for the Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForMetricListEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_METRIC_LIST, $parameters);
+        return $this->helper->generateUri(
+            self::URI_EVENT_LOGS,
+            [
+                '{hostId}' => $parameters['hostId'],
+                '{serviceId}' => $parameters['serviceId']
+            ]
+        );
     }
 
     /**
@@ -166,13 +123,13 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     {
         $parameters = ['metaId' => $response->id];
         return [
-            'timeline' => $this->createForTimelineEndpoint($parameters),
-            'status_graph' => $this->createForStatusGraphEndpoint($parameters),
-            'metrics' => $this->createForMetricListEndpoint($parameters),
+            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_TIMELINE, $parameters),
+            'status_graph' => $this->helper->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
+            'metrics' => $this->helper->generateEndpoint(self::ENDPOINT_METRIC_LIST, $parameters),
             'performance_graph' => $response->hasGraphData
-                ? $this->createForPerformanceDataEndpoint($parameters)
+                ? $this->helper->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
                 : null,
-            'notification_policy' => $this->createNotificationPolicyEndpoint($response),
+            'notification_policy' => $this->helper->generateEndpoint(self::ENDPOINT_NOTIFICATION_POLICY, $response),
         ];
     }
 
@@ -196,7 +153,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     /**
      * @inheritDoc
      */
-    public function createInternalGroupsUri(mixed $response): array
+    public function convertGroupsForPresenter(array $groups): array
     {
         return [];
     }
@@ -204,22 +161,8 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     /**
      * @inheritDoc
      */
-    public function createInternalCategoriesUri(mixed $response): array
+    public function convertCategoriesForPresenter(array $categories): array
     {
         return [];
-    }
-
-    /**
-     * Create Notification policy endpoint URI for the Meta Service Resource
-     *
-     * @param FindMetaServiceResponse $response
-     * @return string
-     */
-    private function createNotificationPolicyEndpoint(FindMetaServiceResponse $response): string
-    {
-        return $this->router->generate(
-            self::ENDPOINT_NOTIFICATION_POLICY,
-            ['metaServiceId' => $response->id],
-        );
     }
 }

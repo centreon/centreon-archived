@@ -705,4 +705,29 @@ class Host
         $this->categories[] = $category;
         return $this;
     }
+
+    /**
+     * @param Tag[] $categories
+     * @return self
+     */
+    public function setCategories(array $categories): self
+    {
+        foreach ($categories as $category) {
+            $this->addCategory($category);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Hostgroup[] $hostgroups
+     * @return self
+     */
+    public function setHostgroups(array $hostgroups): self
+    {
+        foreach ($hostgroups as $hostgroup) {
+            $this->addHostgroup($hostgroup);
+        }
+
+        return $this;
+    }
 }

@@ -25,14 +25,11 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 
 class HostHypermediaProvider implements HypermediaProviderInterface
 {
-    use HttpUrlTrait;
-
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
@@ -43,11 +40,11 @@ class HostHypermediaProvider implements HypermediaProviderInterface
 
     /**
      * @param ContactInterface $contact
-     * @param UrlGeneratorInterface $router
+     * @param HyperMediaCreatorHelper $helper
      */
     public function __construct(
         private ContactInterface $contact,
-        protected UrlGeneratorInterface $router
+        private HypermediaCreatorHelper $helper
     ) {
     }
 
@@ -65,8 +62,11 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public function createEndpoints(mixed $response): array
     {
         return [
-            'timeline' => $this->createForTimelineEndpoint(['hostId' => $response->id]),
-            'notification_policy' => $this->createNotificationPolicyEndpoint(['hostId' => $response->id]),
+            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]),
+            'notification_policy' => $this->helper->generateEndpoint(
+                self::ENDPOINT_HOST_NOTIFICATION_POLICY,
+                ['hostId' => $response->id]
+            ),
         ];
     }
 
@@ -86,18 +86,24 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     /**
      * Create configuration redirection uri
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForConfiguration(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_CONFIGURATION)
-        : null;
+        $roles = [
+            Contact::ROLE_CONFIGURATION_HOSTS_WRITE,
+            Contact::ROLE_CONFIGURATION_HOSTS_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_CONFIGURATION,
+            ['{hostId}' => $parameters['hostId']]
+        );
     }
 
     /**
@@ -108,12 +114,14 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForReporting(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_REPORTING)
-        : null;
+        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_HOSTS])) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_REPORTING,
+            ['{hostId}' => $parameters['hostId']]
+        );
     }
 
     /**
@@ -124,82 +132,66 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_EVENT_LOGS)
-        : null;
+        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_EVENT_LOGS,
+            ['{hostId}' => $parameters['hostId']]
+        );
     }
 
     /**
      * Create hostgroup configuration redirection uri
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForGroup(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace(
-            '{hostgroupId}',
-            (string) $parameters['hostgroupId'],
-            self::URI_HOSTGROUP_CONFIGURATION
-        )
-        : null;
+        $roles = [
+            Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE,
+            Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ
+        ];
+
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
+        }
+
+        return $this->helper->generateUri(
+            self::URI_HOSTGROUP_CONFIGURATION,
+            ['{hostgroupId}' => $parameters['hostgroupId']]
+        );
     }
 
     /**
      * Create host category configuration redirection uri
      *
-     * @param array<string, int> $parameters
+     * @param array<string, mixed> $parameters
      * @return string|null
      */
     public function createForCategory(array $parameters): ?string
     {
-        return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ)
-            || $this->contact->isAdmin()
-        )
-        ? $this->getBaseUri() . str_replace(
-            '{hostCategoryId}',
-            (string) $parameters['categoryId'],
-            self::URI_HOST_CATEGORY_CONFIGURATION
-        )
-        : null;
-    }
+        $roles = [
+            Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ_WRITE,
+            Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ
+        ];
 
-    /**
-     * Create Timeline endpoint URI for the Host Resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createForTimelineEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, $parameters);
-    }
+        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+            return null;
+        }
 
-    /**
-     * Create Notification policy endpoint URI for the Host Resource
-     *
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    public function createNotificationPolicyEndpoint(array $parameters): string
-    {
-        return $this->router->generate(self::ENDPOINT_HOST_NOTIFICATION_POLICY, $parameters);
+        return $this->helper->generateUri(
+            self::URI_HOST_CATEGORY_CONFIGURATION,
+            ['{hostCategoryId}' => $parameters['categoryId']]
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalGroupsUri(mixed $response): array
+    public function convertGroupsForPresenter(array $groups): array
     {
         return array_map(
             fn (array $group) => [
@@ -207,14 +199,14 @@ class HostHypermediaProvider implements HypermediaProviderInterface
                 'name' => $group['name'],
                 'configuration_uri' => $this->createForGroup(['hostgroupId' => $group['id']])
             ],
-            $response->hostgroups
+            $groups
         );
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalCategoriesUri(mixed $response): array
+    public function convertCategoriesForPresenter(array $categories): array
     {
         return array_map(
             fn (array $category) => [
@@ -222,7 +214,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
                 'name' => $category['name'],
                 'configuration_uri' => $this->createForCategory(['categoryId' => $category['id']])
             ],
-            $response->categories
+            $categories
         );
     }
 }

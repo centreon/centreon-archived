@@ -104,14 +104,12 @@ class FindHost
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
         }
 
+        $host->setHostgroups($hostgroups);
+
         $categories = $this->tagRepository->findAllByResourceAndTypeId($host->getId(), 0, Tag::HOST_CATEGORY_TYPE_ID);
 
         foreach ($categories as $category) {
             $host->addCategory($category);
-        }
-
-        foreach ($hostgroups as $hostgroup) {
-            $host->addHostgroup($hostgroup);
         }
 
         /**

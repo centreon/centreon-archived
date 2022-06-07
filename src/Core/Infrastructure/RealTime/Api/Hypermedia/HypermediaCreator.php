@@ -105,13 +105,13 @@ class HypermediaCreator
      * ]
      *
      * @param mixed $response
-     * @return array<array<string, string|null>>
+     * @return array<array<string, string|int|null>>
      */
-    public function createInternalGroupsUri(mixed $response): array
+    public function convertGroupsForPresenter(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createInternalGroupsUri($response);
+                return $hypermediaProvider->convertGroupsForPresenter($response->groups);
             }
         }
         return [];
@@ -131,13 +131,13 @@ class HypermediaCreator
      * ]
      *
      * @param mixed $response
-     * @return array<array<string, string|null>>
+     * @return array<array<string, string|int|null>>
      */
-    public function createInternalCategoriesUri(mixed $response): array
+    public function convertCategoriesForPresenter(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createInternalCategoriesUri($response);
+                return $hypermediaProvider->convertCategoriesForPresenter($response->categories);
             }
         }
         return [];

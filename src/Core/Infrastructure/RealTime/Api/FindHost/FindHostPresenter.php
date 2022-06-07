@@ -80,8 +80,8 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
             'severity_level' => $response->severityLevel,
             'parent' => null,
             'icon' => $response->icon,
-            'groups' => $this->hypermediaCreator->createInternalGroupsUri($response),
-            'categories' => $this->hypermediaCreator->createInternalCategoriesUri($response)
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response)
         ];
 
         $acknowledgement = null;
