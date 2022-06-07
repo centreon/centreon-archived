@@ -36,7 +36,7 @@ export const searchUrlFromEntry = (item: Page): string | null | undefined => {
   if (isArrayItem(groupPage)) {
     const grandsonPage = groupPage?.[0]?.children;
     if (isArrayItem(grandsonPage)) {
-      return searchUrlFromEntry(grandsonPage[0]);
+      return searchUrlFromEntry(grandsonPage?.[0] as Page);
     }
 
     return searchUrlFromEntry(groupPage?.[0] as Page);
