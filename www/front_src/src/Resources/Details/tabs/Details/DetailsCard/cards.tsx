@@ -190,7 +190,7 @@ const getDetailCardLines = ({
       isCustomCard: true,
       line: (
         <DetailsChips
-          getType={() =>
+          getType={(): CriteriaNames =>
             equals(details?.type, ResourceType.host)
               ? CriteriaNames.hostGroups
               : CriteriaNames.serviceGroups
@@ -207,7 +207,7 @@ const getDetailCardLines = ({
       isCustomCard: true,
       line: (
         <DetailsChips
-          getType={() =>
+          getType={(): CriteriaNames =>
             equals(details?.type, ResourceType.host)
               ? CriteriaNames.hostCategories
               : CriteriaNames.serviceCategories
