@@ -31,7 +31,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 class CheckService extends AbstractCentreonService implements CheckServiceInterface
@@ -52,20 +52,20 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * CheckService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator

@@ -30,7 +30,6 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
 };
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class UpdateOpenIdConfigurationController extends AbstractController
 {
@@ -77,6 +76,11 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->clientSecret = $requestData['client_secret'];
         $updateOpenIdConfigurationRequest->authenticationType = $requestData['authentication_type'];
         $updateOpenIdConfigurationRequest->verifyPeer = $requestData['verify_peer'];
+        $updateOpenIdConfigurationRequest->isAutoImportEnabled = $requestData['auto_import'];
+        $updateOpenIdConfigurationRequest->contactTemplate = $requestData['contact_template'];
+        $updateOpenIdConfigurationRequest->emailBindAttribute = $requestData['email_bind_attribute'];
+        $updateOpenIdConfigurationRequest->userAliasBindAttribute = $requestData['alias_bind_attribute'];
+        $updateOpenIdConfigurationRequest->userNameBindAttribute = $requestData['fullname_bind_attribute'];
 
         return $updateOpenIdConfigurationRequest;
     }

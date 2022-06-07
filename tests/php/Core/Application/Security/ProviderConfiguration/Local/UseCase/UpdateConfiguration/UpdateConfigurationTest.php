@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;

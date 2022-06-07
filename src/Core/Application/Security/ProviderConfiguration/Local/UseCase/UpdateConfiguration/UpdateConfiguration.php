@@ -27,7 +27,7 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\ConfigurationFactory;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\ConfigurationFactory;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;

@@ -23,10 +23,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration;
 
-use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -37,82 +35,55 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface
 };
+use Symfony\Component\HttpFoundation\Request;
 
-class UpdateOpenIdConfigurationControllerTest extends TestCase
-{
-    /**
-     * @var Request&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
+beforeEach(function () {
+    $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
+    $this->useCase = $this->createMock(UpdateOpenIdConfiguration::class);
+    $this->request = $this->createMock(Request::class);
 
-    /**
-     * @var UpdateOpenIdConfigurationPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $presenter;
+    $timezone = new \DateTimeZone('Europe/Paris');
+    $adminContact = (new Contact())
+        ->setId(1)
+        ->setName('admin')
+        ->setAdmin(true)
+        ->setTimezone($timezone);
 
-    /**
-     * @var UpdateOpenIdConfiguration&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $useCase;
+    $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+    $authorizationChecker->expects($this->once())
+        ->method('isGranted')
+        ->willReturn(true);
+    $token = $this->createMock(TokenInterface::class);
+    $token->expects($this->any())
+        ->method('getUser')
+        ->willReturn($adminContact);
+    $tokenStorage = $this->createMock(TokenStorageInterface::class);
+    $tokenStorage->expects($this->any())
+        ->method('getToken')
+        ->willReturn($token);
 
-    /**
-     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $container;
-
-    public function setUp(): void
-    {
-        $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
-        $this->useCase = $this->createMock(UpdateOpenIdConfiguration::class);
-
-        $timezone = new \DateTimeZone('Europe/Paris');
-        $adminContact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true)
-            ->setTimezone($timezone);
-
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authorizationChecker->expects($this->once())
-            ->method('isGranted')
-            ->willReturn(true);
-        $token = $this->createMock(TokenInterface::class);
-        $token->expects($this->any())
-            ->method('getUser')
-            ->willReturn($adminContact);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $tokenStorage->expects($this->any())
-            ->method('getToken')
-            ->willReturn($token);
-
-        $this->container = $this->createMock(ContainerInterface::class);
-        $this->container->expects($this->any())
-            ->method('has')
-            ->willReturn(true);
-        $this->container->expects($this->any())
-            ->method('get')
-            ->withConsecutive(
-                [$this->equalTo('security.authorization_checker')],
-                [$this->equalTo('parameter_bag')]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $authorizationChecker,
-                new class () {
-                    public function get(): string
-                    {
-                        return __DIR__ . '/../../../../../';
-                    }
+    $this->container = $this->createMock(ContainerInterface::class);
+    $this->container->expects($this->any())
+        ->method('has')
+        ->willReturn(true);
+    $this->container->expects($this->any())
+        ->method('get')
+        ->withConsecutive(
+            [$this->equalTo('security.authorization_checker')],
+            [$this->equalTo('parameter_bag')]
+        )
+        ->willReturnOnConsecutiveCalls(
+            $authorizationChecker,
+            new class () {
+                public function get(): string
+                {
+                    return __DIR__ . '/../../../../../';
                 }
-            );
+            }
+        );
+});
 
-        $this->request = $this->createMock(Request::class);
-    }
-
-    /**
-     * Test that a correct exception is thrown when body is invalid.
-     */
-    public function testCreateUpdateOpenIdConfigurationRequestWithInvalidBody(): void
-    {
+it('should thrown an exception when the request body is invalid', function () {
         $controller = new UpdateOpenIdConfigurationController();
         $controller->setContainer($this->container);
 
@@ -124,13 +95,9 @@ class UpdateOpenIdConfigurationControllerTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter);
-    }
+});
 
-    /**
-     * Test that the controller correctly send the request to the useCase with valid body.
-     */
-    public function testCreateUpdateOpenIdConfigurationRequestWithValidBody(): void
-    {
+it('should execute the usecase properly', function () {
         $controller = new UpdateOpenIdConfigurationController();
         $controller->setContainer($this->container);
 
@@ -150,7 +117,12 @@ class UpdateOpenIdConfigurationControllerTest extends TestCase
             'client_id' => 'MyCl1ientId',
             'client_secret' => 'MyCl1ientSuperSecr3tKey',
             'authentication_type' => 'client_secret_post',
-            'verify_peer' => false
+            'verify_peer' => false,
+            'auto_import' => false,
+            'contact_template' => null,
+            'email_bind_attribute' => null,
+            'alias_bind_attribute' => null,
+            'fullname_bind_attribute' => null,
         ]);
 
         $this->request
@@ -163,5 +135,4 @@ class UpdateOpenIdConfigurationControllerTest extends TestCase
             ->method('__invoke');
 
         $controller($this->useCase, $this->request, $this->presenter);
-    }
-}
+});

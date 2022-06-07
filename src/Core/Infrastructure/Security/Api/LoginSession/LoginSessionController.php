@@ -28,7 +28,7 @@ use Core\Application\Security\UseCase\LoginSession\LoginSession;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Security\Domain\Authentication\AuthenticationException;
 
 class LoginSessionController extends AbstractController
 {

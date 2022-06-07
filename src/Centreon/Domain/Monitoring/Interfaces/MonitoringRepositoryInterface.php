@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Downtime\Downtime;

@@ -28,7 +28,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\{
     ReadWebSSOConfigurationRepositoryInterface as ReadRepositoryInterface
 };
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 
 class DbReadWebSSOConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
 {
