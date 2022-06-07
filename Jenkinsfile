@@ -4,7 +4,7 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-def serie = '22.04'
+def serie = '22.10'
 def stableBranch = "master"
 def devBranch = "develop"
 env.REF_BRANCH = stableBranch
@@ -154,7 +154,7 @@ stage('Deliver sources') {
     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
+    stash name: 'api-doc', includes: 'centreon-api-v22.10.html'
     stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
     publishHTML([
       allowMissing: false,
