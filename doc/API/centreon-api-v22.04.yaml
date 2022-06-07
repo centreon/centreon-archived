@@ -3766,7 +3766,7 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+                  $ref: '#/components/schemas/ReadAuthenticationOpenIdProvider'
     put:
       tags:
         - Administration
@@ -3776,7 +3776,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+              $ref: '#/components/schemas/WriteAuthenticationOpenIdProvider'
       responses:
         '204':
             description: "Configuration updated"
@@ -4548,48 +4548,6 @@ components:
               type: string
               description: "Contact template name"
               example: "Default"
-        contact_group:
-          type: object
-          nullable: true
-          properties:
-            id:
-              type: integer
-              description: "Contact group ID"
-              example: 1
-            name:
-              type: string
-              description: "Contact group name"
-              example: "Default"
-        authorization_claim:
-          type: string
-          description: "Authorization claim"
-          example: "groups"
-          nullable: true
-        authorization_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: "Authorization claim name"
-                example: "scope"
-              access_group:
-                type: object
-                description: "Access group"
-                properties:
-                  id:
-                    type: integer
-                    description: "Access group ID"
-                    example: 1
-                  name:
-                    type: string
-                    description: "Access group name"
-                    example: "Default"
-                  alias:
-                    type: string
-                    description: "Access group alias"
-                    example: "default"
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
@@ -4605,6 +4563,67 @@ components:
           description: "Fullname bind attribute"
           example: "name"
           nullable: true
+        claim_name:
+          type: string
+          description: "Authorization claim"
+          example: "groups"
+          nullable: true
+    ReadAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              description: "Contact group ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact group name"
+              example: "Default"
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group:
+                type: object
+                description: "Access group"
+                properties:
+                  id:
+                    type: integer
+                    description: "Access group ID"
+                    example: 1
+                  name:
+                    type: string
+                    description: "Access group name"
+                    example: "Default"
+    WriteAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group_id:
+          type: integer
+          description: "Contact group ID"
+          example: 1
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group_id:
+                type: integer
+                description: "Access group ID"
+                example: 1
     Comment.Resources:
       type: object
       required: [ resources ]
