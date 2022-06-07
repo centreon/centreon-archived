@@ -26,7 +26,6 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
-  labelParentAlias,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -38,7 +37,6 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
-import ParentAlias from './ParentAlias';
 
 export interface DetailCardLine {
   active?: boolean;
