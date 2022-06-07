@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
-use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
+use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationRequest
 };
 use Core\Contact\Domain\Model\ContactTemplate;

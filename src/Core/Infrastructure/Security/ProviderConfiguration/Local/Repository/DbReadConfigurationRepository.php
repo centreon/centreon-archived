@@ -28,8 +28,8 @@ use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Repository\DbConfigurationFactory;
-use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
     ReadProviderConfigurationsRepositoryInterface,

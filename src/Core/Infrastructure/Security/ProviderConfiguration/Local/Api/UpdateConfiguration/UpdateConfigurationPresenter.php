@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
     UpdateConfigurationPresenterInterface
 };
 

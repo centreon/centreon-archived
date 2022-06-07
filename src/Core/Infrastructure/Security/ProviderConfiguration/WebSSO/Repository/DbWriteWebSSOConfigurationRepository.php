@@ -27,7 +27,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
 
 class DbWriteWebSSOConfigurationRepository extends AbstractRepositoryDRB implements
     WriteWebSSOConfigurationRepositoryInterface

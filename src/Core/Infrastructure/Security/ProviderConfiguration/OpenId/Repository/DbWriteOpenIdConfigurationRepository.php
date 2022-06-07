@@ -26,7 +26,7 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
+use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 

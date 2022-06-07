@@ -24,8 +24,8 @@ namespace Tests\Core\Infrastructure\Security\Api\FindProviderConfigurations\Prov
 
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\LocalProviderPresenter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
-use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
+use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
+use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
 
 beforeEach(function () {
     $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);

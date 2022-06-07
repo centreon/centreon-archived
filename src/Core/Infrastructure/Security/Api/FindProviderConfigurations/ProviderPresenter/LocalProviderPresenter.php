@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
+use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class LocalProviderPresenter implements ProviderPresenterInterface

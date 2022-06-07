@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
+use Core\Security\Application\UseCase\LogoutSession\LogoutSession;
 use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController;
 use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionPresenter;
 use Core\Infrastructure\Common\Presenter\JsonPresenter;

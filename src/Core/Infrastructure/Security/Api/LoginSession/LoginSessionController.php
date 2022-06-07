@@ -24,9 +24,9 @@ namespace Core\Infrastructure\Security\Api\LoginSession;
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\UseCase\LoginSession\LoginSession;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
+use Core\Security\Application\UseCase\LoginSession\LoginSession;
+use Core\Security\Application\UseCase\LoginSession\LoginSessionPresenterInterface;
+use Core\Security\Application\UseCase\LoginSession\LoginSessionRequest;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Core\Security\Domain\Authentication\AuthenticationException;
 
