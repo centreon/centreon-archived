@@ -195,7 +195,7 @@ const getDetailCardLines = ({
               ? CriteriaNames.hostGroups
               : CriteriaNames.serviceGroups
           }
-          groups={details?.groups}
+          groupsObject={details?.groups}
           title={labelGroups}
         />
       ),
@@ -212,7 +212,7 @@ const getDetailCardLines = ({
               ? CriteriaNames.hostCategories
               : CriteriaNames.serviceCategories
           }
-          groups={details?.categories}
+          groupsObject={details?.categories}
           title={labelCategory}
         />
       ),
