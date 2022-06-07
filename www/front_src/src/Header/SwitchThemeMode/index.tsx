@@ -1,3 +1,6 @@
+/* eslint-disable hooks/sort */
+import { useTransition, useState } from 'react';
+
 import { equals } from 'ramda';
 import { useAtom } from 'jotai';
 import { useLocation } from 'react-router-dom';
@@ -50,21 +53,24 @@ const useStyles = makeStyles((theme) => ({
 const SwitchThemeMode = (): JSX.Element => {
   const classes = useStyles();
   const { pathname } = useLocation();
-
   const { sendRequest } = useRequest({
     request: patchData,
   });
   const [user, setUser] = useAtom(userAtom);
-
+  const [, startTransition] = useTransition();
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
+  const [isDark, setIsDark] = useState(isDarkMode);
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
     const themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
     const isCurrentPageLegacy = pathname.includes('php');
-    setUser({
-      ...user,
-      themeMode,
+    setIsDark(!isDark);
+    startTransition(() => {
+      setUser({
+        ...user,
+        themeMode,
+      });
     });
     sendRequest({
       data: { theme: themeMode },
@@ -79,7 +85,7 @@ const SwitchThemeMode = (): JSX.Element => {
   return (
     <div className={classes.container}>
       <ThemeModeSwitch
-        checked={isDarkMode}
+        checked={isDark}
         size="small"
         onChange={switchThemeMode}
       />
