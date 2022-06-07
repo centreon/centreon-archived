@@ -11,7 +11,7 @@ import {
   Actions,
   downtimeAtom,
   refreshIntervalAtom,
-  statusOptimizedModeAtom,
+  statusResourceStorageOptimizationAtom,
 } from '@centreon/ui-context';
 import { getData, useRequest, useSnackbar, postData } from '@centreon/ui';
 
@@ -63,7 +63,9 @@ const useApp = (): UseAppState => {
 
   const setDowntime = useUpdateAtom(downtimeAtom);
   const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
-  const setStatusOptimizedMode = useUpdateAtom(statusOptimizedModeAtom);
+  const setStatusOptimizedMode = useUpdateAtom(
+    statusResourceStorageOptimizationAtom,
+  );
   const setAcl = useUpdateAtom(aclAtom);
   const setAcknowledgement = useUpdateAtom(acknowledgementAtom);
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
@@ -119,7 +121,7 @@ const useApp = (): UseAppState => {
             retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
         setStatusOptimizedMode(
-          retrievedParameters.monitoring_resource_status_optimized_mode,
+          retrievedParameters.use_resource_storage_optimization,
         );
 
         setDataLoaded(true);
