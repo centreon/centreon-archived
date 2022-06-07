@@ -335,8 +335,8 @@ class CentreonEngineCfg extends CentreonObject
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
                     } elseif (
-                        $parameter == 'illegal_object_name_chars'
-                        || $parameter == 'illegal_macro_output_chars'
+                        $parameter === 'illegal_object_name_chars'
+                        || $parameter === 'illegal_macro_output_chars'
                     ) {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);
                     }
