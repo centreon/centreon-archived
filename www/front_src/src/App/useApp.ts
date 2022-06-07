@@ -63,7 +63,7 @@ const useApp = (): UseAppState => {
 
   const setDowntime = useUpdateAtom(downtimeAtom);
   const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
-  const setStatusOptimizedMode = useUpdateAtom(
+  const setResourceStorageOptimizedMode = useUpdateAtom(
     statusResourceStorageOptimizationAtom,
   );
   const setAcl = useUpdateAtom(aclAtom);
@@ -120,7 +120,7 @@ const useApp = (): UseAppState => {
           with_services:
             retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
-        setStatusOptimizedMode(
+        setResourceStorageOptimizedMode(
           retrievedParameters.use_resource_storage_optimization,
         );
 
