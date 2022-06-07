@@ -346,7 +346,9 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
  */
 function checkPhpPrerequisite(): void
 {
-    if (! VersionHelper::compare(PHP_VERSION, _CENTREON_PHP_VERSION_, '=')) {
+    $currentPhpMajorVersion = VersionHelper::regularizeDepthVersion(PHP_VERSION, 1);
+
+    if (! VersionHelper::compare($currentPhpMajorVersion, _CENTREON_PHP_VERSION_, VersionHelper::EQUAL)) {
         throw new \Exception(
             sprintf(
                 _('Please install PHP version %s instead of %s.'),
@@ -366,17 +368,18 @@ function checkPhpPrerequisite(): void
 function checkMariaDBPrerequisite(\PDO $db): void
 {
     $currentMariaDBVersion = getMariaDBVersion($db);
-    if (
-        $currentMariaDBVersion !== null
-        && VersionHelper::compare($currentMariaDBVersion, _CENTREON_MARIA_DB_MIN_VERSION_, '<')
-    ) {
-        throw new \Exception(
-            sprintf(
-                _('Please install MariaDB version %s instead of %s.'),
-                _CENTREON_MARIA_DB_MIN_VERSION_,
-                $currentMariaDBVersion,
-            ),
-        );
+
+    if ($currentMariaDBVersion !== null) {
+        $currentMariaDBMajorVersion = VersionHelper::regularizeDepthVersion($currentMariaDBVersion, 1);
+        if (VersionHelper::compare($currentMariaDBMajorVersion, _CENTREON_MARIA_DB_MIN_VERSION_, VersionHelper::LT)) {
+            throw new \Exception(
+                sprintf(
+                    _('Please install MariaDB version %s instead of %s.'),
+                    _CENTREON_MARIA_DB_MIN_VERSION_,
+                    $currentMariaDBVersion,
+                ),
+            );
+        }
     }
 }
 
