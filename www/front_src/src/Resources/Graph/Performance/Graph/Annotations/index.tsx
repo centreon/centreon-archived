@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { ScaleTime } from 'd3-scale';
 
 import { TimelineEvent } from '../../../../Details/tabs/Timeline/models';

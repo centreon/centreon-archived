@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { propEq } from 'ramda';
@@ -32,7 +32,7 @@ const DisacknowledgeForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
   const [disacknowledgeAttachedResources, setDisacknowledgeAttachedResources] =
-    React.useState(true);
+    useState(true);
 
   const {
     sendRequest: sendDisacknowledgeResources,
@@ -46,7 +46,7 @@ const DisacknowledgeForm = ({
 
   const deniedTypeAlert = getDisacknowledgementDeniedTypeAlert(resources);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (canDisacknowledgeServices()) {
       return;
     }

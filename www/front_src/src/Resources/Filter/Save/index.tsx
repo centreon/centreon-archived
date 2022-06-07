@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 
 import {
   or,
@@ -59,9 +59,8 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const [createFilterDialogOpen, setCreateFilterDialogOpen] =
-    React.useState(false);
+  const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
+  const [createFilterDialogOpen, setCreateFilterDialogOpen] = useState(false);
 
   const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
     decoder: listCustomFiltersDecoder,
@@ -84,7 +83,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const { showSuccessMessage } = useSnackbar();
 
-  const openSaveFilterMenu = (event: React.MouseEvent): void => {
+  const openSaveFilterMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
 
@@ -149,7 +148,7 @@ const SaveFilterMenu = (): JSX.Element => {
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSendingFilter(sending);
   }, [sending]);
 

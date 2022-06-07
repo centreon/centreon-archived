@@ -81,6 +81,8 @@ isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
 isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
+$o = filter_var($_POST["o"] ?? $_GET["o"] ?? null, FILTER_SANITIZE_STRING);
+
 /*
  * Path to the configuration dir
  */

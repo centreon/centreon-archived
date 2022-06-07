@@ -131,4 +131,21 @@ interface HostConfigurationServiceInterface
      * @return Host[]
      */
     public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find a host by its name
+     *
+     * @param string $hostName Host name to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws HostConfigurationException
+     */
+    public function findHostByName(string $hostName): ?Host;
+
+    /**
+     * Find a host template by its id
+     *
+     * @param int $hostTemplateId
+     * @return Host|null
+     */
+    public function findHostTemplate(int $hostTemplateId): ?Host;
 }

@@ -59,6 +59,7 @@ class LoginOpenIdSessionController extends AbstractController
                 Response::HTTP_FOUND
             );
         }
+
         return View::createRedirect(
             $this->getBaseUrl() . $response->redirectUri,
             Response::HTTP_FOUND,

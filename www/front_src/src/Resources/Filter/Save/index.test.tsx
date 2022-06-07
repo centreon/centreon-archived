@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import * as React from 'react';
-
 import axios from 'axios';
-import { last, omit, propEq } from 'ramda';
+import { last, omit } from 'ramda';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
@@ -149,9 +147,6 @@ const retrievedCustomFilters = {
   result: [getFilter({})],
 };
 
-const getCustomFilter = (): Filter =>
-  context.customFilters.find(propEq('id', filterId));
-
 describe(SaveMenu, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
@@ -187,7 +182,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    const filter = getCustomFilter();
+    const filter = getFilter({});
 
     act(() => {
       context.setCurrentFilter(
@@ -229,7 +224,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    const filter = getCustomFilter();
+    const filter = getFilter({});
 
     const newSearch = 'new search';
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { equals, last } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  infiniteScrollTriggerRef: RefObject<HTMLDivElement>;
   metrics: Array<MetaServiceMetric>;
 }
 

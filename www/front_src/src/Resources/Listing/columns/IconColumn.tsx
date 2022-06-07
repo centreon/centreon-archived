@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 import { makeStyles } from '@mui/styles';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const useStyles = makeStyles(() => ({

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +52,7 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [isHovered, setIsHovered] = React.useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,

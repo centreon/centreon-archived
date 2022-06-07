@@ -1,8 +1,3 @@
-/* eslint-disable hooks/sort */
-// Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
-
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
 
@@ -110,11 +105,11 @@ type Props = {
 } & DetailsSectionProps;
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
-  const { t } = useTranslation();
-  const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStyles({
     displaySeverity: not(isNil(details?.severity_level)),
   });
+  const { t } = useTranslation();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
   const copyResourceLink = (): void => {
     try {

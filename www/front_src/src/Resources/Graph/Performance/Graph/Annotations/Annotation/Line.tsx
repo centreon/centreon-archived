@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
 import { pick } from 'ramda';

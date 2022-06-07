@@ -1,6 +1,6 @@
 export const labelOpenIDConnectConfiguration = 'OpenID Connect Configuration';
 export const labelDefineOpenIDConnectConfiguration =
-  'Define OpenID Connect Configuration';
+  'Define OpenID Connect configuration';
 export const labelRequired = 'Required';
 export const labelInvalidURL = 'Invalid URL';
 export const labelInvalidIPAddress = 'Invalid IP Address';
@@ -28,3 +28,10 @@ export const labelUseBasicAuthenticatonForTokenEndpointAuthentication =
 export const labelDisableVerifyPeer = 'Disable verify peer';
 export const labelOpenIDConnectOnly = 'OpenID Connect only';
 export const labelMixed = 'Mixed';
+export const labelEnableAutoImport = 'Enable auto import';
+export const labelContactTemplate = 'Contact template';
+export const labelEmailAttributeToBind = 'Email attribute to bind';
+export const labelAliasAttributeToBind = 'Alias attribute to bind';
+export const labelFullnameAttributeToBind = 'Fullname attribute to bind';
+export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
+  'At least one of the two following fields must be filled';

@@ -26,7 +26,7 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\WebSSO\UpdateWeb
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfigurationFactory;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfigurationFactory;
 use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
     UpdateWebSSOConfiguration,
     UpdateWebSSOConfigurationRequest,

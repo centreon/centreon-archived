@@ -36,12 +36,15 @@
 
 namespace CentreonClapi;
 
+use App\Kernel;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\ServiceProvider;
 use CentreonRemote\Domain\Service\TaskService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Core\Domain\Engine\Model\EngineCommandGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
@@ -62,6 +65,16 @@ class CentreonConfigPoller
     private $engineCachePath;
     private $centreon_path;
     private $centcore_pipe;
+    /**
+     * @var EngineCommandGenerator|null
+     */
+    private ?EngineCommandGenerator $commandGenerator;
+
+    /**
+     * @var ContainerInterface
+     */
+    private ContainerInterface $container;
+
     public const MISSING_POLLER_ID = "Missing poller ID";
     public const UNKNOWN_POLLER_ID = "Unknown poller ID";
 
@@ -83,6 +96,10 @@ class CentreonConfigPoller
         $this->centreon_path = $centreon_path;
         $this->resultTest = array("warning" => 0, "errors" => 0);
         $this->centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
+
+        $kernel = new Kernel('prod', false);
+        $kernel->boot();
+        $this->container = $kernel->getContainer();
     }
 
     /**
@@ -181,7 +198,13 @@ class CentreonConfigPoller
         $host = $result->fetch();
         $result->closeCursor();
 
-        exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $this->commandGenerator = $this->container->get(EngineCommandGenerator::class);
+        $reloadCommand = $this->commandGenerator->getEngineCommand('RELOAD');
+        exec(
+            sprintf("echo '%s:%d' >> %s", $reloadCommand, $host["id"], $this->centcore_pipe),
+            $stdout,
+            $return_code
+        );
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
@@ -249,7 +272,13 @@ class CentreonConfigPoller
         $host = $result->fetch();
         $result->closeCursor();
 
-        exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $this->commandGenerator = $this->container->get(EngineCommandGenerator::class);
+        $restartCommand = $this->commandGenerator->getEngineCommand('RESTART');
+        exec(
+            sprintf("echo '%s:%d' >> %s", $restartCommand, $host["id"], $this->centcore_pipe),
+            $stdout,
+            $return_code
+        );
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
@@ -461,7 +490,7 @@ class CentreonConfigPoller
             $Nagioscfg = $statement->fetchRow();
             $statement->closeCursor();
 
-            foreach (glob($this->engineCachePath . '/' . $pollerId . "/*.cfg") as $filename) {
+            foreach (glob($this->engineCachePath . '/' . $pollerId . '/*.{json,cfg}', GLOB_BRACE) as $filename) {
                 $bool = @copy($filename, $Nagioscfg["cfg_dir"] . "/" . basename($filename));
                 $result = explode("/", $filename);
                 $filename = array_pop($result);
@@ -473,7 +502,7 @@ class CentreonConfigPoller
 
             /* Change files owner */
             if ($apacheUser != "") {
-                foreach (glob($Nagioscfg["cfg_dir"] . "/*.cfg") as $file) {
+                foreach (glob($Nagioscfg["cfg_dir"] . '/*.{json,cfg}', GLOB_BRACE) as $file) {
                     @chown($file, $apacheUser);
                     @chgrp($file, $apacheUser);
                 }

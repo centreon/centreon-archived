@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useRequest } from '@centreon/ui';
 
@@ -16,7 +16,7 @@ interface UseWebSSOState {
 
 const useWebSSO = (): UseWebSSOState => {
   const [initialWebSSOConfiguration, setInitialWebSSOConfiguration] =
-    React.useState<WebSSOConfiguration | null>(null);
+    useState<WebSSOConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<WebSSOConfiguration>({
     decoder: webSSOConfigurationDecoder,
     request: getProviderConfiguration<WebSSOConfiguration>(Provider.WebSSO),

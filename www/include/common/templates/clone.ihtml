@@ -1,5 +1,5 @@
 <div id="{$cloneId}_controls">
-    <div id="{$cloneId}_add">
+    <div id="{$cloneId}_add" class="add-new-entry">
         <span style="cursor:pointer;">
             {assign var=isFrozen value=0}
             {foreach from=$cloneSet item=v}

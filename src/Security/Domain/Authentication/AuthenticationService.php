@@ -99,8 +99,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         if ($authenticationTokens->getProviderToken()->isExpired()) {
             if (
                 !$provider->canRefreshToken()
-                || ($authenticationTokens->getProviderRefreshToken() !== null
-                && $authenticationTokens->getProviderRefreshToken()->isExpired())
+                || $authenticationTokens->getProviderRefreshToken() === null
+                || $authenticationTokens->getProviderRefreshToken()->isExpired()
             ) {
                 $this->notice('Your session has expired');
                 return false;

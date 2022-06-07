@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pipe, trim } from 'ramda';
@@ -40,13 +40,13 @@ const AddCommentForm = ({
   const { t } = useTranslation();
   const { toIsoString, toDateTime } = useLocaleDateTimeFormat();
   const { showSuccessMessage } = useSnackbar();
-  const [comment, setComment] = React.useState<string>();
+  const [comment, setComment] = useState<string>();
 
   const { sendRequest, sending } = useRequest({
     request: commentResources,
   });
 
-  const changeComment = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const changeComment = (event: ChangeEvent<HTMLInputElement>): void => {
     setComment(event.target.value);
   };
 

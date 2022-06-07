@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { path } from 'ramda';
 
 import IconAction from '@mui/icons-material/FlashOn';

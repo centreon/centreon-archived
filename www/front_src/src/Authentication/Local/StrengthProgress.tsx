@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { findLast, gt, lt } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ const StrengthProgress = ({
   value,
   isInverted = false,
 }: Props): JSX.Element => {
-  const currentThreshold = React.useMemo(
+  const currentThreshold = useMemo(
     () =>
       findLast((threshold) => value >= threshold.value, thresholds) ||
       thresholds[0],

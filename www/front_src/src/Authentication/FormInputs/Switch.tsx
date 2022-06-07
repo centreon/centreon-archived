@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { prop } from 'ramda';
@@ -15,14 +15,13 @@ const Switch = ({
   change,
   label,
   getChecked,
+  getDisabled,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const changeSwitchValue = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
+  const changeSwitchValue = (event: ChangeEvent<HTMLInputElement>): void => {
     if (change) {
       change({ setFieldValue, value: event.target.checked });
 
@@ -34,6 +33,7 @@ const Switch = ({
 
   const value =
     getChecked?.(prop(fieldName, values)) ?? prop(fieldName, values);
+  const disabled = getDisabled?.(values) || false;
 
   return useMemoComponent({
     Component: (
@@ -41,6 +41,7 @@ const Switch = ({
         control={
           <MUISwitch
             checked={value}
+            disabled={disabled}
             inputProps={{ 'aria-label': t(label) }}
             onChange={changeSwitchValue}
           />
@@ -48,7 +49,7 @@ const Switch = ({
         label={t(label) as string}
       />
     ),
-    memoProps: [value],
+    memoProps: [value, disabled],
   });
 };
 

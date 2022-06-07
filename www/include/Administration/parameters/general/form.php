@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,7 +33,9 @@
  * For more information : contact@centreon.com
  *
  */
-require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+
+require_once __DIR__ . '/../../../../../bootstrap.php';
+require_once __DIR__ . "/../../../../class/centreonGMT.class.php";
 
 const VERTICAL_NOTIFICATION = 1;
 const CLOSE_NOTIFICATION = 2;
@@ -129,22 +132,6 @@ $CentreonGMT = new CentreonGMT($pearDB);
 $GMTList = $CentreonGMT->getGMTList();
 
 $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
-
-$templates = array();
-if ($handle = @opendir($oreon->optGen["oreon_path"] . "www/Themes/")) {
-    while ($file = @readdir($handle)) {
-        if (
-            !is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
-            && $file != "."
-            && $file != ".."
-            && $file != ".svn"
-        ) {
-            $templates[$file] = $file;
-        }
-    }
-    @closedir($handle);
-}
-$form->addElement('select', 'template', _("Display Template"), $templates);
 
 $globalSortType = array(
     "host_name" => _("Hosts"),

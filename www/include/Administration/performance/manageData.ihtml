@@ -31,7 +31,12 @@
 	 	{assign var='host_name' value=''}
 		{foreach item=d from=$data}
 		<tr class="{$d.class}">
-		 	<td class="ListColCenter"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
+		 	<td class="ListColCenter">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input name="select[{$d.id}]" id="{$d.id}" value="1" type="checkbox">
+                    <label class="empty-label" for="{$d.id}"></label>
+                </div>
+            </td>
 			<td class="ListColLeft">{if !$host_name || $host_name != $d.host_name}{$d.host_name}{/if}</td>
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>

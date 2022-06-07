@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Provider } from 'jotai';
 import mockDate from 'mockdate';
 import { BrowserRouter } from 'react-router-dom';
@@ -43,7 +41,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-jest.mock('../assets/centreon.png');
+jest.mock('../assets/logo-centreon-colors.png');
 jest.mock('../assets/centreon-wallpaper-xl.jpg');
 jest.mock('../assets/centreon-wallpaper-lg.jpg');
 jest.mock('../assets/centreon-wallpaper-sm.jpg');
@@ -94,6 +92,12 @@ const retrievedProvidersConfiguration = [
   },
 ];
 
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
+};
+
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -143,12 +147,28 @@ const mockPostLoginPasswordExpired = (): void => {
   });
 };
 
+const labelError = 'This is an error from the server';
+
+const mockPostLoginServerError = (): void => {
+  mockedAxios.post.mockRejectedValue({
+    response: {
+      data: {
+        message: labelError,
+      },
+      status: 500,
+    },
+  });
+};
+
 const labelInvalidCredentials = 'Invalid credentials';
 
 describe('Login Page', () => {
   beforeEach(() => {
     mockDate.set(mockNow);
     mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedTranslations,
+      })
       .mockResolvedValueOnce({
         data: retrievedWeb,
       })
@@ -188,7 +208,9 @@ describe('Login Page', () => {
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
-    expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    });
     expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
       'href',
       '/centreon/authentication/providers/configurations/openid',
@@ -273,7 +295,9 @@ describe('Login Page', () => {
       expect(screen.getByLabelText(labelConnect)).toBeDisabled();
     });
 
-    expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    await waitFor(() => {
+      expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+    });
   });
 
   it('displays the password when the corresponding action is clicked', () => {
@@ -304,5 +328,22 @@ describe('Login Page', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/reset-password');
+  });
+
+  it('stays on the login page when the login request returns a 500 error', async () => {
+    mockPostLoginServerError();
+    renderLoginPage();
+
+    userEvent.type(screen.getByLabelText(labelAlias), 'admin');
+    userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
+
+    userEvent.click(screen.getByLabelText(labelConnect));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelError)).toBeInTheDocument();
+    });
+
+    expect(window.location.href).not.toBe('http://localhost/reset-password');
+    expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
   });
 });

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Divider } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { isNil, not } from 'ramda';
 
 import { CreateCSSProperties, makeStyles } from '@mui/styles';

@@ -1,12 +1,15 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import { Responsive } from '@visx/visx';
 
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
+
+import { userAtom } from '@centreon/ui-context';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -17,6 +20,7 @@ import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
+  labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
@@ -59,6 +63,10 @@ export const categories: Array<Category> = [
     name: labelClientAddresses,
     order: 3,
   },
+  {
+    name: labelAutoImport,
+    order: 3,
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -84,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
   },
   panel: {
-    height: '88%',
+    height: '80%',
     padding: 0,
   },
   paper: {
@@ -96,18 +104,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const marginBottomHeight = 88;
+
 const Authentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const appliedTab = useAtomValue(appliedTabAtom);
+  const { themeMode } = useAtomValue(userAtom);
   const setTab = useUpdateAtom(tabAtom);
 
   const changeTab = (_, newTab: Provider): void => {
     setTab(newTab);
   };
 
-  const tabs = React.useMemo(
+  const tabs = useMemo(
     () =>
       panels.map(({ title, value }) => (
         <Tab key={value} label={t(title)} value={value} />
@@ -115,17 +126,27 @@ const Authentication = (): JSX.Element => {
     [],
   );
 
-  const tabPanels = React.useMemo(
-    () =>
-      panels.map(({ Component, value, image }) => (
-        <TabPanel className={classes.panel} key={value} value={value}>
-          <div className={classes.formContainer}>
-            <Component />
-            <img alt="padlock" className={classes.image} src={image} />
-          </div>
-        </TabPanel>
-      )),
-    [],
+  const tabPanels = useMemo(
+    () => (
+      <Responsive.ParentSize>
+        {({ height }): Array<JSX.Element> =>
+          panels.map(({ Component, value, image }) => (
+            <TabPanel
+              className={classes.panel}
+              key={value}
+              style={{ height: height - marginBottomHeight }}
+              value={value}
+            >
+              <div className={classes.formContainer}>
+                <Component />
+                <img alt="padlock" className={classes.image} src={image} />
+              </div>
+            </TabPanel>
+          ))
+        }
+      </Responsive.ParentSize>
+    ),
+    [themeMode],
   );
 
   return (

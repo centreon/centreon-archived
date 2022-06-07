@@ -112,7 +112,9 @@ abstract class AbstractController extends AbstractFOSRestController
             $message = '';
             $this->error('Invalid request body');
             foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+                $message .= ! empty($error['property'])
+                    ? sprintf("[%s] %s\n", $error['property'], $error['message'])
+                    : sprintf("%s\n", $error['message']);
             }
             throw new \InvalidArgumentException($message);
         }

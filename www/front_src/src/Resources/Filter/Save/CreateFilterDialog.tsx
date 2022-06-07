@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent, KeyboardEvent } from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -17,7 +17,7 @@ import {
 import { createFilter } from '../api';
 import { Filter } from '../models';
 
-type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
+type InputChangeEvent = (event: ChangeEvent<HTMLInputElement>) => void;
 
 interface Props {
   filter: Filter;
@@ -56,7 +56,7 @@ const CreateFilterDialog = ({
     }),
   });
 
-  const submitFormOnEnterKey = (event: React.KeyboardEvent): void => {
+  const submitFormOnEnterKey = (event: KeyboardEvent<HTMLDivElement>): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {

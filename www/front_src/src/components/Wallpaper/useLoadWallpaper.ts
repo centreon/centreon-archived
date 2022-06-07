@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo, useEffect } from 'react';
 
 import { always, lte, cond } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
@@ -16,7 +16,7 @@ const useLoadWallpaper = (): void => {
 
   const loadImage = useUpdateAtom(loadImageDerivedAtom);
 
-  const imagePath = React.useMemo(
+  const imagePath = useMemo(
     (): string =>
       cond<number, string>([
         [lte(theme.breakpoints.values.xl), always(centreonWallpaperXl)],
@@ -26,7 +26,7 @@ const useLoadWallpaper = (): void => {
     [],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadImage(imagePath);
   }, []);
 };

@@ -24,18 +24,18 @@ namespace Security\Domain\Authentication\Model;
 
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Domain\Security\User\Model\User;
+use Core\Security\Domain\User\Model\User;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Core\Domain\Security\Authentication\AuthenticationException;
-use Core\Domain\Security\Authentication\PasswordExpiredException;
+use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Domain\Authentication\PasswordExpiredException;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
+use Core\Security\Domain\ProviderConfiguration\Local\ConfigurationException;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
@@ -105,6 +105,10 @@ class LocalProvider implements LocalProviderInterface
             ""
         );
 
+        if ($auth->userInfos === null) {
+            throw AuthenticationException::notAuthenticated();
+        }
+
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
             [
@@ -150,10 +154,8 @@ class LocalProvider implements LocalProviderInterface
             throw AuthenticationException::notAuthenticated();
         }
 
-        if ($auth->userInfos !== null) {
-            $this->contactId = (int) $auth->userInfos['contact_id'];
-            $this->setLegacySession(new \Centreon($auth->userInfos));
-        }
+        $this->contactId = (int) $auth->userInfos['contact_id'];
+        $this->setLegacySession(new \Centreon($auth->userInfos));
         $this->info('[LOCAL PROVIDER] authentication succeed');
     }
 

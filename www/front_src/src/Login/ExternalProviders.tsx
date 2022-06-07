@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { isEmpty, isNil, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 

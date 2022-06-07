@@ -63,7 +63,9 @@
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
             <td class="ListColLeft" style='white-space:nowrap;'>
-                <img src='{$elemArr[elem].RowMenu_ico}' title='{$elemArr[elem].RowMenu_ico_title}' class='ico-22 margin_right'>
+                <span class='ico-22 margin_right' title='{$elemArr[elem].RowMenu_ico_title}'>
+                    {$elemArr[elem].RowMenu_ico}
+                </span>
                 <a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>
             </td>
             <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>

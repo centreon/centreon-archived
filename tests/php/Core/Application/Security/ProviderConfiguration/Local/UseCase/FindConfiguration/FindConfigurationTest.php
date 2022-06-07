@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfiguration;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;

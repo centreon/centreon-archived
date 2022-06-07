@@ -43,4 +43,14 @@ interface ReadHostRepositoryInterface
      * @return Host|null
      */
     public function findHostByIdAndAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+
+    /**
+     * Check if user is allowed to get host information
+     *
+     * @param int $hostId
+
+     * @param int[] $accessGroupIds
+     * @return bool
+     */
+    public function isAllowedToFindHostByAccessGroupIds(int $hostId, array $accessGroupIds): bool;
 }

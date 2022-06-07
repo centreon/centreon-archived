@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import { equals, isNil } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -58,7 +56,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 
   if (isNil(options)) {
     const isOptionEqualToValue = (option, selectedValue): boolean =>
-      equals(option.name, selectedValue.name);
+      isNil(option) ? false : equals(option.name, selectedValue.name);
 
     const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({

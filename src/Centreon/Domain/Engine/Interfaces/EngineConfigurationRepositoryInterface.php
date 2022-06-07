@@ -28,6 +28,13 @@ use Centreon\Domain\HostConfiguration\Host;
 interface EngineConfigurationRepositoryInterface
 {
     /**
+     * Find the Engine configuration associated to the central poller.
+     *
+     * @return EngineConfiguration|null
+     */
+    public function findCentralEngineConfiguration(): ?EngineConfiguration;
+
+    /**
      * Find the Engine configuration associated to a host.
      *
      * @param Host $host Host for which we want to find the Engine configuration

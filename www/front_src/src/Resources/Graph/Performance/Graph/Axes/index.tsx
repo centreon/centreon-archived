@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 

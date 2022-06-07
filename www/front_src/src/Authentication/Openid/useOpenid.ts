@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { useRequest } from '@centreon/ui';
 
@@ -16,7 +16,7 @@ interface UseOpenidState {
 
 const useOpenid = (): UseOpenidState => {
   const [initialOpenidConfiguration, setInitialOpenidConfiguration] =
-    React.useState<OpenidConfiguration | null>(null);
+    useState<OpenidConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<OpenidConfiguration>({
     decoder: openidConfigurationDecoder,
     request: getProviderConfiguration<OpenidConfiguration>(Provider.Openid),

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { useRequest } from '@centreon/ui';
 
@@ -18,7 +18,7 @@ const useAuthentication = (): UseAuthenticationState => {
   const [
     initialPasswordPasswordSecurityPolicy,
     setInitialPasswordSecurityPolicy,
-  ] = React.useState<PasswordSecurityPolicy | null>(null);
+  ] = useState<PasswordSecurityPolicy | null>(null);
   const { sendRequest, sending } = useRequest<PasswordSecurityPolicy>({
     decoder: securityPolicyDecoder,
     request: getPasswordPasswordSecurityPolicy,
@@ -34,7 +34,7 @@ const useAuthentication = (): UseAuthenticationState => {
       .catch(() => undefined);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadPasswordPasswordSecurityPolicy();
   }, []);
 

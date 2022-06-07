@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, isNil, map, prop, type } from 'ramda';
@@ -12,10 +12,20 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
+import { labelPressEnterToAccept } from '../translatedLabels';
+
 import { InputProps } from './models';
 
-const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
+const Multiple = ({
+  fieldName,
+  label,
+  required,
+  getDisabled,
+  getRequired,
+}: InputProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const [inputText, setInputText] = useState('');
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
@@ -39,12 +49,14 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
           return undefined;
         }
 
-        return `${selectedValues.at(index)}: ${errorText}`;
+        return `${selectedValues[index]}: ${errorText}`;
       })
       .filter(Boolean) as Array<string>;
 
     return error || undefined;
   };
+
+  const textChange = (event): void => setInputText(event.target.value);
 
   const normalizedValues = selectedValues.map((value) => ({
     id: value,
@@ -53,23 +65,28 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
 
   const inputErrors = getError();
 
+  const disabled = getDisabled?.(values) || false;
+  const isRequired = required || getRequired?.(values) || false;
+  const additionalLabel = inputText ? ` (${labelPressEnterToAccept})` : '';
+
   return useMemoComponent({
     Component: (
       <div>
         <MultiAutocompleteField
-          clearOnBlur
           freeSolo
-          handleHomeEndKeys
+          disabled={disabled}
+          inputValue={inputText}
           isOptionEqualToValue={(option, selectedValue): boolean =>
             equals(option, selectedValue)
           }
-          label={t(label)}
+          label={`${t(label)}${additionalLabel}`}
           open={false}
           options={[]}
           popupIcon={null}
-          required={required}
+          required={isRequired}
           value={normalizedValues}
           onChange={change}
+          onTextChange={textChange}
         />
         {inputErrors && (
           <Stack>
@@ -82,7 +99,7 @@ const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
         )}
       </div>
     ),
-    memoProps: [normalizedValues, inputErrors],
+    memoProps: [normalizedValues, inputErrors, additionalLabel, disabled],
   });
 };
 

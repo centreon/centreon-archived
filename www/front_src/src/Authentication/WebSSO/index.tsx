@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
@@ -37,14 +37,14 @@ const WebSSOConfigurationForm = (): JSX.Element => {
     loadWebSSOonfiguration,
   } = useWebSSO();
 
-  const isWebSSOConfigurationEmpty = React.useMemo(
+  const isWebSSOConfigurationEmpty = useMemo(
     () => isNil(initialWebSSOConfiguration),
     [initialWebSSOConfiguration],
   );
 
   useTab(isWebSSOConfigurationEmpty);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadWebSSOonfiguration();
   }, []);
 

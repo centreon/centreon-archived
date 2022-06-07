@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
@@ -13,6 +11,7 @@ import {
   labelResetTheForm,
   labelSave,
 } from '../Local/translatedLabels';
+import { labelActivation } from '../translatedLabels';
 
 import {
   labelBlacklistClientAddresses,
@@ -51,8 +50,8 @@ const retrievedWebSSOConfiguration = {
   is_active: true,
   is_forced: false,
   login_header_attribute: '',
-  pattern_matching_login: '',
-  pattern_replace_login: '',
+  pattern_matching_login: null,
+  pattern_replace_login: null,
   trusted_client_addresses: ['127.0.0.1'],
 };
 
@@ -83,16 +82,20 @@ describe('Web SSOconfiguration form', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
     expect(
       screen.getByLabelText(labelEnableWebSSOAuthentication),
     ).toBeChecked();
     expect(screen.getByLabelText(labelWebSSOOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
     expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toHaveValue(
@@ -110,6 +113,10 @@ describe('Web SSOconfiguration form', () => {
         authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -133,7 +140,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelTrustedClientAddresses),
+      screen.getByLabelText(`${labelTrustedClientAddresses}`),
       'invalid domain',
     );
     userEvent.keyboard('{Enter}');
@@ -145,7 +152,7 @@ describe('Web SSOconfiguration form', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBlacklistClientAddresses),
+      screen.getByLabelText(`${labelBlacklistClientAddresses}`),
       '127.0.0.1111',
     );
     userEvent.keyboard('{Enter}');
@@ -168,6 +175,10 @@ describe('Web SSOconfiguration form', () => {
         authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -209,6 +220,10 @@ describe('Web SSOconfiguration form', () => {
         authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
     userEvent.type(

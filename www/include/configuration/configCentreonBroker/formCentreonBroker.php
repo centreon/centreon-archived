@@ -58,6 +58,30 @@ if (
 
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
+/**
+ * @param mixed $data
+ * @return mixed
+ */
+function htmlEncodeBrokerInformation(mixed $data): mixed
+{
+    if (is_string($data)) {
+        $data = htmlentities($data);
+    }
+    return $data;
+}
+
+/**
+ * @param mixed $data
+ * @return mixed
+ */
+function htmlDecodeBrokerInformation(mixed $data): mixed
+{
+    if (is_string($data)) {
+        $data = html_entity_decode($data);
+    }
+    return $data;
+}
+
 /*
  * nagios servers comes from DB
  */
@@ -164,6 +188,9 @@ $stats_activate[] = $form->createElement('radio', 'stats_activate', null, _("Yes
 $stats_activate[] = $form->createElement('radio', 'stats_activate', null, _("No"), 0);
 $form->addGroup($stats_activate, 'stats_activate', _("Statistics"), '&nbsp;');
 
+$bbdo_versions = [ '2.0.0' => 'v.2.0.0 (old protocol)', '3.0.0' => 'v.3.0.0 (with protobuf)'];
+$form->addElement('select', 'bbdo_version', _("BBDO version"), $bbdo_versions);
+
 $tags = $cbObj->getTags();
 
 $tabs = array();
@@ -191,7 +218,8 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
             "write_thread_id" => '1',
             "stats_activate" => '1',
             "activate" => '1',
-            "activate_watchdog" => '1'
+            "activate_watchdog" => '1',
+            "bbdo_version" => '3.0.0',
         ),
         $defaultLog
     );
@@ -200,6 +228,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
 } elseif ($id !== 0) {
     $tpl->assign('config_id', $id);
     $defaultBrokerInformation = getCentreonBrokerInformation($id);
+    $defaultBrokerInformation = array_map('htmlEncodeBrokerInformation', $defaultBrokerInformation);
     if (!isset($defaultBrokerInformation['log_core'])) {
         $defaultBrokerInformation = array_merge(
             $defaultBrokerInformation,
@@ -262,10 +291,11 @@ if ($o == "w") {
 $valid = false;
 if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
+    $data = array_map('htmlDecodeBrokerInformation', $_POST);
     if ($form->getSubmitValue("submitA")) {
-        $cbObj->insertConfig($_POST);
+        $cbObj->insertConfig($data);
     } elseif ($form->getSubmitValue("submitC")) {
-        $cbObj->updateConfig($_POST['id'], $_POST);
+        $cbObj->updateConfig($data['id'], $data);
     }
     $o = null;
     $valid = true;

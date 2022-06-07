@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import { not } from 'ramda';
 
@@ -26,16 +26,16 @@ interface TimeShiftContextProps {
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
-export const TimeShiftContext = React.createContext<
+export const TimeShiftContext = createContext<
   TimeShiftContextProps | undefined
 >(undefined);
 
 export const useTimeShiftContext = (): TimeShiftContextProps =>
-  React.useContext(TimeShiftContext) as TimeShiftContextProps;
+  useContext(TimeShiftContext) as TimeShiftContextProps;
 
 const TimeShifts = (): JSX.Element | null => {
   const [directionHovered, setDirectionHovered] =
-    React.useState<TimeShiftDirection | null>(null);
+    useState<TimeShiftDirection | null>(null);
 
   const { graphWidth, canAdjustTimePeriod } = useTimeShiftContext();
 

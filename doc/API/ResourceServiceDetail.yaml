@@ -363,6 +363,11 @@ Monitoring.ServiceDetail:
         endpoints:
           type: object
           properties:
+            notification_policy:
+              type: string
+              nullable: true
+              description: "Service resource notification policy endpoint"
+              example: "/centreon/api/v22.04/monitoring/hosts/202/services/1533/notification-policy"
             timeline:
               type: string
               nullable: true

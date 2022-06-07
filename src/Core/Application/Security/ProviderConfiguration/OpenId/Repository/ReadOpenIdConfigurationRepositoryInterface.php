@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\OpenId\Repository;
 
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 interface ReadOpenIdConfigurationRepositoryInterface
 {

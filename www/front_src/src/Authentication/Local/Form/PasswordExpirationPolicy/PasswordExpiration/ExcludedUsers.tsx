@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
@@ -66,7 +66,7 @@ const ExcludedUsers = (): JSX.Element => {
       },
     });
 
-  const getRenderedOptionText = React.useCallback((option): JSX.Element => {
+  const getRenderedOptionText = useCallback((option): JSX.Element => {
     const { alias, email, is_admin: isAdmin } = option;
 
     return (
@@ -111,7 +111,7 @@ const ExcludedUsers = (): JSX.Element => {
     object: values,
   });
 
-  const formattedUsers = React.useMemo(
+  const formattedUsers = useMemo(
     () => map((user) => ({ alias: user, id: user, name: user }), excludedUsers),
     [excludedUsers],
   );

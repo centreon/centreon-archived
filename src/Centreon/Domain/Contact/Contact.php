@@ -67,6 +67,10 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE =
         'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_RW';
     public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ = 'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_R';
+    public const ROLE_CONFIGURATION_CONTACTS_READ_WRITE = 'ROLE_CONFIGURATION_USERS_CONTACTS__USERS_RW';
+    public const ROLE_CONFIGURATION_CONTACTS_READ = 'ROLE_CONFIGURATION_USERS_CONTACTS__USERS_R';
+    public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ_WRITE = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_RW';
+    public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_R';
 
     /**
      * @var string
@@ -179,6 +183,11 @@ class Contact implements UserInterface, ContactInterface
      * @var bool
      */
     private $isOneClickExportEnabled = false;
+
+    /**
+     * @var string|null
+     */
+    private $theme;
 
     /**
      * @return int
@@ -651,5 +660,27 @@ class Contact implements UserInterface, ContactInterface
     public function getUserIdentifier(): string
     {
         return $this->alias;
+    }
+
+    /**
+     * Set user current theme.
+     *
+     * @param string $theme user's new theme.
+     * @return self
+     */
+    public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
+        return $this;
+    }
+
+    /**
+     * Get user current theme.
+     *
+     * @return string|null
+     */
+    public function getTheme(): ?string
+    {
+        return $this->theme;
     }
 }

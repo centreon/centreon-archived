@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { ComponentColumnProps } from '@centreon/ui';
 
 import ShortTypeChip from '../../ShortTypeChip';

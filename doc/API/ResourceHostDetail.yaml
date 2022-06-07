@@ -365,6 +365,11 @@ Monitoring.HostDetail:
         endpoints:
           type: object
           properties:
+            notification_policy:
+              type: string
+              nullable: true
+              description: "Host resource notification policy endpoint"
+              example: "/centreon/api/v22.04/monitoring/hosts/202/notification-policy"
             timeline:
               type: string
               nullable: true

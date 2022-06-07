@@ -24,15 +24,17 @@ const devServerAddress = externalInterface
 
 const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
 
-const isServing = process.env.WEBPACK_ENV === 'serve';
+const isServeMode = process.env.WEBPACK_ENV === 'serve';
+const isDevelopmentMode = process.env.WEBPACK_ENV === 'development';
 
-const plugins = isServing ? [new ReactRefreshWebpackPlugin()] : [];
+const plugins = isServeMode ? [new ReactRefreshWebpackPlugin()] : [];
 
-const output = isServing
-  ? {
-      publicPath,
-    }
-  : {};
+const output =
+  isServeMode || isDevelopmentMode
+    ? {
+        publicPath,
+      }
+    : {};
 
 const getStaticDirectoryPath = (moduleName) =>
   `${__dirname}/www/modules/${moduleName}/static`;
@@ -64,7 +66,6 @@ module.exports = merge(baseConfig, devConfig, {
     host: '0.0.0.0',
     hot: true,
     port: devServerPort,
-
     static: modules.map(({ name, getDirectoryPath }) => ({
       directory: path.resolve(getDirectoryPath(name)),
       publicPath,

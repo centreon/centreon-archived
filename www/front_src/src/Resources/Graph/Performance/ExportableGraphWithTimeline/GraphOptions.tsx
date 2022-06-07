@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, useState } from 'react';
 
 import { isNil, not, pluck, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -35,14 +35,14 @@ const useStyles = makeStyles((theme) => ({
 const Options = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
   const graphOptions = useAtomValue(graphOptionsAtom);
   const tabParameters = useAtomValue(tabParametersAtom);
   const changeGraphOptions = useUpdateAtom(changeGraphOptionsDerivedAtom);
   const setGraphTabParameters = useUpdateAtom(setGraphTabParametersDerivedAtom);
 
-  const openGraphOptions = (event: React.MouseEvent): void => {
+  const openGraphOptions = (event: MouseEvent<HTMLButtonElement>): void => {
     if (isNil(anchorEl)) {
       setAnchorEl(event.currentTarget);
 

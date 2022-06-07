@@ -304,8 +304,9 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             $tplStr .= "&nbsp;>&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
         }
     }
-
+    $isServiceSvgFile = true;
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
     } elseif (
         $icone = $mediaObj->getFilename(
@@ -315,9 +316,11 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             )
         )
     ) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $icone;
     } else {
-        $svc_icon = "./img/icons/service.png ";
+        $isServiceSvgFile = true;
+        $svc_icon = returnSvg("www/img/icons/service.svg", "var(--icons-fill-color)", 14, 14);
     }
 
     //Get service intervals in seconds
@@ -359,7 +362,8 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         "RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
         "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $service["service_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isServiceSvgFile" => $isServiceSvgFile
     );
 
     $fgHostgroup["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;

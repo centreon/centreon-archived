@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { SeverityCode, StatusChip } from '@centreon/ui';

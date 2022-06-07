@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { isNil } from 'ramda';
 
 import { ListingModel, useRequest } from '@centreon/ui';

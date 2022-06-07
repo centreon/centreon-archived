@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
@@ -58,12 +58,13 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
 
         return [
             'id' => $response->id,
-            'type' => OpenIdConfiguration::NAME,
+            'type' => OpenIdConfiguration::TYPE,
             'name' => OpenIdConfiguration::NAME,
             'authentication_uri' => $response->baseUrl . '/'
                 . ltrim($response->authorizationEndpoint ?? '', '/')
-                . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri=' . $redirectUri
-                . '&state=' . uniqid(),
+                . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri='
+                . rtrim($redirectUri, '/') . '&state=' . uniqid()
+                . (! empty($response->connectionScopes) ? '&scope=' . implode('%20', $response->connectionScopes) : ''),
             'is_active' => $response->isActive,
             'is_forced' => $response->isForced,
         ];

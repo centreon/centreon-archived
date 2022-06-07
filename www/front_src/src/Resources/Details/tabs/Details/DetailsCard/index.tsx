@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -10,7 +8,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main,
   },
   container: {
-    height: 65,
     overflow: 'hidden',
   },
   title: {

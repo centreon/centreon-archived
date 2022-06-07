@@ -2,7 +2,7 @@
 <form {$form.attributes}>
 	<div id="popupAcknowledgement" align=center>
 		 <table class="table">
-                     <tr><td class="FormHeader" colspan='2'><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
+                     <tr><td class="FormHeader" colspan='2'><h3 class="header-text">{$form.header.title}</h3></td></tr>
 			<tr>
 	            <td class="FormRowField" style='padding-left:15px;'>{$form.sticky.label}</td>
                     <td class="FormRowValue" style='padding-left:15px;'>{$form.sticky.html}</td>

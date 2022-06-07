@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { equals, find, propEq } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse;
 
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class OpenIdProviderResponse implements ProviderResponseInterface
 {
@@ -51,11 +51,15 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public ?string $authorizationEndpoint;
 
-
     /**
      * @var string|null
      */
     public ?string $clientId;
+
+    /**
+     * @var string[]|null
+     */
+    public ?array $connectionScopes;
 
     /**
      * @inheritDoc
@@ -77,6 +81,7 @@ class OpenIdProviderResponse implements ProviderResponseInterface
         $response->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
         $response->clientId = $configuration->getClientId();
         $response->id = $configuration->getId();
+        $response->connectionScopes = $configuration->getConnectionScopes();
 
         return $response;
     }

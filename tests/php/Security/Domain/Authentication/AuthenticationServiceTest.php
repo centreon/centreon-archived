@@ -73,6 +73,11 @@ class AuthenticationServiceTest extends TestCase
      */
     private $providerToken;
 
+    /**
+     * @var ProviderToken|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $refreshToken;
+
     protected function setUp(): void
     {
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
@@ -82,6 +87,7 @@ class AuthenticationServiceTest extends TestCase
         $this->provider = $this->createMock(LocalProviderInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->providerToken = $this->createMock(ProviderToken::class);
+        $this->refreshToken = $this->createMock(ProviderToken::class);
     }
 
     /**
@@ -206,10 +212,20 @@ class AuthenticationServiceTest extends TestCase
             ->method('getProviderToken')
             ->willReturn($this->providerToken);
 
+        $this->authenticationTokens
+            ->expects($this->any())
+            ->method('getProviderRefreshToken')
+            ->willReturn($this->refreshToken);
+
         $this->providerToken
             ->expects($this->once())
             ->method('isExpired')
             ->willReturn(true);
+
+        $this->refreshToken
+            ->expects($this->once())
+            ->method('isExpired')
+            ->willReturn(false);
 
         $this->provider
             ->expects($this->once())
@@ -253,6 +269,16 @@ class AuthenticationServiceTest extends TestCase
             ->expects($this->once())
             ->method('getProviderToken')
             ->willReturn($this->providerToken);
+
+        $this->authenticationTokens
+            ->expects($this->any())
+            ->method('getProviderRefreshToken')
+            ->willReturn($this->refreshToken);
+
+        $this->refreshToken
+            ->expects($this->once())
+            ->method('isExpired')
+            ->willReturn(false);
 
         $this->providerToken
             ->expects($this->once())

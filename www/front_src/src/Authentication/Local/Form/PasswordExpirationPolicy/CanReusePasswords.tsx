@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +6,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelCanReuseLast3Passwords } from '../../translatedLabels';
+import { labelLast3PasswordsCanBeReused } from '../../translatedLabels';
 import { getField } from '../utils';
 
 const fieldName = 'canReusePasswords';
@@ -37,12 +35,12 @@ const CanReusePasswords = (): JSX.Element => {
             <Switch
               checked={canReusePasswords}
               color="primary"
-              name={t(labelCanReuseLast3Passwords)}
+              name={t(labelLast3PasswordsCanBeReused)}
               size="small"
               onChange={handleChange(fieldName)}
             />
           }
-          label={t(labelCanReuseLast3Passwords) as string}
+          label={t(labelLast3PasswordsCanBeReused) as string}
         />
       </div>
     ),

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
 import {
   always,
@@ -109,13 +109,13 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [entities, setEntities] = React.useState<Array<TEntity>>();
-  const [page, setPage] = React.useState(1);
-  const [total, setTotal] = React.useState(0);
-  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
-  const [isScrolling, setIsScrolling] = React.useState(false);
-  const scrollableContainerRef = React.useRef<HTMLDivElement | undefined>();
-  const preventScrollingRef = React.useRef(false);
+  const [entities, setEntities] = useState<Array<TEntity>>();
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loadingMoreEvents, setLoadingMoreEvents] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollableContainerRef = useRef<HTMLDivElement | undefined>();
+  const preventScrollingRef = useRef(false);
 
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
@@ -145,7 +145,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       .catch(() => undefined);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(details)) {
       setEntities(undefined);
     }
@@ -157,7 +157,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     reload();
   }, [details]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(entities) || page === 1) {
       return;
     }
@@ -169,7 +169,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       .catch(() => undefined);
   }, [page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(details) || isNil(entities)) {
       return;
     }
@@ -179,7 +179,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     reload();
   }, reloadDependencies);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedResourceId !== details?.id) {
       setEntities(undefined);
       setPage(1);
@@ -230,7 +230,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   return (
     <div
       className={classes.scrollableContainer}
-      ref={scrollableContainerRef as React.RefObject<HTMLDivElement>}
+      ref={scrollableContainerRef as RefObject<HTMLDivElement>}
       onScroll={scroll}
     >
       <div className={classes.container}>

@@ -38,6 +38,7 @@ ini_set("display_errors", "Off");
 
 use App\Kernel;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Core\Domain\Engine\Model\EngineCommandGenerator;
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../config/bootstrap.php");
@@ -64,15 +65,13 @@ $xml = new CentreonXML();
 $okMsg = "<b><font color='green'>OK</font></b>";
 $nokMsg = "<b><font color='red'>NOK</font></b>";
 
-
+$kernel = new Kernel('prod', false);
+$kernel->boot();
+$container = $kernel->getContainer();
+if ($container == null) {
+    throw new Exception(_('Unable to load the Symfony container'));
+}
 if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
-    $kernel = new Kernel('prod', false);
-    $kernel->boot();
-
-    $container = $kernel->getContainer();
-    if ($container == null) {
-        throw new Exception(_('Unable to load the Symfony container'));
-    }
     $contactService = $container->get(ContactServiceInterface::class);
     $contact = $contactService->findByAuthenticationToken($_SERVER['HTTP_X_AUTH_TOKEN']);
 
@@ -209,11 +208,17 @@ try {
      */
     $brk = new CentreonBroker($pearDB);
     $brk->reload();
-
+    /**
+     * @var EngineCommandGenerator $commandGenerator
+     */
+    $commandGenerator = $container->get(EngineCommandGenerator::class);
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
             if ($fh = @fopen($centcore_pipe, 'a+')) {
-                fwrite($fh, "RELOAD:" . $host["id"] . "\n");
+                $reloadCommand = ($commandGenerator !== null)
+                    ? $commandGenerator->getEngineCommand('RELOAD')
+                    : 'RELOAD';
+                fwrite($fh, $reloadCommand . ':' . $host["id"] . "\n");
                 fclose($fh);
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
@@ -229,7 +234,10 @@ try {
             );
         } elseif ($ret["restart_mode"] == 2) {
             if ($fh = @fopen($centcore_pipe, 'a+')) {
-                fwrite($fh, "RESTART:" . $host["id"] . "\n");
+                $restartCommand = ($commandGenerator !== null)
+                    ? $commandGenerator->getEngineCommand('RESTART')
+                    : 'RESTART';
+                fwrite($fh, $restartCommand . ':' . $host["id"] . "\n");
                 fclose($fh);
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));

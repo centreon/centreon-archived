@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { RefObject } from 'react';
 
 import { isNil } from 'ramda';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
@@ -20,19 +20,23 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
     display: 'flex',
     height: '100%',
   }),
+  paper: {
+    height: '100%',
+  },
   tile: {
     '&:hover': {
       boxShadow: theme.shadows[3],
     },
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
+    height: '100%',
   },
 }));
 
 interface ContentProps extends CardsLayout {
   attributes;
   isDragging: boolean;
-  itemRef: React.RefObject<HTMLDivElement>;
+  itemRef: RefObject<HTMLDivElement>;
   listeners: DraggableSyntheticListeners;
   style;
 }
@@ -67,7 +71,7 @@ const Content = ({
       ref={itemRef}
       style={style}
     >
-      <Paper>
+      <Paper className={classes.paper}>
         <div className={classes.tile}>
           <div {...listeners} className={classes.handler}>
             <MoreVertIcon fontSize="small" />

@@ -59,12 +59,21 @@
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
             <td class="ListColLeft">
                 <a href="{$elemArr[elem].RowMenu_link}">
-                    <img src="{$elemArr[elem].RowMenu_icone}" class="ico-18  margin_right"/>{$elemArr[elem].RowMenu_name}
+                    {if $elemArr[elem].isSvgFile}
+                        <span class="ico-18  margin_right">
+                            {$elemArr[elem].RowMenu_icone}
+                        </span>
+                    {else}
+                        <img src="{$elemArr[elem].RowMenu_icone}" class="ico-18  margin_right"/>
+                    {/if}
+                    {$elemArr[elem].RowMenu_name}
                 </a>
             </td>
             <td class="ListColCenter">
                 <a href='./main.php?p=602&search={$elemArr[elem].RowMenu_name}'>
-                    <img src="./img/icons/all_services.png" class="ico-16" title='{$HelpServices}'>
+                    <span class="ico-16" title='{$HelpServices}'>
+                        {$listServicesIcon}
+                    </span>
                 </a>
             </td>
             <td class="ListColLeft resizeTitle">

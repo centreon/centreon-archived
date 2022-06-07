@@ -155,7 +155,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
         $request = $this->translateDbName(
             'SELECT service_id AS id, service_template_model_stm_id AS template_id, display_name AS name,
             service_description AS description, service_locked AS is_locked, service_register AS service_type,
-            service_activate AS is_activated
+            service_activate AS is_activated, service_notifications_enabled
             FROM `:db`.service
             WHERE service_id = :service_id'
         );

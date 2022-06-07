@@ -296,12 +296,8 @@
         <td class="ListColRight">
             <xsl:if test="svc_index &gt; 0">
                 <xsl:element name="a">
-                    <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>                   
-                        <xsl:element name="img">
-                            <xsl:attribute name="id"><xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
-                            <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
-                            <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-                        </xsl:element>                  
+                    <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>
+                        <xsl:value-of select="chartIcon" disable-output-escaping="yes"/>
                 </xsl:element>
             </xsl:if>
         </td>
@@ -309,7 +305,6 @@
             <xsl:element name="span">
                 <xsl:attribute name="style">
                     <xsl:if test="ssc = 3">
-                        color: #818285;
                         font-weight: normal;
                     </xsl:if>
                 </xsl:attribute>

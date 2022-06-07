@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useFormikContext, FormikValues } from 'formik';
@@ -15,15 +15,17 @@ const Text = ({
   fieldName,
   type,
   required,
+  getDisabled,
+  getRequired,
 }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const { values, setFieldValue, touched, errors, handleBlur } =
     useFormikContext<FormikValues>();
 
-  const change = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const change = (event: ChangeEvent<HTMLInputElement>): void => {
     setFieldValue(fieldName, event.target.value);
   };
 
@@ -35,7 +37,7 @@ const Text = ({
 
   const error = prop(fieldName, touched) ? prop(fieldName, errors) : undefined;
 
-  const passwordEndAdornment = React.useCallback(
+  const passwordEndAdornment = useCallback(
     (): JSX.Element | null =>
       equals(type, InputType.Password) ? (
         <PasswordEndAdornment
@@ -49,21 +51,26 @@ const Text = ({
   const inputType =
     equals(type, InputType.Password) && not(isVisible) ? 'password' : 'text';
 
+  const disabled = getDisabled?.(values) || false;
+  const isRequired = required || getRequired?.(values) || false;
+
   return useMemoComponent({
     Component: (
       <TextField
+        fullWidth
         EndAdornment={passwordEndAdornment}
         ariaLabel={t(label)}
+        disabled={disabled}
         error={error as string | undefined}
         label={t(label)}
-        required={required}
+        required={isRequired}
         type={inputType}
         value={value || ''}
         onBlur={handleBlur(fieldName)}
         onChange={change}
       />
     ),
-    memoProps: [error, value, isVisible],
+    memoProps: [error, value, isVisible, disabled, isRequired],
   });
 };
 

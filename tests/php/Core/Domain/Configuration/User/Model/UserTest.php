@@ -51,6 +51,7 @@ class UserTest extends TestCase
             'name',
             'email',
             false,
+            'light'
         );
     }
 
@@ -77,6 +78,7 @@ class UserTest extends TestCase
             'name',
             'email',
             false,
+            'light'
         );
     }
 
@@ -103,6 +105,7 @@ class UserTest extends TestCase
             $name,
             'email',
             false,
+            'light'
         );
     }
 
@@ -129,6 +132,7 @@ class UserTest extends TestCase
             $name,
             'email',
             false,
+            'light'
         );
     }
 
@@ -155,6 +159,7 @@ class UserTest extends TestCase
             'name',
             $email,
             false,
+            'light'
         );
     }
 
@@ -181,6 +186,7 @@ class UserTest extends TestCase
             'name',
             $email,
             false,
+            'light'
         );
     }
 
@@ -201,6 +207,7 @@ class UserTest extends TestCase
             $name,
             $email,
             $isAdmin,
+            'light'
         );
 
         $this->assertEquals($id, $user->getId());

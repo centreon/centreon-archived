@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MouseEvent, MutableRefObject, useState } from 'react';
 
 import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
-  performanceGraphRef: React.MutableRefObject<HTMLDivElement | null>;
+  performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   resourceName: string;
   resourceParentName?: string;
   timeline?: Array<TimelineEvent>;
@@ -57,12 +57,12 @@ const GraphActions = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const [exporting, setExporting] = React.useState<boolean>(false);
+  const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
+  const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
 
-  const openSizeExportMenu = (event: React.MouseEvent): void => {
+  const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
   const closeSizeExportMenu = (): void => {

@@ -219,8 +219,7 @@ function updateVirtualMetricInDB($vmetric_id = null)
 
 function insertVirtualMetricInDB()
 {
-    $vmetric_id = insertVirtualMetric();
-    return ($vmetric_id);
+    return insertVirtualMetric();
 }
 
 /**
@@ -229,133 +228,232 @@ function insertVirtualMetricInDB()
  * @global HTML_QuickFormCustom $form
  * @global CentreonDB $pearDB
  * @global CentreonDB $pearDBO
- * @global Centreon $centreon
  * @return int New virtual metric id
  */
 function insertVirtualMetric()
 {
-    global $form, $pearDB, $pearDBO, $centreon;
-    $h_id = null;
-    $s_id = null;
-    $ret = array();
+    global $form, $pearDB, $pearDBO;
+
     $ret = $form->getSubmitValues();
 
-    $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, " .
-        "`unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
-    $rq .= "VALUES ( NULL, ";
+    $indexId = isset($ret["host_id"])
+        ? getIndexIdFromHostServiceId($pearDBO, $ret["host_id"])
+        : null;
 
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
-        # Get index_id
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
-        
-        $prepare = $pearDBO->prepare(
-            "SELECT id FROM index_data "
-            . "WHERE host_id = :host_id "
-            . "AND service_id = :service_id "
-        );
-        $prepare->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
-        $prepare->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
-        $prepare->execute();
-        
-        $result = $prepare->fetch(\PDO::FETCH_ASSOC);
-        if (isset($result['id'])) {
-            $rq .= "'" . $result['id'] . "', ";
-        } else {
-            $rq .= "NULL, ";
-        }
-    } else {
-        $rq .= "NULL, ";
-    }
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
-        ? $rq .= "'" . htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'" . $ret["def_type"] . "', " : $rq .= "NULL, ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null
-        ? $rq .= "'" . $ret["rpn_function"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'" . $ret["unit_name"] . "', " : $rq .= "NULL, ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'" . $ret["warn"] . "', " : $rq .= "NULL, ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'" . $ret["crit"] . "', " : $rq .= "NULL, ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'" . $ret["vhidden"] . "', " : $rq .= "NULL, ";
-    isset($ret["comment"]) && $ret["comment"] != null
-        ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "NULL, NULL";
-    $rq .= ")";
-    if ($centreon->optGen["debug_rrdtool"] == "1") {
-        $debug_path = realpath($centreon->optGen["debug_path"]);
-        error_log("[" . date("d/m/Y H:s") . "] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
-    }
-    $dbResult = $pearDB->query($rq);
+    $insertStatement = $pearDB->prepare(
+        'INSERT INTO `virtual_metrics`
+          (`index_id`, `vmetric_name`, `def_type` , `rpn_function`,
+          `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`)
+        VALUES
+          (:index_id, :vmetric_name, :def_type, :rpn_function,
+          :unit_name , :warn, :crit, :hidden, :comment, NULL, NULL)'
+    );
+
+    $insertStatement->bindValue(
+        ':index_id',
+        $indexId,
+        \PDO::PARAM_INT
+    );
+
+    $insertStatement->bindValue(
+        ':vmetric_name',
+        isset($ret["vmetric_name"])
+            ? htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")
+            : null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->bindValue(
+        ':def_type',
+        $ret['def_type'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->bindValue(
+        ':rpn_function',
+        $ret['rpn_function'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->bindValue(
+        ':unit_name',
+        $ret['unit_name'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->bindValue(
+        ':warn',
+        array_key_exists('warn', $ret) && is_numeric($ret['warn']) ? $ret['warn'] : null,
+        \PDO::PARAM_INT
+    );
+
+    $insertStatement->bindValue(
+        ':crit',
+        array_key_exists('crit', $ret) && is_numeric($ret['crit']) ? $ret['crit'] : null,
+        \PDO::PARAM_INT
+    );
+
+    $insertStatement->bindValue(
+        ':hidden',
+        $ret['vhidden'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->bindValue(
+        ':comment',
+        isset($ret["comment"])
+            ? htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")
+            : null,
+        \PDO::PARAM_STR
+    );
+
+    $insertStatement->execute();
+
     $dbResult = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
-    $vmetric_id = $dbResult->fetch();
-    $vmetric_id = $vmetric_id["MAX(vmetric_id)"];
-    return $vmetric_id;
+    $vmetricId = $dbResult->fetch();
+
+    return $vmetricId["MAX(vmetric_id)"];
 }
 
-function updateVirtualMetric($vmetric_id = null)
+/**
+ * Update a virtual metric
+ *
+ * @params int|null $vmetricId
+ * @global HTML_QuickFormCustom $form
+ * @global CentreonDB $pearDB
+ * @global CentreonDB $pearDBO
+ */
+function updateVirtualMetric($vmetricId = null)
 {
-    if (!$vmetric_id) {
+    if ($vmetricId === null) {
         return;
     }
-    global $form, $pearDB, $pearDBO;
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    $rq = "UPDATE virtual_metrics ";
-    $rq .= "SET `index_id` = ";
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
-        # Get index_id
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
-        
-        $prepare = $pearDBO->prepare(
-            "SELECT id FROM index_data "
-            . "WHERE host_id = :host_id "
-            . "AND service_id = :service_id"
-        );
-        $prepare->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
-        $prepare->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
-        $prepare->execute();
-        
-        $result = $prepare->fetch(\PDO::FETCH_ASSOC);
-        if (isset($result['id'])) {
-            $rq .= "'" . $result['id'] . "', ";
-        } else {
-            $rq .= "NULL, ";
-        }
-    } else {
-        $rq .= "NULL, ";
-    }
-    $rq .= "vmetric_name = ";
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
-        ? $rq .= "'" . htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "def_type = ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'" . $ret["def_type"] . "', " : $rq .= "NULL, ";
-    $rq .= "rpn_function = ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null
-        ? $rq .= "'" . $ret["rpn_function"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "unit_name = ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'" . $ret["unit_name"] . "', " : $rq .= "NULL, ";
-    $rq .= "warn = ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'" . $ret["warn"] . "', " : $rq .= "NULL, ";
-    $rq .= "crit = ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'" . $ret["crit"] . "', " : $rq .= "NULL, ";
-    $rq .= "hidden = ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null
-        ? $rq .= "'" . $ret["vhidden"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "comment = ";
-    isset($ret["comment"]) && $ret["comment"] != null
-        ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "vmetric_activate = NULL, ck_state = NULL ";
-    $rq .= "WHERE vmetric_id = '" . $vmetric_id . "'";
-    $dbResult = $pearDB->query($rq);
 
-    if (!enableVirtualMetricInDB($vmetric_id)) {
-        disableVirtualMetricInDB($vmetric_id, 1);
+    global $form, $pearDB, $pearDBO;
+
+    $ret = $form->getSubmitValues();
+
+    $indexId = isset($ret["host_id"])
+        ? getIndexIdFromHostServiceId($pearDBO, $ret["host_id"])
+        : null;
+
+    $updateStatement = $pearDB->prepare(
+        'UPDATE `virtual_metrics` SET
+          `index_id` = :index_id,
+          `vmetric_name` = :vmetric_name,
+          `def_type` = :def_type,
+          `rpn_function` = :rpn_function,
+          `unit_name` = :unit_name,
+          `warn` = :warn,
+          `crit` = :crit,
+          `hidden` = :hidden,
+          `comment` = :comment,
+          `vmetric_activate` = NULL,
+          `ck_state` = NULL
+        WHERE vmetric_id = :vmetric_id'
+    );
+
+    $updateStatement->bindValue(
+        ':index_id',
+        $indexId,
+        \PDO::PARAM_INT
+    );
+
+    $updateStatement->bindValue(
+        ':vmetric_name',
+        isset($ret["vmetric_name"])
+            ? htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")
+            : null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':def_type',
+        $ret['def_type'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':rpn_function',
+        $ret['rpn_function'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':unit_name',
+        $ret['unit_name'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':warn',
+        array_key_exists('warn', $ret) && is_numeric($ret['warn']) ? $ret['warn'] : null,
+        \PDO::PARAM_INT
+    );
+
+    $updateStatement->bindValue(
+        ':crit',
+        array_key_exists('crit', $ret) && is_numeric($ret['crit']) ? $ret['crit'] : null,
+        \PDO::PARAM_INT
+    );
+
+    $updateStatement->bindValue(
+        ':hidden',
+        $ret['vhidden'] ?? null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':comment',
+        isset($ret["comment"])
+            ? htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")
+            : null,
+        \PDO::PARAM_STR
+    );
+
+    $updateStatement->bindValue(
+        ':vmetric_id',
+        $vmetricId,
+        \PDO::PARAM_INT
+    );
+
+    $updateStatement->execute();
+
+    if (!enableVirtualMetricInDB($vmetricId)) {
+        disableVirtualMetricInDB($vmetricId, 1);
     }
+}
+
+/**
+ * get index id from host and service id
+ *
+ * @param \CentreonDB $dbMonitoring
+ * @param string $hostServiceId
+ * @return int|null
+ */
+function getIndexIdFromHostServiceId(\CentreonDB $dbMonitoring, string $hostServiceId): ?int
+{
+    $indexId = null;
+
+    if (preg_match('/\d+\-\d+/', $hostServiceId)) {
+        # Get index_id
+        list($hostId, $serviceId) = explode('-', $hostServiceId);
+
+        $prepare = $dbMonitoring->prepare(
+            "SELECT id FROM index_data
+            WHERE host_id = :host_id
+            AND service_id = :service_id"
+        );
+        $prepare->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $prepare->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+        $prepare->execute();
+
+        if ($result = $prepare->fetch(\PDO::FETCH_ASSOC)) {
+            $indexId = $result['id'];
+        }
+    }
+
+    return $indexId;
 }
 
 function disableVirtualMetricInDB($vmetric_id = null, $force = 0)

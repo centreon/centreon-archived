@@ -27,7 +27,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterfa
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 use Centreon\Domain\Macro\Interfaces\MacroInterface;
@@ -49,7 +49,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
@@ -64,13 +64,13 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ServiceConfigurationServiceInterface $serviceConfigurationService
      * @param HostConfigurationServiceInterface $hostConfigurationService
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         ServiceConfigurationServiceInterface $serviceConfigurationService,
         HostConfigurationServiceInterface $hostConfigurationService,
     ) {

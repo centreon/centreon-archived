@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   graphContainer: {
     display: 'grid',
     gridTemplateRows: '1fr',
+    height: '93%',
     padding: theme.spacing(2, 1, 1),
   },
 }));
@@ -55,7 +56,7 @@ const ExportablePerformanceGraphWithTimeline = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+  const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
@@ -73,7 +74,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const details = useAtomValue(detailsAtom);
   const adjustTimePeriod = useUpdateAtom(adjustTimePeriodDerivedAtom);
 
-  const graphContainerRef = React.useRef<HTMLElement | null>(null);
+  const graphContainerRef = useRef<HTMLElement | null>(null);
 
   const { setElement, isInViewport } = useIntersection();
 
@@ -120,7 +121,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNil(endpoint)) {
       return;
     }
@@ -128,11 +129,11 @@ const ExportablePerformanceGraphWithTimeline = ({
     retrieveTimeline();
   }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setElement(graphContainerRef.current);
   }, []);
 
-  const graphEndpoint = React.useMemo((): string | undefined => {
+  const graphEndpoint = useMemo((): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
     }
@@ -169,7 +170,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     <Paper className={classes.graphContainer}>
       <div
         className={classes.graph}
-        ref={graphContainerRef as React.MutableRefObject<HTMLDivElement>}
+        ref={graphContainerRef as MutableRefObject<HTMLDivElement>}
       >
         <PerformanceGraph
           toggableLegend

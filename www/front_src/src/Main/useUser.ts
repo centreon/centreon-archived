@@ -1,21 +1,16 @@
 import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { isNil, not, or, pathEq, propOr } from 'ramda';
+import { isNil } from 'ramda';
 
 import { User, userAtom } from '@centreon/ui-context';
 import { useRequest, getData } from '@centreon/ui';
 
 import { userDecoder } from '../api/decoders';
 import { userEndpoint } from '../api/endpoint';
-import { PlatformInstallationStatus } from '../api/models';
 
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
-const useUser = (
-  changeLanguage?: (locale: string) => void,
-): ((
-  webVersions: PlatformInstallationStatus | null,
-) => null | Promise<void>) => {
+const useUser = (): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
     httpCodesBypassErrorSnackbar: [403, 401, 500],
@@ -27,9 +22,7 @@ const useUser = (
   );
   const setUser = useUpdateAtom(userAtom);
 
-  const loadUser = (
-    webVersions: PlatformInstallationStatus | null,
-  ): null | Promise<void> => {
+  const loadUser = (): null | Promise<void> => {
     if (areUserParametersLoaded) {
       return null;
     }
@@ -47,6 +40,7 @@ const useUser = (
           isExportButtonEnabled,
           locale,
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
           default_page: defaultPage,
@@ -58,25 +52,13 @@ const useUser = (
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
+          themeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
-        changeLanguage?.((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
       })
-      .catch((error) => {
-        const isDbInitialized = propOr(false, 'isInstalled', webVersions);
-        const isUserAllowed = not(
-          or(
-            pathEq(['response', 'status'], 403)(error),
-            pathEq(['response', 'status'], 401)(error),
-          ),
-        );
-
-        if (isUserAllowed && isDbInitialized) {
-          return;
-        }
-
+      .catch(() => {
         setAreUserParametersLoaded(false);
       });
   };

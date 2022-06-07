@@ -28,7 +28,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
 {
@@ -87,7 +87,12 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'client_id' => $configuration->getClientId(),
             'client_secret' => $configuration->getClientSecret(),
             'authentication_type' => $configuration->getAuthenticationType(),
-            'verify_peer' => $configuration->verifyPeer()
+            'verify_peer' => $configuration->verifyPeer(),
+            'auto_import' => $configuration->isAutoImportEnabled(),
+            'contact_template_id' => $configuration->getContactTemplate()?->getId(),
+            'email_bind_attribute' => $configuration->getEmailBindAttribute(),
+            'alias_bind_attribute' => $configuration->getUserAliasBindAttribute(),
+            'fullname_bind_attribute' => $configuration->getUserNameBindAttribute(),
         ];
     }
 }

@@ -1,12 +1,15 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 
 import {
   always,
+  any,
   ascend,
   cond,
   equals,
+  filter,
   find,
   groupBy,
+  keys,
   last,
   not,
   pluck,
@@ -25,6 +28,7 @@ import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
+import ConnectedAutocomplete from './ConnectedAutocomplete';
 
 export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
@@ -35,13 +39,21 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
     always(MultipleInput),
   ],
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
+  [
+    equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
+    always(ConnectedAutocomplete),
+  ],
 ]);
 
 const useStyles = makeStyles((theme) => ({
+  additionalLabel: {
+    marginBottom: theme.spacing(0.5),
+  },
   category: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  inputWrapper: { width: '100%' },
   inputs: {
     display: 'flex',
     flexDirection: 'column',
@@ -61,7 +73,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
 
   const categoriesName = pluck('name', categories);
 
-  const inputsByCategory = React.useMemo(
+  const inputsByCategory = useMemo(
     () =>
       groupBy(
         ({ category }) => find(equals(category), categoriesName) as string,
@@ -70,13 +82,18 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const sortedCategoryNames = React.useMemo(() => {
+  const sortedCategoryNames = useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
-    return pluck('name', sortedCategories);
+    const usedCategories = filter(
+      ({ name }) => any(equals(name), keys(inputsByCategory)),
+      sortedCategories,
+    );
+
+    return pluck('name', usedCategories);
   }, []);
 
-  const sortedInputsByCategory = React.useMemo(
+  const sortedInputsByCategory = useMemo(
     () =>
       reduce<string, Record<string, Array<InputProps>>>(
         (acc, value) => ({
@@ -92,13 +109,13 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const lastCategory = React.useMemo(() => last(sortedCategoryNames), []);
+  const lastCategory = useMemo(() => last(sortedCategoryNames), []);
 
   return (
     <div>
       {toPairs(sortedInputsByCategory).map(([category, categorizedInputs]) => (
-        <>
-          <div className={classes.category} key={category}>
+        <div key={category}>
+          <div className={classes.category}>
             <Typography variant="h5">{t(category)}</Typography>
             <div className={classes.inputs}>
               {categorizedInputs.map(
@@ -110,6 +127,9 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   change,
                   getChecked,
                   required,
+                  getDisabled,
+                  getRequired,
+                  additionalLabel,
                 }) => {
                   const Input = getInput(type);
 
@@ -118,19 +138,33 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                     change,
                     fieldName,
                     getChecked,
+                    getDisabled,
+                    getRequired,
                     label,
                     options,
                     required,
                     type,
                   };
 
-                  return <Input key={label} {...props} />;
+                  return (
+                    <div className={classes.inputWrapper} key={label}>
+                      {additionalLabel && (
+                        <Typography
+                          className={classes.additionalLabel}
+                          variant="body1"
+                        >
+                          {t(additionalLabel)}
+                        </Typography>
+                      )}
+                      <Input {...props} />
+                    </div>
+                  );
                 },
               )}
             </div>
           </div>
           {not(equals(lastCategory, category)) && <Divider />}
-        </>
+        </div>
       ))}
     </div>
   );

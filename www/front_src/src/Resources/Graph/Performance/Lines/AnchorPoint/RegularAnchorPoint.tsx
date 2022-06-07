@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { memo } from 'react';
 
 import { equals, isNil, not, prop } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
@@ -71,7 +71,7 @@ const RegularAnchorPoint = ({
   );
 };
 
-export default React.memo(
+export default memo(
   RegularAnchorPoint,
   (prevProps, nextProps) =>
     equals(prevProps.timeTick, nextProps.timeTick) &&

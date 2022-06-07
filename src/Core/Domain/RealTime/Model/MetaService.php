@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
 
@@ -39,6 +38,12 @@ class MetaService
      * @var boolean
      */
     private $isAcknowledged = false;
+
+    /**
+     * @var bool
+     */
+    private $isNotificationEnabled = false;
+
     /**
      * @var int|null
      */
@@ -278,6 +283,25 @@ class MetaService
     public function setCommandLine(?string $commandLine): self
     {
         $this->commandLine = $commandLine;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->isNotificationEnabled;
+    }
+
+    /**
+     * @param bool $isNotificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $isNotificationEnabled): self
+    {
+        $this->isNotificationEnabled = $isNotificationEnabled;
+
         return $this;
     }
 

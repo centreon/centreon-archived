@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { map, find, equals, path } from 'ramda';
@@ -93,7 +93,7 @@ const EditFiltersPanel = (): JSX.Element => {
     customFilters,
   );
 
-  const RootComponent = React.useCallback(
+  const RootComponent = useCallback(
     ({ children }: RootComponentProps): JSX.Element => (
       <Stack spacing={2}>{children}</Stack>
     ),

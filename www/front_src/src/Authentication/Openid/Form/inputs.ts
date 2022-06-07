@@ -1,15 +1,22 @@
-import { equals } from 'ramda';
+import { equals, not, prop } from 'ramda';
+import { FormikValues } from 'formik';
 
 import {
+  labelAliasAttributeToBind,
+  labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactTemplate,
   labelDisableVerifyPeer,
+  labelEmailAttributeToBind,
+  labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
+  labelFullnameAttributeToBind,
   labelIntrospectionTokenEndpoint,
   labelLoginClaimValue,
   labelMixed,
@@ -24,9 +31,15 @@ import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
+  labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from '../../translatedLabels';
+
+const isAutoImportDisabled = (values: FormikValues): boolean =>
+  not(prop('autoImport', values));
+const isAutoImportEnabled = (values: FormikValues): boolean =>
+  prop('autoImport', values);
 
 export const inputs: Array<InputProps> = [
   {
@@ -88,22 +101,17 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'introspectionTokenEndpoint',
-    label: labelIntrospectionTokenEndpoint,
+    fieldName: 'clientId',
+    label: labelClientID,
     required: true,
     type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'userInformationEndpoint',
-    label: labelUserInformationEndpoint,
-    type: InputType.Text,
-  },
-  {
-    category: labelIdentityProvider,
-    fieldName: 'endSessionEndpoint',
-    label: labelEndSessionEndpoint,
-    type: InputType.Text,
+    fieldName: 'clientSecret',
+    label: labelClientSecret,
+    required: true,
+    type: InputType.Password,
   },
   {
     category: labelIdentityProvider,
@@ -119,17 +127,22 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'clientId',
-    label: labelClientID,
-    required: true,
+    fieldName: 'endSessionEndpoint',
+    label: labelEndSessionEndpoint,
+    type: InputType.Text,
+  },
+  {
+    additionalLabel: labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
+    category: labelIdentityProvider,
+    fieldName: 'introspectionTokenEndpoint',
+    label: labelIntrospectionTokenEndpoint,
     type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
-    fieldName: 'clientSecret',
-    label: labelClientSecret,
-    required: true,
-    type: InputType.Password,
+    fieldName: 'userinfoEndpoint',
+    label: labelUserInformationEndpoint,
+    type: InputType.Text,
   },
   {
     category: labelIdentityProvider,
@@ -137,12 +150,12 @@ export const inputs: Array<InputProps> = [
       setFieldValue(
         'authenticationType',
         value
-          ? AuthenticationType.ClientSecretPost
-          : AuthenticationType.ClientSecretBasic,
+          ? AuthenticationType.ClientSecretBasic
+          : AuthenticationType.ClientSecretPost,
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value) => equals(AuthenticationType.ClientSecretPost, value),
+    getChecked: (value) => equals(AuthenticationType.ClientSecretBasic, value),
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },
@@ -151,5 +164,43 @@ export const inputs: Array<InputProps> = [
     fieldName: 'verifyPeer',
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'autoImport',
+    label: labelEnableAutoImport,
+    type: InputType.Switch,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'contactTemplate',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelContactTemplate,
+    type: InputType.ConnectedAutocomplete,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'emailBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelEmailAttributeToBind,
+    type: InputType.Text,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'aliasBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelAliasAttributeToBind,
+    type: InputType.Text,
+  },
+  {
+    category: labelAutoImport,
+    fieldName: 'fullnameBindAttribute',
+    getDisabled: isAutoImportDisabled,
+    getRequired: isAutoImportEnabled,
+    label: labelFullnameAttributeToBind,
+    type: InputType.Text,
   },
 ];

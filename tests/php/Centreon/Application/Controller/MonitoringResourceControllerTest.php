@@ -41,6 +41,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\ServerBag;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MonitoringResourceControllerTest extends TestCase
 {
@@ -60,7 +62,7 @@ class MonitoringResourceControllerTest extends TestCase
     protected $resourceService;
 
     /**
-     * @var UrlGeneratorInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlGenerator;
 
@@ -124,8 +126,12 @@ class MonitoringResourceControllerTest extends TestCase
             ->setStatus($resourceStatus);
 
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
-        $router = $kernel->getContainer()->get('router');
-        $this->urlGenerator = $kernel->getContainer()->get('router')->getRouter()->getGenerator();
+        $this->urlGenerator = $kernel->getContainer()->get('router');
+        $this->request = $this->createMock(Request::class);
+        $this->request->server = new ServerBag([]);
+        $requestStack = new RequestStack();
+        $requestStack->push($this->request);
+        $this->urlGenerator->setHttpServerBag($requestStack);
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -157,7 +163,6 @@ class MonitoringResourceControllerTest extends TestCase
             );
 
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
-        $this->request = $this->createMock(Request::class);
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
     }
@@ -223,19 +228,19 @@ class MonitoringResourceControllerTest extends TestCase
         $this->assertEquals($resource->getLinks()->getUris()->getReporting(), '/main.php?p=307&host=1');
 
         $this->assertEquals(
+            '/api/latest/monitoring/resources/hosts/1',
             $resource->getLinks()->getEndpoints()->getDetails(),
-            '/centreon/api/v21.10/monitoring/resources/hosts/1'
         );
         $this->assertEquals(
+            '/api/latest/monitoring/hosts/1/timeline',
             $resource->getLinks()->getEndpoints()->getTimeline(),
-            '/centreon/api/v21.10/monitoring/hosts/1/timeline'
         );
         $this->assertEquals(
+            '/api/latest/monitoring/hosts/1/acknowledgements?limit=1',
             $resource->getLinks()->getEndpoints()->getAcknowledgement(),
-            '/centreon/api/v21.10/monitoring/hosts/1/acknowledgements?limit=1'
         );
         $this->assertMatchesRegularExpression(
-            '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
+            '#/api/latest/monitoring/hosts/1/downtimes\?'
                 . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
                 . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
             urldecode($resource->getLinks()->getEndpoints()->getDowntime() ?? '')

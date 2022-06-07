@@ -314,6 +314,22 @@ class EngineService extends AbstractCentreonService implements
     /**
      * @inheritDoc
      */
+    public function findCentralEngineConfiguration(): ?EngineConfiguration
+    {
+        try {
+            return $this->engineConfigurationRepository->findCentralEngineConfiguration();
+        } catch (\Throwable $ex) {
+            throw new EngineException(
+                _('Error when searching for the central engine configuration'),
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findEngineConfigurationByHost(\Centreon\Domain\HostConfiguration\Host $host): ?EngineConfiguration
     {
         if ($host->getId() === null) {
@@ -344,6 +360,30 @@ class EngineService extends AbstractCentreonService implements
                 $ex
             );
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function scheduleImmediateForcedServiceCheck(Service $service): void
+    {
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException(_('Host name cannot be empty'));
+        }
+
+        if (empty($service->getDescription())) {
+            throw new EngineException(_('Service description cannot be empty'));
+        }
+
+        $command = sprintf(
+            'SCHEDULE_FORCED_SVC_CHECK;%s;%s;%d',
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            (new \DateTime())->getTimestamp()
+        );
+
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
     }
 
     /**

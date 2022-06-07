@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 import { equals, isNil, identity, min, max, not, lt, gte } from 'ramda';
 import {
@@ -80,12 +80,12 @@ import {
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
-const MemoizedAxes = React.memo(Axes, propsAreEqual);
-const MemoizedBar = React.memo(Shape.Bar, propsAreEqual);
-const MemoizedGridColumns = React.memo(Grid.GridColumns, propsAreEqual);
-const MemoizedGridRows = React.memo(Grid.GridRows, propsAreEqual);
-const MemoizedLines = React.memo(Lines, propsAreEqual);
-const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
+const MemoizedAxes = memo(Axes, propsAreEqual);
+const MemoizedBar = memo(Shape.Bar, propsAreEqual);
+const MemoizedGridColumns = memo(Grid.GridColumns, propsAreEqual);
+const MemoizedGridRows = memo(Grid.GridRows, propsAreEqual);
+const MemoizedLines = memo(Lines, propsAreEqual);
+const MemoizedAnnotations = memo(Annotations, propsAreEqual);
 
 const margin = { bottom: 30, left: 45, right: 45, top: 30 };
 
@@ -116,6 +116,34 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
     position: 'absolute',
   },
   container: {
+    '& .visx-axis-bottom': {
+      '& .visx-axis-tick': {
+        '& .visx-line': {
+          stroke: theme.palette.text.primary,
+        },
+      },
+    },
+    '& .visx-axis-line': {
+      stroke: theme.palette.text.primary,
+    },
+    '& .visx-axis-right': {
+      '& .visx-axis-tick': {
+        '& .visx-line': {
+          stroke: theme.palette.text.primary,
+        },
+      },
+    },
+    '& .visx-columns': {
+      '& .visx-line': {
+        stroke: theme.palette.divider,
+      },
+    },
+    '& .visx-rows': {
+      '& .visx-line': {
+        stroke: theme.palette.divider,
+      },
+    },
+    fill: theme.palette.text.primary,
     position: 'relative',
   },
   graphLoader: {
@@ -215,14 +243,15 @@ const GraphContent = ({
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
 
-  const [addingComment, setAddingComment] = React.useState(false);
-  const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
-    number | null
-  >(null);
-  const [zoomBoundaries, setZoomBoundaries] =
-    React.useState<ZoomBoundaries | null>(null);
-  const graphSvgRef = React.useRef<SVGSVGElement | null>(null);
+  const [addingComment, setAddingComment] = useState(false);
+  const [commentDate, setCommentDate] = useState<Date>();
+  const [zoomPivotPosition, setZoomPivotPosition] = useState<number | null>(
+    null,
+  );
+  const [zoomBoundaries, setZoomBoundaries] = useState<ZoomBoundaries | null>(
+    null,
+  );
+  const graphSvgRef = useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
   const mousePosition = useAtomValue(mousePositionAtom);
   const changeMousePositionAndTimeValue = useUpdateAtom(
@@ -239,13 +268,15 @@ const GraphContent = ({
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
-  const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
+  const hideAddCommentTooltipOnEspcapePress = (
+    event: globalThis.KeyboardEvent,
+  ): void => {
     if (event.key === 'Escape') {
       hideAddCommentTooltip();
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener(
       'keydown',
       hideAddCommentTooltipOnEspcapePress,
@@ -261,7 +292,7 @@ const GraphContent = ({
     };
   }, []);
 
-  const xScale = React.useMemo(
+  const xScale = useMemo(
     () =>
       Scale.scaleTime<number>({
         domain: [
@@ -275,7 +306,7 @@ const GraphContent = ({
 
   const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
-  const leftScale = React.useMemo(() => {
+  const leftScale = useMemo(() => {
     const values = isNil(thirdUnit)
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
@@ -295,7 +326,7 @@ const GraphContent = ({
     return getScale({ height: graphHeight, stackedValues, values });
   }, [timeSeries, lines, firstUnit, graphHeight]);
 
-  const rightScale = React.useMemo(() => {
+  const rightScale = useMemo(() => {
     const values = getMetricValuesForUnit({
       lines,
       timeSeries,
@@ -337,7 +368,7 @@ const GraphContent = ({
     changeMousePositionAndTimeValue({ position, timeValue });
   };
 
-  const displayTooltip = (event: React.MouseEvent): void => {
+  const displayTooltip = (event: MouseEvent<SVGRectElement>): void => {
     const { x, y } = Event.localPoint(
       graphSvgRef.current as SVGSVGElement,
       event,
@@ -477,13 +508,11 @@ const GraphContent = ({
             <MemoizedGridRows
               height={graphHeight}
               scale={rightScale || leftScale}
-              stroke={grey[100]}
               width={graphWidth}
             />
             <MemoizedGridColumns
               height={graphHeight}
               scale={xScale}
-              stroke={grey[100]}
               width={graphWidth}
             />
             <MemoizedAxes
@@ -560,7 +589,7 @@ const GraphContent = ({
             />
           </Group.Group>
           <TimeShiftContext.Provider
-            value={React.useMemo(
+            value={useMemo(
               () => ({
                 canAdjustTimePeriod,
                 graphHeight,

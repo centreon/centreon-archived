@@ -1,6 +1,6 @@
 <div id="{$cloneId}_controls">
     <div id="{$cloneId}_add">
-        <p style="cursor:pointer; color: #4ccaff;">
+        <p class="add-new-entry">
             {assign var=isFrozen value=0}
             {foreach from=$cloneSet item=v}
                 {if $v->isFrozen()}

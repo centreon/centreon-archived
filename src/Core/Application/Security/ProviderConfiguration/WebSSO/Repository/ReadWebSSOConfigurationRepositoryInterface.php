@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\WebSSO\Repository;
 
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 
 interface ReadWebSSOConfigurationRepositoryInterface
 {

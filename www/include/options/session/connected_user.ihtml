@@ -28,10 +28,14 @@
 			<tr class="{$sd.class}">
 				<td class="ListColLeft">
 					{if $sd.admin == 1}
-						<img src='./img/icons/admin.png' class="ico-18">
+                    <span class="ico-18">
+                        {$adminIcon}
+                    </span>
 					{else}
-						<img src='./img/icons/user.png' class="ico-18">
-					{/if}&nbsp;&nbsp;
+                    <span class="ico-18">
+                        {$userIcon}
+                    </span>
+					{/if}&nbsp;
 						<a href='./main.php?p=60301&o=w&contact_id={$sd.user_id}'>{$sd.user_alias}</a>
 				</td>
 				<td class="ListColCenter">{$sd.ip_address}</td>

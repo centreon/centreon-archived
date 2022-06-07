@@ -1,8 +1,9 @@
-import * as React from 'react';
+import { lazy, useState, Suspense, useRef, useEffect } from 'react';
 
 import { equals, isNil, path } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
+import { Box } from '@mui/material';
 
 import { ServerType, WizardFormProps } from '../../PollerWizard/models';
 import BaseWizard from '../../PollerWizard/forms/baseWizard';
@@ -16,21 +17,21 @@ import {
   labelSelectServerType,
 } from './translatedLabels';
 
-const ServerConfigurationWizard = React.lazy(
+const ServerConfigurationWizard = lazy(
   () => import('../../PollerWizard/serverConfigurationWizard'),
 );
-const RemoteServerStep1 = React.lazy(
+const RemoteServerStep1 = lazy(
   () => import('../../PollerWizard/remoteServerStep1'),
 );
-const PollerStep1 = React.lazy(() => import('../../PollerWizard/pollerStep1'));
-const RemoteServerStep2 = React.lazy(
+const PollerStep1 = lazy(() => import('../../PollerWizard/pollerStep1'));
+const RemoteServerStep2 = lazy(
   () => import('../../PollerWizard/remoteServerStep2'),
 );
-const PollerStep2 = React.lazy(() => import('../../PollerWizard/pollerStep2'));
-const RemoteServerStep3 = React.lazy(
+const PollerStep2 = lazy(() => import('../../PollerWizard/pollerStep2'));
+const RemoteServerStep3 = lazy(
   () => import('../../PollerWizard/remoteServerStep3'),
 );
-const PollerStep3 = React.lazy(() => import('../../PollerWizard/pollerStep3'));
+const PollerStep3 = lazy(() => import('../../PollerWizard/pollerStep3'));
 
 const formSteps = [
   { [ServerType.Base]: ServerConfigurationWizard },
@@ -47,7 +48,7 @@ const steps = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  formContainer: {
+  wrapper: {
     margin: theme.spacing(2, 4),
   },
 }));
@@ -55,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
 const PollerWizard = (): JSX.Element | null => {
   const classes = useStyles();
 
-  const [currentStep, setCurrentStep] = React.useState(0);
-  const [serverType, setServerType] = React.useState<ServerType>(
-    ServerType.Base,
-  );
+  const [currentStep, setCurrentStep] = useState(0);
+  const [serverType, setServerType] = useState<ServerType>(ServerType.Base);
+  const [listingHeight, setListingHeight] = useState(window.innerHeight);
+  const listingRef = useRef<HTMLDivElement | null>(null);
 
   const goToNextStep = (): void => {
     setCurrentStep((step) => step + 1);
@@ -72,6 +73,18 @@ const PollerWizard = (): JSX.Element | null => {
     setServerType(type);
   };
 
+  const resize = (): void => {
+    setListingHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   const Form = path<(props: WizardFormProps) => JSX.Element>(
     [currentStep, equals(currentStep, 0) ? ServerType.Base : serverType],
     formSteps,
@@ -81,18 +94,29 @@ const PollerWizard = (): JSX.Element | null => {
     return null;
   }
 
+  const listingContainerHeight =
+    listingHeight - (listingRef.current?.getBoundingClientRect().top || 0);
+
   return (
     <BaseWizard>
       <ProgressBar activeStep={currentStep} steps={steps} />
-      <div className={classes.formContainer}>
-        <React.Suspense fallback={<LoadingSkeleton />}>
-          <Form
-            changeServerType={changeServerType}
-            goToNextStep={goToNextStep}
-            goToPreviousStep={goToPreviousStep}
-          />
-        </React.Suspense>
-      </div>
+      <Box
+        ref={listingRef}
+        sx={{
+          maxHeight: listingContainerHeight,
+          overflowY: 'auto',
+        }}
+      >
+        <div className={classes.wrapper}>
+          <Suspense fallback={<LoadingSkeleton />}>
+            <Form
+              changeServerType={changeServerType}
+              goToNextStep={goToNextStep}
+              goToPreviousStep={goToPreviousStep}
+            />
+          </Suspense>
+        </div>
+      </Box>
     </BaseWizard>
   );
 };

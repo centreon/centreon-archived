@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
@@ -49,7 +49,7 @@ const ResetPassword = (): JSX.Element | null => {
 
   const { submitResetPassword, validationSchema } = useResetPassword();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       not(isNil(passwordResetInformations)) &&
       passwordResetInformations?.alias

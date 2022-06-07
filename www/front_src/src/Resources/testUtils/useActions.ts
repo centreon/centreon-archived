@@ -1,13 +1,11 @@
-import * as React from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 import { useAtom } from 'jotai';
 
 import { Resource } from '../models';
 import { selectedResourcesAtom } from '../Actions/actionsAtoms';
 
-type SetResourcesDispatch = React.Dispatch<
-  React.SetStateAction<Array<Resource>>
->;
+type SetResourcesDispatch = Dispatch<SetStateAction<Array<Resource>>>;
 
 export interface ActionsState {
   selectedResources: Array<Resource>;

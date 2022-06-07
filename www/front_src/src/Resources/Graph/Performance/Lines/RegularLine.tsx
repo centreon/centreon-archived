@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { memo } from 'react';
 
 import { Shape, Curve } from '@visx/visx';
 import { equals, isNil, prop } from 'ramda';
@@ -64,7 +64,7 @@ const RegularLine = ({
   return <Shape.LinePath<TimeValue> {...props} />;
 };
 
-export default React.memo(RegularLine, (prevProps, nextProps) => {
+export default memo(RegularLine, (prevProps, nextProps) => {
   const {
     timeSeries: prevTimeSeries,
     graphHeight: prevGraphHeight,

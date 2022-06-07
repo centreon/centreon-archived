@@ -4588,23 +4588,6 @@ msgstr ""
 "Para alterar essa opção quando a retenção de estado estiver ativa (e use_retained_program_state estiver ativa), será necessário usar o comando externo apropriado ou alterá-lo por meio da interface da web. \n"
 "A opção está ativada por padrão."
 
-#: centreon-web/www/include/configuration/configNagios/help.php:179
-msgid ""
-"This is the rotation method that you would like Monitoring Engine to use for"
-" your log file."
-msgstr ""
-"O método de rotação que você deseja que o mecanismo de gerenciamento use "
-"para seus arquivos de log."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:183
-msgid ""
-"This is the directory where Monitoring Engine should place log files that "
-"have been rotated. This option is ignored if you choose to not use the log "
-"rotation functionality."
-msgstr ""
-"Esse é o diretório em que o mecanismo de gerenciamento deve salvar os arquivos de log que foram girados. \n"
-"Esta opção é ignorada se você não ativou a rotação de log."
-
 #: centreon-web/www/include/configuration/configNagios/help.php:188
 msgid ""
 "This option determines whether or not Monitoring Engine will check the "
@@ -5829,16 +5812,6 @@ msgstr ""
 "Esta opção determina o tamanho máximo (em bytes) do arquivo de depuração.Se o arquivo exceder o tamanho especificado, ele será renomeado com uma extensão .old. \n"
 "Se o arquivo .old já existir, ele será automaticamente excluído. \n"
 "Essa opção permite manter um controle sobre o espaço em disco que o mecanismo de gerenciamento executa quando está no modo de depuração."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:886
-msgid ""
-"This option allows dumping core in case a segmentation fault occurs. "
-"Warning: Make sure that server has sufficient disk space for these dumps "
-"(ulimit). This option is discarded when using Centreon Engine."
-msgstr ""
-"Esta opção permite a criação de um arquivo de depuração se ocorrer um erro de segmentação. \n"
-"Aviso: Certifique-se de que o servidor tenha espaço em disco suficiente para esses arquivos (ulimit). \n"
-"Essa opção não pode ser usada com o planejador do Centreon Engine."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:891
 msgid ""

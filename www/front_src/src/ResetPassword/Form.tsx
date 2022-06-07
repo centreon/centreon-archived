@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, Fragment } from 'react';
 
 import {
   FormikErrors,
@@ -78,7 +78,7 @@ const Form = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [passwordVisibility, setPasswordVisibility] = React.useState({
+  const [passwordVisibility, setPasswordVisibility] = useState({
     [newPasswordConfirmationFieldName]: false,
     [newPasswordFieldName]: false,
     [oldPasswordFieldName]: false,
@@ -115,7 +115,7 @@ const Form = (): JSX.Element => {
         );
 
         return (
-          <React.Fragment key={name}>
+          <Fragment key={name}>
             <TextField
               fullWidth
               required
@@ -130,7 +130,7 @@ const Form = (): JSX.Element => {
               onChange={handleChange(name)}
             />
             {equals(name, oldPasswordFieldName) && <Divider />}
-          </React.Fragment>
+          </Fragment>
         );
       })}
 

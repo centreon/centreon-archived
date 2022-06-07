@@ -18,9 +18,15 @@
 				{if $date_start != 0}
 				&nbsp;&nbsp;&nbsp;{$period_name} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end}</span>
 				{/if}
-				<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
+                <div class="md-radio-modified md-radio-inline">
+                    <input type="radio" id="preset" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
+                    <label for="preset"></label>
+                </div>
 					{$periodTitle} : {$formPeriod.period.html}{$periodORlabel}
-				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+                <div class="md-radio-modified md-radio-inline">
+                    <input type="radio" id="custom" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+                    <label for="custom"></label>
+                </div>
 					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
 					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}

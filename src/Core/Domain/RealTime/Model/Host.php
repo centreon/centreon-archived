@@ -64,6 +64,11 @@ class Host
     private $isFlapping = false;
 
     /**
+     * @var bool
+     */
+    private $isNotificationEnabled = false;
+
+    /**
      * @var int|null
      */
     private $notificationNumber;
@@ -358,6 +363,25 @@ class Host
     public function setCommandLine(?string $commandLine): self
     {
         $this->commandLine = $commandLine;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->isNotificationEnabled;
+    }
+
+    /**
+     * @param bool $isNotificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $isNotificationEnabled): self
+    {
+        $this->isNotificationEnabled = $isNotificationEnabled;
+
         return $this;
     }
 

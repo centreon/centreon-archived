@@ -271,7 +271,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             if (isset($fieldList['state_type'])) {
                 $fields["s.state_type"] = 'state_type';
             }
-            if (isset($fieldList['id'])) {
+            if (isset($fieldList['service_id'])) {
                 $fields["s.service_id"] = 'service_id';
             }
             if (isset($fieldList['output'])) {

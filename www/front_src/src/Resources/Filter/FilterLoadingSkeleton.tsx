@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Skeleton } from '@mui/material';
 
 const FilterLoadingSkeleton = (): JSX.Element => {

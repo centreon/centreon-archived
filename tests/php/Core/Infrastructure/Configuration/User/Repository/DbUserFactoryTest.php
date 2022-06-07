@@ -24,15 +24,14 @@ declare(strict_types=1);
 namespace Tests\Core\Infrastructure\Configuration\User\Repository;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\Configuration\User\Model\User;
 use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 
 class DbUserFactoryTest extends TestCase
 {
     /**
-     * @var array<string, mixed>
+     * @var array<string, string>
      */
-    private $userRecord;
+    private array $userRecord;
 
     public function setUp(): void
     {
@@ -42,6 +41,7 @@ class DbUserFactoryTest extends TestCase
             'contact_name' => 'name',
             'contact_email' => 'root@localhost',
             'contact_admin' => '1',
+            'contact_theme' => 'light',
         ];
     }
 
@@ -57,5 +57,6 @@ class DbUserFactoryTest extends TestCase
         $this->assertEquals(('name'), $user->getName());
         $this->assertEquals('root@localhost', $user->getEmail());
         $this->assertEquals(true, $user->isAdmin());
+        $this->assertEquals('light', $user->getTheme());
     }
 }

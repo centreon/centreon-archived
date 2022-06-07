@@ -92,8 +92,8 @@
         <tr class="list_one">
             <td class="FormRowField"><img class="helpTooltip" name="macro"> {$custom_macro_label} <br>
                 <div class="macro_legend">
-                    <p><span class="state_badge" style="background-color: #ffcb6b;"></span>{$template_inheritance}</p>
-                    <p><span class="state_badge" style="background-color: #b6fca7;"></span>{$command_inheritance}</p>
+                    <p><span class="state_badge" style="background-color: var(--custom-macros-template-background-color);"></span>{$template_inheritance}</p>
+                    <p><span class="state_badge" style="background-color: var(--custom-macros-command-background-color);"></span>{$command_inheritance}</p>
                 </div>
             </td>
             <td class="FormRowValue">
@@ -133,7 +133,7 @@
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="is_volatile"> {$form.service_is_volatile.label}</td><td class="FormRowValue">{$form.service_is_volatile.html}</td></tr>
     </table>
 </div>
-<div id="tab2" class="tab"> 
+<div id="tab2" class="tab">
     <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
@@ -156,7 +156,7 @@
         {/if}
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
-        {/if} 
+        {/if}
         {if $o == "mc"}
         {if $inheritance =="1"}
         <tr class="list_one">
@@ -216,7 +216,7 @@
                 </td>
             </tr>
         {/if}
-        {/if}            
+        {/if}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{t}Notification options{/t}</h4>
@@ -224,7 +224,7 @@
         </tr>
         {if $o == "mc"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td></tr>
-        {/if}       
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}&nbsp;{$time_unit}</td></tr>
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_timeperiod.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td></tr>
@@ -232,11 +232,11 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
         {if $o == "mc"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td><td class="FormRowValue">{$form.mc_mod_notifopts.html}</td></tr>
-        {/if}   
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.service_notifOpts.label}</td><td class="FormRowValue">{$form.service_notifOpts.html}</td></tr>
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_first_notification_delay.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td></tr>
-        {/if}   
+        {/if}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.service_first_notification_delay.label}</td><td class="FormRowValue">{$form.service_first_notification_delay.html}&nbsp;{$time_unit}</td></tr>
         {if $o == "mc"}
         <tr class="list_one">
@@ -474,11 +474,11 @@ jQuery(function() {
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
         } else if (from === "fromTpl") {
-            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
         } else {
-            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
-            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-command-background-color)',border : '1px solid var(--custom-macros-command-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-command-background-color)',border : '1px solid var(--custom-macros-command-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
         }
 
         // Set a 'Macro value' field as password field, on edit mode
@@ -497,8 +497,8 @@ jQuery(function() {
                 tplValueField.after(jQuery('<img/>',{src : './img/icons/undo.png', class : 'ico-14', style : 'vertical-align : middle;'}).on('click',function() {
                     jQuery(elem).find("input[name^='macroValue']").val(tplValue);
                     jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
-                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
                 }));
             }
         }
@@ -506,13 +506,25 @@ jQuery(function() {
 
         jQuery(elem).find("input[name^='macroInput']").on("input",function() {
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
-            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
-            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+            jQuery(elem).find("input[name^='macroInput']").css({
+                "color" : "var(--custom-macros-font-color)",
+                "background" : "var(--input-select-background-color)"
+            });
+            jQuery(elem).find("input[name^='macroValue']").css({
+                "color" : "var(--custom-macros-font-color)",
+                "background" : "var(--input-select-background-color)"
+            });
         });
         jQuery(elem).find("input[name^='macroValue']").on("input",function() {
             jQuery(elem).find('input[name^=macroFrom]').val("direct");
-            jQuery(elem).find("input[name^='macroInput']").css("background", "white");
-            jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+            jQuery(elem).find("input[name^='macroInput']").css({
+                "color" : "var(--custom-macros-font-color)",
+                "background" : "var(--input-select-background-color)"
+            });
+            jQuery(elem).find("input[name^='macroValue']").css({
+                "color" : "var(--custom-macros-font-color)",
+                "background" : "var(--input-select-background-color)"
+            });
         });
 
         var $passwordCheckbox = jQuery(elem).find("input[id^='macroPassword_']");
@@ -555,18 +567,18 @@ jQuery(function() {
             jQuery("#service_cgs").removeAttr('disabled');
         }
     }
-    
+
     bindInhertance();
     jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function() {
         bindInhertance();
     });
 
-    
+
     jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]').on('change',function(event,data) {
         if (typeof data != "undefined" && typeof data.origin != undefined && data.origin == "select2defaultinit") {
             return false;
     }
-    {/literal}{if $o != "mc"}{literal} 
+    {/literal}{if $o != "mc"}{literal}
     jQuery.ajax({
         url: "./include/configuration/configObject/service/refreshMacroAjax.php",
         type: "POST",
@@ -577,7 +589,7 @@ jQuery(function() {
             jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
             sheepIt.removeAllForms();
             for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
-                sheepIt.addForm();  
+                sheepIt.addForm();
             }
 
             sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
@@ -595,11 +607,11 @@ jQuery(function() {
             jQuery(".onemacro").each(function(idx, elem) {
                 var from = jQuery(elem).find('input[name^=macroFrom]').val();
                 if (from === "fromTpl") {
-                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
                 } else {
-                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
-                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
+                    jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-command-background-color)',border : '1px solid var(--custom-macros-command-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+                    jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-command-background-color)',border : '1px solid var(--custom-macros-command-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
                 }
 
                 if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
@@ -612,7 +624,7 @@ jQuery(function() {
                     if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
                         var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                         var tplValue = tplValueField.val();
-                        
+
                         var tplInputField = jQuery(elem).find("input[name^='macroInput']");
                         var tplInput = tplInputField.val();
 
@@ -621,8 +633,8 @@ jQuery(function() {
                             jQuery(elem).find("input[name^='macroValue']").val(tplValue);
                             jQuery(elem).find("input[name^='macroInput']").val(tplInput);
                             jQuery(elem).find('input[name^=macroFrom]').val("fromTpl");
-                            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
-                            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
+                            jQuery(elem).find("input[name^='macroInput']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
+                            jQuery(elem).find("input[name^='macroValue']").css({'background-color' : 'var(--custom-macros-template-background-color)',border : '1px solid var(--custom-macros-template-border-color)',color: 'var(--custom-macros-placeholder-font-color)'});
                         }));
                     }
                 }
@@ -630,13 +642,25 @@ jQuery(function() {
 
                 jQuery(elem).find("input[name^='macroInput']").on("input",function() {
                     jQuery(elem).find('input[name^=macroFrom]').val("direct");
-                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
-                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroInput']").css({
+                        "color" : "var(--custom-macros-font-color)",
+                        "background" : "var(--input-select-background-color)"
+                    });
+                    jQuery(elem).find("input[name^='macroValue']").css({
+                        "color" : "var(--custom-macros-font-color)",
+                        "background" : "var(--input-select-background-color)"
+                    });
                 });
                 jQuery(elem).find("input[name^='macroValue']").on("input",function() {
                     jQuery(elem).find('input[name^=macroFrom]').val("direct");
-                    jQuery(elem).find("input[name^='macroInput']").css("background", "white");
-                    jQuery(elem).find("input[name^='macroValue']").css("background", "white");
+                    jQuery(elem).find("input[name^='macroInput']").css({
+                        "color" : "var(--custom-macros-font-color)",
+                        "background" : "var(--input-select-background-color)"
+                    });
+                    jQuery(elem).find("input[name^='macroValue']").css({
+                        "color" : "var(--custom-macros-font-color)",
+                        "background" : "var(--input-select-background-color)"
+                    });
                 });
 
                 if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {

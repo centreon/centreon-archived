@@ -27,6 +27,7 @@ use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Annotation\EntityDescriptor;
+use Centreon\Domain\Common\Assertion\Assertion;
 
 /***
  * This class is designed to represent a host configuration.
@@ -51,6 +52,16 @@ class Host
      * Host meta
      */
     public const TYPE_META = 2;
+
+    public const NOTIFICATIONS_OPTION_DISABLED = 0,
+                 NOTIFICATIONS_OPTION_ENABLED = 1,
+                 NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE = 2;
+
+    private const AVAILABLE_NOTIFICATION_OPTIONS = [
+        self::NOTIFICATIONS_OPTION_DISABLED,
+        self::NOTIFICATIONS_OPTION_ENABLED,
+        self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE,
+    ];
 
     /**
      * @var int|null
@@ -135,6 +146,11 @@ class Host
      * @var HostSeverity|null
      */
     private $severity;
+
+    /**
+     * @var int
+     */
+    private $notificationsEnabledOption = self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE;
 
     /**
      * @return int|null
@@ -489,5 +505,30 @@ class Host
     public function getSeverity(): ?HostSeverity
     {
         return $this->severity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationsEnabledOption(): int
+    {
+        return $this->notificationsEnabledOption;
+    }
+
+    /**
+     * @param int $notificationsEnabledOption
+     * @return self
+     */
+    public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
+    {
+        Assertion::inArray(
+            $notificationsEnabledOption,
+            self::AVAILABLE_NOTIFICATION_OPTIONS,
+            'Engine::notificationsEnabledOption',
+        );
+
+        $this->notificationsEnabledOption = $notificationsEnabledOption;
+
+        return $this;
     }
 }
