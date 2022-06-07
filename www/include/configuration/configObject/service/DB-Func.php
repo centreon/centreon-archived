@@ -604,7 +604,7 @@ function multipleServiceInDB(
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
                             $query = "INSERT INTO host_service_relation 
-                                      VALUES (NULL, NULL, service_id)";
+                                      VALUES (NULL, NULL, :service_id)";
                             $statement = $pearDB->prepare($query);
                             $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
                             $statement->execute();
@@ -810,10 +810,10 @@ function multipleServiceInDB(
                             }
                             $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, " .
                                 "`svc_macro_value`, `is_password`) 
-                                VALUES (:svc_svc_id, \$:svc_macro_name\$,:svc_macro_value , :is_password)";
+                                VALUES (:svc_svc_id, :svc_macro_name, :svc_macro_value , :is_password)";
                             $statement = $pearDB->prepare($mTpRq2);
-                            $statement->bindValue(':svc_svc_id', $maxId["MAX(service_id)"]);
-                            $statement->bindValue(':svc_macro_name', $macName);
+                            $statement->bindValue(':svc_svc_id', $maxId["MAX(service_id)"], \PDO::PARAM_INT);
+                            $statement->bindValue(':svc_macro_name', '$' . $macName . '$');
                             $statement->bindValue(':svc_macro_value', $macVal);
                             $statement->bindValue(':is_password', $sv["is_password"]);
                             $statement->execute();
