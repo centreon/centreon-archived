@@ -9,8 +9,8 @@ import { Category, Group } from '../../../models';
 import DetailsChip from './DetailsChip';
 
 interface Props {
+  chips?: Array<Category | Group>;
   getType: () => CriteriaNames;
-  metaResources?: Array<Category | Group>;
   title: string;
 }
 
@@ -21,11 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DetailsChips = ({
-  metaResources = [],
-  title,
-  getType,
-}: Props): JSX.Element => {
+const DetailsChips = ({ chips = [], title, getType }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -37,7 +33,7 @@ const DetailsChips = ({
           {t(title)}
         </Typography>
       </Grid>
-      {metaResources?.map((metaResourceType) => {
+      {chips?.map((metaResourceType) => {
         return (
           <DetailsChip
             key={metaResourceType.id}
