@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
+use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfigurationPresenterInterface,
     FindOpenIdConfigurationResponse
 };

@@ -24,7 +24,7 @@ namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPr
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
+use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class OpenIdProviderPresenter implements ProviderPresenterInterface

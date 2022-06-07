@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration as LocalProviderConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
 
 class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements WriteConfigurationRepositoryInterface
 {

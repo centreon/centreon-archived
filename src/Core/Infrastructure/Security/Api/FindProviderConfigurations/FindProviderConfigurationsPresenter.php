@@ -27,7 +27,7 @@ use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
+use Core\Security\Application\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
 
 class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     FindProviderConfigurationsPresenterInterface

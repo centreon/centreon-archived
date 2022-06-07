@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
+use Core\Security\Application\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
     FindWebSSOConfiguration,
     FindWebSSOConfigurationPresenterInterface
 };

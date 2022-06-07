@@ -28,7 +28,7 @@ use Core\Security\Domain\User\Model\User;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Infrastructure\Security\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Security\Application\User\Repository\ReadUserRepositoryInterface;
 
 class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
 {

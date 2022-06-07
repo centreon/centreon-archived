@@ -32,11 +32,11 @@ use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Core\Security\Domain\Authentication\AuthenticationException;
 use Core\Security\Domain\Authentication\PasswordExpiredException;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Security\Application\User\Repository\ReadUserRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Application\User\Repository\WriteUserRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\Local\ConfigurationException;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 /**
