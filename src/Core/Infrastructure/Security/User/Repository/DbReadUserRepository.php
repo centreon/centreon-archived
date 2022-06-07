@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\User\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Domain\Security\User\Model\User;
+use Core\Security\Domain\User\Model\User;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Infrastructure\Security\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;

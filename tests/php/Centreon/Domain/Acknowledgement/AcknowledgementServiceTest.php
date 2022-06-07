@@ -28,7 +28,7 @@ use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterfac
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -109,7 +109,7 @@ class AcknowledgementServiceTest extends TestCase
             ->setType(1);
 
         $this->acknowledgementRepository = $this->createMock(AcknowledgementRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
         $this->engineService = $this->createMock(EngineServiceInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
