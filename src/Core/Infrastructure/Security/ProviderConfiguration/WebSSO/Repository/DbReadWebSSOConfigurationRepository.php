@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\{
+use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\{
     ReadWebSSOConfigurationRepositoryInterface as ReadRepositoryInterface
 };
 use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;

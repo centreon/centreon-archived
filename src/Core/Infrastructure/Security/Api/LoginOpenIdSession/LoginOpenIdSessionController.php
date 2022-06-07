@@ -29,9 +29,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Application\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSession;
-use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
-use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
+use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSession;
+use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
+use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class LoginOpenIdSessionController extends AbstractController

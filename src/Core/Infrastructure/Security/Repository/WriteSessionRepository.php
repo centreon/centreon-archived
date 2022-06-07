@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Repository;
 
-use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
+use Core\Security\Application\Repository\WriteSessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class WriteSessionRepository implements WriteSessionRepositoryInterface

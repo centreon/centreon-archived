@@ -27,7 +27,7 @@ use Core\Security\Domain\User\Model\User;
 use Centreon\Domain\Common\Assertion\Assertion;
 use Core\Security\Domain\User\Model\UserPassword;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Application\Security\Exception\UserPasswordException;
+use Core\Security\Application\Exception\UserPasswordException;
 use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
 

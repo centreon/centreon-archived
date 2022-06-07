@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationResponse;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationResponse;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
 
 class FindConfigurationPresenter extends AbstractPresenter implements FindConfigurationPresenterInterface
 {

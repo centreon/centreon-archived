@@ -28,7 +28,7 @@ use Core\Security\Domain\User\Model\User;
 use Core\Security\Domain\User\Model\UserPassword;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Application\User\Repository\WriteUserRepositoryInterface;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
 {
