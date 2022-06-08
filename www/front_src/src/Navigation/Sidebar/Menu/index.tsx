@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import { ListItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -48,6 +48,7 @@ const NavigationMenu = ({
   const classes = useStyles();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const theme = useTheme();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
@@ -72,7 +73,7 @@ const NavigationMenu = ({
 
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
-
+  const dismissDurationMenu = theme.transitions.duration.complex;
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
@@ -94,7 +95,7 @@ const NavigationMenu = ({
     timeoutRef.current = setTimeout((): void => {
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
-    }, 500);
+    }, dismissDurationMenu);
   };
 
   const handleClickItem = (currentPage: Page): void => {
