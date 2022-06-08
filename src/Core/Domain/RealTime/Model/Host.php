@@ -147,7 +147,7 @@ class Host
     /**
      * @var Hostgroup[]
      */
-    private $hostgroups = [];
+    private $groups = [];
 
     /**
      * @var Icon|null
@@ -608,21 +608,21 @@ class Host
     }
 
     /**
-     * @param Hostgroup $hostgroup
+     * @param Hostgroup $group
      * @return self
      */
-    public function addHostgroup(Hostgroup $hostgroup): self
+    public function addGroup(Hostgroup $group): self
     {
-        $this->hostgroups[] = $hostgroup;
+        $this->groups[] = $group;
         return $this;
     }
 
     /**
      * @return Hostgroup[]
      */
-    public function getHostgroups(): array
+    public function getGroups(): array
     {
-        return $this->hostgroups;
+        return $this->groups;
     }
 
     /**
@@ -712,6 +712,7 @@ class Host
      */
     public function setCategories(array $categories): self
     {
+        $this->categories = [];
         foreach ($categories as $category) {
             $this->addCategory($category);
         }
@@ -719,13 +720,18 @@ class Host
     }
 
     /**
-     * @param Hostgroup[] $hostgroups
+     * @param Hostgroup[] $groups
      * @return self
+     * @throws \InvalidArgumentException
      */
-    public function setHostgroups(array $hostgroups): self
+    public function setGroups(array $groups): self
     {
-        foreach ($hostgroups as $hostgroup) {
-            $this->addHostgroup($hostgroup);
+        $this->groups = [];
+        foreach ($groups as $group) {
+            if (! $group instanceof Hostgroup) {
+                throw new \InvalidArgumentException('Hostgroup model expected.');
+            }
+            $this->addGroup($group);
         }
 
         return $this;

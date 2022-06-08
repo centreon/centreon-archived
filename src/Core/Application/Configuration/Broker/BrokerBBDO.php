@@ -50,7 +50,7 @@ abstract class BrokerBBDO
                 VersionHelper::compare(
                     (string) $brokerConfiguration->getConfigurationValue(),
                     self::MINIMUM_BBDO_VERSION_SUPPORTED,
-                    VersionHelper::GT
+                    VersionHelper::GE
                 )
             ) {
                 return true;

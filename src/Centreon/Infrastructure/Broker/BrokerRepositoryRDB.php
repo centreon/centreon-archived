@@ -25,6 +25,7 @@ namespace Centreon\Infrastructure\Broker;
 
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
+use Core\Application\Configuration\Broker\BrokerBBDO;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 
 class BrokerRepositoryRDB implements BrokerRepositoryInterface
@@ -61,20 +62,20 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
                         ON cfgb.ns_nagios_server = ns.id
                         AND ns.id = :monitoringServerId
                     WHERE config_key = :configKey
-            ");
-            $statement->bindValue(':monitoringServerId', $monitoringServerId, \PDO::PARAM_INT);
-            $statement->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
-            $statement->execute();
+        ");
+        $statement->bindValue(':monitoringServerId', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
+        $statement->execute();
 
-            $brokerConfigurations = [];
-            while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-                $brokerConfigurations[] = (new BrokerConfiguration())
-                    ->setId((int) $result['id'])
-                    ->setConfigurationKey($configKey)
-                    ->setConfigurationValue($result['config_value']);
-            }
+        $brokerConfigurations = [];
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $brokerConfigurations[] = (new BrokerConfiguration())
+                ->setId((int) $result['id'])
+                ->setConfigurationKey($configKey)
+                ->setConfigurationValue($result['config_value']);
+        }
 
-            return $brokerConfigurations;
+        return $brokerConfigurations;
     }
 
     /**
@@ -83,22 +84,22 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
     public function findAllConfigurations(): array
     {
         $statement = $this->db->query("
-            SELECT cb.*
+            SELECT cb.config_id, cd.bbdo_version
             FROM cfg_centreonbroker cb
             INNER JOIN cfg_centreonbroker_info cbi
                 ON cbi.config_id = cb.config_id
                 AND config_group = 'output'
                 AND config_key = 'type'
                 AND config_value = 'unified_sql'
-            WHERE cb.daemon = 1"
-        );
+            WHERE cb.daemon = 1
+        ");
 
         $statement->execute();
         $brokerConfigurations = [];
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $brokerConfigurations[] = (new BrokerConfiguration())
-                ->setId($result['config_id'])
-                ->setConfigurationKey('bbdo_version')
+                ->setId((int) $result['config_id'])
+                ->setConfigurationKey(BrokerBBDO::BBDO_VERSION_CONFIG_KEY)
                 ->setConfigurationValue($result['bbdo_version']);
         }
 

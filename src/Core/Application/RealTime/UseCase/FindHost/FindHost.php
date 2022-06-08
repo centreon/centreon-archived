@@ -104,13 +104,11 @@ class FindHost
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
         }
 
-        $host->setHostgroups($hostgroups);
+        $host->setGroups($hostgroups);
 
         $categories = $this->tagRepository->findAllByResourceAndTypeId($host->getId(), 0, Tag::HOST_CATEGORY_TYPE_ID);
 
-        foreach ($categories as $category) {
-            $host->addCategory($category);
-        }
+        $host->setCategories($categories);
 
         /**
          * Obfuscate the passwords in Host commandLine
@@ -161,7 +159,7 @@ class FindHost
             $host->getMonitoringServerName(),
             $host->getStatus(),
             $host->getIcon(),
-            $host->getHostgroups(),
+            $host->getGroups(),
             $downtimes,
             $acknowledgement,
             $host->getCategories(),

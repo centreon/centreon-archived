@@ -34,7 +34,7 @@ class Service
     /**
      * @var Servicegroup[]
      */
-    private $servicegroups = [];
+    private $groups = [];
 
     /**
      * @var boolean
@@ -192,16 +192,16 @@ class Service
     /**
      * @return Servicegroup[]
      */
-    public function getServicegroups(): array
+    public function getGroups(): array
     {
-        return $this->servicegroups;
+        return $this->groups;
     }
 
     /**
      * @param Servicegroup $servicegroup
      * @return self
      */
-    public function addServicegroup(Servicegroup $servicegroup): self
+    public function addGroup(Servicegroup $servicegroup): self
     {
         $this->servicegroups[] = $servicegroup;
         return $this;
@@ -663,6 +663,7 @@ class Service
      */
     public function setCategories(array $categories): self
     {
+        $this->categories = [];
         foreach ($categories as $category) {
             $this->addCategory($category);
         }
@@ -671,13 +672,18 @@ class Service
     }
 
     /**
-     * @param Servicegroup[] $servicegroups
+     * @param Servicegroup[] $groups
      * @return self
+     * @throws \InvalidArgumentException
      */
-    public function setServicegroups(array $servicegroups): self
+    public function setGroups(array $groups): self
     {
-        foreach ($servicegroups as $servicegroup) {
-            $this->addServicegroup($servicegroup);
+        $this->groups = [];
+        foreach ($groups as $group) {
+            if (! $group instanceof Hostgroup) {
+                throw new \InvalidArgumentException('Servicegroup model expected.');
+            }
+            $this->addGroup($group);
         }
 
         return $this;

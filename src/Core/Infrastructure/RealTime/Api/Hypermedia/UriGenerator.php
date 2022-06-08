@@ -23,12 +23,11 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class HypermediaCreatorHelper
+class UriGenerator
 {
     use HttpUrlTrait;
 
@@ -46,14 +45,14 @@ class HypermediaCreatorHelper
      * @param string[] $topologyRoles
      * @return boolean
      */
-    public function canContactAccessPages(ContactInterface $contact, array $topologyRoles): bool
+/*     public function canContactAccessPages(ContactInterface $contact, array $topologyRoles): bool
     {
         if (! $contact->isAdmin() && ! $this->hasTopologyAccess($contact, $topologyRoles)) {
             return false;
         }
 
         return true;
-    }
+    } */
 
     /**
      * Checks if contact has topology roles submited
@@ -62,7 +61,7 @@ class HypermediaCreatorHelper
      * @param string[] $topologyRoles
      * @return boolean
      */
-    private function hasTopologyAccess(ContactInterface $contact, array $topologyRoles): bool
+/*     private function hasTopologyAccess(ContactInterface $contact, array $topologyRoles): bool
     {
         foreach ($topologyRoles as $topologyRole) {
             if ($contact->hasTopologyRole($topologyRole)) {
@@ -71,7 +70,7 @@ class HypermediaCreatorHelper
         }
 
         return false;
-    }
+    } */
 
     /**
      * Generates endpoint call URI with parameters

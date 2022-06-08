@@ -137,7 +137,7 @@ class FindService
             );
         }
 
-        $service->setServicegroups($servicegroups);
+        $service->setGroups($servicegroups);
 
         $serviceCategories = $this->tagRepository->findAllByResourceAndTypeId(
             $serviceId,
@@ -220,7 +220,7 @@ class FindService
             $service->getName(),
             $service->getStatus(),
             $service->getIcon(),
-            $service->getServicegroups(),
+            $service->getGroups(),
             $downtimes,
             $acknowledgement,
             $host,

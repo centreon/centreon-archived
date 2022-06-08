@@ -25,8 +25,8 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Infrastructure\RealTime\Api\Hypermedia\UriGenerator;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 
 class HostHypermediaProvider implements HypermediaProviderInterface
 {
@@ -44,7 +44,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function __construct(
         private ContactInterface $contact,
-        private HypermediaCreatorHelper $helper
+        private UriGenerator $uriGenerator
     ) {
     }
 
@@ -62,8 +62,8 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public function createEndpoints(mixed $response): array
     {
         return [
-            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]),
-            'notification_policy' => $this->helper->generateEndpoint(
+            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]),
+            'notification_policy' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
                 ['hostId' => $response->id]
             ),
@@ -100,7 +100,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_CONFIGURATION,
             ['{hostId}' => $parameters['hostId']]
         );
@@ -118,7 +118,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_REPORTING,
             ['{hostId}' => $parameters['hostId']]
         );
@@ -136,7 +136,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_EVENT_LOGS,
             ['{hostId}' => $parameters['hostId']]
         );
@@ -159,7 +159,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_HOSTGROUP_CONFIGURATION,
             ['{hostgroupId}' => $parameters['hostgroupId']]
         );
@@ -182,7 +182,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_HOST_CATEGORY_CONFIGURATION,
             ['{hostCategoryId}' => $parameters['categoryId']]
         );
