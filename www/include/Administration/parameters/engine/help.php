@@ -107,3 +107,11 @@ $help['tip_svc_notification_3'] = dgettext(
     'help',
     'When enabled, "Service Unknown" notification messages will be displayed.'
 );
+/**
+ * Monitoring
+ */
+$help['tip_resource_status_mode'] = dgettext(
+    'help',
+    'Mode used to retrieve information displayed in Resource Status page. The optimized mode will only be available '
+    . ' and functional when using the BBDO 3.0.0 protocol for the collect engine.'
+);

@@ -131,9 +131,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     }).then(({ status, result }) => {
       if (status) {
         setExtension(result as Extensions);
-      } else {
-        showErrorMessage(result as string);
+
+        return;
       }
+
+      showErrorMessage(result as string);
     });
   }, [getAppliedFilterCriteriasAtom]);
 

@@ -86,8 +86,8 @@ services:
         public: true
 
     # Authentication
-    Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
-        class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
+    Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface:
+        class: Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
@@ -229,11 +229,11 @@ services:
                   arguments: ['@sqlRequestTranslator']
         Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
             tags: ['realtime.api.hypermedia']
-        Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
+        Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
             tags: ['authentication.provider.repositories']
-        Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface:
+        Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface:
             tags: ['authentication.provider.responses']
-        Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
+        Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
@@ -245,12 +245,12 @@ services:
                 ? service("Centreon\\Infrastructure\\Monitoring\\Resource\\ResourceRepositoryRDB")
                 : service("Centreon\\Infrastructure\\Monitoring\\Resource\\DbReadResourceRepository")']
 
-    Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurations:
+    Core\Security\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
         arguments:
           - !tagged_iterator 'authentication.provider.repositories'
           - !tagged_iterator 'authentication.provider.responses'
 
-    Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
+    Core\Security\Infrastructure\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']
 
 
@@ -363,20 +363,20 @@ services:
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
-    Core\Application\Security\UseCase\LoginSession\LoginSession:
+    Core\Security\Application\UseCase\LoginSession\LoginSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
 
-    Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSession:
+    Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
 
     Security\Domain\Authentication\Interfaces\OpenIdProviderInterface:
-        class: Core\Domain\Security\Provider\OpenIdProvider
+        class: Core\Security\Domain\Provider\OpenIdProvider
         tags: ['authentication.providers']
 
     Security\Domain\Authentication\Interfaces\WebSSOProviderInterface:
-        class: Core\Domain\Security\Provider\WebSSOProvider
+        class: Core\Security\Domain\Provider\WebSSOProvider
         tags: ['authentication.providers']
 
     Centreon\Domain\Authentication\UseCase\AuthenticateApi:

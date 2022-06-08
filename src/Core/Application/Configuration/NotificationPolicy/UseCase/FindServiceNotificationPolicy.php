@@ -31,7 +31,7 @@ use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Domain\Configuration\Notification\Model\NotifiedContact;
 use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
@@ -48,7 +48,7 @@ class FindServiceNotificationPolicy
      * @param HostConfigurationRepositoryInterface $hostRepository
      * @param ServiceConfigurationRepositoryInterface $serviceRepository
      * @param EngineConfigurationServiceInterface $engineService
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
      * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
      * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
@@ -58,7 +58,7 @@ class FindServiceNotificationPolicy
         private HostConfigurationRepositoryInterface $hostRepository,
         private ServiceConfigurationRepositoryInterface $serviceRepository,
         private EngineConfigurationServiceInterface $engineService,
-        private AccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ContactInterface $contact,
         private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
         private ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository,

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 
-import { Provider as ReduxProvider } from 'react-redux';
 import { not } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -8,11 +7,8 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import createStore from '../store';
 
 import useApp from './useApp';
-
-const store = createStore();
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -64,27 +60,25 @@ const App = (): JSX.Element => {
   const min = hasMinArgument();
 
   return (
-    <ReduxProvider store={store}>
-      <Suspense fallback={<PageLoader />}>
-        <div className={classes.wrapper}>
+    <Suspense fallback={<PageLoader />}>
+      <div className={classes.wrapper}>
+        {not(min) && (
+          <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
+            <Navigation />
+          </Suspense>
+        )}
+        <div className={classes.content} id="content">
           {not(min) && (
-            <Suspense fallback={<LoadingSkeleton height="100%" width={45} />}>
-              <Navigation />
+            <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
+              <Header />
             </Suspense>
           )}
-          <div className={classes.content} id="content">
-            {not(min) && (
-              <Suspense fallback={<LoadingSkeleton height={56} width="100%" />}>
-                <Header />
-              </Suspense>
-            )}
-            <div className={classes.mainContent}>
-              <MainRouter />
-            </div>
+          <div className={classes.mainContent}>
+            <MainRouter />
           </div>
         </div>
-      </Suspense>
-    </ReduxProvider>
+      </div>
+    </Suspense>
   );
 };
 
