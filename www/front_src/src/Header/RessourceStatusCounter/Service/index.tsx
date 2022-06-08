@@ -217,7 +217,6 @@ const ServiceStatusCounter = (): JSX.Element => {
             </Link>
             <IconToggleSubmenu
               data-testid="submenu-service"
-              iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
             />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
@@ -8,7 +9,19 @@ import { createRoot } from 'react-dom/client';
 
 import Main from './Main';
 
-const container = document.getElementById('root');
+declare global {
+  interface Window {
+    CentreonUiContext;
+    Jotai;
+    React;
+    ReactDom;
+    ReactI18Next;
+    ReactRouterDOM;
+    ReactRouterDom;
+  }
+}
+
+const container = document.getElementById('root') as HTMLElement;
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -16,9 +29,6 @@ const container = document.getElementById('root');
   window.React = await import(/* webpackChunkName: "external" */ 'react');
   window.ReactDOM = window.ReactDom = await import(
     /* webpackChunkName: "external" */ 'react-dom'
-  );
-  window.PropTypes = window.PropTypes = await import(
-    /* webpackChunkName: "external" */ 'prop-types'
   );
   window.ReactRouterDOM = window.ReactRouterDom = await import(
     /* webpackChunkName: "external" */ 'react-router-dom'
