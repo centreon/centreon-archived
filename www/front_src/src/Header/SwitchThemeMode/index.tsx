@@ -6,15 +6,30 @@ import { useAtom } from 'jotai';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { styled } from '@mui/material/styles';
 import { Switch, ListItemText } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 
 import { userAtom, ThemeMode } from '@centreon/ui-context';
 import { patchData, useRequest } from '@centreon/ui';
 
-const ThemeModeSwitch = styled(Switch)(() => ({
-  '& .MuiSwitch-switchBase': {
+const useStyles = makeStyles((theme) => ({
+  container: {
+    '& .MuiSwitch-thumb': {
+      backgroundColor: 'white',
+    },
+    '& .MuiSwitch-track': {
+      backgroundColor: '#aab4be',
+      opacity: 1,
+    },
+    alignItems: 'center',
+    display: 'flex',
+  },
+  containerMode: {
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
+  containerSwitch: {
     '&.Mui-checked': {
       '&:hover': {
         backgroundColor: 'unset',
@@ -24,26 +39,8 @@ const ThemeModeSwitch = styled(Switch)(() => ({
       backgroundColor: 'unset',
     },
   },
-  '& .MuiSwitch-thumb': {
-    backgroundColor: 'white',
-  },
-  '& .MuiSwitch-track': {
-    backgroundColor: '#aab4be',
-    opacity: 1,
-  },
-}));
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    alignItems: 'center',
-    display: 'flex',
-  },
-  containerMode: {
-    display: 'flex',
-    justifyContent: 'space-around',
-  },
   disabledMode: {
-    color: '#A7A7A7',
+    color: grey[600],
   },
   mode: {
     paddingLeft: theme.spacing(1),
@@ -84,8 +81,9 @@ const SwitchThemeMode = (): JSX.Element => {
 
   return (
     <div className={classes.container}>
-      <ThemeModeSwitch
+      <Switch
         checked={isDark}
+        className={classes.containerSwitch}
         size="small"
         onChange={switchThemeMode}
       />

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
 
+import { grey } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
 import {
   Typography,
@@ -90,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5, 0, 0.5, 0),
   },
   divider: {
-    borderColor: '#A7A7A7',
+    borderColor: grey[600],
     margin: theme.spacing(0, 1.25, 0, 1.25),
   },
   fullname: {
