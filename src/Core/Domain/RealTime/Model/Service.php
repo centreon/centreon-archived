@@ -198,12 +198,16 @@ class Service
     }
 
     /**
-     * @param Servicegroup $servicegroup
+     * @param Servicegroup $group
      * @return self
+     * @throws \InvalidArgumentException
      */
-    public function addGroup(Servicegroup $servicegroup): self
+    public function addGroup(Servicegroup $group): self
     {
-        $this->servicegroups[] = $servicegroup;
+        if (! $group instanceof Servicegroup) {
+            throw new \InvalidArgumentException('Servicegroup model expected.');
+        }
+        $this->groups[] = $group;
         return $this;
     }
 
@@ -650,9 +654,13 @@ class Service
     /**
      * @param Tag $category
      * @return self
+     * @throws \InvalidArgumentException
      */
     public function addCategory(Tag $category): self
     {
+        if (! $category instanceof Tag) {
+            throw new \InvalidArgumentException('Tag model expected.');
+        }
         $this->categories[] = $category;
         return $this;
     }
@@ -674,15 +682,11 @@ class Service
     /**
      * @param Servicegroup[] $groups
      * @return self
-     * @throws \InvalidArgumentException
      */
     public function setGroups(array $groups): self
     {
         $this->groups = [];
         foreach ($groups as $group) {
-            if (! $group instanceof Hostgroup) {
-                throw new \InvalidArgumentException('Servicegroup model expected.');
-            }
             $this->addGroup($group);
         }
 

@@ -30,8 +30,9 @@ use Tests\Core\Domain\RealTime\Model\HostTest;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Tests\Core\Domain\RealTime\Model\ServiceTest;
 use Core\Application\Common\UseCase\NotFoundResponse;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindService\FindService;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
@@ -61,15 +62,7 @@ beforeEach(function () {
 
     $this->acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
 
-    $this->adminContact = (new Contact())
-        ->setId(1)
-        ->setName('admin')
-        ->setAdmin(true);
-
-    $this->nonAdminContact = (new Contact())
-        ->setId(2)
-        ->setName('user')
-        ->setAdmin(false);
+    $this->contact = $this->createMock(ContactInterface::class);
 
     $this->host = HostTest::createHostModel();
     $this->service = ServiceTest::createServiceModel();
@@ -77,43 +70,56 @@ beforeEach(function () {
     $this->category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
 });
 
-it('FindService host not found as admin', function () {
+it('should present a NotFoundResponse if host not found as admin', function () {
     $findService = new FindService(
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->adminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
 
     $this->hostRepository
         ->expects($this->once())
         ->method('findHostById')
         ->willReturn(null);
 
-    $findServicePresenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $presenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
 
-    $findService(1, 20, $findServicePresenter);
+    $findService(1, 20, $presenter);
 
-    $this->assertEquals($findServicePresenter->getResponseStatus(), new NotFoundResponse('Host'));
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Host not found'
+    );
 });
 
-it('FindService host not found as non admin', function () {
+it('should present a NotFoundResponse if host not found as non admin', function () {
     $findService = new FindService(
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->nonAdminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
 
     $this->accessGroupRepository
         ->expects($this->once())
@@ -125,25 +131,33 @@ it('FindService host not found as non admin', function () {
         ->method('findHostByIdAndAccessGroupIds')
         ->willReturn(null);
 
-    $findServicePresenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $presenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
 
-    $findService(1, 20, $findServicePresenter);
+    $findService(1, 20, $presenter);
 
-    $this->assertEquals($findServicePresenter->getResponseStatus(), new NotFoundResponse('Host'));
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Host not found'
+    );
 });
 
-it('FindService service not found as admin', function () {
+it('should present a NotFoundResponse if service not found as admin', function () {
     $findService = new FindService(
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->adminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
 
     $this->hostRepository
         ->expects($this->once())
@@ -155,25 +169,33 @@ it('FindService service not found as admin', function () {
         ->method('findServiceById')
         ->willReturn(null);
 
-    $findServicePresenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $presenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
 
-    $findService(1, 20, $findServicePresenter);
+    $findService(1, 20, $presenter);
 
-    $this->assertEquals($findServicePresenter->getResponseStatus(), new NotFoundResponse('Service'));
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Service not found'
+    );
 });
 
-it('FindService service not found as non admin', function () {
+it('should present a NotFoundResponse if service not found as non admin', function () {
     $findService = new FindService(
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->nonAdminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
 
     $this->accessGroupRepository
         ->expects($this->once())
@@ -190,25 +212,33 @@ it('FindService service not found as non admin', function () {
         ->method('findServiceByIdAndAccessGroupIds')
         ->willReturn(null);
 
-    $findServicePresenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $presenter = new FindServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
 
-    $findService(1, 20, $findServicePresenter);
+    $findService(1, 20, $presenter);
 
-    $this->assertEquals($findServicePresenter->getResponseStatus(), new NotFoundResponse('Service'));
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Service not found'
+    );
 });
 
-it('FindService service found as admin', function () {
+it('should find service as admin', function () {
     $findService = new FindService(
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->adminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
 
     $this->hostRepository
         ->expects($this->once())
@@ -240,68 +270,51 @@ it('FindService service found as admin', function () {
         ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
         ->willReturn($this->acknowledgement);
 
-    $findServicePresenter = new FindServicePresenterStub();
+    $presenter = new FindServicePresenterStub();
 
-    $findService(1, 10, $findServicePresenter);
+    $findService(1, 10, $presenter);
 
-    $this->assertEquals($findServicePresenter->response->name, $this->service->getName());
-    $this->assertEquals($findServicePresenter->response->id, $this->service->getId());
-    $this->assertEquals(
-        $findServicePresenter->response->host['monitoring_server_name'],
-        $this->host->getMonitoringServerName()
-    );
-    $this->assertEquals($findServicePresenter->response->isFlapping, $this->service->isFlapping());
-    $this->assertEquals($findServicePresenter->response->isAcknowledged, $this->service->isAcknowledged());
-    $this->assertEquals($findServicePresenter->response->isInDowntime, $this->service->isInDowntime());
-    $this->assertEquals($findServicePresenter->response->output, $this->service->getOutput());
-    $this->assertEquals($findServicePresenter->response->commandLine, $this->service->getCommandLine());
-    $this->assertEquals($findServicePresenter->response->performanceData, $this->service->getPerformanceData());
-    $this->assertEquals($findServicePresenter->response->notificationNumber, $this->service->getNotificationNumber());
-    $this->assertEquals($findServicePresenter->response->latency, $this->service->getLatency());
-    $this->assertEquals($findServicePresenter->response->executionTime, $this->service->getExecutionTime());
-    $this->assertEquals(
-        $findServicePresenter->response->statusChangePercentage,
-        $this->service->getStatusChangePercentage()
-    );
-    $this->assertEquals($findServicePresenter->response->hasActiveChecks, $this->service->hasActiveChecks());
-    $this->assertEquals($findServicePresenter->response->hasPassiveChecks, $this->service->hasPassiveChecks());
-    $this->assertEquals($findServicePresenter->response->severityLevel, $this->service->getSeverityLevel());
-    $this->assertEquals($findServicePresenter->response->checkAttempts, $this->service->getCheckAttempts());
-    $this->assertEquals($findServicePresenter->response->maxCheckAttempts, $this->service->getMaxCheckAttempts());
-    $this->assertEquals($findServicePresenter->response->lastTimeOk, $this->service->getLastTimeOk());
-    $this->assertEquals($findServicePresenter->response->lastCheck, $this->service->getLastCheck());
-    $this->assertEquals($findServicePresenter->response->nextCheck, $this->service->getNextCheck());
-    $this->assertEquals($findServicePresenter->response->lastNotification, $this->service->getLastNotification());
-    $this->assertEquals($findServicePresenter->response->lastStatusChange, $this->service->getLastStatusChange());
-    $this->assertEquals($findServicePresenter->response->status['code'], $this->service->getStatus()->getCode());
-    $this->assertEquals($findServicePresenter->response->status['name'], $this->service->getStatus()->getName());
-    $this->assertEquals($findServicePresenter->response->status['type'], $this->service->getStatus()->getType());
-    $this->assertEquals(
-        $findServicePresenter->response->status['severity_code'],
-        $this->service->getStatus()->getOrder()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->servicegroups[0]['id'],
-        $this->service->getServicegroups()[0]->getId()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->servicegroups[0]['name'],
-        $this->service->getServicegroups()[0]->getName()
-    );
-    $this->assertEquals($findServicePresenter->response->icon['name'], $this->service->getIcon()?->getName());
-    $this->assertEquals($findServicePresenter->response->icon['url'], $this->service->getIcon()?->getUrl());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['id'], $this->downtime->getId());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['service_id'], $this->downtime->getServiceId());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['host_id'], $this->downtime->getHostId());
-    $this->assertEquals($findServicePresenter->response->acknowledgement['id'], $this->acknowledgement->getId());
-    $this->assertEquals(
-        $findServicePresenter->response->acknowledgement['service_id'],
-        $this->acknowledgement->getServiceId()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->acknowledgement['host_id'],
-        $this->acknowledgement->getHostId()
-    );
+    expect($presenter->response->name)->toBe($this->service->getName());
+    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->host['monitoring_server_name'])
+        ->toBe($this->host->getMonitoringServerName());
+    expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());
+    expect($presenter->response->isAcknowledged)->toBe($this->service->isAcknowledged());
+    expect($presenter->response->isInDowntime)->toBe($this->service->isInDowntime());
+    expect($presenter->response->output)->toBe($this->service->getOutput());
+    expect($presenter->response->commandLine)->toBe($this->service->getCommandLine());
+    expect($presenter->response->performanceData)->toBe($this->service->getPerformanceData());
+    expect($presenter->response->notificationNumber)->toBe($this->service->getNotificationNumber());
+    expect($presenter->response->latency)->toBe($this->service->getLatency());
+    expect($presenter->response->executionTime)->toBe($this->service->getExecutionTime());
+    expect($presenter->response->statusChangePercentage)->toBe($this->service->getStatusChangePercentage());
+    expect($presenter->response->hasActiveChecks)->toBe($this->service->hasActiveChecks());
+    expect($presenter->response->hasPassiveChecks)->toBe($this->service->hasPassiveChecks());
+    expect($presenter->response->severityLevel)->toBe($this->service->getSeverityLevel());
+    expect($presenter->response->checkAttempts)->toBe($this->service->getCheckAttempts());
+    expect($presenter->response->maxCheckAttempts)->toBe($this->service->getMaxCheckAttempts());
+    expect($presenter->response->lastTimeOk)->toBe($this->service->getLastTimeOk());
+    expect($presenter->response->lastCheck)->toBe($this->service->getLastCheck());
+    expect($presenter->response->nextCheck)->toBe($this->service->getNextCheck());
+    expect($presenter->response->lastNotification)->toBe($this->service->getLastNotification());
+    expect($presenter->response->lastStatusChange)->toBe($this->service->getLastStatusChange());
+    expect($presenter->response->status['code'])->toBe($this->service->getStatus()->getCode());
+    expect($presenter->response->status['name'])->toBe($this->service->getStatus()->getName());
+    expect($presenter->response->status['type'])->toBe($this->service->getStatus()->getType());
+    expect($presenter->response->status['severity_code'])->toBe($this->service->getStatus()->getOrder());
+    expect($presenter->response->groups[0]['id'])
+        ->toBe($this->service->getGroups()[0]->getId());
+    expect($presenter->response->groups[0]['name'])
+        ->toBe($this->service->getGroups()[0]->getName());
+    expect($presenter->response->icon['name'])->toBe($this->service->getIcon()?->getName());
+    expect($presenter->response->icon['url'])->toBe($this->service->getIcon()?->getUrl());
+    expect($presenter->response->downtimes[0]['id'])->toBe($this->downtime->getId());
+    expect($presenter->response->downtimes[0]['service_id'])->toBe($this->downtime->getServiceId());
+    expect($presenter->response->downtimes[0]['host_id'])->toBe($this->downtime->getHostId());
+    expect($presenter->response->acknowledgement['id'])->toBe($this->acknowledgement->getId());
+    expect($presenter->response->acknowledgement['service_id'])
+        ->toBe($this->acknowledgement->getServiceId());
+    expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
 });
 
 it('FindService service found as non admin', function () {
@@ -309,13 +322,18 @@ it('FindService service found as non admin', function () {
         $this->repository,
         $this->hostRepository,
         $this->servicegroupRepository,
-        $this->nonAdminContact,
+        $this->contact,
         $this->accessGroupRepository,
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
     );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
 
     $this->hostRepository
         ->expects($this->once())
@@ -342,66 +360,49 @@ it('FindService service found as non admin', function () {
         ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
         ->willReturn($this->acknowledgement);
 
-    $findServicePresenter = new FindServicePresenterStub();
+    $presenter = new FindServicePresenterStub();
 
-    $findService(1, 10, $findServicePresenter);
+    $findService(1, 10, $presenter);
 
-    $this->assertEquals($findServicePresenter->response->name, $this->service->getName());
-    $this->assertEquals($findServicePresenter->response->id, $this->service->getId());
-    $this->assertEquals(
-        $findServicePresenter->response->host['monitoring_server_name'],
-        $this->host->getMonitoringServerName()
-    );
-    $this->assertEquals($findServicePresenter->response->isFlapping, $this->service->isFlapping());
-    $this->assertEquals($findServicePresenter->response->isAcknowledged, $this->service->isAcknowledged());
-    $this->assertEquals($findServicePresenter->response->isInDowntime, $this->service->isInDowntime());
-    $this->assertEquals($findServicePresenter->response->output, $this->service->getOutput());
-    $this->assertEquals($findServicePresenter->response->commandLine, $this->service->getCommandLine());
-    $this->assertEquals($findServicePresenter->response->performanceData, $this->service->getPerformanceData());
-    $this->assertEquals($findServicePresenter->response->notificationNumber, $this->service->getNotificationNumber());
-    $this->assertEquals($findServicePresenter->response->latency, $this->service->getLatency());
-    $this->assertEquals($findServicePresenter->response->executionTime, $this->service->getExecutionTime());
-    $this->assertEquals(
-        $findServicePresenter->response->statusChangePercentage,
-        $this->service->getStatusChangePercentage()
-    );
-    $this->assertEquals($findServicePresenter->response->hasActiveChecks, $this->service->hasActiveChecks());
-    $this->assertEquals($findServicePresenter->response->hasPassiveChecks, $this->service->hasPassiveChecks());
-    $this->assertEquals($findServicePresenter->response->severityLevel, $this->service->getSeverityLevel());
-    $this->assertEquals($findServicePresenter->response->checkAttempts, $this->service->getCheckAttempts());
-    $this->assertEquals($findServicePresenter->response->maxCheckAttempts, $this->service->getMaxCheckAttempts());
-    $this->assertEquals($findServicePresenter->response->lastTimeOk, $this->service->getLastTimeOk());
-    $this->assertEquals($findServicePresenter->response->lastCheck, $this->service->getLastCheck());
-    $this->assertEquals($findServicePresenter->response->nextCheck, $this->service->getNextCheck());
-    $this->assertEquals($findServicePresenter->response->lastNotification, $this->service->getLastNotification());
-    $this->assertEquals($findServicePresenter->response->lastStatusChange, $this->service->getLastStatusChange());
-    $this->assertEquals($findServicePresenter->response->status['code'], $this->service->getStatus()->getCode());
-    $this->assertEquals($findServicePresenter->response->status['name'], $this->service->getStatus()->getName());
-    $this->assertEquals($findServicePresenter->response->status['type'], $this->service->getStatus()->getType());
-    $this->assertEquals(
-        $findServicePresenter->response->status['severity_code'],
-        $this->service->getStatus()->getOrder()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->servicegroups[0]['id'],
-        $this->service->getServicegroups()[0]->getId()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->servicegroups[0]['name'],
-        $this->service->getServicegroups()[0]->getName()
-    );
-    $this->assertEquals($findServicePresenter->response->icon['name'], $this->service->getIcon()?->getName());
-    $this->assertEquals($findServicePresenter->response->icon['url'], $this->service->getIcon()?->getUrl());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['id'], $this->downtime->getId());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['service_id'], $this->downtime->getServiceId());
-    $this->assertEquals($findServicePresenter->response->downtimes[0]['host_id'], $this->downtime->getHostId());
-    $this->assertEquals($findServicePresenter->response->acknowledgement['id'], $this->acknowledgement->getId());
-    $this->assertEquals(
-        $findServicePresenter->response->acknowledgement['service_id'],
-        $this->acknowledgement->getServiceId()
-    );
-    $this->assertEquals(
-        $findServicePresenter->response->acknowledgement['host_id'],
-        $this->acknowledgement->getHostId()
-    );
+    expect($presenter->response->name)->toBe($this->service->getName());
+    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->host['monitoring_server_name'])
+        ->toBe($this->host->getMonitoringServerName());
+    expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());
+    expect($presenter->response->isAcknowledged)->toBe($this->service->isAcknowledged());
+    expect($presenter->response->isInDowntime)->toBe($this->service->isInDowntime());
+    expect($presenter->response->output)->toBe($this->service->getOutput());
+    expect($presenter->response->commandLine)->toBe($this->service->getCommandLine());
+    expect($presenter->response->performanceData)->toBe($this->service->getPerformanceData());
+    expect($presenter->response->notificationNumber)->toBe($this->service->getNotificationNumber());
+    expect($presenter->response->latency)->toBe($this->service->getLatency());
+    expect($presenter->response->executionTime)->toBe($this->service->getExecutionTime());
+    expect($presenter->response->statusChangePercentage)->toBe($this->service->getStatusChangePercentage());
+    expect($presenter->response->hasActiveChecks)->toBe($this->service->hasActiveChecks());
+    expect($presenter->response->hasPassiveChecks)->toBe($this->service->hasPassiveChecks());
+    expect($presenter->response->severityLevel)->toBe($this->service->getSeverityLevel());
+    expect($presenter->response->checkAttempts)->toBe($this->service->getCheckAttempts());
+    expect($presenter->response->maxCheckAttempts)->toBe($this->service->getMaxCheckAttempts());
+    expect($presenter->response->lastTimeOk)->toBe($this->service->getLastTimeOk());
+    expect($presenter->response->lastCheck)->toBe($this->service->getLastCheck());
+    expect($presenter->response->nextCheck)->toBe($this->service->getNextCheck());
+    expect($presenter->response->lastNotification)->toBe($this->service->getLastNotification());
+    expect($presenter->response->lastStatusChange)->toBe($this->service->getLastStatusChange());
+    expect($presenter->response->status['code'])->toBe($this->service->getStatus()->getCode());
+    expect($presenter->response->status['name'])->toBe($this->service->getStatus()->getName());
+    expect($presenter->response->status['type'])->toBe($this->service->getStatus()->getType());
+    expect($presenter->response->status['severity_code'])->toBe($this->service->getStatus()->getOrder());
+    expect($presenter->response->groups[0]['id'])
+        ->toBe($this->service->getGroups()[0]->getId());
+    expect($presenter->response->groups[0]['name'])
+        ->toBe($this->service->getGroups()[0]->getName());
+    expect($presenter->response->icon['name'])->toBe($this->service->getIcon()?->getName());
+    expect($presenter->response->icon['url'])->toBe($this->service->getIcon()?->getUrl());
+    expect($presenter->response->downtimes[0]['id'])->toBe($this->downtime->getId());
+    expect($presenter->response->downtimes[0]['service_id'])->toBe($this->downtime->getServiceId());
+    expect($presenter->response->downtimes[0]['host_id'])->toBe($this->downtime->getHostId());
+    expect($presenter->response->acknowledgement['id'])->toBe($this->acknowledgement->getId());
+    expect($presenter->response->acknowledgement['service_id'])
+        ->toBe($this->acknowledgement->getServiceId());
+    expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
 });

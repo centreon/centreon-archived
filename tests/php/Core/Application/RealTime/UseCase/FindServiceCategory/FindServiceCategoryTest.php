@@ -80,8 +80,7 @@ it('Find all service categories repository bbdo version imcompatible', function 
         ->willReturn([]);
 
     $brokerRepository->expects($this->once())
-        ->method('findAllByParameterName')
-        ->with('bbdo_version')
+        ->method('findAllConfigurations')
         ->willReturn([$brokerConfiguration]);
 
     $useCase = new FindServiceCategory($tagRepository, $brokerRepository);

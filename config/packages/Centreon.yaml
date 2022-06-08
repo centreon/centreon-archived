@@ -227,7 +227,7 @@ services:
             calls:
                 - method: setSqlRequestTranslator
                   arguments: ['@sqlRequestTranslator']
-        Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
+        Core\Infrastructure\RealTime\Hypermedia\HypermediaProviderInterface:
             tags: ['realtime.api.hypermedia']
         Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
             tags: ['authentication.provider.repositories']
@@ -266,8 +266,8 @@ services:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
 
-    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
-        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
+    Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator:
+        class: Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator
         calls:
             - method: setHypermediaProviders
               arguments: [!tagged_iterator 'realtime.api.hypermedia']
