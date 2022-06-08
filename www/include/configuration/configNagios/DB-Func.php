@@ -89,7 +89,7 @@ function enableNagiosInDB($nagiosId = null)
     $statement->bindValue(':id', (int) $data["nagios_server_id"], \PDO::PARAM_INT);
     $statement->execute();
     $activate = $statement->fetch(\PDO::FETCH_ASSOC);
-    if (isset($activate["name"]) && $activate["name"] == 1) {
+    if ($activate && $activate["name"]) {
         $query = "UPDATE `nagios_server` SET `ns_activate` = '1' WHERE `id` = :id";
         $statement = $pearDB->prepare($query);
         $statement->bindValue(':id', (int) $activate['id'], \PDO::PARAM_INT);
