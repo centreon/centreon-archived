@@ -28,7 +28,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
     ReadProviderConfigurationsRepositoryInterface,
@@ -61,7 +61,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * @inheritDoc
      */
-    public function findConfiguration(): ?OpenIdConfiguration
+    public function findConfiguration(): ?Configuration
     {
         $statement = $this->db->query(
             $this->translateDbName("SELECT * FROM `:db`.`provider_configuration` WHERE name = 'openid'")

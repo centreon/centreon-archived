@@ -4611,6 +4611,7 @@ components:
           type: integer
           description: "Contact group ID"
           example: 1
+          nullable: true
         authorization_rules:
           type: array
           items:

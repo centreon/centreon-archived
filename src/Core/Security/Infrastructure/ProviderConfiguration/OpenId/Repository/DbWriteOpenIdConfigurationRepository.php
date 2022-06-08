@@ -28,7 +28,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
 {
@@ -43,9 +43,9 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
     }
 
     /**
-     * @param OpenIdConfiguration $configuration
+     * @param Configuration $configuration
      */
-    public function updateConfiguration(OpenIdConfiguration $configuration): void
+    public function updateConfiguration(Configuration $configuration): void
     {
         $this->info('Updating OpenID Configuration in DBMS');
         $statement = $this->db->prepare(
@@ -68,10 +68,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
     /**
      * Format OpenIdConfiguration for custom_configuration.
      *
-     * @param OpenIdConfiguration $configuration
+     * @param Configuration $configuration
      * @return array<string, mixed>
      */
-    private function buildCustomConfigurationFromOpenIdConfiguration(OpenIdConfiguration $configuration): array
+    private function buildCustomConfigurationFromOpenIdConfiguration(Configuration $configuration): array
     {
         return [
             'trusted_client_addresses' => $configuration->getTrustedClientAddresses(),
