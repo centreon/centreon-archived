@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 interface HypermediaProviderInterface
 {
@@ -58,7 +58,7 @@ interface HypermediaProviderInterface
      * Create internal redirection uris for the Resource categories
      *
      * @param array<int, array<string, string|int>> $categories
-     * @return array<array<string, string|int|null>>
+     * @return array<int, array<string, string|int|null>>
      */
     public function convertCategoriesForPresenter(array $categories): array;
 }

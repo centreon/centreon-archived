@@ -21,14 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 
-class ServiceHypermediaProvider implements HypermediaProviderInterface
+class ServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
     public const URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}',
@@ -43,11 +42,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
 
     /**
      * @param ContactInterface $contact
-     * @param HypermediaCreatorHelper $helper
+     * @param UriGenerator $uriGenerator
      */
     public function __construct(
         private ContactInterface $contact,
-        private HypermediaCreatorHelper $helper
+        private UriGenerator $uriGenerator
     ) {
     }
 
@@ -72,11 +71,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_SERVICES_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_CONFIGURATION,
             ['{serviceId}' => $parameters['serviceId']]
         );
@@ -90,11 +89,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForReporting(array $parameters): ?string
     {
-        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_SERVICES])) {
+        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_SERVICES])) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_REPORTING,
             [
                 '{serviceId}' => $parameters['serviceId'],
@@ -111,11 +110,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_EVENT_LOGS,
             [
                 '{serviceId}' => $parameters['serviceId'],
@@ -135,12 +134,12 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
         ];
 
         return [
-            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parameters),
-            'status_graph' => $this->helper->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
+            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parameters),
+            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
             'performance_graph' => $response->hasGraphData
-                ? $this->helper->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
+                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
                 : null,
-            'notification_policy' => $this->helper->generateEndpoint(
+            'notification_policy' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_SERVICE_NOTIFICATION_POLICY,
                 $parameters
             ),
@@ -176,11 +175,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_SERVICEGROUP_CONFIGURATION,
             ['{servicegroupId}' => $parameters['servicegroupId']]
         );
@@ -214,11 +213,11 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_SERVICE_CATEGORY_CONFIGURATION,
             ['{serviceCategoryId}' => $parameters['categoryId']]
         );

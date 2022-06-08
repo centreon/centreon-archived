@@ -21,14 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\UriGenerator;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 
-class HostHypermediaProvider implements HypermediaProviderInterface
+class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
@@ -40,7 +39,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
 
     /**
      * @param ContactInterface $contact
-     * @param HyperMediaCreatorHelper $helper
+     * @param UriGenerator $uriGenerator
      */
     public function __construct(
         private ContactInterface $contact,
@@ -62,7 +61,10 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public function createEndpoints(mixed $response): array
     {
         return [
-            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]),
+            'timeline' => $this->uriGenerator->generateEndpoint(
+                self::ENDPOINT_HOST_TIMELINE,
+                ['hostId' => $response->id]
+            ),
             'notification_policy' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
                 ['hostId' => $response->id]
@@ -96,7 +98,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_HOSTS_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
@@ -114,7 +116,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForReporting(array $parameters): ?string
     {
-        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_HOSTS])) {
+        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_REPORTING_DASHBOARD_HOSTS])) {
             return null;
         }
 
@@ -132,7 +134,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
             return null;
         }
 
@@ -155,7 +157,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
@@ -178,7 +180,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 

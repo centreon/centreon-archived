@@ -21,16 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreatorHelper;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
 
-class MetaServiceHypermediaProvider implements HypermediaProviderInterface
+class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
     use HttpUrlTrait;
 
@@ -45,11 +43,11 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
 
     /**
      * @param ContactInterface $contact
-     * @param UrlGeneratorInterface $router
+     * @param UriGenerator $uriGenerator
      */
     public function __construct(
         private ContactInterface $contact,
-        private HypermediaCreatorHelper $helper
+        private UriGenerator $uriGenerator
     ) {
     }
 
@@ -74,11 +72,11 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
             Contact::ROLE_CONFIGURATION_SERVICES_READ
         ];
 
-        if (! $this->helper->canContactAccessPages($this->contact, $roles)) {
+        if (! $this->canContactAccessPages($this->contact, $roles)) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_CONFIGURATION,
             ['{metaId}' => $parameters['metaId']]
         );
@@ -103,11 +101,11 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->helper->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
+        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
             return null;
         }
 
-        return $this->helper->generateUri(
+        return $this->uriGenerator->generateUri(
             self::URI_EVENT_LOGS,
             [
                 '{hostId}' => $parameters['hostId'],
@@ -123,13 +121,16 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     {
         $parameters = ['metaId' => $response->id];
         return [
-            'timeline' => $this->helper->generateEndpoint(self::ENDPOINT_TIMELINE, $parameters),
-            'status_graph' => $this->helper->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
-            'metrics' => $this->helper->generateEndpoint(self::ENDPOINT_METRIC_LIST, $parameters),
+            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_TIMELINE, $parameters),
+            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
+            'metrics' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_METRIC_LIST, $parameters),
             'performance_graph' => $response->hasGraphData
-                ? $this->helper->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
+                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
                 : null,
-            'notification_policy' => $this->helper->generateEndpoint(self::ENDPOINT_NOTIFICATION_POLICY, $response),
+            'notification_policy' => $this->uriGenerator->generateEndpoint(
+                self::ENDPOINT_NOTIFICATION_POLICY,
+                $response
+            ),
         ];
     }
 

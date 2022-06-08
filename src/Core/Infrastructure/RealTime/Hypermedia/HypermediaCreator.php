@@ -21,16 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
-
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 class HypermediaCreator
 {
     /**
      * @var HypermediaProviderInterface[]
      */
-    private $hypermediaProviders;
+    private array $hypermediaProviders;
 
     /**
      * @param iterable<HypermediaProviderInterface> $hypermediaProviders
