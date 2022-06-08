@@ -20,11 +20,11 @@
  */
 declare(strict_types=1);
 
-namespace Core\EventLog\Application\UseCase\FindEventLogs;
+namespace Core\EventLog\Application\UseCase\ExportEventLogs;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
-interface FindEventLogsPresenterInterface extends PresenterInterface
+interface ExportEventLogsPresenterInterface extends PresenterInterface
 {
     /**
      * {@inheritDoc}

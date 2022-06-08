@@ -21,11 +21,11 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\UseCase\FindUsers;
+namespace Core\EventLog\Application\UseCase\ExportEventLogs;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 
-class FindEventLogsErrorResponse extends ErrorResponse
+class ExportEventLogsErrorResponse extends ErrorResponse
 {
     public function __construct()
     {
