@@ -505,9 +505,9 @@ class CentreonDowntime
                 $row = $res->fetch();
                 $index = $i = 1;
                 while ($i <= $nb[$id]) {
-                    if (!$this->downTimeExists($row['dt_name'] . '_' . $index)) {
+                    if (!$this->downtimeExists($row['dt_name'] . '_' . $index)) {
                         $row['index'] = $index;
-                        $this->duplicateDownTime($this->db, $row);
+                        $this->duplicateDowntime($row);
                         $i++;
                     }
                     $index++;
@@ -891,22 +891,21 @@ class CentreonDowntime
     /**
      * All in one function to duplicate downtime.
      *
-     * @param CentreonDB $dbh
      * @param array $params
      */
-    private function duplicateDownTime($dbh, $params): void
+    private function duplicateDowntime(array $params): void
     {
-        $dbh->beginTransaction();
+        $this->db->beginTransaction();
         try {
-            $params['dt_id_new'] = $this->createDownTime($params);
-            $this->createDownTimePeriods($params);
-            $this->createDownTimeHostsRelations($params);
-            $this->createDownTimeHostGroupsRelations($params);
-            $this->createDownTimeServicesRelations($params);
-            $this->createDownTimeServiceGroupsRelations($params);
-            $dbh->commit();
+            $params['dt_id_new'] = $this->createDowntime($params);
+            $this->createDowntimePeriods($params);
+            $this->createDowntimeHostsRelations($params);
+            $this->createDowntimeHostGroupsRelations($params);
+            $this->createDowntimeServicesRelations($params);
+            $this->createDowntimeServiceGroupsRelations($params);
+            $this->db->commit();
         } catch (\Exception $e) {
-            $dbh->rollBack();
+            $this->db->rollBack();
         }
     }
 
@@ -932,7 +931,7 @@ class CentreonDowntime
      * @param array<string, string> $params
      * @return int
      */
-    private function createDownTime(array $params): int
+    private function createDowntime(array $params): int
     {
         $rq = 'INSERT INTO downtime (dt_name, dt_description, dt_activate)
 			   VALUES (:dt_name, :dt_description, :dt_activate)';
@@ -949,7 +948,7 @@ class CentreonDowntime
      *
      * @param array<string, string> $params
      */
-    private function createDownTimePeriods(array $params): void
+    private function createDowntimePeriods(array $params): void
     {
         $query = 'INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
             dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration,
@@ -968,7 +967,7 @@ class CentreonDowntime
      *
      * @param array<string, string> $params
      */
-    private function createDownTimeHostsRelations(array $params): void
+    private function createDowntimeHostsRelations(array $params): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO downtime_host_relation (dt_id, host_host_id)
@@ -984,7 +983,7 @@ class CentreonDowntime
      *
      * @param array<string, string> $params
      */
-    private function createDownTimeHostGroupsRelations(array $params): void
+    private function createDowntimeHostGroupsRelations(array $params): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
@@ -1000,7 +999,7 @@ class CentreonDowntime
      *
      * @param array<string, string> $params
      */
-    private function createDownTimeServicesRelations(array $params): void
+    private function createDowntimeServicesRelations(array $params): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO downtime_service_relation
@@ -1018,7 +1017,7 @@ class CentreonDowntime
      *
      * @param array<string, string> $params
      */
-    private function createDownTimeServiceGroupsRelations(array $params): void
+    private function createDowntimeServiceGroupsRelations(array $params): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
