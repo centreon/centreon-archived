@@ -21,19 +21,20 @@
 
 declare(strict_types=1);
 
-namespace Core\EventLog\Domain;
+namespace Core\EventLog\Infrastructure\Repository;
 
-final class EventLog
+use Core\EventLog\Domain\EventLog;
+
+class DbEventLogFactory
 {
-    public function __construct(private int $hostId)
-    {
-    }
-
     /**
-     * @return int
+     * Create EventLog model using data from database
+     *
+     * @param array<string, mixed> $data
+     * @return EventLog
      */
-    public function getHostId(): int
+    public static function createFromRecord(array $data): EventLog
     {
-        return $this->hostId;
+        return new EventLog((int) $data['id']);
     }
 }

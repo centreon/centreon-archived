@@ -18,22 +18,14 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\EventLog\Domain;
+namespace Core\EventLog\Application\UseCase\ExportEventLogs;
 
-final class EventLog
+class FindEventLogsResponse
 {
-    public function __construct(private int $hostId)
-    {
-    }
-
     /**
-     * @return int
+     * @var array<int, array<string, mixed>>
      */
-    public function getHostId(): int
-    {
-        return $this->hostId;
-    }
+    public array $eventLogs = [];
 }

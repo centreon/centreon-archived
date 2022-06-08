@@ -21,19 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Core\EventLog\Domain;
+namespace Core\EventLog\Infrastructure\Repository;
 
-final class EventLog
+class DbQueryBuilder
 {
-    public function __construct(private int $hostId)
-    {
-    }
+    private const SELECTED_TABLE_COLS = [
+        'logs.ctime',
+        'logs.host_id',
+        'logs.host_name',
+        'logs.service_id',
+        'logs.service_description',
+        'logs.msg_type',
+        'logs.notification_cmd',
+        'logs.notification_contact',
+        'logs.output',
+        'logs.retry',
+        'logs.status',
+        'logs.type',
+        'logs.instance_name'
+    ];
 
-    /**
-     * @return int
-     */
-    public function getHostId(): int
-    {
-        return $this->hostId;
-    }
 }

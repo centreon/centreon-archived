@@ -18,14 +18,15 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\EventLog\Application\UseCase\FindEventLogs;
+namespace Core\EventLog\Infrastructure\Api\ExportEventLog;
 
-class FindEventLogsResponse
+class ExportEventLogController
 {
-    /**
-     * @var array<int, array<string, mixed>>
-     */
-    public array $eventLogs = [];
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
 }
