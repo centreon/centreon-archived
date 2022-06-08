@@ -44,7 +44,7 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Core\Security\Application\UseCase\LoginSession\LoginSessionRequest;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Core\Infrastructure\Security\Api\LoginSession\LoginSessionPresenter;
+use Core\Security\Infrastructure\Api\LoginSession\LoginSessionPresenter;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Core\Security\Application\UseCase\LoginSession\PasswordExpiredResponse;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;

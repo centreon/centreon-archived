@@ -21,21 +21,25 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
+namespace Tests\Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration;
 
 use Centreon\Domain\Contact\Contact;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesPresenterInterface;
-use Core\Contact\Infrastructure\Api\FindContactTemplates\FindContactTemplatesController;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Core\Security\Application\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationPresenterInterface
+};
+use Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfigurationController
+};
 
 beforeEach(function () {
-    $this->useCase = $this->createMock(FindContactTemplates::class);
-    $this->presenter = $this->createMock(FindContactTemplatesPresenterInterface::class);
+    $this->useCase = $this->createMock(UpdateWebSSOConfiguration::class);
+    $this->presenter = $this->createMock(UpdateWebSSOConfigurationPresenterInterface::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
@@ -77,16 +81,41 @@ beforeEach(function () {
     $this->request = $this->createMock(Request::class);
 });
 
-it('should call the use case', function () {
-    $controller = new FindContactTemplatesController();
+it('throws an exception when the request body is invalid', function () {
+    $controller = new UpdateWebSSOConfigurationController();
     $controller->setContainer($this->container);
-
-    $this->useCase
+    $invalidPayload = json_encode([
+        'is_active' => true
+    ]);
+    $this->request
         ->expects($this->once())
-        ->method('__invoke')
-        ->with(
-            $this->equalTo($this->presenter)
-        );
+        ->method('getContent')
+        ->willReturn($invalidPayload);
 
-    $controller($this->useCase, $this->presenter);
+    $controller($this->useCase, $this->request, $this->presenter);
+})->throws(\InvalidArgumentException::class);
+
+it('show the response when everything is valid', function () {
+    $controller = new UpdateWebSSOConfigurationController();
+    $controller->setContainer($this->container);
+    $validPayload = json_encode([
+        "is_active" => true,
+        "is_forced" =>  false,
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "login_header_attribute" => 'HTTP_AUTH_USER',
+        "pattern_matching_login" => '/@.*/',
+        "pattern_replace_login" => 'sso_',
+    ]);
+
+    $this->request
+        ->expects($this->any())
+        ->method('getContent')
+        ->willReturn($validPayload);
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('show');
+
+    $controller($this->useCase, $this->request, $this->presenter);
 });
