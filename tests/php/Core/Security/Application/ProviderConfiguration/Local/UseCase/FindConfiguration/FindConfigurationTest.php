@@ -30,7 +30,7 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Application\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfiguration;
 use Core\Security\Application\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationErrorResponse;
-use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration\FindConfigurationPresenter;
+use Core\Security\Infrastructure\ProviderConfiguration\Local\Api\FindConfiguration\FindConfigurationPresenter;
 use Tests\Core\Security\Application\ProviderConfiguration\Local\UseCase\FindConfiguration\{
     FindConfigurationPresenterFake
 };

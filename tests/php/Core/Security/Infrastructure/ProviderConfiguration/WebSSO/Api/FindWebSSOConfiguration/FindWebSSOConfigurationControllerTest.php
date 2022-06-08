@@ -21,21 +21,25 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
+namespace Tests\Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
 
 use Centreon\Domain\Contact\Contact;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesPresenterInterface;
-use Core\Contact\Infrastructure\Api\FindContactTemplates\FindContactTemplatesController;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Core\Security\Application\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration\{
+    FindWebSSOConfiguration,
+    FindWebSSOConfigurationPresenterInterface
+};
+use Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\{
+    FindWebSSOConfigurationController
+};
 
 beforeEach(function () {
-    $this->useCase = $this->createMock(FindContactTemplates::class);
-    $this->presenter = $this->createMock(FindContactTemplatesPresenterInterface::class);
+    $this->useCase = $this->createMock(FindWebSSOConfiguration::class);
+    $this->presenter = $this->createMock(FindWebSSOConfigurationPresenterInterface::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
@@ -78,7 +82,7 @@ beforeEach(function () {
 });
 
 it('should call the use case', function () {
-    $controller = new FindContactTemplatesController();
+    $controller = new FindWebSSOConfigurationController();
     $controller->setContainer($this->container);
 
     $this->useCase

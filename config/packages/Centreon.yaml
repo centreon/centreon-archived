@@ -233,7 +233,7 @@ services:
             tags: ['authentication.provider.repositories']
         Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface:
             tags: ['authentication.provider.responses']
-        Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
+        Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
@@ -250,7 +250,7 @@ services:
           - !tagged_iterator 'authentication.provider.repositories'
           - !tagged_iterator 'authentication.provider.responses'
 
-    Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
+    Core\Security\Infrastructure\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']
 
 
