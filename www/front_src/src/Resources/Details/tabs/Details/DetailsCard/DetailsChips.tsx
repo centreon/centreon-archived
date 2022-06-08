@@ -10,7 +10,7 @@ import DetailsChip from './DetailsChip';
 
 interface Props {
   getType: () => CriteriaNames;
-  groupsObject?: Array<Category | Group>;
+  groups?: Array<Category | Group>;
   title: string;
 }
 
@@ -21,11 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DetailsChips = ({
-  groupsObject = [],
-  title,
-  getType,
-}: Props): JSX.Element => {
+const DetailsChips = ({ groups = [], title, getType }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -37,7 +33,7 @@ const DetailsChips = ({
           {t(title)}
         </Typography>
       </Grid>
-      {groupsObject?.map((group) => {
+      {groups?.map((group) => {
         return <DetailsChip group={group} key={group.id} type={getType()} />;
       })}
     </Grid>
