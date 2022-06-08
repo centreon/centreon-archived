@@ -31,7 +31,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceService;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
@@ -65,7 +65,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
@@ -73,14 +73,14 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
      * AcknowledgementService constructor.
      *
      * @param AcknowledgementRepositoryInterface $acknowledgementRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
      * @param EntityValidator $validator
      */
     public function __construct(
         AcknowledgementRepositoryInterface $acknowledgementRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator

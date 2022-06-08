@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Repository;
 
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbOpenIdConfigurationFactory
 {

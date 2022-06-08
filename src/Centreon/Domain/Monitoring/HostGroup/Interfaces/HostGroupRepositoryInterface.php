@@ -52,7 +52,7 @@ interface HostGroupRepositoryInterface
     /**
      * Sets the access groups that will be used to filter.
      *
-     * @param \Centreon\Domain\Security\AccessGroup[]|null $accessGroups
+     * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
      * @return HostGroupRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): HostGroupRepositoryInterface;

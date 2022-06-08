@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration as LocalProviderConfiguration;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\Configuration as LocalProviderConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;

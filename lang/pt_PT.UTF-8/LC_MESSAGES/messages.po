@@ -15602,3 +15602,9 @@ msgstr ""
 
 # msgid "and an access group:"
 # msgstr ""
+
+# msgid "License end date:"
+# msgstr ""
+
+# msgid "License expired"
+# msgstr ""

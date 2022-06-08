@@ -23,6 +23,35 @@ declare(strict_types=1);
 
 namespace Core\Contact\Application\UseCase\FindContactGroups;
 
+use Core\Contact\Domain\Model\ContactGroup;
+
 class FindContactGroupsResponse
 {
+    /**
+     * @var array<array<string,string|int>>
+     */
+    public array $contactGroups;
+
+    /**
+     * @param array<ContactGroup> $contactGroups
+     */
+    public function __construct(array $contactGroups)
+    {
+        $this->contactGroups = $this->contactGroupsToArray($contactGroups);
+    }
+
+    /**
+     * @param array<ContactGroup> $contactGroups
+     * @return array<array<string,string|int>>
+     */
+    private function contactGroupsToArray(array $contactGroups): array
+    {
+        return array_map(
+            fn (ContactGroup $contactGroup) => [
+                'id' => $contactGroup->getId(),
+                'name' => $contactGroup->getName(),
+            ],
+            $contactGroups
+        );
+    }
 }

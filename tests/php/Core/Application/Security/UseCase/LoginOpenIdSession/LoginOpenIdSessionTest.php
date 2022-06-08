@@ -37,7 +37,7 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSession;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
 use Core\Infrastructure\Security\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;

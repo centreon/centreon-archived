@@ -16902,3 +16902,9 @@ msgstr "Si nous considérons l'exemple suivant dans le JSON reçu depuis le poin
 
 msgid "and an access group:"
 msgstr "et un groupe d'accès :"
+
+msgid "License end date:"
+msgstr "Date de fin de licence :"
+
+msgid "License expired"
+msgstr "Licence expirée"

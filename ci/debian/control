@@ -92,7 +92,8 @@ Depends:
     ntp,
     rrdtool,
     bsd-mailx,
-    sudo
+    sudo,
+    nagios-images
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
