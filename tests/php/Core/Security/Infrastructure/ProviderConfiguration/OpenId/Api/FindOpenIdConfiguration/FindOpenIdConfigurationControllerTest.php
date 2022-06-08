@@ -21,28 +21,32 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
+namespace Tests\Core\Security\Infrastructure\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration;
 
-use Centreon\Domain\Contact\Contact;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesPresenterInterface;
-use Core\Contact\Infrastructure\Api\FindContactTemplates\FindContactTemplatesController;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Centreon\Domain\Contact\Contact;
+use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
+    FindOpenIdConfiguration,
+    FindOpenIdConfigurationPresenterInterface
+};
+use Core\Security\Infrastructure\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration\{
+    FindOpenIdConfigurationController
+};
 
 beforeEach(function () {
-    $this->useCase = $this->createMock(FindContactTemplates::class);
-    $this->presenter = $this->createMock(FindContactTemplatesPresenterInterface::class);
+    $this->presenter = $this->createMock(FindOpenIdConfigurationPresenterInterface::class);
+    $this->useCase = $this->createMock(FindOpenIdConfiguration::class);
 
     $timezone = new \DateTimeZone('Europe/Paris');
     $adminContact = (new Contact())
-        ->setId(1)
-        ->setName('admin')
-        ->setAdmin(true)
-        ->setTimezone($timezone);
+    ->setId(1)
+    ->setName('admin')
+    ->setAdmin(true)
+    ->setTimezone($timezone);
+
     $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
     $authorizationChecker->expects($this->once())
         ->method('isGranted')
@@ -55,6 +59,7 @@ beforeEach(function () {
     $tokenStorage->expects($this->any())
         ->method('getToken')
         ->willReturn($token);
+
     $this->container = $this->createMock(ContainerInterface::class);
     $this->container->expects($this->any())
         ->method('has')
@@ -74,11 +79,10 @@ beforeEach(function () {
                 }
             }
         );
-    $this->request = $this->createMock(Request::class);
 });
 
-it('should call the use case', function () {
-    $controller = new FindContactTemplatesController();
+it('should execute the use case properly', function () {
+    $controller = new FindOpenIdConfigurationController();
     $controller->setContainer($this->container);
 
     $this->useCase
