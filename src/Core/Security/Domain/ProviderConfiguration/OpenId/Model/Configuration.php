@@ -107,9 +107,9 @@ class Configuration implements ProviderConfigurationInterface
     ) {
         if ($isActive === true) {
             Assertion::notEmpty($clientId, "Configuration::clientId");
-            Assertion::notEmpty($clientSecret, "Configuration:clientSecret");
+            Assertion::notEmpty($clientSecret, "Configuration::clientSecret");
             Assertion::notEmpty($baseUrl, "Configuration::baseUrl");
-            Assertion::notEmpty($authorizationEndpoint, "Configuration:authorizationEndpoint");
+            Assertion::notEmpty($authorizationEndpoint, "Configuration::authorizationEndpoint");
             Assertion::notEmpty($tokenEndpoint, "Configuration::tokenEndpoint");
             if (empty($introspectionTokenEndpoint) && empty($userInformationEndpoint)) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();

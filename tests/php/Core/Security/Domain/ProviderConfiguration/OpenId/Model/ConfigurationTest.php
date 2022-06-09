@@ -32,6 +32,42 @@ it('should throw an Exception when a configuration client id is empty and config
     new Configuration(true, true, '');
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::clientId')->getMessage());
 
+it('should throw an Exception when a configuration client secret is empty and configuration is active', function () {
+    new Configuration(true, true, 'MyCl1ientId', '');
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::clientSecret')->getMessage());
+
+it('should throw an Exception when a configuration base url is empty and configuration is active', function () {
+    new Configuration(true, true, 'MyCl1ientId', 'MyCl1ientSuperSecr3tKey', '');
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::baseUrl')->getMessage());
+
+it(
+    'should throw an Exception when a configuration authorization endpoint is empty and configuration is active',
+    function () {
+        new Configuration(
+            true,
+            true,
+            'MyCl1ientId',
+            'MyCl1ientSuperSecr3tKey',
+            'http://127.0.0.1/auth/openid-connect',
+            ''
+        );
+    }
+)->throws(
+    InvalidArgumentException::class,
+    AssertionException::notEmpty('Configuration::authorizationEndpoint')->getMessage()
+);
+
+it('should throw an Exception when a configuration token endpoint is empty and configuration is active', function () {
+    new Configuration(
+        true,
+        true,
+        'MyCl1ientId',
+        'MyCl1ientSuperSecr3tKey',
+        'http://127.0.0.1/auth/openid-connect',
+        '/authorization'
+    );
+})->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::tokenEndpoint')->getMessage());
+
 it(
     'should throw an Exception when both introspection and userinfo endpoints are empty and configuration is active',
     function () {
