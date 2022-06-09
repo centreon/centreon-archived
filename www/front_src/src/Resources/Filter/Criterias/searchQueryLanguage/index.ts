@@ -27,9 +27,9 @@ import {
   trim,
   without,
   __,
+  compose,
 } from 'ramda';
 import pluralize from 'pluralize';
-import { compose } from 'redux';
 
 import { SelectEntry } from '@centreon/ui';
 
@@ -131,10 +131,11 @@ const parse = (search: string): Array<Criteria> => {
   const toNames = map(prop('name'));
   const criteriaNames = toNames(criteriasWithSearch);
 
-  const defaultCriterias = reject(
-    compose(isIn(criteriaNames), prop('name')),
-    getDefaultCriterias(),
-  );
+  const isInCriteriaNames = isIn(criteriaNames);
+
+  const nameIsInCriteriaNames = pipe(({ name }) => name, isInCriteriaNames);
+
+  const defaultCriterias = reject(nameIsInCriteriaNames, getDefaultCriterias());
 
   return sortBy(
     ({ name }) => criteriaNameSortOrder[name],
@@ -162,13 +163,15 @@ const build = (criterias: Array<Criteria>): string => {
   )(criterias);
 
   const builtCriterias = regularCriterias
-    .filter(compose(not, isNil, prop('value')))
+    .filter(pipe(({ value }) => value, isNil, not))
     .map(({ name, value, object_type }): string => {
       const values = value as Array<SelectEntry>;
       const isStaticCriteria = isNil(object_type);
 
       const formattedValues = isStaticCriteria
-        ? values.map(compose(getCriteriaQueryLanguageName, prop('id')))
+        ? values.map(
+            pipe(({ id }) => id as string, getCriteriaQueryLanguageName),
+          )
         : values.map(({ name: valueName }) => `${valueName}`);
 
       const criteriaName = compose(

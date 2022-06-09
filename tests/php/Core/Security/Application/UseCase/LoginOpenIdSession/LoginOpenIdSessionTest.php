@@ -40,7 +40,7 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
-use Core\Infrastructure\Security\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
+use Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 beforeEach(function () {

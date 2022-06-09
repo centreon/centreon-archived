@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
+namespace Tests\Core\Contact\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplates;
