@@ -27,6 +27,8 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationRequest
 };
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdConfigurationFactory
@@ -34,12 +36,16 @@ class OpenIdConfigurationFactory
     /**
      * @param UpdateOpenIdConfigurationRequest $request
      * @param ContactTemplate|null $contactTemplate
+     * @param ContactGroup|null $contactGroup
+     * @param array<AuthorizationRule> $authorizationRules
      * @return Configuration
      * @throws OpenIdConfigurationException
      */
-    public static function createFromRequest(
+    public static function create(
         UpdateOpenIdConfigurationRequest $request,
-        ?ContactTemplate $contactTemplate = null
+        ?ContactTemplate $contactTemplate = null,
+        ?ContactGroup $contactGroup = null,
+        array $authorizationRules= []
     ): Configuration {
         $configuration = new Configuration(
             $request->isActive,
@@ -54,7 +60,9 @@ class OpenIdConfigurationFactory
             $contactTemplate,
             $request->emailBindAttribute,
             $request->userAliasBindAttribute,
-            $request->userNameBindAttribute
+            $request->userNameBindAttribute,
+            $contactGroup,
+            $request->claimName
         );
 
         $configuration
@@ -65,7 +73,8 @@ class OpenIdConfigurationFactory
             ->setConnectionScopes($request->connectionScopes)
             ->setLoginClaim($request->loginClaim)
             ->setAuthenticationType($request->authenticationType)
-            ->setVerifyPeer($request->verifyPeer);
+            ->setVerifyPeer($request->verifyPeer)
+            ->setAuthorizationRules($authorizationRules);
 
         return $configuration;
     }

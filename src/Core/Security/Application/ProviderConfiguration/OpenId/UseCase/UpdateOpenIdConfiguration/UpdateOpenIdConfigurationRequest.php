@@ -19,10 +19,17 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
 class UpdateOpenIdConfigurationRequest
 {
+    /**
+     * @var int|null
+     */
+    public ?int $contactGroupId = null;
+
     /**
      * @var boolean
      */
@@ -127,4 +134,14 @@ class UpdateOpenIdConfigurationRequest
      * @var string|null
      */
     public ?string $userNameBindAttribute = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $claimName = null;
+
+    /**
+     * @var array{claim_value: string, acces_group_id: int}
+     */
+    public array $authorizationRules = [];
 }

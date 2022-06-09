@@ -29,6 +29,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
 {
@@ -63,6 +64,8 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         $statement->bindValue(':isActive', $configuration->isActive() ? '1' : '0', \PDO::PARAM_STR);
         $statement->bindValue(':isForced', $configuration->isForced() ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
+        //@TODO: Transaction for those 2 request
+        $this->insertAuthorizationRules($configuration->getAuthorizationRules());
     }
 
     /**
@@ -93,6 +96,37 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'email_bind_attribute' => $configuration->getEmailBindAttribute(),
             'alias_bind_attribute' => $configuration->getUserAliasBindAttribute(),
             'fullname_bind_attribute' => $configuration->getUserNameBindAttribute(),
+            'claim_name' => $configuration->getClaimName(),
+            'contact_group_id' => $configuration->getContactGroup()?->getId()
         ];
+    }
+
+    /**
+     * Insert Authorization Rule
+     *
+     * @param array<AuthorizationRule> $authorizationRules
+     */
+    private function insertAuthorizationRules(array $authorizationRules): void
+    {
+        $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $providerConfigurationId = (int) $result['id'];
+
+            $insertStatement = $this->db->prepare(
+                "INSERT INTO security_provider_openid_access_group_relation
+                    (claim_value, access_group_id, provider_configuration_id)
+                    VALUES (:claimValue, :accessGroupId, :providerConfigurationId)"
+            );
+            foreach ($authorizationRules as $authorizationRule) {
+                $insertStatement->bindValue(':claimValue', $authorizationRule->getClaimValue(), \PDO::PARAM_STR);
+                $insertStatement->bindValue(
+                    ':accessGroupId',
+                    $authorizationRule->getAccessGroup()->getId(),
+                    \PDO::PARAM_INT
+                );
+                $insertStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+                $insertStatement->execute();
+            }
+        }
     }
 }

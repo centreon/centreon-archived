@@ -32,6 +32,7 @@ interface ReadAccessGroupRepositoryInterface
      * Find all access groups
      *
      * @return AccessGroup[]
+     * @throws \Throwable
      */
     public function findAllWithFilter(): array;
 
@@ -40,6 +41,7 @@ interface ReadAccessGroupRepositoryInterface
      *
      * @param ContactInterface $contact Contact for which we want to find the access groups.
      * @return AccessGroup[]
+     * @throws \Throwable
      */
     public function findByContact(ContactInterface $contact): array;
 
@@ -48,6 +50,14 @@ interface ReadAccessGroupRepositoryInterface
      *
      * @param ContactInterface $contact
      * @return AccessGroup[]
+     * @throws \Throwable
      */
     public function findByContactWithFilter(ContactInterface $contact): array;
+
+    /**
+     * @param int $accessGroupId
+     * @return AccessGroup|null
+     * @throws \Throwable
+     */
+    public function find(int $accessGroupId): ?AccessGroup;
 }

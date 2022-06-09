@@ -21,26 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
+namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
+use Core\Application\Common\UseCase\ErrorResponse;
 
-interface ReadOpenIdConfigurationRepositoryInterface
+class UpdateOpenIdConfigurationErrorResponse extends ErrorResponse
 {
-    /**
-     * Find the OpenId Configuration
-     *
-     * @return Configuration|null
-     * @throws \Throwable
-     */
-    public function findConfiguration(): ?Configuration;
-
-    /**
-     * Find the Authorization Rules of the configuration.
-     *
-     * @return AuthorizationRule[]
-     * @throws \Throwable
-     */
-    public function findAuthorizationRules(): array;
+    public function __construct()
+    {
+        parent::__construct('Error during Opend ID Configuration Update');
+    }
 }

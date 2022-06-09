@@ -28,6 +28,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Contact\Domain\Model\ContactGroup;
 
 class DbReadContactGroupRepository extends AbstractRepositoryDRB implements ReadContactGroupRepositoryInterface
 {
@@ -146,5 +147,21 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         }
 
         return $contactGroups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(int $contactGroupId): ?ContactGroup
+    {
+        $statement = $this->db->prepare("SELECT cg_id,cg_name FROM contactgroup WHERE cg_id = :contactGroupId");
+        $statement->bindValue(':contactGroupId', $contactGroupId, \PDO::PARAM_INT);
+        $statement->execute();
+        $contactGroup = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $contactGroup = DbContactGroupFactory::createFromRecord($result);
+        }
+
+        return $contactGroup;
     }
 }

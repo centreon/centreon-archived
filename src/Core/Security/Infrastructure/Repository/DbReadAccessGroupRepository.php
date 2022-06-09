@@ -29,6 +29,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
 /**
  * Database repository for the access groups.
@@ -197,5 +198,22 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         }
 
         return $accessGroups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(int $accessGroupId): ?AccessGroup
+    {
+        $statement = $this->db->prepare("SELECT * FROM acl_groups WHERE acl_group_id = :accessGroupId");
+        $statement->bindValue(':accessGroupId', $accessGroupId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $accessGroup = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $accessGroup = DbAccessGroupFactory::createFromRecord($result);
+        }
+
+        return $accessGroup;
     }
 }

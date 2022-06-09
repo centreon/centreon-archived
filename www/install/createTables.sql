@@ -2468,6 +2468,20 @@ CREATE TABLE `cfg_nagios_logger` (
     REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `security_provider_openid_access_group_relation` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `claim_value` VARCHAR(255) NOT NULL,
+  `access_group_id` int(11) NOT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `security_provider_openid_access_group_id`
+    FOREIGN KEY (`access_group_id`)
+    REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
+  CONSTRAINT `security_provider_openid_provider_configuration_id`
+    FOREIGN KEY (`provider_configuration_id`)
+    REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `unique_access_relation` UNIQUE (claim_value, access_group_id, provider_configuration_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

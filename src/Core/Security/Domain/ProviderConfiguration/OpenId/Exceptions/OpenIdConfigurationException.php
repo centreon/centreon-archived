@@ -72,4 +72,18 @@ class OpenIdConfigurationException extends \Exception
             $contactTemplateName
         )));
     }
+
+    /**
+     * Exception thrown when contact group link to configuration doesn't exist
+     *
+     * @param integer $contactGroupId
+     * @return self
+     */
+    public static function contactGroupNotFound(int $contactGroupId): self
+    {
+        return new self(_(sprintf(
+            "The contact group #%s doesn't exist",
+            $contactGroupId
+        )));
+    }
 }
