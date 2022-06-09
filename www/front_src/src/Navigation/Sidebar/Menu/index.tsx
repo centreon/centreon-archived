@@ -241,12 +241,12 @@ const NavigationMenu = ({
 
   document.addEventListener('visibilitychange', () => {
     if (equals(document.visibilityState, 'visible')) {
-      defaultItems();
+      setDefaultItems();
     }
   });
 
   useEffect(() => {
-    defaultItems();
+    setDefaultItems();
   }, [pathname, search]);
 
   const props = {
