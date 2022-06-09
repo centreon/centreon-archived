@@ -72,7 +72,7 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Validate that contact template link to configuration exists or throw an Exception.
+     * Get Contact template or throw an Exception
      *
      * @param array{id: int, name: string}|null $contactTemplateFromRequest
      * @return ContactTemplate|null
