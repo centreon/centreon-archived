@@ -38,6 +38,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   },
   buttonGroup: {
     alignSelf: 'center',
+    height: '100%',
   },
   header: ({ disablePaper }): CreateCSSProperties<StylesProps> => ({
     alignItems: 'center',
@@ -47,6 +48,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
     columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
+    gridTemplateRows: '1fr',
     justifyContent: 'center',
     padding: theme.spacing(1, 0.5),
   }),
