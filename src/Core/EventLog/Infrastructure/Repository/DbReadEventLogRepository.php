@@ -1,15 +1,11 @@
 <?php
 
-
 /**
  * api/latest/export/{$type}/default?search=...&limit=...
  *
  * api/latest/export/event_logs?search={}&limit=0&page=1
  * api/latest/export/event_logs?format=csv&search={}&limit=0&page=1
  */
-
-
-
 
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
@@ -34,17 +30,36 @@ declare(strict_types=1);
 
 namespace Core\EventLog\Infrastructure\Repository;
 
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use \PDO;
-use \PDOStatement;
+use http\Exception\InvalidArgumentException;
+use PDO;
+use PDOStatement;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\EventLog\Application\Repository\ReadEventLogRepositoryInterface;
 use Core\EventLog\Domain\EventLog;
+use Centreon\Domain\RequestParameters\RequestParameters;
 
 class DbReadEventLogRepository extends AbstractRepositoryDRB implements ReadEventLogRepositoryInterface
 {
     use LoggerTrait;
+
+    private const SELECTED_TABLE_COLS = [
+        'logs.ctime',
+        'logs.host_id',
+        'logs.host_name',
+        'logs.service_id',
+        'logs.service_description',
+        'logs.msg_type',
+        'logs.notification_cmd',
+        'logs.notification_contact',
+        'logs.output',
+        'logs.retry',
+        'logs.status',
+        'logs.type',
+        'logs.instance_name'
+    ];
 
     /**
      * @param DatabaseConnection $db
@@ -62,21 +77,25 @@ class DbReadEventLogRepository extends AbstractRepositoryDRB implements ReadEven
     public function findAll(): array
     {
         $this->info('Fetching event logs from database');
-        $this->sqlRequestTranslator->setConcordanceArray([
-            'log_type' => 'logs.type',
-        ]);
-        $query = $this->translateDbName('SELECT id FROM `:dbstg`.logs');
-        // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $query .= !is_null($searchRequest)
-            ? $searchRequest . ' AND hc.level IS NULL'
-            : '  WHERE hc.level IS NULL';
+        $this->sqlRequestTranslator->setConcordanceArray(['logs.output' => 'logs.output',]);
+        $selectStmt = sprintf(
+            'SELECT SQL_CALC_FOUND_ROWS %s FROM `:dbstg`.logs',
+            join(', ', self::SELECTED_TABLE_COLS)
+        );
+        $query = $this->translateDbName($selectStmt);
 
-        // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $query .= !is_null($sortRequest)
-            ? $sortRequest
-            : ' ORDER BY hc.hc_name ASC';
+//        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        if (is_null($searchRequest)) {
+            throw new InvalidArgumentException('Event logs should be filtered');
+        }
+        $query .= $searchRequest;
+//
+//        // Sort
+//        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+//        $query .= !is_null($sortRequest)
+//            ? $sortRequest
+//            : ' ORDER BY hc.hc_name ASC';
 
         $statement = $this->db->prepare($query);
 
@@ -92,7 +111,7 @@ class DbReadEventLogRepository extends AbstractRepositoryDRB implements ReadEven
      */
     public function findByAccessGroups(array $accessGroups): array
     {
-        // TODO: Implement findByAccessGroups() method.
+        return [];
     }
 
     private function statementToArray(PDOStatement $statement): array

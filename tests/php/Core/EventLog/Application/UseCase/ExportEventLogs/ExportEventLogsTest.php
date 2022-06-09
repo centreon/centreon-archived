@@ -153,7 +153,7 @@ class ExportEventLogsTest extends TestCase
 
     public function testException(): void
     {
-        $this->findByContactMethodthrowsAnException();
+        $this->findByContactMethodThrowsAnException();
 
         $exportEventLogs = new ExportEventLogs($this->contact, $this->eventLogRepository, $this->accessGroupRepository);
 
@@ -224,7 +224,7 @@ class ExportEventLogsTest extends TestCase
         return $response;
     }
 
-    private function findByContactMethodthrowsAnException(): void
+    private function findByContactMethodThrowsAnException(): void
     {
         $this->accessGroupRepository
             ->expects($this->once())
