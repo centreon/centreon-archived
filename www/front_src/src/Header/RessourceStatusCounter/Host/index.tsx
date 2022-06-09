@@ -203,7 +203,6 @@ const HostStatusCounter = (): JSX.Element => {
             </Link>
             <IconToggleSubmenu
               data-testid="submenu-hosts"
-              iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
             />

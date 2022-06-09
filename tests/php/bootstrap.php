@@ -23,6 +23,18 @@ foreach ($mockedPathConstants as $mockedPathConstant) {
     }
 }
 
+$mockedPreRequisiteConstants = [
+    '_CENTREON_PHP_MIN_VERSION_' => '8.0',
+    '_CENTREON_PHP_MAX_VERSION_' => '8.0',
+    '_CENTREON_MARIA_DB_MIN_VERSION_' => '10.5',
+];
+foreach ($mockedPreRequisiteConstants as $mockedPreRequisiteConstant => $value) {
+    if (!defined($mockedPreRequisiteConstant)) {
+        define($mockedPreRequisiteConstant, $value);
+    }
+}
+
+
 // mock variable constants to redirect to base centreon directory
 $mockedVarConstants = ['hostCentreon', 'hostCentstorage', 'user', 'password', 'db', 'dbcstg', 'port'];
 foreach ($mockedVarConstants as $mockedVarConstant) {
