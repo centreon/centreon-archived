@@ -28,13 +28,13 @@ import {
 import MenuItems from './MenuItems';
 
 interface Props {
+  collapseMenu: () => void;
   collapseScrollMaxHeight?: number;
   collapseScrollMaxWidth?: number;
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
   isCollapsed: boolean;
-  isNavigated: () => void;
   isSubHeader?: boolean;
   level: number;
   onLeave?: () => void;
@@ -125,7 +125,7 @@ const CollapsibleItems = ({
   data,
   isCollapsed,
   isSubHeader,
-  isNavigated,
+  collapseMenu,
   currentTop,
   currentWidth,
   onLeave,
@@ -213,7 +213,7 @@ const CollapsibleItems = ({
   };
 
   const isItemClicked = (): void => {
-    isNavigated();
+    collapseMenu();
   };
 
   useEffect(() => {
@@ -313,13 +313,13 @@ const CollapsibleItems = ({
               {isCollapseWithSubheader ? (
                 <CollapsibleItems
                   isSubHeader
+                  collapseMenu={collapseMenu}
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                   collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
                   currentTop={itemTop}
                   currentWidth={itemWidth}
                   data={item.groups}
                   isCollapsed={index === hoveredIndex}
-                  isNavigated={isNavigated}
                   level={level + 1}
                   setCollapseScrollMaxHeight={setNestedScrollCollapsMaxHeight}
                   setCollapseScrollMaxWidth={setNestedScrollCollapsMaxWidth}
@@ -331,13 +331,13 @@ const CollapsibleItems = ({
                     isArrayItem(itemGroup?.children) && (
                       <div key={itemGroup.label}>
                         <CollapsibleItems
+                          collapseMenu={collapseMenu}
                           collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                           collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
                           currentTop={itemTop}
                           currentWidth={itemWidth}
                           data={itemGroup.children}
                           isCollapsed={index === hoveredIndex}
-                          isNavigated={isNavigated}
                           level={level + 1}
                           setCollapseScrollMaxHeight={
                             setNestedScrollCollapsMaxHeight

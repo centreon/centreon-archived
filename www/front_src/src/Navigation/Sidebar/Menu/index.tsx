@@ -218,7 +218,7 @@ const NavigationMenu = ({
     });
   };
 
-  const collapseMenu= (): void => {
+  const collapseMenu = (): void => {
     setHoveredIndex(null);
   };
 
@@ -301,9 +301,9 @@ const NavigationMenu = ({
                 item.children.length > 0 && (
                   <CollapsibleItems
                     {...props}
+                    collapseMenu={collapseMenu}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    collapseMenu={collapseMenu}
                     onLeave={handleLeave}
                   />
                 )}
