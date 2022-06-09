@@ -422,7 +422,8 @@ class CentreonMainCfg
             ':nagios_activate' => $baseValues['nagios_activate'],
             ':event_broker_options' => $baseValues['event_broker_options'],
             ':enable_predictive_host_dependency_checks' => $baseValues['enable_predictive_host_dependency_checks'],
-            ':enable_predictive_service_dependency_checks' => $baseValues['enable_predictive_service_dependency_checks'],
+            ':enable_predictive_service_dependency_checks' =>
+                $baseValues['enable_predictive_service_dependency_checks'],
             ':passive_host_checks_are_soft' => $baseValues['passive_host_checks_are_soft'],
             ':enable_environment_macros' => $baseValues['enable_environment_macros'],
             ':debug_file' => $baseValues['debug_file'],
