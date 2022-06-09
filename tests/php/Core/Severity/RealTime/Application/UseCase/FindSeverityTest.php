@@ -68,7 +68,19 @@ it('should present a FindSeverityResponse', function () {
 
     $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
     $useCase($presenter);
-    expect($presenter->response)->toBeInstanceOf(FindSeverityResponse::class);
+    expect($presenter->response)
+        ->toBeInstanceOf(FindSeverityResponse::class)
+        ->and($presenter->response->severities[0])->toBe(
+            [
+                'id' => 1,
+                'name' => 'name',
+                'level' => 50,
+                'icon' => [
+                    'name' => 'icon-name',
+                    'url' => 'ppm/icon-name.png'
+                ]
+            ]
+        );
     expect($presenter->response->severities[0])->toBe(
         [
             'id' => 1,
