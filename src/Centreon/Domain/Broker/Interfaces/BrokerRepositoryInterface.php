@@ -38,10 +38,10 @@ interface BrokerRepositoryInterface
     ): array;
 
     /**
-     * Returns value of the parameter on all monitoring servers
+     * Returns all the broker configurations available
      *
      * @return BrokerConfiguration[]
      * @throws \Throwable
      */
-    public function findAllByParameterName(string $parameterName): array;
+    public function findAllConfigurations(): array;
 }

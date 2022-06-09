@@ -27,7 +27,6 @@ use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Domain\RealTime\Model\Tag;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
-use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategory;
 use Tests\Core\Application\RealTime\UseCase\FindServiceCategory\FindServiceCategoryPresenterStub;
@@ -81,8 +80,7 @@ it('Find all service categories repository bbdo version imcompatible', function 
         ->willReturn([]);
 
     $brokerRepository->expects($this->once())
-        ->method('findAllByParameterName')
-        ->with('bbdo_version')
+        ->method('findAllConfigurations')
         ->willReturn([$brokerConfiguration]);
 
     $useCase = new FindServiceCategory($tagRepository, $brokerRepository);

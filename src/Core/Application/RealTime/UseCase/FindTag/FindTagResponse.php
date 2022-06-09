@@ -22,10 +22,13 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindTag;
 
+use Core\Application\RealTime\Common\RealTimeResponseTrait;
 use Core\Domain\RealTime\Model\Tag;
 
 class FindTagResponse
 {
+    use RealTimeResponseTrait;
+
     /**
      * @var array<int, array<string, int|string>>
      */
@@ -37,22 +40,5 @@ class FindTagResponse
     public function __construct(array $tags)
     {
         $this->tags = $this->tagsToArray($tags);
-    }
-
-    /**
-     * Convert array of HostCategory models into an array made of scalars
-     *
-     * @param Tag[] $tags
-     * @return array<int, array<string, int|string>>
-     */
-    private function tagsToArray(array $tags): array
-    {
-        return array_map(
-            fn (Tag $tag) => [
-                'id' => $tag->getId(),
-                'name' => $tag->getName()
-            ],
-            $tags
-        );
     }
 }
