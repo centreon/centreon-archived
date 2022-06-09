@@ -54,14 +54,14 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
     public function findByMonitoringServerAndParameterName(int $monitoringServerId, string $configKey): array
     {
         $statement = $this->db->prepare("
-                SELECT config_value, cfgbi.config_id AS id
-                    FROM cfg_centreonbroker_info cfgbi
-                    INNER JOIN cfg_centreonbroker AS cfgb
-                        ON cfgbi.config_id = cfgb.config_id
-                    INNER JOIN nagios_server AS ns
-                        ON cfgb.ns_nagios_server = ns.id
-                        AND ns.id = :monitoringServerId
-                    WHERE config_key = :configKey
+            SELECT config_value, cfgbi.config_id AS id
+                FROM cfg_centreonbroker_info cfgbi
+                INNER JOIN cfg_centreonbroker AS cfgb
+                    ON cfgbi.config_id = cfgb.config_id
+                INNER JOIN nagios_server AS ns
+                    ON cfgb.ns_nagios_server = ns.id
+                    AND ns.id = :monitoringServerId
+                WHERE config_key = :configKey
         ");
         $statement->bindValue(':monitoringServerId', $monitoringServerId, \PDO::PARAM_INT);
         $statement->bindValue(':configKey', $configKey, \PDO::PARAM_STR);
