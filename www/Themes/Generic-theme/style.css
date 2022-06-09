@@ -1021,6 +1021,11 @@ div.menuLeft {
     margin-bottom: 2px;
 }
 
+#esi_icon_image_img, #ehi_icon_image_img{
+    height: 25px;
+    vertical-align: middle;
+}
+
 #menu_3 a:hover {
     color:var(--menu3-anchor-hover-font-color);
 }
