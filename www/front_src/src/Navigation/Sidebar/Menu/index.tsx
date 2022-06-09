@@ -218,7 +218,7 @@ const NavigationMenu = ({
     });
   };
 
-  const itemNavigated = (): void => {
+  const collapseMenu= (): void => {
     setHoveredIndex(null);
   };
 
