@@ -23,10 +23,18 @@ declare(strict_types=1);
 
 namespace Core\EventLog\Infrastructure\Api\ExportEventLog;
 
-class ExportEventLogController
+use Centreon\Application\Controller\AbstractController;
+use Core\EventLog\Application\UseCase\ExportEventLogs\ExportEventLogs;
+use Core\EventLog\Application\UseCase\ExportEventLogs\ExportEventLogsPresenterInterface;
+
+class ExportEventLogController extends AbstractController
 {
-    protected function setUp(): void
+    public function __invoke(ExportEventLogs $exportEventLogs, ExportEventLogsPresenterInterface $presenter): object
     {
-        parent::setUp();
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $exportEventLogs($presenter);
+
+        return $presenter->show();
     }
 }

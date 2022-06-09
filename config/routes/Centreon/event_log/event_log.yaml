@@ -1,0 +1,7 @@
+---
+export_event_logs:
+  methods: GET
+  path: /event_logs/export
+  controller: 'Core\EventLog\Infrastructure\Api\ExportEventLog\ExportEventLogController'
+  condition: "request.attributes.get('version') >= 22.10"
+...
