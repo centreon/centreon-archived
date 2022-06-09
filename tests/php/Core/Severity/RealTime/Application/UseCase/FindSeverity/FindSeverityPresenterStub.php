@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Severity\RealTime\Application\UseCase;
+namespace Tests\Core\Severity\RealTime\Application\UseCase\FindSeverity;
 
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\AbstractPresenter;

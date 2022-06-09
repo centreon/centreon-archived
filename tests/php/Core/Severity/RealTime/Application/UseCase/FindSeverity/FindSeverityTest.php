@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Severity\RealTime\Application\UseCase;
+namespace Tests\Core\Severity\RealTime\Application\UseCase\FindSeverity;
 
 use Core\Domain\RealTime\Model\Icon;
 use Core\Severity\RealTime\Domain\Model\Severity;
@@ -46,10 +46,9 @@ it('should present an ErrorResponse when an exception is thrown', function () {
     $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
     $useCase($presenter);
 
-    expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'An error occured while retrieving severities'
-    );
+    expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class)
+        ->and($presenter->getResponseStatus()?->getMessage())
+            ->toBe('An error occured while retrieving severities');
 });
 
 it('should present a FindSeverityResponse', function () {
@@ -81,15 +80,4 @@ it('should present a FindSeverityResponse', function () {
                 ]
             ]
         );
-    expect($presenter->response->severities[0])->toBe(
-        [
-            'id' => 1,
-            'name' => 'name',
-            'level' => 50,
-            'icon' => [
-                'name' => 'icon-name',
-                'url' => 'ppm/icon-name.png'
-            ]
-        ]
-    );
 });
