@@ -60,7 +60,7 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
     {
         $this->info('Fetching tags from database of type', ['type' => $typeId]);
 
-        $request = 'SELECT id, name, `type`
+        $request = 'SELECT SQL_CALC_FOUND_ROWS id, name, `type`
             FROM `:dbstg`.tags';
 
         // Handle search
