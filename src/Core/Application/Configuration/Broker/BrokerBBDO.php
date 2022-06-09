@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\Broker;
 
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
+use Centreon\Domain\VersionHelper;
 
 abstract class BrokerBBDO
 {
@@ -43,13 +44,14 @@ abstract class BrokerBBDO
      */
     public function isBBDOVersionCompatible(): bool
     {
-        $brokerConfigurations = $this->brokerRepository->findAllByParameterName(self::BBDO_VERSION_CONFIG_KEY);
+        $brokerConfigurations = $this->brokerRepository->findAllConfigurations();
         foreach ($brokerConfigurations as $brokerConfiguration) {
             if (
-                version_compare(
+                VersionHelper::compare(
                     (string) $brokerConfiguration->getConfigurationValue(),
-                    self::MINIMUM_BBDO_VERSION_SUPPORTED
-                ) > 0
+                    self::MINIMUM_BBDO_VERSION_SUPPORTED,
+                    VersionHelper::GE
+                )
             ) {
                 return true;
             }

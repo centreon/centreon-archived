@@ -34,7 +34,7 @@ class Service
     /**
      * @var Servicegroup[]
      */
-    private $servicegroups = [];
+    private array $groups = [];
 
     /**
      * @var boolean
@@ -152,6 +152,11 @@ class Service
     private $hasGraphData = false;
 
     /**
+     * @var Tag[]
+     */
+    private array $categories = [];
+
+    /**
      * @param int $id
      * @param int $hostId
      * @param string $name
@@ -187,18 +192,18 @@ class Service
     /**
      * @return Servicegroup[]
      */
-    public function getServicegroups(): array
+    public function getGroups(): array
     {
-        return $this->servicegroups;
+        return $this->groups;
     }
 
     /**
-     * @param Servicegroup $servicegroup
+     * @param Servicegroup $group
      * @return self
      */
-    public function addServicegroup(Servicegroup $servicegroup): self
+    public function addGroup(Servicegroup $group): self
     {
-        $this->servicegroups[] = $servicegroup;
+        $this->groups[] = $group;
         return $this;
     }
 
@@ -631,6 +636,54 @@ class Service
     public function setHasGraphData(bool $hasGraphData): self
     {
         $this->hasGraphData = $hasGraphData;
+        return $this;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Tag $category
+     * @return self
+     */
+    public function addCategory(Tag $category): self
+    {
+        $this->categories[] = $category;
+        return $this;
+    }
+
+    /**
+     * @param Tag[] $categories
+     * @return self
+     * @throws \TypeError
+     */
+    public function setCategories(array $categories): self
+    {
+        $this->categories = [];
+        foreach ($categories as $category) {
+            $this->addCategory($category);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Servicegroup[] $groups
+     * @return self
+     * @throws \TypeError
+     */
+    public function setGroups(array $groups): self
+    {
+        $this->groups = [];
+        foreach ($groups as $group) {
+            $this->addGroup($group);
+        }
+
         return $this;
     }
 }
