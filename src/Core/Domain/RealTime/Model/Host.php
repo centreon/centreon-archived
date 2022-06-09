@@ -147,7 +147,7 @@ class Host
     /**
      * @var Hostgroup[]
      */
-    private $groups = [];
+    private array $groups = [];
 
     /**
      * @var Icon|null
@@ -167,7 +167,7 @@ class Host
     /**
      * @var Tag[]
      */
-    private $categories = [];
+    private array $categories = [];
 
     /**
      * Host constructor
@@ -709,6 +709,7 @@ class Host
     /**
      * @param Tag[] $categories
      * @return self
+     * @throws \InvalidArgumentException
      */
     public function setCategories(array $categories): self
     {

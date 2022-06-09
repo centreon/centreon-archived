@@ -34,7 +34,7 @@ class Service
     /**
      * @var Servicegroup[]
      */
-    private $groups = [];
+    private array $groups = [];
 
     /**
      * @var boolean
@@ -154,7 +154,7 @@ class Service
     /**
      * @var Tag[]
      */
-    private $categories = [];
+    private array $categories = [];
 
     /**
      * @param int $id
@@ -200,7 +200,6 @@ class Service
     /**
      * @param Servicegroup $group
      * @return self
-     * @throws \InvalidArgumentException
      */
     public function addGroup(Servicegroup $group): self
     {
@@ -651,7 +650,6 @@ class Service
     /**
      * @param Tag $category
      * @return self
-     * @throws \InvalidArgumentException
      */
     public function addCategory(Tag $category): self
     {
@@ -662,6 +660,7 @@ class Service
     /**
      * @param Tag[] $categories
      * @return self
+     * @throws \InvalidArgumentException
      */
     public function setCategories(array $categories): self
     {
@@ -679,6 +678,7 @@ class Service
     /**
      * @param Servicegroup[] $groups
      * @return self
+     * @throws \InvalidArgumentException
      */
     public function setGroups(array $groups): self
     {
