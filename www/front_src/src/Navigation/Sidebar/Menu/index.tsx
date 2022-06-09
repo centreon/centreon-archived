@@ -226,7 +226,7 @@ const NavigationMenu = ({
     setIsDoubleClickedFromRoot(false);
   };
 
-  useEffect(() => {
+  const defaultItems = (): void => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
       const filteredResult = flatten(searchedItems || []).filter(Boolean);
@@ -237,19 +237,16 @@ const NavigationMenu = ({
 
       addSelectedNavigationItemsByDefault(filteredResult);
     });
-  }, []);
+  };
+
+  document.addEventListener('visibilitychange', () => {
+    if (equals(document.visibilityState, 'visible')) {
+      defaultItems();
+    }
+  });
 
   useEffect(() => {
-    navigationData?.forEach((item) => {
-      const searchedItems = searchItemsHoveredByDefault(item);
-      const filteredResult = flatten(searchedItems || []).filter(Boolean);
-
-      if (isEmpty(filteredResult)) {
-        return;
-      }
-
-      addSelectedNavigationItemsByDefault(filteredResult);
-    });
+    defaultItems();
   }, [pathname, search]);
 
   const props = {
