@@ -1,0 +1,7 @@
+---
+centreon_application_monitoring_find_severities:
+    methods: "GET"
+    path: "/monitoring/severities"
+    controller: >-
+        Core\Severity\RealTime\Infrastructure\API\FindSeverityController
+    condition: "request.attributes.get('version') >= 22.04"
