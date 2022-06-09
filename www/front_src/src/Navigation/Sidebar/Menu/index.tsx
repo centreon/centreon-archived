@@ -58,6 +58,7 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const [isDoubleClickedFromRoot, setIsDoubleClickedFromRoot] = useState(false);
   const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
@@ -102,6 +103,8 @@ const NavigationMenu = ({
     if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
+    setIsDoubleClickedFromRoot(true);
+    setHoveredIndex(null);
     navigate(searchUrlFromEntry(currentPage) as string);
   };
 
@@ -215,6 +218,14 @@ const NavigationMenu = ({
     });
   };
 
+  const itemNavigated = (): void => {
+    setHoveredIndex(null);
+  };
+
+  const leaveMenuItem = (): void => {
+    setIsDoubleClickedFromRoot(false);
+  };
+
   useEffect(() => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
@@ -278,9 +289,11 @@ const NavigationMenu = ({
                 data={item}
                 hover={hover}
                 icon={<MenuIcon className={classes.icon} />}
+                isDoubleClickedFromRoot={isDoubleClickedFromRoot}
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
+                onLeaveMenuItem={leaveMenuItem}
                 onMouseEnter={(e: MouseEvent<HTMLElement>): void =>
                   hoverItem({ currentPage: item, e, index })
                 }
@@ -293,6 +306,7 @@ const NavigationMenu = ({
                     {...props}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
+                    isNavigated={itemNavigated}
                     onLeave={handleLeave}
                   />
                 )}
@@ -303,6 +317,7 @@ const NavigationMenu = ({
     ),
     memoProps: [
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       hoveredIndex,
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,

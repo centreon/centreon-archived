@@ -34,6 +34,7 @@ interface Props {
   currentWidth: number;
   data?: Array<Page>;
   isCollapsed: boolean;
+  isNavigated: () => void;
   isSubHeader?: boolean;
   level: number;
   onLeave?: () => void;
@@ -124,6 +125,7 @@ const CollapsibleItems = ({
   data,
   isCollapsed,
   isSubHeader,
+  isNavigated,
   currentTop,
   currentWidth,
   onLeave,
@@ -210,6 +212,10 @@ const CollapsibleItems = ({
     setCollapseScrollMaxWidth((window.innerWidth - rect.left) / 8);
   };
 
+  const isItemClicked = (): void => {
+    isNavigated();
+  };
+
   useEffect(() => {
     if (isCollapsed && collapsRef && collapsRef.current) {
       updateCollapseSize(collapsRef.current);
@@ -240,7 +246,9 @@ const CollapsibleItems = ({
             hoverItem({ currentPage: item, e, index });
 
           const isCollapseWithSubheader =
-            Array.isArray(item?.groups) && item.groups.length > 1;
+            Array.isArray(item?.groups) &&
+            item.groups.length > 1 &&
+            equals(index, hoveredIndex);
 
           const isSimpleCollapse =
             isArrayItem(item?.groups) && equals(index, hoveredIndex);
@@ -285,6 +293,7 @@ const CollapsibleItems = ({
                     <MenuItems
                       data={content}
                       hover={nestedHover}
+                      isItemClicked={isItemClicked}
                       isOpen={nestedIndex === hoveredIndex}
                       key={content.label}
                       onMouseEnter={mouseEnterContent}
@@ -295,12 +304,13 @@ const CollapsibleItems = ({
                 <MenuItems
                   data={item}
                   hover={hover}
+                  isItemClicked={isItemClicked}
                   isOpen={index === hoveredIndex}
                   onMouseEnter={mouseEnterItem}
                 />
               )}
 
-              {isCollapseWithSubheader && equals(index, hoveredIndex) ? (
+              {isCollapseWithSubheader ? (
                 <CollapsibleItems
                   isSubHeader
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
@@ -309,6 +319,7 @@ const CollapsibleItems = ({
                   currentWidth={itemWidth}
                   data={item.groups}
                   isCollapsed={index === hoveredIndex}
+                  isNavigated={isNavigated}
                   level={level + 1}
                   setCollapseScrollMaxHeight={setNestedScrollCollapsMaxHeight}
                   setCollapseScrollMaxWidth={setNestedScrollCollapsMaxWidth}
@@ -326,6 +337,7 @@ const CollapsibleItems = ({
                           currentWidth={itemWidth}
                           data={itemGroup.children}
                           isCollapsed={index === hoveredIndex}
+                          isNavigated={isNavigated}
                           level={level + 1}
                           setCollapseScrollMaxHeight={
                             setNestedScrollCollapsMaxHeight
