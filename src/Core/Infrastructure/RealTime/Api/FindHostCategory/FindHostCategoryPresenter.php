@@ -23,18 +23,32 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\FindHostCategory;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryResponse;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterInterface;
 
 class FindHostCategoryPresenter extends AbstractPresenter implements FindHostCategoryPresenterInterface
 {
     /**
+     * @param RequestParametersInterface $requestParameters
+     * @param PresenterFormatterInterface $presenterFormatter
+     */
+    public function __construct(
+        private RequestParametersInterface $requestParameters,
+        protected PresenterFormatterInterface $presenterFormatter,
+    ) {
+    }
+
+    /**
      * {@inheritDoc}
      * @param FindHostCategoryResponse $data
      */
     public function present(mixed $data): void
     {
-        $presenterResponse = $data->tags;
-        parent::present($presenterResponse);
+        parent::present([
+            'result' => $data->tags,
+            'meta' => $this->requestParameters->toArray()
+        ]);
     }
 }

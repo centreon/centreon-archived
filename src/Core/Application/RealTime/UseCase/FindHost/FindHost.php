@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHost;
 
+use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Host;
@@ -31,12 +32,13 @@ use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 
 class FindHost
@@ -49,6 +51,9 @@ class FindHost
      * @param ContactInterface $contact
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
+     * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
+     * @param MonitoringServiceInterface $monitoringService
+     * @param ReadTagRepositoryInterface $tagRepository
      */
     public function __construct(
         private ReadHostRepositoryInterface $repository,
@@ -58,6 +63,7 @@ class FindHost
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService,
+        private ReadTagRepositoryInterface $tagRepository,
     ) {
     }
 
@@ -98,9 +104,11 @@ class FindHost
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
         }
 
-        foreach ($hostgroups as $hostgroup) {
-            $host->addHostgroup($hostgroup);
-        }
+        $host->setGroups($hostgroups);
+
+        $categories = $this->tagRepository->findAllByResourceAndTypeId($host->getId(), 0, Tag::HOST_CATEGORY_TYPE_ID);
+
+        $host->setCategories($categories);
 
         /**
          * Obfuscate the passwords in Host commandLine
@@ -151,9 +159,10 @@ class FindHost
             $host->getMonitoringServerName(),
             $host->getStatus(),
             $host->getIcon(),
-            $host->getHostgroups(),
+            $host->getGroups(),
             $downtimes,
-            $acknowledgement
+            $acknowledgement,
+            $host->getCategories(),
         );
 
         $findHostResponse->timezone = $host->getTimezone();

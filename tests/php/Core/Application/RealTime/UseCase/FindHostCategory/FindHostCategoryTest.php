@@ -25,39 +25,39 @@ namespace Tests\Core\Application\RealTime\UseCase\FindHostCategory;
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterStub;
 
-it('Find all host categories', function () {
-    $hostCategory = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
-    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
-    $tagRepository->expects($this->once())
-        ->method('findAllByTypeId')
-        ->willReturn([$hostCategory]);
+beforeEach(function () {
+    $this->category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
+    $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $this->brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
+});
 
-    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
+it('should find all categories', function () {
+    $this->tagRepository->expects($this->once())
+        ->method('findAllByTypeId')
+        ->willReturn([$this->category]);
+
+    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
 
     expect($presenter->response->tags)->toHaveCount(1);
-    expect($presenter->response->tags[0]['id'])->toBe($hostCategory->getId());
-    expect($presenter->response->tags[0]['name'])->toBe($hostCategory->getName());
+    expect($presenter->response->tags[0]['id'])->toBe($this->category->getId());
+    expect($presenter->response->tags[0]['name'])->toBe($this->category->getName());
 });
 
-it('Find all service categories repository error', function () {
-    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
-    $tagRepository->expects($this->once())
+it('should present an ErrorResponse on repository error', function () {
+    $this->tagRepository->expects($this->once())
         ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
@@ -68,10 +68,8 @@ it('Find all service categories repository error', function () {
     );
 });
 
-it('Find all host categories repository bbdo version imcompatible', function ($bbdoVersion) {
-    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
-    $tagRepository->expects($this->once())
+it('should present an IncompatibilityResponse on bbdo version imcompatible', function ($bbdoVersion) {
+    $this->tagRepository->expects($this->once())
         ->method('findAllByTypeId')
         ->willReturn([]);
 
@@ -79,12 +77,11 @@ it('Find all host categories repository bbdo version imcompatible', function ($b
         ->setConfigurationKey('bbdo_version')
         ->setConfigurationValue($bbdoVersion);
 
-    $brokerRepository->expects($this->once())
-        ->method('findAllByParameterName')
-        ->with('bbdo_version')
+    $this->brokerRepository->expects($this->once())
+        ->method('findAllConfigurations')
         ->willReturn([$brokerConfiguration]);
 
-    $useCase = new FindHostCategory($tagRepository, $brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);

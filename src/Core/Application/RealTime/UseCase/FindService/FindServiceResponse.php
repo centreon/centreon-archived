@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindService;
 
+use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Downtime;
@@ -142,7 +143,12 @@ class FindServiceResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $servicegroups;
+    public $groups;
+
+    /**
+     * @var array<array<string, mixed>>
+     */
+    public $categories;
 
     /**
      * @var array<string, mixed>
@@ -179,6 +185,7 @@ class FindServiceResponse
      * @param Downtime[] $downtimes
      * @param Acknowledgement|null $acknowledgement
      * @param Host $host
+     * @param Tag[] $serviceCategories
      */
     public function __construct(
         public int $id,
@@ -189,14 +196,16 @@ class FindServiceResponse
         array $servicegroups,
         array $downtimes,
         ?Acknowledgement $acknowledgement,
-        Host $host
+        Host $host,
+        array $serviceCategories
     ) {
-        $this->servicegroups = $this->servicegroupsToArray($servicegroups);
+        $this->groups = $this->servicegroupsToArray($servicegroups);
         $this->status = $this->statusToArray($status);
         $this->icon = $this->iconToArray($icon);
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->host = $this->hostToArray($host);
+        $this->categories = $this->tagsToArray($serviceCategories);
     }
 
     /**

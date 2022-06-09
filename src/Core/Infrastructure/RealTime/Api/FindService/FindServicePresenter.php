@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\AbstractPresenter;
@@ -75,9 +75,10 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
             'active_checks' => $response->hasActiveChecks,
             'severity_level' => $response->severityLevel,
             'icon' => $response->icon,
-            'groups' => $response->servicegroups,
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
             'parent' => $response->host,
-            'monitoring_server_name' => $response->host['monitoring_server_name']
+            'monitoring_server_name' => $response->host['monitoring_server_name'],
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
         ];
 
         $acknowledgement = null;
