@@ -1,14 +1,10 @@
 import * as React from 'react';
 
-import { ifElse, pathEq, always, pathOr } from 'ramda';
-
 import { useRequest } from '@centreon/ui';
 
 import { ResourceListing } from '../models';
-import { labelSomethingWentWrong } from '../translatedLabels';
 
 import { defaultSortOrder, defaultSortField } from './columns';
-import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
 
 type SortOrder = 'asc' | 'desc';
@@ -41,11 +37,6 @@ const useListing = (): ListingState => {
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
-    getErrorMessage: ifElse(
-      pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
-      pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
-    ),
     request: listResources,
   });
 

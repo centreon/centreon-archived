@@ -17,7 +17,7 @@ import DowntimeDetailsTable from './DetailsTable/Downtime';
 
 interface StateChipProps {
   Chip: () => JSX.Element;
-  DetailsTable: React.SFC<{ endpoint: string }>;
+  DetailsTable: React.FC<{ endpoint: string }>;
   endpoint: string;
   label: string;
 }

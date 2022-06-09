@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { dec, equals, length, not, pipe } from 'ramda';
+import { equals, not, dec } from 'ramda';
 
 import { Link, makeStyles, Typography } from '@material-ui/core';
 
@@ -43,10 +43,7 @@ const links: Array<FooterLink> = [
   },
 ];
 
-const numbersOfLinks = pipe<Array<FooterLink>, number, number>(
-  length,
-  dec,
-)(links);
+const numbersOfLinks = dec(links.length);
 
 const Links = (): JSX.Element => {
   const classes = useStyles();

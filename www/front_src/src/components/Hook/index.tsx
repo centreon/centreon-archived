@@ -1,24 +1,19 @@
 import React, { Suspense } from 'react';
 
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import isEqual from 'lodash/isEqual';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 
 interface Props {
-  history;
   hooks;
   path;
 }
 
-const LoadableHooks = ({
-  history,
-  hooks,
-  path,
-  ...rest
-}: Props): JSX.Element => {
+const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element => {
+  const history = useHistory();
   const basename = history.createHref({
     hash: '',
     pathname: '/',
@@ -58,4 +53,4 @@ const mapStateToProps = ({ externalComponents }): Record<string, unknown> => ({
   hooks: externalComponents.hooks,
 });
 
-export default connect(mapStateToProps)(withRouter(Hook));
+export default connect(mapStateToProps)(Hook);
