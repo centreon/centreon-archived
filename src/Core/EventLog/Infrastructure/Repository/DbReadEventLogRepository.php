@@ -30,9 +30,9 @@ declare(strict_types=1);
 
 namespace Core\EventLog\Infrastructure\Repository;
 
+use cebe\openapi\spec\Parameter;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use http\Exception\InvalidArgumentException;
 use PDO;
 use PDOStatement;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -77,29 +77,38 @@ class DbReadEventLogRepository extends AbstractRepositoryDRB implements ReadEven
     public function findAll(): array
     {
         $this->info('Fetching event logs from database');
-        $this->sqlRequestTranslator->setConcordanceArray(['logs.output' => 'logs.output',]);
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'time' => 'logs.ctime',
+            'msgType' => 'logs.msg_type',
+            'status' => 'logs.status',
+            'type' => 'logs.type',
+        ]);
         $selectStmt = sprintf(
             'SELECT SQL_CALC_FOUND_ROWS %s FROM `:dbstg`.logs',
             join(', ', self::SELECTED_TABLE_COLS)
         );
         $query = $this->translateDbName($selectStmt);
 
-//        // Search
+        // add where clause
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         if (is_null($searchRequest)) {
-            throw new InvalidArgumentException('Event logs should be filtered');
+            throw new \InvalidArgumentException('Event logs should be filtered');
         }
         $query .= $searchRequest;
-//
-//        // Sort
-//        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-//        $query .= !is_null($sortRequest)
-//            ? $sortRequest
-//            : ' ORDER BY hc.hc_name ASC';
+
+        // add order statement
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $query .= $sortRequest ?? ' ORDER BY logs.ctime DESC';
 
         $statement = $this->db->prepare($query);
 
-        $statement->bindValue(':type', 1, PDO::PARAM_INT);
+        //bind values to where statement
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
         $statement->execute();
 
         return $this->statementToArray($statement);

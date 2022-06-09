@@ -23,12 +23,15 @@ declare(strict_types=1);
 
 namespace Core\EventLog\Infrastructure\Repository;
 
+use cebe\openapi\spec\Parameter;
+use \PDO;
 use \PDOStatement;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Core\EventLog\Domain\EventLog;
 
 class DbReadEventLogRepositoryTest extends TestCase
 {
@@ -36,8 +39,9 @@ class DbReadEventLogRepositoryTest extends TestCase
     private SqlRequestParametersTranslator $sqlRequestTranslator;
     private int $currentPageNb = 1;
     private int $maxResultsPerPage = 30;
-    private array $searchParams = ['logs.output' => 'LIKE :output'];
-    private array $sortParams = ['ctime' => 'DESC'];
+    private array $searchParams = [];
+    private array $sortParams = ['time' => 'DESC'];
+
     private const SELECTED_TABLE_COLS = [
         'logs.ctime',
         'logs.host_id',
@@ -54,32 +58,55 @@ class DbReadEventLogRepositoryTest extends TestCase
         'logs.instance_name'
     ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->initSqlRequestTranslator();
-    }
-
     /**
      * @dataProvider findAllDataProvider
      */
-    public function testFindAll(array $searchParams): void
+    public function testFindAll(array $searchParams, string $expectedWhere): void
     {
         $this->searchParams = $searchParams;
-        $expectedQuery = $this->generateExpectedQuery($searchParams);
+        $this->initSqlRequestTranslator();
+        $expectedQuery = $this->generateExpectedQuery($expectedWhere);
         $this->initDbMock($expectedQuery);
         $repository = new DbReadEventLogRepository($this->db, $this->sqlRequestTranslator);
 
         $eventLogs = $repository->findAll();
 
         $this->assertIsArray($eventLogs);
+        $this->assertCount(1, $eventLogs);
+        $this->assertInstanceOf(EventLog::class, $eventLogs[0]);
     }
 
     public function findAllDataProvider(): iterable
     {
         yield 'filter with date' => [
-            ['logs.ctime'=> '>1654207200', 'logs.ctime' => '<= 1654293600'],
+            [
+                '$and' =>
+                    ['time' => ['$gt' => 123,]],
+                    ['time' => ['$le' => 456,]],
+            ],
+            '(logs.ctime > :value_1 AND logs.ctime <= :value_2)',
+        ];
+
+        yield 'filter on message type' => [
+            ['msgType' => ['$in' => [123, 456],]],
+            'logs.msg_type IN (:value_1,:value_2)',
+        ];
+
+        yield 'filter on status' => [
+            ['status' => ['$in' => [1, 2],]],
+            'logs.status IN (:value_1,:value_2)',
+        ];
+
+        yield 'filter on type' => [['type' => 1], 'logs.type = :value_1',];
+
+        yield 'filter with multiple fields' => [
+            [
+                '$or' => [
+                    'msgType' => ['$in' => [123, 456]],
+                    'time' => ['$gt' => 789,],
+                ]
+            ],
+            '(logs.msg_type IN (:value_1,:value_2) OR logs.ctime > :value_3)',
         ];
     }
 
@@ -105,16 +132,22 @@ class DbReadEventLogRepositoryTest extends TestCase
     {
         $query = $this->createMock(PDOStatement::class);
         $query->method('execute')->willReturn(true);
+        $query
+            ->method('fetch')
+            ->willReturnOnConsecutiveCalls(
+                ['id' => 15,],
+                false
+            );
 
         return $query;
     }
 
-    private function initSqlRequestTranslator()
+    private function initSqlRequestTranslator(): void
     {
         $this->sqlRequestTranslator = new SqlRequestParametersTranslator($this->mockRequestParameters());
     }
 
-    private function mockRequestParameters()
+    private function mockRequestParameters(): RequestParametersInterface
     {
         $requestParams = $this->createMock(RequestParametersInterface::class);
         $requestParams->method('getPage')->willReturn($this->currentPageNb);
@@ -131,13 +164,13 @@ class DbReadEventLogRepositoryTest extends TestCase
         return $requestParams;
     }
 
-    private function generateExpectedQuery(array $searchParams): string
+    private function generateExpectedQuery(string $whereStatement): string
     {
         $selectStmt = sprintf(
             'SELECT SQL_CALC_FOUND_ROWS %s FROM `centreon_storage`.logs',
             join(', ', self::SELECTED_TABLE_COLS)
         );
 
-        return $selectStmt;
+        return $selectStmt . ' WHERE ' . $whereStatement . ' ORDER BY logs.ctime IS NULL, logs.ctime DESC';
     }
 }
