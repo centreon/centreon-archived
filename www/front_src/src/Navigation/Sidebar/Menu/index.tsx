@@ -226,7 +226,7 @@ const NavigationMenu = ({
     setIsDoubleClickedFromRoot(false);
   };
 
-  const defaultItems = (): void => {
+  const setDefaultItems = (): void => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
       const filteredResult = flatten(searchedItems || []).filter(Boolean);
