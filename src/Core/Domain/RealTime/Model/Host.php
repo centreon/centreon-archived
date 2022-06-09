@@ -709,15 +709,12 @@ class Host
     /**
      * @param Tag[] $categories
      * @return self
-     * @throws \InvalidArgumentException
+     * @throws \TypeError
      */
     public function setCategories(array $categories): self
     {
         $this->categories = [];
         foreach ($categories as $category) {
-            if (! $category instanceof Tag) {
-                throw new \InvalidArgumentException('Tag model expected.');
-            }
             $this->addCategory($category);
         }
         return $this;
@@ -726,15 +723,12 @@ class Host
     /**
      * @param Hostgroup[] $groups
      * @return self
-     * @throws \InvalidArgumentException
+     * @throws \TypeError
      */
     public function setGroups(array $groups): self
     {
         $this->groups = [];
         foreach ($groups as $group) {
-            if (! $group instanceof Hostgroup) {
-                throw new \InvalidArgumentException('Hostgroup model expected.');
-            }
             $this->addGroup($group);
         }
 

@@ -660,15 +660,12 @@ class Service
     /**
      * @param Tag[] $categories
      * @return self
-     * @throws \InvalidArgumentException
+     * @throws \TypeError
      */
     public function setCategories(array $categories): self
     {
         $this->categories = [];
         foreach ($categories as $category) {
-            if (! $category instanceof Tag) {
-                throw new \InvalidArgumentException('Tag model expected.');
-            }
             $this->addCategory($category);
         }
 
@@ -678,15 +675,12 @@ class Service
     /**
      * @param Servicegroup[] $groups
      * @return self
-     * @throws \InvalidArgumentException
+     * @throws \TypeError
      */
     public function setGroups(array $groups): self
     {
         $this->groups = [];
         foreach ($groups as $group) {
-            if (! $group instanceof Servicegroup) {
-                throw new \InvalidArgumentException('Servicegroup model expected.');
-            }
             $this->addGroup($group);
         }
 

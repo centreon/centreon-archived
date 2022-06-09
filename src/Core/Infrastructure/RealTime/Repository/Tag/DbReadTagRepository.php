@@ -90,6 +90,12 @@ class DbReadTagRepository extends AbstractRepositoryDRB implements ReadTagReposi
         $statement->bindValue(':type', $typeId, \PDO::PARAM_INT);
         $statement->execute();
 
+        // Set total
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
         $tags = [];
         while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $tags[] = DbTagFactory::createFromRecord($record);
