@@ -714,6 +714,9 @@ class Host
     {
         $this->categories = [];
         foreach ($categories as $category) {
+            if (! $category instanceof Tag) {
+                throw new \InvalidArgumentException('Tag model expected.');
+            }
             $this->addCategory($category);
         }
         return $this;

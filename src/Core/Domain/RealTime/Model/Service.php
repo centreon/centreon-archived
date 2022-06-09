@@ -204,9 +204,6 @@ class Service
      */
     public function addGroup(Servicegroup $group): self
     {
-        if (! $group instanceof Servicegroup) {
-            throw new \InvalidArgumentException('Servicegroup model expected.');
-        }
         $this->groups[] = $group;
         return $this;
     }
@@ -658,9 +655,6 @@ class Service
      */
     public function addCategory(Tag $category): self
     {
-        if (! $category instanceof Tag) {
-            throw new \InvalidArgumentException('Tag model expected.');
-        }
         $this->categories[] = $category;
         return $this;
     }
@@ -673,6 +667,9 @@ class Service
     {
         $this->categories = [];
         foreach ($categories as $category) {
+            if (! $category instanceof Tag) {
+                throw new \InvalidArgumentException('Tag model expected.');
+            }
             $this->addCategory($category);
         }
 
@@ -687,6 +684,9 @@ class Service
     {
         $this->groups = [];
         foreach ($groups as $group) {
+            if (! $group instanceof Servicegroup) {
+                throw new \InvalidArgumentException('Servicegroup model expected.');
+            }
             $this->addGroup($group);
         }
 

@@ -36,11 +36,11 @@ abstract class AbstractHypermediaProvider
      */
     protected function canContactAccessPages(ContactInterface $contact, array $topologyRoles): bool
     {
-        if (! $contact->isAdmin() && ! $this->hasTopologyAccess($contact, $topologyRoles)) {
-            return false;
+        if ($contact->isAdmin() || $this->hasTopologyAccess($contact, $topologyRoles)) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
