@@ -35,4 +35,15 @@ interface ReadTagRepositoryInterface
      * @throws \Throwable
      */
     public function findAllByTypeId(int $typeId): array;
+
+    /**
+     * Find tags of type typeId linked to the resource (identified by id and parentId)
+     *
+     * @param integer $id
+     * @param integer $parentId
+     * @param integer $typeId
+     * @return Tag[]
+     * @throws \Throwable
+     */
+    public function findAllByResourceAndTypeId(int $id, int $parentId, int $typeId): array;
 }

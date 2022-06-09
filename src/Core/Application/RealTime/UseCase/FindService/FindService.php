@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindService;
 
+use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Host;
@@ -34,6 +35,7 @@ use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Service as LegacyService;
+use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
