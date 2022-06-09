@@ -61,6 +61,7 @@ tags:
   - name: Proxy
   - name: Service
   - name: Service group
+  - name: Severity
   - name: Topology
 security:
   - Token: []
@@ -263,31 +264,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.Host.Template'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /configuration/hosts/categories:
-    get:
-      tags:
-        - Host category
-      summary: "List all host categories"
-      description: |
-        List of all host category configurations
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Configuration.Host.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -1629,6 +1605,43 @@ paths:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.ServiceGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/severities:
+    get:
+      tags:
+        - Severity
+      summary: "List all severities from the realtime"
+      description: |
+        List all the severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * id
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.Severity'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -6398,6 +6411,34 @@ components:
           type: string
           description: "Name of the service group"
           example: "MySG"
+    Monitoring.Severity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the severity"
+          example: 13
+        name:
+          type: string
+          description: "Name of the severity"
+          example: "severity-name"
+        level:
+          type: integer
+          format: int64
+          description: "Level defined for the severity"
+          example: 50
+        icon:
+          type: object
+          properties:
+            name:
+              type: string
+              description: "Name of the icon"
+              example: "centreon.png"
+            url:
+              type: string
+              description: "URL of the icon"
+              example: "img/centreon.png"
     Monitoring.ServiceMin:
       type: object
       properties:
