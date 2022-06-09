@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 
 import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router';
 import isEqual from 'lodash/isEqual';
 
 import { styled } from '@material-ui/core';
@@ -59,12 +59,13 @@ const getExternalPageRoutes = ({
 interface Props {
   allowedPages: Array<string>;
   externalPagesFetched: boolean;
-  history;
   pages: Record<string, unknown>;
 }
 
 const ReactRouter = React.memo<Props>(
-  ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
+  ({ allowedPages, pages, externalPagesFetched }: Props) => {
+    const history = useHistory();
+
     if (!externalPagesFetched) {
       // eslint-disable-next-line react/jsx-no-undef
       return <PageContainer />;
@@ -104,10 +105,10 @@ const ReactRouter = React.memo<Props>(
     isEqual(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
 );
 
-const mapStateToProps = (state): Record<string, unknown> => ({
+const mapStateToProps = (state): Props => ({
   allowedPages: allowedPagesSelector(state),
   externalPagesFetched: state.externalComponents.fetched,
   pages: state.externalComponents.pages,
 });
 
-export default connect(mapStateToProps)(withRouter(ReactRouter));
+export default connect(mapStateToProps)(ReactRouter);
