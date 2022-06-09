@@ -28,12 +28,12 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
-it('should thrown an Exception when a configuration client id is empty and configuration is active', function () {
+it('should throw an Exception when a configuration client id is empty and configuration is active', function () {
     new Configuration(true, true, '');
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::clientId')->getMessage());
 
 it(
-    'should thrown an Exception when both introspection and userinfo endpoints are empty and configuration is active',
+    'should throw an Exception when both introspection and userinfo endpoints are empty and configuration is active',
     function () {
         new Configuration(
             true,
