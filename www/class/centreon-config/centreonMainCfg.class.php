@@ -444,7 +444,7 @@ class CentreonMainCfg
                     $stmt->bindValue($paramName, empty($paramValue) ? null : $paramValue, \PDO::PARAM_STR);
                 }
             }
-            $res = $stmt->execute();
+            $stmt->execute();
         } catch (\PDOException $e) {
             return false;
         }
