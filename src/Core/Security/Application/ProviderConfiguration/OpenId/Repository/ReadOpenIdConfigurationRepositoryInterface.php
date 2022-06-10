@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
 
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 interface ReadOpenIdConfigurationRepositoryInterface
 {
