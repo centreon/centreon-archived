@@ -1003,11 +1003,6 @@ class CentreonLDAP
                 'Error while getting automatic synchronization value for LDAP Id : ' . $arId
             );
             // assuming it needs to be synchronized
-            $this->centreonLog->insertLog(
-                3,
-                'LDAP AUTH : Updating user DN of ' .
-                (!empty($contactData['contact_name']) ? $contactData['contact_name'] : "contact id $contactId")
-            );
             return true;
         }
         $this->centreonLog->insertLog(

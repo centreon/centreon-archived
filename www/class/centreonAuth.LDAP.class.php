@@ -108,7 +108,6 @@ class CentreonAuthLDAP
     {
         if (empty($this->contactInfos['contact_ldap_dn'])) {
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
-
         } elseif (
             ($userDn = $this->ldap->findUserDn($this->contactInfos['contact_alias']))
             && $userDn !== $this->contactInfos['contact_ldap_dn']
@@ -243,24 +242,26 @@ class CentreonAuthLDAP
              * Searching if the user already exist in the DB and updating OR adding him
              */
             if (isset($this->contactInfos['contact_id'])) {
-                $stmt = $this->pearDB->prepare(
-                    'UPDATE contact SET
-                    contact_ldap_dn = :userDn,
-                    contact_name = :userDisplay,
-                    contact_email = :userEmail,
-                    contact_pager = :userPager,
-                    ar_id = :arId
-                    WHERE contact_id = :contactId'
-                );
                 try {
                     // checking if the LDAP synchronization on login is enabled or needed
-                    if (
-                        !$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])
-                    ) {
+                    if (!$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])) {
                         // skipping the update
                         return true;
                     }
-                    // Updating the user DN and extended information
+
+                    $this->CentreonLog->insertLog(
+                        3,
+                        'LDAP AUTH : Updating user DN of ' . $userDisplay
+                    );
+                    $stmt = $this->pearDB->prepare(
+                        'UPDATE contact SET
+                        contact_ldap_dn = :userDn,
+                        contact_name = :userDisplay,
+                        contact_email = :userEmail,
+                        contact_pager = :userPager,
+                        ar_id = :arId
+                        WHERE contact_id = :contactId'
+                    );
                     $stmt->bindValue(':userDn', $userDn, \PDO::PARAM_STR);
                     $stmt->bindValue(':userDisplay', $userDisplay, \PDO::PARAM_STR);
                     $stmt->bindValue(':userEmail', $userEmail, \PDO::PARAM_STR);
