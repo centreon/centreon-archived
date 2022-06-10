@@ -38,6 +38,7 @@ class Configuration implements ProviderConfigurationInterface
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
     public const TYPE = 'openid';
     public const NAME = 'openid';
+    public const DEFAULT_CLAIM_NAME = "groups";
 
     /**
      * @var int|null
@@ -131,7 +132,7 @@ class Configuration implements ProviderConfigurationInterface
             Assertion::notEmpty($authorizationEndpoint, "Configuration::authorizationEndpoint");
             Assertion::notEmpty($tokenEndpoint, "Configuration::tokenEndpoint");
             Assertion::notNull($contactGroup, "Configuration::contactGroup");
-            Assertion::notEmpty($claimName, "Configuration::claimName");
+            $this->claimName = $claimName ?? self::DEFAULT_CLAIM_NAME;
             if (empty($introspectionTokenEndpoint) && empty($userInformationEndpoint)) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();
             }

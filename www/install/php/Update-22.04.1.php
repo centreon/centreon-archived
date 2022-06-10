@@ -1,5 +1,7 @@
 <?php
 
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -84,7 +86,7 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
         $openIdCustomConfiguration["alias_bind_attribute"] = null;
         $openIdCustomConfiguration["fullname_bind_attribute"] = null;
         $openIdCustomConfiguration["contact_group_id"] = $defaultContactGroupId;
-        $openIdCustomConfiguration["claim_name"] = null;
+        $openIdCustomConfiguration["claim_name"] = Configuration::DEFAULT_CLAIM_NAME;
 
         $statement = $pearDB->prepare(
             "UPDATE provider_configuration SET custom_configuration = :customConfiguration
