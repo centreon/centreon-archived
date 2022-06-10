@@ -52,6 +52,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     marginTop: theme.spacing(1),
   },
+  container: {
+    display: 'flex',
+    flex: 0.4,
+  },
   label: {
     color: theme.palette.common.white,
   },
@@ -174,7 +178,7 @@ const PollerMenu = (): JSX.Element | null => {
         toggleDetailedView();
       }}
     >
-      <div>
+      <div className={classes.container}>
         <SubmenuHeader active={toggled}>
           <IconHeader
             Icon={PollerIcon}

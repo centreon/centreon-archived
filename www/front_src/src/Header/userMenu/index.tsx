@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 import { gt, isNil, not, __ } from 'ramda';
 
+import { grey } from '@mui/material/colors';
+import Divider from '@mui/material/Divider';
 import {
   Typography,
   Paper,
@@ -34,6 +36,7 @@ import {
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
+import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
@@ -79,6 +82,18 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+  },
+  containerList: {
+    padding: theme.spacing(0.5, 0, 0.5, 0),
+  },
+  divider: {
+    borderColor: grey[600],
+    margin: theme.spacing(0, 1.25, 0, 1.25),
+  },
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -91,11 +106,17 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
+  icon: {
+    minWidth: theme.spacing(3.75),
+  },
+  itemMenu: {
+    padding: theme.spacing(0, 2, 0.25, 2),
+  },
   menu: {
     backgroundColor: theme.palette.common.black,
+    borderRadius: 0,
     color: theme.palette.common.white,
-    maxWidth: 230,
-    width: '100%',
+    minWidth: 190,
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
@@ -241,6 +262,14 @@ const UserMenu = (): JSX.Element => {
     logout();
   };
 
+  const capitalizeFirstLetter = (input: string | null): string => {
+    if (!input) {
+      return '';
+    }
+
+    return input.charAt(0).toUpperCase() + input.slice(1);
+  };
+
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
     loadUserData();
@@ -309,6 +338,14 @@ const UserMenu = (): JSX.Element => {
             transition
             anchorEl={anchorEl}
             className={classes.popper}
+            modifiers={[
+              {
+                name: 'offset',
+                options: {
+                  offset: [22, 12],
+                },
+              },
+            ]}
             open={not(isNil(anchorEl))}
             placement="bottom-end"
           >
@@ -321,21 +358,18 @@ const UserMenu = (): JSX.Element => {
                     display: isNil(anchorEl) ? 'none' : 'block',
                   }}
                 >
-                  <List dense>
-                    <ListItem>
+                  <List dense className={classes.containerList}>
+                    <ListItem className={classes.itemMenu}>
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
-                        {data.fullname}
+                        {capitalizeFirstLetter(data.username)}
                       </ListItemText>
                     </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primaryTypographyProps={primaryTypographyProps}
-                      >{`${t('as')} ${data.username}`}</ListItemText>
-                    </ListItem>
+                    <Divider className={classes.divider} />
+
                     {not(passwordIsNotYetAboutToExpire) && (
-                      <ListItem>
+                      <ListItem className={classes.itemMenu}>
                         <div className={classes.passwordExpiration}>
                           <Typography variant="body2">
                             {t(labelPasswordWillExpireIn)}:
@@ -347,11 +381,11 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {allowEditProfile && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton
                           onClick={navigateToUserSettingsAndCloseUserMenu}
                         >
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             <SettingsIcon fontSize="small" />
                           </ListItemIcon>
                           <ListItemText>{t(labelEditProfile)}</ListItemText>
@@ -359,9 +393,9 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {data.autologinkey && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton onClick={onCopy}>
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             {copied ? (
                               <CheckIcon fontSize="small" />
                             ) : (
@@ -381,9 +415,18 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
-                    <ListItem disableGutters>
-                      <ListItemButton onClick={logoutFromSession}>
-                        <ListItemIcon>
+                    <div className={classes.itemMenu}>
+                      <SwitchMode />
+                    </div>
+
+                    <Divider className={classes.divider} />
+
+                    <ListItem disableGutters disablePadding>
+                      <ListItemButton
+                        className={classes.button}
+                        onClick={logoutFromSession}
+                      >
+                        <ListItemIcon className={classes.icon}>
                           <LogoutIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>{t(labelLogout)}</ListItemText>
