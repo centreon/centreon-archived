@@ -33,6 +33,22 @@ try {
     $errorMessage = "Unable to update 'custom_configuration' column on 'provider_configuration' table";
     updateOpenIdConfiguration($pearDB);
 
+    $errorMessage = "Unable to create 'security_provider_openid_access_group_relation' table";
+    $pearDB->query("CREATE TABLE IF NOT EXISTS `security_provider_openid_access_group_relation` (
+        `claim_value` VARCHAR(255) NOT NULL,
+        `access_group_id` int(11) NOT NULL,
+        `provider_configuration_id` int(11) NOT NULL,
+        PRIMARY KEY (`claim_value`, `access_group_id`, `provider_configuration_id`),
+        CONSTRAINT `security_provider_openid_access_group_id`
+            FOREIGN KEY (`access_group_id`)
+            REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
+        CONSTRAINT `security_provider_openid_provider_configuration_id`
+            FOREIGN KEY (`provider_configuration_id`)
+            REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `unique_access_relation` UNIQUE (claim_value, access_group_id, provider_configuration_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ");
+
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
@@ -60,12 +76,15 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
 {
     $statement = $pearDB->query("SELECT custom_configuration FROM provider_configuration WHERE name='openid'");
     if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        $defaultContactGroupId = createOpenIdDefaultContactGroup($pearDB);
         $openIdCustomConfiguration = json_decode($result['custom_configuration'], true);
         $openIdCustomConfiguration["auto_import"] = false;
         $openIdCustomConfiguration["contact_template_id"] = null;
         $openIdCustomConfiguration["email_bind_attribute"] = null;
         $openIdCustomConfiguration["alias_bind_attribute"] = null;
         $openIdCustomConfiguration["fullname_bind_attribute"] = null;
+        $openIdCustomConfiguration["contact_group_id"] = $defaultContactGroupId;
+        $openIdCustomConfiguration["claim_name"] = null;
 
         $statement = $pearDB->prepare(
             "UPDATE provider_configuration SET custom_configuration = :customConfiguration
@@ -76,4 +95,19 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
     } else {
         throw new \Exception('No custom_configuration for open_id has been found');
     }
+}
+
+/**
+ * create Default Contact Group for OpenId Configuration
+ *
+ * @param CentreonDB $pearDB
+ * @return int
+ */
+function createOpenIdDefaultContactGroup(CentreonDB $pearDB): int
+{
+    $pearDB->query("INSERT INTO contactgroup (cg_name, cg_alias, cg_activate)
+        VALUES ('OpenId Default', 'OpenId Default ContactGroup', '1')
+    ");
+
+    return $pearDB->lastInsertId();
 }

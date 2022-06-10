@@ -35,12 +35,4 @@ interface ReadOpenIdConfigurationRepositoryInterface
      * @throws \Throwable
      */
     public function findConfiguration(): ?Configuration;
-
-    /**
-     * Find the Authorization Rules of the configuration.
-     *
-     * @return AuthorizationRule[]
-     * @throws \Throwable
-     */
-    public function findAuthorizationRules(): array;
 }

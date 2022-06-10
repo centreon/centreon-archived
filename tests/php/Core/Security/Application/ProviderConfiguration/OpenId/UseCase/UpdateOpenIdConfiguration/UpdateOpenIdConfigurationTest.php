@@ -26,6 +26,7 @@ namespace Tests\Core\Security\Application\ProviderConfiguration\OpenId\UseCase\U
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfiguration,
@@ -33,11 +34,15 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationRequest
 };
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
 
 beforeEach(function () {
     $this->repository = $this->createMock(WriteOpenIdConfigurationRepositoryInterface::class);
+    $this->contactGroupRepository = $this->createMock(ReadContactGroupRepositoryInterface::class);
+    $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
     $this->contactTemplateRepository = $this->createMock(ReadContactTemplateRepositoryInterface::class);
 });
@@ -61,20 +66,35 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
+    $request->contactGroupId = 1;
+    $request->claimName = 'groups';
 
-    $openIdConfiguration = OpenIdConfigurationFactory::createFromRequest($request);
+    $contactGroup = new ContactGroup(1, 'contact_group');
+
+    $openIdConfiguration = OpenIdConfigurationFactory::create($request, null, $contactGroup);
 
     $this->repository
         ->expects($this->once())
         ->method('updateConfiguration')
         ->with($openIdConfiguration);
 
+    $this->contactGroupRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with(1)
+        ->willReturn($contactGroup);
+
     $this->presenter
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new NoContentResponse());
 
-    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+    $useCase = new UpdateOpenIdConfiguration(
+        $this->repository,
+        $this->contactTemplateRepository,
+        $this->contactGroupRepository,
+        $this->accessGroupRepository
+    );
     $useCase($this->presenter, $request);
 });
 
@@ -97,6 +117,16 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
+    $request->contactGroupId = 1;
+    $request->claimName = 'groups';
+
+    $contactGroup = new ContactGroup(1, 'contact_group');
+
+    $this->contactGroupRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with(1)
+        ->willReturn($contactGroup);
 
     $this->presenter
         ->expects($this->once())
@@ -105,7 +135,12 @@ it('should present an ErrorResponse when an error occured during the use case ex
             AssertionException::ipOrDomain('abcd_.@', 'OpenIdConfiguration::trustedClientAddresses')->getMessage()
         ));
 
-    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+    $useCase = new UpdateOpenIdConfiguration(
+        $this->repository,
+        $this->contactTemplateRepository,
+        $this->contactGroupRepository,
+        $this->accessGroupRepository
+    );
 
     $useCase($this->presenter, $request);
 });
@@ -129,6 +164,8 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = true;
+    $request->contactGroupId = 1;
+    $request->claimName = 'groups';
 
     $missingParameters = [
         'contact_template',
@@ -137,6 +174,14 @@ it('should present an Error Response when auto import is enable and mandatory pa
         'fullname_bind_attribute',
     ];
 
+    $contactGroup = new ContactGroup(1, 'contact_group');
+
+    $this->contactGroupRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with(1)
+        ->willReturn($contactGroup);
+
     $this->presenter
         ->expects($this->once())
         ->method('setResponseStatus')
@@ -144,7 +189,12 @@ it('should present an Error Response when auto import is enable and mandatory pa
             OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingParameters)->getMessage()
         ));
 
-    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+    $useCase = new UpdateOpenIdConfiguration(
+        $this->repository,
+        $this->contactTemplateRepository,
+        $this->contactGroupRepository,
+        $this->accessGroupRepository
+    );
 
     $useCase($this->presenter, $request);
 });
@@ -172,6 +222,8 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->emailBindAttribute = 'email';
     $request->userAliasBindAttribute = 'alias';
     $request->userNameBindAttribute = 'name';
+    $request->contactGroupId = 1;
+    $request->claimName = 'groups';
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -186,7 +238,12 @@ it('should present an Error Response when auto import is enable and the contact 
             OpenIdConfigurationException::contactTemplateNotFound($request->contactTemplate['name'])->getMessage()
         ));
 
-    $useCase = new UpdateOpenIdConfiguration($this->repository, $this->contactTemplateRepository);
+    $useCase = new UpdateOpenIdConfiguration(
+        $this->repository,
+        $this->contactTemplateRepository,
+        $this->contactGroupRepository,
+        $this->accessGroupRepository
+    );
 
     $useCase($this->presenter, $request);
 });

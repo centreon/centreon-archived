@@ -35,7 +35,6 @@ use Core\Security\Domain\ProviderConfiguration\OpenId\{
     Exceptions\OpenIdConfigurationException
 };
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
-use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationErrorResponse;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
@@ -46,14 +45,12 @@ class UpdateOpenIdConfiguration
     use LoggerTrait;
 
     /**
-     * @param ReadOpenIdConfigurationRepositoryInterface $readRepository
      * @param WriteOpenIdConfigurationRepositoryInterface $repository
      * @param ReadContactTemplateRepositoryInterface $contactTemplateRepository
      * @param ReadContactGroupRepositoryInterface $contactGroupRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
-        private ReadOpenIdConfigurationRepositoryInterface $readRepository,
         private WriteOpenIdConfigurationRepositoryInterface $repository,
         private ReadContactTemplateRepositoryInterface $contactTemplateRepository,
         private ReadContactGroupRepositoryInterface $contactGroupRepository,
@@ -73,7 +70,7 @@ class UpdateOpenIdConfiguration
         try {
             $contactTemplate = $this->getContactTemplateOrFail($request->contactTemplate);
             $contactGroup = $this->getContactGroupOrFail($request->contactGroupId);
-            $authorizationRules = $this->createAuthorizationRulesIfNotExist($request->authorizationRules);
+            $authorizationRules = $this->createAuthorizationRules($request->authorizationRules);
             $configuration = OpenIdConfigurationFactory::create(
                 $request,
                 $contactTemplate,
@@ -141,12 +138,11 @@ class UpdateOpenIdConfiguration
     /**
      * Create non already existent AuthorizationRule Objects
      *
-     * @param array{claim_value: string, access_group_id: int} $authorizationRules
+     * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
      * @return AuthorizationRule[]
      */
-    private function createAuthorizationRulesIfNotExist(array $authorizationRulesFromRequest): array
+    private function createAuthorizationRules(array $authorizationRulesFromRequest): array
     {
-        $existingAuthorizationRules = $this->readRepository->findAuthorizationRules();
         $authorizationRules = [];
         foreach ($authorizationRulesFromRequest as $authorizationRule) {
             if (($accessGroup = $this->accessGroupRepository->find($authorizationRule["access_group_id"])) === null) {
@@ -156,32 +152,9 @@ class UpdateOpenIdConfiguration
                 continue;
             }
 
-            //Check if Authorization Rule already exists
             $authorizationRules[] = new AuthorizationRule($authorizationRule["claim_value"], $accessGroup);
         }
 
-        return $this->findNonExistingAuthorizationRules($existingAuthorizationRules, $authorizationRules);
-    }
-
-    /**
-     * Return all the non already existent Authorization Rules
-     *
-     * @param AuthorizationRule[] $existingAuthorizationRules
-     * @param AuthorizationRule[] $newAuthorizationRules
-     * @return AuthorizationRule[]
-     */
-    private function findNonExistingAuthorizationRules(
-        array $existingAuthorizationRules,
-        array $newAuthorizationRules
-    ): array {
-        $nonExistentAuthorizationRules = array_udiff(
-            $newAuthorizationRules,
-            $existingAuthorizationRules,
-            function ($newAuthorizationRule, $existingAuthorizationRule) {
-                return (int) ! $newAuthorizationRule->isEqual($existingAuthorizationRule);
-            }
-        );
-
-        return $nonExistentAuthorizationRules;
+        return $authorizationRules;
     }
 }

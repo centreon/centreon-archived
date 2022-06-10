@@ -24,9 +24,10 @@ declare(strict_types=1);
 namespace Tests\Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
 use Assert\InvalidArgumentException;
+use Core\Contact\Domain\Model\ContactGroup;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 it('should throw an Exception when a configuration client id is empty and configuration is active', function () {
     new Configuration(true, true, '');
@@ -43,6 +44,14 @@ it(
             'http://127.0.0.1/auth/openid-connect',
             '/authorization',
             '/token',
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            new ContactGroup(1, 'contact_group'),
+            'groups'
         );
     }
 )->throws(

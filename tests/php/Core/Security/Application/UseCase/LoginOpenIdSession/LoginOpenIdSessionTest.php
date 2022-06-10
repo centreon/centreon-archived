@@ -25,6 +25,7 @@ namespace Tests\Core\Security\Application\UseCase\LoginOpenIdSession;
 
 use CentreonDB;
 use Pimple\Container;
+use Core\Contact\Domain\Model\ContactGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,9 +36,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSession;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
 use Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
@@ -82,7 +83,12 @@ beforeEach(function () {
         '/token',
         '/introspect',
         '/userinfo',
-        new ContactTemplate(1, 'contact_template')
+        new ContactTemplate(1, 'contact_template'),
+        null,
+        null,
+        null,
+        new ContactGroup(1, 'contact_group'),
+        'groups'
     );
 
     $this->validOpenIdConfiguration

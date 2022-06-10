@@ -27,7 +27,6 @@ use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
 class AuthorizationRule
 {
-
     /**
      * @param string $claimValue
      * @param AccessGroup $accessGroup
@@ -50,17 +49,5 @@ class AuthorizationRule
     public function getAccessGroup(): AccessGroup
     {
         return $this->accessGroup;
-    }
-
-    /**
-     * Validate that two Authorization Rules are equal
-     *
-     * @param AuthorizationRule $authorizationRule
-     * @return bool
-     */
-    public function isEqual(AuthorizationRule $authorizationRule): bool
-    {
-        return $authorizationRule->getClaimValue() === $this->claimValue
-            && $authorizationRule->getAccessGroup()->getId() === $this->accessGroup->getId();
     }
 }

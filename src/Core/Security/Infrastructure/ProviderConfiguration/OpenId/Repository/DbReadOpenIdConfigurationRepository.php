@@ -100,13 +100,4 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
 
         return $configuration;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function findAuthorizationRules(): array
-    {
-        //@TODO: Implements this method on GET use case
-        return [];
-    }
 }

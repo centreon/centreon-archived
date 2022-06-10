@@ -98,7 +98,7 @@ it('should present a provider configuration', function () {
         expect($presenter->response->emailBindAttribute)->toBeNull();
         expect($presenter->response->userAliasBindAttribute)->toBeNull();
         expect($presenter->response->userNameBindAttribute)->toBeNull();
-});
+})->skip('reimplement this test while handle find configuration useCase');
 
 it('should present a NotFoundReponse when no configuration is found', function () {
     $useCase = new FindOpenIdConfiguration($this->repository);

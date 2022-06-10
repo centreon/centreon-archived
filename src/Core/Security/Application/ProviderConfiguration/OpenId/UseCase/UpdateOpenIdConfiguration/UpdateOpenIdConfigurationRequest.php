@@ -141,7 +141,7 @@ class UpdateOpenIdConfigurationRequest
     public ?string $claimName = null;
 
     /**
-     * @var array{claim_value: string, acces_group_id: int}
+     * @var array<array{claim_value: string, access_group_id: int}>
      */
     public array $authorizationRules = [];
 }

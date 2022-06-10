@@ -45,7 +45,7 @@ class OpenIdConfigurationFactory
         UpdateOpenIdConfigurationRequest $request,
         ?ContactTemplate $contactTemplate = null,
         ?ContactGroup $contactGroup = null,
-        array $authorizationRules= []
+        array $authorizationRules = []
     ): Configuration {
         $configuration = new Configuration(
             $request->isActive,

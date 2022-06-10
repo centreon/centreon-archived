@@ -48,24 +48,40 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
      */
     public function updateConfiguration(Configuration $configuration): void
     {
-        $this->info('Updating OpenID Configuration in DBMS');
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                "UPDATE `:db`.`provider_configuration` SET
-                `custom_configuration` = :customConfiguration, `is_active` = :isActive, `is_forced` = :isForced
-                WHERE `name`='openid'"
-            )
-        );
-        $statement->bindValue(
-            ':customConfiguration',
-            json_encode($this->buildCustomConfigurationFromOpenIdConfiguration($configuration)),
-            \PDO::PARAM_STR
-        );
-        $statement->bindValue(':isActive', $configuration->isActive() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->bindValue(':isForced', $configuration->isForced() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->execute();
-        //@TODO: Transaction for those 2 request
-        $this->insertAuthorizationRules($configuration->getAuthorizationRules());
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        try {
+            if (! $isAlreadyInTransaction) {
+                $this->db->beginTransaction();
+            }
+
+            $this->info('Updating OpenID Configuration in DBMS');
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    "UPDATE `:db`.`provider_configuration` SET
+                    `custom_configuration` = :customConfiguration, `is_active` = :isActive, `is_forced` = :isForced
+                    WHERE `name`='openid'"
+                )
+            );
+            $statement->bindValue(
+                ':customConfiguration',
+                json_encode($this->buildCustomConfigurationFromOpenIdConfiguration($configuration)),
+                \PDO::PARAM_STR
+            );
+            $statement->bindValue(':isActive', $configuration->isActive() ? '1' : '0', \PDO::PARAM_STR);
+            $statement->bindValue(':isForced', $configuration->isForced() ? '1' : '0', \PDO::PARAM_STR);
+            $statement->execute();
+            //@TODO: Transaction for those 2 request
+            $this->updateAuthorizationRules($configuration->getAuthorizationRules());
+
+            if (! $isAlreadyInTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Throwable $ex) {
+            if (! $isAlreadyInTransaction) {
+                $this->db->rollBack();
+            }
+            throw $ex;
+        }
     }
 
     /**
@@ -106,11 +122,18 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
      *
      * @param array<AuthorizationRule> $authorizationRules
      */
-    private function insertAuthorizationRules(array $authorizationRules): void
+    private function updateAuthorizationRules(array $authorizationRules): void
     {
         $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+
         if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $providerConfigurationId = (int) $result['id'];
+            $deleteStatement = $this->db->prepare(
+                "DELETE FROM security_provider_openid_access_group_relation
+                    WHERE provider_configuration_id = :providerConfigurationId"
+            );
+            $deleteStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+            $deleteStatement->execute();
 
             $insertStatement = $this->db->prepare(
                 "INSERT INTO security_provider_openid_access_group_relation

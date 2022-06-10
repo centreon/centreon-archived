@@ -90,12 +90,23 @@ class Configuration implements ProviderConfigurationInterface
     private array $authorizationRules = [];
 
     /**
+     * Undocumented function
+     *
+     * @param boolean $isActive
+     * @param boolean $isAutoImportEnabled
+     * @param string|null $clientId
+     * @param string|null $clientSecret
+     * @param string|null $baseUrl
+     * @param string|null $authorizationEndpoint
+     * @param string|null $tokenEndpoint
+     * @param string|null $introspectionTokenEndpoint
+     * @param string|null $userInformationEndpoint
      * @param ContactTemplate|null $contactTemplate
-     * @param bool $isAutoImportEnabled
      * @param string|null $emailBindAttribute
      * @param string|null $userAliasBindAttribute
      * @param string|null $userNameBindAttribute
-     * @throws OpenIdConfigurationException
+     * @param ContactGroup|null $contactGroup
+     * @param string|null $claimName
      */
     public function __construct(
         private bool $isActive,
@@ -112,7 +123,7 @@ class Configuration implements ProviderConfigurationInterface
         private ?string $userAliasBindAttribute = null,
         private ?string $userNameBindAttribute = null,
         private ?ContactGroup $contactGroup = null,
-        private string $claimName = "groups"
+        private ?string $claimName = null
     ) {
         if ($isActive === true) {
             Assertion::notEmpty($clientId, "Configuration::clientId");
@@ -120,7 +131,7 @@ class Configuration implements ProviderConfigurationInterface
             Assertion::notEmpty($baseUrl, "Configuration::baseUrl");
             Assertion::notEmpty($authorizationEndpoint, "Configuration:authorizationEndpoint");
             Assertion::notEmpty($tokenEndpoint, "Configuration::tokenEndpoint");
-            Assertion::notNull($contactGroup,"Configuration::contactGroup");
+            Assertion::notNull($contactGroup, "Configuration::contactGroup");
             Assertion::notEmpty($claimName, "Configuration::claimName");
             if (empty($introspectionTokenEndpoint) && empty($userInformationEndpoint)) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();
@@ -497,18 +508,24 @@ class Configuration implements ProviderConfigurationInterface
         return $this->userNameBindAttribute;
     }
 
+    /**
+     * @return string|null
+     */
     public function getClaimName(): ?string
     {
         return $this->claimName;
     }
 
+    /**
+     * @return ContactGroup|null
+     */
     public function getContactGroup(): ?ContactGroup
     {
         return $this->contactGroup;
     }
 
     /**
-     * @return array<AuthorizationRule>
+     * @return AuthorizationRule[]
      */
     public function getAuthorizationRules(): array
     {
@@ -516,7 +533,7 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @param array<AuthorizationRule> $authorizationRules
+     * @param AuthorizationRule[] $authorizationRules
      * @return self
      * @throws \TypeError
      */
