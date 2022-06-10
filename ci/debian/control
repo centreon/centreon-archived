@@ -38,6 +38,7 @@ Depends:
     centreon-license-manager (>= ${centreon:version}~),
     centreon-pp-manager (>= ${centreon:version}~),
     centreon-auto-discovery-server (>= ${centreon:version}~),
+    centreon-web (>= ${centreon:version}~),
     centreon-web-apache (>= ${centreon:version}~),
     centreon-broker (>= ${centreon:version}~),
     centreon-engine-extcommands (>= ${centreon:version}~),
