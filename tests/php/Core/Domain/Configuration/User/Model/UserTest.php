@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration;
+namespace Tests\Core\Domain\Configuration\User\Model;
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Configuration\User\Model\User;

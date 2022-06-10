@@ -22,12 +22,13 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHost;
 
-use Core\Application\RealTime\Common\RealTimeResponseTrait;
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\HostStatus;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\HostStatus;
+use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Application\RealTime\Common\RealTimeResponseTrait;
 
 class FindHostResponse
 {
@@ -151,7 +152,7 @@ class FindHostResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $hostgroups;
+    public $groups;
 
     /**
      * @var array<string, mixed>
@@ -169,6 +170,11 @@ class FindHostResponse
     public $acknowledgement;
 
     /**
+     * @var array<array<string, mixed>>
+     */
+    public $categories;
+
+    /**
      * @param int $id
      * @param string $name
      * @param string $address
@@ -177,7 +183,8 @@ class FindHostResponse
      * @param Icon|null $icon
      * @param Hostgroup[] $hostgroups
      * @param Downtime[] $downtimes
-     * @param Acknowledgement|null $acknowledgement
+     * @param Acknowledgement|null $acknowledgement,
+     * @param Tag[] $categories
      */
     public function __construct(
         public int $id,
@@ -188,13 +195,15 @@ class FindHostResponse
         ?Icon $icon,
         array $hostgroups,
         array $downtimes,
-        ?Acknowledgement $acknowledgement
+        ?Acknowledgement $acknowledgement,
+        array $categories,
     ) {
         $this->icon = $this->iconToArray($icon);
         $this->status = $this->statusToArray($status);
-        $this->hostgroups = $this->hostgroupsToArray($hostgroups);
+        $this->groups = $this->hostgroupsToArray($hostgroups);
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
+        $this->categories = $this->tagsToArray($categories);
     }
 
     /**

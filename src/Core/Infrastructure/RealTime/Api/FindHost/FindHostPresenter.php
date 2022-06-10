@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\FindHost;
 
 use CentreonDuration;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\AbstractPresenter;
@@ -80,7 +80,8 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
             'severity_level' => $response->severityLevel,
             'parent' => null,
             'icon' => $response->icon,
-            'groups' => $this->hypermediaCreator->createInternalGroupsUri($response)
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response)
         ];
 
         $acknowledgement = null;
