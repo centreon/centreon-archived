@@ -44,17 +44,8 @@ module.exports = (jscTransformConfiguration) =>
       }),
       new HtmlWebpackHarddiskPlugin(),
       new CompressionPlugin({
-        algorithm: 'brotliCompress',
-        compressionOptions: {
-          params: {
-            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-          },
-        },
-        deleteOriginalAssets: false,
-        filename: '[path][base].br',
-        minRatio: 0.8,
-        test: /\.(js|css|html|svg)$/,
-        threshold: 10240,
+        algorithm: 'gzip',
+        test: /\.(js)$/,
       }),
     ],
   });
