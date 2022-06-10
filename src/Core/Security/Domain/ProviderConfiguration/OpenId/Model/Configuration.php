@@ -24,11 +24,12 @@ declare(strict_types=1);
 namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
 use Core\Contact\Domain\Model\ContactTemplate;
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
-class OpenIdConfiguration implements ProviderConfigurationInterface
+class Configuration implements ProviderConfigurationInterface
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';
@@ -40,11 +41,6 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @var int|null
      */
     private ?int $id = null;
-
-    /**
-     * @var bool
-     */
-    private bool $isActive = false;
 
     /**
      * @var bool
@@ -64,31 +60,6 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     /**
      * @var string|null
      */
-    private ?string $baseUrl = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $authorizationEndpoint = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $tokenEndpoint = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $introspectionTokenEndpoint = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $userInformationEndpoint = null;
-
-    /**
-     * @var string|null
-     */
     private ?string $endSessionEndpoint = null;
 
     /**
@@ -100,16 +71,6 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @var string|null
      */
     private ?string $loginClaim = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $clientId = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $clientSecret = null;
 
     /**
      * @var string|null
@@ -130,28 +91,48 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
      * @throws OpenIdConfigurationException
      */
     public function __construct(
+        private bool $isActive,
         private bool $isAutoImportEnabled,
+        private ?string $clientId = null,
+        private ?string $clientSecret = null,
+        private ?string $baseUrl = null,
+        private ?string $authorizationEndpoint = null,
+        private ?string $tokenEndpoint = null,
+        private ?string $introspectionTokenEndpoint = null,
+        private ?string $userInformationEndpoint = null,
         private ?ContactTemplate $contactTemplate = null,
         private ?string $emailBindAttribute = null,
         private ?string $userAliasBindAttribute = null,
         private ?string $userNameBindAttribute = null,
     ) {
-        if ($isAutoImportEnabled === true) {
-            $missingMandatoryParameters = [];
-            if ($contactTemplate === null) {
-                $missingMandatoryParameters[] = 'contact_template';
+        if ($isActive === true) {
+            Assertion::notEmpty($clientId, "Configuration::clientId");
+            Assertion::notEmpty($clientSecret, "Configuration::clientSecret");
+            Assertion::notEmpty($baseUrl, "Configuration::baseUrl");
+            Assertion::notEmpty($authorizationEndpoint, "Configuration::authorizationEndpoint");
+            Assertion::notEmpty($tokenEndpoint, "Configuration::tokenEndpoint");
+            if (empty($introspectionTokenEndpoint) && empty($userInformationEndpoint)) {
+                throw OpenIdConfigurationException::missingInformationEndpoint();
             }
-            if (empty($emailBindAttribute)) {
-                $missingMandatoryParameters[] = 'email_bind_attribute';
-            }
-            if (empty($userAliasBindAttribute)) {
-                $missingMandatoryParameters[] = 'alias_bind_attribute';
-            }
-            if (empty($userNameBindAttribute)) {
-                $missingMandatoryParameters[] = 'fullname_bind_attribute';
-            }
-            if (! empty($missingMandatoryParameters)) {
-                throw OpenIdConfigurationException::missingAutoImportMandatoryParameters($missingMandatoryParameters);
+            if ($isAutoImportEnabled === true) {
+                $missingMandatoryParameters = [];
+                if ($contactTemplate === null) {
+                    $missingMandatoryParameters[] = 'contact_template';
+                }
+                if (empty($emailBindAttribute)) {
+                    $missingMandatoryParameters[] = 'email_bind_attribute';
+                }
+                if (empty($userAliasBindAttribute)) {
+                    $missingMandatoryParameters[] = 'alias_bind_attribute';
+                }
+                if (empty($userNameBindAttribute)) {
+                    $missingMandatoryParameters[] = 'fullname_bind_attribute';
+                }
+                if (! empty($missingMandatoryParameters)) {
+                    throw OpenIdConfigurationException::missingAutoImportMandatoryParameters(
+                        $missingMandatoryParameters
+                    );
+                }
             }
         }
     }
@@ -181,17 +162,6 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     public function isActive(): bool
     {
         return $this->isActive;
-    }
-
-    /**
-     * @param bool $isActive
-     * @return self
-     */
-    public function setActive(bool $isActive): self
-    {
-        $this->isActive = $isActive;
-
-        return $this;
     }
 
     /**
@@ -260,6 +230,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     /**
      * @param string[] $blacklistClientAddresses
      * @return self
+     * @throws AssertionException
      */
     public function setBlacklistClientAddresses(array $blacklistClientAddresses): self
     {
@@ -274,6 +245,7 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     /**
      * @param string $blacklistClientAddress
      * @return self
+     * @throws AssertionException
      */
     public function addBlacklistClientAddress(string $blacklistClientAddress): self
     {
@@ -310,33 +282,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @param string|null $baseUrl
-     * @return self
-     */
-    public function setBaseUrl(?string $baseUrl): self
-    {
-        $this->baseUrl = $baseUrl;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getAuthorizationEndpoint(): ?string
     {
         return $this->authorizationEndpoint;
-    }
-
-    /**
-     * @param string|null $authorizationEndpoint
-     * @return self
-     */
-    public function setAuthorizationEndpoint(?string $authorizationEndpoint): self
-    {
-        $this->authorizationEndpoint = $authorizationEndpoint;
-
-        return $this;
     }
 
     /**
@@ -348,17 +298,6 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @param string|null $tokenEndpoint
-     * @return self
-     */
-    public function setTokenEndpoint(?string $tokenEndpoint): self
-    {
-        $this->tokenEndpoint = $tokenEndpoint;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getIntrospectionTokenEndpoint(): ?string
@@ -367,33 +306,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @param string|null $introspectionTokenEndpoint
-     * @return self
-     */
-    public function setIntrospectionTokenEndpoint(?string $introspectionTokenEndpoint): self
-    {
-        $this->introspectionTokenEndpoint = $introspectionTokenEndpoint;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getUserInformationEndpoint(): ?string
     {
         return $this->userInformationEndpoint;
-    }
-
-    /**
-     * @param string|null $userInformationEndpoint
-     * @return self
-     */
-    public function setUserInformationEndpoint(?string $userInformationEndpoint): self
-    {
-        $this->userInformationEndpoint = $userInformationEndpoint;
-
-        return $this;
     }
 
     /**
@@ -476,33 +393,11 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     }
 
     /**
-     * @param string|null $clientId
-     * @return self
-     */
-    public function setClientId(?string $clientId): self
-    {
-        $this->clientId = $clientId;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getClientSecret(): ?string
     {
         return $this->clientSecret;
-    }
-
-    /**
-     * @param string|null $clientSecret
-     * @return self
-     */
-    public function setClientSecret(?string $clientSecret): self
-    {
-        $this->clientSecret = $clientSecret;
-
-        return $this;
     }
 
     /**

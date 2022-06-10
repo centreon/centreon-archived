@@ -33,20 +33,24 @@ class OpenIdConfigurationFactory
 {
     /**
      * @param UpdateOpenIdConfigurationRequest $request
-     * @return OpenIdConfiguration
+     * @param ContactTemplate|null $contactTemplate
+     * @return Configuration
+     * @throws OpenIdConfigurationException
      */
-    public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
-    {
-        if ($request->userInformationEndpoint === null && $request->introspectionTokenEndpoint === null) {
-            throw OpenIdConfigurationException::missingInformationEndpoint();
-        }
-
-        $contactTemplate = $request->contactTemplate !== null
-            ? new ContactTemplate($request->contactTemplate['id'], $request->contactTemplate['name'])
-            : null;
-
-        $configuration = new OpenIdConfiguration(
+    public static function createFromRequest(
+        UpdateOpenIdConfigurationRequest $request,
+        ?ContactTemplate $contactTemplate = null
+    ): Configuration {
+        $configuration = new Configuration(
+            $request->isActive,
             $request->isAutoImportEnabled,
+            $request->clientId,
+            $request->clientSecret,
+            $request->baseUrl,
+            $request->authorizationEndpoint,
+            $request->tokenEndpoint,
+            $request->introspectionTokenEndpoint,
+            $request->userInformationEndpoint,
             $contactTemplate,
             $request->emailBindAttribute,
             $request->userAliasBindAttribute,
@@ -54,20 +58,12 @@ class OpenIdConfigurationFactory
         );
 
         $configuration
-            ->setActive($request->isActive)
             ->setForced($request->isForced)
             ->setTrustedClientAddresses($request->trustedClientAddresses)
             ->setBlacklistClientAddresses($request->blacklistClientAddresses)
-            ->setBaseUrl($request->baseUrl)
-            ->setAuthorizationEndpoint($request->authorizationEndpoint)
-            ->setTokenEndpoint($request->tokenEndpoint)
-            ->setIntrospectionTokenEndpoint($request->introspectionTokenEndpoint)
-            ->setUserInformationEndpoint($request->userInformationEndpoint)
             ->setEndSessionEndpoint($request->endSessionEndpoint)
             ->setConnectionScopes($request->connectionScopes)
             ->setLoginClaim($request->loginClaim)
-            ->setClientId($request->clientId)
-            ->setClientSecret($request->clientSecret)
             ->setAuthenticationType($request->authenticationType)
             ->setVerifyPeer($request->verifyPeer);
 

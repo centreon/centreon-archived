@@ -37,7 +37,7 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSession;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
 use Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
@@ -72,26 +72,26 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
-    $this->validOpenIdConfiguration = new OpenIdConfiguration(
+    $this->validOpenIdConfiguration = new Configuration(
+        true,
         false,
+        'MyCl1ientId',
+        'MyCl1ientSuperSecr3tKey',
+        'http://127.0.0.1/auth/openid-connect',
+        '/authorization',
+        '/token',
+        '/introspect',
+        '/userinfo',
         new ContactTemplate(1, 'contact_template')
     );
 
     $this->validOpenIdConfiguration
-        ->setActive(true)
         ->setForced(true)
         ->setTrustedClientAddresses([])
         ->setBlacklistClientAddresses([])
-        ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
-        ->setAuthorizationEndpoint('/authorization')
-        ->setTokenEndpoint('/token')
-        ->setIntrospectionTokenEndpoint('/introspect')
-        ->setUserInformationEndpoint('/userinfo')
         ->setEndSessionEndpoint('/logout')
         ->setConnectionScopes([])
         ->setLoginClaim('preferred_username')
-        ->setClientId('MyCl1ientId')
-        ->setClientSecret('MyCl1ientSuperSecr3tKey')
         ->setAuthenticationType('client_secret_post')
         ->setVerifyPeer(false);
 });

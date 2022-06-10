@@ -34,7 +34,7 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use CentreonUserLog;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
@@ -45,9 +45,9 @@ class OpenIdProvider implements OpenIdProviderInterface
     use LoggerTrait;
 
     /**
-     * @var OpenIdConfiguration
+     * @var Configuration
      */
-    private OpenIdConfiguration $configuration;
+    private Configuration $configuration;
 
     /**
      * @var ProviderToken
@@ -95,7 +95,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @inheritDoc
      */
-    public function getConfiguration(): OpenIdConfiguration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
@@ -121,7 +121,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
-        if (!is_a($configuration, OpenIdConfiguration::class)) {
+        if (!is_a($configuration, Configuration::class)) {
             throw new \InvalidArgumentException('Bad provider configuration');
         }
         $this->configuration = $configuration;
@@ -165,7 +165,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function getName(): string
     {
-        return OpenIdConfiguration::NAME;
+        return Configuration::NAME;
     }
 
     /**
@@ -184,16 +184,16 @@ class OpenIdProvider implements OpenIdProviderInterface
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void
     {
         $this->info('Start authenticating user...', [
-            'provider' => OpenIdConfiguration::NAME
+            'provider' => Configuration::NAME
         ]);
         if (empty($authorizationCode)) {
             $this->error(
                 'No authorization code return from external provider',
                 [
-                    'provider' => OpenIdConfiguration::NAME
+                    'provider' => Configuration::NAME
                 ]
             );
-            throw SSOAuthenticationException::noAuthorizationCode(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::noAuthorizationCode(Configuration::NAME);
         }
 
         if ($this->configuration->getTokenEndpoint() === null) {
@@ -210,7 +210,7 @@ class OpenIdProvider implements OpenIdProviderInterface
 
         $this->sendRequestForConnectionTokenOrFail($authorizationCode);
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
-            throw SSOAuthenticationException::tokensExpired(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::tokensExpired(Configuration::NAME);
         }
         if ($this->configuration->getIntrospectionTokenEndpoint() !== null) {
             $this->sendRequestForIntrospectionTokenOrFail();
@@ -272,7 +272,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorInLoginLogFile('Refresh Token Info:', $content);
             $this->logErrorFromExternalProvider($content);
-            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
         $accessTokenLog = [
@@ -355,7 +355,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorInLoginLogFile('Connection Token Info: ', $content);
             $this->logErrorFromExternalProvider($content);
-            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
         $accessTokenLog = [
@@ -442,7 +442,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorInLoginLogFile('Introspection Token Info: ', $content);
             $this->logErrorFromExternalProvider($content);
-            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('Token Introspection Information: ', $content);
         $this->info('Introspection token information found');
@@ -488,7 +488,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorInLoginLogFile('User Information Info: ', $content);
             $this->logErrorFromExternalProvider($content);
-            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
+            throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->info('User information found');
         $this->userInformations = $content;
@@ -531,7 +531,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $loginClaim = ! empty($this->configuration->getLoginClaim())
             ? $this->configuration->getLoginClaim()
-            : OpenIdConfiguration::DEFAULT_LOGIN_GLAIM;
+            : Configuration::DEFAULT_LOGIN_GLAIM;
         if (
             !array_key_exists($loginClaim, $this->userInformations)
             && $this->configuration->getUserInformationEndpoint() !== null
@@ -544,7 +544,7 @@ class OpenIdProvider implements OpenIdProviderInterface
                 "[Openid] [Error] Unable to get login from claim: " . $loginClaim
             );
             $this->error('Login Claim not found', ['login_claim' => $loginClaim]);
-            throw SSOAuthenticationException::loginClaimNotFound(OpenIdConfiguration::NAME, $loginClaim);
+            throw SSOAuthenticationException::loginClaimNotFound(Configuration::NAME, $loginClaim);
         }
         return $this->userInformations[$loginClaim];
     }
@@ -562,7 +562,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             'Content-Type' => "application/x-www-form-urlencoded"
         ];
 
-        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
+        if ($this->configuration->getAuthenticationType() === Configuration::AUTHENTICATION_BASIC) {
             $headers['Authorization'] = "Basic " . base64_encode(
                 $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
             );

@@ -59,10 +59,8 @@ class UpdateOpenIdConfiguration
     ): void {
         $this->info('Updating OpenID Configuration');
         try {
-            $configuration = OpenIdConfigurationFactory::createFromRequest($request);
-            if ($configuration->getContactTemplate() !== null) {
-                $this->validateContactTemplateExistsOrFail($configuration->getContactTemplate());
-            }
+            $contactTemplate = $this->getContactTemplateOrFail($request->contactTemplate);
+            $configuration = OpenIdConfigurationFactory::createFromRequest($request, $contactTemplate);
         } catch (AssertionException | OpenIdConfigurationException $ex) {
             $this->error('Unable to create OpenID Configuration because one or many parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
@@ -74,17 +72,23 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Validate that contact template link to configuration exists or throw an Exception.
+     * Get Contact template or throw an Exception
      *
-     * @param ContactTemplate $contactTemplate
-     * @throws OpenIdConfigurationException
+     * @param array{id: int, name: string}|null $contactTemplateFromRequest
+     * @return ContactTemplate|null
+     * @throws \Throwable|OpenIdConfigurationException
      */
-    private function validateContactTemplateExistsOrFail(ContactTemplate $contactTemplate): void
+    private function getContactTemplateOrFail(?array $contactTemplateFromRequest): ?ContactTemplate
     {
-        if ($this->contactTemplateRepository->find($contactTemplate->getId()) === null) {
+        if ($contactTemplateFromRequest === null) {
+            return null;
+        }
+        if (($contactTemplate = $this->contactTemplateRepository->find($contactTemplateFromRequest["id"])) === null) {
             throw OpenIdConfigurationException::contactTemplateNotFound(
-                $contactTemplate->getName()
+                $contactTemplateFromRequest["name"]
             );
         }
+
+        return $contactTemplate;
     }
 }

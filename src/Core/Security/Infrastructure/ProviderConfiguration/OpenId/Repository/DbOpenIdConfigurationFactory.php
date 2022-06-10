@@ -24,19 +24,29 @@ declare(strict_types=1);
 namespace Core\Security\Infrastructure\ProviderConfiguration\OpenId\Repository;
 
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class DbOpenIdConfigurationFactory
 {
     /**
      * @param array<string,mixed> $record
      * @param array<string,mixed> $customConfiguration
-     * @return OpenIdConfiguration
+     * @return Configuration
+     * @throws OpenIdConfigurationException
      */
-    public static function createFromRecord(array $record, array $customConfiguration): OpenIdConfiguration
+    public static function createFromRecord(array $record, array $customConfiguration): Configuration
     {
-        $configuration = new OpenIdConfiguration(
+        $configuration = new Configuration(
+            $record['is_active'] === '1',
             $customConfiguration['auto_import'] === '1',
+            $customConfiguration['client_id'],
+            $customConfiguration['client_secret'],
+            $customConfiguration['base_url'],
+            $customConfiguration['authorization_endpoint'],
+            $customConfiguration['token_endpoint'],
+            $customConfiguration['introspection_token_endpoint'],
+            $customConfiguration['userinfo_endpoint'],
             $customConfiguration['contact_template'] !== null
                 ? self::createContactTemplate($customConfiguration['contact_template'])
                 : null,
@@ -47,20 +57,12 @@ class DbOpenIdConfigurationFactory
 
         $configuration
             ->setId((int) $record['id'])
-            ->setActive($record['is_active'] === '1')
             ->setForced($record['is_forced'] === '1')
             ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
             ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
-            ->setBaseUrl($customConfiguration['base_url'])
-            ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])
-            ->setTokenEndpoint($customConfiguration['token_endpoint'])
-            ->setIntrospectionTokenEndpoint($customConfiguration['introspection_token_endpoint'])
-            ->setUserInformationEndpoint($customConfiguration['userinfo_endpoint'])
             ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
             ->setConnectionScopes($customConfiguration['connection_scopes'])
             ->setLoginClaim($customConfiguration['login_claim'])
-            ->setClientId($customConfiguration['client_id'])
-            ->setClientSecret($customConfiguration['client_secret'])
             ->setAuthenticationType($customConfiguration['authentication_type'])
             ->setVerifyPeer($customConfiguration['verify_peer']);
 

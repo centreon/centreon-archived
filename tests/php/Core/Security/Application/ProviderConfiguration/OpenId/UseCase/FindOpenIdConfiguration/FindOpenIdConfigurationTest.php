@@ -31,7 +31,7 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
     FindOpenIdConfigurationResponse
 };
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 beforeEach(function () {
@@ -40,26 +40,26 @@ beforeEach(function () {
 });
 
 it('should present a provider configuration', function () {
-        $configuration = new OpenIdConfiguration(
+        $configuration = new Configuration(
+            true,
             false,
-            new ContactTemplate(1, 'contact_template'),
+            'MyCl1ientId',
+            'MyCl1ientSuperSecr3tKey',
+            'http://127.0.0.1/auth/openid-connect',
+            '/authorization',
+            '/token',
+            '/introspect',
+            '/userinfo',
+            new ContactTemplate(1, 'contact_template')
         );
 
         $configuration
-            ->setActive(true)
             ->setForced(true)
             ->setTrustedClientAddresses([])
             ->setBlacklistClientAddresses([])
-            ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
-            ->setAuthorizationEndpoint('/authorization')
-            ->setTokenEndpoint('/token')
-            ->setIntrospectionTokenEndpoint('/introspect')
-            ->setUserInformationEndpoint('/userinfo')
             ->setEndSessionEndpoint('/logout')
             ->setConnectionScopes([])
             ->setLoginClaim('preferred_username')
-            ->setClientId('MyCl1ientId')
-            ->setClientSecret('MyCl1ientSuperSecr3tKey')
             ->setAuthenticationType('client_secret_post')
             ->setVerifyPeer(false);
 
