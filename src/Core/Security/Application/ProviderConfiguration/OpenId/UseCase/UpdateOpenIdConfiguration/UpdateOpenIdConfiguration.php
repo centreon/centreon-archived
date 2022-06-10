@@ -86,7 +86,7 @@ class UpdateOpenIdConfiguration
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         } catch (\Throwable $ex) {
-            $this->error('Error during Opend ID Configuration Update',['trace' => $ex->getTraceAsString()]);
+            $this->error('Error during Opend ID Configuration Update', ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new UpdateOpenIdConfigurationErrorResponse());
             return;
         }

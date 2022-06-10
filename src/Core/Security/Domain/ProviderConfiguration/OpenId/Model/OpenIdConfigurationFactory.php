@@ -37,7 +37,7 @@ class OpenIdConfigurationFactory
      * @param UpdateOpenIdConfigurationRequest $request
      * @param ContactTemplate|null $contactTemplate
      * @param ContactGroup|null $contactGroup
-     * @param array<AuthorizationRule> $authorizationRules
+     * @param AuthorizationRule[] $authorizationRules
      * @return Configuration
      * @throws OpenIdConfigurationException
      */
