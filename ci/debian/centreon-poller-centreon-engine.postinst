@@ -48,5 +48,10 @@ access notConfigGroup \"\" any noauth exact centreon none none" \
         /etc/centreon/centreontrapd.pm \
         /etc/centreon/conf.pm
 
+    if [ "$(getent passwd centreon-broker)" -a "$(getent passwd centreon-engine)" ]; then
+        usermod -a -G centreon-engine centreon-broker
+        usermod -a -G centreon-broker centreon-engine
+    fi    
+
 fi
 exit 0

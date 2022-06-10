@@ -29,7 +29,7 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Application\Repository\WriteTokenRepositoryInterface;
 
 /**
  * @package Security\Authentication

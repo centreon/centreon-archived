@@ -19,6 +19,7 @@ import {
   setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 
 import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
@@ -72,20 +73,6 @@ const NavigationMenu = ({
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
-  const props = {
-    collapseScrollMaxHeight,
-    collapseScrollMaxWidth,
-    currentTop,
-    currentWidth,
-    hoveredIndex,
-    isDrawerOpen,
-    level: 1,
-    pathname,
-    search,
-    setCollapseScrollMaxHeight,
-    setCollapseScrollMaxWidth,
-  };
-
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
@@ -110,23 +97,11 @@ const NavigationMenu = ({
     }, 500);
   };
 
-  const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
-    const page = isNil(entryProps?.page) ? '' : entryProps.page;
-    const options = isNil(entryProps?.options) ? '' : entryProps.options;
-
-    const urlOptions = `${page}${options}`;
-    const url = entryProps.is_react
-      ? entryProps.url
-      : `/main.php?p=${urlOptions}`;
-
-    return url;
-  };
-
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry(currentPage))) {
+    if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
-    navigate(getUrlFromEntry(currentPage) as string);
+    navigate(searchUrlFromEntry(currentPage) as string);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
@@ -239,11 +214,6 @@ const NavigationMenu = ({
     });
   };
 
-  const handleWindowClose = (): void => {
-    setSelectedNavigationItems(null);
-    setHoveredNavigationItems(null);
-  };
-
   useEffect(() => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
@@ -255,9 +225,6 @@ const NavigationMenu = ({
 
       addSelectedNavigationItemsByDefault(filteredResult);
     });
-    window.addEventListener('beforeunload', handleWindowClose);
-
-    return () => window.removeEventListener('beforeunload', handleWindowClose);
   }, []);
 
   useEffect(() => {
@@ -272,6 +239,20 @@ const NavigationMenu = ({
       addSelectedNavigationItemsByDefault(filteredResult);
     });
   }, [pathname, search]);
+
+  const props = {
+    collapseScrollMaxHeight,
+    collapseScrollMaxWidth,
+    currentTop,
+    currentWidth,
+    hoveredIndex,
+    isDrawerOpen,
+    level: 1,
+    pathname,
+    search,
+    setCollapseScrollMaxHeight,
+    setCollapseScrollMaxWidth,
+  };
 
   return useMemoComponent({
     Component: (
@@ -311,7 +292,6 @@ const NavigationMenu = ({
                     {...props}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onClick={handleClickItem}
                     onLeave={handleLeave}
                   />
                 )}

@@ -1,4 +1,3 @@
-debian/extra/centreon-web/centreon.conf.php     etc/centreon
 debian/extra/centreon-web/crontab/centreon      etc/cron.d
 debian/extra/centreon-web/crontab/centstorage   etc/cron.d
 debian/extra/centreon-web/centreon.conf         etc/php/8.0/fpm/pool.d
