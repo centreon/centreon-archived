@@ -11,7 +11,7 @@ import {
   Actions,
   downtimeAtom,
   refreshIntervalAtom,
-  statusResourceStorageOptimizationAtom,
+  resourceStorageOptimizationModeAtom,
 } from '@centreon/ui-context';
 import { getData, useRequest, useSnackbar, postData } from '@centreon/ui';
 
@@ -64,7 +64,7 @@ const useApp = (): UseAppState => {
   const setDowntime = useUpdateAtom(downtimeAtom);
   const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
   const setResourceStorageOptimizedMode = useUpdateAtom(
-    statusResourceStorageOptimizationAtom,
+    resourceStorageOptimizationModeAtom,
   );
   const setAcl = useUpdateAtom(aclAtom);
   const setAcknowledgement = useUpdateAtom(acknowledgementAtom);

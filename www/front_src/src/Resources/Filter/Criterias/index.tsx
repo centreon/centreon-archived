@@ -6,7 +6,7 @@ import { Button, Grid } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import TuneIcon from '@mui/icons-material/Tune';
 
-import { statusResourceStorageOptimizationAtom } from '@centreon/ui-context';
+import { resourceStorageOptimizationModeAtom } from '@centreon/ui-context';
 import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 
 import {
@@ -62,9 +62,7 @@ const CriteriasContent = (): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
-  const statusOptimizedMode = useAtomValue(
-    statusResourceStorageOptimizationAtom,
-  );
+  const statusOptimizedMode = useAtomValue(resourceStorageOptimizationModeAtom);
 
   const getSelectableCriterias = (): Array<CriteriaModel> => {
     const criterias = sortBy(
