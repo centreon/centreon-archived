@@ -124,7 +124,7 @@ export const Remote = ({
   });
 
   if (!ready) {
-    return isFederatedModule ? <MenuSkeleton width={29} /> : <PageSkeleton />;
+    return isFederatedModule ? <MenuSkeleton width={27} /> : <PageSkeleton />;
   }
 
   if (failed) {
