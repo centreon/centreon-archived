@@ -112,6 +112,9 @@ const useStyles = makeStyles((theme) => ({
   itemMenu: {
     padding: theme.spacing(0, 2, 0.25, 2),
   },
+  loaderUserMenu: {
+    marginRight: theme.spacing(22 / 8),
+  },
   menu: {
     backgroundColor: theme.palette.common.black,
     borderRadius: 0,
