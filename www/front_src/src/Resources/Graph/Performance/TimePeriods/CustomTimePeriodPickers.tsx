@@ -45,6 +45,7 @@ dayjs.extend(isSameOrAfter);
 
 const useStyles = makeStyles((theme) => ({
   button: {
+    height: '100%',
     padding: theme.spacing(0, 0.5),
   },
   buttonContent: {
