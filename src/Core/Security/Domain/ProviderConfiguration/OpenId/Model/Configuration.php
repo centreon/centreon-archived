@@ -90,8 +90,6 @@ class Configuration implements ProviderConfigurationInterface
     private array $authorizationRules = [];
 
     /**
-     * Undocumented function
-     *
      * @param boolean $isActive
      * @param boolean $isAutoImportEnabled
      * @param string|null $clientId
@@ -107,6 +105,7 @@ class Configuration implements ProviderConfigurationInterface
      * @param string|null $userNameBindAttribute
      * @param ContactGroup|null $contactGroup
      * @param string|null $claimName
+     * @throws OpenIdConfigurationException
      */
     public function __construct(
         private bool $isActive,

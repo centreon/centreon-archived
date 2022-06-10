@@ -70,7 +70,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             $statement->bindValue(':isActive', $configuration->isActive() ? '1' : '0', \PDO::PARAM_STR);
             $statement->bindValue(':isForced', $configuration->isForced() ? '1' : '0', \PDO::PARAM_STR);
             $statement->execute();
-            //@TODO: Transaction for those 2 request
+
             $this->updateAuthorizationRules($configuration->getAuthorizationRules());
 
             if (! $isAlreadyInTransaction) {

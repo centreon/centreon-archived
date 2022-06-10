@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Update OpenID configuration",
     "type": "object",
-    "additionalProperties": true,
+    "additionalProperties": false,
     "required": [
         "is_active",
         "is_forced",
