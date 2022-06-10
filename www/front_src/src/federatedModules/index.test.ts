@@ -27,6 +27,7 @@ describe('external components', () => {
       .mockResolvedValueOnce({ data: retrievedWebVersions })
       .mockResolvedValue({ data: retrievedFederatedModule });
   });
+  
   it('populates the federated components atom with the data retrieved from the API', async () => {
     const { result } = renderHook(() => ({
       ...useFederatedModules(),
