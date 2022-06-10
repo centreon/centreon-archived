@@ -1,3 +1,0 @@
-name: config.yaml
-description: Configuration for Central server
-configuration: !include config.d/*.yaml

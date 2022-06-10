@@ -1,6 +1,0 @@
-User_Alias      CENTREON_COLLECT_USERS=centreon-engine,centreon-gorgone
-Defaults:CENTREON_COLLECT_USERS !requiretty
-
-CENTREON_COLLECT_USERS   ALL = NOPASSWD: /usr/lib/centreon/plugins/centreon_protocol_dhcp.pl *
-CENTREON_COLLECT_USERS   ALL = NOPASSWD: /usr/lib/centreon/plugins/centreon_protocol_udp.pl *
-CENTREON_COLLECT_USERS   ALL = NOPASSWD: /usr/lib/centreon/plugins/centreon_nmap_cli.pl *

@@ -1,8 +1,0 @@
-/usr/share/centreon/bin/centFillTrapDB          /usr/bin/centFillTrapDB 
-/usr/share/centreon/bin/centreon                /usr/bin/centreon
-/usr/share/centreon/bin/centreonSyncArchives    /usr/bin/centreonSyncArchives
-/usr/share/centreon/bin/centreonSyncPlugins     /usr/bin/centreonSyncPlugins
-/usr/share/centreon/bin/centreon_trap_send      /usr/bin/centreon_trap_send
-/usr/share/centreon/bin/generateSqlLite         /usr/bin/bin/generateSqlLite
-/etc/php/8.0/mods-available/centreon.ini        /etc/php/8.0/fpm/conf.d/50-centreon.ini
-/etc/php/8.0/mods-available/centreon.ini        /etc/php/8.0/cli/conf.d/50-centreon.ini

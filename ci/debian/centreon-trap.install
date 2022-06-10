@@ -1,4 +1,0 @@
-debian/extra/centreon-trap/centreontrapd.service    lib/systemd/system
-debian/extra/centreon-trap/centreontrapd            etc/default
-bin/centreontrapd                                   usr/share/centreon/bin
-bin/centreontrapdforward                            usr/share/centreon/bin

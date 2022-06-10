@@ -1,8 +1,0 @@
-var/lib/centreon/centcore
-var/lib/centreon/installs
-var/lib/centreon/log
-var/lib/centreon/metrics
-var/lib/centreon/nagios-perf
-var/lib/centreon/perfdata
-var/lib/centreon/status
-var/run/centreon
