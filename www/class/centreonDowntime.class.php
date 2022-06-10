@@ -895,7 +895,10 @@ class CentreonDowntime
      */
     private function duplicateDowntime(array $params): void
     {
-        $this->db->beginTransaction();
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        if (! $isAlreadyInTransaction) {
+            $this->db->beginTransaction();
+        }
         try {
             $params['dt_id_new'] = $this->createDowntime($params);
             $this->createDowntimePeriods($params);
@@ -903,9 +906,13 @@ class CentreonDowntime
             $this->createDowntimeHostGroupsRelations($params);
             $this->createDowntimeServicesRelations($params);
             $this->createDowntimeServiceGroupsRelations($params);
-            $this->db->commit();
+            if (! $isAlreadyInTransaction) {
+                $this->db->commit();
+            }
         } catch (\Exception $e) {
-            $this->db->rollBack();
+            if (! $isAlreadyInTransaction) {
+                $this->db->rollBack();
+            }
         }
     }
 
