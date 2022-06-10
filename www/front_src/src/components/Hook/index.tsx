@@ -31,7 +31,7 @@ const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
             );
 
             return (
-              <Suspense fallback={<MenuSkeleton width={29} />} key={path}>
+              <Suspense fallback={<MenuSkeleton width={27} />} key={path}>
                 <HookComponent {...rest} />
               </Suspense>
             );
