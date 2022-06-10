@@ -1,8 +1,10 @@
 const path = require('path');
+const zlib = require('zlib');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
+const CompressionPlugin = require('compression-webpack-plugin');
 const getBaseConfiguration = require('centreon-frontend/packages/frontend-config/webpack/base');
 
 module.exports = (jscTransformConfiguration) =>
@@ -41,5 +43,18 @@ module.exports = (jscTransformConfiguration) =>
         template: './www/front_src/public/index.html',
       }),
       new HtmlWebpackHarddiskPlugin(),
+      new CompressionPlugin({
+        algorithm: 'brotliCompress',
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        deleteOriginalAssets: false,
+        filename: '[path][base].br',
+        minRatio: 0.8,
+        test: /\.(js|css|html|svg)$/,
+        threshold: 10240,
+      }),
     ],
   });
