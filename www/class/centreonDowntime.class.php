@@ -922,7 +922,7 @@ class CentreonDowntime
      * @param string $dtName
      * @return bool
      */
-    private function downTimeExists($dtName): bool
+    private function downtimeExists($dtName): bool
     {
         $statement = $this->db->prepare('SELECT 1 FROM downtime WHERE dt_name = :dt_name LIMIT 1');
         $statement->bindValue(':dt_name', $dtName, \PDO::PARAM_STR);
