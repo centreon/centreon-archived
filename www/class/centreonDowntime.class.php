@@ -924,12 +924,10 @@ class CentreonDowntime
      */
     private function downTimeExists($dtName): bool
     {
-        $query = 'SELECT COUNT(*) as nb FROM downtime WHERE dt_name = :dt_name';
-        $statement = $this->db->prepare($query);
+        $statement = $this->db->prepare('SELECT 1 FROM downtime WHERE dt_name = :dt_name LIMIT 1');
         $statement->bindValue(':dt_name', $dtName, \PDO::PARAM_STR);
         $statement->execute();
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
-        return $row['nb'] > 0;
+        return (bool) $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
