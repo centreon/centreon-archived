@@ -7219,3 +7219,24 @@ msgid "Mode used to retrieve information displayed in Resource Status page."
 "The optimized mode will only be available and functional when using the BBDO 3.0.0 protocol for the collect engine."
 msgstr "Mode utilisé pour récupérer les données affichées dans la page Resource Status."
 "Le mode optimisé pourra être utilisé et fonctionnel que si le moteur de supervision utilise le protocole BBDO 3.0.0"
+
+msgid "Poller configuration actions / Poller management"
+msgstr "Gestion des serveurs de collecte/collecteurs"
+
+msgid "Create and edit pollers"
+msgstr "Créer et modifier des collecteurs"
+
+msgid "Delete pollers"
+msgstr "Supprimer des collecteurs"
+
+msgid "Deploy configuration"
+msgstr "Déployer la configuration"
+
+msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
+msgstr "Permet aux utilisateurs de créer des collecteurs (boutons “Ajouter”, Ajouter (avancé)” et “Dupliquer”)"
+
+msgid "Allows user to delete pollers."
+msgstr "Permet aux utilisateurs de supprimer des collecteurs"
+
+msgid "Allows user to generate and export configuration, and restart poller."
+msgstr "Permet aux utilisateurs de déployer la configuration de la supervision sur les collecteurs."
