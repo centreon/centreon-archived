@@ -34,9 +34,11 @@ use Core\Security\Domain\ProviderConfiguration\OpenId\{
     Model\OpenIdConfigurationFactory,
     Exceptions\OpenIdConfigurationException
 };
-use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\OpenId\{
+    UseCase\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationErrorResponse,
+    Repository\WriteOpenIdConfigurationRepositoryInterface
+};
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
-use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationErrorResponse;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
