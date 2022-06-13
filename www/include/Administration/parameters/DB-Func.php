@@ -472,7 +472,6 @@ function updateLdapConfigData($gopt_id = null)
 {
     global $form, $pearDB, $centreon;
 
-    $ret = array();
     $ret = $form->getSubmitValues();
 
     updateOption(
@@ -528,6 +527,13 @@ function updateLdapConfigData($gopt_id = null)
         "ldap_search_filter",
         isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != null
             ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8") : "NULL"
+    );
+    updateOption(
+        $pearDB,
+        "ldap_connection_timeout",
+        !empty($ret["ldap_connection_timeout"])
+            ? htmlentities($ret["ldap_connection_timeout"], ENT_QUOTES, "UTF-8")
+            : "NULL"
     );
     updateOption(
         $pearDB,

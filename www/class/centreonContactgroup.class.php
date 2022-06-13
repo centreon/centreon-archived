@@ -463,16 +463,16 @@ class CentreonContactgroup
                         );
                         $deleteStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
                         $deleteStmt->execute();
-                        $contact = '';
+                        $contactDns = '';
                         foreach ($members as $member) {
-                            $contact .= $this->db->quote($member) . ',';
+                            $contactDns .= $this->db->quote($member) . ',';
                         }
-                        $contact = rtrim($contact, ",");
+                        $contactDns = rtrim($contactDns, ",");
 
-                        if ($contact !== '') {
+                        if ($contactDns !== '') {
                             try {
                                 $resContact = $this->db->query(
-                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")"
+                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contactDns . ")"
                                 );
                             } catch (\PDOException $e) {
                                 $msg[] = "Error in getting contact id from members.";

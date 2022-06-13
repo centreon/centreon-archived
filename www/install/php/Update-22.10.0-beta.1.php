@@ -18,3 +18,37 @@
  * For more information : contact@centreon.com
  *
  */
+
+require_once __DIR__ . '/../../class/centreonLog.class.php';
+
+$centreonLog = new CentreonLog();
+
+//error specific content
+$versionOfTheUpgrade = 'UPGRADE - 22.10.0-beta.1: ';
+$errorMessage = '';
+
+try {
+    $pearDB->beginTransaction();
+
+    $errorMessage = "Unable to add default ldap connection timeout";
+    $pearDB->query(
+        "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
+        (SELECT ar_id, 'ldap_connection_timeout', '' FROM auth_ressource)"
+    );
+
+    $pearDB->commit();
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
