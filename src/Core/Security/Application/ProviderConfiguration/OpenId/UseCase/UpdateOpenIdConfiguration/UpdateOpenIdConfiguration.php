@@ -69,7 +69,9 @@ class UpdateOpenIdConfiguration
         $this->info('Updating OpenID Configuration');
         try {
             $contactTemplate = $this->getContactTemplateOrFail($request->contactTemplate);
-            $contactGroup = $this->getContactGroupOrFail($request->contactGroupId);
+            $contactGroup = $request->contactGroupId !== null
+                ? $this->getContactGroupOrFail($request->contactGroupId)
+                : null;
             $authorizationRules = $this->createAuthorizationRules($request->authorizationRules);
             $configuration = OpenIdConfigurationFactory::create(
                 $request,
@@ -118,15 +120,12 @@ class UpdateOpenIdConfiguration
     /**
      * Get Contact Group or throw an Exception
      *
-     * @param integer|null $contactGroupId
-     * @return ContactGroup|null
+     * @param integer $contactGroupId
+     * @return ContactGroup
      * @throws \Throwable|OpenIdConfigurationException
      */
-    private function getContactGroupOrFail(?int $contactGroupId): ?ContactGroup
+    private function getContactGroupOrFail(int $contactGroupId): ContactGroup
     {
-        if ($contactGroupId === null) {
-            return null;
-        }
         if (($contactGroup = $this->contactGroupRepository->find($contactGroupId)) === null) {
             throw OpenIdConfigurationException::contactGroupNotFound(
                 $contactGroupId
