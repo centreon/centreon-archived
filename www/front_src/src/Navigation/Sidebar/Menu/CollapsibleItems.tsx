@@ -37,7 +37,6 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  onLeave?: () => void;
   setCollapseScrollMaxHeight: Dispatch<SetStateAction<number | undefined>>;
   setCollapseScrollMaxWidth: Dispatch<SetStateAction<number | undefined>>;
 }
@@ -128,7 +127,6 @@ const CollapsibleItems = ({
   collapseMenu,
   currentTop,
   currentWidth,
-  onLeave,
   level,
   collapseScrollMaxHeight,
   collapseScrollMaxWidth,
@@ -232,7 +230,6 @@ const CollapsibleItems = ({
         in={isCollapsed}
         ref={collapsRef}
         timeout={0}
-        onMouseLeave={onLeave}
       >
         {data?.map((item, index) => {
           const hover =

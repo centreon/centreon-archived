@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
-import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
@@ -60,6 +60,7 @@ const NavigationMenu = ({
   >(undefined);
   const [isDoubleClickedFromRoot, setIsDoubleClickedFromRoot] = useState(false);
   const timeoutRef = useRef<null | NodeJS.Timeout>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -75,7 +76,7 @@ const NavigationMenu = ({
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
   const dismissMenuDuration = theme.transitions.duration.complex;
-  
+
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
@@ -86,10 +87,9 @@ const NavigationMenu = ({
   };
 
   const discardTimeout = (): void => {
-    if (isNil(timeoutRef.current)) {
-      return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
@@ -226,7 +226,6 @@ const NavigationMenu = ({
   const leaveMenuItem = (): void => {
     setIsDoubleClickedFromRoot(false);
   };
-  
 
   const setDefaultItems = (): void => {
     navigationData?.forEach((item) => {
@@ -241,14 +240,43 @@ const NavigationMenu = ({
     });
   };
 
-  document.addEventListener('visibilitychange', () => {
+  const closeMenu = (event): void => {
+    const mouseOver = menuRef?.current?.contains(event.target);
+    if (!mouseOver) {
+      handleLeave();
+    }
+  };
+
+  const visibilitychange = (): void => {
     if (equals(document.visibilityState, 'visible')) {
       setDefaultItems();
     }
-  });
+  };
+
+  useEffect(() => {
+    window.addEventListener('visibilitychange', visibilitychange);
+
+    return () => {
+      window.removeEventListener('visibilitychange', visibilitychange);
+    };
+  }, []);
 
   useEffect(() => {
     setDefaultItems();
+
+    const isLegacyRoute = pathname.includes('main.php');
+    const iframe = document.getElementById('main-content') as HTMLIFrameElement;
+
+    if (isLegacyRoute) {
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow?.document?.addEventListener(
+          'mousemove',
+          closeMenu,
+        );
+      });
+    } else {
+      window.addEventListener('mousemove', closeMenu);
+    }
   }, [pathname, search]);
 
   const props = {
@@ -269,6 +297,7 @@ const NavigationMenu = ({
     Component: (
       <List
         className={classes.list}
+        ref={menuRef}
         onMouseEnter={discardTimeout}
         onMouseLeave={handleLeave}
       >
@@ -306,7 +335,6 @@ const NavigationMenu = ({
                     collapseMenu={collapseMenu}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onLeave={handleLeave}
                   />
                 )}
             </ListItem>
