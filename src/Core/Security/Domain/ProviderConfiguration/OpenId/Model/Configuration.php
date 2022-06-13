@@ -535,7 +535,6 @@ class Configuration implements ProviderConfigurationInterface
     /**
      * @param AuthorizationRule[] $authorizationRules
      * @return self
-     * @throws \TypeError
      */
     public function setAuthorizationRules(array $authorizationRules): self
     {
