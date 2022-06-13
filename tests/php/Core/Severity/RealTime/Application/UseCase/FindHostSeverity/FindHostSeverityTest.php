@@ -21,15 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Severity\RealTime\Application\UseCase\FindSeverity;
+namespace Tests\Core\Severity\RealTime\Application\UseCase\FindHostSeverity;
 
 use Core\Domain\RealTime\Model\Icon;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverity;
+use Core\Severity\RealTime\Application\UseCase\FindHostSeverity\FindHostSeverity;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityResponse;
+use Core\Severity\RealTime\Application\UseCase\FindHostSeverity\FindHostSeverityResponse;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadSeverityRepositoryInterface::class);
@@ -37,13 +37,13 @@ beforeEach(function () {
 });
 
 it('should present an ErrorResponse when an exception is thrown', function () {
-    $useCase = new FindSeverity($this->repository);
+    $useCase = new FindHostSeverity($this->repository);
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
+    $presenter = new FindHostSeverityPresenterStub($this->presenterFormatter);
     $useCase($presenter);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class)
@@ -51,29 +51,31 @@ it('should present an ErrorResponse when an exception is thrown', function () {
             ->toBe('An error occured while retrieving severities');
 });
 
-it('should present a FindSeverityResponse', function () {
-    $useCase = new FindSeverity($this->repository);
+it('should present a FindHostSeverityResponse', function () {
+    $useCase = new FindHostSeverity($this->repository);
 
     $icon = (new Icon())
         ->setName('icon-name')
         ->setUrl('ppm/icon-name.png');
 
-    $severity = new Severity(1, 'name', 50, $icon);
+    $severity = new Severity(1, 'name', 50, Severity::HOST_SEVERITY_TYPE_ID, $icon);
 
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllByTypeId')
+        ->with(Severity::HOST_SEVERITY_TYPE_ID)
         ->willReturn([$severity]);
 
-    $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
+    $presenter = new FindHostSeverityPresenterStub($this->presenterFormatter);
     $useCase($presenter);
     expect($presenter->response)
-        ->toBeInstanceOf(FindSeverityResponse::class)
+        ->toBeInstanceOf(FindHostSeverityResponse::class)
         ->and($presenter->response->severities[0])->toBe(
             [
                 'id' => 1,
                 'name' => 'name',
                 'level' => 50,
+                'type' => 'host',
                 'icon' => [
                     'name' => 'icon-name',
                     'url' => 'ppm/icon-name.png'

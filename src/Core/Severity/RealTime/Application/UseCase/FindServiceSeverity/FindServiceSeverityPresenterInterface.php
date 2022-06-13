@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Application\UseCase\FindSeverity;
+namespace Core\Severity\RealTime\Application\UseCase\FindServiceSeverity;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
-interface FindSeverityPresenterInterface extends PresenterInterface
+interface FindServiceSeverityPresenterInterface extends PresenterInterface
 {
 }

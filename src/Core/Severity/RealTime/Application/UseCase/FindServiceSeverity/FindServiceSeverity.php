@@ -21,15 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Application\UseCase\FindSeverity;
+namespace Core\Severity\RealTime\Application\UseCase\FindServiceSeverity;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityPresenterInterface;
+use Core\Severity\RealTime\Application\UseCase\FindServiceSeverity\FindServiceSeverityPresenterInterface;
 use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
-class FindSeverity
+class FindServiceSeverity
 {
     use LoggerTrait;
 
@@ -41,17 +41,17 @@ class FindSeverity
     }
 
     /**
-     * @param FindSeverityPresenterInterface $presenter
+     * @param FindServiceSeverityPresenterInterface $presenter
      */
-    public function __invoke(FindSeverityPresenterInterface $presenter): void
+    public function __invoke(FindServiceSeverityPresenterInterface $presenter): void
     {
-        $this->info('Searching for severities in the realtime');
+        $this->info('Searching for service severities in the realtime');
         $severities = [];
         try {
-            $severities = $this->repository->findAll();
+            $severities = $this->repository->findAllByTypeId(Severity::SERVICE_SEVERITY_TYPE_ID);
         } catch (\Throwable $ex) {
             $this->error(
-                'An error occured while retrieving severities',
+                'An error occured while retrieving service severities',
                 [
                     'trace' => $ex->getTraceAsString()
                 ]
@@ -67,10 +67,10 @@ class FindSeverity
 
     /**
      * @param Severity[] $severities
-     * @return FindSeverityResponse
+     * @return FindServiceSeverityResponse
      */
-    private function createResponse(array $severities): FindSeverityResponse
+    private function createResponse(array $severities): FindServiceSeverityResponse
     {
-        return new FindSeverityResponse($severities);
+        return new FindServiceSeverityResponse($severities);
     }
 }

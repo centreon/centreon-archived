@@ -21,23 +21,23 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Severity\RealTime\Application\UseCase\FindSeverity;
+namespace Tests\Core\Severity\RealTime\Application\UseCase\FindHostSeverity;
 
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityResponse;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityPresenterInterface;
+use Core\Severity\RealTime\Application\UseCase\FindHostSeverity\FindHostSeverityResponse;
+use Core\Severity\RealTime\Application\UseCase\FindHostSeverity\FindHostSeverityPresenterInterface;
 
-class FindSeverityPresenterStub extends AbstractPresenter implements
-    FindSeverityPresenterInterface
+class FindHostSeverityPresenterStub extends AbstractPresenter implements
+    FindHostSeverityPresenterInterface
 {
     /**
-     * @var FindSeverityResponse
+     * @var FindHostSeverityResponse
      */
     public $response;
 
     /**
-     * @param FindSeverityResponse $response
+     * @param FindHostSeverityResponse $response
      */
     public function present(mixed $response): void
     {

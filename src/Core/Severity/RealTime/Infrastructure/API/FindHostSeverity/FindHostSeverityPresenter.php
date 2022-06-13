@@ -21,14 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Infrastructure\API\FindSeverity;
+namespace Core\Severity\RealTime\Infrastructure\API\FindHostSeverity;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityPresenterInterface;
+use Core\Severity\RealTime\Application\UseCase\FindHostSeverity\FindHostSeverityPresenterInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
-class FindSeverityPresenter extends AbstractPresenter implements FindSeverityPresenterInterface
+class FindHostSeverityPresenter extends AbstractPresenter implements FindHostSeverityPresenterInterface
 {
     /**
      * @param RequestParametersInterface $requestParameters

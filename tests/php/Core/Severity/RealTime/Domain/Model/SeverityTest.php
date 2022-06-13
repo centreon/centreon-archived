@@ -33,7 +33,7 @@ beforeEach(function () {
 });
 
 it('should throw an exception when severity name is empty', function () {
-    new Severity(1, '', 50, $this->icon);
+    new Severity(1, '', 50, Severity::HOST_SEVERITY_TYPE_ID, $this->icon);
 })->throws(
     \Assert\InvalidArgumentException::class,
     AssertionException::notEmpty('Severity::name')
@@ -41,7 +41,13 @@ it('should throw an exception when severity name is empty', function () {
 );
 
 it('should throw an exception when severity name is too long', function () {
-    new Severity(1, str_repeat('a', Severity::MAX_NAME_LENGTH + 1), 50, $this->icon);
+    new Severity(
+        1,
+        str_repeat('a', Severity::MAX_NAME_LENGTH + 1),
+        50,
+        Severity::HOST_SEVERITY_TYPE_ID,
+        $this->icon
+    );
 })->throws(
     \Assert\InvalidArgumentException::class,
     AssertionException::maxLength(
@@ -53,9 +59,20 @@ it('should throw an exception when severity name is too long', function () {
 );
 
 it('should throw an exception when severity level is lower than 0', function () {
-    new Severity(1, 'name', -1, $this->icon);
+    new Severity(1, 'name', -1, Severity::HOST_SEVERITY_TYPE_ID, $this->icon);
 })->throws(\Assert\InvalidArgumentException::class, AssertionException::min(-1, 0, 'Severity::level')->getMessage());
 
 it('should throw an exception when severity level is greater than 100', function () {
-    new Severity(1, 'name', 200, $this->icon);
+    new Severity(1, 'name', 200, Severity::HOST_SEVERITY_TYPE_ID, $this->icon);
 })->throws(\Assert\InvalidArgumentException::class, AssertionException::max(200, 100, 'Severity::level')->getMessage());
+
+it('should throw an exception when severity type is not handled', function () {
+    new Severity(1, 'name', 50, 2, $this->icon);
+})->throws(
+    \Assert\InvalidArgumentException::class,
+    AssertionException::inArray(
+        2,
+        [Severity::HOST_SEVERITY_TYPE_ID, Severity::SERVICE_SEVERITY_TYPE_ID],
+        'Severity::type'
+    )->getMessage()
+);

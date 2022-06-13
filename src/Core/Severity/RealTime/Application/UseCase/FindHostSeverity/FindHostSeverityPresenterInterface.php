@@ -18,31 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Infrastructure\Repository;
+namespace Core\Severity\RealTime\Application\UseCase\FindHostSeverity;
 
-use Core\Domain\RealTime\Model\Icon;
-use Core\Severity\RealTime\Domain\Model\Severity;
+use Core\Application\Common\UseCase\PresenterInterface;
 
-class DbSeverityFactory
+interface FindHostSeverityPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param array<string, mixed> $record
-     * @return Severity
-     */
-    public static function createFromRecord(array $record): Severity
-    {
-        $icon = (new Icon())
-            ->setName($record['icon_name'])
-            ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
-
-        return new Severity(
-            (int) $record['id'],
-            $record['name'],
-            (int) $record['level'],
-            (int) $record['type'],
-            $icon
-        );
-    }
 }

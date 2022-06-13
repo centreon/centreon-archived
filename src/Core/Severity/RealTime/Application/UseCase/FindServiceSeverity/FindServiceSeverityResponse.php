@@ -21,12 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Application\UseCase\FindSeverity;
+namespace Core\Severity\RealTime\Application\UseCase\FindServiceSeverity;
 
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
 use Core\Severity\RealTime\Domain\Model\Severity;
 
-class FindSeverityResponse
+class FindServiceSeverityResponse
 {
     use RealTimeResponseTrait;
 
@@ -54,6 +54,7 @@ class FindSeverityResponse
                 'id' => $severity->getId(),
                 'name' => $severity->getName(),
                 'level' => $severity->getLevel(),
+                'type' => $severity->getTypeAsString(),
                 'icon' => $this->iconToArray($severity->getIcon()),
             ],
             $severities

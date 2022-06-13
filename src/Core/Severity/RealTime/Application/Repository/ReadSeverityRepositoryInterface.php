@@ -28,7 +28,10 @@ interface ReadSeverityRepositoryInterface
 {
     /**
      * Returns all the severities from the RealTime
+     *
+     * @param integer $typeId
      * @return Severity[]
+     * @throws \Throwable
      */
-    public function findAll(): array;
+    public function findAllByTypeId(int $typeId): array;
 }

@@ -21,20 +21,20 @@
 
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Infrastructure\API\FindSeverity;
+namespace Core\Severity\RealTime\Infrastructure\API\FindServiceSeverity;
 
 use Centreon\Application\Controller\AbstractController;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverity;
-use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityPresenterInterface;
+use Core\Severity\RealTime\Application\UseCase\FindServiceSeverity\FindServiceSeverity;
+use Core\Severity\RealTime\Application\UseCase\FindServiceSeverity\FindServiceSeverityPresenterInterface;
 
-class FindSeverityController extends AbstractController
+class FindServiceSeverityController extends AbstractController
 {
     /**
-     * @param FindSeverity $useCase
-     * @param FindSeverityPresenterInterface $presenter
+     * @param FindServiceSeverity $useCase
+     * @param FindServiceSeverityPresenterInterface $presenter
      * @return object
      */
-    public function __invoke(FindSeverity $useCase, FindSeverityPresenterInterface $presenter): object
+    public function __invoke(FindServiceSeverity $useCase, FindServiceSeverityPresenterInterface $presenter): object
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $useCase($presenter);

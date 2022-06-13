@@ -322,6 +322,41 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/severities:
+    get:
+      tags:
+        - Severity
+      summary: "List all service severities from the realtime"
+      description: |
+        List all the service severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/severities:
     get:
       tags:
@@ -1556,6 +1591,41 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/severities:
+    get:
+      tags:
+        - Severity
+      summary: "List all host severities from the realtime"
+      description: |
+        List all the host severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
@@ -1632,43 +1702,6 @@ paths:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.ServiceGroup'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/severities:
-    get:
-      tags:
-        - Severity
-      summary: "List all severities from the realtime"
-      description: |
-        List all the severities in real-time monitoring.
-
-        The available parameters to **search** / **sort_by** are:
-
-        * id
-        * name
-        * level
-      parameters:
-        - $ref: '#/components/parameters/Search'
-        - $ref: '#/components/parameters/Limit'
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/SortBy'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Monitoring.Severity'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -6380,6 +6413,10 @@ components:
           format: int64
           description: "Level defined for the severity"
           example: 50
+        type:
+          type: string
+          description: "Type of the severity"
+          example: "host|service"
         icon:
           type: object
           properties:
