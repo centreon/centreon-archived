@@ -129,14 +129,14 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $providerConfigurationId = (int) $result['id'];
             $deleteStatement = $this->db->prepare(
-                "DELETE FROM security_provider_openid_access_group_relation
+                "DELETE FROM security_provider_access_group_relation
                     WHERE provider_configuration_id = :providerConfigurationId"
             );
             $deleteStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
             $deleteStatement->execute();
 
             $insertStatement = $this->db->prepare(
-                "INSERT INTO security_provider_openid_access_group_relation
+                "INSERT INTO security_provider_access_group_relation
                     (claim_value, access_group_id, provider_configuration_id)
                     VALUES (:claimValue, :accessGroupId, :providerConfigurationId)"
             );
