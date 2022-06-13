@@ -24,6 +24,7 @@ namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use CentreonRemote\Domain\Resources\RemoteConfig\NagiosServer;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagios;
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosLogger;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosBrokerModule;
 use CentreonRemote\Domain\Resources\RemoteConfig\BamBrokerCfgInfo;
 
@@ -152,6 +153,8 @@ abstract class ServerConnectionConfigurationService
     protected function insertConfigNagios($serverID): int
     {
         $configID = $this->insertWithAdapter('cfg_nagios', CfgNagios::getConfiguration($this->name, $serverID));
+
+        $this->insertWithAdapter('cfg_nagios_logger', CfgNagiosLogger::getConfiguration($configID));
 
         $configBroker = CfgNagiosBrokerModule::getConfiguration($configID, $this->name);
 

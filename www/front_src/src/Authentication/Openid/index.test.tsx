@@ -4,7 +4,10 @@ import axios from 'axios';
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { Provider } from '../models';
-import { authenticationProvidersEndpoint } from '../api/endpoints';
+import {
+  authenticationProvidersEndpoint,
+  contactTemplatesEndpoint,
+} from '../api/endpoints';
 import {
   labelDoYouWantToResetTheForm,
   labelReset,
@@ -14,15 +17,20 @@ import {
 import { labelActivation } from '../translatedLabels';
 
 import {
+  labelAliasAttributeToBind,
   labelAuthorizationEndpoint,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
   labelDisableVerifyPeer,
+  labelEmailAttributeToBind,
+  labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
+  labelFullnameAttributeToBind,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
   labelInvalidURL,
@@ -35,6 +43,7 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from './translatedLabels';
+import { OpenidConfigurationToAPI } from './models';
 
 import OpenidConfigurationForm from '.';
 
@@ -54,15 +63,23 @@ const cancelTokenPutParams = {
 const renderOpenidConfigurationForm = (): RenderResult =>
   render(<OpenidConfigurationForm />);
 
-const retrievedOpenidConfiguration = {
+const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
+  alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
+  auto_import: true,
   base_url: 'https://localhost:8080',
   blacklist_client_addresses: ['127.0.0.1'],
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
+  contact_template: {
+    id: 1,
+    name: 'Contant template',
+  },
+  email_bind_attribute: 'email',
   endsession_endpoint: '/logout',
+  fullname_bind_attribute: 'lastname',
   introspection_token_endpoint: '/introspect',
   is_active: true,
   is_forced: false,
@@ -145,6 +162,16 @@ describe('Openid configuration form', () => {
       ),
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
+    expect(screen.getByLabelText(labelEnableAutoImport)).toBeChecked();
+    expect(screen.getByLabelText(labelEmailAttributeToBind)).toHaveValue(
+      'email',
+    );
+    expect(screen.getByLabelText(labelAliasAttributeToBind)).toHaveValue(
+      'firstname',
+    );
+    expect(screen.getByLabelText(labelFullnameAttributeToBind)).toHaveValue(
+      'lastname',
+    );
   });
 
   it('displays an error message when fields are not correctly formatted', async () => {
@@ -281,6 +308,93 @@ describe('Openid configuration form', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
         'https://localhost:8080',
+      );
+    });
+  });
+
+  it('enables the "Save" button when an "Auto import" text field is cleared and the "Enable auto import" switch is unchecked', async () => {
+    renderOpenidConfigurationForm();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEmailAttributeToBind),
+      ).toBeInTheDocument();
+    });
+
+    userEvent.type(screen.getByLabelText(labelEmailAttributeToBind), '');
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).toBeDisabled();
+    });
+
+    userEvent.click(screen.getByLabelText(labelEnableAutoImport));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
+    });
+  });
+
+  it('updates the contact template field when an contact template is selected from the retrieved options', async () => {
+    renderOpenidConfigurationForm();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        meta: {
+          limit: 10,
+          page: 1,
+          total: 30,
+        },
+        result: [
+          {
+            id: 1,
+            name: 'Contact Template 1',
+          },
+          {
+            id: 2,
+            name: 'Contact Template 2',
+          },
+        ],
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(labelContactTemplate)).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByLabelText(labelContactTemplate));
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${contactTemplatesEndpoint}?page=1&sort_by=${encodeURIComponent(
+          '{"name":"ASC"}',
+        )}&search=${encodeURIComponent('{"$and":[{"id":{"$ni":[1]}}]}')}`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Contact Template 2')).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByText('Contact Template 2'));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelContactTemplate)).toHaveValue(
+        'Contact Template 2',
       );
     });
   });

@@ -5,6 +5,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   page: {
+    height: 'fit-content',
     margin: '0 auto',
     padding: theme.spacing(2, 0),
     width: '40%',

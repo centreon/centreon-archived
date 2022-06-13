@@ -3,7 +3,7 @@ import { equals, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { putData, useRequest, useSnackbar } from '@centreon/ui';
 
@@ -38,7 +38,7 @@ function differentPasswords(this, newPassword?: string): boolean {
 }
 
 const useResetPassword = (): UseResetPasswordState => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { showSuccessMessage } = useSnackbar();
@@ -48,7 +48,7 @@ const useResetPassword = (): UseResetPasswordState => {
 
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
 
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
   const { sendLogin } = useLogin();
 
   const submitResetPassword = (

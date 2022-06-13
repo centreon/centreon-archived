@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\Monitoring\Resource;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
@@ -334,9 +334,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $resource->setIcon($icon);
         }
 
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $parent = null;
-        } else {
+        $parent = null;
+        if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
             // parse parent Resource object
             $parent = EntityCreator::createEntityByArray(
                 ResourceEntity::class,

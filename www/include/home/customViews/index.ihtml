@@ -12,7 +12,7 @@
         {if $aclAddView == 1}
         <!-- Button for add a view -->
         <div class="cntn">
-            <button class='addView btnAction btc bt_success'>{t}Add view{/t}</button>
+            <button class='addView btnAction btc bt_success'>{$addIcon} {t}Add view{/t}</button>
             <!-- Form for add a view -->
             <div class="position_toggle_wrapper">
                 <div class="toggle_wrapper inactive" id="addView">
@@ -63,7 +63,7 @@
         <!-- Button for edit a view -->
         {if $aclEdit == 1}
         <div class="cntn">
-            <button class='editView btnAction btnExtraAction btc bt_info'>{t}Edit view{/t}</button>
+            <button class='editView btnAction btnExtraAction btc bt_info'>{$editIcon} {t}Edit view{/t}</button>
             <div class="position_toggle_wrapper">
                 <div class="toggle_wrapper inactive" id="editView">
                 <div>
@@ -106,18 +106,18 @@
 
         <!-- Button for delete a view -->
         {if $aclDeleteView == 1}
-        <button class='deleteView btnExtraAction btc bt_danger'>{t}Delete view{/t}</button>
+        <button class='deleteView btnExtraAction btc bt_danger'>{$deleteIcon} {t}Delete view{/t}</button>
         {/if}
 
         <!-- Button for set default a view -->
         {if $aclSetDefault == 1}
-        <button class='setDefault btnExtraAction btc bt_default'>{t}Set default{/t}</button>
+        <button class='setDefault btnExtraAction btc bt_default'>{$returnIcon} {t}Set default{/t}</button>
         {/if}
 
         <!-- Button for share a view -->
         {if $aclShare == 1}
         <div class="cntn">
-            <button class='shareView btnAction btnExtraAction btc bt_info'>{t}Share view{/t}</button>
+            <button class='shareView btnAction btnExtraAction btc bt_info'>{$folderIcon} {t}Share view{/t}</button>
             <div class="position_toggle_wrapper">
                 <div class="toggle_wrapper inactive" id="shareView">
                 <form {$formShareView.attributes}>
@@ -166,7 +166,7 @@
         <!-- Button for add a widget -->
         {if $aclAddWidget == 1}
         <div class="cntn">
-            <button class='addWidget btnAction btnExtraAction btc bt_success'>{t}Add widget{/t}</button>
+            <button class='addWidget btnAction btnExtraAction btc bt_success'>{$addIcon} {t}Add widget{/t}</button>
             <div class="position_toggle_wrapper">
                 <div class="toggle_wrapper inactive" id="addwdgt">
                 <form {$formAddWidget.attributes}>
@@ -202,7 +202,7 @@
         <!-- Button for activate rotation -->
         {if $aclRotation == 1}
         <div class="cntn">
-            <button class='setRotate btnAction btnExtraAction btc bt_info'>{t}Rotation{/t}</button>
+            <button class='setRotate btnAction btnExtraAction btc bt_info'>{$playIcon} {t}Rotation{/t}</button>
             <div class="position_toggle_wrapper">
                 <div class="toggle_wrapper inactive" id="rotationTabs">
                 <div id='rotation_timer'></div>
@@ -220,7 +220,9 @@
     <div id="tabs">
         <div class="info_box">
             <h4>
-                <img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'>
+                <span style='padding-right:5px;'>
+                    {$helpIcon}
+                </span>
                 {t}No view available. To create a new view, please click "Add view" button.{/t}
             </h4>
         </div>
@@ -678,7 +680,7 @@ jQuery(function () {
   jQuery('#tabs').tabs();
 
   /* Initialize buttons */
-  jQuery('.addView').button({icon: "ui-icon-plus"}).on('click', function () {
+  jQuery('.addView').button().on('click', function () {
     //reset select2
     jQuery("#formAddView #viewLoad").empty().append($('<option>'));
     //reset add view form
@@ -691,21 +693,21 @@ jQuery(function () {
     jQuery('#formAddView input[name="public"]').prop('checked', false);
   });
 
-    jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
+    jQuery('.setDefault').button().on('click', function () {
         jQuery("#setDefaultConfirm").centreonPopin({
             open: true
         });
     });
 
-  jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
+  jQuery('.editView').button();
 
-    jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
+    jQuery('.deleteView').button().on('click', function () {
         jQuery("#deleteViewConfirm").centreonPopin({
             open: true
         });
     });
 
-  jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
+  jQuery('.shareView').button().on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
       jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
@@ -751,8 +753,8 @@ jQuery(function () {
       }
     });
   });
-  jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
-  jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
+  jQuery('.addWidget').button();
+  jQuery('.setRotate').button();
 
   jQuery('input[name="create_load[create_load]"]').change(function (){
     if (jQuery(this).val() == 'load'){

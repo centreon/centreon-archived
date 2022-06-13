@@ -95,6 +95,11 @@ textarea {
 	}
 /* custom */
 
+.bt_back_install {
+    background: none !important;
+    color: var(--color-mine-shaft) !important;
+}
+
 table.shell {
 	border: 1px solid #fff;
 	height: 300px;

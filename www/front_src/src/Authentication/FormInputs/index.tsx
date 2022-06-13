@@ -2,11 +2,14 @@ import { useMemo } from 'react';
 
 import {
   always,
+  any,
   ascend,
   cond,
   equals,
+  filter,
   find,
   groupBy,
+  keys,
   last,
   not,
   pluck,
@@ -25,6 +28,7 @@ import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
+import ConnectedAutocomplete from './ConnectedAutocomplete';
 
 export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
@@ -35,6 +39,10 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
     always(MultipleInput),
   ],
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
+  [
+    equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
+    always(ConnectedAutocomplete),
+  ],
 ]);
 
 const useStyles = makeStyles((theme) => ({
@@ -77,7 +85,12 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
   const sortedCategoryNames = useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
-    return pluck('name', sortedCategories);
+    const usedCategories = filter(
+      ({ name }) => any(equals(name), keys(inputsByCategory)),
+      sortedCategories,
+    );
+
+    return pluck('name', usedCategories);
   }, []);
 
   const sortedInputsByCategory = useMemo(
@@ -101,8 +114,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
   return (
     <div>
       {toPairs(sortedInputsByCategory).map(([category, categorizedInputs]) => (
-        <>
-          <div className={classes.category} key={category}>
+        <div key={category}>
+          <div className={classes.category}>
             <Typography variant="h5">{t(category)}</Typography>
             <div className={classes.inputs}>
               {categorizedInputs.map(
@@ -114,6 +127,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                   change,
                   getChecked,
                   required,
+                  getDisabled,
+                  getRequired,
                   additionalLabel,
                 }) => {
                   const Input = getInput(type);
@@ -123,6 +138,8 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
                     change,
                     fieldName,
                     getChecked,
+                    getDisabled,
+                    getRequired,
                     label,
                     options,
                     required,
@@ -147,7 +164,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
             </div>
           </div>
           {not(equals(lastCategory, category)) && <Divider />}
-        </>
+        </div>
       ))}
     </div>
   );

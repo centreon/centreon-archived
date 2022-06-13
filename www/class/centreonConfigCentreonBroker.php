@@ -784,6 +784,7 @@ class CentreonConfigCentreonBroker
         $iId = $objMain->insertServerInCfgNagios(-1, $iIdServer, $values['name']);
         if (!empty($iId)) {
             $objMain->insertBrokerDefaultDirectives($iId, 'wizard');
+            $objMain->insertDefaultCfgNagiosLogger($iId);
         }
 
         /*

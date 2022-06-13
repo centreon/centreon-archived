@@ -14,9 +14,10 @@ import {
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
 import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
+import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
 import {
   labelCentreonLogo,
@@ -29,11 +30,7 @@ import {
   labelLoginWith,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import {
-  loginEndpoint,
-  platformVersionsEndpoint,
-  providersConfigurationEndpoint,
-} from './api/endpoint';
+import { loginEndpoint, providersConfigurationEndpoint } from './api/endpoint';
 
 import LoginPage from '.';
 
@@ -92,6 +89,12 @@ const retrievedProvidersConfiguration = [
   },
 ];
 
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
+};
+
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -102,6 +105,7 @@ const TestComponent = (): JSX.Element => (
             platformInstallationStatusAtom,
             { availableVersion: null, installedVersion: '21.10.1' },
           ],
+          [platformVersionsAtom, retrievedWeb],
         ]}
       >
         <LoginPage />
@@ -141,6 +145,19 @@ const mockPostLoginPasswordExpired = (): void => {
   });
 };
 
+const labelError = 'This is an error from the server';
+
+const mockPostLoginServerError = (): void => {
+  mockedAxios.post.mockRejectedValue({
+    response: {
+      data: {
+        message: labelError,
+      },
+      status: 500,
+    },
+  });
+};
+
 const labelInvalidCredentials = 'Invalid credentials';
 
 describe('Login Page', () => {
@@ -148,7 +165,7 @@ describe('Login Page', () => {
     mockDate.set(mockNow);
     mockedAxios.get
       .mockResolvedValueOnce({
-        data: retrievedWeb,
+        data: retrievedTranslations,
       })
       .mockResolvedValueOnce({
         data: retrievedProvidersConfiguration,
@@ -171,15 +188,10 @@ describe('Login Page', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        platformVersionsEndpoint,
+        providersConfigurationEndpoint,
         cancelTokenRequestParam,
       );
     });
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      providersConfigurationEndpoint,
-      cancelTokenRequestParam,
-    );
 
     expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
@@ -189,10 +201,12 @@ describe('Login Page', () => {
     await waitFor(() => {
       expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
     });
-    expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
-      'href',
-      '/centreon/authentication/providers/configurations/openid',
-    );
+    await waitFor(() => {
+      expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
+        'href',
+        '/centreon/authentication/providers/configurations/openid',
+      );
+    });
     expect(
       screen.queryByText(`${labelLoginWith} ldap`),
     ).not.toBeInTheDocument();
@@ -306,5 +320,22 @@ describe('Login Page', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/reset-password');
+  });
+
+  it('stays on the login page when the login request returns a 500 error', async () => {
+    mockPostLoginServerError();
+    renderLoginPage();
+
+    userEvent.type(screen.getByLabelText(labelAlias), 'admin');
+    userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
+
+    userEvent.click(screen.getByLabelText(labelConnect));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelError)).toBeInTheDocument();
+    });
+
+    expect(window.location.href).not.toBe('http://localhost/reset-password');
+    expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
   });
 });

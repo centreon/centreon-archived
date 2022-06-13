@@ -28,10 +28,13 @@ central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first
 function genpasswd() {
   local _pwd
 
-  PWD_STRING_LENGTH=16
-  PWD_SPECIAL_CHARS='a-zA-Z0-9\!\@\$\*\?'
+  PWD_LOWER=$(cat /dev/urandom | tr -dc 'a-z' | head -c4)
+  PWD_UPPER=$(cat /dev/urandom | tr -dc 'A-Z' | head -c4)
+  PWD_DIGIT=$(cat /dev/urandom | tr -dc '0-9' | head -c4)
+  PWD_SPECIAL=$(cat /dev/urandom | tr -dc '\!\@\$\*\?' | head -c4)
 
-  _pwd=$(cat /dev/urandom | tr -dc $PWD_SPECIAL_CHARS | fold -w $PWD_STRING_LENGTH | head -n 1)
+  _pwd="$PWD_LOWER$PWD_UPPER$PWD_DIGIT$PWD_SPECIAL"
+  _pwd=$(echo $_pwd |fold -w 1 |shuf |tr -d '\n')
 
   echo "Random password generated for user [$1] is [$_pwd]" >>$tmp_passwords_file
 

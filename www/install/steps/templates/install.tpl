@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Style-Type" content="text/css">
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
+    <link rel="stylesheet" href="../Themes/Generic-theme/Variables-css/variables.css" type="text/css">
     <link rel="stylesheet" href="../Themes/Generic-theme/style.css" type="text/css">
     <link rel="stylesheet" href="./install.css" type="text/css">
     <link rel="stylesheet" href="./pub_install.css" type="text/css">

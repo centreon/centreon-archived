@@ -1,6 +1,6 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
-import { equals, flatten, isEmpty, isNil } from 'ramda';
+import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
@@ -19,6 +19,7 @@ import {
   setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 
 import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
@@ -56,6 +57,7 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const timeoutRef = useRef<null | NodeJS.Timeout>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -71,51 +73,35 @@ const NavigationMenu = ({
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
-  const props = {
-    collapseScrollMaxHeight,
-    collapseScrollMaxWidth,
-    currentTop,
-    currentWidth,
-    hoveredIndex,
-    isDrawerOpen,
-    level: 1,
-    pathname,
-    search,
-    setCollapseScrollMaxHeight,
-    setCollapseScrollMaxWidth,
-  };
-
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
     setHoveredNavigationItemsDerived({ currentPage, levelName });
+    discardTimeout();
+  };
+
+  const discardTimeout = (): void => {
+    if (isNil(timeoutRef.current)) {
+      return;
+    }
+    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
-    setHoveredIndex(null);
-    setHoveredNavigationItems(null);
-  };
-
-  const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
-    const page = isNil(entryProps?.page) ? '' : entryProps.page;
-    const options = isNil(entryProps?.options) ? '' : entryProps.options;
-
-    const urlOptions = `${page}${options}`;
-    const url = entryProps.is_react
-      ? entryProps.url
-      : `/main.php?p=${urlOptions}`;
-
-    return url;
+    discardTimeout();
+    timeoutRef.current = setTimeout((): void => {
+      setHoveredIndex(null);
+      setHoveredNavigationItems(null);
+    }, 500);
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry(currentPage))) {
+    if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
-    navigate(getUrlFromEntry(currentPage) as string);
-    setSelectedNavigationItems(hoveredNavigationItems);
+    navigate(searchUrlFromEntry(currentPage) as string);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
@@ -174,28 +160,41 @@ const NavigationMenu = ({
     return [parentItem, ...args].reverse();
   };
 
+  const getItemHoveredByDefault = (
+    currentPage,
+    ...args
+  ): Array<Page> | null => {
+    if (!currentPage.is_react && searchItemsWithPhpUrl(currentPage, ...args)) {
+      return searchItemsWithPhpUrl(currentPage, ...args);
+    }
+
+    if (currentPage.is_react && searchItemsWithReactUrl(currentPage, ...args)) {
+      return searchItemsWithReactUrl(currentPage, ...args);
+    }
+
+    return null;
+  };
+
   const searchItemsHoveredByDefault = (
     currentPage,
     ...args
   ): Array<Page> | null => {
+    const hoveredCurrentPage = getItemHoveredByDefault(currentPage, ...args);
+    if (hoveredCurrentPage) {
+      return hoveredCurrentPage;
+    }
+
     const childPage = currentPage?.children;
     if (isNil(childPage) || !isArrayItem(childPage)) {
-      if (
-        !currentPage.is_react &&
-        searchItemsWithPhpUrl(currentPage, ...args)
-      ) {
-        return searchItemsWithPhpUrl(currentPage, ...args);
-      }
-
-      if (
-        currentPage.is_react &&
-        searchItemsWithReactUrl(currentPage, ...args)
-      ) {
-        return searchItemsWithReactUrl(currentPage, ...args);
-      }
+      return getItemHoveredByDefault(currentPage, ...args);
     }
 
     return childPage?.map((item) => {
+      const hoveredItem = getItemHoveredByDefault(item, ...args);
+      if (hoveredItem && equals(length(hoveredItem as Array<Page>), 1)) {
+        return [currentPage, ...hoveredItem];
+      }
+
       const grandsonPage = item?.groups;
       if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
         if (args.length > 0) {
@@ -215,10 +214,18 @@ const NavigationMenu = ({
     });
   };
 
-  const handleWindowClose = (): void => {
-    setSelectedNavigationItems(null);
-    setHoveredNavigationItems(null);
-  };
+  useEffect(() => {
+    navigationData?.forEach((item) => {
+      const searchedItems = searchItemsHoveredByDefault(item);
+      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+
+      if (isEmpty(filteredResult)) {
+        return;
+      }
+
+      addSelectedNavigationItemsByDefault(filteredResult);
+    });
+  }, []);
 
   useEffect(() => {
     navigationData?.forEach((item) => {
@@ -231,14 +238,29 @@ const NavigationMenu = ({
 
       addSelectedNavigationItemsByDefault(filteredResult);
     });
-    window.addEventListener('beforeunload', handleWindowClose);
+  }, [pathname, search]);
 
-    return () => window.removeEventListener('beforeunload', handleWindowClose);
-  }, []);
+  const props = {
+    collapseScrollMaxHeight,
+    collapseScrollMaxWidth,
+    currentTop,
+    currentWidth,
+    hoveredIndex,
+    isDrawerOpen,
+    level: 1,
+    pathname,
+    search,
+    setCollapseScrollMaxHeight,
+    setCollapseScrollMaxWidth,
+  };
 
   return useMemoComponent({
     Component: (
-      <List className={classes.list} onMouseLeave={handleLeave}>
+      <List
+        className={classes.list}
+        onMouseEnter={discardTimeout}
+        onMouseLeave={handleLeave}
+      >
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
@@ -270,7 +292,6 @@ const NavigationMenu = ({
                     {...props}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onClick={handleClickItem}
                     onLeave={handleLeave}
                   />
                 )}

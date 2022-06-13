@@ -65,6 +65,12 @@ const retrievedLogin = {
   redirect_uri: '/monitoring/resources',
 };
 
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
+};
+
 const TestComponent = ({ initialValues }: Props): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -107,6 +113,9 @@ describe('Reset password Page', () => {
       })
       .mockResolvedValueOnce({
         data: retrievedProvidersConfiguration,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedTranslations,
       })
       .mockResolvedValue({
         data: retrievedUser,

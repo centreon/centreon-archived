@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,9 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 $nagios_comment = array();
@@ -61,14 +59,6 @@ $nagios_comment["status_file"] = "This is where the current status of all monito
     . "The contentsof the status file are deleted every time Nagios "
     . "restarts. ";
 
-$nagios_comment["nagios_user"] = " NAGIOS USER "
-    . "This determines the effective user that Nagios should run as.   "
-    . "You can either supply a username or a UID. ";
-
-$nagios_comment["nagios_group"] = " NAGIOS GROUP "
-    . "This determines the effective group that Nagios should run as.  "
-    . "You can either supply a group name or a GID. ";
-
 $nagios_comment["check_external_commands"] = "This option allows you to specify whether or not Nagios should check "
     . "for external commands (in the command file defined below).  By default "
     . "Nagios will *not* check for external commands, just to be on the "
@@ -94,31 +84,6 @@ $nagios_comment["command_file"] = "This is the file that Nagios checks for exter
     . "is running as (usually &laquo;nobody&raquo;).  Permissions should be set at the  "
     . "directory level instead of on the file, as the file is deleted every "
     . "time its contents are processed. ";
-
-$nagios_comment["comment_file"] = "This is the file that Nagios will use for storing host and service "
-    . "comments. ";
-
-$nagios_comment["downtime_file"] = "This is the file that Nagios will use for storing host and service "
-    . "downtime data. ";
-
-$nagios_comment["lock_file"] = "This is the lockfile that Nagios will use to store its PID number "
-    . "in when it is running in daemon mode. ";
-
-$nagios_comment["temp_file"] = "This is a temporary file< that is used as scratch space when Nagios "
-    . "updates the status log, cleans the comment file, etc.  This file "
-    . "is created, used, and deleted throughout the time that Nagios is "
-    . "running. ";
-
-$nagios_comment["log_rotation_method"] = "This is the log rotation method that Nagios should use to rotate "
-    . "the main log file. Values are as follows..<br /> "
-    . "n	= None - don\'t rotate the log <br />"
-    . "h	= Hourly rotation (top of the hour) <br />"
-    . "d	= Daily rotation (midnight every day)<br /> "
-    . "w	= Weekly rotation (midnight on Saturday evening)<br /> "
-    . "m	= Monthly rotation (midnight last day of month)<br /> ";
-
-$nagios_comment["log_archive_path"] = "This is the directory where archived (rotated) log files should be  "
-    . "placed (assuming you\'ve chosen to do log rotation). ";
 
 $nagios_comment["use_syslog"] = "If you want messages logged to the syslog facility, as well as the "
     . "NetAlarm log file set this option to 1.  If not, set it to 0. ";
@@ -275,11 +240,6 @@ $nagios_comment["use_retained_scheduling_info"] = "This setting determines wheth
     . "as it can adversely skew the spread of initial checks.<br />"
     . "Otherwise you will probably want to leave it enabled.";
 
-$nagios_comment["interval_length"] = "This is the seconds per unit interval as used in the "
-    . "host/contact/service configuration files.  Setting this to 60 means "
-    . "that each interval is one minute long (60 seconds).  Other settings "
-    . "have not been tested much, so your mileage is likely to vary... ";
-
 $nagios_comment["execute_service_checks"] = "This determines whether or not Nagios will actively execute "
     . "service checks when it initially starts.  If this option is  "
     . "disabled, checks are not actively made, but Nagios can still "
@@ -318,116 +278,6 @@ $nagios_comment["enable_event_handlers"] = "This determines whether or not Nagio
     . "service event handlers when it is initially (re)started.  Unless "
     . "you\'re implementing redundant hosts, leave this option enabled. "
     . "Values: 1 = enable event handlers, 0 = disable event handlers ";
-
-$nagios_comment["process_performance_data"] = "This determines whether or not Nagios will process performance "
-    . "data returned from service and host checks.  If this option is "
-    . "enabled, host performance data will be processed using the "
-    . "host_perfdata_command (defined below) and service performance "
-    . "data will be processed using the service_perfdata_command (also "
-    . "defined below).  Read the HTML docs for more information on "
-    . "performance data. "
-    . "Values: 1 = process performance data, 0 = do not process performance data ";
-
-$nagios_comment["host_perfdata_command"] = "This option allows you to specify a command to be run after "
-    . "every host check to process host performance data that may be returned from the check.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "This command is only executed if the process_performance_data option is enabled "
-    . "globally and if the process_perf_data directive in the host definition is enabled.";
-
-$nagios_comment["service_perfdata_command"] = "This option allows you to specify a command to be run after every "
-    . "service check to process service performance data that may be returned from the check.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "This command is only executed if the process_performance_data option is enabled globally "
-    . "and if the process_perf_data directive in the service definition is enabled.";
-
-$nagios_comment["host_perfdata_file"] = "This option allows you to specify a file "
-    . "to which host performance data will be written after every host check.<br />"
-    . "Data will be written to the performance file as specified by the host_perfdata_file_template option.<br />"
-    . "Performance data is only written to this file if the process_performance_data option is enabled globally "
-    . "and if the process_perf_data directive in the host definition is enabled.";
-
-$nagios_comment["service_perfdata_file"] = "This option allows you to specify a file "
-    . "to which service performance data will be written after every service check.<br />"
-    . "Data will be written to the performance file as specified by the service_perfdata_file_template option. <br />"
-    . "Performance data is only written to this file if the process_performance_data option is enabled globally "
-    . "and if the process_perf_data directive in the service definition is enabled.";
-
-$nagios_comment["host_perfdata_file_template"] = "This option determines what (and how) "
-    . "data is written to the host performance data file.<br />"
-    . "The template may contain macros, special characters "
-    . "( t for tab, r for carriage return, n for newline) and plain text.<br />"
-    . "A newline is automatically added after each write to the performance data file.";
-
-$nagios_comment["service_perfdata_file_template"] = "This option determines what (and how) data is written "
-    . "to the service performance data file.<br />"
-    . "The template may contain macros, special characters "
-    . "(t for tab, r for carriage return, n for newline) and plain text.<br />"
-    . "A newline is automatically added after each write to the performance data file.";
-
-$nagios_comment["host_perfdata_file_mode"] = "This option determines whether the host performance data file "
-    . "is opened in write or append mode.<br />"
-    . "Unless the file is a named pipe, you will probably want to use the default mode of append.<br />"
-    . "a = Open file in append mode (default)<br />w = Open file in write mode ";
-
-$nagios_comment["service_perfdata_file_mode"] = "This option determines whether "
-    . "the service performance data file is opened in write or append mode.<br />"
-    . "Unless the file is a named pipe, you will probably want to use the default mode of append.<br />"
-    . "a = Open file in append mode (default)<br />w = Open file in write mode ";
-
-$nagios_comment["host_perfdata_file_processing_interval"] = "This option allows you to specify the interval "
-    . "(in seconds) at which the host performance data file is processed "
-    . "using the host performance data file processing command.<br />"
-    . "A value of 0 indicates that the performance data file should not be processed at regular intervals.";
-
-$nagios_comment["service_perfdata_file_processing_interval"] = "This option allows you to specify the interval "
-    . "(in seconds) at which the service performance data file "
-    . "is processed using the service performance data file processing command.<br />"
-    . "A value of 0 indicates that the performance data file should not be processed at regular intervals.";
-
-$nagios_comment["host_perfdata_file_processing_command"] = "This option allows you to specify the command "
-    . "that should be executed to process the host performance data file.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "The interval at which this command is executed is determined "
-    . "by the host_perfdata_file_processing_interval directive.";
-
-$nagios_comment["service_perfdata_file_processing_command"] = "This option allows you to specify the command "
-    . "that should be executed to process the service performance data file.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "The interval at which this command is executed is determined "
-    . "by the service_perfdata_file_processing_interval directive.";
-
-$nagios_comment["obsess_over_services"] = "This determines whether or not Nagios will obsess over service "
-    . "checks and run the ocsp_command defined below.  Unless you\'re "
-    . "planning on implementing distributed monitoring, do not enable "
-    . "this option.  Read the HTML docs for more information on "
-    . "implementing distributed monitoring. "
-    . "Values: 1 = obsess over services, 0 = do not obsess (default) ";
-
-$nagios_comment["obsess_over_hosts"] = "This value determines whether or not Nagios will &laquo;obsess&laquo; "
-    . "over host checks results and run the obsessive compulsive host processor command you define.<br />"
-    . "I know - funny name, but it was all I could think of.<br />"
-    . "This option is useful for performing distributed monitoring.<br />"
-    . "If you're not doing distributed monitoring, don't enable this option.";
-
-$nagios_comment["ocsp_command"] = "This is the command that is run for every service check that is "
-    . "processed by Nagios.  This command is executed only if the "
-    . "obsess_over_service option (above) is set to 1.  The command  "
-    . "argument is the short name of a command definition that you "
-    . "define in your host configuration file. Read the HTML docs for "
-    . "more information on implementing distributed monitoring. ";
-
-$nagios_comment["ochp_command"] = "This option allows you to specify a command to be run "
-    . "after every host check, which can be useful in distributed monitoring.<br />"
-    . "This command is executed after any event handler or notification commands.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "The maximum amount of time that this command can run is controlled by the ochp_timeout option.<br />"
-    . "This command is only executed if the obsess_over_hosts option is enabled globally "
-    . "and if the obsess_over_host directive in the host definition is enabled.";
 
 $nagios_comment["check_for_orphaned_services"] = "This determines whether or not Nagios will periodically  "
     . "check for orphaned services.  Since service checks are not "

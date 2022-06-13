@@ -321,7 +321,7 @@ if (!$isRemote) {
             "link" => "./poller-wizard/1",
             "text" => _("Add"),
             "class" => "btc bt-poller-action bt_success",
-            "iconClass" => "ui-icon-plus"
+            "icon" => returnSvg("www/img/icons/add.svg", "var(--button-icons-fill-color)", 16, 16)
         )
     );
 
@@ -331,7 +331,7 @@ if (!$isRemote) {
             "link" => "main.php?p=" . $p . "&o=a",
             "text" => _("Add (advanced)"),
             "class" => "btc bt-poller-action bt_success",
-            "iconClass" => "ui-icon-plus"
+            "icon" => returnSvg("www/img/icons/add.svg", "var(--button-icons-fill-color)", 16, 16)
         )
     );
 
@@ -342,7 +342,7 @@ if (!$isRemote) {
             "text" => _("Duplicate"),
             "class" => "btc bt-poller-action bt_success",
             "name" => "duplicate_action",
-            "iconClass" => "ui-icon-copy",
+            "icon" => returnSvg("www/img/icons/duplicate.svg", "var(--button-icons-fill-color)", 16, 14),
             "onClickAction" => "javascript: " .
                 " var bChecked = isChecked(); " .
                 " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
@@ -356,7 +356,7 @@ if (!$isRemote) {
             "text" => _("Delete"),
             "class" => "btc bt-poller-action bt_danger",
             "name" => "delete_action",
-            "iconClass" => "ui-icon-trash",
+            "icon" => returnSvg("www/img/icons/trash.svg", "var(--button-icons-fill-color)", 16, 16),
             "onClickAction" => "javascript: " .
                 " var bChecked = isChecked(); " .
                 " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
@@ -373,7 +373,7 @@ if (!$isRemote) {
             "text" => _("Export configuration"),
             "class" => "btc bt-poller-action bt_info",
             "name" => "apply_configuration",
-            "iconClass" => "ui-icon-extlink",
+            "icon" => returnSvg("www/img/icons/export.svg", "var(--button-icons-fill-color)", 14, 14),
             "onClickAction" => "applyConfiguration();"
         )
     );

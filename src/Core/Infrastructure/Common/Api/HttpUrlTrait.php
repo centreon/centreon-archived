@@ -22,8 +22,26 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Common\Api;
 
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\ServerBag;
+use Symfony\Contracts\Service\Attribute\Required;
+
 trait HttpUrlTrait
 {
+    /**
+     * @var ServerBag|null
+     */
+    private ?ServerBag $httpServerBag;
+
+    /**
+     * @param RequestStack $requestStack
+     */
+    #[Required]
+    public function setHttpServerBag(RequestStack $requestStack): void
+    {
+        $this->httpServerBag = $requestStack->getCurrentRequest()?->server;
+    }
+
     /**
      * Get base URL (example: https://127.0.0.1/centreon)
      *
@@ -31,25 +49,32 @@ trait HttpUrlTrait
      */
     protected function getBaseUrl(): string
     {
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        if (! $this->httpServerBag?->has('SERVER_NAME')) {
+            return '';
+        }
+
+        $protocol = $this->httpServerBag->has('HTTPS') && $this->httpServerBag->get('HTTPS') !== 'off'
+            ? 'https'
+            : 'http';
 
         $port = null;
-        if (isset($_SERVER['SERVER_PORT'])) {
+        if ($this->httpServerBag->get('SERVER_PORT')) {
             if (
-                ($protocol === 'http' && $_SERVER['SERVER_PORT'] !== '80')
-                || ($protocol === 'https' && $_SERVER['SERVER_PORT'] !== '443')
+                ($protocol === 'http' && $this->httpServerBag->get('SERVER_PORT') !== '80')
+                || ($protocol === 'https' && $this->httpServerBag->get('SERVER_PORT') !== '443')
             ) {
-                $port = (int) $_SERVER['SERVER_PORT'];
+                $port = (int) $this->httpServerBag->get('SERVER_PORT');
             }
         }
 
-        $serverName = $_SERVER['SERVER_NAME'];
+        $serverName = $this->httpServerBag->get('SERVER_NAME');
 
-        $baseUri = $this->getBaseUri();
+        $baseUri = trim($this->getBaseUri(), '/');
 
-        return $protocol . '://'
-            . $serverName . ($port !== null ? ':' . $port : '')
-            . '/' . trim($baseUri, '/');
+        return rtrim(
+            $protocol . '://' . $serverName . ($port !== null ? ':' . $port : '') . '/' . $baseUri,
+            '/'
+        );
     }
 
     /**
@@ -64,20 +89,20 @@ trait HttpUrlTrait
         $routeSuffixPatterns = [
             '(api|widgets|modules|include)\/.+',
             'main(\.get)?\.php',
-            '(?<!administration\/)authentication\/providers\/configurations',
+            '(?<!administration\/)authentication\/.+',
         ];
 
         if (
-            isset($_SERVER['REQUEST_URI'])
+            $this->httpServerBag?->has('REQUEST_URI')
             && preg_match(
-                '/^(.+?)\/(' . implode('|', $routeSuffixPatterns) . ')/',
-                $_SERVER['REQUEST_URI'],
-                $matches
+                '/^(.+?)\/?(' . implode('|', $routeSuffixPatterns) . ')/',
+                $this->httpServerBag->get('REQUEST_URI'),
+                $matches,
             )
         ) {
             $baseUri = $matches[1];
         }
 
-        return $baseUri;
+        return rtrim($baseUri, '/');
     }
 }

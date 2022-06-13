@@ -38,6 +38,9 @@ export const labelRemoteServers =
 export const labelOpenBrokerFlow =
   'Advanced: reverse Centreon Broker communication flow';
 
+export const labelDoNotUseConfiguredProxy =
+  'Do not use configured proxy to connect to this server';
+
 export const labelFinalStep = 'Finalizing Setup';
 export const labelNext = 'Next';
 export const labelPrevious = 'Previous';

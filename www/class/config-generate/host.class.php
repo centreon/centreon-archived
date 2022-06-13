@@ -60,11 +60,11 @@ class Host extends AbstractHost
 
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
-                $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
-                    hostgroup_hg_id
-                FROM hostgroup_relation
-                WHERE host_host_id = :host_id
-                ");
+                $this->stmt_hg = $this->backend_instance->db->prepare(
+                    "SELECT hostgroup_hg_id
+                    FROM hostgroup_relation hgr, hostgroup hg
+                    WHERE host_host_id = :host_id AND hg.hg_id = hgr.hostgroup_hg_id AND hg.hg_activate = '1'"
+                );
             }
             $this->stmt_hg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_hg->execute();

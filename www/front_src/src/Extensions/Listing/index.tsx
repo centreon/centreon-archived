@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -18,11 +18,11 @@ import {
   useSnackbar,
 } from '@centreon/ui';
 
-import Hook from '../../components/Hook';
+import FederatedComponents from '../../components/FederatedComponents';
 import useNavigation from '../../Navigation/useNavigation';
-import useExternalComponents from '../../externalComponents/useExternalComponents';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
 import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
+import usePlatformVersions from '../../Main/usePlatformVersions';
 
 import { deleteExtension } from './api';
 import ExtensionsHolder from './ExtensionsHolder';
@@ -52,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   reloadNavigation: () => void;
 }
+
+const scrollMargin = 8;
 
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
@@ -86,6 +88,10 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
     string | null
   >(null);
+
+  const listingRef = useRef<HTMLDivElement | null>(null);
+
+  const [listingHeight, setListingHeight] = useState(window.innerHeight);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
     request: getData,
@@ -125,9 +131,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     }).then(({ status, result }) => {
       if (status) {
         setExtension(result as Extensions);
-      } else {
-        showErrorMessage(result as string);
+
+        return;
       }
+
+      showErrorMessage(result as string);
     });
   }, [getAppliedFilterCriteriasAtom]);
 
@@ -343,6 +351,18 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
+  const resize = (): void => {
+    setListingHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   const allModulesInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
@@ -363,8 +383,19 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
+  const listingContainerHeight =
+    listingHeight -
+    (listingRef.current?.getBoundingClientRect().top || 0) -
+    scrollMargin;
+
   return (
-    <div>
+    <Box
+      ref={listingRef}
+      sx={{
+        height: listingContainerHeight,
+        overflowY: 'auto',
+      }}
+    >
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
           <Button
@@ -387,7 +418,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <Hook path="/administration/extensions/manager" />
+          <FederatedComponents path="/lm/administration/extensions/manager" />
         </Stack>
       </div>
       {extensions && (
@@ -449,17 +480,17 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           onConfirm={deleteById}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
 const ExtensionsRoute = (): JSX.Element => {
   const { getNavigation } = useNavigation();
-  const { getExternalComponents } = useExternalComponents();
+  const { getPlatformVersions } = usePlatformVersions();
 
   const reloadNavigation = useCallback(() => {
     getNavigation();
-    getExternalComponents();
+    getPlatformVersions();
   }, []);
 
   return <ExtensionsManager reloadNavigation={reloadNavigation} />;

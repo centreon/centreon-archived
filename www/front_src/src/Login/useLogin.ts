@@ -20,28 +20,21 @@ import { useUpdateAtom } from 'jotai/utils';
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
 import { PlatformInstallationStatus } from '../api/models';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import useUser from '../Main/useUser';
 import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
 import routeMap from '../reactRoutes/routeMap';
+import useInitializeTranslation from '../Main/useInitializeTranslation';
 
 import postLogin from './api';
-import {
-  platformVersionsDecoder,
-  providersConfigurationDecoder,
-  redirectDecoder,
-} from './api/decoder';
+import { providersConfigurationDecoder, redirectDecoder } from './api/decoder';
 import {
   labelLoginSucceeded,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import {
-  platformVersionsEndpoint,
-  providersConfigurationEndpoint,
-} from './api/endpoint';
+import { providersConfigurationEndpoint } from './api/endpoint';
 import {
   LoginFormValues,
-  PlatformVersions,
   Redirect,
   RedirectAPI,
   ProviderConfiguration,
@@ -49,7 +42,6 @@ import {
 
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
-  platformVersions: PlatformVersions | null;
   providersConfiguration: Array<ProviderConfiguration> | null;
   sendLogin: (values) => Promise<Redirect>;
   submitLoginForm: (
@@ -60,8 +52,6 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
-  const [platformVersions, setPlatformVersions] =
-    useState<PlatformVersions | null>(null);
   const [providersConfiguration, setProvidersConfiguration] =
     useState<Array<ProviderConfiguration> | null>(null);
 
@@ -71,11 +61,6 @@ const useLogin = (): UseLoginState => {
     request: postLogin,
   });
 
-  const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
-    decoder: platformVersionsDecoder,
-    request: getData,
-  });
-
   const { sendRequest: getProvidersConfiguration } = useRequest<
     Array<ProviderConfiguration>
   >({
@@ -83,10 +68,13 @@ const useLogin = (): UseLoginState => {
     request: getData,
   });
 
+  const { getInternalTranslation, getExternalTranslation } =
+    useInitializeTranslation();
+
   const { showSuccessMessage, showWarningMessage, showErrorMessage } =
     useSnackbar();
   const navigate = useNavigate();
-  const loadUser = useUser(i18n.changeLanguage);
+  const loadUser = useUser();
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
   const setPasswordResetInformations = useUpdateAtom(
@@ -102,20 +90,18 @@ const useLogin = (): UseLoginState => {
         error,
       ) as RedirectAPI;
 
-      if (isUserNotAllowed && not(passwordIsExpired)) {
-        setSubmitting(false);
-        showErrorMessage(
-          path(['response', 'data', 'message'], error) as string,
-        );
+      if (isUserNotAllowed && passwordIsExpired) {
+        setPasswordResetInformations({
+          alias,
+        });
+        navigate(routeMap.resetPassword);
+        showWarningMessage(t(labelPasswordHasExpired));
 
         return;
       }
 
-      setPasswordResetInformations({
-        alias,
-      });
-      navigate(routeMap.resetPassword);
-      showWarningMessage(t(labelPasswordHasExpired));
+      setSubmitting(false);
+      showErrorMessage(path(['response', 'data', 'message'], error) as string);
     },
     [],
   );
@@ -130,7 +116,9 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(redirectUri));
+        getInternalTranslation().finally(() =>
+          loadUser()?.then(() => navigate(redirectUri)),
+        );
       })
       .catch((error) =>
         checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
@@ -140,11 +128,9 @@ const useLogin = (): UseLoginState => {
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
   useEffect(() => {
-    i18n.changeLanguage?.(getBrowserLocale());
-
-    sendPlatformVersions({
-      endpoint: platformVersionsEndpoint,
-    }).then(setPlatformVersions);
+    getExternalTranslation().then(() =>
+      i18n.changeLanguage?.(getBrowserLocale()),
+    );
 
     getProvidersConfiguration({
       endpoint: providersConfigurationEndpoint,
@@ -179,7 +165,6 @@ const useLogin = (): UseLoginState => {
 
   return {
     platformInstallationStatus,
-    platformVersions,
     providersConfiguration,
     sendLogin,
     submitLoginForm,

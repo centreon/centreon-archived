@@ -34,67 +34,47 @@
  *
  */
 
-if (!isset($oreon)) {
+
+if (!isset($centreon)) {
     exit();
 }
+
+require_once __DIR__ . "/minHelpCommandFunctions.php";
 
 $commandId = filter_var(
     $_GET["command_id"] ?? $_POST["command_id"] ?? null,
     FILTER_VALIDATE_INT
 );
 
-$commandName = filter_var(
-    $_GET["command_name"] ?? $_POST["command_name"] ?? null,
-    FILTER_SANITIZE_STRING
-);
+$commandName = htmlspecialchars($_GET["command_name"] ?? $_POST["command_name"] ?? null);
 
 if ($commandId !== false) {
-    //Get command information
-    $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
-    $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
-    $sth->execute();
-    $cmd = $sth->fetch();
-    unset($sth);
+    $commandLine = getCommandById($pearDB, (int) $commandId) ?? '';
 
-    $aCmd = explode(" ", $cmd["command_line"]);
-    $fullLine = $aCmd[0];
-    $plugin = array_values(preg_grep('/^\-\-plugin\=(\w+)/i', $aCmd))[0];
-    $mode = array_values(preg_grep('/^\-\-mode\=(\w+)/i', $aCmd))[0];
-    $aCmd = explode("/", $fullLine);
-    $resourceInfo = $aCmd[0];
+    ['commandPath' => $commandPath, 'plugin' => $plugin, 'mode' => $mode] = getCommandElements($commandLine);
 
-    $prepare = $pearDB->prepare(
-        'SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = :resource LIMIT 1'
-    );
-    $prepare->bindValue(':resource', $resourceInfo, \PDO::PARAM_STR);
-    $prepare->execute();
-    //Match if the first part of the path is a MACRO
-    if ($resource = $prepare->fetch()) {
-        $resourcePath = $resource["resource_line"];
-        unset($aCmd[0]);
-        $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
-    } else {
-        $command = $fullLine;
-    }
+    $command = replaceMacroInCommandPath($pearDB, $commandPath);
 } else {
-    $command = $oreon->optGen["nagios_path_plugins"] . $commandName;
+    $command = $centreon->optGen["nagios_path_plugins"] . $commandName;
 }
 
 // Secure command
 $search = ['#S#', '#BS#', '../', "\t"];
 $replace = ['/', "\\", '/', ' '];
 $command = str_replace($search, $replace, $command);
-$command = escapeshellcmd($command);
 
-$tab = explode(' ', $command);
-if (realpath($tab[0])) {
-    $command = realpath($tab[0]) . ' ' . $plugin . ' ' . $mode . ' --help';
-} else {
-    $command = $tab[0] . ' ' . $plugin . ' ' . $mode . ' --help';
+// Remove params
+$explodedCommand = explode(' ', $command);
+$commandPath = realpath($explodedCommand[0]) === false ? $explodedCommand[0] : realpath($explodedCommand[0]);
+
+// Exec command only if located in allowed directories
+$msg = "Command not allowed";
+if (isCommandInAllowedResources($pearDB, $commandPath)) {
+    $command = $commandPath . ' ' . ($plugin ?? '') . ' ' . ($mode ?? '') . ' --help';
+    $command = escapeshellcmd($command);
+    $stdout = shell_exec($command . " 2>&1");
+    $msg = str_replace("\n", "<br />", $stdout);
 }
-
-$stdout = shell_exec($command . " 2>&1");
-$msg = str_replace("\n", "<br />", $stdout);
 
 $attrsText = array("size" => "25");
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
@@ -122,8 +102,6 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
 $tpl->assign('command_line', CentreonUtils::escapeSecure($command, CentreonUtils::ESCAPE_ALL));
-if (isset($msg) && $msg) {
-    $tpl->assign('msg', CentreonUtils::escapeAllExceptSelectedTags($msg, ['br']));
-}
+$tpl->assign('msg', CentreonUtils::escapeAllExceptSelectedTags($msg, ['br']));
 
 $tpl->display("minHelpCommand.ihtml");

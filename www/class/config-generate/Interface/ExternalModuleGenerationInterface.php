@@ -39,9 +39,9 @@ interface ExternalModuleGenerationInterface
 
     /**
      * @param int $pollerId
-     * @param string $localhost
+     * @param bool $isLocalhost
      */
-    public function generateFromPollerId(int $pollerId, string $localhost): void;
+    public function generateFromPollerId(int $pollerId, bool $isLocalhost): void;
 
     public function reset(): void;
 }

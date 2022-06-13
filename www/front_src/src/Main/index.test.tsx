@@ -3,17 +3,20 @@ import { Provider } from 'jotai';
 
 import { render, RenderResult, waitFor, screen } from '@centreon/ui';
 
-import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
+import {
+  platformInstallationStatusEndpoint,
+  userEndpoint,
+} from '../api/endpoint';
 import { labelConnect } from '../Login/translatedLabels';
 import {
   aclEndpoint,
   parametersEndpoint,
-  translationEndpoint,
+  externalTranslationEndpoint,
+  internalTranslationEndpoint,
 } from '../App/endpoint';
 import { retrievedNavigation } from '../Navigation/mocks';
-import { retrievedExternalComponents } from '../externalComponents/mocks';
+import { retrievedFederatedModule } from '../federatedModules/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
-import { externalComponentsEndpoint } from '../externalComponents/useExternalComponents';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
@@ -113,7 +116,7 @@ const renderMain = (): RenderResult =>
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -125,10 +128,13 @@ const mockDefaultGetRequests = (): void => {
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
+      data: retrievedFederatedModule,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -144,7 +150,7 @@ const mockDefaultGetRequests = (): void => {
 const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -153,7 +159,7 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       },
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
@@ -162,10 +168,10 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
-      data: retrievedNavigation,
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
+      data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -181,7 +187,7 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
 const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -193,7 +199,7 @@ const mockNotConnectedGetRequests = (): void => {
       response: { status: 403 },
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedProvidersConfiguration,
@@ -202,8 +208,8 @@ const mockNotConnectedGetRequests = (): void => {
 
 const mockInstallGetRequests = (): void => {
   mockedAxios.get
-    .mockRejectedValueOnce({
-      data: retrievedTranslations,
+    .mockResolvedValueOnce({
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -219,7 +225,7 @@ const mockInstallGetRequests = (): void => {
 const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -235,7 +241,7 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
 const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
-      data: retrievedTranslations,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: {
@@ -247,10 +253,10 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
       data: retrievedUser,
     })
     .mockResolvedValueOnce({
-      data: retrievedNavigation,
+      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
-      data: retrievedExternalComponents,
+      data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
       data: retrievedParameters,
@@ -279,14 +285,14 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        translationEndpoint,
+        externalTranslationEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -315,15 +321,17 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      userEndpoint,
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        userEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
@@ -342,7 +350,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -371,7 +379,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -400,7 +408,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });
@@ -420,11 +428,6 @@ describe('Main', () => {
     });
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      externalComponentsEndpoint,
-      cancelTokenRequestParam,
-    );
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
       parametersEndpoint,
       cancelTokenRequestParam,
     );
@@ -435,7 +438,7 @@ describe('Main', () => {
     );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      translationEndpoint,
+      internalTranslationEndpoint,
       cancelTokenRequestParam,
     );
   });
@@ -450,7 +453,7 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        webVersionsEndpoint,
+        platformInstallationStatusEndpoint,
         cancelTokenRequestParam,
       );
     });

@@ -44,7 +44,7 @@ class LegacyLogger implements LoggerInterface
         log as traitLog;
     }
 
-    public function emergency($message, array $context = [])
+    public function emergency($message, array $context = []): void
     {
         $this->traitEmergency($message, $context);
     }
@@ -52,7 +52,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function alert($message, array $context = [])
+    public function alert($message, array $context = []): void
     {
         $this->traitAlert($message, $context);
     }
@@ -60,7 +60,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function critical($message, array $context = [])
+    public function critical($message, array $context = []): void
     {
         $this->traitCritical($message, $context);
     }
@@ -68,7 +68,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         $this->traitError($message, $context);
     }
@@ -76,7 +76,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function warning($message, array $context = [])
+    public function warning($message, array $context = []): void
     {
         $this->traitWarning($message, $context);
     }
@@ -84,7 +84,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function notice($message, array $context = [])
+    public function notice($message, array $context = []): void
     {
         $this->traitNotice($message, $context);
     }
@@ -92,7 +92,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function info($message, array $context = [])
+    public function info($message, array $context = []): void
     {
         $this->traitInfo($message, $context);
     }
@@ -100,7 +100,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function debug($message, array $context = [])
+    public function debug($message, array $context = []): void
     {
         $this->traitDebug($message, $context);
     }
@@ -108,7 +108,7 @@ class LegacyLogger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         $this->traitLog($level, $message, $context);
     }

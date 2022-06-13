@@ -36,7 +36,6 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  onClick: (item: Page) => void;
   onLeave?: () => void;
   setCollapseScrollMaxHeight: Dispatch<SetStateAction<number | undefined>>;
   setCollapseScrollMaxWidth: Dispatch<SetStateAction<number | undefined>>;
@@ -49,7 +48,7 @@ interface StyleProps {
   currentWidth: number;
 }
 
-const collapseWidth = 20.6;
+const collapseWidth = 24;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -73,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
-      padding: theme.spacing(0, 0.25, 0, 0.75),
+      padding: theme.spacing(0, 0.25, 0, 0.1),
     },
     '& .MuiTypography-root': {
       color: theme.palette.text.primary,
@@ -115,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
+    whiteSpace: 'normal',
     width: theme.spacing(collapseWidth),
     zIndex: theme.zIndex.mobileStepper,
   },
@@ -126,7 +126,6 @@ const CollapsibleItems = ({
   isSubHeader,
   currentTop,
   currentWidth,
-  onClick,
   onLeave,
   level,
   collapseScrollMaxHeight,
@@ -288,11 +287,6 @@ const CollapsibleItems = ({
                       hover={nestedHover}
                       isOpen={nestedIndex === hoveredIndex}
                       key={content.label}
-                      onClick={
-                        !isArrayItem(item?.groups)
-                          ? (): void => onClick(content)
-                          : undefined
-                      }
                       onMouseEnter={mouseEnterContent}
                     />
                   );
@@ -302,11 +296,6 @@ const CollapsibleItems = ({
                   data={item}
                   hover={hover}
                   isOpen={index === hoveredIndex}
-                  onClick={
-                    !isArrayItem(item?.groups)
-                      ? (): void => onClick(item)
-                      : undefined
-                  }
                   onMouseEnter={mouseEnterItem}
                 />
               )}
@@ -323,7 +312,6 @@ const CollapsibleItems = ({
                   level={level + 1}
                   setCollapseScrollMaxHeight={setNestedScrollCollapsMaxHeight}
                   setCollapseScrollMaxWidth={setNestedScrollCollapsMaxWidth}
-                  onClick={onClick}
                 />
               ) : (
                 isSimpleCollapse &&
@@ -345,7 +333,6 @@ const CollapsibleItems = ({
                           setCollapseScrollMaxWidth={
                             setNestedScrollCollapsMaxWidth
                           }
-                          onClick={onClick}
                         />
                       </div>
                     ),
