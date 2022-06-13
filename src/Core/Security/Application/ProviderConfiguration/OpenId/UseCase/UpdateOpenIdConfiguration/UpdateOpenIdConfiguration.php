@@ -120,6 +120,7 @@ class UpdateOpenIdConfiguration
      *
      * @param integer|null $contactGroupId
      * @return ContactGroup|null
+     * @throws \Throwable|OpenIdConfigurationException
      */
     private function getContactGroupOrFail(?int $contactGroupId): ?ContactGroup
     {
