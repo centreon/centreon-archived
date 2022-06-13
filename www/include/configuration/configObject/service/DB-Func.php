@@ -2290,8 +2290,8 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
     } else {
         foreach ($cache as $host_id) {
             if (!isset($cache[$host_id]) && count($cacheEsc)) {
-                $query = "DELETE FROM escalation_service_relation WHERE host_host_id = '" . $ret1[0] .
-                    "' AND service_service_id = :service_id";
+                $query = "DELETE FROM escalation_service_relation 
+                    WHERE host_host_id = :host_host_id AND service_service_id = :service_id";
                 $statement = $pearDB->prepare($query);
                 $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
                 $statement->bindValue(':host_host_id', (int) $ret1[0], \PDO::PARAM_INT);
