@@ -9,8 +9,7 @@
 /.snyk				@centreon/centreon-security
 /sonar-project.properties	@centreon/centreon-security
 
-# @ghost seems deprecated
-# *.po            @ghost
+*.po            @centreon/centreon-technical-writer
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php

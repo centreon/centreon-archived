@@ -27,13 +27,7 @@ FROM command AS t1
 INNER JOIN command_arg_description AS cad1 ON cad1.cmd_id = t1.command_id
 INNER JOIN cfg_nagios AS cn1 ON
     cn1.global_service_event_handler = t1.command_id OR
-    cn1.global_host_event_handler = t1.command_id OR
-    cn1.ocsp_command = t1.command_id OR
-    cn1.ochp_command = t1.command_id OR
-    cn1.host_perfdata_command = t1.command_id OR
-    cn1.service_perfdata_command = t1.command_id OR
-    cn1.host_perfdata_file_processing_command = t1.command_id OR
-    cn1.service_perfdata_file_processing_command = t1.command_id
+    cn1.global_host_event_handler = t1.command_id
 WHERE
     cn1.nagios_id IN ({$ids})
 GROUP BY cad1.cmd_id
