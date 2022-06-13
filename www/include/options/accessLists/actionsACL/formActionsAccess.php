@@ -173,7 +173,9 @@ $form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers sta
 $form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 
 // Configuration Actions
-$form->addElement('checkbox', 'generate_cfg', _("Generate Configuration Files"));
+$form->addElement('checkbox', 'create_edit_poller_cfg', _("Create and edit pollers"));
+$form->addElement('checkbox', 'delete_poller_cfg', _("Delete pollers"));
+$form->addElement('checkbox', 'generate_cfg', _("Deploy configuration Files"));
 $form->addElement('checkbox', 'generate_trap', _("Generate SNMP Trap configuration"));
 
 $form->addElement('checkbox', 'all_service', "");
@@ -189,6 +191,7 @@ $form->addElement('header', 'service_actions', _("Services Actions Access"));
 $form->addElement('header', 'host_actions', _("Hosts Actions Access"));
 $form->addElement('header', 'global_actions', _("Global Monitoring Engine Actions (External Process Commands)"));
 $form->addElement('header', 'global_access', _("Global Functionalities Access"));
+$form->addElement('header', 'poller_cfg_access', _("Poller configuration actions / Poller management"));
 
 $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 $ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
