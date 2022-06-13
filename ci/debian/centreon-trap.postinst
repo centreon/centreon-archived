@@ -16,6 +16,11 @@ traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforwa
 EOF
     fi
 
+    # Fix permissions to binaries files
+    chmod 0755 \
+        /usr/share/centreon/bin/centreontrapd \
+        /usr/share/centreon/bin/centreontrapdforward
+
     # Initial installation
     systemctl --no-reload preset centreontrapd.service || : &>/dev/null || :
     
