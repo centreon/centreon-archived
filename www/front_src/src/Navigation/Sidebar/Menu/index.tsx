@@ -226,6 +226,7 @@ const NavigationMenu = ({
   const leaveMenuItem = (): void => {
     setIsDoubleClickedFromRoot(false);
   };
+  
 
   const setDefaultItems = (): void => {
     navigationData?.forEach((item) => {
