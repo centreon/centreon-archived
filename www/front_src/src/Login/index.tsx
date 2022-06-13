@@ -12,6 +12,7 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
 import Wallpaper from '../components/Wallpaper';
 import useLoadWallpaper from '../components/Wallpaper/useLoadWallpaper';
+import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
 import Copyright from './Copyright';
 import useValidationSchema from './validationSchema';
@@ -62,11 +63,11 @@ const LoginPage = (): JSX.Element => {
   const { t } = useTranslation();
   const validationSchema = useValidationSchema();
 
-  const { submitLoginForm, platformVersions, providersConfiguration } =
-    useLogin();
+  const { submitLoginForm, providersConfiguration } = useLogin();
   useLoadWallpaper();
 
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
+  const platformVersions = useAtomValue(platformVersionsAtom);
 
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
     return <MainLoaderWithoutTranslation />;
