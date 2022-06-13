@@ -496,72 +496,18 @@ class CentreonDowntime
         }
         foreach ($ids as $id) {
             if (isset($nb[$id])) {
-                $query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id = " . $id;
+                $query = "SELECT dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE dt_id = " . $id;
                 try {
                     $res = $this->db->query($query);
                 } catch (\PDOException $e) {
                     return;
                 }
                 $row = $res->fetch();
-                $dt_name = $row['dt_name'];
-                $dt_desc = $row['dt_description'];
-                $dt_activate = $row['dt_activate'];
                 $index = $i = 1;
                 while ($i <= $nb[$id]) {
-                    /* Find the index for duplicate name */
-                    $query = "SELECT COUNT(*) as nb FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
-                    $res = $this->db->query($query);
-                    $row = $res->fetch();
-                    if ($row["nb"] == 0) {
-                        /* Insert the new downtime */
-                        $rq = "INSERT INTO downtime (dt_name, dt_description, dt_activate)
-								VALUES ('" . $dt_name . "_" . $index . "', '" . $dt_desc . "', '" . $dt_activate . "')";
-                        try {
-                            $res = $this->db->query($rq);
-                        } catch (\PDOException $e) {
-                            return;
-                        }
-                        /* Get the new downtime id */
-                        $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
-                        $res = $this->db->query($query);
-                        $row = $res->fetch();
-                        $res->closeCursor();
-                        $id_new = $row['dt_id'];
-                        /* Copy the periods for new downtime */
-                        $query = "INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
-                            dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration,
-                            dtp_activate)
-                            SELECT " . $id_new . ", dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle,
-                            dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
-                            FROM downtime_period WHERE dt_id = " . $id;
-                        $this->db->query($query);
-
-                        /*
-                         * Duplicate Relations for hosts
-                         */
-                        $this->db->query("INSERT INTO downtime_host_relation (dt_id, host_host_id)
-                            SELECT $id_new, host_host_id FROM downtime_host_relation WHERE dt_id = '$id'");
-
-                        /*
-                         * Duplicate Relations for hostgroups
-                         */
-                        $this->db->query("INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
-                            SELECT $id_new, hg_hg_id FROM downtime_hostgroup_relation WHERE dt_id = '$id'");
-
-                        /*
-                         * Duplicate Relations for services
-                         */
-                        $this->db->query("INSERT INTO downtime_service_relation
-                            (dt_id, host_host_id, service_service_id)
-                            SELECT $id_new, host_host_id, service_service_id
-                            FROM downtime_service_relation WHERE dt_id = '$id'");
-
-                        /*
-                         * Duplicate Relations for servicegroups
-                         */
-                        $this->db->query("INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
-                            SELECT $id_new, sg_sg_id FROM downtime_servicegroup_relation WHERE dt_id = '$id'");
-
+                    if (!$this->downtimeExists($row['dt_name'] . '_' . $index)) {
+                        $row['index'] = $index;
+                        $this->duplicateDowntime($row);
                         $i++;
                     }
                     $index++;
@@ -940,5 +886,150 @@ class CentreonDowntime
         }
 
         return $parameters;
+    }
+
+    /**
+     * All in one function to duplicate downtime.
+     *
+     * @param array $params
+     */
+    private function duplicateDowntime(array $params): void
+    {
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        if (! $isAlreadyInTransaction) {
+            $this->db->beginTransaction();
+        }
+        try {
+            $params['dt_id_new'] = $this->createDowntime($params);
+            $this->createDowntimePeriods($params);
+            $this->createDowntimeHostsRelations($params);
+            $this->createDowntimeHostGroupsRelations($params);
+            $this->createDowntimeServicesRelations($params);
+            $this->createDowntimeServiceGroupsRelations($params);
+            if (! $isAlreadyInTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Exception $e) {
+            if (! $isAlreadyInTransaction) {
+                $this->db->rollBack();
+            }
+        }
+    }
+
+    /**
+     * Check if the downtime exists by name.
+     *
+     * @param string $dtName
+     * @return bool
+     */
+    private function downtimeExists($dtName): bool
+    {
+        $statement = $this->db->prepare('SELECT 1 FROM downtime WHERE dt_name = :dt_name LIMIT 1');
+        $statement->bindValue(':dt_name', $dtName, \PDO::PARAM_STR);
+        $statement->execute();
+        return (bool) $statement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Creating new downtime and returns id.
+     *
+     * @param array<string, string> $params
+     * @return int
+     */
+    private function createDowntime(array $params): int
+    {
+        $rq = 'INSERT INTO downtime (dt_name, dt_description, dt_activate)
+			   VALUES (:dt_name, :dt_description, :dt_activate)';
+        $statement = $this->db->prepare($rq);
+        $statement->bindValue(':dt_name', $params['dt_name'] . '_' . $params['index'], \PDO::PARAM_STR);
+        $statement->bindValue(':dt_description', $params['dt_description'], \PDO::PARAM_STR);
+        $statement->bindValue(':dt_activate', $params['dt_activate'], \PDO::PARAM_STR);
+        $statement->execute();
+        return $this->db->lastInsertId();
+    }
+
+    /**
+     * Creating downtime periods for the new downtime.
+     *
+     * @param array<string, string> $params
+     */
+    private function createDowntimePeriods(array $params): void
+    {
+        $query = 'INSERT INTO downtime_period (dt_id, dtp_start_time, dtp_end_time,
+            dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration,
+            dtp_activate)
+            SELECT :dt_id_new, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle,
+            dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
+            FROM downtime_period WHERE dt_id = :dt_id';
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':dt_id_new', (int) $params['dt_id_new'], \PDO::PARAM_INT);
+        $statement->bindValue(':dt_id', (int) $params['dt_id'], \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Creating hosts relations for the new downtime.
+     *
+     * @param array<string, string> $params
+     */
+    private function createDowntimeHostsRelations(array $params): void
+    {
+        $statement = $this->db->prepare(
+            'INSERT INTO downtime_host_relation (dt_id, host_host_id)
+            SELECT :dt_id_new, host_host_id FROM downtime_host_relation WHERE dt_id = :dt_id'
+        );
+        $statement->bindValue(':dt_id_new', (int) $params['dt_id_new'], \PDO::PARAM_INT);
+        $statement->bindValue(':dt_id', (int) $params['dt_id'], \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Create host groups for the new downtime.
+     *
+     * @param array<string, string> $params
+     */
+    private function createDowntimeHostGroupsRelations(array $params): void
+    {
+        $statement = $this->db->prepare(
+            'INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
+            SELECT :dt_id_new, hg_hg_id FROM downtime_hostgroup_relation WHERE dt_id = :dt_id'
+        );
+        $statement->bindValue(':dt_id_new', (int) $params['dt_id_new'], \PDO::PARAM_INT);
+        $statement->bindValue(':dt_id', (int) $params['dt_id'], \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Creating services relations for the new downtime.
+     *
+     * @param array<string, string> $params
+     */
+    private function createDowntimeServicesRelations(array $params): void
+    {
+        $statement = $this->db->prepare(
+            'INSERT INTO downtime_service_relation
+            (dt_id, host_host_id, service_service_id)
+            SELECT :dt_id_new, host_host_id, service_service_id
+            FROM downtime_service_relation WHERE dt_id = :dt_id'
+        );
+        $statement->bindValue(':dt_id_new', (int) $params['dt_id_new'], \PDO::PARAM_INT);
+        $statement->bindValue(':dt_id', (int) $params['dt_id'], \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Creating service groups relations for the new downtime.
+     *
+     * @param array<string, string> $params
+     */
+    private function createDowntimeServiceGroupsRelations(array $params): void
+    {
+        $statement = $this->db->prepare(
+            'INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
+            SELECT :dt_id_new, sg_sg_id FROM downtime_servicegroup_relation WHERE dt_id = :dt_id'
+        );
+        $statement->bindValue(':dt_id_new', (int) $params['dt_id_new'], \PDO::PARAM_INT);
+        $statement->bindValue(':dt_id', (int) $params['dt_id'], \PDO::PARAM_INT);
+        $statement->execute();
     }
 }
