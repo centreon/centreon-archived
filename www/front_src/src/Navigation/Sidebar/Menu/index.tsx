@@ -97,7 +97,7 @@ const NavigationMenu = ({
     timeoutRef.current = setTimeout((): void => {
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
-    }, dismissDurationMenu);
+    }, dismissMenuDuration);
   };
 
   const handleClickItem = (currentPage: Page): void => {
