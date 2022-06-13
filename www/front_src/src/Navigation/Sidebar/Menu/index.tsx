@@ -74,7 +74,8 @@ const NavigationMenu = ({
 
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
-  const dismissDurationMenu = theme.transitions.duration.complex;
+  const dismissMenuDuration = theme.transitions.duration.complex;
+  
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
