@@ -170,15 +170,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart split',20401,2040101,1,1,'./include/views/graphs/graph-split.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart periods',20401,2040102,1,1,'./include/views/graphs/graph-periods.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 
--- Insert Multi-step Wizard into Topology
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller/Remote Wizard', '/poller-wizard/1', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Step 2', '/poller-wizard/2', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Step 3', '/poller-wizard/3', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Final Step', '/poller-wizard/4', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Step 2', '/poller-wizard/5', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Step 3', '/poller-wizard/6', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Final Step', '/poller-wizard/7', 60901, 60959, 1, '0', '0', '1');
-
 -- Insert Extensions Manager entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
