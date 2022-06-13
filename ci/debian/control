@@ -153,6 +153,7 @@ Depends:
     centreon-trap (>= ${centreon:version}~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
+    centreon-plugin-applications-databases-mysql,
     centreon-plugin-applications-protocol-dns,
     centreon-plugin-applications-protocol-ldap,
     centreon-plugin-hardware-printers-generic-snmp,
