@@ -33,6 +33,9 @@ try {
     $errorMessage = "Unable to update 'custom_configuration' column on 'provider_configuration' table";
     updateOpenIdConfiguration($pearDB);
 
+    $errorMessage = "Unable to update poller wizard ACL";
+    removePollerWizardAcl($pearDB);
+
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
@@ -76,4 +79,24 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
     } else {
         throw new \Exception('No custom_configuration for open_id has been found');
     }
+}
+
+/**
+ * Remove ACL menu access to poller wizard individual steps
+ *
+ * @param CentreonDB $pearDB
+ * @throws \Exception
+ */
+function removePollerWizardAcl(CentreonDB $pearDB): void
+{
+    $statement = $pearDB->query("SELECT topology_id FROM topology WHERE topology_parent = 60901");
+    if ($statement !== false && $topologyIds = $statement->fetchAll(\PDO::FETCH_COLUMN, 0)) {
+         $statement = $pearDB->prepare(
+            "DELETE FROM acl_topology_relations WHERE topology_topology_id IN (:topologyIds)"
+        );
+        $statement->bindValue(':topologyIds', implode(',', $topologyIds), \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
+    $pearDB->query("DELETE FROM topology WHERE topology_parent = 60901");
 }
