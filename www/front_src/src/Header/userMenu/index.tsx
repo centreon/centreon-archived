@@ -27,6 +27,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles, styled } from '@mui/styles';
 
 import {
+  MenuSkeleton,
   postData,
   getData,
   useRequest,
@@ -35,7 +36,6 @@ import {
 } from '@centreon/ui';
 
 import Clock from '../Clock';
-import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 import { areUserParametersLoadedAtom } from '../../Main/useUser';
 import { logoutEndpoint } from '../../api/endpoint';
@@ -91,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
+  loaderUserMenu: {
+    marginRight: 22,
+  },
   menu: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -119,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     marginLeft: theme.spacing(0.5),
-    padding: theme.spacing(0.75, 2.75, 0.75, 1.5),
+    padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
   },
   wrapRightUserItems: {
@@ -254,7 +257,7 @@ const UserMenu = (): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuLoader width={21} />;
+    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);

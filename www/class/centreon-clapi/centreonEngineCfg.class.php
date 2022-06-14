@@ -98,7 +98,6 @@ class CentreonEngineCfg extends CentreonObject
             'max_concurrent_checks' => '400',
             'max_service_check_spread' => '5',
             'check_result_reaper_frequency' => '5',
-            'interval_length' => '60',
             'auto_reschedule_checks' => '2',
             'enable_flap_detection' => '0',
             'low_service_flap_threshold' => '25.0',
@@ -110,14 +109,6 @@ class CentreonEngineCfg extends CentreonObject
             'host_check_timeout' => '10',
             'event_handler_timeout' => '30',
             'notification_timeout' => '30',
-            'ocsp_timeout' => '5',
-            'ochp_timeout' => '5',
-            'perfdata_timeout' => '5',
-            'obsess_over_services' => '0',
-            'obsess_over_hosts' => '2',
-            'process_performance_data' => '0',
-            'host_perfdata_file_mode' => '2',
-            'service_perfdata_file_mode' => '2',
             'check_for_orphaned_services' => '0',
             'check_for_orphaned_hosts' => '0',
             'check_service_freshness' => '2',
@@ -133,7 +124,6 @@ class CentreonEngineCfg extends CentreonObject
             'event_broker_options' => '-1',
             'enable_predictive_host_dependency_checks' => '2',
             'enable_predictive_service_dependency_checks' => '2',
-            'use_large_installation_tweaks' => '2',
             'enable_environment_macros' => '2',
             'debug_level' => '0',
             'debug_level_opt' => '0',
@@ -205,12 +195,6 @@ class CentreonEngineCfg extends CentreonObject
             $commandColumns = array(
                 'global_host_event_handler',
                 'global_service_event_handler',
-                'host_perfdata_command',
-                'service_perfdata_command',
-                'host_perfdata_file_processing_command',
-                'service_perfdata_file_processing_command',
-                'ocsp_command',
-                'ochp_command'
             );
             $loggerColumns = [
                 'log_v2_logger',
@@ -344,19 +328,15 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler'
+                    if (
+                        $parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command'
-                        || $parameter == 'service_perfdata_command'
-                        || $parameter == 'host_perfdata_file_processing_command'
-                        || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command'
-                        || $parameter == 'ocsp_command'
                     ) {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
-                    } elseif ($parameter == 'illegal_object_name_chars'
-                        || $parameter == 'illegal_macro_output_chars'
+                    } elseif (
+                        $parameter === 'illegal_object_name_chars'
+                        || $parameter === 'illegal_macro_output_chars'
                     ) {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);
                     }
