@@ -125,6 +125,14 @@ const groups = [
   },
 ];
 
+const categories = [
+  {
+    configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
+    id: 0,
+    name: 'Windows',
+  },
+];
+
 const serviceDetailsUrlParameters = {
   id: 1,
   parentId: 1,
@@ -205,6 +213,7 @@ const retrievedDetails = {
   },
   active_checks: false,
   alias: 'Central-Centreon',
+  categories,
   checked: true,
   command_line: 'base_host_alive',
   downtimes: [
@@ -687,6 +696,8 @@ describe(Details, () => {
     expect(getByText(labelCommand)).toBeInTheDocument();
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
+  expect(getByText(labelCategory)).toBeInTheDocument();
+  expect(getByText('Windows')).toBeInTheDocument();
 
   it.each([
     [label1Day, '2020-01-20T06:00:00.000Z', 20],

@@ -25,9 +25,13 @@ import {
   labelStatusType,
   labelHard,
   labelSoft,
+  labelHostCategory,
+  labelServiceCategory,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
+  buildHostCategoryEndpoint,
+  buildServiceCategoryEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
@@ -35,6 +39,7 @@ import {
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
 
 export interface Criteria {
+  isOptimizedModeEnabled?: boolean;
   name: string;
   object_type: string | null;
   type: string;
@@ -174,6 +179,7 @@ const selectableStateTypes = [hardStateType, softStateType];
 export interface CriteriaDisplayProps {
   autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
+  enable?: boolean;
   label: string;
   options?: Array<SelectEntry>;
 }
@@ -183,9 +189,11 @@ export interface CriteriaById {
 }
 
 export enum CriteriaNames {
+  hostCategories = 'host_categories',
   hostGroups = 'host_groups',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
+  serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
   states = 'states',
   statusTypes = 'status_types',
@@ -221,6 +229,14 @@ const selectableCriterias: CriteriaById = {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
+  },
+  [CriteriaNames.hostCategories]: {
+    buildAutocompleteEndpoint: buildHostCategoryEndpoint,
+    label: labelHostCategory,
+  },
+  [CriteriaNames.serviceCategories]: {
+    buildAutocompleteEndpoint: buildServiceCategoryEndpoint,
+    label: labelServiceCategory,
   },
 };
 

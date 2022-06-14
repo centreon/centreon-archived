@@ -11,6 +11,7 @@ const entityDecoder = JsonDecoder.object<Filter>(
     criterias: JsonDecoder.array<Criteria>(
       JsonDecoder.object<Criteria>(
         {
+          isOptimizedModeEnabled: JsonDecoder.boolean,
           name: JsonDecoder.string,
           object_type: JsonDecoder.nullable(JsonDecoder.string),
           type: JsonDecoder.string,

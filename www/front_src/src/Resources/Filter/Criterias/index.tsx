@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { pipe, isNil, sortBy, reject } from 'ramda';
+import { pipe, isNil, sortBy, reject, equals } from 'ramda';
 
 import { Button, Grid } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import TuneIcon from '@mui/icons-material/Tune';
 
 import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
+import { resourceStorageOptimizationModeAtom } from '@centreon/ui-context';
 
 import {
   labelClear,
@@ -42,6 +43,17 @@ const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
 const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
   pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
+const isOptimizedModeDisabled =
+  (statusOptimizedMode) =>
+  ({
+    isOptimizedModeEnabled,
+  }: Pick<CriteriaModel, 'isOptimizedModeEnabled'>): boolean => {
+    return (
+      isNil(isOptimizedModeEnabled) ||
+      equals(isOptimizedModeEnabled, statusOptimizedMode)
+    );
+  };
+
 const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
@@ -51,10 +63,16 @@ const CriteriasContent = (): JSX.Element => {
     filterWithParsedSearchDerivedAtom,
   );
 
+  const statusOptimizedMode = useAtomValue(resourceStorageOptimizationModeAtom);
+
   const getSelectableCriterias = (): Array<CriteriaModel> => {
     const criterias = sortBy(
       ({ name }) => criteriaNameSortOrder[name],
       filterWithParsedSearch.criterias,
+    );
+
+    return reject(isNonSelectableCriteria)(criterias).filter(
+      isOptimizedModeDisabled(statusOptimizedMode),
     );
 
     return reject(isNonSelectableCriteria)(criterias);
