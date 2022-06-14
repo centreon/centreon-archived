@@ -122,6 +122,28 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       value: [],
     },
     {
+      name: 'host_categories',
+      object_type: 'host_categories',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'Linux',
+        },
+      ],
+    },
+    {
+      name: 'service_categories',
+      object_type: 'service_categories',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'web-services',
+        },
+      ],
+    },
+    {
       name: 'search',
       object_type: null,
       type: 'text',

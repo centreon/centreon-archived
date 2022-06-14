@@ -15,12 +15,16 @@ export interface Group extends NamedEntity {
   configuration_uri: string | null;
 }
 
+export interface Category extends NamedEntity {
+  configuration_uri: string | null;
+}
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
   active_checks: boolean;
   alias?: string;
   calculation_type?: string;
+  categories?: Array<Category>;
   command_line?: string;
   downtimes: Array<Downtime>;
   duration: string;
