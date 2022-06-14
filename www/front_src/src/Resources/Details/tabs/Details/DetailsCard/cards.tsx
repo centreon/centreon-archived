@@ -26,6 +26,7 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
+  labelCategory,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -35,7 +36,6 @@ import { CriteriaNames } from '../../../../Filter/Criterias/models';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
-import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
