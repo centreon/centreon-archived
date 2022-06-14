@@ -27,8 +27,10 @@ use Core\Severity\RealTime\Domain\Model\Severity;
 interface ReadSeverityRepositoryInterface
 {
     /**
-     * Returns all the severities from the RealTime
+     * Returns all the severities from the RealTime of provided type id
+     *
+     * @param integer $typeId
      * @return Severity[]
      */
-    public function findAll(): array;
+    public function findAllByTypeId(int $typeId): array;
 }

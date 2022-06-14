@@ -30,10 +30,19 @@ class Severity
 {
     public const MAX_NAME_LENGTH = 255;
 
+    public const SERVICE_SEVERITY_TYPE_ID = 0,
+                 HOST_SEVERITY_TYPE_ID = 1;
+
+    public const TYPES_AS_STRING = [
+        self::HOST_SEVERITY_TYPE_ID => 'host',
+        self::SERVICE_SEVERITY_TYPE_ID => 'service'
+    ];
+
     /**
      * @param integer $id
      * @param string $name
      * @param integer $level
+     * @param integer $type
      * @param Icon $icon
      * @throws \Assert\AssertionFailedException
      */
@@ -41,12 +50,18 @@ class Severity
         private int $id,
         private string $name,
         private int $level,
+        private int $type,
         private Icon $icon
     ) {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Severity::name');
         Assertion::notEmpty($name, 'Severity::name');
         Assertion::min($level, 0, 'Severity::level');
         Assertion::max($level, 100, 'Severity::level');
+        Assertion::inArray(
+            $type,
+            [self::HOST_SEVERITY_TYPE_ID, self::SERVICE_SEVERITY_TYPE_ID],
+            'Severity::type'
+        );
     }
 
     /**
@@ -79,5 +94,21 @@ class Severity
     public function getIcon(): Icon
     {
         return $this->icon;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeAsString(): string
+    {
+        return self::TYPES_AS_STRING[$this->type];
     }
 }
