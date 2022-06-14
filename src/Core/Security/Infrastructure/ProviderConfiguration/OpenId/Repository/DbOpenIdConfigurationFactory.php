@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Infrastructure\ProviderConfiguration\OpenId\Repository;
 
-use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\NonActiveConfiguration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class DbOpenIdConfigurationFactory
@@ -32,51 +33,69 @@ class DbOpenIdConfigurationFactory
     /**
      * @param array<string,mixed> $record
      * @param array<string,mixed> $customConfiguration
-     * @return Configuration
+     * @return AbstractConfiguration
      * @throws OpenIdConfigurationException
      */
-    public static function createFromRecord(array $record, array $customConfiguration): Configuration
+    public static function createFromRecord(array $record, array $customConfiguration): AbstractConfiguration
     {
-        $configuration = new Configuration(
-            $record['is_active'] === '1',
-            $customConfiguration['auto_import'] === '1',
-            $customConfiguration['client_id'],
-            $customConfiguration['client_secret'],
-            $customConfiguration['base_url'],
-            $customConfiguration['authorization_endpoint'],
-            $customConfiguration['token_endpoint'],
-            $customConfiguration['introspection_token_endpoint'],
-            $customConfiguration['userinfo_endpoint'],
-            $customConfiguration['contact_template'] !== null
-                ? self::createContactTemplate($customConfiguration['contact_template'])
-                : null,
-            $customConfiguration['email_bind_attribute'],
-            $customConfiguration['alias_bind_attribute'],
-            $customConfiguration['fullname_bind_attribute']
-        );
+        if ($record['is_active'] === '1') {
+            $configuration = new ActiveConfiguration(
+                $customConfiguration['auto_import'] === '1',
+                $customConfiguration['client_id'],
+                $customConfiguration['client_secret'],
+                $customConfiguration['base_url'],
+                $customConfiguration['authorization_endpoint'],
+                $customConfiguration['token_endpoint'],
+                $customConfiguration['introspection_token_endpoint'],
+                $customConfiguration['userinfo_endpoint'],
+                $customConfiguration['contact_group'],
+                $customConfiguration['contact_template'],
+                $customConfiguration['email_bind_attribute'],
+                $customConfiguration['alias_bind_attribute'],
+                $customConfiguration['fullname_bind_attribute']
+            );
 
-        $configuration
-            ->setId((int) $record['id'])
-            ->setForced($record['is_forced'] === '1')
-            ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
-            ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
-            ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
-            ->setConnectionScopes($customConfiguration['connection_scopes'])
-            ->setLoginClaim($customConfiguration['login_claim'])
-            ->setAuthenticationType($customConfiguration['authentication_type'])
-            ->setVerifyPeer($customConfiguration['verify_peer']);
+            $configuration
+                ->setId((int) $record['id'])
+                ->setForced($record['is_forced'] === '1')
+                ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
+                ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
+                ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
+                ->setConnectionScopes($customConfiguration['connection_scopes'])
+                ->setLoginClaim($customConfiguration['login_claim'])
+                ->setAuthenticationType($customConfiguration['authentication_type'])
+                ->setVerifyPeer($customConfiguration['verify_peer'])
+                ->setContactGroup($customConfiguration['contact_group'])
+                ->setClaimName($customConfiguration['claim_name'])
+                ->setAuthorizationRules($customConfiguration['authorization_rules']);
+        } else {
+            $configuration = (new NonActiveConfiguration())
+                ->setAutoImportEnabled($customConfiguration['auto_import'] === '1')
+                ->setClientId($customConfiguration['client_id'])
+                ->setClientSecret($customConfiguration['client_secret'])
+                ->setBaseUrl($customConfiguration['base_url'])
+                ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])
+                ->setTokenEndpoint($customConfiguration['token_endpoint'])
+                ->setIntrospectionTokenEndpoint($customConfiguration['introspection_token_endpoint'])
+                ->setUserInformationEndpoint($customConfiguration['userinfo_endpoint'])
+                ->setContactTemplate($customConfiguration['contact_template'])
+                ->setEmailBindAttribute($customConfiguration['email_bind_attribute'])
+                ->setUserAliasBindAttribute($customConfiguration['alias_bind_attribute'])
+                ->setUserNameBindAttribute($customConfiguration['fullname_bind_attribute'])
+                ->setForced($record['is_forced'] === '1')
+                ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
+                ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
+                ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
+                ->setConnectionScopes($customConfiguration['connection_scopes'])
+                ->setLoginClaim($customConfiguration['login_claim'])
+                ->setAuthenticationType($customConfiguration['authentication_type'])
+                ->setVerifyPeer($customConfiguration['verify_peer'])
+                ->setContactGroup($customConfiguration['contact_group'])
+                ->setClaimName($customConfiguration['claim_name'])
+                ->setAuthorizationRules($customConfiguration['authorization_rules']);
+
+        }
 
         return $configuration;
-    }
-
-    /**
-     * create a Contact Template
-     *
-     * @param array<string,string> $contactTemplate
-     * @return ContactTemplate
-     */
-    public static function createContactTemplate(array $contactTemplate): ContactTemplate
-    {
-        return new ContactTemplate((int) $contactTemplate['id'], $contactTemplate['name']);
     }
 }

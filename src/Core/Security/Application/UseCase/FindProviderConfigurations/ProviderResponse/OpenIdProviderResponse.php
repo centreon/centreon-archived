@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse;
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
 
 class OpenIdProviderResponse implements ProviderResponseInterface
 {
@@ -66,7 +66,7 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public function getType(): string
     {
-        return Configuration::NAME;
+        return AbstractConfiguration::NAME;
     }
 
     /**

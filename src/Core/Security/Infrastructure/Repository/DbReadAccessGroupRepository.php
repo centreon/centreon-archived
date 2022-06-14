@@ -203,17 +203,26 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function find(int $accessGroupId): ?AccessGroup
+    public function findByIds(array $accessGroupIds): array
     {
-        $statement = $this->db->prepare("SELECT * FROM acl_groups WHERE acl_group_id = :accessGroupId");
-        $statement->bindValue(':accessGroupId', $accessGroupId, \PDO::PARAM_INT);
+        $queryBindValues = [];
+        foreach ($accessGroupIds as $accessGroupId) {
+            $queryBindValues[':access_group_' . $accessGroupId] = $accessGroupId;
+        }
+        $boundIds = implode(', ', array_keys($queryBindValues));
+        $statement = $this->db->prepare(
+            "SELECT * FROM acl_groups WHERE acl_group_id IN ($boundIds)"
+        );
+        foreach ($queryBindValues as $bindKey => $accessGroupId) {
+            $statement->bindValue($bindKey, $accessGroupId, \PDO::PARAM_INT);
+        }
         $statement->execute();
 
-        $accessGroup = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $accessGroup = DbAccessGroupFactory::createFromRecord($result);
+        $accessGroups = [];
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
         }
 
-        return $accessGroup;
+        return $accessGroups;
     }
 }

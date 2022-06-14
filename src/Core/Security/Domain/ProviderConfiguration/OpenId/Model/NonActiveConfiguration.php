@@ -21,17 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
+namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
-
-interface ReadOpenIdConfigurationRepositoryInterface
+/**
+ * This class represent an non-active OpenId Configuration
+ *
+ * Non-active configuration are not used for authentication so they don't have any required parameters.
+ */
+class NonActiveConfiguration extends AbstractConfiguration
 {
-    /**
-     * Find the OpenId Configuration
-     *
-     * @return AbstractConfiguration|null
-     * @throws \Throwable
-     */
-    public function findConfiguration(): ?AbstractConfiguration;
+    protected bool $isActive = false;
 }

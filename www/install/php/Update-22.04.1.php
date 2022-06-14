@@ -46,8 +46,7 @@ try {
             REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
         CONSTRAINT `security_provider_provider_configuration_id`
             FOREIGN KEY (`provider_configuration_id`)
-            REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
-        CONSTRAINT `unique_access_relation` UNIQUE (claim_value, access_group_id, provider_configuration_id)
+            REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ");
 

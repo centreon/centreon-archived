@@ -25,6 +25,7 @@ namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateO
 
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
@@ -40,6 +41,8 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 };
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 class UpdateOpenIdConfiguration
@@ -57,6 +60,7 @@ class UpdateOpenIdConfiguration
         private ReadContactTemplateRepositoryInterface $contactTemplateRepository,
         private ReadContactGroupRepositoryInterface $contactGroupRepository,
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private DataStorageEngineInterface $dataStorageEngine
     ) {
     }
 
@@ -81,7 +85,7 @@ class UpdateOpenIdConfiguration
                 $contactGroup,
                 $authorizationRules
             );
-            $this->repository->updateConfiguration($configuration);
+            $this->updateConfiguration($configuration);
         } catch (AssertionException | OpenIdConfigurationException $ex) {
             $this->error(
                 'Unable to create OpenID Configuration because one or many parameters are invalid',
@@ -138,25 +142,114 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Create non already existent AuthorizationRule Objects
+     * Create Authorization Rules
      *
      * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
      * @return AuthorizationRule[]
      */
     private function createAuthorizationRules(array $authorizationRulesFromRequest): array
     {
+        //Get Access Groups from request
+        $accessGroupIds = $this->getAccessGroupIds($authorizationRulesFromRequest);
+        $foundAccessGroups = $this->accessGroupRepository->findByIds($accessGroupIds);
+
+        //Log non existent access groups.
+        $this->logNonExistentAccessGroupsIds($accessGroupIds, $foundAccessGroups);
+
         $authorizationRules = [];
         foreach ($authorizationRulesFromRequest as $authorizationRule) {
-            if (($accessGroup = $this->accessGroupRepository->find($authorizationRule["access_group_id"])) === null) {
-                $this->error("Access Group not found", [
-                    "access_group_id" => $authorizationRule["access_group_id"]
-                ]);
-                continue;
+            $accessGroup = $this->getAccessGroupFromFoundAccessGroups(
+                $authorizationRule["access_group_id"],
+                $foundAccessGroups
+            );
+            if ($accessGroup !== null) {
+                $authorizationRules[] = new AuthorizationRule($authorizationRule["claim_value"], $accessGroup);
             }
-
-            $authorizationRules[] = new AuthorizationRule($authorizationRule["claim_value"], $accessGroup);
         }
 
         return $authorizationRules;
+    }
+
+    /**
+     * Add log for all the non existent access groups
+     *
+     * @param int[] $accessGroupIdsFromRequest
+     * @param AccessGroup[] $foundAccessGroups
+     * @return void
+     */
+    private function logNonExistentAccessGroupsIds(array $accessGroupIdsFromRequest, array $foundAccessGroups): void
+    {
+        $foundAccessGroupsId = [];
+        foreach ($foundAccessGroups as $foundAccessGroup) {
+            $foundAccessGroupsId[] = $foundAccessGroup->getId();
+        }
+        $nonExistentAccessGroupsIds = array_diff($accessGroupIdsFromRequest, $foundAccessGroupsId);
+        $this->error("Access Groups not found", [
+            "access_group_ids" => implode(', ', $nonExistentAccessGroupsIds)
+        ]);
+    }
+
+    /**
+     * Get AccessGroup corresponding to the id from the request
+     *
+     * @param int $accessGroupIdFromRequest
+     * @param AccessGroup[] $foundAccessGroups
+     * @return AccessGroup|null
+     */
+    private function getAccessGroupFromFoundAccessGroups(
+        int $accessGroupIdFromRequest,
+        array $foundAccessGroups
+    ): ?AccessGroup {
+        foreach ($foundAccessGroups as $foundAccessGroup) {
+            if ($accessGroupIdFromRequest === $foundAccessGroup->getId()) {
+                return $foundAccessGroup;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Return all unique access group id from request
+     *
+     * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
+     * @return int[]
+     */
+    private function getAccessGroupIds(array $authorizationRulesFromRequest): array
+    {
+        $accessGroupIds = [];
+        foreach ($authorizationRulesFromRequest as $authorizationRules) {
+            $accessGroupIds[] = $authorizationRules["access_group_id"];
+        }
+
+        return array_unique($accessGroupIds);
+    }
+
+    /**
+     * Update OpenId Configuration
+     *
+     * @param AbstractConfiguration $configuration
+     * @throws \Throwable
+     */
+    private function updateConfiguration(AbstractConfiguration $configuration): void
+    {
+        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
+        try {
+            if (! $isAlreadyInTransaction) {
+                $this->dataStorageEngine->startTransaction();
+            }
+            $this->repository->updateConfiguration($configuration);
+            if (! empty($configuration->getAuthorizationRules())) {
+                $this->repository->deleteAuthorizationRules();
+                $this->repository->insertAuthorizationRules($configuration->getAuthorizationRules());
+            }
+            if (! $isAlreadyInTransaction) {
+                $this->dataStorageEngine->commitTransaction();
+            }
+        } catch (\Throwable $ex) {
+            if (! $isAlreadyInTransaction) {
+                $this->dataStorageEngine->rollbackTransaction();
+                throw $ex;
+            }
+        }
     }
 }

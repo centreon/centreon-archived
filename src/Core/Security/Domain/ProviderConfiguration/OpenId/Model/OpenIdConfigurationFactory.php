@@ -38,7 +38,7 @@ class OpenIdConfigurationFactory
      * @param ContactTemplate|null $contactTemplate
      * @param ContactGroup|null $contactGroup
      * @param AuthorizationRule[] $authorizationRules
-     * @return Configuration
+     * @return AbstractConfiguration
      * @throws OpenIdConfigurationException
      */
     public static function create(
@@ -46,9 +46,43 @@ class OpenIdConfigurationFactory
         ?ContactTemplate $contactTemplate = null,
         ?ContactGroup $contactGroup = null,
         array $authorizationRules = []
-    ): Configuration {
-        $configuration = new Configuration(
-            $request->isActive,
+    ): AbstractConfiguration {
+        if ($request->isActive === true) {
+            $configuration = self::createActiveConfiguration(
+                $request,
+                $contactTemplate,
+                $contactGroup,
+                $authorizationRules
+            );
+        } else {
+            $configuration = self::createNonActiveConfiguration(
+                $request,
+                $contactTemplate,
+                $contactGroup,
+                $authorizationRules
+            );
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Create Active Configuration
+     *
+     * @param UpdateOpenIdConfigurationRequest $request
+     * @param ContactTemplate|null $contactTemplate
+     * @param ContactGroup|null $contactGroup
+     * @param AuthorizationRule[] $authorizationRules
+     * @return ActiveConfiguration
+     * @throws OpenIdConfigurationException
+     */
+    private static function createActiveConfiguration(
+        UpdateOpenIdConfigurationRequest $request,
+        ?ContactTemplate $contactTemplate,
+        ?ContactGroup $contactGroup,
+        array $authorizationRules
+    ): ActiveConfiguration {
+        $configuration = new ActiveConfiguration(
             $request->isAutoImportEnabled,
             $request->clientId,
             $request->clientSecret,
@@ -57,14 +91,15 @@ class OpenIdConfigurationFactory
             $request->tokenEndpoint,
             $request->introspectionTokenEndpoint,
             $request->userInformationEndpoint,
+            $contactGroup,
             $contactTemplate,
             $request->emailBindAttribute,
             $request->userAliasBindAttribute,
             $request->userNameBindAttribute,
-            $contactGroup,
-            $request->claimName
         );
-
+        if ($request->claimName !== null) {
+            $configuration->setClaimName($request->claimName);
+        }
         $configuration
             ->setForced($request->isForced)
             ->setTrustedClientAddresses($request->trustedClientAddresses)
@@ -77,5 +112,46 @@ class OpenIdConfigurationFactory
             ->setAuthorizationRules($authorizationRules);
 
         return $configuration;
+    }
+
+    /**
+     * Create Non Active Configuration
+     *
+     * @param UpdateOpenIdConfigurationRequest $request
+     * @param ContactTemplate|null $contactTemplate
+     * @param ContactGroup|null $contactGroup
+     * @param AuthorizationRule[] $authorizationRules
+     * @return NonActiveConfiguration
+     */
+    private static function createNonActiveConfiguration(
+        UpdateOpenIdConfigurationRequest $request,
+        ?ContactTemplate $contactTemplate,
+        ?ContactGroup $contactGroup,
+        array $authorizationRules
+    ): NonActiveConfiguration {
+        return (new NonActiveConfiguration())
+            ->setAutoImportEnabled($request->isAutoImportEnabled)
+            ->setClientId($request->clientId)
+            ->setClientSecret($request->clientSecret)
+            ->setBaseUrl($request->baseUrl)
+            ->setAuthorizationEndpoint($request->authorizationEndpoint)
+            ->setTokenEndpoint($request->tokenEndpoint)
+            ->setIntrospectionTokenEndpoint($request->introspectionTokenEndpoint)
+            ->setUserInformationEndpoint($request->userInformationEndpoint)
+            ->setContactGroup($contactGroup)
+            ->setContactTemplate($contactTemplate)
+            ->setEmailBindAttribute($request->emailBindAttribute)
+            ->setUserAliasBindAttribute($request->userAliasBindAttribute)
+            ->setUserNameBindAttribute($request->userNameBindAttribute)
+            ->setClaimName($request->claimName)
+            ->setForced($request->isForced)
+            ->setTrustedClientAddresses($request->trustedClientAddresses)
+            ->setBlacklistClientAddresses($request->blacklistClientAddresses)
+            ->setEndSessionEndpoint($request->endSessionEndpoint)
+            ->setConnectionScopes($request->connectionScopes)
+            ->setLoginClaim($request->loginClaim)
+            ->setAuthenticationType($request->authenticationType)
+            ->setVerifyPeer($request->verifyPeer)
+            ->setAuthorizationRules($authorizationRules);
     }
 }

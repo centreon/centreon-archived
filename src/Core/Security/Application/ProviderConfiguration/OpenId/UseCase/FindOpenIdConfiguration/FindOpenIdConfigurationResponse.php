@@ -23,7 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 class FindOpenIdConfigurationResponse
 {
@@ -133,6 +135,18 @@ class FindOpenIdConfigurationResponse
     public ?string $userNameBindAttribute = null;
 
     /**
+     * @var string|null
+     */
+    public ?string $claimName = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $contactGroup = null;
+
+    public array $authorizationRules = [];
+
+    /**
      * @param ContactTemplate $contactTemplate
      * @return array<string,int|string>
      */
@@ -142,5 +156,34 @@ class FindOpenIdConfigurationResponse
             "id" => $contactTemplate->getId(),
             "name" => $contactTemplate->getName(),
         ];
+    }
+
+    /**
+     * @param ContactGroup $contactGroup
+     * @return array{id: int, name: string}
+     */
+    public static function contactGroupToArray(ContactGroup $contactGroup): array
+    {
+        return [
+            "id" => $contactGroup->getId(),
+            "name" => $contactGroup->getName()
+        ];
+    }
+
+    /**
+     * @param AuthorizationRule[] $authorizationRules
+     * @return array<array{claim_value: string, access_group:{id: int, name: string}}>
+     */
+    public static function AuthorizationRulesToArray(array $authorizationRules): array
+    {
+        return array_map(function (AuthorizationRule $authorizationRule) {
+            return [
+                'claim_value' => $authorizationRule->getClaimValue(),
+                'access_group' => [
+                    "id" => $authorizationRule->getAccessGroup()->getId(),
+                    "name" => $authorizationRule->getAccessGroup()->getName()
+                ]
+            ];
+        }, $authorizationRules);
     }
 }

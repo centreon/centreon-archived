@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Tests\Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
@@ -45,6 +46,7 @@ beforeEach(function () {
     $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
     $this->contactTemplateRepository = $this->createMock(ReadContactTemplateRepositoryInterface::class);
+    $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
 });
 
 it('should present a NoContentResponse when the use case is executed correctly', function () {
@@ -93,7 +95,8 @@ it('should present a NoContentResponse when the use case is executed correctly',
         $this->repository,
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
-        $this->accessGroupRepository
+        $this->accessGroupRepository,
+        $this->dataStorageEngine
     );
     $useCase($this->presenter, $request);
 });
@@ -139,7 +142,8 @@ it('should present an ErrorResponse when an error occured during the use case ex
         $this->repository,
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
-        $this->accessGroupRepository
+        $this->accessGroupRepository,
+        $this->dataStorageEngine
     );
 
     $useCase($this->presenter, $request);
@@ -193,7 +197,8 @@ it('should present an Error Response when auto import is enable and mandatory pa
         $this->repository,
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
-        $this->accessGroupRepository
+        $this->accessGroupRepository,
+        $this->dataStorageEngine
     );
 
     $useCase($this->presenter, $request);
@@ -242,7 +247,8 @@ it('should present an Error Response when auto import is enable and the contact 
         $this->repository,
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
-        $this->accessGroupRepository
+        $this->accessGroupRepository,
+        $this->dataStorageEngine
     );
 
     $useCase($this->presenter, $request);

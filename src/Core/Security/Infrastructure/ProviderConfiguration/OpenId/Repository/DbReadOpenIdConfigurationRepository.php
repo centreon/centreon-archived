@@ -25,10 +25,16 @@ namespace Core\Security\Infrastructure\ProviderConfiguration\OpenId\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Contact\Infrastructure\Repository\DbContactGroupFactory;
+use Core\Contact\Infrastructure\Repository\DbContactTemplateFactory;
 use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
+use Core\Security\Infrastructure\Repository\DbAccessGroupFactory;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
     ReadProviderConfigurationsRepositoryInterface,
@@ -61,7 +67,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * @inheritDoc
      */
-    public function findConfiguration(): ?Configuration
+    public function findConfiguration(): ?AbstractConfiguration
     {
         $statement = $this->db->query(
             $this->translateDbName("SELECT * FROM `:db`.`provider_configuration` WHERE name = 'openid'")
@@ -73,31 +79,102 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 __DIR__ . '/CustomConfigurationSchema.json',
             );
             $customConfiguration = json_decode($result['custom_configuration'], true);
-            $customConfiguration['contact_template'] = null;
-            if ($customConfiguration['contact_template_id'] !== null) {
-                $statement = $this->db->prepare(
-                    "SELECT
-                        contact_id AS id,
-                        contact_name AS name
-                    FROM contact
-                    WHERE
-                        contact_id = :contactTemplateId
-                        AND contact_register = 0"
-                );
-                $statement->bindValue(
-                    ':contactTemplateId',
-                    $customConfiguration['contact_template_id'],
-                    \PDO::PARAM_INT
-                );
-                $statement->execute();
-                unset($customConfiguration['contact_template_id']);
-                if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                    $customConfiguration['contact_template'] = $result;
-                }
-            }
+            $customConfiguration['contact_template'] = $this->getContactTemplate(
+                $customConfiguration['contact_template_id']
+            );
+            $customConfiguration['contact_group'] = $this->getContactGroup($customConfiguration['contact_group_id']);
+            $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByProviderId((int) $result["id"]);
             $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
         }
 
         return $configuration;
+    }
+
+    /**
+     * Get Contact Template
+     *
+     * @param int|null $contactTemplateId
+     * @return ContactTemplate|null
+     */
+    private function getContactTemplate(?int $contactTemplateId): ?ContactTemplate
+    {
+        if ($contactTemplateId === null) {
+            return null;
+        }
+
+        $statement = $this->db->prepare(
+            "SELECT
+                contact_id,
+                contact_name
+            FROM contact
+            WHERE
+                contact_id = :contactTemplateId
+                AND contact_register = 0"
+        );
+        $statement->bindValue(':contactTemplateId', $contactTemplateId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $contactTemplate = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $contactTemplate = DbContactTemplateFactory::createFromRecord($result);
+        }
+
+        return $contactTemplate;
+    }
+
+    /**
+     * Get Contact Group
+     *
+     * @param int|null $contactGroupId
+     * @return ContactGroup|null
+     */
+    private function getContactGroup(?int $contactGroupId): ?ContactGroup
+    {
+        if ($contactGroupId === null) {
+            return null;
+        }
+
+        $statement = $this->db->prepare(
+            "SELECT
+                cg_id,
+                cg_name
+            FROM contactgroup
+            WHERE
+                cg_id = :contactGroupId
+            "
+        );
+        $statement->bindValue(':contactGroupId', $contactGroupId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $contactGroup = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $contactGroup = DbContactGroupFactory::createFromRecord($result);
+        }
+
+        return $contactGroup;
+    }
+
+    /**
+     * Get Authorization Rules
+     *
+     * @param integer $providerConfigurationId
+     * @return AuthorizationRule[]
+     */
+    private function getAuthorizationRulesByProviderId(int $providerConfigurationId): array
+    {
+        $statement = $this->db->prepare(
+            "SELECT * from security_provider_access_group_relation spagn
+            INNER JOIN acl_groups ON acl_group_id = spagn.access_group_id
+            WHERE spagn.provider_configuration_id = :providerConfigurationId"
+        );
+        $statement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $authorizationRules = [];
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $accessGroup = DbAccessGroupFactory::createFromRecord($result);
+            $authorizationRules[] = new AuthorizationRule($result['claim_value'], $accessGroup);
+        }
+        return $authorizationRules;
     }
 }

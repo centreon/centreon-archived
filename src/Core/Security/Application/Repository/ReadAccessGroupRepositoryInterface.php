@@ -55,9 +55,9 @@ interface ReadAccessGroupRepositoryInterface
     public function findByContactWithFilter(ContactInterface $contact): array;
 
     /**
-     * @param int $accessGroupId
-     * @return AccessGroup|null
+     * @param int[] $accessGroupIds
+     * @return AccessGroup[]
      * @throws \Throwable
      */
-    public function find(int $accessGroupId): ?AccessGroup;
+    public function findByIds(array $accessGroupIds): array;
 }

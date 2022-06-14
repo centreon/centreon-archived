@@ -43,6 +43,7 @@ use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
 use Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -73,8 +74,7 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
-    $this->validOpenIdConfiguration = new Configuration(
-        true,
+    $this->validOpenIdConfiguration = new ActiveConfiguration(
         false,
         'MyCl1ientId',
         'MyCl1ientSuperSecr3tKey',
@@ -83,12 +83,11 @@ beforeEach(function () {
         '/token',
         '/introspect',
         '/userinfo',
+        new ContactGroup(1, 'contact_group'),
         new ContactTemplate(1, 'contact_template'),
         null,
         null,
         null,
-        new ContactGroup(1, 'contact_group'),
-        'groups'
     );
 
     $this->validOpenIdConfiguration

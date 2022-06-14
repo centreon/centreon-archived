@@ -25,32 +25,70 @@ namespace Tests\Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
 use Assert\InvalidArgumentException;
 use Core\Contact\Domain\Model\ContactGroup;
+use Core\Contact\Domain\Model\ContactTemplate;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 it('should throw an Exception when a configuration client id is empty and configuration is active', function () {
-    new Configuration(true, true, '');
+    new ActiveConfiguration(
+        false,
+        '',
+        'MyCl1ientSuperSecr3tKey',
+        'http://127.0.0.1/auth/openid-connect',
+        '/authorization',
+        '/token',
+        '/introspect',
+        '/userinfo',
+        new ContactGroup(1, 'contact_group'),
+        new ContactTemplate(1, 'contact_template'),
+    );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::clientId')->getMessage());
 
 it('should throw an Exception when a configuration client secret is empty and configuration is active', function () {
-    new Configuration(true, true, 'MyCl1ientId', '');
+    new ActiveConfiguration(
+        false,
+        'MyCl1ientId',
+        '',
+        'http://127.0.0.1/auth/openid-connect',
+        '/authorization',
+        '/token',
+        '/introspect',
+        '/userinfo',
+        new ContactGroup(1, 'contact_group'),
+        new ContactTemplate(1, 'contact_template'),
+    );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::clientSecret')->getMessage());
 
 it('should throw an Exception when a configuration base url is empty and configuration is active', function () {
-    new Configuration(true, true, 'MyCl1ientId', 'MyCl1ientSuperSecr3tKey', '');
+    new ActiveConfiguration(
+        false,
+        'MyCl1ientId',
+        'MyCl1ientSuperSecr3tKey',
+        '',
+        '/authorization',
+        '/token',
+        '/introspect',
+        '/userinfo',
+        new ContactGroup(1, 'contact_group'),
+        new ContactTemplate(1, 'contact_template'),
+    );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::baseUrl')->getMessage());
 
 it(
     'should throw an Exception when a configuration authorization endpoint is empty and configuration is active',
     function () {
-        new Configuration(
-            true,
-            true,
+        new ActiveConfiguration(
+            false,
             'MyCl1ientId',
             'MyCl1ientSuperSecr3tKey',
             'http://127.0.0.1/auth/openid-connect',
-            ''
+            '',
+            '/token',
+            '/introspect',
+            '/userinfo',
+            new ContactGroup(1, 'contact_group'),
+            new ContactTemplate(1, 'contact_template'),
         );
     }
 )->throws(
@@ -59,38 +97,64 @@ it(
 );
 
 it('should throw an Exception when a configuration token endpoint is empty and configuration is active', function () {
-    new Configuration(
-        true,
-        true,
+    new ActiveConfiguration(
+        false,
         'MyCl1ientId',
         'MyCl1ientSuperSecr3tKey',
         'http://127.0.0.1/auth/openid-connect',
-        '/authorization'
+        '/authorization',
+        '',
+        '/introspect',
+        '/userinfo',
+        new ContactGroup(1, 'contact_group'),
+        new ContactTemplate(1, 'contact_template'),
     );
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('Configuration::tokenEndpoint')->getMessage());
 
 it(
     'should throw an Exception when both introspection and userinfo endpoints are empty and configuration is active',
     function () {
-        new Configuration(
-            true,
+        new ActiveConfiguration(
             false,
             'MyCl1ientId',
             'MyCl1ientSuperSecr3tKey',
             'http://127.0.0.1/auth/openid-connect',
             '/authorization',
-            '/token',
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
+            'token',
+            '',
+            '',
             new ContactGroup(1, 'contact_group'),
-            'groups'
+            new ContactTemplate(1, 'contact_template'),
         );
     }
 )->throws(
     OpenIdConfigurationException::class,
     OpenIdConfigurationException::missingInformationEndpoint()->getMessage()
 );
+
+it('should add the ips to trustedClientAddresses properties', function () {
+    $configuration = new ActiveConfiguration(
+        false,
+        'MyCl1ientId',
+        'MyClientS3cr3t',
+        'http://127.0.0.1/auth/openid-connect',
+        '/authorization',
+        '/token',
+        '/introspect',
+        '/userinfo',
+        new ContactGroup(1, 'contact_group'),
+        new ContactTemplate(1, 'contact_template'),
+    );
+
+    $configuration->setTrustedClientAddresses([
+        '127.0.0.1',
+        '127.0.0.2',
+        '127.0.0.3',
+    ]);
+
+    expect($configuration->getTrustedClientAddresses())->toBe([
+        '127.0.0.1',
+        '127.0.0.2',
+        '127.0.0.3',
+    ]);
+});

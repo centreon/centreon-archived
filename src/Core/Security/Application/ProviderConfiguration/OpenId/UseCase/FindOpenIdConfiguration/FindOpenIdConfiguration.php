@@ -25,7 +25,7 @@ namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpe
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 class FindOpenIdConfiguration
@@ -58,10 +58,10 @@ class FindOpenIdConfiguration
     }
 
     /**
-     * @param Configuration $configuration
+     * @param AbstractConfiguration $configuration
      * @return FindOpenIdConfigurationResponse
      */
-    private function createResponse(Configuration $configuration): FindOpenIdConfigurationResponse
+    private function createResponse(AbstractConfiguration $configuration): FindOpenIdConfigurationResponse
     {
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
         $findOpenIdConfigurationResponse->isActive = $configuration->isActive();
@@ -87,6 +87,13 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->emailBindAttribute = $configuration->getEmailBindAttribute();
         $findOpenIdConfigurationResponse->userAliasBindAttribute = $configuration->getUserAliasBindAttribute();
         $findOpenIdConfigurationResponse->userNameBindAttribute = $configuration->getUserNameBindAttribute();
+        $findOpenIdConfigurationResponse->claimName = $configuration->getClaimName();
+        $findOpenIdConfigurationResponse->contactGroup = $configuration->getContactGroup() === null
+            ? null
+            : $findOpenIdConfigurationResponse::contactGroupToArray($configuration->getContactGroup());
+        $findOpenIdConfigurationResponse->authorizationRules = empty($configuration->getAuthorizationRules())
+            ? []
+            : $findOpenIdConfigurationResponse::authorizationRulesToArray($configuration->getAuthorizationRules());
 
         return $findOpenIdConfigurationResponse;
     }

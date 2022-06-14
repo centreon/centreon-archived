@@ -82,7 +82,7 @@ class OpenIdConfigurationException extends \Exception
     public static function contactGroupNotFound(int $contactGroupId): self
     {
         return new self(_(sprintf(
-            "The contact group #%d doesn't exist",
+            "The contact group id #%d doesn't exist",
             $contactGroupId
         )));
     }

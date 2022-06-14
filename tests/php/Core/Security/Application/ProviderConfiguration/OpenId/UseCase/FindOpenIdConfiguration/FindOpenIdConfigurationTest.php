@@ -25,14 +25,15 @@ namespace Tests\Core\Security\Application\ProviderConfiguration\OpenId\UseCase\F
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Contact\Domain\Model\ContactGroup;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
 };
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -40,8 +41,7 @@ beforeEach(function () {
 });
 
 it('should present a provider configuration', function () {
-        $configuration = new Configuration(
-            true,
+        $configuration = new ActiveConfiguration(
             false,
             'MyCl1ientId',
             'MyCl1ientSuperSecr3tKey',
@@ -50,7 +50,8 @@ it('should present a provider configuration', function () {
             '/token',
             '/introspect',
             '/userinfo',
-            new ContactTemplate(1, 'contact_template')
+            new ContactGroup(1, 'contact_group'),
+            new ContactTemplate(1, 'contact_template'),
         );
 
         $configuration
@@ -98,7 +99,8 @@ it('should present a provider configuration', function () {
         expect($presenter->response->emailBindAttribute)->toBeNull();
         expect($presenter->response->userAliasBindAttribute)->toBeNull();
         expect($presenter->response->userNameBindAttribute)->toBeNull();
-})->skip('reimplement this test while handle find configuration useCase');
+        expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
+});
 
 it('should present a NotFoundReponse when no configuration is found', function () {
     $useCase = new FindOpenIdConfiguration($this->repository);
