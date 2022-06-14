@@ -169,12 +169,14 @@ const useLoadResources = (): LoadResources => {
     }
 
     sendRequest({
+      hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
+      serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
