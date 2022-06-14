@@ -140,10 +140,13 @@ class FindOpenIdConfigurationResponse
     public ?string $claimName = null;
 
     /**
-     * @var array|null
+     * @var array{id: int, name: string}|null
      */
     public ?array $contactGroup = null;
 
+    /**
+     * @var array<array{claim_value: string, access_group:{id: int, name: string}}>
+     */
     public array $authorizationRules = [];
 
     /**

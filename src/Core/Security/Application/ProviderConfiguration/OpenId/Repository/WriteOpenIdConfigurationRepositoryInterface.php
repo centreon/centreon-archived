@@ -39,8 +39,7 @@ interface WriteOpenIdConfigurationRepositoryInterface
 
     /**
      * Delete Authorization rules
-     *
-     * @return void
+     * @throws \Throwable
      */
     public function deleteAuthorizationRules(): void;
 
@@ -48,7 +47,7 @@ interface WriteOpenIdConfigurationRepositoryInterface
      * Insert Authorization rules
      *
      * @param AuthorizationRule[] $authorizationRules
-     * @return void
+     * @throws \Throwable
      */
     public function insertAuthorizationRules(array $authorizationRules): void;
 }

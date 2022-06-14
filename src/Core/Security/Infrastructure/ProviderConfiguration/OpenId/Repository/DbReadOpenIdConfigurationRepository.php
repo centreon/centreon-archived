@@ -95,6 +95,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param int|null $contactTemplateId
      * @return ContactTemplate|null
+     * @throws \Throwable
      */
     private function getContactTemplate(?int $contactTemplateId): ?ContactTemplate
     {
@@ -127,6 +128,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param int|null $contactGroupId
      * @return ContactGroup|null
+     * @throws \Throwable
      */
     private function getContactGroup(?int $contactGroupId): ?ContactGroup
     {
@@ -140,8 +142,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 cg_name
             FROM contactgroup
             WHERE
-                cg_id = :contactGroupId
-            "
+                cg_id = :contactGroupId"
         );
         $statement->bindValue(':contactGroupId', $contactGroupId, \PDO::PARAM_INT);
         $statement->execute();
@@ -159,13 +160,14 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param integer $providerConfigurationId
      * @return AuthorizationRule[]
+     * @throws \Throwable
      */
     private function getAuthorizationRulesByProviderId(int $providerConfigurationId): array
     {
         $statement = $this->db->prepare(
             "SELECT * from security_provider_access_group_relation spagn
-            INNER JOIN acl_groups ON acl_group_id = spagn.access_group_id
-            WHERE spagn.provider_configuration_id = :providerConfigurationId"
+                INNER JOIN acl_groups ON acl_group_id = spagn.access_group_id
+                WHERE spagn.provider_configuration_id = :providerConfigurationId"
         );
         $statement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
         $statement->execute();

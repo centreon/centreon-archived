@@ -146,6 +146,7 @@ class UpdateOpenIdConfiguration
      *
      * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
      * @return AuthorizationRule[]
+     * @throws \Throwable
      */
     private function createAuthorizationRules(array $authorizationRulesFromRequest): array
     {
@@ -175,7 +176,6 @@ class UpdateOpenIdConfiguration
      *
      * @param int[] $accessGroupIdsFromRequest
      * @param AccessGroup[] $foundAccessGroups
-     * @return void
      */
     private function logNonExistentAccessGroupsIds(array $accessGroupIdsFromRequest, array $foundAccessGroups): void
     {
