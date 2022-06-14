@@ -14,9 +14,10 @@ import {
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
 import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
+import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
 import {
   labelCentreonLogo,
@@ -29,11 +30,7 @@ import {
   labelLoginWith,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import {
-  loginEndpoint,
-  platformVersionsEndpoint,
-  providersConfigurationEndpoint,
-} from './api/endpoint';
+import { loginEndpoint, providersConfigurationEndpoint } from './api/endpoint';
 
 import LoginPage from '.';
 
@@ -108,6 +105,7 @@ const TestComponent = (): JSX.Element => (
             platformInstallationStatusAtom,
             { availableVersion: null, installedVersion: '21.10.1' },
           ],
+          [platformVersionsAtom, retrievedWeb],
         ]}
       >
         <LoginPage />
@@ -170,9 +168,6 @@ describe('Login Page', () => {
         data: retrievedTranslations,
       })
       .mockResolvedValueOnce({
-        data: retrievedWeb,
-      })
-      .mockResolvedValueOnce({
         data: retrievedProvidersConfiguration,
       })
       .mockResolvedValue({
@@ -193,15 +188,10 @@ describe('Login Page', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        platformVersionsEndpoint,
+        providersConfigurationEndpoint,
         cancelTokenRequestParam,
       );
     });
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      providersConfigurationEndpoint,
-      cancelTokenRequestParam,
-    );
 
     expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
@@ -211,10 +201,12 @@ describe('Login Page', () => {
     await waitFor(() => {
       expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
     });
-    expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
-      'href',
-      '/centreon/authentication/providers/configurations/openid',
-    );
+    await waitFor(() => {
+      expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
+        'href',
+        '/centreon/authentication/providers/configurations/openid',
+      );
+    });
     expect(
       screen.queryByText(`${labelLoginWith} ldap`),
     ).not.toBeInTheDocument();

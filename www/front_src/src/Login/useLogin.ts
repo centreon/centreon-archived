@@ -20,29 +20,21 @@ import { useUpdateAtom } from 'jotai/utils';
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
 import { PlatformInstallationStatus } from '../api/models';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import useUser from '../Main/useUser';
 import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
 import routeMap from '../reactRoutes/routeMap';
 import useInitializeTranslation from '../Main/useInitializeTranslation';
 
 import postLogin from './api';
-import {
-  platformVersionsDecoder,
-  providersConfigurationDecoder,
-  redirectDecoder,
-} from './api/decoder';
+import { providersConfigurationDecoder, redirectDecoder } from './api/decoder';
 import {
   labelLoginSucceeded,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import {
-  platformVersionsEndpoint,
-  providersConfigurationEndpoint,
-} from './api/endpoint';
+import { providersConfigurationEndpoint } from './api/endpoint';
 import {
   LoginFormValues,
-  PlatformVersions,
   Redirect,
   RedirectAPI,
   ProviderConfiguration,
@@ -50,7 +42,6 @@ import {
 
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
-  platformVersions: PlatformVersions | null;
   providersConfiguration: Array<ProviderConfiguration> | null;
   sendLogin: (values) => Promise<Redirect>;
   submitLoginForm: (
@@ -61,9 +52,6 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
-
-  const [platformVersions, setPlatformVersions] =
-    useState<PlatformVersions | null>(null);
   const [providersConfiguration, setProvidersConfiguration] =
     useState<Array<ProviderConfiguration> | null>(null);
 
@@ -71,11 +59,6 @@ const useLogin = (): UseLoginState => {
     decoder: redirectDecoder,
     httpCodesBypassErrorSnackbar: [401],
     request: postLogin,
-  });
-
-  const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
-    decoder: platformVersionsDecoder,
-    request: getData,
   });
 
   const { sendRequest: getProvidersConfiguration } = useRequest<
@@ -149,10 +132,6 @@ const useLogin = (): UseLoginState => {
       i18n.changeLanguage?.(getBrowserLocale()),
     );
 
-    sendPlatformVersions({
-      endpoint: platformVersionsEndpoint,
-    }).then(setPlatformVersions);
-
     getProvidersConfiguration({
       endpoint: providersConfigurationEndpoint,
     }).then((providers) => {
@@ -186,7 +165,6 @@ const useLogin = (): UseLoginState => {
 
   return {
     platformInstallationStatus,
-    platformVersions,
     providersConfiguration,
     sendLogin,
     submitLoginForm,
