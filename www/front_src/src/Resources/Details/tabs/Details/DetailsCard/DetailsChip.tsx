@@ -66,14 +66,14 @@ const DetailsChip = ({ group, type }: Props): JSX.Element => {
     setIsHovered(false);
   };
 
-  const filterByMetaResourceType = useCallback((): void => {
+  const filterByGroup = useCallback((): void => {
     setCriteriaAndNewFilter({
       name: type,
       value: [group],
     });
   }, [group, type]);
 
-  const configureMetaResourceType = useCallback((): void => {
+  const configureGroup = useCallback((): void => {
     window.location.href = group.configuration_uri as string;
   }, [group]);
 
@@ -104,7 +104,7 @@ const DetailsChip = ({ group, type }: Props): JSX.Element => {
                   className={classes.chipIconColor}
                   size="small"
                   title={t(name)}
-                  onClick={filterByMetaResourceType}
+                  onClick={filterByGroup}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
@@ -113,7 +113,7 @@ const DetailsChip = ({ group, type }: Props): JSX.Element => {
                   className={classes.chipIconColor}
                   size="small"
                   title={t(name)}
-                  onClick={configureMetaResourceType}
+                  onClick={configureGroup}
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
