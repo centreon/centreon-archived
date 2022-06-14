@@ -89,14 +89,14 @@ const SwitchThemeMode = (): JSX.Element => {
       />
       <div className={classes.containerMode}>
         <ListItemText
-          className={clsx(classes.mode, { [classes.disabledMode]: isDarkMode })}
+          className={clsx(classes.mode, { [classes.disabledMode]: isDark })}
         >
           Light
         </ListItemText>
 
         <ListItemText
           className={clsx(classes.mode, {
-            [classes.disabledMode]: !isDarkMode,
+            [classes.disabledMode]: !isDark,
           })}
         >
           Dark
