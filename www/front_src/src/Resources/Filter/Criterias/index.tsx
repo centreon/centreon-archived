@@ -74,8 +74,6 @@ const CriteriasContent = (): JSX.Element => {
     return reject(isNonSelectableCriteria)(criterias).filter(
       isOptimizedModeDisabled(statusOptimizedMode),
     );
-
-    return reject(isNonSelectableCriteria)(criterias);
   };
 
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);

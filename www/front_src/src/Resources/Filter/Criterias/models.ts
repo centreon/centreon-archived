@@ -30,8 +30,8 @@ import {
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
-  buildHostCategoryEndpoint,
-  buildServiceCategoryEndpoint,
+  buildHostCategoriesEndpoint,
+  buildServiceCategoriesEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
@@ -231,11 +231,11 @@ const selectableCriterias: CriteriaById = {
     label: labelMonitoringServer,
   },
   [CriteriaNames.hostCategories]: {
-    buildAutocompleteEndpoint: buildHostCategoryEndpoint,
+    buildAutocompleteEndpoint: buildHostCategoriesEndpoint,
     label: labelHostCategory,
   },
   [CriteriaNames.serviceCategories]: {
-    buildAutocompleteEndpoint: buildServiceCategoryEndpoint,
+    buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
     label: labelServiceCategory,
   },
 };
