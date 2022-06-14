@@ -84,7 +84,7 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
     public function findAllConfigurations(): array
     {
         $statement = $this->db->query("
-            SELECT cb.config_id, cd.bbdo_version
+            SELECT cb.config_id, cb.bbdo_version
             FROM cfg_centreonbroker cb
             INNER JOIN cfg_centreonbroker_info cbi
                 ON cbi.config_id = cb.config_id
@@ -94,7 +94,6 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
             WHERE cb.daemon = 1
         ");
 
-        $statement->execute();
         $brokerConfigurations = [];
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $brokerConfigurations[] = (new BrokerConfiguration())
