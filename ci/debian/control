@@ -140,6 +140,7 @@ Package: centreon-trap
 Architecture: all
 Depends: 
     centreon-common (>= ${centreon:version}~),
+    snmptrapd,
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
