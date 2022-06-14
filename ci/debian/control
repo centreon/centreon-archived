@@ -38,6 +38,7 @@ Depends:
     centreon-license-manager (>= ${centreon:version}~),
     centreon-pp-manager (>= ${centreon:version}~),
     centreon-auto-discovery-server (>= ${centreon:version}~),
+    centreon-web (>= ${centreon:version}~),
     centreon-web-apache (>= ${centreon:version}~),
     centreon-broker (>= ${centreon:version}~),
     centreon-engine-extcommands (>= ${centreon:version}~),
@@ -139,6 +140,7 @@ Package: centreon-trap
 Architecture: all
 Depends: 
     centreon-common (>= ${centreon:version}~),
+    snmptrapd,
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
@@ -152,6 +154,7 @@ Depends:
     centreon-trap (>= ${centreon:version}~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
+    centreon-plugin-applications-databases-mysql,
     centreon-plugin-applications-protocol-dns,
     centreon-plugin-applications-protocol-ldap,
     centreon-plugin-hardware-printers-generic-snmp,

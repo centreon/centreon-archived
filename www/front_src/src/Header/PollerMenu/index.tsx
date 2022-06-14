@@ -11,6 +11,7 @@ import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
+  MenuSkeleton,
   getData,
   useRequest,
   IconHeader,
@@ -19,7 +20,6 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 
 import { Issues } from './models';
@@ -51,6 +51,10 @@ const useStyles = makeStyles((theme) => ({
   confButton: {
     display: 'flex',
     marginTop: theme.spacing(1),
+  },
+  container: {
+    display: 'flex',
+    flex: 0.4,
   },
   label: {
     color: theme.palette.common.white,
@@ -126,7 +130,7 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = 27;
+  const loaderWidth = 19;
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 
@@ -157,7 +161,7 @@ const PollerMenu = (): JSX.Element | null => {
   }
 
   if (isNil(issues)) {
-    return <MenuLoader width={loaderWidth} />;
+    return <MenuSkeleton width={loaderWidth} />;
   }
 
   const redirectToPollerConfiguration = (): void => {
@@ -174,7 +178,7 @@ const PollerMenu = (): JSX.Element | null => {
         toggleDetailedView();
       }}
     >
-      <div>
+      <div className={classes.container}>
         <SubmenuHeader active={toggled}>
           <IconHeader
             Icon={PollerIcon}
