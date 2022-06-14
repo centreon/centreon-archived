@@ -8,19 +8,21 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { getData, useRequest, useSnackbar } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
-import { webVersionsDecoder } from '../api/decoders';
-import { webVersionsEndpoint } from '../api/endpoint';
+import { platformInstallationStatusDecoder } from '../api/decoders';
+import { platformInstallationStatusEndpoint } from '../api/endpoint';
 import { PlatformInstallationStatus } from '../api/models';
 import reactRoutes from '../reactRoutes/routeMap';
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import useFederatedModules from '../federatedModules/useFederatedModules';
 
+import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import useUser, { areUserParametersLoadedAtom } from './useUser';
+import usePlatformVersions from './usePlatformVersions';
 import useInitializeTranslation from './useInitializeTranslation';
 
 const useMain = (): void => {
-  const { sendRequest: getWebVersions } =
+  const { sendRequest: getPlatformInstallationStatus } =
     useRequest<PlatformInstallationStatus>({
-      decoder: webVersionsDecoder,
+      decoder: platformInstallationStatusDecoder,
       request: getData,
     });
   const { showErrorMessage } = useSnackbar();
@@ -28,7 +30,9 @@ const useMain = (): void => {
   const { getBrowserLocale, getInternalTranslation, i18next } =
     useInitializeTranslation();
 
-  const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
+  const [platformInstallationStatus, setPlatformInstallationStatus] = useAtom(
+    platformInstallationStatusAtom,
+  );
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
@@ -36,6 +40,8 @@ const useMain = (): void => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParameter] = useSearchParams();
+  const { getPlatformVersions } = usePlatformVersions();
+  useFederatedModules();
 
   const displayAuthenticationError = (): void => {
     const authenticationError = searchParameter.get('authenticationError');
@@ -49,20 +55,23 @@ const useMain = (): void => {
 
   useEffect(() => {
     displayAuthenticationError();
-    getWebVersions({
-      endpoint: webVersionsEndpoint,
-    }).then((retrievedWebVersions) => {
-      setWebVersions(retrievedWebVersions);
+
+    getPlatformVersions();
+
+    getPlatformInstallationStatus({
+      endpoint: platformInstallationStatusEndpoint,
+    }).then((retrievedPlatformInstallationStatus) => {
+      setPlatformInstallationStatus(retrievedPlatformInstallationStatus);
     });
   }, []);
 
   useEffect((): void => {
-    if (isNil(webVersions)) {
+    if (isNil(platformInstallationStatus)) {
       return;
     }
 
     loadUser();
-  }, [webVersions]);
+  }, [platformInstallationStatus]);
 
   useEffect((): void => {
     if (not(areUserParametersLoaded)) {

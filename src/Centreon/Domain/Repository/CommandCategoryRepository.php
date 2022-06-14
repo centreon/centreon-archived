@@ -28,13 +28,7 @@ INNER JOIN command_categories_relation AS ccr1 ON ccr1.command_command_id = t1.c
 INNER JOIN command_categories AS cc1 ON cc1.cmd_category_id = ccr1.category_id
 INNER JOIN cfg_nagios AS cn1 ON
     cn1.global_service_event_handler = t1.command_id OR
-    cn1.global_host_event_handler = t1.command_id OR
-    cn1.ocsp_command = t1.command_id OR
-    cn1.ochp_command = t1.command_id OR
-    cn1.host_perfdata_command = t1.command_id OR
-    cn1.service_perfdata_command = t1.command_id OR
-    cn1.host_perfdata_file_processing_command = t1.command_id OR
-    cn1.service_perfdata_file_processing_command = t1.command_id
+    cn1.global_host_event_handler = t1.command_id
 WHERE
     cn1.nagios_id IN ({$ids})
 GROUP BY cc1.cmd_category_id
@@ -136,13 +130,7 @@ INNER JOIN command_categories_relation AS ccr ON ccr.command_command_id = t.comm
 INNER JOIN command_categories AS cc ON cc.cmd_category_id = ccr.category_id
 INNER JOIN cfg_nagios AS cn1 ON
     cn1.global_service_event_handler = t1.command_id OR
-    cn1.global_host_event_handler = t1.command_id OR
-    cn1.ocsp_command = t1.command_id OR
-    cn1.ochp_command = t1.command_id OR
-    cn1.host_perfdata_command = t1.command_id OR
-    cn1.service_perfdata_command = t1.command_id OR
-    cn1.host_perfdata_file_processing_command = t1.command_id OR
-    cn1.service_perfdata_file_processing_command = t1.command_id
+    cn1.global_host_event_handler = t1.command_id
 WHERE t.command_id IN ({$ids})
 GROUP BY cc.cmd_category_id
 SQL;

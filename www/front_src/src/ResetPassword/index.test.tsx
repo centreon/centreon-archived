@@ -109,13 +109,13 @@ describe('Reset password Page', () => {
 
     mockedAxios.get
       .mockResolvedValueOnce({
-        data: retrievedTranslations,
-      })
-      .mockResolvedValueOnce({
         data: retrievedWeb,
       })
       .mockResolvedValueOnce({
         data: retrievedProvidersConfiguration,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedTranslations,
       })
       .mockResolvedValue({
         data: retrievedUser,
