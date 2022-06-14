@@ -106,12 +106,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_cgs"] = "";
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO escalation_contactgroup_relation "
+                        . "VALUES (:esc_id, :contactgroup_cg_id)"
+                    );
                     while ($cg = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_contactgroup_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $cg["contactgroup_cg_id"] . "')"
-                        );
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':contactgroup_cg_id', (int) $cg["contactgroup_cg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["esc_cgs"] .= $cg["contactgroup_cg_id"] . ",";
                     }
                     $fields["esc_cgs"] = trim($fields["esc_cgs"], ",");
@@ -121,12 +123,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_hosts"] = "";
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO escalation_host_relation "
+                        . "VALUES (:esc_id, :host_host_id)"
+                    );
                     while ($host = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_host_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $host["host_host_id"] . "')"
-                        );
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':host_host_id', (int) $host["host_host_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["esc_hosts"] .= $host["host_host_id"] . ",";
                     }
                     $fields["esc_hosts"] = trim($fields["esc_hosts"], ",");
@@ -136,12 +140,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_hgs"] = "";
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO escalation_hostgroup_relation "
+                        . "VALUES (:esc_id, :hostgroup_hg_id)"
+                    );
                     while ($hg = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_hostgroup_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $hg["hostgroup_hg_id"] . "')"
-                        );
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':hostgroup_hg_id', (int) $hg["hostgroup_hg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["esc_hgs"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["esc_hgs"] = trim($fields["esc_hgs"], ",");
@@ -151,12 +157,14 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_sgs"] = "";
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO escalation_servicegroup_relation "
+                        . "VALUES (:esc_id, :servicegroup_sg_id)"
+                    );
                     while ($sg = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_servicegroup_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $sg["servicegroup_sg_id"] . "')"
-                        );
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':servicegroup_sg_id', (int) $sg["servicegroup_sg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["esc_sgs"] .= $sg["servicegroup_sg_id"] . ",";
                     }
                     $fields["esc_sgs"] = trim($fields["esc_sgs"], ",");
@@ -165,13 +173,15 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_hServices"] = "";
+                    $statement = $pearDB->prepare(
+                        "INSERT INTO escalation_service_relation "
+                        . "VALUES (:esc_id, :service_service_id, :host_host_id)"
+                    );
                     while ($sv = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_service_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $sv["service_service_id"] . "', '"
-                            . $sv["host_host_id"] . "')"
-                        );
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':service_service_id', (int) $sv["service_service_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':host_host_id', (int) $sv["host_host_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["esc_hServices"] .= $sv["service_service_id"] . ",";
                     }
                     $fields["esc_hServices"] = trim($fields["esc_hServices"], ",");
@@ -181,12 +191,18 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                         . "WHERE escalation_esc_id = '" . $key . "'"
                     );
                     $fields["esc_metas"] = "";
+                    $statement = $pearDB->prepare(
+                        'INSERT INTO escalation_meta_service_relation '
+                        . 'VALUES (:esc_id, :meta_service_meta_id)'
+                    );
                     while ($sv = $dbResult->fetch()) {
-                        $dbResult2 = $pearDB->query(
-                            "INSERT INTO escalation_meta_service_relation "
-                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
-                            . $sv["meta_service_meta_id"] . "')"
+                        $statement->bindValue(':esc_id', (int) $maxId["MAX(esc_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(
+                            ':meta_service_meta_id',
+                            (int) $sv["meta_service_meta_id"],
+                            \PDO::PARAM_INT
                         );
+                        $statement->execute();
                         $fields["esc_metas"] .= $sv["meta_service_meta_id"] . ",";
                     }
                     $fields["esc_metas"] = trim($fields["esc_metas"], ",");

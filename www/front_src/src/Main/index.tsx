@@ -19,9 +19,9 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import reactRoutes from '../reactRoutes/routeMap';
 
+import { platformInstallationStatusAtom } from './atoms/platformInstallationStatusAtom';
 import Provider from './Provider';
 import { MainLoaderWithoutTranslation } from './MainLoader';
 import useMain from './useMain';

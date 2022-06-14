@@ -34,9 +34,11 @@
  *
  */
 
+require_once __DIR__ . '/../../../bootstrap.php';
 require_once __DIR__ . '/../../class/centreonAuth.class.php';
 
 use Symfony\Component\Yaml\Yaml;
+use Centreon\Domain\VersionHelper;
 
 /**
  * Checks if line is sql comment
@@ -334,4 +336,76 @@ function getGorgoneApiCredentialMacros(string $gorgoneEtcPath): array
     }
 
     return $macros;
+}
+
+/**
+ * Check PHP version and throws exception if prerequisite is not respected
+ *
+ * @param \PDO $db
+ * @throws \Exception
+ */
+function checkPhpPrerequisite(): void
+{
+    $currentPhpMajorVersion = VersionHelper::regularizeDepthVersion(PHP_VERSION, 1);
+
+    if (! VersionHelper::compare($currentPhpMajorVersion, _CENTREON_PHP_VERSION_, VersionHelper::EQUAL)) {
+        throw new \Exception(
+            sprintf(
+                _('Please install PHP version %s instead of %s.'),
+                _CENTREON_PHP_VERSION_,
+                PHP_VERSION,
+            ),
+        );
+    }
+}
+
+/**
+ * Check MariaDB version and throws exception if prerequisite is not respected
+ *
+ * @param \PDO $db
+ * @throws \Exception
+ */
+function checkMariaDBPrerequisite(\PDO $db): void
+{
+    $currentMariaDBVersion = getMariaDBVersion($db);
+
+    if ($currentMariaDBVersion !== null) {
+        $currentMariaDBMajorVersion = VersionHelper::regularizeDepthVersion($currentMariaDBVersion, 1);
+        if (VersionHelper::compare($currentMariaDBMajorVersion, _CENTREON_MARIA_DB_MIN_VERSION_, VersionHelper::LT)) {
+            throw new \Exception(
+                sprintf(
+                    _('Please install MariaDB version %s instead of %s.'),
+                    _CENTREON_MARIA_DB_MIN_VERSION_,
+                    $currentMariaDBVersion,
+                ),
+            );
+        }
+    }
+}
+
+/**
+ * Get MariaDB version
+ * Returns nulls if not found or if MySQL is installed
+ *
+ * @return string|null
+ */
+function getMariaDBVersion(\PDO $db): ?string
+{
+    $version = null;
+    $dbmsName = null;
+
+    $statement = $db->query("SHOW VARIABLES WHERE Variable_name IN ('version', 'version_comment')");
+    while ($row = $statement->fetch()) {
+        if ($row['Variable_name'] === "version") {
+            $version = $row['Value'];
+        } elseif ($row['Variable_name'] === "version_comment") {
+            $dbmsName = $row['Value'];
+        }
+    }
+
+    if (strpos($dbmsName, "MariaDB") !== false && $version !== null) {
+        return $version;
+    }
+
+    return null;
 }

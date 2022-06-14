@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
@@ -150,7 +148,7 @@ const HostStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter<HostData>
       endpoint={hostStatusEndpoint}
-      loaderWidth={27}
+      loaderWidth={24}
       schema={statusSchema}
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
@@ -203,7 +201,6 @@ const HostStatusCounter = (): JSX.Element => {
             </Link>
             <IconToggleSubmenu
               data-testid="submenu-hosts"
-              iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
             />

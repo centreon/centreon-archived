@@ -1,13 +1,11 @@
 import { makeStyles } from '@mui/styles';
 
-import Hook from '../components/Hook';
+import FederatedComponent from '../components/FederatedComponents';
 
 import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
-
-const HookComponent = Hook as unknown as (props) => JSX.Element;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,7 +62,7 @@ const Header = (): JSX.Element => {
         </div>
         <div className={classes.rightContainer}>
           <div className={classes.hookComponent}>
-            <HookComponent path="/header/topCounter" />
+            <FederatedComponent path="/bam/header/topCounter" />
           </div>
           <div className={classes.hostStatusContainer}>
             <HostStatusCounter />

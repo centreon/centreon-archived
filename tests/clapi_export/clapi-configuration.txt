@@ -470,10 +470,7 @@ CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_metrics;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_status;yes
 ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/centengine.log
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
-ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
-ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
 ENGINECFG;setparam;Centreon Engine Central;execute_service_checks;1
 ENGINECFG;setparam;Centreon Engine Central;accept_passive_service_checks;1
@@ -483,7 +480,6 @@ ENGINECFG;setparam;Centreon Engine Central;enable_event_handlers;1
 ENGINECFG;setparam;Centreon Engine Central;check_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;command_check_interval;1s
 ENGINECFG;setparam;Centreon Engine Central;command_file;/var/lib/centreon-engine/rw/centengine.cmd
-ENGINECFG;setparam;Centreon Engine Central;lock_file;/var/lock/subsys/centengine.lock
 ENGINECFG;setparam;Centreon Engine Central;retain_state_information;1
 ENGINECFG;setparam;Centreon Engine Central;state_retention_file;/var/log/centreon-engine/retention.dat
 ENGINECFG;setparam;Centreon Engine Central;retention_update_interval;60
@@ -504,7 +500,6 @@ ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;400
 ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
 ENGINECFG;setparam;Centreon Engine Central;max_host_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
-ENGINECFG;setparam;Centreon Engine Central;interval_length;60
 ENGINECFG;setparam;Centreon Engine Central;auto_reschedule_checks;2
 ENGINECFG;setparam;Centreon Engine Central;enable_flap_detection;0
 ENGINECFG;setparam;Centreon Engine Central;low_service_flap_threshold;25.0
@@ -516,14 +511,6 @@ ENGINECFG;setparam;Centreon Engine Central;service_check_timeout;60
 ENGINECFG;setparam;Centreon Engine Central;host_check_timeout;12
 ENGINECFG;setparam;Centreon Engine Central;event_handler_timeout;30
 ENGINECFG;setparam;Centreon Engine Central;notification_timeout;30
-ENGINECFG;setparam;Centreon Engine Central;ocsp_timeout;5
-ENGINECFG;setparam;Centreon Engine Central;ochp_timeout;5
-ENGINECFG;setparam;Centreon Engine Central;perfdata_timeout;5
-ENGINECFG;setparam;Centreon Engine Central;obsess_over_services;0
-ENGINECFG;setparam;Centreon Engine Central;obsess_over_hosts;2
-ENGINECFG;setparam;Centreon Engine Central;process_performance_data;0
-ENGINECFG;setparam;Centreon Engine Central;host_perfdata_file_mode;2
-ENGINECFG;setparam;Centreon Engine Central;service_perfdata_file_mode;2
 ENGINECFG;setparam;Centreon Engine Central;check_for_orphaned_services;0
 ENGINECFG;setparam;Centreon Engine Central;check_for_orphaned_hosts;0
 ENGINECFG;setparam;Centreon Engine Central;check_service_freshness;1
@@ -541,7 +528,6 @@ ENGINECFG;setparam;Centreon Engine Central;event_broker_options;-1
 ENGINECFG;setparam;Centreon Engine Central;enable_predictive_host_dependency_checks;2
 ENGINECFG;setparam;Centreon Engine Central;enable_predictive_service_dependency_checks;2
 ENGINECFG;setparam;Centreon Engine Central;cached_host_check_horizon;60
-ENGINECFG;setparam;Centreon Engine Central;use_large_installation_tweaks;2
 ENGINECFG;setparam;Centreon Engine Central;enable_environment_macros;2
 ENGINECFG;setparam;Centreon Engine Central;debug_file;/var/log/centreon-engine/centengine.debug
 ENGINECFG;setparam;Centreon Engine Central;debug_level;0

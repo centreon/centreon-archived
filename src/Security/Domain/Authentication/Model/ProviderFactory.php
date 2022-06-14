@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Exceptions\ProviderException;

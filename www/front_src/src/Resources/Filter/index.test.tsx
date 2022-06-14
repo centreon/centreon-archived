@@ -900,7 +900,7 @@ describe(Filter, () => {
       const { getByDisplayValue, queryByText } = renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(mockedAxios.get).toHaveBeenCalledTimes(3);
       });
 
       await waitFor(() =>

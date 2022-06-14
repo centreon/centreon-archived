@@ -146,13 +146,15 @@ function testExistence($name = null): bool
         $id = $form->getSubmitValue('id');
     }
 
-    $query = "SELECT name, id FROM `nagios_server` WHERE `name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $dbResult = $pearDB->query($query);
-    $row = $dbResult->fetch();
+    $query = 'SELECT name, id FROM `nagios_server` WHERE `name` = :name';
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':name', htmlentities($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
+    $statement->execute();
+    $row = $statement->fetch(\PDO::FETCH_ASSOC);
 
-    if ($dbResult->rowCount() >= 1 && $row["id"] == $id) {
+    if ($statement->rowCount() >= 1 && $row["id"] == $id) {
         return true;
-    } elseif ($dbResult->rowCount() >= 1 && $row["id"] != $id) {
+    } elseif ($statement->rowCount() >= 1 && $row["id"] != $id) {
         return false;
     } else {
         return true;
@@ -282,15 +284,19 @@ function deleteServerInDB(array $serverIds): void
         $row = $result->fetch();
 
         // Is a Remote Server?
-        $result = $pearDB->query(
-            "SELECT * FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+        $statement = $pearDB->prepare(
+            'SELECT * FROM remote_servers WHERE ip = :ip'
         );
+        $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+        $statement->execute();
 
-        if ($result->numRows() > 0) {
+        if ($statement->rowCount() > 0) {
             // Delete entry from remote_servers
-            $pearDB->query(
-                "DELETE FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+            $statement = $pearDB->prepare(
+                'DELETE FROM remote_servers WHERE ip = :ip'
             );
+            $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+            $statement->execute();
             // Delete all relation between this Remote Server and pollers
             $pearDB->query(
                 "DELETE FROM rs_poller_relation WHERE remote_server_id = '" . $serverId . "'"
@@ -394,32 +400,43 @@ function duplicateServer(array $server, array $nbrDup): void
                     $pearDB->query('INSERT INTO `nagios_server` VALUES (' . $queryValues . ')');
                 }
 
-                $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $serverName . '"';
+                $queryGetId = 'SELECT id FROM nagios_server WHERE name = :name';
                 try {
-                    $res = $pearDB->query($queryGetId);
-                    if ($res->rowCount() > 0) {
-                        $row = $res->fetch();
+                    $statement = $pearDB->prepare($queryGetId);
+                    $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
+                    $statement->execute();
+                    if ($statement->rowCount() > 0) {
+                        $row = $statement->fetch(\PDO::FETCH_ASSOC);
                         $iId = $obj->insertServerInCfgNagios($serverId, $row['id'], $serverName);
                         $obj->insertCfgNagiosLogger($iId, $serverId);
 
                         if (isset($rowBks)) {
+                            $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`)" .
+                                    " VALUES (:cfg_nagios_id, :broker_module)";
+                            $statement = $pearDB->prepare($rqBk);
                             foreach ($rowBks as $keyBk => $valBk) {
                                 if ($valBk["broker_module"]) {
-                                    $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`)" .
-                                        " VALUES ('" . $iId . "', '" . $valBk["broker_module"] . "')";
+                                    $statement->bindValue(':cfg_nagios_id', (int) $iId, \PDO::PARAM_INT);
+                                    $statement->bindValue(':broker_module', $valBk["broker_module"], \PDO::PARAM_STR);
+                                    $statement->execute();
                                 }
-                                $pearDB->query($rqBk);
                             }
                         }
 
                         $queryRel = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) ' .
-                            'SELECT b.resource_id, ' . $row['id'] . ' FROM ' .
-                            'cfg_resource_instance_relations as b WHERE b.instance_id = ' . $serverId;
-                        $pearDB->query($queryRel);
+                            'SELECT b.resource_id, :instance_id FROM ' .
+                            'cfg_resource_instance_relations as b WHERE b.instance_id = :b_instance_id';
+                        $statement = $pearDB->prepare($queryRel);
+                        $statement->bindValue(':instance_id', (int) $row['id'], \PDO::PARAM_INT);
+                        $statement->bindValue(':b_instance_id', (int) $serverId, \PDO::PARAM_INT);
+                        $statement->execute();
                         $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order) ' .
-                            'SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM ' .
-                            'poller_command_relations as b WHERE b.poller_id = ' . $serverId;
-                        $pearDB->query($queryCmd);
+                            'SELECT :poller_id, b.command_id, b.command_order FROM ' .
+                            'poller_command_relations as b WHERE b.poller_id = :b_poller_id';
+                        $statement = $pearDB->prepare($queryCmd);
+                        $statement->bindValue(':poller_id', (int) $row['id'], \PDO::PARAM_INT);
+                        $statement->bindValue(':b_poller_id', (int) $serverId, \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                 } catch (\PDOException $e) {
                     // Nothing to do
