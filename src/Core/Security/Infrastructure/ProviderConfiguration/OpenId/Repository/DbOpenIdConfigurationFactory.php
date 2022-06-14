@@ -50,8 +50,8 @@ class DbOpenIdConfigurationFactory
     /**
      * Create Active Configuration
      *
-     * @param array $record
-     * @param array $customConfiguration
+     * @param array<string,mixed> $record
+     * @param array<string,mixed> $customConfiguration
      * @return ActiveConfiguration
      * @throws OpenIdConfigurationException
      */
@@ -93,8 +93,8 @@ class DbOpenIdConfigurationFactory
     /**
      * Create Non Active Configuration
      *
-     * @param array $record
-     * @param array $customConfiguration
+     * @param array<string,mixed> $record
+     * @param array<string,mixed> $customConfiguration
      * @return NonActiveConfiguration
      */
     private static function createNonActiveConfiguration(

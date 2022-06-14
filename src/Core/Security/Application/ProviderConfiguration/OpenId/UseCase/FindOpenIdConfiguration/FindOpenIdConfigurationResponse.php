@@ -145,7 +145,7 @@ class FindOpenIdConfigurationResponse
     public ?array $contactGroup = null;
 
     /**
-     * @var array<array{claim_value: string, access_group:{id: int, name: string}}>
+     * @var array<array{claim_value: string, access_group:array{id: int, name: string}}>
      */
     public array $authorizationRules = [];
 
@@ -175,7 +175,7 @@ class FindOpenIdConfigurationResponse
 
     /**
      * @param AuthorizationRule[] $authorizationRules
-     * @return array<array{claim_value: string, access_group:{id: int, name: string}}>
+     * @return array<array{claim_value: string, access_group:array{id: int, name: string}}>
      */
     public static function AuthorizationRulesToArray(array $authorizationRules): array
     {
