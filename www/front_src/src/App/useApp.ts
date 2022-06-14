@@ -14,7 +14,6 @@ import {
 } from '@centreon/ui-context';
 import { getData, useRequest, useSnackbar, postData } from '@centreon/ui';
 
-import useExternalComponents from '../externalComponents/useExternalComponents';
 import useNavigation from '../Navigation/useNavigation';
 import reactRoutes from '../reactRoutes/routeMap';
 import { logoutEndpoint } from '../api/endpoint';
@@ -67,7 +66,6 @@ const useApp = (): UseAppState => {
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
 
   const { getNavigation } = useNavigation();
-  const { getExternalComponents } = useExternalComponents();
 
   const logout = (): void => {
     setAreUserParametersLoaded(false);
@@ -82,7 +80,6 @@ const useApp = (): UseAppState => {
 
   useEffect(() => {
     getNavigation();
-    getExternalComponents();
 
     Promise.all([
       getParameters({

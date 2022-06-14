@@ -4,6 +4,10 @@
     {t}The entire process should take around ten minutes.{/t}
 </p>
 
+{if isset($errorMessage)}
+    {$errorMessage}
+{/if}
+
 <script type="text/javascript">
 
     {literal}

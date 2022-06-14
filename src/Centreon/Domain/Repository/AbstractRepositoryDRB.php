@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Repository;
 
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
 
 class AbstractRepositoryDRB

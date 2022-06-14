@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\Monitoring\Resource;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;

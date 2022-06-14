@@ -24,7 +24,7 @@ namespace Centreon\Infrastructure\Repository;
 use JsonSchema\Validator;
 use Centreon\Domain\Log\LoggerTrait;
 use JsonSchema\Constraints\Constraint;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
 

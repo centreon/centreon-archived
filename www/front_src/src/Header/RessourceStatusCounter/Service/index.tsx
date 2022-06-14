@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
@@ -150,7 +148,7 @@ const ServiceStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter
       endpoint={serviceStatusEndpoint}
-      loaderWidth={33}
+      loaderWidth={29.5}
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
@@ -217,7 +215,6 @@ const ServiceStatusCounter = (): JSX.Element => {
             </Link>
             <IconToggleSubmenu
               data-testid="submenu-service"
-              iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
             />

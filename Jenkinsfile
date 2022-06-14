@@ -4,7 +4,7 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-def serie = '22.04'
+def serie = '22.10'
 def stableBranch = "master"
 def devBranch = "develop"
 env.REF_BRANCH = stableBranch
@@ -158,7 +158,7 @@ stage('Deliver sources') {
     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
+    stash name: 'api-doc', includes: 'centreon-api-v22.10.html'
     stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
     publishHTML([
       allowMissing: false,
@@ -308,7 +308,7 @@ try {
           checkout scm
         }
         sh 'rm -rf *.deb'
-        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
+        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.10'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
         sh 'rm -rf *.deb'
@@ -491,7 +491,7 @@ try {
           unstash "Debian11"
           sh '''for i in $(echo *.deb)
                 do 
-                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.10-$REPO/
                 done
              '''    
         }

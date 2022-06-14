@@ -36,7 +36,6 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  onClick: (item: Page) => void;
   onLeave?: () => void;
   setCollapseScrollMaxHeight: Dispatch<SetStateAction<number | undefined>>;
   setCollapseScrollMaxWidth: Dispatch<SetStateAction<number | undefined>>;
@@ -127,7 +126,6 @@ const CollapsibleItems = ({
   isSubHeader,
   currentTop,
   currentWidth,
-  onClick,
   onLeave,
   level,
   collapseScrollMaxHeight,
@@ -290,11 +288,6 @@ const CollapsibleItems = ({
                       hover={nestedHover}
                       isOpen={nestedIndex === hoveredIndex}
                       key={content.label}
-                      onClick={
-                        !isArrayItem(item?.groups)
-                          ? (): void => onClick(content)
-                          : undefined
-                      }
                       onMouseEnter={mouseEnterContent}
                     />
                   );
@@ -304,11 +297,6 @@ const CollapsibleItems = ({
                   data={item}
                   hover={hover}
                   isOpen={index === hoveredIndex}
-                  onClick={
-                    !isArrayItem(item?.groups)
-                      ? (): void => onClick(item)
-                      : undefined
-                  }
                   onMouseEnter={mouseEnterItem}
                 />
               )}
@@ -325,7 +313,6 @@ const CollapsibleItems = ({
                   level={level + 1}
                   setCollapseScrollMaxHeight={setNestedScrollCollapsMaxHeight}
                   setCollapseScrollMaxWidth={setNestedScrollCollapsMaxWidth}
-                  onClick={onClick}
                 />
               ) : (
                 isSimpleCollapse &&
@@ -347,7 +334,6 @@ const CollapsibleItems = ({
                           setCollapseScrollMaxWidth={
                             setNestedScrollCollapsMaxWidth
                           }
-                          onClick={onClick}
                         />
                       </div>
                     ),

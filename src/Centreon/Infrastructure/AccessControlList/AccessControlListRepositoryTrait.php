@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\AccessControlList;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
 trait AccessControlListRepositoryTrait
 {
