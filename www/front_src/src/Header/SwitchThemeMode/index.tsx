@@ -54,7 +54,7 @@ const SwitchThemeMode = (): JSX.Element => {
     request: patchData,
   });
   const [user, setUser] = useAtom(userAtom);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const isDarkMode = equals(user.themeMode, ThemeMode.dark);
   const [isDark, setIsDark] = useState(isDarkMode);
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
