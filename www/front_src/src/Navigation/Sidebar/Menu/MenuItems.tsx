@@ -37,10 +37,13 @@ interface Props {
   data: Page;
   hover: boolean;
   icon?: ReactNode;
+  isDoubleClickedFromRoot?: boolean;
   isDrawerOpen?: boolean;
+  isItemClicked?: () => void;
   isOpen: boolean;
   isRoot?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
+  onLeaveMenuItem?: () => void;
   onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
 }
 
@@ -87,12 +90,15 @@ const useStyles = makeStyles((theme) => ({
 const MenuItems = ({
   onMouseEnter,
   onClick,
+  onLeaveMenuItem,
+  isItemClicked,
   isOpen,
   icon,
   hover,
   data,
   isDrawerOpen,
   isRoot,
+  isDoubleClickedFromRoot,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
@@ -110,6 +116,8 @@ const MenuItems = ({
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
     if (!isRoot && canNavigate) {
+      isItemClicked?.();
+
       return;
     }
 
@@ -127,7 +135,8 @@ const MenuItems = ({
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onClick={handleClickItem}
         onDoubleClick={isRoot ? onClick : undefined}
-        onMouseEnter={onMouseEnter}
+        onMouseEnter={!isDoubleClickedFromRoot ? onMouseEnter : undefined}
+        onMouseLeave={onLeaveMenuItem}
       >
         {isRoot ? (
           <>
@@ -162,6 +171,7 @@ const MenuItems = ({
       isOpen,
       isRoot,
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       user,
       hoveredNavigationItems,
       selectedNavigationItems,
