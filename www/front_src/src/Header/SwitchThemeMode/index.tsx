@@ -84,6 +84,7 @@ const SwitchThemeMode = (): JSX.Element => {
       <Switch
         checked={isDark}
         className={classes.containerSwitch}
+        disabled={isPending}
         size="small"
         onChange={switchThemeMode}
       />
