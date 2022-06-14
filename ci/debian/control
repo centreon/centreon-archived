@@ -141,7 +141,8 @@ Description: Centreon is a network, system, applicative supervision and monitori
 Package: centreon-trap
 Architecture: all
 Depends: 
-    centreon-common (>= 22.04.0~),
+    centreon-common (>= ${centreon:version}~),
+    snmptrapd,
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
