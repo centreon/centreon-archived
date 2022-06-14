@@ -1,18 +1,17 @@
-import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelGroups } from '../../../../translatedLabels';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
-import { ResourceDetails } from '../../../models';
-import { ResourceType } from '../../../../models';
+import { Category, Group } from '../../../models';
 
 import GroupChip from './GroupChip';
 
 interface Props {
-  details: ResourceDetails | undefined;
+  getType: () => CriteriaNames;
+  groups?: Array<Category | Group>;
+  title: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -22,27 +21,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ details }: Props): JSX.Element => {
+const GroupChips = ({ groups = [], title, getType }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const groupType = equals(details?.type, ResourceType.host)
-    ? CriteriaNames.hostGroups
-    : CriteriaNames.serviceGroups;
+  const type = getType();
 
   return (
     <Grid container className={classes.groups} spacing={1}>
       <Grid item xs={12}>
         <Typography color="textSecondary" variant="body1">
-          {t(labelGroups)}
+          {t(title)}
         </Typography>
       </Grid>
-      {details?.groups?.map((group) => {
-        return <GroupChip group={group} key={group.id} type={groupType} />;
+      {groups?.map((group) => {
+        return <GroupChip group={group} key={group.id} type={type} />;
       })}
     </Grid>
   );
 };
 
-export default Groups;
+export default GroupChips;

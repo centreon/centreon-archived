@@ -134,6 +134,24 @@ describe(useLoadResources, () => {
         }),
       3,
     ],
+    [
+      'hostCategories',
+      (): void =>
+        context.setCriteria?.({
+          name: 'host_categories',
+          value: [{ id: 0, name: 'Linux' }],
+        }),
+      3,
+    ],
+    [
+      'serviceCategories',
+      (): void =>
+        context.setCriteria?.({
+          name: 'service_categories',
+          value: [{ id: 1, name: 'Web-services' }],
+        }),
+      3,
+    ],
   ];
 
   it.each(testCases)(
