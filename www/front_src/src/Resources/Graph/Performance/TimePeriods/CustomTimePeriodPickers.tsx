@@ -55,9 +55,17 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: 'min-content auto',
   },
   compactFromTo: {
-    columnGap: theme.spacing(0.5),
-    display: 'grid',
-    grid: 'repeat(2, min-content) / min-content auto',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing(0.5, 0, 0.5, 0),
+  },
+  containerTime: {
+    alignItems: 'center',
+    display: 'flex',
+    flexBasis: 'row',
+  },
+  date: {
+    display: 'flex',
   },
   error: {
     textAlign: 'center',
@@ -67,6 +75,11 @@ const useStyles = makeStyles((theme) => ({
     columnGap: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
+  },
+  labelDate: {
+    display: 'flex',
+    flex: 1,
+    paddingRight: 4,
   },
   minimalFromTo: {
     display: 'grid',
@@ -184,20 +197,32 @@ const CustomTimePeriodPickers = ({
           <div
             className={isMinimalWidth ? classes.compactFromTo : classes.fromTo}
           >
-            <Typography variant="caption">{t(labelFrom)}:</Typography>
-            <Typography variant="caption">
-              {format({
-                date: customTimePeriod.start,
-                formatString: dateTimeFormat,
-              })}
-            </Typography>
-            <Typography variant="caption">{t(labelTo)}:</Typography>
-            <Typography variant="caption">
-              {format({
-                date: customTimePeriod.end,
-                formatString: dateTimeFormat,
-              })}
-            </Typography>
+            <div className={classes.containerTime}>
+              <div className={classes.labelDate}>
+                <Typography variant="caption">{t(labelFrom)}:</Typography>
+              </div>
+              <div className={classes.date}>
+                <Typography variant="caption">
+                  {format({
+                    date: customTimePeriod.start,
+                    formatString: dateTimeFormat,
+                  })}
+                </Typography>
+              </div>
+            </div>
+            <div className={classes.containerTime}>
+              <div className={classes.labelDate}>
+                <Typography variant="caption">{t(labelTo)}:</Typography>
+              </div>
+              <div className={classes.date}>
+                <Typography variant="caption">
+                  {format({
+                    date: customTimePeriod.end,
+                    formatString: dateTimeFormat,
+                  })}
+                </Typography>
+              </div>
+            </div>
           </div>
         </div>
       </Button>
