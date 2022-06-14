@@ -25,8 +25,8 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.states]: 2,
   [CriteriaNames.statuses]: 3,
   [CriteriaNames.statusTypes]: 4,
-  [CriteriaNames.serviceCategories]: 8,
-  [CriteriaNames.hostCategories]: 9,
+  [CriteriaNames.serviceCategories]: 9,
+  [CriteriaNames.hostCategories]: 8,
 };
 
 export interface AutocompleteSuggestionProps {
