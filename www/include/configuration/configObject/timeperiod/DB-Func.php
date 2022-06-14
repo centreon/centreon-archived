@@ -158,7 +158,7 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                     'values' => $val,
                     'timeperiod_id' => $key
                 ];
-                $tpId = duplicateTimePeriods($params);
+                $tpId = duplicateTimePeriod($params);
                 $centreon->CentreonLogAction->insertLog("timeperiod", $tpId, $tp_name, "a", $fields);
             }
         }
@@ -472,7 +472,7 @@ function testTemplateLoop($value)
  * @param array $params
  * @return int
  */
-function duplicateTimePeriods(array $params): int
+function duplicateTimePeriod(array $params): int
 {
     global $pearDB;
 
