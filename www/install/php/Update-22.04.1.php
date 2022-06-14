@@ -91,7 +91,7 @@ function removePollerWizardAcl(CentreonDB $pearDB): void
 {
     $statement = $pearDB->query("SELECT topology_id FROM topology WHERE topology_parent = 60901");
     if ($statement !== false && $topologyIds = $statement->fetchAll(\PDO::FETCH_COLUMN, 0)) {
-         $statement = $pearDB->prepare(
+        $statement = $pearDB->prepare(
             "DELETE FROM acl_topology_relations WHERE topology_topology_id IN (:topologyIds)"
         );
         $statement->bindValue(':topologyIds', implode(',', $topologyIds), \PDO::PARAM_STR);
