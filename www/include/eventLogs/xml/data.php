@@ -172,10 +172,6 @@ $resourceController = $kernel->getContainer()->get(
     \Centreon\Application\Controller\MonitoringResourceController::class
 );
 
-// Start XML document root
-$buffer = new CentreonXML();
-$buffer->startElement("root");
-
 /*
  * Security check
  */
@@ -243,14 +239,14 @@ $start = 0;
 $end = time();
 
 if ($engine == "true") {
-    $ok = "false";
-    $up = "false";
-    $unknown = "false";
-    $unreachable = "false";
-    $down = "false";
-    $warning = "false";
-    $critical = "false";
-    $oh = "false";
+    $ok = "false";//
+    $up = "false";//
+    $unknown = "false";//
+    $unreachable = "false";//
+    $down = "false";//
+    $warning = "false";//
+    $critical = "false";//
+    $oh = "false";//
     $notification = "false";
     $alert = "false";
 }
@@ -339,6 +335,9 @@ $logs = array();
 /*
  * Print infos..
  */
+// Start XML document root
+$buffer = new CentreonXML();
+$buffer->startElement("root");
 $buffer->startElement("infos");
 $buffer->writeElement("opid", $openid);
 $buffer->writeElement("start", $start);
@@ -474,7 +473,7 @@ $queryGenerator->setOutput($output);
 $queryGenerator->setAccess($access);
 $queryGenerator->setStart($start);
 $queryGenerator->setEnd($end);
-$queryGenerator->setUp($end);
+$queryGenerator->setUp($up);
 $queryGenerator->setDown($down);
 $queryGenerator->setUnreachable($unreachable);
 $queryGenerator->setOk($ok);
