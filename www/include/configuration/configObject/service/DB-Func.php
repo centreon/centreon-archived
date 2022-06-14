@@ -604,8 +604,9 @@ function multipleServiceInDB(
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
                             $query = "INSERT INTO host_service_relation 
-                                      VALUES (NULL, NULL, :service_id)";
+                                      VALUES (NULL, NULL, :host_id, NULL, :service_id)";
                             $statement = $pearDB->prepare($query);
+                            $statement->bindValue(':host_id', (int) $host, \PDO::PARAM_INT);
                             $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
                             $statement->execute();
                             setHostChangeFlag($pearDB, $host, null);
