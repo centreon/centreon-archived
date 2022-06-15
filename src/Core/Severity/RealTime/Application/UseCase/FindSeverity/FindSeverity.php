@@ -46,7 +46,7 @@ class FindSeverity
      */
     public function __invoke(int $severityTypeId, FindSeverityPresenterInterface $presenter): void
     {
-        $this->info('Searching for severities in the realtime', ['type' => Severity::TYPES_AS_STRING[$severityTypeId]]);
+        $this->info('Searching for severities in the realtime', ['typeId' => $severityTypeId]);
         $severities = [];
         try {
             $severities = $this->repository->findAllByTypeId($severityTypeId);
@@ -54,6 +54,7 @@ class FindSeverity
             $this->error(
                 'An error occured while retrieving severities from the realtime',
                 [
+                    'typeId' => $severityTypeId,
                     'trace' => $ex->getTraceAsString()
                 ]
             );
