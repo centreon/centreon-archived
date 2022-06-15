@@ -81,7 +81,15 @@ try {
         $parameters['root_password']
     );
 } catch (\PDOException $e) {
-    $err['connection'] = $e->getMessage();
+    if ((int) $e->getCode() === 1698) {
+        $err['connection'] =
+            'Please check the root database username and password. '
+            . 'If the problem persists, check that you have properly '
+            . '<a target="_blank" href="https://docs.centreon.com/docs/installation'
+            . '/installation-of-a-central-server/using-packages/#secure-the-database">secured your DBMS</a>';
+    } else {
+        $err['connection'] = $e->getMessage();
+    }
 }
 
 try {
