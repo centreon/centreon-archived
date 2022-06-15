@@ -960,6 +960,24 @@ describe(Filter, () => {
         expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument(),
       );
 
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      await waitFor(() =>
+        expect(getByText(linuxHostCategory.name)).toBeInTheDocument(),
+      );
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      userEvent.click(getByText(labelServiceCategory));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      await waitFor(() =>
+        expect(getByText(webAccessServiceCategory.name)).toBeInTheDocument(),
+      );
+
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
       });
@@ -1007,6 +1025,8 @@ describe(Filter, () => {
       expect(queryByText(labelOk)).toBeNull();
       expect(queryByText(linuxServersHostGroup.name)).toBeNull();
       expect(queryByText(webAccessServiceGroup.name)).toBeNull();
+      expect(queryByText(linuxHostCategory.name)).toBeNull();
+      expect(queryByText(webAccessServiceCategory.name)).toBeNull();
 
       const filterFromUrlQueryParameters = getUrlQueryParameters()
         .filter as FilterModel;
