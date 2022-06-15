@@ -38,6 +38,8 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once __DIR__ . '/../functions.php';
 
+define('SQL_ERROR_CODE_ACCESS_DENIED', 1698);
+
 $requiredParameters = array(
     'db_configuration',
     'db_storage',
@@ -81,7 +83,7 @@ try {
         $parameters['root_password']
     );
 } catch (\PDOException $e) {
-    if ((int) $e->getCode() === 1698) {
+    if ((int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
         $err['connection'] =
             'Please check the root database username and password. '
             . 'If the problem persists, check that you have properly '
