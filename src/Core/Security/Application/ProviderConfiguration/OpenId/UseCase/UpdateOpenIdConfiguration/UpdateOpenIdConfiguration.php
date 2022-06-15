@@ -151,16 +151,14 @@ class UpdateOpenIdConfiguration
      */
     private function createAuthorizationRules(array $authorizationRulesFromRequest): array
     {
-        //Get Access Groups from request
         $accessGroupIds = $this->getAccessGroupIds($authorizationRulesFromRequest);
         $foundAccessGroups = $this->accessGroupRepository->findByIds($accessGroupIds);
 
-        //Log non existent access groups.
         $this->logNonExistentAccessGroupsIds($accessGroupIds, $foundAccessGroups);
 
         $authorizationRules = [];
         foreach ($authorizationRulesFromRequest as $authorizationRule) {
-            $accessGroup = $this->getAccessGroupFromFoundAccessGroups(
+            $accessGroup = $this->findAccessGroupFromFoundAccessGroups(
                 $authorizationRule["access_group_id"],
                 $foundAccessGroups
             );
@@ -191,13 +189,14 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Get AccessGroup corresponding to the id from the request
+     * Compare the access group id sent in request with Access groups from database
+     * Return the access group that have the same id than the access group id from the request
      *
-     * @param int $accessGroupIdFromRequest
-     * @param AccessGroup[] $foundAccessGroups
+     * @param int $accessGroupIdFromRequest Access group id sent in the request
+     * @param AccessGroup[] $foundAccessGroups Access groups found in data storage
      * @return AccessGroup|null
      */
-    private function getAccessGroupFromFoundAccessGroups(
+    private function findAccessGroupFromFoundAccessGroups(
         int $accessGroupIdFromRequest,
         array $foundAccessGroups
     ): ?AccessGroup {

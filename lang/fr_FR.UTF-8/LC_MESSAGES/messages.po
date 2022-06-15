@@ -16867,5 +16867,5 @@ msgstr "Date de fin de licence :"
 msgid "License expired"
 msgstr "Licence expirée"
 
-msgid "The contact group #%d doesn't exist"
-msgstr "Le groupe de contact #%d n'existe pas"
+msgid "The contact group id #%d doesn't exist"
+msgstr "L'id de groupe de contact #%d n'existe pas"

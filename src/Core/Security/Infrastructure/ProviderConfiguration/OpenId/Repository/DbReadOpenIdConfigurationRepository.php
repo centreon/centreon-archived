@@ -79,10 +79,12 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 __DIR__ . '/CustomConfigurationSchema.json',
             );
             $customConfiguration = json_decode($result['custom_configuration'], true);
-            $customConfiguration['contact_template'] = $this->getContactTemplate(
-                $customConfiguration['contact_template_id']
-            );
-            $customConfiguration['contact_group'] = $this->getContactGroup($customConfiguration['contact_group_id']);
+            $customConfiguration['contact_template'] = $customConfiguration['contact_template_id'] !== null
+                ? $this->getContactTemplate($customConfiguration['contact_template_id'])
+                : null;
+            $customConfiguration['contact_group'] = $customConfiguration['contact_group_id'] !== null
+                ? $this->getContactGroup($customConfiguration['contact_group_id'])
+                : null;
             $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByProviderId((int) $result["id"]);
             $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
         }
@@ -93,15 +95,12 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * Get Contact Template
      *
-     * @param int|null $contactTemplateId
+     * @param int $contactTemplateId
      * @return ContactTemplate|null
      * @throws \Throwable
      */
-    private function getContactTemplate(?int $contactTemplateId): ?ContactTemplate
+    private function getContactTemplate(int $contactTemplateId): ?ContactTemplate
     {
-        if ($contactTemplateId === null) {
-            return null;
-        }
 
         $statement = $this->db->prepare(
             "SELECT
@@ -126,15 +125,12 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * Get Contact Group
      *
-     * @param int|null $contactGroupId
+     * @param int $contactGroupId
      * @return ContactGroup|null
      * @throws \Throwable
      */
-    private function getContactGroup(?int $contactGroupId): ?ContactGroup
+    private function getContactGroup(int $contactGroupId): ?ContactGroup
     {
-        if ($contactGroupId === null) {
-            return null;
-        }
 
         $statement = $this->db->prepare(
             "SELECT
