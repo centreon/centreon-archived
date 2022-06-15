@@ -54,6 +54,7 @@ class UpdateOpenIdConfiguration
      * @param ReadContactTemplateRepositoryInterface $contactTemplateRepository
      * @param ReadContactGroupRepositoryInterface $contactGroupRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
+     * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
         private WriteOpenIdConfigurationRepositoryInterface $repository,
