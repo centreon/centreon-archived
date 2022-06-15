@@ -386,6 +386,7 @@ const UserMenu = (): JSX.Element => {
                     {allowEditProfile && (
                       <ListItem disableGutters disablePadding>
                         <ListItemButton
+                          className={classes.button}
                           onClick={navigateToUserSettingsAndCloseUserMenu}
                         >
                           <ListItemIcon className={classes.icon}>
