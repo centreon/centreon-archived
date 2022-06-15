@@ -9,7 +9,7 @@
 /.snyk				@centreon/centreon-security
 /sonar-project.properties	@centreon/centreon-security
 
-*.po            @centreon/centreon-technical-writer
+*.po            @centreon/centreon-documentation
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php
