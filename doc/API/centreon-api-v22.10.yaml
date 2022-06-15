@@ -1611,17 +1611,52 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/severities:
+  /monitoring/severities/service:
     get:
       tags:
         - Severity
-      summary: "List all severities from the realtime"
+      summary: "List all service severities from the realtime"
       description: |
-        List all the severities in real-time monitoring.
+        List all the service severities in real-time monitoring.
 
         The available parameters to **search** / **sort_by** are:
 
-        * id
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/severities/host:
+    get:
+      tags:
+        - Severity
+      summary: "List all host severities from the realtime"
+      description: |
+        List all the host severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
         * name
         * level
       parameters:
@@ -6428,6 +6463,11 @@ components:
           format: int64
           description: "Level defined for the severity"
           example: 50
+        type:
+          type: string
+          enum: [host, service]
+          description: "Type of the severity"
+          example: "host|service"
         icon:
           type: object
           properties:

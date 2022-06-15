@@ -18,31 +18,27 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Infrastructure\Repository;
+namespace Core\Severity\RealTime\Infrastructure\API\FindSeverity;
 
-use Core\Domain\RealTime\Model\Icon;
 use Core\Severity\RealTime\Domain\Model\Severity;
+use Centreon\Application\Controller\AbstractController;
+use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverity;
+use Core\Severity\RealTime\Application\UseCase\FindSeverity\FindSeverityPresenterInterface;
 
-class DbSeverityFactory
+class FindHostSeverityController extends AbstractController
 {
     /**
-     * @param array<string, mixed> $record
-     * @return Severity
+     * @param FindSeverity $useCase
+     * @param FindSeverityPresenterInterface $presenter
+     * @return object
      */
-    public static function createFromRecord(array $record): Severity
+    public function __invoke(FindSeverity $useCase, FindSeverityPresenterInterface $presenter): object
     {
-        $icon = (new Icon())
-            ->setName($record['icon_name'])
-            ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
-
-        return new Severity(
-            (int) $record['id'],
-            $record['name'],
-            (int) $record['level'],
-            (int) $record['type'],
-            $icon
-        );
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $useCase(Severity::HOST_SEVERITY_TYPE_ID, $presenter);
+        return $presenter->show();
     }
 }
