@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     padding: theme.spacing(0.5, 0, 0.5, 0),
   },
-  containerTime: {
+  timeContainer: {
     alignItems: 'center',
     display: 'flex',
     flexBasis: 'row',
