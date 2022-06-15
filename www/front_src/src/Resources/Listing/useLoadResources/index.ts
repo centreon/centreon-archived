@@ -65,7 +65,7 @@ const useLoadResources = (): LoadResources => {
   const { sendRequest, sending } = useRequest<ResourceListing>({
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
+      always(t(labelNoResourceFound)),
       pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
     ),
     request: listResources,
