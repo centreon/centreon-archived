@@ -1193,6 +1193,7 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
+        hostCategories: [],
         hostGroups: [],
         limit: 30,
         monitoringServers: [],
@@ -1208,6 +1209,7 @@ describe(Details, () => {
             },
           ],
         },
+        serviceCategories: [],
         serviceGroups: [],
         states: [],
         statusTypes: [],
