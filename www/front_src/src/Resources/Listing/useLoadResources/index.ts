@@ -44,7 +44,6 @@ import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../../translatedLabels';
-import ApiNotFoundMessage from '../ApiNotFoundMessage';
 import { ResourceDetails } from '../../Details/models';
 import {
   appliedFilterAtom,
