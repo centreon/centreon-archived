@@ -266,7 +266,7 @@ const UserMenu = (): JSX.Element => {
   };
 
   const capitalizeFirstLetter = (input: string | null): string => {
-    if (!input) {
+    if (isNil(input)) {
       return '';
     }
 
