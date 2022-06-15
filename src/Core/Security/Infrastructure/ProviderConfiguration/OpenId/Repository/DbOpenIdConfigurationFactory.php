@@ -102,6 +102,7 @@ class DbOpenIdConfigurationFactory
         array $customConfiguration
     ): NonActiveConfiguration {
         return (new NonActiveConfiguration())
+            ->setId((int) $record['id'])
             ->setAutoImportEnabled($customConfiguration['auto_import'] === '1')
             ->setClientId($customConfiguration['client_id'])
             ->setClientSecret($customConfiguration['client_secret'])
