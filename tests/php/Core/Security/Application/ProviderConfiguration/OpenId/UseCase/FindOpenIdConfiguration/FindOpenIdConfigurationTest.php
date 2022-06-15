@@ -32,8 +32,8 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
     FindOpenIdConfigurationResponse
 };
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);

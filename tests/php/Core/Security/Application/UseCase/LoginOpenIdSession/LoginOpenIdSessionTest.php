@@ -36,14 +36,13 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSession;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Security\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionRequest;
 use Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
