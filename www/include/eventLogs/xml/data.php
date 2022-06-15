@@ -172,6 +172,10 @@ $resourceController = $kernel->getContainer()->get(
     \Centreon\Application\Controller\MonitoringResourceController::class
 );
 
+// Start XML document root
+$buffer = new CentreonXML();
+$buffer->startElement("root");
+
 /*
  * Security check
  */
@@ -239,14 +243,14 @@ $start = 0;
 $end = time();
 
 if ($engine == "true") {
-    $ok = "false";//
-    $up = "false";//
-    $unknown = "false";//
-    $unreachable = "false";//
-    $down = "false";//
-    $warning = "false";//
-    $critical = "false";//
-    $oh = "false";//
+    $ok = "false";
+    $up = "false";
+    $unknown = "false";
+    $unreachable = "false";
+    $down = "false";
+    $warning = "false";
+    $critical = "false";
+    $oh = "false";
     $notification = "false";
     $alert = "false";
 }
@@ -335,9 +339,6 @@ $logs = array();
 /*
  * Print infos..
  */
-// Start XML document root
-$buffer = new CentreonXML();
-$buffer->startElement("root");
 $buffer->startElement("infos");
 $buffer->writeElement("opid", $openid);
 $buffer->writeElement("start", $start);
@@ -374,6 +375,9 @@ if ($error == 'true') {
     array_push($msg_type_set, "'4'");
 }
 
+$msg_req = '';
+$suffix_order = " ORDER BY ctime DESC ";
+
 $host_msg_status_set = array();
 if ($up == 'true') {
     array_push($host_msg_status_set, "'" . STATUS_UP . "'");
@@ -397,6 +401,107 @@ if ($critical == 'true') {
 }
 if ($unknown == 'true') {
     array_push($svc_msg_status_set, "'" . STATUS_UNKNOWN . "'");
+}
+
+$flag_begin = 0;
+
+$whereOutput = "";
+if (isset($output) && $output != "") {
+    $queryValues[':output'] = [\PDO::PARAM_STR => '%' . $output . '%'];
+    $whereOutput = " AND logs.output like :output ";
+}
+
+$innerJoinEngineLog = "";
+if ($engine == "true" && isset($openid) && $openid != "") {
+    // filtering poller ids and keeping only real ids
+    $pollerIds = explode(',', $openid);
+    $filteredIds = array_filter($pollerIds, function ($id) {
+        return is_numeric($id);
+    });
+
+    $pollerParams = [];
+    if (count($filteredIds) > 0) {
+        $in = '';
+        foreach ($filteredIds as $index => $filteredId) {
+            $key = ':pollerId' . $index;
+            $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
+            $pollerIds[] = $key;
+        }
+        $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
+            . ' AND i.instance_id IN ( ' . implode(',', array_values($pollerIds)) . ')';
+    }
+}
+
+if ($notification == 'true') {
+    if (count($host_msg_status_set)) {
+        $msg_req .= "(";
+        $flag_begin = 1;
+        $msg_req .= " (`msg_type` = '3' ";
+        $msg_req .= " AND `status` IN (" . implode(',', $host_msg_status_set) . "))";
+        $msg_req .= ") ";
+    }
+    if (count($svc_msg_status_set)) {
+        if ($flag_begin == 0) {
+            $msg_req .= "(";
+        } else {
+            $msg_req .= " OR ";
+        }
+        $msg_req .= " (`msg_type` = '2' ";
+        $msg_req .= " AND `status` IN (" . implode(',', $svc_msg_status_set) . "))";
+        if ($flag_begin == 0) {
+            $msg_req .= ") ";
+        }
+        $flag_begin = 1;
+    }
+}
+if ($alert == 'true') {
+    if (count($host_msg_status_set)) {
+        if ($flag_begin) {
+            $msg_req .= " OR ";
+        }
+        if ($oh == true) {
+            $msg_req .= " ( ";
+            $flag_oh = true;
+        }
+        $flag_begin = 1;
+        $msg_req .= " ((`msg_type` IN ('1', '10', '11') ";
+        $msg_req .= " AND `status` IN (" . implode(',', $host_msg_status_set) . ")) ";
+        $msg_req .= ") ";
+    }
+    if (count($svc_msg_status_set)) {
+        if ($flag_begin) {
+            $msg_req .= " OR ";
+        }
+        if ($oh == true && !isset($flag_oh)) {
+            $msg_req .= " ( ";
+        }
+        $flag_begin = 1;
+        $msg_req .= " ((`msg_type` IN ('0', '10', '11') ";
+        $msg_req .= " AND `status` IN (" . implode(',', $svc_msg_status_set) . ")) ";
+        $msg_req .= ") ";
+    }
+    if ($flag_begin) {
+        $msg_req .= ")";
+    }
+    if ((count($host_msg_status_set) || count($svc_msg_status_set)) && $oh == 'true') {
+        $msg_req .= " AND ";
+    }
+    if ($oh == 'true') {
+        $flag_begin = 1;
+        $msg_req .= " `type` = '" . TYPE_HARD . "' ";
+    }
+}
+// Error filter is only used in the engine log page.
+if ($error == 'true') {
+    if ($flag_begin == 0) {
+        $msg_req .= "AND ";
+    } else {
+        $msg_req .= " OR ";
+    }
+    $msg_req .= " `msg_type` IN ('4','5') ";
+}
+if ($flag_begin) {
+    $msg_req = " AND (" . $msg_req . ") ";
 }
 
 $tab_id = preg_split("/\,/", $openid);
@@ -464,43 +569,134 @@ foreach ($tab_id as $openid) {
     }
 }
 
-require_once _CENTREON_PATH_ . "www/include/eventLogs/xml/QueryGenerator.php";
+// Build final request
+$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
+        logs.ctime,
+        logs.host_id,
+        logs.host_name,
+        logs.service_id,
+        logs.service_description,
+        logs.msg_type,
+        logs.notification_cmd,
+        logs.notification_contact,
+        logs.output,
+        logs.retry,
+        logs.status,
+        logs.type,
+        logs.instance_name
+        FROM logs " . $innerJoinEngineLog
+    . (
+    !$is_admin ?
+        " INNER JOIN centreon_acl acl ON (logs.host_id = acl.host_id AND (acl.service_id IS NULL OR "
+        . " acl.service_id = logs.service_id)) "
+        . " WHERE acl.group_id IN (" . $access->getAccessGroupsString() . ") AND " :
+        "WHERE "
+    )
+    . " logs.ctime > '{$start}' AND logs.ctime <= '{$end}' {$whereOutput} {$msg_req}";
 
-$queryGenerator = new QueryGenerator($pearDBO);
-$queryGenerator->setIsAdmin($is_admin);
-$queryGenerator->setOpenid($openid);
-$queryGenerator->setOutput($output);
-$queryGenerator->setAccess($access);
-$queryGenerator->setStart($start);
-$queryGenerator->setEnd($end);
-$queryGenerator->setUp($up);
-$queryGenerator->setDown($down);
-$queryGenerator->setUnreachable($unreachable);
-$queryGenerator->setOk($ok);
-$queryGenerator->setWarning($warning);
-$queryGenerator->setCritical($critical);
-$queryGenerator->setUnreachable($unknown);
-$queryGenerator->setNotification($notification);
-$queryGenerator->setAlert($alert);
-$queryGenerator->setError($error);
-$queryGenerator->setOh($oh);
-$queryGenerator->setHostMsgStatusSet($host_msg_status_set);
-$queryGenerator->setSvcMsgStatusSet($svc_msg_status_set);
-$queryGenerator->setTabHostIds($tab_host_ids);
-$queryGenerator->setSearchHost($search_host);
-$queryGenerator->setTabSvc($tab_svc);
-$queryGenerator->setSearchService($search_service);
-$queryGenerator->setEngine($engine);
-$queryGenerator->setExport($export);
-$queryGenerator->setNum($num);
-$queryGenerator->setLimit($limit);
+/*
+ * Add Host
+ */
+$str_unitH = "";
+$str_unitH_append = "";
+$host_search_sql = "";
+if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
+    if ($engine == "false") {
+        $req .= " AND `msg_type` NOT IN ('4','5') ";
+        $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
+    }
+} else {
+    foreach ($tab_host_ids as $host_id) {
+        if ($host_id != "") {
+            $str_unitH .= $str_unitH_append . "'$host_id'";
+            $str_unitH_append = ", ";
+        }
+    }
+    if ($str_unitH != "") {
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND (logs.service_id IS NULL OR logs.service_id = 0))";
+        if (isset($search_host) && $search_host != "") {
+            $host_search_sql = " AND logs.host_name LIKE '%" . $pearDBO->escape($search_host) . "%' ";
+        }
+    }
 
-$stmt = $queryGenerator->getStatement();
+    /*
+     * Add services
+     */
+    $flag = 0;
+    $str_unitSVC = "";
+    $service_search_sql = "";
+    if (
+        (count($tab_svc) || count($tab_host_ids)) &&
+        (
+            $up == 'true' ||
+            $down == 'true' ||
+            $unreachable == 'true' ||
+            $ok == 'true' || $warning == 'true' ||
+            $critical == 'true' ||
+            $unknown == 'true'
+        )
+    ) {
+        $req_append = "";
+        foreach ($tab_svc as $host_id => $services) {
+            $str = "";
+            $str_append = "";
+            foreach ($services as $svc_id => $svc_name) {
+                if ($svc_id != "") {
+                    $str .= $str_append . $svc_id;
+                    $str_append = ", ";
+                }
+            }
+            if ($str != "") {
+                if ($host_id === '_Module_Meta') {
+                    $str_unitSVC .= $req_append . " (logs.host_name = '" . $host_id . "' "
+                        . "AND logs.service_id IN (" . $str . ")) ";
+                } else {
+                    $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                }
+                $req_append = " OR";
+            }
+        }
+        if (isset($search_service) && $search_service != "") {
+            $service_search_sql = " AND logs.service_description LIKE '%" . $pearDBO->escape($search_service) . "%' ";
+        }
+        if ($str_unitH != "" && $str_unitSVC != "") {
+            $str_unitSVC = " OR " . $str_unitSVC;
+        }
+        if ($str_unitH != "" || $str_unitSVC != "") {
+            $req .= " AND (" . $str_unitH . $str_unitSVC . ")";
+        }
+    } else {
+        $req .= "AND 0 ";
+    }
+    $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
+    $req .= $host_search_sql . $service_search_sql;
+}
 
 /*
  * calculate size before limit for pagination
  */
-if ($stmt instanceof PDOStatement) {
+if (isset($req) && $req) {
+    /*
+     * Add Suffix for order
+     */
+    $req .= $suffix_order;
+    if ($num < 0) {
+        $num = 0;
+    }
+
+    $limitReq = "";
+    if ($export !== "1") {
+        $offset = $num * $limit;
+        $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
+        $limitReq = " LIMIT :offset, :limit";
+    }
+    $stmt = $pearDBO->prepare($req . $limitReq);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $stmt->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
     $stmt->execute();
 
     if (!($stmt->rowCount()) && ($num != 0)) {

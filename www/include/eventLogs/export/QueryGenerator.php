@@ -50,7 +50,7 @@ class QueryGenerator
     private string $searchService = '';
     private string $engine;
     private string|int $export;
-    private ?int $num;
+    private int $num = 0;
     private ?int $limit;
 
     public function __construct(private CentreonDB $pearDBO)
@@ -182,7 +182,7 @@ class QueryGenerator
         $this->export = $export;
     }
 
-    public function setNum(?int $num): void
+    public function setNum(int $num): void
     {
         $this->num = $num;
     }
@@ -314,7 +314,7 @@ class QueryGenerator
             $req .= $host_search_sql . $service_search_sql . ' ORDER BY ctime DESC ';
         }
 
-        $limit = ($this->export !== "1") ? $this->generateLimit() : '';
+        $limit = ($this->export !== "1" && $this->num) ? $this->generateLimit() : '';
 
         $req .= $limit;
 
