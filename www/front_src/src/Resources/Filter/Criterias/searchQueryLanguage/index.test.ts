@@ -6,7 +6,7 @@ import { selectableResourceTypes, selectableStatuses } from '../models';
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers monitoring_server:Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers host_category:Linux monitoring_server:Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -48,6 +48,20 @@ const parsedSearch = [
   {
     name: 'service_groups',
     object_type: 'service_groups',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    isOptimizedModeEnabled: true,
+    name: 'host_categories',
+    object_type: 'host_categories',
+    type: 'multi_select',
+    value: [{ id: 0, name: 'Linux' }],
+  },
+  {
+    isOptimizedModeEnabled: true,
+    name: 'service_categories',
+    object_type: 'service_categories',
     type: 'multi_select',
     value: [],
   },
@@ -125,6 +139,16 @@ describe(getAutocompleteSuggestions, () => {
       cursorPosition: 11,
       expectedResult: [],
       inputSearch: 'host_group:',
+    },
+    {
+      cursorPosition: 18,
+      expectedResult: [],
+      inputSearch: 'service_categorie:',
+    },
+    {
+      cursorPosition: 15,
+      expectedResult: [],
+      inputSearch: 'host_categorie:',
     },
     {
       cursorPosition: 19,

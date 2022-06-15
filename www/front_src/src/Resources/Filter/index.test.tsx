@@ -32,6 +32,8 @@ import {
   labelStatusType,
   labelSoft,
   labelType,
+  labelHostCategory,
+  labelServiceCategory,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
@@ -76,6 +78,16 @@ const linuxServersHostGroup = {
 const webAccessServiceGroup = {
   id: 0,
   name: 'Web-access',
+};
+
+const linuxHostCategory = {
+  id: 0,
+  name: 'Linux',
+};
+
+const webAccessServiceCategory = {
+  id: 0,
+  name: 'web-access',
 };
 
 type FilterParameter = [
@@ -130,6 +142,42 @@ const filterParams: Array<FilterParameter> = [
     },
   ],
   [
+    labelServiceCategory,
+    webAccessServiceCategory.name,
+    {
+      serviceGroups: [webAccessServiceCategory.name],
+    },
+    (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+          result: [webAccessServiceCategory],
+        },
+      });
+    },
+  ],
+  [
+    labelHostCategory,
+    linuxHostCategory.name,
+    {
+      hostGroups: [linuxHostCategory.name],
+    },
+    (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+          result: [linuxHostCategory],
+        },
+      });
+    },
+  ],
+  [
     labelServiceGroup,
     webAccessServiceGroup.name,
     {
@@ -169,6 +217,16 @@ const filter = {
       name: 'service_groups',
       object_type: 'service_groups',
       value: [webAccessServiceGroup],
+    },
+    {
+      name: 'host_categories',
+      object_type: 'host_categories',
+      value: [linuxHostCategory],
+    },
+    {
+      name: 'service_categories',
+      object_type: 'service_categories',
+      value: [webAccessServiceCategory],
     },
     { name: 'search', value: 'Search me' },
     { name: 'sort', value: [defaultSortField, defaultSortOrder] },
@@ -681,7 +739,7 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access host_category:Linux service_category:web-access Search me',
       );
 
       userEvent.click(
@@ -716,6 +774,24 @@ describe(Filter, () => {
       );
 
       expect(webAccessServiceGroupOption).toBeInTheDocument();
+
+      userEvent.click(getByText(labelHostCategory));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      const linuxServerCategory = await findByText(linuxHostCategory.name);
+
+      expect(linuxServerCategory).toBeInTheDocument();
+
+      act(() => {
+        fireEvent.click(getByText(labelServiceCategory));
+      });
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      const webAccessServiceCategoryOption = await findByText(
+        webAccessServiceCategory.name,
+      );
+      expect(webAccessServiceCategoryOption).toBeInTheDocument();
     });
 
     it('stores filter values in localStorage when updated', async () => {
@@ -809,6 +885,26 @@ describe(Filter, () => {
             },
             result: [webAccessServiceGroup],
           },
+        })
+        .mockResolvedValue({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [linuxHostCategory],
+          },
+        })
+        .mockResolvedValue({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceCategory],
+          },
         });
 
       const {
@@ -827,7 +923,7 @@ describe(Filter, () => {
       });
       expect(
         getByDisplayValue(
-          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
+          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access host_category:Linux service_category:web-access Search me',
         ),
       ).toBeInTheDocument();
 
