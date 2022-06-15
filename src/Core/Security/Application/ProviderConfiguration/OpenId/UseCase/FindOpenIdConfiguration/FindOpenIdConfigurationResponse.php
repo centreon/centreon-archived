@@ -177,7 +177,7 @@ class FindOpenIdConfigurationResponse
      * @param AuthorizationRule[] $authorizationRules
      * @return array<array{claim_value: string, access_group:array{id: int, name: string}}>
      */
-    public static function AuthorizationRulesToArray(array $authorizationRules): array
+    public static function authorizationRulesToArray(array $authorizationRules): array
     {
         return array_map(function (AuthorizationRule $authorizationRule) {
             return [
