@@ -59,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     padding: theme.spacing(0.5, 0, 0.5, 0),
   },
-  timeContainer: {
-    alignItems: 'center',
-    display: 'flex',
-    flexBasis: 'row',
-  },
   date: {
     display: 'flex',
+  },
+  dateLabel: {
+    display: 'flex',
+    flex: 1,
+    paddingRight: 4,
   },
   error: {
     textAlign: 'center',
@@ -75,11 +75,6 @@ const useStyles = makeStyles((theme) => ({
     columnGap: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
-  },
-  dateLabel: {
-    display: 'flex',
-    flex: 1,
-    paddingRight: 4,
   },
   minimalFromTo: {
     display: 'grid',
@@ -110,6 +105,11 @@ const useStyles = makeStyles((theme) => ({
     justifyItems: 'center',
     padding: theme.spacing(1, 2),
     rowGap: theme.spacing(1),
+  },
+  timeContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
 }));
 
@@ -197,8 +197,8 @@ const CustomTimePeriodPickers = ({
           <div
             className={isMinimalWidth ? classes.compactFromTo : classes.fromTo}
           >
-            <div className={classes.containerTime}>
-              <div className={classes.labelDate}>
+            <div className={classes.timeContainer}>
+              <div className={classes.dateLabel}>
                 <Typography variant="caption">{t(labelFrom)}:</Typography>
               </div>
               <div className={classes.date}>
@@ -210,8 +210,8 @@ const CustomTimePeriodPickers = ({
                 </Typography>
               </div>
             </div>
-            <div className={classes.containerTime}>
-              <div className={classes.labelDate}>
+            <div className={classes.timeContainer}>
+              <div className={classes.dateLabel}>
                 <Typography variant="caption">{t(labelTo)}:</Typography>
               </div>
               <div className={classes.date}>
