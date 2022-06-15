@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
   },
-  labelDate: {
+  dateLabel: {
     display: 'flex',
     flex: 1,
     paddingRight: 4,
