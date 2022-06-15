@@ -6417,6 +6417,7 @@ components:
           example: 50
         type:
           type: string
+          enum: [host, service]
           description: "Type of the severity"
           example: "host|service"
         icon:
