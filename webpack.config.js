@@ -2,6 +2,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const getBaseConfiguration = require('centreon-frontend/packages/frontend-config/webpack/base');
 
@@ -37,6 +38,9 @@ module.exports = (jscTransformConfiguration) =>
         publicPath: './static/',
       },
       plugins: [
+        new webpack.ProvidePlugin({
+          process: 'process/browser',
+        }),
         new HtmlWebpackPlugin({
           alwaysWriteToDisk: true,
           filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
