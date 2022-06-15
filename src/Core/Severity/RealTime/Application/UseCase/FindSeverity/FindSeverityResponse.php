@@ -54,6 +54,7 @@ class FindSeverityResponse
                 'id' => $severity->getId(),
                 'name' => $severity->getName(),
                 'level' => $severity->getLevel(),
+                'type' => $severity->getTypeAsString(),
                 'icon' => $this->iconToArray($severity->getIcon()),
             ],
             $severities
