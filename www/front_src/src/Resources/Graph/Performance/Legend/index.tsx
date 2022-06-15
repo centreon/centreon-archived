@@ -322,7 +322,7 @@ const LegendContent = ({
                       component="p"
                       variant="caption"
                     >
-                      {!isEmpty(line?.unit) ? `(${line.unit})` : null}
+                      {!isEmpty(line?.unit) && `(${line.unit})`}
                     </Typography>
                   </div>
                   {formattedValue ? (
