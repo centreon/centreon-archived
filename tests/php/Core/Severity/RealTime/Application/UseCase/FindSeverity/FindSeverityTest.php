@@ -40,11 +40,12 @@ it('should present an ErrorResponse when an exception is thrown', function () {
     $useCase = new FindSeverity($this->repository);
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllByTypeId')
+        ->with(Severity::HOST_SEVERITY_TYPE_ID)
         ->willThrowException(new \Exception());
 
     $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
-    $useCase($presenter);
+    $useCase(Severity::HOST_SEVERITY_TYPE_ID, $presenter);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class)
         ->and($presenter->getResponseStatus()?->getMessage())
@@ -58,15 +59,15 @@ it('should present a FindSeverityResponse', function () {
         ->setName('icon-name')
         ->setUrl('ppm/icon-name.png');
 
-    $severity = new Severity(1, 'name', 50, $icon);
+    $severity = new Severity(1, 'name', 50, Severity::HOST_SEVERITY_TYPE_ID, $icon);
 
     $this->repository
         ->expects($this->once())
-        ->method('findAll')
+        ->method('findAllByTypeId')
         ->willReturn([$severity]);
 
     $presenter = new FindSeverityPresenterStub($this->presenterFormatter);
-    $useCase($presenter);
+    $useCase(Severity::HOST_SEVERITY_TYPE_ID, $presenter);
     expect($presenter->response)
         ->toBeInstanceOf(FindSeverityResponse::class)
         ->and($presenter->response->severities[0])->toBe(
@@ -74,6 +75,7 @@ it('should present a FindSeverityResponse', function () {
                 'id' => 1,
                 'name' => 'name',
                 'level' => 50,
+                'type' => 'host',
                 'icon' => [
                     'name' => 'icon-name',
                     'url' => 'ppm/icon-name.png'
