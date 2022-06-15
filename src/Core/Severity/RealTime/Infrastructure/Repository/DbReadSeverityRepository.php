@@ -38,6 +38,10 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
      */
     private SqlRequestParametersTranslator $sqlRequestTranslator;
 
+    /**
+     * @param DatabaseConnection $db
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     */
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
