@@ -76,6 +76,7 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
   labelNotificationStatus,
+  labelCategory,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -685,6 +686,8 @@ describe(Details, () => {
 
     expect(getByText(labelGroups)).toBeInTheDocument();
     expect(getByText('Linux-servers')).toBeInTheDocument();
+    expect(getByText(labelCategory)).toBeInTheDocument();
+    expect(getByText('Windows')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
@@ -696,8 +699,6 @@ describe(Details, () => {
     expect(getByText(labelCommand)).toBeInTheDocument();
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
-  expect(getByText(labelCategory)).toBeInTheDocument();
-  expect(getByText('Windows')).toBeInTheDocument();
 
   it.each([
     [label1Day, '2020-01-20T06:00:00.000Z', 20],
