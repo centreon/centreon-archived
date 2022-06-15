@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
-use Centreon\Domain\Common\Assertion\AssertionException;
+use Assert\AssertionFailedException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
@@ -85,7 +85,7 @@ class UpdateOpenIdConfiguration
                 $authorizationRules
             );
             $this->updateConfiguration($configuration);
-        } catch (AssertionException | OpenIdConfigurationException $ex) {
+        } catch (AssertionFailedException | OpenIdConfigurationException $ex) {
             $this->error(
                 'Unable to create OpenID Configuration because one or several parameters are invalid',
                 ['trace' => $ex->getTraceAsString()]
