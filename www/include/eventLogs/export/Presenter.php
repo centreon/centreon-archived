@@ -27,10 +27,16 @@ class Presenter
 
     private array $heads = [];
     private iterable $logs;
+    private array $metaData;
 
     public function setHeads(array $heads): void
     {
         $this->heads = $heads;
+    }
+
+    public function setMetaData(array $metaData): void
+    {
+        $this->metaData = $metaData;
     }
 
     public function setLogs(iterable $logs): void
@@ -46,6 +52,11 @@ class Presenter
         header("Pragma: public");
 
         $f = fopen('php://output', 'w');
+
+        //print meta data
+        foreach ($this->metaData as $metaData) {
+            fputcsv($f, $metaData, self::DELIMITER);
+        }
 
         //print heads
         fputcsv($f, $this->heads, self::DELIMITER);
