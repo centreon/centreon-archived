@@ -41,7 +41,7 @@ use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenId
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 class LoginOpenIdSession
 {
@@ -150,7 +150,7 @@ class LoginOpenIdSession
         $this->debug(
             "[AUTHENTICATE] Authentication success",
             [
-                "provider_name" => AbstractConfiguration::NAME,
+                "provider_name" => Configuration::NAME,
                 "contact_id" => $user->getId(),
                 "contact_alias" => $user->getAlias()
             ]

@@ -31,10 +31,8 @@ use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Contact\Domain\Model\ContactGroup;
-use Core\Security\Domain\ProviderConfiguration\OpenId\{
-    Model\OpenIdConfigurationFactory,
-    Exceptions\OpenIdConfigurationException
-};
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\Application\ProviderConfiguration\OpenId\Builder\ConfigurationBuilder;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfigurationErrorResponse
@@ -42,7 +40,7 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 class UpdateOpenIdConfiguration
@@ -80,7 +78,7 @@ class UpdateOpenIdConfiguration
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
             $authorizationRules = $this->createAuthorizationRules($request->authorizationRules);
-            $configuration = OpenIdConfigurationFactory::create(
+            $configuration = ConfigurationBuilder::createConfigurationFromRequest(
                 $request,
                 $contactTemplate,
                 $contactGroup,
@@ -89,7 +87,7 @@ class UpdateOpenIdConfiguration
             $this->updateConfiguration($configuration);
         } catch (AssertionException | OpenIdConfigurationException $ex) {
             $this->error(
-                'Unable to create OpenID Configuration because one or many parameters are invalid',
+                'Unable to create OpenID Configuration because one or several parameters are invalid',
                 ['trace' => $ex->getTraceAsString()]
             );
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
@@ -227,10 +225,10 @@ class UpdateOpenIdConfiguration
     /**
      * Update OpenId Configuration
      *
-     * @param AbstractConfiguration $configuration
+     * @param Configuration $configuration
      * @throws \Throwable
      */
-    private function updateConfiguration(AbstractConfiguration $configuration): void
+    private function updateConfiguration(Configuration $configuration): void
     {
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
         try {

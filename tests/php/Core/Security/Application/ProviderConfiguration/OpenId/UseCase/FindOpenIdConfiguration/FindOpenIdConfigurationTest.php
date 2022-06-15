@@ -33,7 +33,7 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
 };
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\ActiveConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -41,28 +41,26 @@ beforeEach(function () {
 });
 
 it('should present a provider configuration', function () {
-        $configuration = new ActiveConfiguration(
-            false,
-            'MyCl1ientId',
-            'MyCl1ientSuperSecr3tKey',
-            'http://127.0.0.1/auth/openid-connect',
-            '/authorization',
-            '/token',
-            '/introspect',
-            '/userinfo',
-            new ContactGroup(1, 'contact_group'),
-            new ContactTemplate(1, 'contact_template'),
-        );
-
-        $configuration
+        $configuration = (new Configuration())
+            ->setActive(true)
             ->setForced(true)
+            ->setVerifyPeer(false)
             ->setTrustedClientAddresses([])
             ->setBlacklistClientAddresses([])
+            ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
+            ->setAuthorizationEndpoint('/authorization')
+            ->setTokenEndpoint('/token')
+            ->setIntrospectionTokenEndpoint('/introspect')
+            ->setUserInformationEndpoint('/userinfo')
             ->setEndSessionEndpoint('/logout')
             ->setConnectionScopes([])
             ->setLoginClaim('preferred_username')
+            ->setClientId('MyCl1ientId')
+            ->setClientSecret('MyCl1ientSuperSecr3tKey')
             ->setAuthenticationType('client_secret_post')
-            ->setVerifyPeer(false);
+            ->setContactTemplate(new ContactTemplate(1, 'contact_template'))
+            ->setAutoImportEnabled(false)
+            ->setContactGroup(new ContactGroup(1, 'contact_group'));
 
         $useCase = new FindOpenIdConfiguration($this->repository);
         $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);

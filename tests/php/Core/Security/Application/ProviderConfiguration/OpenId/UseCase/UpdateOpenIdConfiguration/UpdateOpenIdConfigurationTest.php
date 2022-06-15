@@ -36,6 +36,7 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 };
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Contact\Domain\Model\ContactGroup;
+use Core\Security\Application\ProviderConfiguration\OpenId\Builder\ConfigurationBuilder;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
@@ -73,7 +74,7 @@ it('should present a NoContentResponse when the use case is executed correctly',
 
     $contactGroup = new ContactGroup(1, 'contact_group');
 
-    $openIdConfiguration = OpenIdConfigurationFactory::create($request, null, $contactGroup);
+    $openIdConfiguration = ConfigurationBuilder::createConfigurationFromRequest($request, null, $contactGroup, []);
 
     $this->repository
         ->expects($this->once())

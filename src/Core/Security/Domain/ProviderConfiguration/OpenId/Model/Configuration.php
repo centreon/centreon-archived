@@ -28,136 +28,136 @@ use Core\Contact\Domain\Model\ContactTemplate;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-abstract class AbstractConfiguration implements ProviderConfigurationInterface
+class Configuration implements ProviderConfigurationInterface
 {
-    public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+    public const DEFAULT_LOGIN_CLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
     public const TYPE = 'openid';
     public const NAME = 'openid';
     public const DEFAULT_CLAIM_NAME = "groups";
 
-    protected ?string $claimName = self::DEFAULT_CLAIM_NAME;
+    private ?string $claimName = self::DEFAULT_CLAIM_NAME;
 
     /**
      * @var int|null
      */
-    protected ?int $id = null;
+    private ?int $id = null;
 
     /**
      * @var bool
      */
-    protected bool $isForced = false;
+    private bool $isForced = false;
 
     /**
      * @var string[]
      */
-    protected array $trustedClientAddresses = [];
+    private array $trustedClientAddresses = [];
 
     /**
      * @var string[]
      */
-    protected array $blacklistClientAddresses = [];
+    private array $blacklistClientAddresses = [];
 
     /**
      * @var string|null
      */
-    protected ?string $endSessionEndpoint = null;
+    private ?string $endSessionEndpoint = null;
 
     /**
      * @var string[]
      */
-    protected array $connectionScopes = [];
+    private array $connectionScopes = [];
 
     /**
      * @var string|null
      */
-    protected ?string $loginClaim = null;
+    private ?string $loginClaim = null;
 
     /**
      * @var string|null
      */
-    protected ?string $authenticationType = null;
+    private ?string $authenticationType = null;
 
     /**
      * @var bool
      */
-    protected bool $verifyPeer = false;
+    private bool $verifyPeer = false;
 
     /**
      * @var array<AuthorizationRule>
      */
-    protected array $authorizationRules = [];
+    private array $authorizationRules = [];
 
     /**
      * @var boolean
      */
-    protected bool $isAutoImportEnabled;
+    private bool $isAutoImportEnabled = false;
 
     /**
      * @var bool
      */
-    protected bool $isActive = false;
+    private bool $isActive = false;
 
     /**
      * @var string|null
      */
-    protected ?string $clientId = null;
+    private ?string $clientId = null;
 
     /**
      * @var string|null
      */
-    protected ?string $clientSecret = null;
+    private ?string $clientSecret = null;
 
     /**
      * @var string|null
      */
-    protected ?string $baseUrl = null;
+    private ?string $baseUrl = null;
 
     /**
      * @var string|null
      */
-    protected ?string $authorizationEndpoint = null;
+    private ?string $authorizationEndpoint = null;
 
     /**
      * @var string|null
      */
-    protected ?string $tokenEndpoint = null;
+    private ?string $tokenEndpoint = null;
 
     /**
      * @var string|null
      */
-    protected ?string $introspectionTokenEndpoint = null;
+    private ?string $introspectionTokenEndpoint = null;
 
     /**
      * @var string|null
      */
-    protected ?string $userInformationEndpoint = null;
+    private ?string $userInformationEndpoint = null;
 
     /**
      * @var ContactTemplate|null
      */
-    protected ?ContactTemplate $contactTemplate = null;
+    private ?ContactTemplate $contactTemplate = null;
 
     /**
      * @var string|null
      */
-    protected ?string $emailBindAttribute = null;
+    private ?string $emailBindAttribute = null;
 
     /**
      * @var string|null
      */
-    protected ?string $userAliasBindAttribute = null;
+    private ?string $userAliasBindAttribute = null;
 
     /**
      * @var string|null
      */
-    protected ?string $userNameBindAttribute = null;
+    private ?string $userNameBindAttribute = null;
 
     /**
      * @var ContactGroup|null
      */
-    protected ?ContactGroup $contactGroup = null;
+    private ?ContactGroup $contactGroup = null;
 
     /**
      * @return int|null
@@ -353,9 +353,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
         /**
      * @param int|null $id
-     * @return static
+     * @return self
      */
-    public function setId(?int $id): static
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -364,9 +364,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param bool $isForced
-     * @return static
+     * @return self
      */
-    public function setForced(bool $isForced): static
+    public function setForced(bool $isForced): self
     {
         $this->isForced = $isForced;
 
@@ -375,10 +375,10 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string[] $trustedClientAddresses
-     * @return static
+     * @return self
      * @throws AssertionException
      */
-    public function setTrustedClientAddresses(array $trustedClientAddresses): static
+    public function setTrustedClientAddresses(array $trustedClientAddresses): self
     {
         $this->trustedClientAddresses = [];
         foreach ($trustedClientAddresses as $trustedClientAddress) {
@@ -390,10 +390,10 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string $trustedClientAddress
-     * @return static
+     * @return self
      * @throws AssertionException
      */
-    public function addTrustedClientAddress(string $trustedClientAddress): static
+    public function addTrustedClientAddress(string $trustedClientAddress): self
     {
         $this->validateClientAddressOrFail($trustedClientAddress, 'trustedClientAddresses');
         $this->trustedClientAddresses[] = $trustedClientAddress;
@@ -403,10 +403,10 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string[] $blacklistClientAddresses
-     * @return static
+     * @return self
      * @throws AssertionException
      */
-    public function setBlacklistClientAddresses(array $blacklistClientAddresses): static
+    public function setBlacklistClientAddresses(array $blacklistClientAddresses): self
     {
         $this->blacklistClientAddresses = [];
         foreach ($blacklistClientAddresses as $blacklistClientAddress) {
@@ -418,10 +418,10 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string $blacklistClientAddress
-     * @return static
+     * @return self
      * @throws AssertionException
      */
-    public function addBlacklistClientAddress(string $blacklistClientAddress): static
+    public function addBlacklistClientAddress(string $blacklistClientAddress): self
     {
         $this->validateClientAddressOrFail($blacklistClientAddress, 'blacklistClientAddresses');
         $this->blacklistClientAddresses[] = $blacklistClientAddress;
@@ -449,9 +449,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $baseUrl
-     * @return static
+     * @return self
      */
-    public function setBaseUrl(?string $baseUrl): static
+    public function setBaseUrl(?string $baseUrl): self
     {
         $this->baseUrl = $baseUrl;
 
@@ -460,9 +460,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $authorizationEndpoint
-     * @return static
+     * @return self
      */
-    public function setAuthorizationEndpoint(?string $authorizationEndpoint): static
+    public function setAuthorizationEndpoint(?string $authorizationEndpoint): self
     {
         $this->authorizationEndpoint = $authorizationEndpoint;
 
@@ -471,9 +471,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $tokenEndpoint
-     * @return static
+     * @return self
      */
-    public function setTokenEndpoint(?string $tokenEndpoint): static
+    public function setTokenEndpoint(?string $tokenEndpoint): self
     {
         $this->tokenEndpoint = $tokenEndpoint;
 
@@ -482,9 +482,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $introspectionTokenEndpoint
-     * @return static
+     * @return self
      */
-    public function setIntrospectionTokenEndpoint(?string $introspectionTokenEndpoint): static
+    public function setIntrospectionTokenEndpoint(?string $introspectionTokenEndpoint): self
     {
         $this->introspectionTokenEndpoint = $introspectionTokenEndpoint;
 
@@ -493,9 +493,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $userInformationEndpoint
-     * @return static
+     * @return self
      */
-    public function setUserInformationEndpoint(?string $userInformationEndpoint): static
+    public function setUserInformationEndpoint(?string $userInformationEndpoint): self
     {
         $this->userInformationEndpoint = $userInformationEndpoint;
 
@@ -504,9 +504,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $endSessionEndpoint
-     * @return static
+     * @return self
      */
-    public function setEndSessionEndpoint(?string $endSessionEndpoint): static
+    public function setEndSessionEndpoint(?string $endSessionEndpoint): self
     {
         $this->endSessionEndpoint = $endSessionEndpoint;
 
@@ -515,9 +515,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string[] $connectionScopes
-     * @return static
+     * @return self
      */
-    public function setConnectionScopes(array $connectionScopes): static
+    public function setConnectionScopes(array $connectionScopes): self
     {
         $this->connectionScopes = [];
         foreach ($connectionScopes as $connectionScope) {
@@ -529,9 +529,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string $connectionScope
-     * @return static
+     * @return self
      */
-    public function addConnectionScope(string $connectionScope): static
+    public function addConnectionScope(string $connectionScope): self
     {
         $this->connectionScopes[] = $connectionScope;
 
@@ -540,9 +540,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $loginClaim
-     * @return static
+     * @return self
      */
-    public function setLoginClaim(?string $loginClaim): static
+    public function setLoginClaim(?string $loginClaim): self
     {
         $this->loginClaim = $loginClaim;
 
@@ -551,9 +551,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $clientId
-     * @return static
+     * @return self
      */
-    public function setClientId(?string $clientId): static
+    public function setClientId(?string $clientId): self
     {
         $this->clientId = $clientId;
 
@@ -562,9 +562,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $clientSecret
-     * @return static
+     * @return self
      */
-    public function setClientSecret(?string $clientSecret): static
+    public function setClientSecret(?string $clientSecret): self
     {
         $this->clientSecret = $clientSecret;
 
@@ -573,9 +573,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $authenticationType
-     * @return static
+     * @return self
      */
-    public function setAuthenticationType(?string $authenticationType): static
+    public function setAuthenticationType(?string $authenticationType): self
     {
         $this->authenticationType = $authenticationType;
 
@@ -584,9 +584,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param bool $verifyPeer
-     * @return static
+     * @return self
      */
-    public function setVerifyPeer(bool $verifyPeer): static
+    public function setVerifyPeer(bool $verifyPeer): self
     {
         $this->verifyPeer = $verifyPeer;
 
@@ -595,9 +595,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param boolean $isAutoImportEnabled
-     * @return static
+     * @return self
      */
-    public function setAutoImportEnabled(bool $isAutoImportEnabled): static
+    public function setAutoImportEnabled(bool $isAutoImportEnabled): self
     {
         $this->isAutoImportEnabled = $isAutoImportEnabled;
 
@@ -606,9 +606,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param ContactTemplate|null $contactTemplate
-     * @return static
+     * @return self
      */
-    public function setContactTemplate(?ContactTemplate $contactTemplate): static
+    public function setContactTemplate(?ContactTemplate $contactTemplate): self
     {
         $this->contactTemplate = $contactTemplate;
 
@@ -617,9 +617,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $emailBindAttribute
-     * @return static
+     * @return self
      */
-    public function setEmailBindAttribute(?string $emailBindAttribute): static
+    public function setEmailBindAttribute(?string $emailBindAttribute): self
     {
         $this->emailBindAttribute = $emailBindAttribute;
 
@@ -628,9 +628,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $userAliasBindAttribute
-     * @return static
+     * @return self
      */
-    public function setUserAliasBindAttribute(?string $userAliasBindAttribute): static
+    public function setUserAliasBindAttribute(?string $userAliasBindAttribute): self
     {
         $this->userAliasBindAttribute = $userAliasBindAttribute;
 
@@ -639,9 +639,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $userNameBindAttribute
-     * @return static
+     * @return self
      */
-    public function setUserNameBindAttribute(?string $userNameBindAttribute): static
+    public function setUserNameBindAttribute(?string $userNameBindAttribute): self
     {
         $this->userNameBindAttribute = $userNameBindAttribute;
 
@@ -650,10 +650,10 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param AuthorizationRule[] $authorizationRules
-     * @return static
+     * @return self
      * @throws \TypeError
      */
-    public function setAuthorizationRules(array $authorizationRules): static
+    public function setAuthorizationRules(array $authorizationRules): self
     {
         $this->authorizationRules = [];
         foreach ($authorizationRules as $authorizationRule) {
@@ -665,9 +665,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param AuthorizationRule $authorizationRule
-     * @return static
+     * @return self
      */
-    public function addAuthorizationRule(AuthorizationRule $authorizationRule): static
+    public function addAuthorizationRule(AuthorizationRule $authorizationRule): self
     {
         $this->authorizationRules[] = $authorizationRule;
 
@@ -676,9 +676,9 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param ContactGroup|null $contactGroup
-     * @return static
+     * @return self
      */
-    public function setContactGroup(?ContactGroup $contactGroup): static
+    public function setContactGroup(?ContactGroup $contactGroup): self
     {
         $this->contactGroup = $contactGroup;
 
@@ -695,11 +695,22 @@ abstract class AbstractConfiguration implements ProviderConfigurationInterface
 
     /**
      * @param string|null $claimName
-     * @return static
+     * @return self
      */
-    public function setClaimName(?string $claimName): static
+    public function setClaimName(?string $claimName): self
     {
         $this->claimName = $claimName;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $isActive
+     * @return self
+     */
+    public function setActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

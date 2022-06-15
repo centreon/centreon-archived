@@ -19,7 +19,7 @@
  *
  */
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 require_once __DIR__ . '/../../class/centreonLog.class.php';
 
@@ -85,7 +85,7 @@ function updateOpenIdConfiguration(CentreonDB $pearDB): void
         $openIdCustomConfiguration["alias_bind_attribute"] = null;
         $openIdCustomConfiguration["fullname_bind_attribute"] = null;
         $openIdCustomConfiguration["contact_group_id"] = $defaultContactGroupId;
-        $openIdCustomConfiguration["claim_name"] = AbstractConfiguration::DEFAULT_CLAIM_NAME;
+        $openIdCustomConfiguration["claim_name"] = Configuration::DEFAULT_CLAIM_NAME;
 
         $statement = $pearDB->prepare(
             "UPDATE provider_configuration SET custom_configuration = :customConfiguration

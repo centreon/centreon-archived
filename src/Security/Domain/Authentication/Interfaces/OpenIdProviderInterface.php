@@ -25,14 +25,14 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 interface OpenIdProviderInterface extends ProviderInterface
 {
     /**
-     * @return AbstractConfiguration
+     * @return Configuration
      */
-    public function getConfiguration(): AbstractConfiguration;
+    public function getConfiguration(): Configuration;
 
     /**
      * @return ProviderToken

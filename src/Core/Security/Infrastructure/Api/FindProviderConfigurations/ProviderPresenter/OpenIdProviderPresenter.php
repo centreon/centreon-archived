@@ -24,7 +24,7 @@ namespace Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPr
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class OpenIdProviderPresenter implements ProviderPresenterInterface
@@ -58,8 +58,8 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
 
         return [
             'id' => $response->id,
-            'type' => AbstractConfiguration::TYPE,
-            'name' => AbstractConfiguration::NAME,
+            'type' => Configuration::TYPE,
+            'name' => Configuration::NAME,
             'authentication_uri' => $response->baseUrl . '/'
                 . ltrim($response->authorizationEndpoint ?? '', '/')
                 . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri='

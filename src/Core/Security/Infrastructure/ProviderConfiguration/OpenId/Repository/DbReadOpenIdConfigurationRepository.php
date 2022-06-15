@@ -29,10 +29,11 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Contact\Infrastructure\Repository\DbContactGroupFactory;
 use Core\Contact\Infrastructure\Repository\DbContactTemplateFactory;
+use Core\Security\Application\ProviderConfiguration\OpenId\Builder\ConfigurationBuilder;
 use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 use Core\Security\Infrastructure\Repository\DbAccessGroupFactory;
 
@@ -67,7 +68,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * @inheritDoc
      */
-    public function findConfiguration(): ?AbstractConfiguration
+    public function findConfiguration(): ?Configuration
     {
         $statement = $this->db->query(
             $this->translateDbName("SELECT * FROM `:db`.`provider_configuration` WHERE name = 'openid'")
@@ -86,7 +87,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 ? $this->getContactGroup($customConfiguration['contact_group_id'])
                 : null;
             $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByProviderId((int) $result["id"]);
-            $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
+            $configuration = ConfigurationBuilder::createConfigurationFromRecord($result, $customConfiguration);
         }
 
         return $configuration;

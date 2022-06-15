@@ -23,15 +23,15 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 interface ReadOpenIdConfigurationRepositoryInterface
 {
     /**
      * Find the OpenId Configuration
      *
-     * @return AbstractConfiguration|null
+     * @return Configuration|null
      * @throws \Throwable
      */
-    public function findConfiguration(): ?AbstractConfiguration;
+    public function findConfiguration(): ?Configuration;
 }

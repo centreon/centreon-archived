@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AbstractConfiguration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
@@ -32,10 +31,10 @@ interface WriteOpenIdConfigurationRepositoryInterface
     /**
      * Update the OpenId Configuration.
      *
-     * @param AbstractConfiguration $configuration
+     * @param Configuration $configuration
      * @throws \Throwable
      */
-    public function updateConfiguration(AbstractConfiguration $configuration): void;
+    public function updateConfiguration(Configuration $configuration): void;
 
     /**
      * Delete Authorization rules
