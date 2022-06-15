@@ -70,11 +70,10 @@ const ThemeModeSwitch = styled(Switch, {
   width: theme.spacing(50 / 8),
 }));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     alignItems: 'center',
     display: 'flex',
-    paddingLeft: theme.spacing(7),
   },
 }));
 
