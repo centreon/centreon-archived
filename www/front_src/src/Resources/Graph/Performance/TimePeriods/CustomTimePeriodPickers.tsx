@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, auto)',
+    gridTemplateColumns: 'repeat(2, auto)',
   },
   minimalFromTo: {
     display: 'grid',
