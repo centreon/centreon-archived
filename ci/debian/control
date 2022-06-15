@@ -120,7 +120,7 @@ Description: Base package for all Centreon installations.
 Package: centreon-database
 Architecture: all
 Depends: 
-    centreon-web (>= ${centreon:version}~),
+    centreon-common (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
 Description: Install a database server optimized for use with Centreon.
