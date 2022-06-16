@@ -33,14 +33,6 @@ try {
     $errorMessage = "Unable to update 'custom_configuration' column on 'provider_configuration' table";
     updateOpenIdConfiguration($pearDB);
 
-    $errorMessage = "Unable to remove poller wizard ACL options";
-    $pearDB->query(
-        "DELETE acl_topology_relations, topology
-        FROM acl_topology_relations
-        INNER JOIN topology on topology.topology_id = acl_topology_relations.topology_topology_id
-        WHERE topology.topology_parent = 60901"
-    );
-
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
