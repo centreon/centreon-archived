@@ -27,11 +27,9 @@ use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 /**
- * Database repository for the access groups.
- *
- * @package Centreon\Infrastructure\Security
+ * Database repository for the access groups
  */
-final class DbReadAccessGroupRepository implements ReadAccessGroupRepositoryInterface
+class DbReadAccessGroupRepository implements ReadAccessGroupRepositoryInterface
 {
     /**
      * @var DatabaseConnection
