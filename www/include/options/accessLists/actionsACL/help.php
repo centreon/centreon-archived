@@ -44,7 +44,7 @@ $help['delete_pollers'] = dgettext(
 );
 $help['deploy_pollers'] = dgettext(
     'help',
-    'Allows user to generate and export configuration, and restart poller.'
+    'Allows user to generate and export configuration.'
 );
 $help['tip_display_generate_trap'] = dgettext(
     'help',

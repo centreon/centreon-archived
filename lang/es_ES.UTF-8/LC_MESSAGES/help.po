@@ -4324,5 +4324,5 @@ msgstr "Ejecuta el comando definido en la configuración del recopilador (Config
 #  msgid "Allows user to delete pollers."
 #  msgstr ""
 
-#  msgid "Allows user to generate and export configuration, and restart poller."
+#  msgid "Allows user to generate and export configuration."
 #  msgstr ""
