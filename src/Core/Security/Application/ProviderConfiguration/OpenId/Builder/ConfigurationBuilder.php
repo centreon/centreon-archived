@@ -28,13 +28,13 @@ use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\{
 };
 use Core\Contact\Domain\Model\ContactGroup;
 use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\{
     Configuration,
     AuthorizationRule
 };
-use Assert\AssertionFailedException;
 
 class ConfigurationBuilder
 {
@@ -99,66 +99,6 @@ class ConfigurationBuilder
             ->setUserNameBindAttribute($request->userNameBindAttribute)
             ->setContactGroup($contactGroup)
             ->setClaimName($request->claimName);
-    }
-
-    /**
-     * Create OpenId Configuration from data storage record
-     *
-     * @param array<string, mixed> $record
-     * @param array<string, mixed> $customConfiguration
-     * @return Configuration
-     */
-    public static function createConfigurationFromRecord(array $record, array $customConfiguration): Configuration
-    {
-        if ($record['is_active'] === true) {
-            Assertion::notEmpty($customConfiguration['client_id'], "Configuration::clientId");
-            Assertion::notEmpty($customConfiguration['client_secret'], "Configuration::clientSecret");
-            Assertion::notEmpty($customConfiguration['base_url'], "Configuration::baseUrl");
-            Assertion::notEmpty($customConfiguration['authorization_endpoint'], "Configuration::authorizationEndpoint");
-            Assertion::notEmpty($customConfiguration['token_endpoint'], "Configuration::tokenEndpoint");
-            Assertion::notNull($customConfiguration['contact_group'], "Configuration::contactGroup");
-            if (
-                empty($customConfiguration['introspection_token_endpoint'])
-                && empty($customConfiguration['userinfo_endpoint'])
-            ) {
-                throw OpenIdConfigurationException::missingInformationEndpoint();
-            }
-            if ($customConfiguration['auto_import'] === '1') {
-                self::validateParametersForAutoImport(
-                    $customConfiguration['contact_template'],
-                    $customConfiguration['email_bind_attribute'],
-                    $customConfiguration['alias_bind_attribute'],
-                    $customConfiguration['fullname_bind_attribute']
-                );
-            }
-        }
-
-        return (new Configuration())
-            ->setId((int) $record['id'])
-            ->setForced($record['is_forced'] === '1')
-            ->setActive($record['is_active'] === true)
-            ->setClientId($customConfiguration['client_id'])
-            ->setAutoImportEnabled($customConfiguration['auto_import'] === '1')
-            ->setClientSecret($customConfiguration['client_secret'])
-            ->setBaseUrl($customConfiguration['base_url'])
-            ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])
-            ->setTokenEndpoint($customConfiguration['token_endpoint'])
-            ->setIntrospectionTokenEndpoint($customConfiguration['introspection_token_endpoint'])
-            ->setUserInformationEndpoint($customConfiguration['userinfo_endpoint'])
-            ->setContactTemplate($customConfiguration['contact_template'])
-            ->setEmailBindAttribute($customConfiguration['email_bind_attribute'])
-            ->setUserAliasBindAttribute($customConfiguration['alias_bind_attribute'])
-            ->setUserNameBindAttribute($customConfiguration['fullname_bind_attribute'])
-            ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
-            ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
-            ->setEndSessionEndpoint($customConfiguration['endsession_endpoint'])
-            ->setConnectionScopes($customConfiguration['connection_scopes'])
-            ->setLoginClaim($customConfiguration['login_claim'])
-            ->setAuthenticationType($customConfiguration['authentication_type'])
-            ->setVerifyPeer($customConfiguration['verify_peer'])
-            ->setContactGroup($customConfiguration['contact_group'])
-            ->setClaimName($customConfiguration['claim_name'])
-            ->setAuthorizationRules($customConfiguration['authorization_rules']);
     }
 
     /**

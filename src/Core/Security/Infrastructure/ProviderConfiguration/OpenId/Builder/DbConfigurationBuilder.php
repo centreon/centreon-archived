@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Infrastructure\ProviderConfiguration\OpenId\Builder;
 
 use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
