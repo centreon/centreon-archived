@@ -48,30 +48,35 @@ const retrievedCustomFilters = {
   result: [0, 1].map((index) => ({
     criterias: [
       {
+        isOptimizedModeEnabled: false,
         name: 'resource_types',
         object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'states',
         object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'statuses',
         object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'host_groups',
         object_type: 'host_groups',
         type: 'multi_select',
         value: [],
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'service_groups',
         object_type: 'service_groups',
         type: 'multi_select',
@@ -92,12 +97,14 @@ const retrievedCustomFilters = {
         value: [],
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'search',
         object_type: null,
         type: 'text',
         value: '',
       },
       {
+        isOptimizedModeEnabled: false,
         name: 'sort',
         object_type: null,
         type: 'array',
