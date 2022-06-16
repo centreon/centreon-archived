@@ -378,3 +378,23 @@ function browserSupportsXSLT() {
     }
     return support;
 }
+
+/**
+ * Displaying SVGs on browsers other than chrome.
+ *
+ * @return void
+ */
+
+function displaySvgOnXSL()
+{
+    if (!browserSupportsXSLT()) {
+        return;
+    }
+    if (navigator.userAgent.indexOf("Chrome") === -1) {
+        var nodes = document.getElementsByClassName("svgs");
+        for (var i = nodes.length - 1; i >= 0; i--) {
+
+            nodes[i].innerHTML = nodes[i].textContent;
+        }
+    }
+}
