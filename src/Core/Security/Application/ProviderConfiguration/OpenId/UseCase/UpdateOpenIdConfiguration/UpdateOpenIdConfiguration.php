@@ -79,7 +79,7 @@ class UpdateOpenIdConfiguration
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
             $authorizationRules = $this->createAuthorizationRules($request->authorizationRules);
-            $configuration = ConfigurationBuilder::createConfigurationFromRequest(
+            $configuration = ConfigurationBuilder::create(
                 $request,
                 $contactTemplate,
                 $contactGroup,

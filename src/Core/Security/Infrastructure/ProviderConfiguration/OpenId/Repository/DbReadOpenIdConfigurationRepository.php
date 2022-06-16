@@ -29,7 +29,7 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Contact\Infrastructure\Repository\DbContactGroupFactory;
 use Core\Contact\Infrastructure\Repository\DbContactTemplateFactory;
-use Core\Security\Application\ProviderConfiguration\OpenId\Builder\ConfigurationBuilder;
+use Core\Security\Infrastructure\ProviderConfiguration\OpenId\Builder\DbConfigurationBuilder;
 use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
@@ -87,7 +87,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
                 ? $this->getContactGroup($customConfiguration['contact_group_id'])
                 : null;
             $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByProviderId((int) $result["id"]);
-            $configuration = ConfigurationBuilder::createConfigurationFromRecord($result, $customConfiguration);
+            $configuration = DbConfigurationBuilder::create($result, $customConfiguration);
         }
 
         return $configuration;

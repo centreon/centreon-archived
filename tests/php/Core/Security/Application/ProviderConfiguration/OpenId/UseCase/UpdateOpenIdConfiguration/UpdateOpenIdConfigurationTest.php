@@ -74,7 +74,7 @@ it('should present a NoContentResponse when the use case is executed correctly',
 
     $contactGroup = new ContactGroup(1, 'contact_group');
 
-    $openIdConfiguration = ConfigurationBuilder::createConfigurationFromRequest($request, null, $contactGroup, []);
+    $openIdConfiguration = ConfigurationBuilder::create($request, null, $contactGroup, []);
 
     $this->repository
         ->expects($this->once())
