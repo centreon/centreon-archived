@@ -391,8 +391,8 @@ function displaySvgOnXSL()
         return;
     }
     if (navigator.userAgent.indexOf("Chrome") === -1) {
-        var nodes = document.getElementsByClassName("svgs");
-        for (var i = nodes.length - 1; i >= 0; i--) {
+        let nodes = document.getElementsByClassName("svgs");
+        for (let i = nodes.length - 1; i >= 0; i--) {
 
             nodes[i].innerHTML = nodes[i].textContent;
         }
