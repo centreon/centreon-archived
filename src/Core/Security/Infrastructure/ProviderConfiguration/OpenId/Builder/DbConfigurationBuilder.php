@@ -31,7 +31,6 @@ use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 class DbConfigurationBuilder
 {
-
     /**
      * Create OpenId Configuration from data storage record
      *
