@@ -102,7 +102,6 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      */
     private function getContactTemplate(int $contactTemplateId): ?ContactTemplate
     {
-
         $statement = $this->db->prepare(
             "SELECT
                 contact_id,
@@ -132,7 +131,6 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      */
     private function getContactGroup(int $contactGroupId): ?ContactGroup
     {
-
         $statement = $this->db->prepare(
             "SELECT
                 cg_id,
