@@ -7238,5 +7238,5 @@ msgstr "Permet aux utilisateurs de créer des collecteurs (boutons “Ajouter”
 msgid "Allows user to delete pollers."
 msgstr "Permet aux utilisateurs de supprimer des collecteurs"
 
-msgid "Allows user to generate and export configuration."
+msgid "Allows user to deploy configuration."
 msgstr "Permet aux utilisateurs de déployer la configuration de la supervision sur les collecteurs."
