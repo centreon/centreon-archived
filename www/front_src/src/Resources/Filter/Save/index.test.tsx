@@ -61,6 +61,7 @@ const filterId = 0;
 const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
   criterias: [
     {
+      isOptimizedModeEnabled: false,
       name: 'resource_types',
       object_type: null,
       type: 'multi_select',
@@ -72,6 +73,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'states',
       object_type: null,
       type: 'multi_select',
@@ -83,6 +85,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'statuses',
       object_type: null,
       type: 'multi_select',
@@ -94,6 +97,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'host_groups',
       object_type: 'host_groups',
       type: 'multi_select',
@@ -105,6 +109,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'service_groups',
       object_type: 'service_groups',
       type: 'multi_select',
@@ -116,18 +121,45 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
+      name: 'host_categories',
+      object_type: 'host_categories',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'Linux',
+        },
+      ],
+    },
+    {
+      isOptimizedModeEnabled: false,
+      name: 'service_categories',
+      object_type: 'service_categories',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'web-services',
+        },
+      ],
+    },
+    {
+      isOptimizedModeEnabled: false,
       name: 'monitoring_servers',
       object_type: 'monitoring_servers',
       type: 'multi_select',
       value: [],
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'search',
       object_type: null,
       type: 'text',
       value: search,
     },
     {
+      isOptimizedModeEnabled: false,
       name: 'sort',
       object_type: null,
       type: 'array',
