@@ -31,6 +31,8 @@ class Formatter
     private const SERVICE_ACKNOWLEDGEMENT_MSG_TYPE = 10;
     private const HOST_ACKNOWLEDGEMENT_MSG_TYPE = 11;
     private const ACKNOWLEDGMENT_MESSAGE_TYPE = 'ACK';
+    private const INITIAL_STATE_VALUE = 'INITIAL STATE';
+    private const NOTIFICATION_TYPE_VALUE = 'NOTIF';
     private array $serviceStatuses = ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN'];
     private array $hostStatuses = ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE',];
     private array $notificationTypes = ['1' => 'HARD', '0' => 'SOFT'];
@@ -150,6 +152,7 @@ class Formatter
     public function formatLogs(iterable $logs): iterable
     {
         foreach ($logs as $log) {
+            usleep(100);
             yield $this->formatLog($log);
         }
     }
@@ -184,7 +187,7 @@ class Formatter
     private function formatOutput(string $output, string $status): string
     {
         if ($output === '' && $status !== '') {
-            return 'INITIAL STATE';
+            return self::INITIAL_STATE_VALUE;
         }
 
         return $output;
@@ -232,11 +235,16 @@ class Formatter
             return $this->notificationTypes[$type];
         }
 
-        if ($type === '2' || $type === '3') {
-            return 'NOTIF';
+        if ($this->typeIsNotification($type)) {
+            return self::NOTIFICATION_TYPE_VALUE;
         }
 
         return $type;
+    }
+
+    private function typeIsNotification(string $type): bool
+    {
+        return $type === '2' || $type === '3';
     }
 
     private function formatRetry(string $retry, string $msgType): string

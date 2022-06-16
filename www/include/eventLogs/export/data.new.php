@@ -132,14 +132,15 @@ $formatter->setEnd($requestHandler->getEnd());
 $formatter->setNotification($requestHandler->getNotification());
 $formatter->setAlert($requestHandler->getAlert());
 $formatter->setError($requestHandler->getError());
+$formatter->setUp($requestHandler->getUp());
+$formatter->setDown($requestHandler->getDown());
+$formatter->setUnreachable($requestHandler->getUnreachable());
 $formatter->setOk($requestHandler->getOk());
 $formatter->setWarning($requestHandler->getWarning());
 $formatter->setCritical($requestHandler->getCritical());
 $formatter->setUnknown($requestHandler->getUnknown());
-
-$logHeads = $formatter->getLogHeads();
 $formattedLogs = $formatter->formatLogs($stmt);
-
+$logHeads = $formatter->getLogHeads();
 $metaData = $formatter->formatMetaData();
 unset($formatter);
 

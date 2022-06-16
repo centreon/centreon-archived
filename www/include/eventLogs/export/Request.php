@@ -30,18 +30,14 @@ class Request
     private const STATUS_WARNING = 1;
     private const STATUS_CRITICAL = 2;
     private const STATUS_UNKNOWN = 3;
-    private const STATUS_PENDING = 4;
 
     private ?int $is_admin;
     private array $lca = [];
     private ?string $lang = null;
     private ?string $id = null;
-    private ?int $num = null;
     private ?int $limit = null;
-    private int $start = 0;
     private ?string $startDate = null;
     private ?string $startTime = null;
-    private int $end = 0;
     private ?string $endDate = null;
     private ?string $endTime = null;
     private ?int $period = null;
@@ -93,14 +89,9 @@ class Request
         return $this->id;
     }
 
-    public function getOpenid()
+    public function getOpenid(): string
     {
-        return filter_var($this->getId() ?? '-1',FILTER_SANITIZE_STRING);
-    }
-
-    public function getNum(): ?int
-    {
-        return $this->num;
+        return filter_var($this->getId() ?? '-1', FILTER_SANITIZE_STRING);
     }
 
     public function getLimit(): ?int
@@ -110,37 +101,34 @@ class Request
 
     public function getStart(): int
     {
+        $start = 0;
+
         if ($this->startDate != '') {
             preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $this->startDate, $matchesD);
             preg_match("/^([0-9]*):([0-9]*)/", $this->startTime, $matchesT);
-            $this->start = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
+            $start = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
         }
 
         // setting the startDate/Time using the user's chosen period
         // and checking if the start date/time was set by the user, to avoid to display/export the whole data since 1/1/1970
-        if ($this->getPeriod() > 0 || $this->start === 0) {
-            $this->start = time() - $this->getPeriod();
+        if ($this->getPeriod() > 0 || $start === 0) {
+            $start = time() - $this->getPeriod();
         }
 
-        return $this->start;
-    }
-
-    public function getStartDate(): ?string
-    {
-        return $this->startDate;
+        return $start;
     }
 
     public function getEnd(): int
     {
-        $this->end = time();
+        $end = time();
 
         if ($this->endDate != '') {
             preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $this->endDate, $matchesD);
             preg_match("/^([0-9]*):([0-9]*)/", $this->endTime, $matchesT);
-            $this->end = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
+            $end = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
         }
 
-        return $this->end;
+        return $end;
     }
 
     public function getEndDate(): ?string
@@ -151,11 +139,6 @@ class Request
     public function getStartTime(): ?string
     {
         return $this->startTime;
-    }
-
-    public function getEndTime(): ?string
-    {
-        return $this->endTime;
     }
 
     public function getPeriod(): ?int
@@ -265,11 +248,6 @@ class Request
         return urldecode($this->output);
     }
 
-    public function getSearchH(): ?string
-    {
-        return $this->searchH;
-    }
-
     public function getSearchS(): ?string
     {
         return $this->searchS;
@@ -277,17 +255,17 @@ class Request
 
     public function getSearchHost(): string
     {
-        return htmlentities($this->searchHost, ENT_QUOTES, 'UTF-8');
+        return $this->charsToHtmlEntities($this->searchHost);
     }
 
     public function getSearchService(): string
     {
-        return htmlentities($this->searchService, ENT_QUOTES, 'UTF-8');
+        return$this->charsToHtmlEntities($this->searchService);
     }
 
     public function getExport(): string
     {
-        return htmlentities($this->export, ENT_QUOTES, 'UTF-8');
+        return $this->charsToHtmlEntities($this->export);
     }
 
     public function getHostMsgStatusSet(): array
@@ -327,20 +305,14 @@ class Request
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
         foreach ($tab_id as $openid) {
-            $tab_tmp = preg_split("/\_/", $openid);
-            $id = '';
-
-            if (isset($tab_tmp[2])) {
-                $id = (int)$tab_tmp[2];
-            } elseif (isset($tab_tmp[1])) {
-                $id = (int)$tab_tmp[1];
-            }
+            $openIdChunks = $this->splitOpenId($openid);
+            $id = $openIdChunks['id'];
+            $type = $openIdChunks['type'];
 
             if ($id === '') {
                 continue;
             }
 
-            $type = $tab_tmp[0];
             if ($type == 'HG' && (isset($this->lca["LcaHostGroup"][$id]) || $this->is_admin)) {
                 // Get hosts from hostgroups
                 $hosts = getMyHostGroupHosts($id);
@@ -361,26 +333,39 @@ class Request
         return $this->tabHostIds;
     }
 
+    private function splitOpenId(string $openid): array
+    {
+        $chunks = preg_split("/\_/", $openid);
+        if (!is_array($chunks)) {
+            return ['id' => '', 'hostId' => '', 'type' => ''];
+        }
+
+        $id = '';
+        $hostId = '';
+
+        if (isset($chunks[2])) {
+            $hostId = (int) $chunks[1];
+            $id = (int) $chunks[2];
+        } elseif (isset($chunks[1])) {
+            $id = (int)$chunks[1];
+        }
+
+        return ['id' => $id, 'hostId' => $hostId, 'type' => $chunks[0]];
+    }
+
     public function getTabSvc(): array
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
         foreach ($tab_id as $openid) {
-            $tab_tmp = preg_split("/\_/", $openid);
-            $id = "";
-            $hostId = "";
+            $openIdChunks = $this->splitOpenId($openid);
+            $id = $openIdChunks['id'];
+            $type = $openIdChunks['type'];
+            $hostId = $openIdChunks['hostId'];
 
-            if (isset($tab_tmp[2])) {
-                $hostId = (int)$tab_tmp[1];
-                $id = (int)$tab_tmp[2];
-            } elseif (isset($tab_tmp[1])) {
-                $id = (int)$tab_tmp[1];
-            }
-
-            if ($id == "") {
+            if ($id === '') {
                 continue;
             }
 
-            $type = $tab_tmp[0];
             if ($type == "HG" && (isset($this->lca["LcaHostGroup"][$id]) || $this->is_admin)) {
                 // Get hosts from hostgroups
                 $hosts = getMyHostGroupHosts($id);
@@ -489,5 +474,10 @@ class Request
             'search_service' => FILTER_SANITIZE_STRING,
             'export' => FILTER_SANITIZE_STRING,
         ];
+    }
+
+    private function charsToHtmlEntities(string $string): string
+    {
+        return htmlentities($string, ENT_QUOTES, 'UTF-8');
     }
 }

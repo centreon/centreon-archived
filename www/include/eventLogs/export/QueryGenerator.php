@@ -311,12 +311,12 @@ class QueryGenerator
                 $req .= "AND 0 ";
             }
             $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
-            $req .= $host_search_sql . $service_search_sql . ' ORDER BY ctime DESC ';
+            $req .= $host_search_sql . $service_search_sql;
         }
 
         $limit = ($this->export !== "1" && $this->num) ? $this->generateLimit() : '';
 
-        $req .= $limit;
+        $req .= ' ORDER BY ctime DESC ' . $limit;
 
         return $req;
     }
