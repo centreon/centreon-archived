@@ -24,6 +24,9 @@ namespace Centreon\Domain\Security\Interfaces;
 
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
+/**
+ * @deprecated this class has been moved to Core\Security namespace and will be removed in 22.10
+ */
 interface AccessGroupRepositoryInterface extends ReadAccessGroupRepositoryInterface
 {
 }

@@ -25,6 +25,9 @@ namespace Centreon\Infrastructure\Security;
 use Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 
+/**
+ * @deprecated this class has been moved to Core\Security namespace and will be removed in 22.10
+ */
 final class AccessGroupRepositoryRDB extends DbReadAccessGroupRepository implements AccessGroupRepositoryInterface
 {
 }

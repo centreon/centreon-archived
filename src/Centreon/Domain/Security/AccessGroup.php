@@ -24,6 +24,9 @@ namespace Centreon\Domain\Security;
 
 use Core\Security\Domain\AccessGroup\Model\AccessGroup as CoreAccessGroup;
 
+/**
+ * @deprecated this class has been moved to Core\Security namespace and will be removed in 22.10
+ */
 final class AccessGroup extends CoreAccessGroup
 {
 }
