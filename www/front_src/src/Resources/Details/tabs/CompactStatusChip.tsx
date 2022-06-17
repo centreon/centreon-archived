@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: theme.typography.body2.fontSize,
     height: 18,
-    lineHeight: theme.spacing(1.5),
+    lineHeight: theme.spacing(2),
   },
 }));
 
