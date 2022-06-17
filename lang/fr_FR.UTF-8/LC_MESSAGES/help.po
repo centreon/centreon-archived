@@ -7233,7 +7233,7 @@ msgid "Deploy configuration"
 msgstr "Déployer la configuration"
 
 msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
-msgstr "Permet aux utilisateurs de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
+msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
 
 msgid "Allows user to delete pollers."
 msgstr "Permet aux utilisateurs de supprimer des collecteurs."
