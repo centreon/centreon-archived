@@ -67,8 +67,6 @@ if (!in_array('db_password', $err['required']) && !in_array('db_password_confirm
     $err['password'] = false;
 }
 
-$link = null;
-
 try {
     if ($parameters['address'] == "") {
         $parameters['address'] = "localhost";
@@ -84,22 +82,15 @@ try {
         $parameters['root_user'],
         $parameters['root_password']
     );
-} catch (\PDOException $e) {
-    if ((int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
+    checkMariaDBPrerequisite($link);
+} catch (\Exception $e) {
+    if ($e instanceof \PDOException && (int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
         $err['connection'] =
             'Please check the root database username and password. '
             . 'If the problem persists, check that you have properly '
             . '<a target="_blank" href="https://docs.centreon.com/docs/installation'
             . '/installation-of-a-central-server/using-packages/#secure-the-database">secured your DBMS</a>';
     } else {
-        $err['connection'] = $e->getMessage();
-    }
-}
-
-if ($link !== null) {
-    try {
-        checkMariaDBPrerequisite($link);
-    } catch (\Exception $e) {
         $err['connection'] = $e->getMessage();
     }
 }
