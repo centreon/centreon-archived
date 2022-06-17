@@ -15,7 +15,8 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DELIVERY_STAGE = 'Delivery to testing'
 } else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
-  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DELIVERY_STAGE = 'Deliver rpm to canary and debian to testing'
+  env.REPO = 'testing'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
   env.REPO = 'unstable'
