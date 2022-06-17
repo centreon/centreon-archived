@@ -82,8 +82,10 @@ try {
         $parameters['root_user'],
         $parameters['root_password']
     );
-} catch (\PDOException $e) {
-    if ((int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
+    checkMariaDBPrerequisite($link);
+    $link = null;
+} catch (\Exception $e) {
+    if ($e instanceof \PDOException && (int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
         $err['connection'] =
             'Please check the root database username and password. '
             . 'If the problem persists, check that you have properly '
@@ -93,15 +95,6 @@ try {
         $err['connection'] = $e->getMessage();
     }
 }
-
-try {
-    checkMariaDBPrerequisite($link);
-} catch (\Exception $e) {
-    $err['connection'] = $e->getMessage();
-}
-
-
-$link = null;
 
 if (!count($err['required']) && $err['password'] && trim($err['connection']) == '') {
     $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
