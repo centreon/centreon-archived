@@ -76,7 +76,7 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
   labelNotificationStatus,
-  labelCategory,
+  labelCategories,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -686,7 +686,7 @@ describe(Details, () => {
 
     expect(getByText(labelGroups)).toBeInTheDocument();
     expect(getByText('Linux-servers')).toBeInTheDocument();
-    expect(getByText(labelCategory)).toBeInTheDocument();
+    expect(getByText(labelCategories)).toBeInTheDocument();
     expect(getByText('Windows')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
