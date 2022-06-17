@@ -132,7 +132,9 @@ class UpdateOpenIdConfiguration
      */
     private function getContactGroupOrFail(int $contactGroupId): ContactGroup
     {
+        $this->info('Getting Contact Group');
         if (($contactGroup = $this->contactGroupRepository->find($contactGroupId)) === null) {
+            $this->error('An existent contact group is mandatory for OpenID Configuration');
             throw OpenIdConfigurationException::contactGroupNotFound(
                 $contactGroupId
             );
@@ -150,6 +152,7 @@ class UpdateOpenIdConfiguration
      */
     private function createAuthorizationRules(array $authorizationRulesFromRequest): array
     {
+        $this->info('Creating Authorization Rules');
         $accessGroupIds = $this->getAccessGroupIds($authorizationRulesFromRequest);
         $foundAccessGroups = $this->accessGroupRepository->findByIds($accessGroupIds);
 
@@ -236,9 +239,12 @@ class UpdateOpenIdConfiguration
             if (! $isAlreadyInTransaction) {
                 $this->dataStorageEngine->startTransaction();
             }
+            $this->info('Updating OpenID Configuration');
             $this->repository->updateConfiguration($configuration);
             if (! empty($configuration->getAuthorizationRules())) {
+                $this->info('Removing existent Authorization Rules');
                 $this->repository->deleteAuthorizationRules();
+                $this->info('Inserting new Authorization Rules');
                 $this->repository->insertAuthorizationRules($configuration->getAuthorizationRules());
             }
             if (! $isAlreadyInTransaction) {

@@ -25,11 +25,11 @@ namespace Core\Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
 /**
  * Database repository for the access groups.
@@ -38,6 +38,8 @@ use Core\Security\Domain\AccessGroup\Model\AccessGroup;
  */
 final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements ReadAccessGroupRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -205,6 +207,9 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
      */
     public function findByIds(array $accessGroupIds): array
     {
+        $this->debug('Getting Access Group by Ids', [
+            "ids" => implode(", ", $accessGroupIds)
+        ]);
         $queryBindValues = [];
         foreach ($accessGroupIds as $accessGroupId) {
             $queryBindValues[':access_group_' . $accessGroupId] = $accessGroupId;
@@ -222,7 +227,7 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
         }
-
+        $this->debug('Access group found: ' . count($accessGroups));
         return $accessGroups;
     }
 }
