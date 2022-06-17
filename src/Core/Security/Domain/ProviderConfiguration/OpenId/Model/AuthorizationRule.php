@@ -21,35 +21,33 @@
 
 declare(strict_types=1);
 
-namespace Core\Contact\Application\Repository;
+namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
-use Core\Contact\Domain\Model\ContactGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
-interface ReadContactGroupRepositoryInterface
+class AuthorizationRule
 {
     /**
-     * Get all contact groups
-     *
-     * @return array<ContactGroup>
-     * @throws \Throwable
+     * @param string $claimValue
+     * @param AccessGroup $accessGroup
      */
-    public function findAll(): array;
+    public function __construct(private string $claimValue, private AccessGroup $accessGroup)
+    {
+    }
 
     /**
-     * Get all contact groups of a contact.
-     *
-     * @param integer $userId
-     * @return array<ContactGroup>
-     * @throws \Throwable
+     * @return string
      */
-    public function findAllByUserId(int $userId): array;
+    public function getClaimValue(): string
+    {
+        return $this->claimValue;
+    }
 
     /**
-     * Get a Contact Group
-     *
-     * @param int $contactGroupId
-     * @return ContactGroup|null
-     * @throws \Throwable
+     * @return AccessGroup
      */
-    public function find(int $contactGroupId): ?ContactGroup;
+    public function getAccessGroup(): AccessGroup
+    {
+        return $this->accessGroup;
+    }
 }

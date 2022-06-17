@@ -23,14 +23,18 @@ declare(strict_types=1);
 
 namespace Core\Contact\Infrastructure\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Core\Contact\Domain\Model\ContactGroup;
 
 class DbReadContactGroupRepository extends AbstractRepositoryDRB implements ReadContactGroupRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -146,5 +150,29 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         }
 
         return $contactGroups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(int $contactGroupId): ?ContactGroup
+    {
+        $this->debug("Getting Contact Group by id", [
+            "contact_group_id" => $contactGroupId
+        ]);
+        $statement = $this->db->prepare("SELECT cg_id,cg_name FROM contactgroup WHERE cg_id = :contactGroupId");
+        $statement->bindValue(':contactGroupId', $contactGroupId, \PDO::PARAM_INT);
+        $statement->execute();
+        $contactGroup = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $contactGroup = DbContactGroupFactory::createFromRecord($result);
+        }
+        $this->debug(
+            $contactGroup === null  ? "No Contact Group found" : "Contact Group Found",
+            [
+                "contact_group_id" => $contactGroupId
+            ]
+        );
+        return $contactGroup;
     }
 }

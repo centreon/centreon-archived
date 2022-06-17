@@ -21,35 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Contact\Application\Repository;
+namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
-use Core\Contact\Domain\Model\ContactGroup;
+use Core\Application\Common\UseCase\ErrorResponse;
 
-interface ReadContactGroupRepositoryInterface
+class UpdateOpenIdConfigurationErrorResponse extends ErrorResponse
 {
-    /**
-     * Get all contact groups
-     *
-     * @return array<ContactGroup>
-     * @throws \Throwable
-     */
-    public function findAll(): array;
-
-    /**
-     * Get all contact groups of a contact.
-     *
-     * @param integer $userId
-     * @return array<ContactGroup>
-     * @throws \Throwable
-     */
-    public function findAllByUserId(int $userId): array;
-
-    /**
-     * Get a Contact Group
-     *
-     * @param int $contactGroupId
-     * @return ContactGroup|null
-     * @throws \Throwable
-     */
-    public function find(int $contactGroupId): ?ContactGroup;
+    public function __construct()
+    {
+        parent::__construct('Error during Opend ID Configuration Update');
+    }
 }

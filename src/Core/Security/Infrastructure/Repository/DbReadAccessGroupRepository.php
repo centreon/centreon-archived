@@ -25,6 +25,7 @@ namespace Core\Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
@@ -37,6 +38,8 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements ReadAccessGroupRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -196,6 +199,35 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
             $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
         }
 
+        return $accessGroups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByIds(array $accessGroupIds): array
+    {
+        $this->debug('Getting Access Group by Ids', [
+            "ids" => implode(", ", $accessGroupIds)
+        ]);
+        $queryBindValues = [];
+        foreach ($accessGroupIds as $accessGroupId) {
+            $queryBindValues[':access_group_' . $accessGroupId] = $accessGroupId;
+        }
+        $boundIds = implode(', ', array_keys($queryBindValues));
+        $statement = $this->db->prepare(
+            "SELECT * FROM acl_groups WHERE acl_group_id IN ($boundIds)"
+        );
+        foreach ($queryBindValues as $bindKey => $accessGroupId) {
+            $statement->bindValue($bindKey, $accessGroupId, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+
+        $accessGroups = [];
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
+        }
+        $this->debug('Access group found: ' . count($accessGroups));
         return $accessGroups;
     }
 }

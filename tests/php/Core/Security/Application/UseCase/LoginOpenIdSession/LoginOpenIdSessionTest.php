@@ -25,6 +25,7 @@ namespace Tests\Core\Security\Application\UseCase\LoginOpenIdSession;
 
 use CentreonDB;
 use Pimple\Container;
+use Core\Contact\Domain\Model\ContactGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -72,28 +73,26 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
-    $this->validOpenIdConfiguration = new Configuration(
-        true,
-        false,
-        'MyCl1ientId',
-        'MyCl1ientSuperSecr3tKey',
-        'http://127.0.0.1/auth/openid-connect',
-        '/authorization',
-        '/token',
-        '/introspect',
-        '/userinfo',
-        new ContactTemplate(1, 'contact_template')
-    );
-
-    $this->validOpenIdConfiguration
+    $this->validOpenIdConfiguration = (new Configuration())
+        ->setActive(true)
         ->setForced(true)
+        ->setVerifyPeer(false)
         ->setTrustedClientAddresses([])
         ->setBlacklistClientAddresses([])
+        ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
+        ->setAuthorizationEndpoint('/authorization')
+        ->setTokenEndpoint('/token')
+        ->setIntrospectionTokenEndpoint('/introspect')
+        ->setUserInformationEndpoint('/userinfo')
         ->setEndSessionEndpoint('/logout')
         ->setConnectionScopes([])
         ->setLoginClaim('preferred_username')
+        ->setClientId('MyCl1ientId')
+        ->setClientSecret('MyCl1ientSuperSecr3tKey')
         ->setAuthenticationType('client_secret_post')
-        ->setVerifyPeer(false);
+        ->setContactTemplate(new ContactTemplate(1, 'contact_template'))
+        ->setAutoImportEnabled(false)
+        ->setContactGroup(new ContactGroup(1, 'contact_group'));
 });
 
 it('expects to return an error message in presenter when no provider configuration are found', function () {
