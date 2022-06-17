@@ -33,7 +33,7 @@
  *
  */
 
-ini_set("display_errors", "On");
+ini_set("display_errors", "Off");
 
 // Include configuration
 require_once realpath(__DIR__ . "/../../../../config/centreon.config.php");
