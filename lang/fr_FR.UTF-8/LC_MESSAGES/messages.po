@@ -16863,3 +16863,8 @@ msgstr "Date de fin de licence :"
 
 msgid "License expired"
 msgstr "Licence expirée"
+
+# msgid "Parent alias
+# msgstr "Alias parent"
+
+

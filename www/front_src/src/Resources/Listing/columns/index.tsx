@@ -22,6 +22,7 @@ import {
   labelNotification,
   labelCheck,
   labelSeverity,
+  labelParentAlias,
 } from '../../translatedLabels';
 import truncate from '../../truncate';
 
@@ -35,6 +36,7 @@ import ResourceColumn from './Resource';
 import ParentResourceColumn from './Parent';
 import NotificationColumn from './Notification';
 import ChecksColumn from './Checks';
+import ParentAliasColumn from './ParentAlias';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -193,6 +195,16 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     label: t(labelAlias),
     sortable: true,
     type: ColumnType.string,
+  },
+  {
+    Component: ParentAliasColumn,
+    getRenderComponentOnRowUpdateCondition: T,
+    id: 'parent_alias',
+    label: t(labelParentAlias),
+    rowMemoProps: ['parent'],
+    sortField: 'parent_alias',
+    sortable: true,
+    type: ColumnType.component,
   },
   {
     getFormattedString: ({ fqdn }): string => fqdn,
