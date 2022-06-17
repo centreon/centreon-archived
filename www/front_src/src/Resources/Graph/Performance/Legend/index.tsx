@@ -2,7 +2,17 @@
 import { MouseEvent } from 'react';
 
 import clsx from 'clsx';
-import { equals, find, gt, includes, isNil, length, slice, split } from 'ramda';
+import {
+  equals,
+  find,
+  gt,
+  includes,
+  isNil,
+  length,
+  slice,
+  split,
+  isEmpty,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
@@ -312,7 +322,7 @@ const LegendContent = ({
                       component="p"
                       variant="caption"
                     >
-                      {`(${line.unit})`}
+                      {!isEmpty(line?.unit) && `(${line.unit})`}
                     </Typography>
                   </div>
                   {formattedValue ? (
