@@ -177,7 +177,6 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                             >
                               {icon(t)}
                             </TimelineDot>
-                            {isNotLastEvent && <TimelineConnector />}
                           </TimelineSeparator>
                           <TimelineContent className={classes.contentContainer}>
                             <Paper>
