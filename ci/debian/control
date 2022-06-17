@@ -120,7 +120,7 @@ Description: Base package for all Centreon installations.
 Package: centreon-database
 Architecture: all
 Depends: 
-    centreon-web (>= ${centreon:version}~),
+    centreon-common (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
 Description: Install a database server optimized for use with Centreon.
@@ -140,6 +140,7 @@ Package: centreon-trap
 Architecture: all
 Depends: 
     centreon-common (>= ${centreon:version}~),
+    snmptrapd,
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
