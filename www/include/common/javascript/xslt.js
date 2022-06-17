@@ -392,7 +392,6 @@ function displaySvgOnXSL()
     if (navigator.userAgent.indexOf("Chrome") === -1) {
         let nodes = document.getElementsByClassName("svgs");
         for (let i = nodes.length - 1; i >= 0; i--) {
-
             nodes[i].innerHTML = nodes[i].textContent;
         }
     }
