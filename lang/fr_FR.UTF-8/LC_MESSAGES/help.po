@@ -7239,4 +7239,4 @@ msgid "Allows user to delete pollers."
 msgstr "Permet à l'utilisateur de supprimer des collecteurs."
 
 msgid "Allows user to deploy configuration."
-msgstr "Permet aux utilisateurs de déployer la configuration de la supervision sur les collecteurs."
+msgstr "Permet à l'utilisateur de déployer la configuration."
