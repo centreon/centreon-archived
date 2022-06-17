@@ -16911,3 +16911,6 @@ msgstr "Licence expirée"
 
 msgid "The contact group id #%d doesn't exist"
 msgstr "L'id de groupe de contacts #%d n'existe pas"
+
+msgid "Parent alias
+msgstr "Alias parent"

@@ -9,11 +9,11 @@ CRONTAB_EXEC_USER=""
 
 ############################
 # Cron for CentACL
-* * * * * apache /usr/bin/php -q /usr/share/centreon/cron/centAcl.php >> /var/log/centreon/centAcl.log 2>&1
+* * * * * www-data /usr/bin/php -q /usr/share/centreon/cron/centAcl.php >> /var/log/centreon/centAcl.log 2>&1
 
 ############################
 # Cron for Centreon-Downtime
-*/5 * * * * apache /usr/bin/php -q /usr/share/centreon/cron/downtimeManager.php >> /var/log/centreon/downtimeManager.log 2>&1
+*/5 * * * * www-data /usr/bin/php -q /usr/share/centreon/cron/downtimeManager.php >> /var/log/centreon/downtimeManager.log 2>&1
 
 ############################
 # Cron to build state events

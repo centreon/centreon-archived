@@ -28,6 +28,7 @@ import {
 import MenuItems from './MenuItems';
 
 interface Props {
+  collapseMenu: () => void;
   collapseScrollMaxHeight?: number;
   collapseScrollMaxWidth?: number;
   currentTop?: number;
@@ -36,7 +37,6 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  onLeave?: () => void;
   setCollapseScrollMaxHeight: Dispatch<SetStateAction<number | undefined>>;
   setCollapseScrollMaxWidth: Dispatch<SetStateAction<number | undefined>>;
 }
@@ -124,9 +124,9 @@ const CollapsibleItems = ({
   data,
   isCollapsed,
   isSubHeader,
+  collapseMenu,
   currentTop,
   currentWidth,
-  onLeave,
   level,
   collapseScrollMaxHeight,
   collapseScrollMaxWidth,
@@ -210,6 +210,10 @@ const CollapsibleItems = ({
     setCollapseScrollMaxWidth((window.innerWidth - rect.left) / 8);
   };
 
+  const isItemClicked = (): void => {
+    collapseMenu();
+  };
+
   useEffect(() => {
     if (isCollapsed && collapsRef && collapsRef.current) {
       updateCollapseSize(collapsRef.current);
@@ -221,12 +225,12 @@ const CollapsibleItems = ({
       <Collapse
         unmountOnExit
         className={clsx(classes.root, classes.toggled)}
+        data-cy="collapse"
         enter={false}
         exit={false}
         in={isCollapsed}
         ref={collapsRef}
         timeout={0}
-        onMouseLeave={onLeave}
       >
         {data?.map((item, index) => {
           const hover =
@@ -240,7 +244,9 @@ const CollapsibleItems = ({
             hoverItem({ currentPage: item, e, index });
 
           const isCollapseWithSubheader =
-            Array.isArray(item?.groups) && item.groups.length > 1;
+            Array.isArray(item?.groups) &&
+            item.groups.length > 1 &&
+            equals(index, hoveredIndex);
 
           const isSimpleCollapse =
             isArrayItem(item?.groups) && equals(index, hoveredIndex);
@@ -285,6 +291,7 @@ const CollapsibleItems = ({
                     <MenuItems
                       data={content}
                       hover={nestedHover}
+                      isItemClicked={isItemClicked}
                       isOpen={nestedIndex === hoveredIndex}
                       key={content.label}
                       onMouseEnter={mouseEnterContent}
@@ -295,14 +302,16 @@ const CollapsibleItems = ({
                 <MenuItems
                   data={item}
                   hover={hover}
+                  isItemClicked={isItemClicked}
                   isOpen={index === hoveredIndex}
                   onMouseEnter={mouseEnterItem}
                 />
               )}
 
-              {isCollapseWithSubheader && equals(index, hoveredIndex) ? (
+              {isCollapseWithSubheader ? (
                 <CollapsibleItems
                   isSubHeader
+                  collapseMenu={collapseMenu}
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                   collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
                   currentTop={itemTop}
@@ -320,6 +329,7 @@ const CollapsibleItems = ({
                     isArrayItem(itemGroup?.children) && (
                       <div key={itemGroup.label}>
                         <CollapsibleItems
+                          collapseMenu={collapseMenu}
                           collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                           collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
                           currentTop={itemTop}

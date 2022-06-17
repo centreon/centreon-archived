@@ -50,7 +50,7 @@
         <tr class="ToolbarTR">
             <td>
                 {if !$isRemote}
-                    {if $mode_access == 'w'}
+                    {if $mode_access == 'w' && $can_create_edit == 1}
                         <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" isreact="true" target="_top">
                             {$wizardAddBtn.icon} {$wizardAddBtn.text}
                         </a>
@@ -58,19 +58,23 @@
                             {$addBtn.icon} {$addBtn.text}
                         </a>
                     {/if}
-                    {if $is_admin == 1 || $can_generate == 1}
+                    {if $can_generate == 1}
                          <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}"
                              onClick="{$exportBtn.onClickAction}">
                              {$exportBtn.icon} {$exportBtn.text}
                          </button>
                     {/if}
                     {if $mode_access == 'w'}
-                        <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
-                            {$duplicateBtn.icon} {$duplicateBtn.text}
-                        </button>
-                        <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
-                            {$deleteBtn.icon} {$deleteBtn.text}
-                        </button>
+                        {if $can_create_edit == 1}
+                            <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
+                                {$duplicateBtn.icon} {$duplicateBtn.text}
+                            </button>
+                        {/if}
+                        {if $can_delete == 1}
+                            <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
+                                {$deleteBtn.icon} {$deleteBtn.text}
+                            </button>
+                        {/if}
                     {/if}
                 {/if}
             </td>
