@@ -26,7 +26,7 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
-  labelCategory,
+  labelCategories,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -213,11 +213,11 @@ const getDetailCardLines = ({
               : CriteriaNames.serviceCategories
           }
           groups={details?.categories}
-          title={labelCategory}
+          title={labelCategories}
         />
       ),
       shouldBeDisplayed: !isEmpty(details.categories),
-      title: labelCategory,
+      title: labelCategories,
       xs: 12,
     },
     {
