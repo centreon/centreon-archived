@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { OpenidConfiguration, ContactTemplate } from './models';
+import { OpenidConfiguration, NamedEntity } from './models';
 import {
   labelRequired,
   labelInvalidURL,
   labelInvalidIPAddress,
+  labelAtLeastOneAuthorizationIsRequired,
 } from './translatedLabels';
 
 const IPAddressRegexp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
@@ -15,9 +16,14 @@ const urlRegexp = /https?:\/\/(\S+)/;
 const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   const { t } = useTranslation();
 
-  const contactTemplateSchema: Yup.SchemaOf<ContactTemplate> = Yup.object({
-    id: Yup.number().required(),
-    name: Yup.string().required(),
+  const namedEntitySchema: Yup.SchemaOf<NamedEntity> = Yup.object({
+    id: Yup.number().required(t(labelRequired)),
+    name: Yup.string().required(t(labelRequired)),
+  });
+
+  const authorizationSchema = Yup.object({
+    accessGroup: namedEntitySchema.nullable().required(t(labelRequired)),
+    claimValue: Yup.string().required(t(labelRequired)),
   });
 
   return Yup.object({
@@ -31,6 +37,15 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     ),
     authenticationType: Yup.string().required(t(labelRequired)),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
+    authorizationRules: Yup.array()
+      .of(authorizationSchema)
+      .when('contactGroup', (contactGroup, schema) => {
+        return contactGroup
+          ? schema
+              .min(1, t(labelAtLeastOneAuthorizationIsRequired))
+              .required(t(labelRequired))
+          : schema.nullable();
+      }),
     autoImport: Yup.boolean().required(t(labelRequired)),
     baseUrl: Yup.string()
       .matches(urlRegexp, t(labelInvalidURL))
@@ -41,10 +56,12 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
+    claimName: Yup.string().nullable(),
     clientId: Yup.string().nullable().required(t(labelRequired)),
     clientSecret: Yup.string().nullable().required(t(labelRequired)),
     connectionScopes: Yup.array().of(Yup.string().required(t(labelRequired))),
-    contactTemplate: contactTemplateSchema
+    contactGroup: namedEntitySchema.nullable().defined(),
+    contactTemplate: namedEntitySchema
       .when('autoImport', (autoImport, schema) => {
         return autoImport
           ? schema.nullable().required(t(labelRequired))

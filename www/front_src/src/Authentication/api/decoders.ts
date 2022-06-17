@@ -1,7 +1,11 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
-import { ContactTemplate, OpenidConfiguration } from '../Openid/models';
+import {
+  AuthorizationRule,
+  NamedEntity,
+  OpenidConfiguration,
+} from '../Openid/models';
 import { WebSSOConfiguration } from '../WebSSO/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
@@ -43,12 +47,27 @@ export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
   },
 );
 
-const contactTemplateDecoder = JsonDecoder.object<ContactTemplate>(
+const getNamedEntityDecoder = (
+  title: string,
+): JsonDecoder.Decoder<NamedEntity> =>
+  JsonDecoder.object<NamedEntity>(
+    {
+      id: JsonDecoder.number,
+      name: JsonDecoder.string,
+    },
+    title,
+  );
+
+const authorization = JsonDecoder.object<AuthorizationRule>(
   {
-    id: JsonDecoder.number,
-    name: JsonDecoder.string,
+    accessGroup: getNamedEntityDecoder('Access group'),
+    claimValue: JsonDecoder.string,
   },
-  'Contact template decoder',
+  'Authorization',
+  {
+    accessGroup: 'access_group',
+    claimValue: 'claim_value',
+  },
 );
 
 export const openidConfigurationDecoder =
@@ -57,19 +76,29 @@ export const openidConfigurationDecoder =
       aliasBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
+      authorizationRules: JsonDecoder.array(
+        authorization,
+        'Authorization relations',
+      ),
       autoImport: JsonDecoder.boolean,
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
       blacklistClientAddresses: JsonDecoder.array(
         JsonDecoder.string,
         'blacklist client addresses',
       ),
+      claimName: JsonDecoder.nullable(JsonDecoder.string),
       clientId: JsonDecoder.nullable(JsonDecoder.string),
       clientSecret: JsonDecoder.nullable(JsonDecoder.string),
       connectionScopes: JsonDecoder.array(
         JsonDecoder.string,
         'connectionScopes',
       ),
-      contactTemplate: JsonDecoder.nullable(contactTemplateDecoder),
+      contactGroup: JsonDecoder.nullable(
+        getNamedEntityDecoder('Contact group'),
+      ),
+      contactTemplate: JsonDecoder.nullable(
+        getNamedEntityDecoder('Contact template'),
+      ),
       emailBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       endSessionEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       fullnameBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
@@ -90,12 +119,15 @@ export const openidConfigurationDecoder =
       aliasBindAttribute: 'alias_bind_attribute',
       authenticationType: 'authentication_type',
       authorizationEndpoint: 'authorization_endpoint',
+      authorizationRules: 'authorization_rules',
       autoImport: 'auto_import',
       baseUrl: 'base_url',
       blacklistClientAddresses: 'blacklist_client_addresses',
+      claimName: 'claim_name',
       clientId: 'client_id',
       clientSecret: 'client_secret',
       connectionScopes: 'connection_scopes',
+      contactGroup: 'contact_group',
       contactTemplate: 'contact_template',
       emailBindAttribute: 'email_bind_attribute',
       endSessionEndpoint: 'endsession_endpoint',
