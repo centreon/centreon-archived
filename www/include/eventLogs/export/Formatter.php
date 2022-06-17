@@ -152,7 +152,6 @@ class Formatter
     public function formatLogs(iterable $logs): iterable
     {
         foreach ($logs as $log) {
-            usleep(100);
             yield $this->formatLog($log);
         }
     }
