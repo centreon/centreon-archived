@@ -83,6 +83,7 @@ try {
         $parameters['root_password']
     );
     checkMariaDBPrerequisite($link);
+    $link = null;
 } catch (\Exception $e) {
     if ($e instanceof \PDOException && (int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
         $err['connection'] =
@@ -94,8 +95,6 @@ try {
         $err['connection'] = $e->getMessage();
     }
 }
-
-$link = null;
 
 if (!count($err['required']) && $err['password'] && trim($err['connection']) == '') {
     $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
