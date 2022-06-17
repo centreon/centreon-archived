@@ -243,7 +243,7 @@ class Formatter
 
     private function typeIsNotification(string $type): bool
     {
-        return $type === '2' || $type === '3';
+        return in_array($type, ['2', '3']);
     }
 
     private function formatRetry(string $retry, string $msgType): string

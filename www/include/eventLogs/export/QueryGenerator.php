@@ -310,7 +310,7 @@ class QueryGenerator
             } else {
                 $req .= "AND 0 ";
             }
-            $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
+            $req .= " AND logs.host_name NOT LIKE '\\_Module\\_BAM%' ";
             $req .= $host_search_sql . $service_search_sql;
         }
 
