@@ -89,33 +89,21 @@ class Formatter
         $this->unreachable = $unreachable;
     }
 
-    /**
-     * @param string $ok
-     */
     public function setOk(string $ok): void
     {
         $this->ok = $ok;
     }
 
-    /**
-     * @param string $warning
-     */
     public function setWarning(string $warning): void
     {
         $this->warning = $warning;
     }
 
-    /**
-     * @param string $critical
-     */
     public function setCritical(string $critical): void
     {
         $this->critical = $critical;
     }
 
-    /**
-     * @param string $unknown
-     */
     public function setUnknown(string $unknown): void
     {
         $this->unknown = $unknown;
