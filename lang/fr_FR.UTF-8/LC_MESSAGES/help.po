@@ -7236,7 +7236,7 @@ msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate�
 msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
 
 msgid "Allows user to delete pollers."
-msgstr "Permet aux utilisateurs de supprimer des collecteurs."
+msgstr "Permet à l'utilisateur de supprimer des collecteurs."
 
 msgid "Allows user to deploy configuration."
 msgstr "Permet aux utilisateurs de déployer la configuration de la supervision sur les collecteurs."
