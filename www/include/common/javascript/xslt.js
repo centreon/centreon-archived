@@ -384,7 +384,6 @@ function browserSupportsXSLT() {
  *
  * @return void
  */
-
 function displaySvgOnXSL()
 {
     if (!browserSupportsXSLT()) {
