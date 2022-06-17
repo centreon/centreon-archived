@@ -370,10 +370,8 @@ if ($cache['value']) {
                     $statement->execute();
                 }
             } else {
-                $statement = $pearDB->prepare("SELECT `value` FROM options WHERE `key` = :key ");
-                $statement->bindValue(':key', 'rrdcached_unix_path');
-                $statement->execute();
-                $path = $statement->fetch(\PDO::FETCH_ASSOC);
+                $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_unix_path' ");
+                $path = $result->fetch();
 
                 $brokerInfoData = [
                     [

@@ -54,6 +54,7 @@ if (isset($pearDB)) {
         $query = 'INSERT INTO host (host_name, host_register) '
             . 'VALUES ("_Module_Meta", "2") ';
         $pearDB->query($query);
+        $res = $pearDB->query($queryHost);
         if ($res->rowCount()) {
             $row = $res->fetchRow();
             $hostId = $row['host_id'];
@@ -82,7 +83,7 @@ if (isset($pearDB)) {
     $statement = $pearDB->prepare($query);
     $statement->bindValue(':host_id', (int)$hostId, \PDO::PARAM_INT);
     $statement->execute();
-    foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+    while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
         if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
             $metaId = $matches[1];
             $virtualServices[$matches[1]]['relation'] = true;

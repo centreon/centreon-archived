@@ -115,14 +115,21 @@ while ($aclTopology = $aclTopologies->fetch()) {
 
     // insert missing parent topology relations
     if (count($aclToInsert)) {
+        $bindedValues = [];
+        foreach ($aclToInsert as $aclIndex => $aclValue) {
+            $bindedValues[':acl_' . $aclIndex] = (int) $aclValue;
+        }
+        $bindedQueries = implode(', ', array_keys($bindedValues));
         $statement = $pearDB->prepare(
             'INSERT INTO acl_topology_relations(acl_topo_id, topology_topology_id) ' .
             'SELECT :acl_topology_id, t.topology_id ' .
             'FROM topology t ' .
-            'WHERE t.topology_page IN (:acl_to_insert)'
+            "WHERE t.topology_page IN ($bindedQueries)"
         );
-        $statement->bindValue(":acl_topology_id", (int)$aclTopologyId, \PDO::PARAM_INT);
-        $statement->bindValue(":acl_to_insert", implode(',', $aclToInsert));
+        $statement->bindValue(":acl_topology_id", (int) $aclTopologyId, \PDO::PARAM_INT);
+        foreach ($bindedValues as $bindedIndex => $bindedValue) {
+            $statement->bindValue($bindedIndex, $bindedValue, \PDO::PARAM_INT);
+        }
         $statement->execute();
     }
 }
