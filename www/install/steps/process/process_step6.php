@@ -67,6 +67,8 @@ if (!in_array('db_password', $err['required']) && !in_array('db_password_confirm
     $err['password'] = false;
 }
 
+$link = null;
+
 try {
     if ($parameters['address'] == "") {
         $parameters['address'] = "localhost";
@@ -94,12 +96,13 @@ try {
     }
 }
 
-try {
-    checkMariaDBPrerequisite($link);
-} catch (\Exception $e) {
-    $err['connection'] = $e->getMessage();
+if ($link !== null) {
+    try {
+        checkMariaDBPrerequisite($link);
+    } catch (\Exception $e) {
+        $err['connection'] = $e->getMessage();
+    }
 }
-
 
 $link = null;
 
