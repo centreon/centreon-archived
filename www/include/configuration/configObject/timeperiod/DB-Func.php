@@ -144,8 +144,8 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                 }
                 $key2 == "tp_name" ? ($tp_name = $value2) : "";
                 $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    ? $val .= ($value2 != null ? (", " . $value2) : ", NULL")
+                    : $val .= ($value2 != null ? ($value2) : "NULL");
                 if ($key2 != "tp_id") {
                     $fields[$key2] = $value2;
                 }
@@ -506,15 +506,28 @@ function createTimePeriod(array $params): int
 {
     global $pearDB;
 
-    $pearDB->query("INSERT INTO timeperiod VALUES (" . $params['values'] . ")");
-    return $pearDB->lastInsertId();
+    $valuesExploded = array_map('notConvertNullToString', explode(', ', $params['values']));
+    $queryBindValues = [];
+    foreach ($valuesExploded as $index => $value) {
+        $queryBindValues[':value_' . $index] = $value;
+    }
+    $bindValues = implode(', ', array_keys($queryBindValues));
+    $statement = $pearDB->prepare("INSERT INTO timeperiod VALUES ($bindValues)");
+    foreach ($queryBindValues as $bindKey => $bindValue) {
+        if(array_key_first($queryBindValues) === $bindKey) {
+            $statement->bindValue($bindKey, (int) $bindValue, \PDO::PARAM_INT);
+        } else {
+            $statement->bindValue($bindKey, $bindValue, \PDO::PARAM_STR);
+        }
+    }
+    $statement->execute();
+    return (int) $pearDB->lastInsertId();
 }
 
 /**
  * Creates time periods exclude relations
  *
  * @param array $params
- * @return void
  */
 function createTimePeriodsExcludeRelations(array $params): void
 {
@@ -524,7 +537,7 @@ function createTimePeriodsExcludeRelations(array $params): void
              "SELECT :tp_id, timeperiod_exclude_id FROM timeperiod_exclude_relations " .
              "WHERE timeperiod_id = :timeperiod_id";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':tp_id', (int) $params['tp_id'], \PDO::PARAM_INT);
+    $statement->bindValue(':tp_id', $params['tp_id'], \PDO::PARAM_INT);
     $statement->bindValue(':timeperiod_id', (int) $params['timeperiod_id'], \PDO::PARAM_INT);
     $statement->execute();
 }
@@ -533,7 +546,6 @@ function createTimePeriodsExcludeRelations(array $params): void
  * Creates time periods include relations
  *
  * @param array $params
- * @return void
  */
 function createTimePeriodsIncludeRelations(array $params): void
 {
@@ -543,7 +555,7 @@ function createTimePeriodsIncludeRelations(array $params): void
              "SELECT :tp_id, timeperiod_include_id FROM timeperiod_include_relations " .
              "WHERE timeperiod_id = :timeperiod_id";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':tp_id', (int) $params['tp_id'], \PDO::PARAM_INT);
+    $statement->bindValue(':tp_id', $params['tp_id'], \PDO::PARAM_INT);
     $statement->bindValue(':timeperiod_id', (int) $params['timeperiod_id'], \PDO::PARAM_INT);
     $statement->execute();
 }
@@ -552,7 +564,6 @@ function createTimePeriodsIncludeRelations(array $params): void
  * Creates time periods exceptions
  *
  * @param array $params
- * @return void
  */
 function createTimePeriodsExceptions(array $params): void
 {
@@ -562,7 +573,18 @@ function createTimePeriodsExceptions(array $params): void
              "SELECT :tp_id, days, timerange FROM timeperiod_exceptions " .
              "WHERE timeperiod_id = :timeperiod_id";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':tp_id', (int) $params['tp_id'], \PDO::PARAM_INT);
+    $statement->bindValue(':tp_id', $params['tp_id'], \PDO::PARAM_INT);
     $statement->bindValue(':timeperiod_id', (int) $params['timeperiod_id'], \PDO::PARAM_INT);
     $statement->execute();
+}
+
+/**
+ * Converts a string null value to a null.
+ *
+ * @param string $value
+ * @return string|null
+ */
+function notConvertNullToString(string $value)
+{
+    return $value === "NULL" ? null : $value;
 }
