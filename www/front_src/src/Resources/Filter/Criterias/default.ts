@@ -28,8 +28,8 @@ const getDefaultCriterias = (
     serviceGroups = [],
     monitoringServers = [],
     statusTypes = [],
-    serviceCategories = [],
     hostCategories = [],
+    serviceCategories = [],
   }: DefaultCriteriaValues = {
     hostCategories: [],
     hostGroups: [],
@@ -80,11 +80,10 @@ const getDefaultCriterias = (
       value: serviceGroups,
     },
     {
-      isOptimizedModeEnabled: true,
-      name: 'service_categories',
-      object_type: 'service_categories',
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
       type: 'multi_select',
-      value: serviceCategories,
+      value: monitoringServers,
     },
     {
       isOptimizedModeEnabled: true,
@@ -94,10 +93,11 @@ const getDefaultCriterias = (
       value: hostCategories,
     },
     {
-      name: 'monitoring_servers',
-      object_type: 'monitoring_servers',
+      isOptimizedModeEnabled: true,
+      name: 'service_categories',
+      object_type: 'service_categories',
       type: 'multi_select',
-      value: monitoringServers,
+      value: serviceCategories,
     },
     {
       name: 'search',

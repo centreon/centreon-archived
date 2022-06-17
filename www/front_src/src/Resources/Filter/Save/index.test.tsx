@@ -121,6 +121,13 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      isOptimizedModeEnabled: false,
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: [],
+    },
+    {
       isOptimizedModeEnabled: true,
       name: 'host_categories',
       object_type: 'host_categories',
@@ -143,13 +150,6 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
           name: 'web-services',
         },
       ],
-    },
-    {
-      isOptimizedModeEnabled: false,
-      name: 'monitoring_servers',
-      object_type: 'monitoring_servers',
-      type: 'multi_select',
-      value: [],
     },
     {
       isOptimizedModeEnabled: false,
