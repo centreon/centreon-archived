@@ -23,19 +23,21 @@ declare(strict_types=1);
 
 namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
+use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
-use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class Configuration implements ProviderConfigurationInterface
 {
-    public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+    public const DEFAULT_LOGIN_CLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
     public const TYPE = 'openid';
     public const NAME = 'openid';
+    public const DEFAULT_CLAIM_NAME = "groups";
+
+    private ?string $claimName = self::DEFAULT_CLAIM_NAME;
 
     /**
      * @var int|null
@@ -83,59 +85,79 @@ class Configuration implements ProviderConfigurationInterface
     private bool $verifyPeer = false;
 
     /**
-     * @param ContactTemplate|null $contactTemplate
-     * @param bool $isAutoImportEnabled
-     * @param string|null $emailBindAttribute
-     * @param string|null $userAliasBindAttribute
-     * @param string|null $userNameBindAttribute
-     * @throws OpenIdConfigurationException
+     * @var array<AuthorizationRule>
      */
-    public function __construct(
-        private bool $isActive,
-        private bool $isAutoImportEnabled,
-        private ?string $clientId = null,
-        private ?string $clientSecret = null,
-        private ?string $baseUrl = null,
-        private ?string $authorizationEndpoint = null,
-        private ?string $tokenEndpoint = null,
-        private ?string $introspectionTokenEndpoint = null,
-        private ?string $userInformationEndpoint = null,
-        private ?ContactTemplate $contactTemplate = null,
-        private ?string $emailBindAttribute = null,
-        private ?string $userAliasBindAttribute = null,
-        private ?string $userNameBindAttribute = null,
-    ) {
-        if ($isActive === true) {
-            Assertion::notEmpty($clientId, "Configuration::clientId");
-            Assertion::notEmpty($clientSecret, "Configuration::clientSecret");
-            Assertion::notEmpty($baseUrl, "Configuration::baseUrl");
-            Assertion::notEmpty($authorizationEndpoint, "Configuration::authorizationEndpoint");
-            Assertion::notEmpty($tokenEndpoint, "Configuration::tokenEndpoint");
-            if (empty($introspectionTokenEndpoint) && empty($userInformationEndpoint)) {
-                throw OpenIdConfigurationException::missingInformationEndpoint();
-            }
-            if ($isAutoImportEnabled === true) {
-                $missingMandatoryParameters = [];
-                if ($contactTemplate === null) {
-                    $missingMandatoryParameters[] = 'contact_template';
-                }
-                if (empty($emailBindAttribute)) {
-                    $missingMandatoryParameters[] = 'email_bind_attribute';
-                }
-                if (empty($userAliasBindAttribute)) {
-                    $missingMandatoryParameters[] = 'alias_bind_attribute';
-                }
-                if (empty($userNameBindAttribute)) {
-                    $missingMandatoryParameters[] = 'fullname_bind_attribute';
-                }
-                if (! empty($missingMandatoryParameters)) {
-                    throw OpenIdConfigurationException::missingAutoImportMandatoryParameters(
-                        $missingMandatoryParameters
-                    );
-                }
-            }
-        }
-    }
+    private array $authorizationRules = [];
+
+    /**
+     * @var boolean
+     */
+    private bool $isAutoImportEnabled = false;
+
+    /**
+     * @var bool
+     */
+    private bool $isActive = false;
+
+    /**
+     * @var string|null
+     */
+    private ?string $clientId = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $clientSecret = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $baseUrl = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $authorizationEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $tokenEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $introspectionTokenEndpoint = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $userInformationEndpoint = null;
+
+    /**
+     * @var ContactTemplate|null
+     */
+    private ?ContactTemplate $contactTemplate = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $emailBindAttribute = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $userAliasBindAttribute = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $userNameBindAttribute = null;
+
+    /**
+     * @var ContactGroup|null
+     */
+    private ?ContactGroup $contactGroup = null;
 
     /**
      * @return int|null
@@ -143,25 +165,6 @@ class Configuration implements ProviderConfigurationInterface
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int|null $id
-     * @return self
-     */
-    public function setId(?int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        return $this->isActive;
     }
 
     /**
@@ -173,6 +176,193 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getTrustedClientAddresses(): array
+    {
+        return $this->trustedClientAddresses;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getBlacklistClientAddresses(): array
+    {
+        return $this->blacklistClientAddresses;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEndSessionEndpoint(): ?string
+    {
+        return $this->endSessionEndpoint;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getConnectionScopes(): array
+    {
+        return $this->connectionScopes;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLoginClaim(): ?string
+    {
+        return $this->loginClaim;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthenticationType(): ?string
+    {
+        return $this->authenticationType;
+    }
+
+    /**
+     * @return bool
+     */
+    public function verifyPeer(): bool
+    {
+        return $this->verifyPeer;
+    }
+
+    /**
+     * @return AuthorizationRule[]
+     */
+    public function getAuthorizationRules(): array
+    {
+        return $this->authorizationRules;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoImportEnabled(): bool
+    {
+        return $this->isAutoImportEnabled;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBaseUrl(): ?string
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorizationEndpoint(): ?string
+    {
+        return $this->authorizationEndpoint;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenEndpoint(): ?string
+    {
+        return $this->tokenEndpoint;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIntrospectionTokenEndpoint(): ?string
+    {
+        return $this->introspectionTokenEndpoint;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserInformationEndpoint(): ?string
+    {
+        return $this->userInformationEndpoint;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getClientId(): ?string
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getClientSecret(): ?string
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return self::TYPE;
+    }
+
+    /**
+     * @return ContactTemplate|null
+     */
+    public function getContactTemplate(): ?ContactTemplate
+    {
+        return $this->contactTemplate;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmailBindAttribute(): ?string
+    {
+        return $this->emailBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserAliasBindAttribute(): ?string
+    {
+        return $this->userAliasBindAttribute;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserNameBindAttribute(): ?string
+    {
+        return $this->userNameBindAttribute;
+    }
+
+    /**
+     * @return ContactGroup|null
+     */
+    public function getContactGroup(): ?ContactGroup
+    {
+        return $this->contactGroup;
+    }
+
+        /**
+     * @param int|null $id
+     * @return self
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @param bool $isForced
      * @return self
      */
@@ -181,14 +371,6 @@ class Configuration implements ProviderConfigurationInterface
         $this->isForced = $isForced;
 
         return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getTrustedClientAddresses(): array
-    {
-        return $this->trustedClientAddresses;
     }
 
     /**
@@ -217,14 +399,6 @@ class Configuration implements ProviderConfigurationInterface
         $this->trustedClientAddresses[] = $trustedClientAddress;
 
         return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getBlacklistClientAddresses(): array
-    {
-        return $this->blacklistClientAddresses;
     }
 
     /**
@@ -274,51 +448,58 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return string|null
+     * @param string|null $baseUrl
+     * @return self
      */
-    public function getBaseUrl(): ?string
+    public function setBaseUrl(?string $baseUrl): self
     {
-        return $this->baseUrl;
+        $this->baseUrl = $baseUrl;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $authorizationEndpoint
+     * @return self
      */
-    public function getAuthorizationEndpoint(): ?string
+    public function setAuthorizationEndpoint(?string $authorizationEndpoint): self
     {
-        return $this->authorizationEndpoint;
+        $this->authorizationEndpoint = $authorizationEndpoint;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $tokenEndpoint
+     * @return self
      */
-    public function getTokenEndpoint(): ?string
+    public function setTokenEndpoint(?string $tokenEndpoint): self
     {
-        return $this->tokenEndpoint;
+        $this->tokenEndpoint = $tokenEndpoint;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $introspectionTokenEndpoint
+     * @return self
      */
-    public function getIntrospectionTokenEndpoint(): ?string
+    public function setIntrospectionTokenEndpoint(?string $introspectionTokenEndpoint): self
     {
-        return $this->introspectionTokenEndpoint;
+        $this->introspectionTokenEndpoint = $introspectionTokenEndpoint;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $userInformationEndpoint
+     * @return self
      */
-    public function getUserInformationEndpoint(): ?string
+    public function setUserInformationEndpoint(?string $userInformationEndpoint): self
     {
-        return $this->userInformationEndpoint;
-    }
+        $this->userInformationEndpoint = $userInformationEndpoint;
 
-    /**
-     * @return string|null
-     */
-    public function getEndSessionEndpoint(): ?string
-    {
-        return $this->endSessionEndpoint;
+        return $this;
     }
 
     /**
@@ -330,14 +511,6 @@ class Configuration implements ProviderConfigurationInterface
         $this->endSessionEndpoint = $endSessionEndpoint;
 
         return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getConnectionScopes(): array
-    {
-        return $this->connectionScopes;
     }
 
     /**
@@ -366,14 +539,6 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getLoginClaim(): ?string
-    {
-        return $this->loginClaim;
-    }
-
-    /**
      * @param string|null $loginClaim
      * @return self
      */
@@ -385,27 +550,25 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return string|null
+     * @param string|null $clientId
+     * @return self
      */
-    public function getClientId(): ?string
+    public function setClientId(?string $clientId): self
     {
-        return $this->clientId;
+        $this->clientId = $clientId;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $clientSecret
+     * @return self
      */
-    public function getClientSecret(): ?string
+    public function setClientSecret(?string $clientSecret): self
     {
-        return $this->clientSecret;
-    }
+        $this->clientSecret = $clientSecret;
 
-    /**
-     * @return string|null
-     */
-    public function getAuthenticationType(): ?string
-    {
-        return $this->authenticationType;
+        return $this;
     }
 
     /**
@@ -420,14 +583,6 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return bool
-     */
-    public function verifyPeer(): bool
-    {
-        return $this->verifyPeer;
-    }
-
-    /**
      * @param bool $verifyPeer
      * @return self
      */
@@ -439,50 +594,132 @@ class Configuration implements ProviderConfigurationInterface
     }
 
     /**
-     * @return string
+     * @param boolean $isAutoImportEnabled
+     * @return self
      */
-    public function getType(): string
+    public function setAutoImportEnabled(bool $isAutoImportEnabled): self
     {
-        return self::TYPE;
+        $this->isAutoImportEnabled = $isAutoImportEnabled;
+
+        return $this;
     }
 
     /**
-     * @return bool
+     * @param ContactTemplate|null $contactTemplate
+     * @return self
      */
-    public function isAutoImportEnabled(): bool
+    public function setContactTemplate(?ContactTemplate $contactTemplate): self
     {
-        return $this->isAutoImportEnabled;
+        $this->contactTemplate = $contactTemplate;
+
+        return $this;
     }
 
     /**
-     * @return ContactTemplate|null
+     * @param string|null $emailBindAttribute
+     * @return self
      */
-    public function getContactTemplate(): ?ContactTemplate
+    public function setEmailBindAttribute(?string $emailBindAttribute): self
     {
-        return $this->contactTemplate;
+        $this->emailBindAttribute = $emailBindAttribute;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $userAliasBindAttribute
+     * @return self
      */
-    public function getEmailBindAttribute(): ?string
+    public function setUserAliasBindAttribute(?string $userAliasBindAttribute): self
     {
-        return $this->emailBindAttribute;
+        $this->userAliasBindAttribute = $userAliasBindAttribute;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param string|null $userNameBindAttribute
+     * @return self
      */
-    public function getUserAliasBindAttribute(): ?string
+    public function setUserNameBindAttribute(?string $userNameBindAttribute): self
     {
-        return $this->userAliasBindAttribute;
+        $this->userNameBindAttribute = $userNameBindAttribute;
+
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @param AuthorizationRule[] $authorizationRules
+     * @return self
+     * @throws \TypeError
      */
-    public function getUserNameBindAttribute(): ?string
+    public function setAuthorizationRules(array $authorizationRules): self
     {
-        return $this->userNameBindAttribute;
+        $this->authorizationRules = [];
+        foreach ($authorizationRules as $authorizationRule) {
+            $this->addAuthorizationRule($authorizationRule);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param AuthorizationRule $authorizationRule
+     * @return self
+     */
+    public function addAuthorizationRule(AuthorizationRule $authorizationRule): self
+    {
+        $this->authorizationRules[] = $authorizationRule;
+
+        return $this;
+    }
+
+    /**
+     * @param ContactGroup|null $contactGroup
+     * @return self
+     */
+    public function setContactGroup(?ContactGroup $contactGroup): self
+    {
+        $this->contactGroup = $contactGroup;
+
+        return $this;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getClaimName(): ?string
+    {
+        return $this->claimName;
+    }
+
+    /**
+     * @param string|null $claimName
+     * @return self
+     */
+    public function setClaimName(?string $claimName): self
+    {
+        $this->claimName = $claimName;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $isActive
+     * @return self
+     */
+    public function setActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
     }
 }

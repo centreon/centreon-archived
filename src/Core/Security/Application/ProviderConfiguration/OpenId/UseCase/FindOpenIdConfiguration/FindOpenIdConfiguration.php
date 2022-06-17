@@ -87,6 +87,13 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->emailBindAttribute = $configuration->getEmailBindAttribute();
         $findOpenIdConfigurationResponse->userAliasBindAttribute = $configuration->getUserAliasBindAttribute();
         $findOpenIdConfigurationResponse->userNameBindAttribute = $configuration->getUserNameBindAttribute();
+        $findOpenIdConfigurationResponse->claimName = $configuration->getClaimName();
+        $findOpenIdConfigurationResponse->contactGroup = $configuration->getContactGroup() === null
+            ? null
+            : $findOpenIdConfigurationResponse::contactGroupToArray($configuration->getContactGroup());
+        $findOpenIdConfigurationResponse->authorizationRules = empty($configuration->getAuthorizationRules())
+            ? []
+            : $findOpenIdConfigurationResponse::authorizationRulesToArray($configuration->getAuthorizationRules());
 
         return $findOpenIdConfigurationResponse;
     }

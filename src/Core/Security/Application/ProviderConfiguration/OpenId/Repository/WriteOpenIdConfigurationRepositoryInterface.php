@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Application\ProviderConfiguration\OpenId\Repository;
 
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 interface WriteOpenIdConfigurationRepositoryInterface
 {
@@ -34,4 +35,18 @@ interface WriteOpenIdConfigurationRepositoryInterface
      * @throws \Throwable
      */
     public function updateConfiguration(Configuration $configuration): void;
+
+    /**
+     * Delete Authorization rules
+     * @throws \Throwable
+     */
+    public function deleteAuthorizationRules(): void;
+
+    /**
+     * Insert Authorization rules
+     *
+     * @param AuthorizationRule[] $authorizationRules
+     * @throws \Throwable
+     */
+    public function insertAuthorizationRules(array $authorizationRules): void;
 }

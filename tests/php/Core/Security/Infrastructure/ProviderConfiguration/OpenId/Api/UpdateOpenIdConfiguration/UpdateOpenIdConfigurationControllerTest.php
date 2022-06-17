@@ -123,6 +123,9 @@ it('should execute the usecase properly', function () {
             'email_bind_attribute' => null,
             'alias_bind_attribute' => null,
             'fullname_bind_attribute' => null,
+            'contact_group_id' => 1,
+            'claim_name' => "groups",
+            'authorization_rules' => []
         ]);
 
         $this->request

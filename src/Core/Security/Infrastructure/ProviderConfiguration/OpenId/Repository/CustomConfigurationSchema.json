@@ -96,6 +96,12 @@
       },
       "fullname_bind_attribute": {
         "type": ["string", "null"]
+      },
+      "contact_group_id": {
+        "type": ["number", "null"]
+      },
+      "claim_name": {
+        "type": ["string", "null"]
       }
     }
 }

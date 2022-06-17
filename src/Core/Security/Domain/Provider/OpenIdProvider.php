@@ -188,7 +188,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         ]);
         if (empty($authorizationCode)) {
             $this->error(
-                'No authorization code return from external provider',
+                'No authorization code returned from external provider',
                 [
                     'provider' => Configuration::NAME
                 ]
@@ -531,7 +531,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $loginClaim = ! empty($this->configuration->getLoginClaim())
             ? $this->configuration->getLoginClaim()
-            : Configuration::DEFAULT_LOGIN_GLAIM;
+            : Configuration::DEFAULT_LOGIN_CLAIM;
         if (
             !array_key_exists($loginClaim, $this->userInformations)
             && $this->configuration->getUserInformationEndpoint() !== null
