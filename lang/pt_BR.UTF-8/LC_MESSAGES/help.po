@@ -6657,7 +6657,7 @@ msgstr ""
 #~ msgstr ""
 
 
-#  msgid "Poller configuration actions / Poller management"
+#  msgid "Poller Configuration Actions / Poller Management"
 #  msgstr ""
 
 #  msgid "Create and edit pollers"

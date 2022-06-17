@@ -191,7 +191,7 @@ $form->addElement('header', 'service_actions', _("Services Actions Access"));
 $form->addElement('header', 'host_actions', _("Hosts Actions Access"));
 $form->addElement('header', 'global_actions', _("Global Monitoring Engine Actions (External Process Commands)"));
 $form->addElement('header', 'global_access', _("Global Functionalities Access"));
-$form->addElement('header', 'poller_cfg_access', _("Poller configuration actions / Poller management"));
+$form->addElement('header', 'poller_cfg_access', _("Poller Configuration Actions / Poller Management"));
 
 $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 $ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));

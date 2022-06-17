@@ -4315,7 +4315,7 @@ msgstr "Ejecuta el comando definido en la configuración del recopilador (Config
 #  msgid "Deploy configuration"
 #  msgstr ""
 
-#  msgid "Poller configuration actions / Poller management"
+#  msgid "Poller Configuration Actions / Poller Management"
 #  msgstr ""
 
 #  msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
