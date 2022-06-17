@@ -514,7 +514,7 @@ function createTimePeriod(array $params): int
     $bindValues = implode(', ', array_keys($queryBindValues));
     $statement = $pearDB->prepare("INSERT INTO timeperiod VALUES ($bindValues)");
     foreach ($queryBindValues as $bindKey => $bindValue) {
-        if(array_key_first($queryBindValues) === $bindKey) {
+        if (array_key_first($queryBindValues) === $bindKey) {
             $statement->bindValue($bindKey, (int) $bindValue, \PDO::PARAM_INT);
         } else {
             $statement->bindValue($bindKey, $bindValue, \PDO::PARAM_STR);
