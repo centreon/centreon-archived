@@ -317,7 +317,7 @@ function insertTimeperiod($ret = array(), $exceptions = null)
     if (isset($my_tab['nbOfExceptions'])) {
         $already_stored = array();
         $query = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) " .
-                 "VALUES (:timeperiod_id, LOWER(:days), :timerange)";
+                 "VALUES (:timeperiod_id, :days, :timerange)";
         $statement = $pearDB->prepare($query);
         for ($i = 0; $i <= $my_tab['nbOfExceptions']; $i++) {
             $exInput = "exceptionInput_" . $i;
@@ -326,7 +326,7 @@ function insertTimeperiod($ret = array(), $exceptions = null)
                 $my_tab[$exInput]
             ) {
                 $statement->bindValue(':timeperiod_id', (int) $tp_id['MAX(tp_id)'], \PDO::PARAM_INT);
-                $statement->bindValue(':days', $my_tab[$exInput], \PDO::PARAM_STR);
+                $statement->bindValue(':days', strtolower($my_tab[$exInput]), \PDO::PARAM_STR);
                 $statement->bindValue(':timerange', $my_tab[$exValue], \PDO::PARAM_STR);
                 $statement->execute();
                 $fields[$my_tab[$exInput]] = $my_tab[$exValue];
