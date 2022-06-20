@@ -401,29 +401,19 @@ try {
       }
     },
     'E2E tests': {
-      def parallelSteps = [:]
-      for (x in e2eFeatureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild()
-            unstash 'tar-sources'
-            unstash 'cypress-node-modules'
-            timeout(time: 10, unit: 'MINUTES') {
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}",
-                returnStatus: true
-              )
-              junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
-                currentBuild.result = 'FAILURE'
-              }
-            }
-          }
+      node {
+        checkoutCentreonBuild(buildBranch);
+        unstash 'git-sources'
+        def acceptanceStatus = sh(
+          script: "./centreon-build/jobs/autodisco/${serie}/mon-web-e2e-test.sh centos7",
+          returnStatus: true
+        )
+        junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+        if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+          currentBuild.result = 'FAILURE'
         }
       }
-      parallel parallelSteps
     },
     'Lighthouse CI': {
       if (hasFrontendChanges) {
