@@ -82,10 +82,12 @@ const useStyles = makeStyles((theme) => ({
   eventTimeLineContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: '0.5 1 auto',
+    flexGrow: 0.5,
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(12 / 8),
+    padding: theme.spacing(0, 1, 0, 1),
+    rowGap: theme.spacing(1),
   },
   info: {
     display: 'grid',
@@ -166,9 +168,9 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
             {`${t(labelTries)}: ${event.tries}`}
           </Typography>
         </div>
-      </div>
-      <div className={classes.outputContainer}>
-        <OutputInformation bold content={event.content} />
+        <div>
+          <OutputInformation bold content={event.content} />
+        </div>
       </div>
     </div>
   );

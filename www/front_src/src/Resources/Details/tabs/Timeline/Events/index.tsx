@@ -57,8 +57,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   header: {
-    textAlign: 'center',
-    width: '20%',
+    paddingBottom: theme.spacing(1),
   },
   timeline: {
     margin: 0,
@@ -133,26 +132,26 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
           return (
             <div key={label}>
               <div className={classes.events}>
-                <Typography
-                  className={classes.header}
-                  display="inline"
-                  variant="h6"
-                >
-                  {t(label)}
-                  <span className={classes.divisionSubtitle}>
-                    <Typography display="inline">
-                      {areStartAndEndDateEqual
-                        ? format({
-                            date: (
-                              startDate?.(formattedLocale) as Dayjs
-                            )?.toISOString(),
-                            formatString: 'LL',
-                          })
-                        : formattedDivisionDates.join(' ')}
-                    </Typography>
-                  </span>
-                </Typography>
                 <Timeline className={classes.timeline}>
+                  <Typography
+                    className={classes.header}
+                    display="inline"
+                    variant="h6"
+                  >
+                    {t(label)}
+                    <span className={classes.divisionSubtitle}>
+                      <Typography display="inline">
+                        {areStartAndEndDateEqual
+                          ? format({
+                              date: (
+                                startDate?.(formattedLocale) as Dayjs
+                              )?.toISOString(),
+                              formatString: 'LL',
+                            })
+                          : formattedDivisionDates.join(' ')}
+                      </Typography>
+                    </span>
+                  </Typography>
                   {eventsByDate.map((event) => {
                     const { id, type } = event;
 
