@@ -97,8 +97,7 @@ function testTPExistence($name = null)
     #Modif case
     if ($statement->rowCount() >= 1 && $tp["tp_id"] == $id) {
         return true;
-    } #Duplicate entry
-    elseif ($statement->rowCount() >= 1 && $tp["tp_id"] != $id) {
+    } elseif ($statement->rowCount() >= 1 && $tp["tp_id"] != $id) { #Duplicate entry
         return false;
     } else {
         return true;
