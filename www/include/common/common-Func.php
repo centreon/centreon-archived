@@ -660,10 +660,13 @@ function getMyServiceMacro($service_id, $field)
 
     $query = "SELECT macro.svc_macro_value " .
         "FROM on_demand_macro_service macro " .
-        "WHERE macro.svc_svc_id = '" . CentreonDB::escape($service_id) .
-        "' AND macro.svc_macro_name = '\$_SERVICE" . $field . "\$' LIMIT 1";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+        "WHERE macro.svc_svc_id = :svc_svc_id 
+        AND macro.svc_macro_name = :svc_macro_name LIMIT 1";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':svc_svc_id', (int) $service_id, \PDO::PARAM_INT);
+    $statement->bindValue(':svc_macro_name', '$_SERVICE' . $field . '$', \PDO::PARAM_STR);
+    $statement->execute();
+    $row = $statement->fetch(\PDO::FETCH_ASSOC);
     if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
         $macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
         $macroValue = str_replace("#BS#", "\\", $macroValue);
@@ -702,17 +705,22 @@ function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $ant
     }
 
     if (isset($flag1stLevel) && $flag1stLevel) {
-        $rq = "SELECT ehi.`" . $field . "` " .
+        $rq = "SELECT :field " .
             "FROM extended_host_information ehi " .
-            "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($rq);
-        $row = $DBRESULT->fetchRow();
+            "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
+        $statement = $pearDB->prepare($rq);
+        $statement->bindValue(':field', $field, \PDO::PARAM_STR);
+        $statement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetch(\PDO::FETCH_ASSOC);
         if (isset($row[$field]) && $row[$field]) {
             $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
-                "WHERE vi.img_id = '" . $row[$field] .
-                "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
-            $DBRESULT2 = $pearDB->query($query);
-            $row2 = $DBRESULT2->fetchRow();
+                "WHERE vi.img_id = :img_id 
+                AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+            $statement = $pearDB->prepare($query);
+            $statement->bindValue(':img_id', (int) $row[$field], \PDO::PARAM_INT);
+            $statement->execute();
+            $row2 = $statement->fetch(\PDO::FETCH_ASSOC);
             if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
                 return $row2["dir_alias"] . "/" . $row2["img_path"];
             }
@@ -725,21 +733,28 @@ function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $ant
     } else {
         $rq = "SELECT host_tpl_id " .
             "FROM host_template_relation " .
-            "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+            "WHERE host_host_id = :host_host_id " .
             "ORDER BY `order`";
-        $DBRESULT = $pearDB->query($rq);
-        while ($row = $DBRESULT->fetchRow()) {
-            $rq2 = "SELECT ehi.`" . $field . "` " .
-                "FROM extended_host_information ehi " .
-                "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
-            $DBRESULT2 = $pearDB->query($rq2);
-            $row2 = $DBRESULT2->fetchRow();
+        $htStatement = $pearDB->prepare($rq);
+        $htStatement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
+        $htStatement->execute();
+        $rq2 = "SELECT :field " .
+               "FROM extended_host_information ehi " .
+               "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
+        $ehiStatement = $pearDB->prepare($rq2);
+        $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+                 "WHERE vi.img_id = :img_id 
+                 AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+        $imgStatement = $pearDB->prepare($query);
+        while ($row = $htStatement->fetch(\PDO::FETCH_ASSOC)) {
+            $ehiStatement->bindValue(':field', $field, \PDO::PARAM_STR);
+            $ehiStatement->bindValue(':host_host_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
+            $ehiStatement->execute();
+            $row2 = $ehiStatement->fetch(\PDO::FETCH_ASSOC);
             if (isset($row2[$field]) && $row2[$field]) {
-                $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
-                    "WHERE vi.img_id = '" . $row2[$field] .
-                    "' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
-                $DBRESULT3 = $pearDB->query($query);
-                $row3 = $DBRESULT3->fetchRow();
+                $imgStatement->bindValue(':img_id', (int) $row2[$field], \PDO::PARAM_INT);
+                $imgStatement->execute();
+                $row3 = $imgStatement->fetch(\PDO::FETCH_ASSOC);
                 if (isset($row3["dir_alias"]) && isset($row3["img_path"]) && $row3["dir_alias"] && $row3["img_path"]) {
                     return $row3["dir_alias"] . "/" . $row3["img_path"];
                 }
@@ -825,9 +840,11 @@ function getMyHostMultipleTemplateModels($host_id = null)
     $query = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '" .
         CentreonDB::escape($host_id) . "' ORDER BY `order`";
     $DBRESULT = $pearDB->query($query);
+    $statement = $pearDB->prepare("SELECT host_name FROM host WHERE host_id = :host_id LIMIT 1");
     while ($row = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT host_name FROM host WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1");
-        $hTpl = $DBRESULT2->fetchRow();
+        $statement->bindValue(':host_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
+        $statement->execute();
+        $hTpl = $statement->fetch(\PDO::FETCH_ASSOC);
         $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES, "UTF-8");
     }
     return $tplArr;
@@ -877,15 +894,17 @@ function getMyHostGroupHosts($hg_id = null, $searchHost = null, $level = 1)
     }
 
     $hosts = array();
-    $DBRESULT = $pearDB->query("SELECT hgr.host_host_id " .
+    $statement = $pearDB->prepare("SELECT hgr.host_host_id " .
         "FROM hostgroup_relation hgr, host h " .
-        "WHERE hgr.hostgroup_hg_id = '" . CentreonDB::escape($hg_id) . "' " .
+        "WHERE hgr.hostgroup_hg_id = :hostgroup_hg_id " .
         "AND h.host_id = hgr.host_host_id $searchSTR " .
         "ORDER by h.host_name");
-    while ($elem = $DBRESULT->fetchRow()) {
+    $statement->bindValue(':hostgroup_hg_id', (int) $hg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($elem = $statement->fetch(\PDO::FETCH_ASSOC)) {
         $hosts[$elem["host_host_id"]] = $elem["host_host_id"];
     }
-    $DBRESULT->closeCursor();
+    $statement->closeCursor();
     unset($elem);
 
     if ($level) {
@@ -930,15 +949,17 @@ function getMyHostGroupHostGroups($hg_id = null)
 
     $hosts = array();
 
-    $DBRESULT = $pearDB->query("SELECT hg_child_id " .
+    $statement = $pearDB->prepare("SELECT hg_child_id " .
         "FROM hostgroup_hg_relation, hostgroup " .
-        "WHERE hostgroup_hg_relation.hg_parent_id = '" . CentreonDB::escape($hg_id) . "' " .
+        "WHERE hostgroup_hg_relation.hg_parent_id = :hg_parent_id " .
         "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
         "ORDER BY hostgroup.hg_name");
-    while ($elem = $DBRESULT->fetchRow()) {
+    $statement->bindValue(':hg_parent_id', (int) $hg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($elem = $statement->fetch(\PDO::FETCH_ASSOC)) {
         $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
     }
-    $DBRESULT->closeCursor();
+    $statement->closeCursor();
     unset($elem);
     return $hosts;
 }
@@ -1120,6 +1141,10 @@ function getMyServiceExtendedInfoImage($service_id, $field)
     global $pearDB;
 
     $tab = array();
+    $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+             "WHERE vi.img_id = :img_id AND vidr.img_img_id = vi.img_id " .
+             "AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
+    $statement = $pearDB->prepare($query);
     while (1) {
         $query = "SELECT s.service_template_model_stm_id, `" . $field .
             "` FROM service s, extended_service_information esi WHERE s.service_id = '" .
@@ -1127,11 +1152,9 @@ function getMyServiceExtendedInfoImage($service_id, $field)
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if (isset($row[$field]) && $row[$field]) {
-            $query = "SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
-                "WHERE vi.img_id = '" . $row[$field] . "' AND vidr.img_img_id = vi.img_id " .
-                "AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
-            $DBRESULT = $pearDB->query($query);
-            $row = $DBRESULT->fetchRow();
+            $statement->bindValue(':img_id', (int) $row[$field], \PDO::PARAM_INT);
+            $statement->execute();
+            $row = $statement->fetch(\PDO::FETCH_ASSOC);
             if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"]) {
                 return $row["dir_alias"] . "/" . $row["img_path"];
             }
@@ -1421,13 +1444,15 @@ function getAllMyServiceHosts($service_id = null)
     $query = "SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr " .
         "WHERE hsr.service_service_id = '" . CentreonDB::escape($service_id) . "'";
     $DBRESULT = $pearDB->query($query);
+    $query = "SELECT host_host_id FROM hostgroup_relation hgr " .
+             "WHERE hgr.hostgroup_hg_id = :hostgroup_hg_id";
+    $statement = $pearDB->prepare($query);
     while ($elem = $DBRESULT->fetchRow()) {
         if ($elem["host_host_id"]) {
             $hosts[$elem["host_host_id"]] = $elem["host_host_id"];
         } elseif ($elem["hostgroup_hg_id"]) {
-            $query = "SELECT host_host_id FROM hostgroup_relation hgr " .
-                "WHERE hgr.hostgroup_hg_id = '" . $elem["hostgroup_hg_id"] . "'";
-            $DBRESULT2 = $pearDB->query($query);
+            $statement->bindValue(':hostgroup_hg_id', (int) $elem["hostgroup_hg_id"], \PDO::PARAM_INT);
+            $statement->execute();
             while ($elem2 = $DBRESULT2->fetchRow()) {
                 $hosts[$elem2["host_host_id"]] = $elem2["host_host_id"];
             }
@@ -1573,15 +1598,17 @@ function getMyCheckCmdName($service_id = null)
 
     $tab = array();
 
+    $query = "SELECT command_name FROM command WHERE command_id = :command_id LIMIT 1";
+    $statement = $pearDB->prepare($query);
     while (1) {
         $query = "SELECT command_command_id, service_template_model_stm_id FROM service " .
             "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
         if ($row["command_command_id"]) {
-            $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
-            $DBRESULT2 = $pearDB->query($query);
-            $row2 = $DBRESULT2->fetchRow();
+            $statement->bindValue(':command_id', (int) $row["command_command_id"], \PDO::PARAM_INT);
+            $statement->execute();
+            $row2 = $statement->fetch(\PDO::FETCH_ASSOC);
             return ($row2["command_name"]);
         } elseif ($row["service_template_model_stm_id"]) {
             if (isset($tab[$row['service_template_model_stm_id']])) {
@@ -1646,15 +1673,19 @@ function getMyCheckCmdParam($service_id = null)
         $cmd = getMyCheckCmdName($service_id);
         return $cmd . db2str($row["command_command_id_arg"]);
     } elseif ($row["command_command_id"] && !$row["command_command_id_arg"]) {
-        $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($query);
-        $row2 = $DBRESULT2->fetchRow();
+        $query = "SELECT command_name FROM command WHERE command_id = :command_id LIMIT 1";
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':command_id', (int) $row["command_command_id"], \PDO::PARAM_INT);
+        $statement->execute();
+        $row2 = $statement->fetch(\PDO::FETCH_ASSOC);
         $arg = getMyCheckCmdArg($service_id);
         return $row2["command_name"] . $arg;
     } elseif ($row["command_command_id"] && $row["command_command_id_arg"]) {
-        $query = "SELECT command_name FROM command WHERE command_id = '" . $row["command_command_id"] . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($query);
-        $row2 = $DBRESULT2->fetchRow();
+        $query = "SELECT command_name FROM command WHERE command_id = :command_id LIMIT 1";
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':command_id', (int) $row["command_command_id"], \PDO::PARAM_INT);
+        $statement->execute();
+        $row2 = $statement->fetch(\PDO::PARAM_INT);
         return $row2["command_name"] . db2str($row["command_command_id_arg"]);
     } else {
         return null;
@@ -1822,9 +1853,11 @@ function getDefaultGraph($service_id = null, $rrdType = null)
         return $gt["graph_id"];
     } else {
         $command_id = getMyServiceField($service_id, "command_command_id");
-        $DBRESULT = $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '" . $command_id . "'");
-        if ($DBRESULT->rowCount()) {
-            $gt = $DBRESULT->fetchRow();
+        $statement = $pearDB->prepare("SELECT graph_id FROM command WHERE `command_id` = :command_id");
+        $statement->bindValue(':command_id', (int) $command_id, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($statement->rowCount()) {
+            $gt = $statement->fetch(\PDO::FETCH_ASSOC);
             if ($gt["graph_id"] != null) {
                 return $gt["graph_id"];
             }
