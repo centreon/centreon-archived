@@ -137,15 +137,13 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
         $row = $dbResult->fetch();
         $row["tp_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
+            $val = [];
             foreach ($row as $key2 => $value2) {
                 if ($key2 == "tp_name") {
                     $value2 .= "_" . $i;
                 }
                 $key2 == "tp_name" ? ($tp_name = $value2) : "";
-                $val
-                    ? $val .= ($value2 != null ? (", " . $value2) : ", NULL")
-                    : $val .= ($value2 != null ? ($value2) : "NULL");
+                $val[] = $value2 ?: null;
                 if ($key2 != "tp_id") {
                     $fields[$key2] = $value2;
                 }
@@ -322,7 +320,8 @@ function insertTimeperiod($ret = array(), $exceptions = null)
         for ($i = 0; $i <= $my_tab['nbOfExceptions']; $i++) {
             $exInput = "exceptionInput_" . $i;
             $exValue = "exceptionTimerange_" . $i;
-            if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) &&
+            if (
+                isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) &&
                 $my_tab[$exInput]
             ) {
                 $statement->bindValue(':timeperiod_id', (int) $tp_id['MAX(tp_id)'], \PDO::PARAM_INT);
@@ -506,9 +505,8 @@ function createTimePeriod(array $params): int
 {
     global $pearDB;
 
-    $valuesExploded = array_map('convertNullStringToNull', explode(', ', $params['values']));
     $queryBindValues = [];
-    foreach ($valuesExploded as $index => $value) {
+    foreach ($params['values'] as $index => $value) {
         $queryBindValues[':value_' . $index] = $value;
     }
     $bindValues = implode(', ', array_keys($queryBindValues));
@@ -576,15 +574,4 @@ function createTimePeriodsExceptions(array $params): void
     $statement->bindValue(':tp_id', $params['tp_id'], \PDO::PARAM_INT);
     $statement->bindValue(':timeperiod_id', (int) $params['timeperiod_id'], \PDO::PARAM_INT);
     $statement->execute();
-}
-
-/**
- * Converts a string null value to a null.
- *
- * @param string $value
- * @return string|null
- */
-function convertNullStringToNull(string $value)
-{
-    return $value === "NULL" ? null : $value;
 }
