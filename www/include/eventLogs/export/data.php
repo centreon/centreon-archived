@@ -65,9 +65,7 @@ bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-
-$sid = session_id();
-(isset($sid)) ? $sid = $sid : $sid = "-1";
+$sid = session_id() ?? '-1';
 $contact_id = check_session($sid, $pearDB);
 
 $is_admin = isUserAdmin($sid);
