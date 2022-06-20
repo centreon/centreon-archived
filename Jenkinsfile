@@ -405,7 +405,7 @@ try {
         checkoutCentreonBuild();
         unstash 'git-sources'
         def acceptanceStatus = sh(
-          script: "./centreon-build/jobs/autodisco/${serie}/mon-web-e2e-test.sh centos7",
+          script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7",
           returnStatus: true
         )
         junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
