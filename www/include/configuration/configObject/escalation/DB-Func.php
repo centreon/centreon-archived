@@ -287,7 +287,7 @@ function insertEscalation(CentreonDB $pearDB, array $data, bool $logAction = tru
         } else {
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? 1 : 0,
+                isset($data[$paramName]) && $data[$paramName] !== '0' ? 1 : 0,
                 \PDO::PARAM_INT
             );
         }
