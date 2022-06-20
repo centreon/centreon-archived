@@ -403,7 +403,8 @@ try {
     'E2E tests': {
       node {
         checkoutCentreonBuild();
-        unstash 'git-sources'
+        unstash 'tar-sources'
+        unstash 'cypress-node-modules'
         def acceptanceStatus = sh(
           script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7",
           returnStatus: true
