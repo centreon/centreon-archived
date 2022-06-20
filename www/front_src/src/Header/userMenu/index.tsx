@@ -84,7 +84,16 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 const useStyles = makeStyles((theme) => ({
   button: {
     '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+      '&:after': {
+        backgroundColor: theme.palette.common.white,
+        content: '""',
+        height: '100%',
+        left: 0,
+        opacity: 0.08,
+        position: 'absolute',
+        right: 0,
+        top: 0,
+      },
     },
   },
   containerList: {
@@ -109,9 +118,6 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     minWidth: theme.spacing(3.75),
   },
-  itemMenu: {
-    padding: theme.spacing(0, 2, 0.25, 2),
-  },
   loaderUserMenu: {
     marginRight: theme.spacing(22 / 8),
   },
@@ -121,12 +127,21 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     minWidth: 190,
   },
+  menuItem: {
+    padding: theme.spacing(0, 2, 0.25, 2),
+  },
+  nameContainer: {
+    padding: theme.spacing(0, 2, 0.25, 2.25),
+  },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
   popper: {
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
+  },
+  switchItem: {
+    padding: theme.spacing(0, 2, 0.25, 1.75),
   },
   text: {
     overflow: 'hidden',
@@ -152,8 +167,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
 }));
+interface Props {
+  headerRef: RefObject<HTMLElement>;
+}
 
-const UserMenu = (): JSX.Element => {
+const UserMenu = ({ headerRef }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();
@@ -161,10 +179,12 @@ const UserMenu = (): JSX.Element => {
   const [copied, setCopied] = useState(false);
   const [data, setData] = useState<UserData | null>(null);
   const [anchorEl, setAnchorEl] = useState<SVGSVGElement | null>(null);
+  const [anchorHeight, setAnchorHeight] = useState(12);
   const profile = useRef<HTMLDivElement>();
   const userMenu = useRef<HTMLDivElement>();
   const autologinNode = useRef<HTMLTextAreaElement>();
   const refreshTimeout = useRef<NodeJS.Timeout>();
+  const userContainer = useRef<HTMLDivElement>(null);
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
   });
@@ -226,6 +246,14 @@ const UserMenu = (): JSX.Element => {
       return;
     }
     setAnchorEl(event.currentTarget);
+    if (!isNil(headerRef?.current) && !isNil(userContainer?.current)) {
+      const headerHeight = headerRef?.current?.getBoundingClientRect().height;
+
+      const userMenuHeight =
+        userContainer.current?.getBoundingClientRect().height;
+
+      setAnchorHeight(headerHeight - userMenuHeight + 10);
+    }
   };
 
   const closeUserMenu = (): void => {
@@ -308,7 +336,10 @@ const UserMenu = (): JSX.Element => {
   };
 
   return (
-    <div className={clsx(classes.wrapRightUser)}>
+    <div
+      className={clsx(classes.wrapRightUser)}
+      ref={userContainer as RefObject<HTMLDivElement>}
+    >
       <div
         className={clsx(classes.wrapRightUserItems)}
         ref={profile as RefObject<HTMLDivElement>}
@@ -345,7 +376,7 @@ const UserMenu = (): JSX.Element => {
               {
                 name: 'offset',
                 options: {
-                  offset: [22, 12],
+                  offset: [22, anchorHeight],
                 },
               },
             ]}
@@ -362,7 +393,7 @@ const UserMenu = (): JSX.Element => {
                   }}
                 >
                   <List dense className={classes.containerList}>
-                    <ListItem className={classes.itemMenu}>
+                    <ListItem className={classes.nameContainer}>
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
@@ -372,7 +403,7 @@ const UserMenu = (): JSX.Element => {
                     <Divider className={classes.divider} />
 
                     {not(passwordIsNotYetAboutToExpire) && (
-                      <ListItem className={classes.itemMenu}>
+                      <ListItem className={classes.menuItem}>
                         <div className={classes.passwordExpiration}>
                           <Typography variant="body2">
                             {t(labelPasswordWillExpireIn)}:
@@ -419,7 +450,7 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
-                    <div className={classes.itemMenu}>
+                    <div className={classes.switchItem}>
                       <SwitchMode />
                     </div>
 

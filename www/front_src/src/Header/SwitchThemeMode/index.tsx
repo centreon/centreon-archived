@@ -8,7 +8,6 @@ import clsx from 'clsx';
 
 import { Switch, ListItemText } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { grey } from '@mui/material/colors';
 
 import { userAtom, ThemeMode } from '@centreon/ui-context';
 import { patchData, useRequest } from '@centreon/ui';
@@ -40,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   disabledMode: {
-    color: grey[600],
+    color: theme.palette.common.white,
+    opacity: 0.5,
   },
   mode: {
     paddingLeft: theme.spacing(1),

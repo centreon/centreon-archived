@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { makeStyles } from '@mui/styles';
 
 import FederatedComponent from '../components/FederatedComponents';
@@ -53,9 +55,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (): JSX.Element => {
   const classes = useStyles();
+  const headerRef = useRef<HTMLElement>(null);
 
   return (
-    <header className={classes.header}>
+    <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
         <div className={classes.pollerContainer}>
           <PollerMenu />
@@ -71,7 +74,7 @@ const Header = (): JSX.Element => {
             <ServiceStatusCounter />
           </div>
           <div className={classes.userMenuContainer}>
-            <UserMenu />
+            <UserMenu headerRef={headerRef} />
           </div>
         </div>
       </div>
