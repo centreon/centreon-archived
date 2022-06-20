@@ -506,7 +506,7 @@ function createTimePeriod(array $params): int
 {
     global $pearDB;
 
-    $valuesExploded = array_map('notConvertNullToString', explode(', ', $params['values']));
+    $valuesExploded = array_map('convertNullStringToNull', explode(', ', $params['values']));
     $queryBindValues = [];
     foreach ($valuesExploded as $index => $value) {
         $queryBindValues[':value_' . $index] = $value;
@@ -584,7 +584,7 @@ function createTimePeriodsExceptions(array $params): void
  * @param string $value
  * @return string|null
  */
-function notConvertNullToString(string $value)
+function convertNullStringToNull(string $value)
 {
     return $value === "NULL" ? null : $value;
 }
