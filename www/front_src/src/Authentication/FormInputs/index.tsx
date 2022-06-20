@@ -14,6 +14,7 @@ import {
   not,
   pluck,
   prop,
+  propEq,
   reduce,
   sort,
   toPairs,
@@ -21,16 +22,25 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@mui/styles';
-import { Divider, Typography } from '@mui/material';
+import { Divider, IconButton, Tooltip, Typography } from '@mui/material';
 
-import { Category, InputProps, InputType } from './models';
+import {
+  Category,
+  InputProps,
+  InputPropsWithoutCategory,
+  InputType,
+} from './models';
 import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
 import ConnectedAutocomplete from './ConnectedAutocomplete';
+import FieldsTable from './FieldsTable';
 
-export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
+export const getInput = cond<
+  InputType,
+  (props: InputPropsWithoutCategory) => JSX.Element
+>([
   [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
   [equals(InputType.Radio) as (b: InputType) => boolean, always(RadioInput)],
   [equals(InputType.Text) as (b: InputType) => boolean, always(TextInput)],
@@ -43,6 +53,10 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
     equals(InputType.ConnectedAutocomplete) as (b: InputType) => boolean,
     always(ConnectedAutocomplete),
   ],
+  [
+    equals(InputType.FieldsTable) as (b: InputType) => boolean,
+    always(FieldsTable),
+  ],
 ]);
 
 const useStyles = makeStyles((theme) => ({
@@ -53,12 +67,21 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
   },
+  categoryTitle: {
+    alignItems: 'center',
+    columnGap: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'row',
+  },
   inputWrapper: { width: '100%' },
   inputs: {
     display: 'flex',
     flexDirection: 'column',
     marginTop: theme.spacing(1),
     rowGap: theme.spacing(2),
+  },
+  tooltip: {
+    maxWidth: theme.spacing(60),
   },
 }));
 
@@ -113,59 +136,58 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
 
   return (
     <div>
-      {toPairs(sortedInputsByCategory).map(([category, categorizedInputs]) => (
-        <div key={category}>
-          <div className={classes.category}>
-            <Typography variant="h5">{t(category)}</Typography>
-            <div className={classes.inputs}>
-              {categorizedInputs.map(
-                ({
-                  fieldName,
-                  label,
-                  type,
-                  options,
-                  change,
-                  getChecked,
-                  required,
-                  getDisabled,
-                  getRequired,
-                  additionalLabel,
-                }) => {
-                  const Input = getInput(type);
+      {toPairs(sortedInputsByCategory).map(
+        ([categoryName, categorizedInputs]) => {
+          const { EndIcon, TooltipContent } = find(
+            propEq('name', categoryName),
+            categories,
+          ) as Category;
 
-                  const props = {
-                    category,
-                    change,
-                    fieldName,
-                    getChecked,
-                    getDisabled,
-                    getRequired,
-                    label,
-                    options,
-                    required,
-                    type,
-                  };
+          return (
+            <div key={categoryName}>
+              <div className={classes.category}>
+                <div className={classes.categoryTitle}>
+                  <Typography variant="h5">{t(categoryName)}</Typography>
+                  <Tooltip
+                    classes={{
+                      tooltip: classes.tooltip,
+                    }}
+                    placement="top"
+                    title={TooltipContent ? <TooltipContent /> : ''}
+                  >
+                    <IconButton size="small">
+                      {EndIcon && <EndIcon fontSize="small" />}
+                    </IconButton>
+                  </Tooltip>
+                </div>
+                <div className={classes.inputs}>
+                  {categorizedInputs.map((inputProps) => {
+                    const Input = getInput(inputProps.type);
 
-                  return (
-                    <div className={classes.inputWrapper} key={label}>
-                      {additionalLabel && (
-                        <Typography
-                          className={classes.additionalLabel}
-                          variant="body1"
-                        >
-                          {t(additionalLabel)}
-                        </Typography>
-                      )}
-                      <Input {...props} />
-                    </div>
-                  );
-                },
-              )}
+                    return (
+                      <div
+                        className={classes.inputWrapper}
+                        key={inputProps.label}
+                      >
+                        {inputProps.additionalLabel && (
+                          <Typography
+                            className={classes.additionalLabel}
+                            variant="body1"
+                          >
+                            {t(inputProps.additionalLabel)}
+                          </Typography>
+                        )}
+                        <Input {...inputProps} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              {not(equals(lastCategory, categoryName)) && <Divider />}
             </div>
-          </div>
-          {not(equals(lastCategory, category)) && <Divider />}
-        </div>
-      ))}
+          );
+        },
+      )}
     </div>
   );
 };

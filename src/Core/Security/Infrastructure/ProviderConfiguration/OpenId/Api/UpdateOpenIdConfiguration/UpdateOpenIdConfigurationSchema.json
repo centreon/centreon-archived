@@ -24,7 +24,10 @@
         "contact_template",
         "email_bind_attribute",
         "alias_bind_attribute",
-        "fullname_bind_attribute"
+        "fullname_bind_attribute",
+        "contact_group_id",
+        "claim_name",
+        "authorization_rules"
     ],
     "properties": {
       "is_active": {
@@ -106,6 +109,26 @@
       },
       "fullname_bind_attribute": {
         "type": ["string", "null"]
+      },
+      "contact_group_id": {
+        "type": ["integer", "null"]
+      },
+      "claim_name": {
+        "type": ["string", "null"]
+      },
+      "authorization_rules": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "claim_value": {
+              "type": "string"
+            },
+            "access_group_id": {
+              "type": "integer"
+            }
+          }
+        }
       }
     }
 }

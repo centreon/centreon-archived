@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -17,28 +18,34 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Core\Security\Domain\AccessGroup\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class AccessGroup
 {
     /**
-     * @var int Id of access group
+     * @var bool Indicates whether this access group is enabled or disabled
      */
-    private $id;
+    private bool $isActivate = false;
+
     /**
-     * @var string Name of the access group
+     * @var bool Indicates whether this access group has changed or not
      */
-    private $name;
+    private bool $hasChanged = false;
+
     /**
-     * @var string Alias of the access group
+     * @param integer $id
+     * @param string $name
      */
-    private $alias;
-    /**
-     * @var bool Indicates whether this contact is enabled or disabled
-     */
-    private $isActivate;
+    public function __construct(private int $id, private string $name, private string $alias)
+    {
+        Assertion::notEmpty($name, 'AccessGroup::name');
+        Assertion::notEmpty($alias, 'AccessGroup::alias');
+    }
 
     /**
      * @return int
@@ -46,16 +53,6 @@ class AccessGroup
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return AccessGroup
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -67,31 +64,11 @@ class AccessGroup
     }
 
     /**
-     * @param string $name
-     * @return AccessGroup
-     */
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getAlias(): string
     {
         return $this->alias;
-    }
-
-    /**
-     * @param string $alias
-     * @return AccessGroup
-     */
-    public function setAlias(string $alias): self
-    {
-        $this->alias = $alias;
-        return $this;
     }
 
     /**
@@ -109,6 +86,24 @@ class AccessGroup
     public function setActivate(bool $isActivate): self
     {
         $this->isActivate = $isActivate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
+    }
+
+    /**
+     * @param bool $hasChanged
+     * @return AccessGroup
+     */
+    public function setChanged(bool $hasChanged): self
+    {
+        $this->hasChanged = $hasChanged;
         return $this;
     }
 }

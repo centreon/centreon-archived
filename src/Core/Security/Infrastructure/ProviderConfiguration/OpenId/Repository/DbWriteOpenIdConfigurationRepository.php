@@ -28,7 +28,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
 {
@@ -43,9 +43,9 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
     }
 
     /**
-     * @param OpenIdConfiguration $configuration
+     * @inheritDoc
      */
-    public function updateConfiguration(OpenIdConfiguration $configuration): void
+    public function updateConfiguration(Configuration $configuration): void
     {
         $this->info('Updating OpenID Configuration in DBMS');
         $statement = $this->db->prepare(
@@ -68,10 +68,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
     /**
      * Format OpenIdConfiguration for custom_configuration.
      *
-     * @param OpenIdConfiguration $configuration
+     * @param Configuration $configuration
      * @return array<string, mixed>
      */
-    private function buildCustomConfigurationFromOpenIdConfiguration(OpenIdConfiguration $configuration): array
+    private function buildCustomConfigurationFromOpenIdConfiguration(Configuration $configuration): array
     {
         return [
             'trusted_client_addresses' => $configuration->getTrustedClientAddresses(),
@@ -93,6 +93,51 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'email_bind_attribute' => $configuration->getEmailBindAttribute(),
             'alias_bind_attribute' => $configuration->getUserAliasBindAttribute(),
             'fullname_bind_attribute' => $configuration->getUserNameBindAttribute(),
+            'claim_name' => $configuration->getClaimName(),
+            'contact_group_id' => $configuration->getContactGroup()?->getId()
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteAuthorizationRules(): void
+    {
+        $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $providerConfigurationId = (int) $result['id'];
+            $deleteStatement = $this->db->prepare(
+                "DELETE FROM security_provider_access_group_relation
+                    WHERE provider_configuration_id = :providerConfigurationId"
+            );
+            $deleteStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+            $deleteStatement->execute();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function insertAuthorizationRules(array $authorizationRules): void
+    {
+        $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $providerConfigurationId = (int) $result['id'];
+            $insertStatement = $this->db->prepare(
+                "INSERT INTO security_provider_access_group_relation
+                    (claim_value, access_group_id, provider_configuration_id)
+                    VALUES (:claimValue, :accessGroupId, :providerConfigurationId)"
+            );
+            foreach ($authorizationRules as $authorizationRule) {
+                $insertStatement->bindValue(':claimValue', $authorizationRule->getClaimValue(), \PDO::PARAM_STR);
+                $insertStatement->bindValue(
+                    ':accessGroupId',
+                    $authorizationRule->getAccessGroup()->getId(),
+                    \PDO::PARAM_INT
+                );
+                $insertStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+                $insertStatement->execute();
+            }
+        }
     }
 }
