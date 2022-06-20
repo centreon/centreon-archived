@@ -786,7 +786,7 @@ function multipleServiceInDB(
                             foreach ($esi as $key2 => $value2) {
                                 $val ? $val .=
                                     (
-                                    $value2 != null
+                                        $value2 != null
                                         ? (", '" . $pearDB->escape($value2) . "'")
                                         : ", NULL"
                                     ) : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
