@@ -38,6 +38,8 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once __DIR__ . '/../functions.php';
 
+define('SQL_ERROR_CODE_ACCESS_DENIED', 1698);
+
 $requiredParameters = array(
     'db_configuration',
     'db_storage',
@@ -80,18 +82,19 @@ try {
         $parameters['root_user'],
         $parameters['root_password']
     );
-} catch (\PDOException $e) {
-    $err['connection'] = $e->getMessage();
-}
-
-try {
     checkMariaDBPrerequisite($link);
+    $link = null;
 } catch (\Exception $e) {
-    $err['connection'] = $e->getMessage();
+    if ($e instanceof \PDOException && (int) $e->getCode() === SQL_ERROR_CODE_ACCESS_DENIED) {
+        $err['connection'] =
+            'Please check the root database username and password. '
+            . 'If the problem persists, check that you have properly '
+            . '<a target="_blank" href="https://docs.centreon.com/docs/installation'
+            . '/installation-of-a-central-server/using-packages/#secure-the-database">secured your DBMS</a>';
+    } else {
+        $err['connection'] = $e->getMessage();
+    }
 }
-
-
-$link = null;
 
 if (!count($err['required']) && $err['password'] && trim($err['connection']) == '') {
     $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);

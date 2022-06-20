@@ -9,6 +9,8 @@ if [ "$1" = "configure" ] ; then
   chown -vR centreon:centreon \
     /etc/centreon \
     /var/cache/centreon
+  chmod -R 0775 \
+    /var/cache/centreon
 fi
 
 # Initial installation

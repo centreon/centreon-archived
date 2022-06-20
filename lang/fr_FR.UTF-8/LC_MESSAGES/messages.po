@@ -16872,3 +16872,6 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 
 msgid "BBDO protocol version enabled not compatible with this feature. Version needed '%s' or higher"
 msgstr "La version du protocole BBDO utilisée n'est pas compatible avec cette fonctionnalité. Version requise '%s' ou supérieure"
+
+msgid "Parent alias"
+msgstr "Alias parent"
