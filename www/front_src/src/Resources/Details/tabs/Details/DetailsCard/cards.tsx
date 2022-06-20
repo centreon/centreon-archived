@@ -187,6 +187,11 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
+      line: <DetailsLine line={details.parent.uuid} />,
+      shouldBeDisplayed: !isNil(details.calculation_type),
+      title: labelCalculationType,
+    },
+    {
       isCustomCard: true,
       line: (
         <DetailsChips

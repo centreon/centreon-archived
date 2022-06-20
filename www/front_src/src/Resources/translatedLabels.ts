@@ -252,3 +252,4 @@ export const labelNoContactGroupsIsConfiguredForThisResource =
 export const labelCategories = 'Categories';
 export const labelHostCategory = 'Host category';
 export const labelServiceCategory = 'Service category';
+export const labelParentAlias = 'Parent alias';
