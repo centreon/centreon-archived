@@ -19,20 +19,18 @@
  *
  */
 
-declare(strict_types=1);
 
 class Formatter
 {
     private const DATE_FORMAT = 'Y/m/d';
     private const TIME_FORMAT = 'H:i:s';
     private const DATE_TIME_FORMAT = 'Y/m/d (H:i:s)';
-    private array $hosts = [];
-
     private const SERVICE_ACKNOWLEDGEMENT_MSG_TYPE = 10;
     private const HOST_ACKNOWLEDGEMENT_MSG_TYPE = 11;
     private const ACKNOWLEDGMENT_MESSAGE_TYPE = 'ACK';
     private const INITIAL_STATE_VALUE = 'INITIAL STATE';
     private const NOTIFICATION_TYPE_VALUE = 'NOTIF';
+    private array $hosts = [];
     private array $serviceStatuses = ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN'];
     private array $hostStatuses = ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE',];
     private array $notificationTypes = ['1' => 'HARD', '0' => 'SOFT'];
@@ -49,71 +47,127 @@ class Formatter
     private string $critical = '';
     private string $unknown = '';
 
+    /**
+     * @param int $start
+     * @return void
+     */
     public function setStart(int $start): void
     {
         $this->start = $start;
     }
 
+    /**
+     * @param int $end
+     * @return void
+     */
     public function setEnd(int $end): void
     {
         $this->end = $end;
     }
 
+    /**
+     * @param string $notification
+     * @return void
+     */
     public function setNotification(string $notification): void
     {
         $this->notification = $notification;
     }
 
+    /**
+     * @param string $alert
+     * @return void
+     */
     public function setAlert(string $alert): void
     {
         $this->alert = $alert;
     }
 
+    /**
+     * @param string $error
+     * @return void
+     */
     public function setError(string $error): void
     {
         $this->error = $error;
     }
 
+    /**
+     * @param string $up
+     * @return void
+     */
     public function setUp(string $up): void
     {
         $this->up = $up;
     }
 
+    /**
+     * @param string $down
+     * @return void
+     */
     public function setDown(string $down): void
     {
         $this->down = $down;
     }
 
+    /**
+     * @param string $unreachable
+     * @return void
+     */
     public function setUnreachable(string $unreachable): void
     {
         $this->unreachable = $unreachable;
     }
 
+    /**
+     * @param string $ok
+     * @return void
+     */
     public function setOk(string $ok): void
     {
         $this->ok = $ok;
     }
 
+    /**
+     * @param string $warning
+     * @return void
+     */
     public function setWarning(string $warning): void
     {
         $this->warning = $warning;
     }
 
+    /**
+     * @param string $critical
+     * @return void
+     */
     public function setCritical(string $critical): void
     {
         $this->critical = $critical;
     }
 
+    /**
+     * @param string $unknown
+     * @return void
+     */
     public function setUnknown(string $unknown): void
     {
         $this->unknown = $unknown;
     }
 
+    /**
+     * @param array $hosts
+     * @return void
+     */
     public function setHosts(array $hosts): void
     {
         $this->hosts = $hosts;
     }
 
+    /**
+     * Generates an array with metadata (filter values from http request)
+     * @return array
+     */
     public function formatMetaData(): array
     {
         return  [
@@ -132,11 +186,20 @@ class Formatter
         ];
     }
 
+    /**
+     * Column names for CSV data table
+     * @return string[]
+     */
     public function getLogHeads(): array
     {
         return ['Day', 'Time', 'Host', 'Address', 'Service', 'Status', 'Type', 'Retry', 'Output', 'Contact', 'Cmd',];
     }
 
+    /**
+     * Generates formatted CSV  data
+     * @param iterable $logs
+     * @return iterable
+     */
     public function formatLogs(iterable $logs): iterable
     {
         foreach ($logs as $log) {
@@ -146,7 +209,7 @@ class Formatter
     }
 
     /**
-     *
+     * Formats individual log data for CSV
      * @param array $log
      * @return array
      */
@@ -167,16 +230,33 @@ class Formatter
         ];
     }
 
+    /**
+     * Formats timestamp to date string
+     * @param int $timestamp
+     * @return string
+     */
     private function dateFromTimestamp(int $timestamp): string
     {
         return date(self::DATE_FORMAT, $timestamp);
     }
 
+    /**
+     * Formats timestamp to time string
+     * @param int $timestamp
+     * @return string
+     */
     private function timeFromTimestamp(int $timestamp): string
     {
         return date(self::TIME_FORMAT, $timestamp);
     }
 
+    /**
+     * Formats output value
+     *
+     * @param string $output
+     * @param string $status
+     * @return string
+     */
     private function formatOutput(string $output, string $status): string
     {
         if ($output === '' && $status !== '') {
@@ -186,6 +266,11 @@ class Formatter
         return $output;
     }
 
+    /**
+     * Formats host name to IP address
+     * @param string $hostName
+     * @return string
+     */
     private function formatAddress(string $hostName): string
     {
         if (array_key_exists($hostName, $this->hosts)) {
@@ -195,6 +280,13 @@ class Formatter
         return '';
     }
 
+    /**
+     * Formats status value query parameter to CSV data
+     * @param string $status
+     * @param string $msgType
+     * @param string $serviceDescription
+     * @return string
+     */
     private function formatStatus(string $status, string $msgType, string $serviceDescription): string
     {
         if ($this->msgTypeIsAcknowledged($msgType)) {
@@ -212,11 +304,22 @@ class Formatter
         return $status;
     }
 
+    /**
+     * Checks that message type is one from the available list
+     * @param string $msgType
+     * @return bool
+     */
     private function msgTypeIsAcknowledged(string $msgType): bool
     {
         return in_array($msgType, [self::HOST_ACKNOWLEDGEMENT_MSG_TYPE, self::SERVICE_ACKNOWLEDGEMENT_MSG_TYPE]);
     }
 
+    /**
+     * Formats type for CSV data
+     * @param string $type
+     * @param string $msgType
+     * @return string
+     */
     private function formatType(string $type, string $msgType): string
     {
         // For an ACK there is no point to display TYPE column
@@ -235,11 +338,22 @@ class Formatter
         return $type;
     }
 
+    /**
+     * Checks that type is one of allowed one
+     * @param string $type
+     * @return bool
+     */
     private function typeIsNotification(string $type): bool
     {
         return in_array($type, ['2', '3']);
     }
 
+    /**
+     * Formats retry query argument
+     * @param string $retry
+     * @param string $msgType
+     * @return string
+     */
     private function formatRetry(string $retry, string $msgType): string
     {
         // For an ACK there is no point to display RETRY column
@@ -254,16 +368,30 @@ class Formatter
         return $retry;
     }
 
+    /**
+     * Converts end date to datetime format
+     * @return string
+     */
     private function formatEnd(): string
     {
         return $this->formatDateTime($this->end);
     }
 
+    /**
+     * Converts start date to datetime format
+     *
+     * @return string
+     */
     private function formatStart(): string
     {
         return $this->formatDateTime($this->start);
     }
 
+    /**
+     * Formats timestamp to datetime string
+     * @param int $date
+     * @return string
+     */
     private function formatDateTime(int $date): string
     {
         if ($date <= 0) {

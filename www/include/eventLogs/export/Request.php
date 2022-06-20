@@ -69,42 +69,66 @@ class Request
         $this->populateClassPropertiesFromRequestParameters();
     }
 
+    /**
+     * @param int|null $is_admin
+     * @return void
+     */
     public function setIsAdmin(?int $is_admin): void
     {
         $this->is_admin = $is_admin;
     }
 
+    /**
+     * @param array $lca
+     * @return void
+     */
     public function setLca(array $lca): void
     {
         $this->lca = $lca;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLang(): ?string
     {
         return $this->lang;
     }
 
+    /**
+     * @return string|null
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getOpenid(): string
     {
         return filter_var($this->getId() ?? '-1', FILTER_SANITIZE_STRING);
     }
 
+    /**
+     * @return int|null
+     */
     public function getLimit(): ?int
     {
         return $this->limit;
     }
 
+    /**
+     * Retrieves timestamp for start date
+     * @return int
+     */
     public function getStart(): int
     {
         $start = 0;
 
         if ($this->startDate != '') {
-            $start = $this->timeFromString($this->startDate);
+            $start = $this->dateStringToTimestamp($this->startDate);
         }
 
         // setting the startDate/Time using the user's chosen period
@@ -117,18 +141,22 @@ class Request
         return $start;
     }
 
+    /**
+     * * Retrieves timestamp for end date
+     * @return int
+     */
     public function getEnd(): int
     {
         $end = time();
 
         if ($this->endDate != '') {
-            $end = $this->timeFromString($this->endDate);
+            $end = $this->dateStringToTimestamp($this->endDate);
         }
 
         return $end;
     }
 
-    private function timeFromString(string $dateString): int
+    private function dateStringToTimestamp(string $dateString): int
     {
         preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $dateString, $matchesD);
         preg_match("/^([0-9]*):([0-9]*)/", $dateString, $matchesT);
@@ -143,26 +171,41 @@ class Request
         );
     }
 
+    /**
+     * @return string|null
+     */
     public function getEndDate(): ?string
     {
         return $this->endDate;
     }
 
+    /**
+     * @return string|null
+     */
     public function getStartTime(): ?string
     {
         return $this->startTime;
     }
 
+    /**
+     * @return int|null
+     */
     public function getPeriod(): ?int
     {
         return $this->period ?? 0;
     }
 
+    /**
+     * @return string
+     */
     public function getEngine(): string
     {
         return htmlentities($this->engine);
     }
 
+    /**
+     * @return string
+     */
     public function getUp(): string
     {
         if ($this->getEngine() === 'true') {
@@ -171,6 +214,9 @@ class Request
         return htmlentities($this->up);
     }
 
+    /**
+     * @return string
+     */
     public function getDown(): string
     {
         if ($this->getEngine() === 'true') {
@@ -180,6 +226,9 @@ class Request
         return htmlentities($this->down);
     }
 
+    /**
+     * @return string
+     */
     public function getUnreachable(): string
     {
         if ($this->getEngine() === 'true') {
@@ -189,6 +238,9 @@ class Request
         return htmlentities($this->unreachable);
     }
 
+    /**
+     * @return string
+     */
     public function getOk(): string
     {
         if ($this->getEngine() === 'true') {
@@ -197,6 +249,9 @@ class Request
         return htmlentities($this->ok);
     }
 
+    /**
+     * @return string
+     */
     public function getWarning(): string
     {
         if ($this->getEngine() === 'true') {
@@ -206,6 +261,9 @@ class Request
         return htmlentities($this->warning);
     }
 
+    /**
+     * @return string
+     */
     public function getCritical(): string
     {
         if ($this->getEngine() === 'true') {
@@ -215,6 +273,9 @@ class Request
         return htmlentities($this->critical);
     }
 
+    /**
+     * @return string
+     */
     public function getUnknown(): string
     {
         if ($this->getEngine() === 'true') {
@@ -223,6 +284,9 @@ class Request
         return htmlentities($this->unknown);
     }
 
+    /**
+     * @return string|null
+     */
     public function getNotification(): ?string
     {
         if ($this->getEngine() === 'true') {
@@ -232,6 +296,9 @@ class Request
         return htmlentities($this->notification);
     }
 
+    /**
+     * @return string
+     */
     public function getAlert(): string
     {
         if ($this->getEngine() === 'true') {
@@ -241,6 +308,9 @@ class Request
         return htmlentities($this->alert);
     }
 
+    /**
+     * @return string
+     */
     public function getOh(): string
     {
         if ($this->getEngine() === 'true') {
@@ -258,31 +328,50 @@ class Request
         return $this->error;
     }
 
+    /**
+     * @return string
+     */
     public function getOutput(): string
     {
         return urldecode($this->output);
     }
 
+    /**
+     * @return string|null
+     */
     public function getSearchS(): ?string
     {
         return $this->searchS;
     }
 
+    /**
+     * @return string
+     */
     public function getSearchHost(): string
     {
         return $this->charsToHtmlEntities($this->searchHost);
     }
 
+    /**
+     * @return string
+     */
     public function getSearchService(): string
     {
         return$this->charsToHtmlEntities($this->searchService);
     }
 
+    /**
+     * @return string
+     */
     public function getExport(): string
     {
         return $this->charsToHtmlEntities($this->export);
     }
 
+    /**
+     * Retrieves list of host message statuses depending on request parameters
+     * @return array
+     */
     public function getHostMsgStatusSet(): array
     {
         if ($this->getUp() === 'true') {
@@ -298,6 +387,10 @@ class Request
         return $this->hostMsgStatusSet;
     }
 
+    /**
+     * Retrieves list of service message statuses depending on request parameters
+     * @return array
+     */
     public function getSvcMsgStatusSet(): array
     {
         if ($this->getOk() === 'true') {
@@ -316,6 +409,10 @@ class Request
         return $this->svcMsgStatusSet;
     }
 
+    /**
+     * Retrieves host ids depending on open id parameter
+     * @return array
+     */
     public function getTabHostIds(): array
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
@@ -348,6 +445,12 @@ class Request
         return $this->tabHostIds;
     }
 
+    /**
+     * Splits open id string into associative array of id, hostId and type
+     *
+     * @param string $openid
+     * @return array|string[]
+     */
     private function splitOpenId(string $openid): array
     {
         $chunks = preg_split("/\_/", $openid);
@@ -368,6 +471,10 @@ class Request
         return ['id' => $id, 'hostId' => $hostId, 'type' => $chunks[0]];
     }
 
+    /**
+     * Retrieves service ids depending on open id parameter
+     * @return array
+     */
     public function getTabSvc(): array
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
@@ -418,6 +525,11 @@ class Request
         return $this->tabSvc;
     }
 
+    /**
+     * Populates class properties from request.
+     * Request arguments are matched against property name. Request values are used as property values.
+     * @return void
+     */
     private function populateClassPropertiesFromRequestParameters(): void
     {
         $inputArguments = $this->getInputFilters();
@@ -434,7 +546,14 @@ class Request
         }
     }
 
-    private function populateClassPropertyWithRequestArgument(mixed $argumentName, mixed $propertyValue)
+    /**
+     * Populates class properties from request.
+     * Arguments are matched against property name. Values as property values.
+     * @param mixed $argumentName
+     * @param mixed $propertyValue
+     * @return void
+     */
+    private function populateClassPropertyWithRequestArgument(mixed $argumentName, mixed $propertyValue): void
     {
         $propertyName = $this->stringToCamelCase($argumentName);
         if (property_exists($this, $propertyName)) {
@@ -442,6 +561,11 @@ class Request
         }
     }
 
+    /**
+     * Converts string to camelCase literal
+     * @param $string
+     * @return string
+     */
     private function stringToCamelCase($string): string
     {
         $str = str_replace('_', '', ucwords($string, '_'));
@@ -449,6 +573,12 @@ class Request
         return lcfirst($str);
     }
 
+    /**
+     * Array of available request argument.
+     * Array keys are available request arguments. Values sanitizing rules
+     * @param int $defaultLimit
+     * @return array
+     */
     private function getInputFilters(int $defaultLimit = 30): array
     {
         return [
@@ -492,6 +622,11 @@ class Request
         ];
     }
 
+    /**
+     * Convert string to HTML entities in order to secure against XSS vulnerabilities
+     * @param string $string
+     * @return string
+     */
     private function charsToHtmlEntities(string $string): string
     {
         return htmlentities($string, ENT_QUOTES, 'UTF-8');

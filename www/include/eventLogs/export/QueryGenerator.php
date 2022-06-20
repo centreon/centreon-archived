@@ -56,141 +56,253 @@ class QueryGenerator
     {
     }
 
+    /**
+     * @param int|null $is_admin
+     * @return void
+     */
     public function setIsAdmin(?int $is_admin): void
     {
         $this->is_admin = $is_admin;
     }
 
+    /**
+     * @param string $openId
+     * @return void
+     */
     public function setOpenId(string $openId): void
     {
         $this->openid = $openId;
     }
 
+    /**
+     * @param string $output
+     * @return void
+     */
     public function setOutput(string $output): void
     {
         $this->output = $output;
     }
 
+    /**
+     * @param CentreonAcl|null $access
+     * @return void
+     */
     public function setAccess(?CentreonAcl $access): void
     {
         $this->access = $access;
     }
 
+    /**
+     * @param int $start
+     * @return void
+     */
     public function setStart(int $start): void
     {
         $this->start = $start;
     }
 
+    /**
+     * @param int $end
+     * @return void
+     */
     public function setEnd(int $end): void
     {
         $this->end = $end;
     }
 
+    /**
+     * @param string $up
+     * @return void
+     */
     public function setUp(string $up): void
     {
         $this->up = $up;
     }
 
+    /**
+     * @param string $down
+     * @return void
+     */
     public function setDown(string $down): void
     {
         $this->down = $down;
     }
 
+    /**
+     * @param string $unreachable
+     * @return void
+     */
     public function setUnreachable(string $unreachable): void
     {
         $this->unreachable = $unreachable;
     }
 
+    /**
+     * @param string $ok
+     * @return void
+     */
     public function setOk(string $ok): void
     {
         $this->ok = $ok;
     }
 
+    /**
+     * @param string $warning
+     * @return void
+     */
     public function setWarning(string $warning): void
     {
         $this->warning = $warning;
     }
 
+    /**
+     * @param string $critical
+     * @return void
+     */
     public function setCritical(string $critical): void
     {
         $this->critical = $critical;
     }
 
+    /**
+     * @param string $unknown
+     * @return void
+     */
     public function setUnknown(string $unknown): void
     {
         $this->unknown = $unknown;
     }
 
+    /**
+     * @param string $notification
+     * @return void
+     */
     public function setNotification(string $notification): void
     {
         $this->notification = $notification;
     }
 
+    /**
+     * @param string $alert
+     * @return void
+     */
     public function setAlert(string $alert): void
     {
         $this->alert = $alert;
     }
 
+    /**
+     * @param string $error
+     * @return void
+     */
     public function setError(string $error): void
     {
         $this->error = $error;
     }
 
+    /**
+     * @param string $oh
+     * @return void
+     */
     public function setOh(string $oh): void
     {
         $this->oh = $oh;
     }
 
+    /**
+     * @param array $hostMsgStatusSet
+     * @return void
+     */
     public function setHostMsgStatusSet(array $hostMsgStatusSet): void
     {
         $this->hostMsgStatusSet = $hostMsgStatusSet;
     }
 
+    /***
+     * @param array $svcMsgStatusSet
+     * @return void
+     */
     public function setSvcMsgStatusSet(array $svcMsgStatusSet): void
     {
         $this->svcMsgStatusSet = $svcMsgStatusSet;
     }
 
+    /**
+     * @param array $tabHostIds
+     * @return void
+     */
     public function setTabHostIds(array $tabHostIds): void
     {
         $this->tabHostIds = $tabHostIds;
     }
 
+    /**
+     * @param string $searchHost
+     * @return void
+     */
     public function setSearchHost(string $searchHost): void
     {
         $this->searchHost = $searchHost;
     }
 
+    /**
+     * @param array $tabSvc
+     * @return void
+     */
     public function setTabSvc(array $tabSvc): void
     {
         $this->tabSvc = $tabSvc;
     }
 
+    /**
+     * @param string $searchService
+     * @return void
+     */
     public function setSearchService(string $searchService): void
     {
         $this->searchService = $searchService;
     }
 
+    /**
+     * @param string $engine
+     * @return void
+     */
     public function setEngine(string $engine): void
     {
         $this->engine = $engine;
     }
 
+    /**
+     * @param int|string $export
+     * @return void
+     */
     public function setExport(int|string $export): void
     {
         $this->export = $export;
     }
 
+    /**
+     * @param int $num
+     * @return void
+     */
     public function setNum(int $num): void
     {
         $this->num = $num;
     }
 
+    /**
+     * @param int|null $limit
+     * @return void
+     */
     public function setLimit(?int $limit): void
     {
         $this->limit = $limit;
     }
 
+    /**
+     * Generates executable PROStatement for all database records
+     * @return PDOStatement
+     */
     public function getStatement(): PDOStatement
     {
         $req = $this->generateQuery();
@@ -205,6 +317,10 @@ class QueryGenerator
         return $stmt;
     }
 
+    /**
+     * Generates SQL statement with placeholders for all database records
+     * @return string
+     */
     private function generateQuery(): string
     {
         $whereOutput = $this->generateWhere();
@@ -323,6 +439,10 @@ class QueryGenerator
         return $req;
     }
 
+    /**
+     * Generates limit statement
+     * @return string
+     */
     private function generateLimit(): string
     {
         if ($this->num < 0) {
@@ -336,6 +456,10 @@ class QueryGenerator
         return " LIMIT :offset, :limit";
     }
 
+    /**
+     * Creates join statement with instances and filters on poller IDs
+     * @return string
+     */
     private function generateInnerJoinQuery(): string
     {
         $innerJoinEngineLog = '';
@@ -360,6 +484,10 @@ class QueryGenerator
         return $innerJoinEngineLog;
     }
 
+    /**
+     * Generates Where statement
+     * @return string
+     */
     private function generateWhere(): string
     {
         $whereOutput = "";
@@ -371,6 +499,10 @@ class QueryGenerator
         return $whereOutput;
     }
 
+    /**
+     * Generates sub request with filters
+     * @return string
+     */
     private function generateMsgHost(): string
     {
         $msg_req = '';

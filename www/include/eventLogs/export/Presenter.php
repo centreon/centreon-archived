@@ -24,26 +24,41 @@ declare(strict_types=1);
 class Presenter
 {
     private const DELIMITER = ';';
-
     private array $heads = [];
     private iterable $logs;
     private array $metaData;
 
+    /**
+     * @param array $heads
+     * @return void
+     */
     public function setHeads(array $heads): void
     {
         $this->heads = $heads;
     }
 
+    /**
+     * @param array $metaData
+     * @return void
+     */
     public function setMetaData(array $metaData): void
     {
         $this->metaData = $metaData;
     }
 
+    /**
+     * @param iterable $logs
+     * @return void
+     */
     public function setLogs(iterable $logs): void
     {
         $this->logs = $logs;
     }
 
+    /**
+     * Renders metadata and formatted records as CSV file
+     * @return void
+     */
     public function render()
     {
         header('Content-Disposition: attachment;filename="EventLogs.csv";');
