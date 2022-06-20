@@ -375,32 +375,7 @@ try {
   }
 
   stage('API // E2E // Lighthouse CI') {
-    parallel 'API Tests': {
-      if (hasBackendChanges) {
-        def parallelSteps = [:]
-        for (x in apiFeatureFiles) {
-          def feature = x
-          parallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild()
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
-                currentBuild.result = 'FAILURE'
-              }
-            }
-          }
-        }
-        parallel parallelSteps
-      }
-    },
-    'E2E tests': {
+    parallel 'E2E tests': {
       node {
         checkoutCentreonBuild(buildBranch);
         unstash 'git-sources'
