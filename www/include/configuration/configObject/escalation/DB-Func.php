@@ -272,17 +272,16 @@ function insertEscalation(CentreonDB $pearDB, array $data, bool $logAction = tru
         if ($paramType === \PDO::PARAM_INT) {
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? $data[$paramName] : null,
+                isset($data[$paramName]) && $data[$paramName] !== '' ? $data[$paramName] : null,
                 $paramType
             );
         } elseif ($paramType === \PDO::PARAM_STR) {
-            $value = $data[$paramName];
-            if (is_array($data[$paramName])) {
-                $value = implode(",", array_keys($data[$paramName]));
-            }
+            $value = isset($data[$paramName])
+                ? (is_array($data[$paramName]) ? implode(",", array_keys($data[$paramName])) : $data[$paramName])
+                : null;
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? $value : null,
+                $value,
                 $paramType
             );
         } else {
@@ -350,17 +349,16 @@ function updateEscalation(CentreonDB $pearDB, array $data, int $escalationId): v
         if ($paramType === \PDO::PARAM_INT) {
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? $data[$paramName] : null,
+                isset($data[$paramName]) && $data[$paramName] !== '' ? $data[$paramName] : null,
                 $paramType
             );
         } elseif ($paramType === \PDO::PARAM_STR) {
-            $value = $data[$paramName];
-            if (is_array($data[$paramName])) {
-                $value = implode(",", array_keys($data[$paramName]));
-            }
+            $value = isset($data[$paramName])
+                ? (is_array($data[$paramName]) ? implode(",", array_keys($data[$paramName])) : $data[$paramName])
+                : null;
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? $value : null,
+                $value,
                 $paramType
             );
         } else {
