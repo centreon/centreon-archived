@@ -59,10 +59,7 @@ function testExistence(?string $name = null): bool
 
     $escalation = $stmt->fetch();
 
-    if ($stmt->rowCount() >= 1 && $escalation["esc_id"] !== $id) {
-        return false;
-    }
-    return true;
+    return ! ($stmt->rowCount() >= 1 && $escalation["esc_id"] !== $id);
 }
 
 /**
@@ -73,7 +70,7 @@ function deleteEscalationInDB(array $escalations = [])
 {
     global $pearDB, $centreon;
 
-    foreach ($escalations as $escalationId => $value) {
+    foreach (array_keys($escalations) as $escalationId) {
         $stmt = $pearDB->prepare("SELECT esc_name FROM `escalation` WHERE `esc_id` = :escalationId LIMIT 1");
         $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -91,7 +88,7 @@ function multipleEscalationInDB(array $escalations = [], array $nbrDup = []): vo
 {
     global $pearDB, $centreon;
 
-    foreach ($escalations as $escalationId => $value) {
+    foreach (array_keys($escalations) as $escalationId) {
         $stmt = $pearDB->prepare("SELECT * FROM `escalation` WHERE `esc_id` = :escalationId LIMIT 1");
         $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
         $stmt->execute();
