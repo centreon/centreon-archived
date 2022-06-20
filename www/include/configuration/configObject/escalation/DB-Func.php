@@ -54,7 +54,7 @@ function testExistence(?string $name = null): bool
     $id = isset($form) ? $form->getSubmitValue('esc_id') : null;
 
     $stmt = $pearDB->prepare("SELECT esc_name, esc_id FROM escalation WHERE esc_name = :name");
-    $stmt->bindValue(':name', htmlentities($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
+    $stmt->bindValue(':name', html_entity_decode($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
     $stmt->execute();
 
     $escalation = $stmt->fetch();
@@ -240,6 +240,8 @@ function insertEscalationInDB(): ?int
  */
 function insertEscalation(CentreonDB $pearDB, array $data, bool $logAction = true): ?int
 {
+    $data = array_map("myDecode", $data);
+
     $query = "INSERT INTO escalation (
             esc_name, esc_alias, first_notification, last_notification, notification_interval,
             escalation_period, host_inheritance_to_services, hostgroup_inheritance_to_services, escalation_options1,
@@ -280,7 +282,7 @@ function insertEscalation(CentreonDB $pearDB, array $data, bool $logAction = tru
             }
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? htmlentities($value, ENT_QUOTES, "UTF-8") : null,
+                isset($data[$paramName]) ? $value : null,
                 $paramType
             );
         } else {
@@ -312,6 +314,8 @@ function insertEscalation(CentreonDB $pearDB, array $data, bool $logAction = tru
  */
 function updateEscalation(CentreonDB $pearDB, array $data, int $escalationId): void
 {
+    $data = array_map("myDecode", $data);
+
     $query = "UPDATE escalation SET
         esc_name = :esc_name,
         esc_alias = :esc_alias,
@@ -356,7 +360,7 @@ function updateEscalation(CentreonDB $pearDB, array $data, int $escalationId): v
             }
             $stmt->bindValue(
                 ":" . $paramName,
-                isset($data[$paramName]) ? htmlentities($value, ENT_QUOTES, "UTF-8") : null,
+                isset($data[$paramName]) ? $value : null,
                 $paramType
             );
         } else {
@@ -374,7 +378,7 @@ function updateEscalation(CentreonDB $pearDB, array $data, int $escalationId): v
 }
 
 /**
- * Log escacaltion creation or update for the action log
+ * Log escalation creation or update for the action log
  *
  * @param int|null $esc_id
  * @param string $action ('a' = add, 'c' = update)
@@ -384,43 +388,45 @@ function logEscalation(?int $escalationId, string $action, array $data): void
 {
     global $centreon;
 
-    $fields["esc_name"] = htmlentities($data["esc_name"], ENT_QUOTES, "UTF-8");
-    $fields["esc_alias"] = htmlentities($data["esc_alias"], ENT_QUOTES, "UTF-8");
-    $fields["first_notification"] = htmlentities($data["first_notification"], ENT_QUOTES, "UTF-8");
-    $fields["last_notification"] = htmlentities($data["last_notification"], ENT_QUOTES, "UTF-8");
-    $fields["notification_interval"] = htmlentities($data["notification_interval"], ENT_QUOTES, "UTF-8");
-    $fields["escalation_period"] = htmlentities($data["escalation_period"], ENT_QUOTES, "UTF-8");
-    $fields["escalation_options1"] = isset($data["escalation_options1"])
-        ? implode(",", array_keys($data["escalation_options1"]))
-        : "";
-    $fields["escalation_options2"] = isset($data["escalation_options2"])
-        ? implode(",", array_keys($data["escalation_options2"]))
-        : "";
-    $fields["esc_comment"] = htmlentities($data["esc_comment"], ENT_QUOTES, "UTF-8");
-    $fields["esc_cgs"] = isset($data["esc_cgs"])
-        ? implode(",", array_keys($data["esc_cgs"]))
-        : "";
+    $fields = [
+       "esc_name" => $data["esc_name"],
+       "esc_alias" => $data["esc_alias"],
+       "first_notification" => $data["first_notification"],
+       "last_notification" => $data["last_notification"],
+       "notification_interval" => $data["notification_interval"],
+       "escalation_period" => $data["escalation_period"],
+       "escalation_options1" => isset($data["escalation_options1"])
+           ? implode(",", array_keys($data["escalation_options1"]))
+           : "",
+       "escalation_options2" => isset($data["escalation_options2"])
+           ? implode(",", array_keys($data["escalation_options2"]))
+           : "",
+       "esc_comment" => $data["esc_comment"],
+       "esc_cgs" => isset($data["esc_cgs"])
+           ? implode(",", array_keys($data["esc_cgs"]))
+           : "",
+        "esc_hosts" => isset($data["esc_hosts"])
+           ? implode(",", array_keys($data["esc_hosts"]))
+           : "",
+        "esc_hgs" => isset($data["esc_hgs"])
+           ? implode(",", array_keys($data["esc_hgs"]))
+           : "",
+        "esc_sgs" => isset($data["esc_sgs"])
+           ? implode(",", array_keys($data["esc_sgs"]))
+           : "",
+        "esc_hServices" => isset($data["esc_hServices"])
+           ? implode(",", array_keys($data["esc_hServices"]))
+           : "",
+        "esc_metas" => isset($data["esc_metas"])
+           ? implode(",", array_keys($data["esc_metas"]))
+           : "",
+    ];
     if (isset($data["host_inheritance_to_services"])) {
         $fields["host_inheritance_to_services"] = $data["host_inheritance_to_services"];
     }
     if (isset($data["hostgroup_inheritance_to_services"])) {
         $fields["hostgroup_inheritance_to_services"] = $data["hostgroup_inheritance_to_services"];
     }
-    $fields["esc_hosts"] = isset($data["esc_hosts"])
-        ? implode(",", array_keys($data["esc_hosts"]))
-        : "";
-    $fields["esc_hgs"] = isset($data["esc_hgs"])
-        ? implode(",", array_keys($data["esc_hgs"]))
-        : "";
-    $fields["esc_sgs"] = isset($data["esc_sgs"])
-        ? implode(",", array_keys($data["esc_sgs"]))
-        : "";
-    $fields["esc_hServices"] = isset($data["esc_hServices"])
-        ? implode(",", array_keys($data["esc_hServices"]))
-        : "";
-    $fields["esc_metas"] = isset($data["esc_metas"])
-        ? implode(",", array_keys($data["esc_metas"]))
-        : "";
 
     $centreon->CentreonLogAction->insertLog(
         "escalation",

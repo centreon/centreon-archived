@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -149,6 +150,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 for ($i = 0; $esc = $dbResult->fetch(); $i++) {
+    $esc = array_map("myEncode", $esc);
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $esc['esc_id'] . "]");
     $moptions .=
@@ -160,8 +162,8 @@ for ($i = 0; $esc = $dbResult->fetch(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($esc["esc_name"])),
-        "RowMenu_alias" => CentreonUtils::escapeSecure(myDecode($esc["esc_alias"])),
+        "RowMenu_name" => CentreonUtils::escapeSecure($esc["esc_name"]),
+        "RowMenu_alias" => CentreonUtils::escapeSecure($esc["esc_alias"]),
         "RowMenu_link" => "main.php?p=" . $p . "&o=c&esc_id=" . $esc['esc_id'],
         "RowMenu_options" => $moptions
     );
