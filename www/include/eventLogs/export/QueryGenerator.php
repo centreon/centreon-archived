@@ -21,7 +21,6 @@
 
 declare(strict_types=1);
 
-$queryValues = [];
 class QueryGenerator
 {
     private array $queryValues = [];
@@ -257,7 +256,8 @@ class QueryGenerator
             if ($str_unitH != "") {
                 $str_unitH = "(logs.host_id IN ($str_unitH) AND (logs.service_id IS NULL OR logs.service_id = 0))";
                 if (isset($this->searchHost) && $this->searchHost != "") {
-                    $host_search_sql = " AND logs.host_name LIKE '%" . $this->pearDBO->escape($this->searchHost) . "%' ";
+                    $host_search_sql =
+                        " AND logs.host_name LIKE '%" . $this->pearDBO->escape($this->searchHost) . "%' ";
                 }
             }
 
@@ -293,13 +293,15 @@ class QueryGenerator
                             $str_unitSVC .= $req_append . " (logs.host_name = '" . $host_id . "' "
                                 . "AND logs.service_id IN (" . $str . ")) ";
                         } else {
-                            $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                            $str_unitSVC .= $req_append .
+                                " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
                         }
                         $req_append = " OR";
                     }
                 }
                 if (isset($this->searchService) && $this->searchService != "") {
-                    $service_search_sql = " AND logs.service_description LIKE '%" . $this->pearDBO->escape($this->searchService) . "%' ";
+                    $service_search_sql =
+                        " AND logs.service_description LIKE '%" . $this->pearDBO->escape($this->searchService) . "%' ";
                 }
                 if ($str_unitH != "" && $str_unitSVC != "") {
                     $str_unitSVC = " OR " . $str_unitSVC;

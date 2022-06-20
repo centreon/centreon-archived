@@ -104,13 +104,12 @@ class Request
         $start = 0;
 
         if ($this->startDate != '') {
-            preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $this->startDate, $matchesD);
-            preg_match("/^([0-9]*):([0-9]*)/", $this->startTime, $matchesT);
-            $start = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
+            $start = $this->timeFromString($this->startDate);
         }
 
         // setting the startDate/Time using the user's chosen period
-        // and checking if the start date/time was set by the user, to avoid to display/export the whole data since 1/1/1970
+        // and checking if the start date/time was set by the user,
+        // to avoid to display/export the whole data since 1/1/1970
         if ($this->getPeriod() > 0 || $start === 0) {
             $start = time() - $this->getPeriod();
         }
@@ -123,12 +122,25 @@ class Request
         $end = time();
 
         if ($this->endDate != '') {
-            preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $this->endDate, $matchesD);
-            preg_match("/^([0-9]*):([0-9]*)/", $this->endTime, $matchesT);
-            $end = mktime((int) $matchesT[1], (int) $matchesT[2], 0, (int) $matchesD[1], (int) $matchesD[2], (int) $matchesD[3]);
+            $end = $this->timeFromString($this->endDate);
         }
 
         return $end;
+    }
+
+    private function timeFromString(string $dateString): int
+    {
+        preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $dateString, $matchesD);
+        preg_match("/^([0-9]*):([0-9]*)/", $dateString, $matchesT);
+
+        return mktime(
+            (int) $matchesT[1],
+            (int) $matchesT[2],
+            0,
+            (int) $matchesD[1],
+            (int) $matchesD[2],
+            (int) $matchesD[3]
+        );
     }
 
     public function getEndDate(): ?string
@@ -238,6 +250,9 @@ class Request
         return htmlentities($this->oh);
     }
 
+    /**
+     * @return string|null
+     */
     public function getError(): ?string
     {
         return $this->error;
@@ -386,7 +401,8 @@ class Request
                         $tmp_host_id = $tab_tmp[0];
                         $tmp_service_id = $tab_tmp[1];
                         if (isset($this->lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
-                            $this->tabSvc[$tmp_host_id][$tmp_service_id] = $this->lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                            $this->tabSvc[$tmp_host_id][$tmp_service_id] =
+                                $this->lca["LcaHost"][$tmp_host_id][$tmp_service_id];
                         }
                     }
                 }

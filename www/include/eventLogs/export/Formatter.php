@@ -140,10 +140,16 @@ class Formatter
     public function formatLogs(iterable $logs): iterable
     {
         foreach ($logs as $log) {
+            usleep(300);
             yield $this->formatLog($log);
         }
     }
 
+    /**
+     *
+     * @param array $log
+     * @return array
+     */
     private function formatLog(array $log): array
     {
         return [
