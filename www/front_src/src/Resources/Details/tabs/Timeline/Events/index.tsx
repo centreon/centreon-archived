@@ -9,7 +9,6 @@ import { Typography, Paper, Divider } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {
   Timeline,
-  TimelineConnector,
   TimelineContent,
   TimelineDot,
   TimelineItem,
@@ -49,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
       flex: 0,
       padding: 0,
     },
+    alignItems: 'center',
     minHeight: theme.spacing(7),
   },
   events: {
