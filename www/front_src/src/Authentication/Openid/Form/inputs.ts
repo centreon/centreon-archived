@@ -1,7 +1,8 @@
-import { equals, not, prop } from 'ramda';
+import { equals, isEmpty, isNil, not, path, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import {
+  labelAccessGroup,
   labelAliasAttributeToBind,
   labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
@@ -10,6 +11,7 @@ import {
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactGroup,
   labelContactTemplate,
   labelDisableVerifyPeer,
   labelEmailAttributeToBind,
@@ -26,20 +28,34 @@ import {
   labelTrustedClientAddresses,
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
+  labelAuthorizationValue,
+  labelDefineRelationAuthorizationValueAndAccessGroup,
+  labelDeleteRelation,
+  labelAuthorizationKey,
 } from '../translatedLabels';
-import { AuthenticationType } from '../models';
+import { AuthenticationType, AuthorizationRule } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
+  labelAuthorizations,
   labelAutoImport,
   labelClientAddresses,
   labelIdentityProvider,
 } from '../../translatedLabels';
+import {
+  accessGroupsEndpoint,
+  contactGroupsEndpoint,
+  contactTemplatesEndpoint,
+} from '../../api/endpoints';
 
 const isAutoImportDisabled = (values: FormikValues): boolean =>
   not(prop('autoImport', values));
+
 const isAutoImportEnabled = (values: FormikValues): boolean =>
   prop('autoImport', values);
+
+const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
+  not(isEmpty(prop('authorizationRules', values)));
 
 export const inputs: Array<InputProps> = [
   {
@@ -155,7 +171,8 @@ export const inputs: Array<InputProps> = [
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value) => equals(AuthenticationType.ClientSecretBasic, value),
+    getChecked: (value): boolean =>
+      equals(AuthenticationType.ClientSecretBasic, value),
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },
@@ -173,6 +190,7 @@ export const inputs: Array<InputProps> = [
   },
   {
     category: labelAutoImport,
+    endpoint: contactTemplatesEndpoint,
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
@@ -202,5 +220,60 @@ export const inputs: Array<InputProps> = [
     getRequired: isAutoImportEnabled,
     label: labelFullnameAttributeToBind,
     type: InputType.Text,
+  },
+  {
+    category: labelAuthorizations,
+    endpoint: contactGroupsEndpoint,
+    fieldName: 'contactGroup',
+    getRequired: isAuthorizationRelationsFilled,
+    label: labelContactGroup,
+    type: InputType.ConnectedAutocomplete,
+  },
+  {
+    category: labelAuthorizations,
+    fieldName: 'claimName',
+    label: labelAuthorizationKey,
+    type: InputType.Text,
+  },
+  {
+    additionalFieldsToMemoize: ['contactGroup'],
+    category: labelAuthorizations,
+    fieldName: 'authorizationRules',
+    fieldsTableConfiguration: {
+      columns: [
+        {
+          fieldName: 'claimValue',
+          label: labelAuthorizationValue,
+          type: InputType.Text,
+        },
+        {
+          endpoint: accessGroupsEndpoint,
+          fieldName: 'accessGroup',
+          label: labelAccessGroup,
+          type: InputType.ConnectedAutocomplete,
+        },
+      ],
+      defaultRowValue: {
+        accessGroup: null,
+        claimValue: '',
+      },
+      deleteLabel: labelDeleteRelation,
+      getRequired: ({ values, index }): boolean => {
+        const tableValues = prop('authorizationRules', values);
+
+        const rowValues = path<AuthorizationRule>(
+          ['authorizationRules', index],
+          values,
+        );
+
+        return isNil(prop('contactGroup', values))
+          ? not(isNil(rowValues))
+          : isNil(tableValues) ||
+              isEmpty(rowValues?.claimValue) ||
+              isNil(rowValues?.accessGroup);
+      },
+    },
+    label: labelDefineRelationAuthorizationValueAndAccessGroup,
+    type: InputType.FieldsTable,
   },
 ];

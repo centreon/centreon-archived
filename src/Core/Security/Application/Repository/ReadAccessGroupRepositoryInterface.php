@@ -29,10 +29,35 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 interface ReadAccessGroupRepositoryInterface
 {
     /**
+     * Find all access groups
+     *
+     * @return AccessGroup[]
+     * @throws \Throwable
+     */
+    public function findAllWithFilter(): array;
+
+    /**
      * Find all access groups according to a contact.
      *
      * @param ContactInterface $contact Contact for which we want to find the access groups.
      * @return AccessGroup[]
+     * @throws \Throwable
      */
     public function findByContact(ContactInterface $contact): array;
+
+    /**
+     * Find all access groups according to a contact with filter
+     *
+     * @param ContactInterface $contact
+     * @return AccessGroup[]
+     * @throws \Throwable
+     */
+    public function findByContactWithFilter(ContactInterface $contact): array;
+
+    /**
+     * @param int[] $accessGroupIds
+     * @return AccessGroup[]
+     * @throws \Throwable
+     */
+    public function findByIds(array $accessGroupIds): array;
 }

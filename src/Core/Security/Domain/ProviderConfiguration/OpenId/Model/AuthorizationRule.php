@@ -21,35 +21,33 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Contact\Application\UseCase;
+namespace Core\Security\Domain\ProviderConfiguration\OpenId\Model;
 
-use Symfony\Component\HttpFoundation\Response;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesResponse;
-use Core\Contact\Application\UseCase\FindContactTemplates\FindContactTemplatesPresenterInterface;
-use Core\Application\Common\UseCase\{
-    AbstractPresenter
-};
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 
-class FindContactTemplatesPresenterStub extends AbstractPresenter implements FindContactTemplatesPresenterInterface
+class AuthorizationRule
 {
     /**
-     * @var FindContactTemplatesResponse
+     * @param string $claimValue
+     * @param AccessGroup $accessGroup
      */
-    public $response;
-
-    /**
-     * @param FindContactTemplatesResponse $response
-     */
-    public function present(mixed $response): void
+    public function __construct(private string $claimValue, private AccessGroup $accessGroup)
     {
-        $this->response = $response;
     }
 
     /**
-     * @return Response
+     * @return string
      */
-    public function show(): Response
+    public function getClaimValue(): string
     {
-        return new Response();
+        return $this->claimValue;
+    }
+
+    /**
+     * @return AccessGroup
+     */
+    public function getAccessGroup(): AccessGroup
+    {
+        return $this->accessGroup;
     }
 }

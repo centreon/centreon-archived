@@ -59,6 +59,9 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'email_bind_attribute' => $response->emailBindAttribute,
             'alias_bind_attribute' => $response->userAliasBindAttribute,
             'fullname_bind_attribute' => $response->userNameBindAttribute,
+            'contact_group' => $response->contactGroup,
+            'claim_name' => $response->claimName,
+            'authorization_rules' => $response->authorizationRules
         ];
 
         $this->presenterFormatter->present($presenterResponse);
