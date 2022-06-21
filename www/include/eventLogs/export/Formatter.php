@@ -19,7 +19,6 @@
  *
  */
 
-
 class Formatter
 {
     private const DATE_FORMAT = 'Y/m/d';
