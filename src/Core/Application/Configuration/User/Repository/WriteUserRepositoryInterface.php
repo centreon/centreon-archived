@@ -33,4 +33,12 @@ interface WriteUserRepositoryInterface
      * @param User $user
      */
     public function update(User $user): void;
+
+    /**
+     * Create a user
+     *
+     * @param User $user
+     * @throws \Throwable
+     */
+    public function create(User $user): void;
 }

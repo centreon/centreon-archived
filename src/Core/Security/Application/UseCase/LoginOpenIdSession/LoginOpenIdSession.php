@@ -92,6 +92,7 @@ class LoginOpenIdSession
                 if (!$this->provider->canCreateUser()) {
                     throw new NotFoundException('User not found');
                 }
+                $this->info("User not found, start auto import");
                 $this->provider->createUser();
                 $user = $this->provider->getUser();
                 if ($user === null) {
@@ -137,9 +138,15 @@ class LoginOpenIdSession
                 }
             }
         } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
+            $this->error('An unexpected error occured while authenticating with OpenID', [
+                'trace' => $e->getTraceAsString()
+            ]);
             $presenter->present($this->createResponse(null, $e->getMessage()));
             return;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            $this->error('An unexpected error occured while authenticating with OpenID', [
+                'trace' => $e->getTraceAsString()
+            ]);
             $presenter->present($this->createResponse(
                 null,
                 'An unexpected error occured while authenticating with OpenID'

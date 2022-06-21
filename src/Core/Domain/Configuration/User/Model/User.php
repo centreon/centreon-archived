@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Domain\Configuration\User\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
+use Core\Contact\Domain\Model\ContactTemplate;
 
 class User
 {
@@ -34,10 +35,21 @@ class User
                  MIN_EMAIL_LENGTH = 1,
                  MAX_EMAIL_LENGTH = 255,
                  MIN_THEME_LENGTH = 1,
-                 MAX_THEME_LENGTH = 100;
+                 MAX_THEME_LENGTH = 100,
+                 THEME_LIGHT = 'light',
+                 THEME_DARK = 'dark';
+
+    private ?int $id = null;
+
+    private bool $isActivate = true;
+
+    private bool $isAdmin = false;
+
+    private string $theme = self::THEME_LIGHT;
+
+    private ?ContactTemplate $contactTemplate = null;
 
     /**
-     * @param int $id
      * @param string $alias
      * @param string $name
      * @param string $email
@@ -46,23 +58,26 @@ class User
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
-        private int $id,
         private string $alias,
         private string $name,
         private string $email,
-        private bool $isAdmin,
-        private string $theme,
     ) {
         $this->setAlias($alias);
         $this->setName($name);
         $this->setEmail($email);
-        $this->setTheme($theme);
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -167,6 +182,44 @@ class User
         Assertion::minLength($theme, self::MIN_THEME_LENGTH, 'User::theme');
         Assertion::maxLength($theme, self::MAX_THEME_LENGTH, 'User::theme');
         $this->theme = $theme;
+        return $this;
+    }
+
+    /**
+     * @return ContactTemplate|null
+     */
+    public function getContactTemplate(): ?ContactTemplate
+    {
+        return $this->contactTemplate;
+    }
+
+    /**
+     * @param ContactTemplate|null $contactTemplate
+     * @return self
+     */
+    public function setContactTemplate(?ContactTemplate $contactTemplate): self
+    {
+        $this->contactTemplate = $contactTemplate;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActivate(): bool
+    {
+        return $this->isActivate;
+    }
+
+    /**
+     * @param bool $isActivate
+     * @return self
+     */
+    public function setActivate(bool $isActivate): self
+    {
+        $this->isActivate = $isActivate;
+
         return $this;
     }
 }

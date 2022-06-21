@@ -32,6 +32,8 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use CentreonUserLog;
+use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Configuration\User\Model\User;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
@@ -87,6 +89,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         private UrlGeneratorInterface $router,
         private ContactServiceInterface $contactService,
         private Container $dependencyInjector,
+        private WriteUserRepositoryInterface $userRepository
     ) {
         $pearDB = $this->dependencyInjector['configuration_db'];
         $this->centreonLog = new CentreonUserLog(-1, $pearDB);
@@ -132,16 +135,32 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function canCreateUser(): bool
     {
-        return true;
+        return $this->configuration->isAutoImportEnabled();
     }
 
     /**
      * @inheritDoc
      */
-    public function createUser(): ?ContactInterface
+    public function createUser(): void
     {
-        // @todo: implement this method when handling autoimport
-        return null;
+        $this->info('Auto import starting...', [
+            "user" => $this->username
+        ]);
+        $this->validateAutoImportAttributesOrFail();
+
+        $user = new User(
+            $this->username,
+            $this->userInformations[$this->configuration->getUserNameBindAttribute()],
+            $this->userInformations[$this->configuration->getEmailBindAttribute()],
+        );
+        $user->setContactTemplate($this->configuration->getContactTemplate());
+        $this->userRepository->create($user);
+        $this->info('Auto import complete', [
+            "user_alias" => $this->username,
+            "user_fullname" => $this->userInformations[$this->configuration->getUserNameBindAttribute()],
+            "user_email" => $this->userInformations[$this->configuration->getEmailBindAttribute()]
+        ]);
+
     }
 
     /**
@@ -490,6 +509,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
+        $this->logAuthenticationInfoInLoginLogFile('User Information: ', $content);
         $this->info('User information found');
         $this->userInformations = $content;
     }
@@ -599,6 +619,30 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * Validate that auto import attributes are present in user informations from provider
+     * @throws SSOAuthenticationException
+     */
+    private function validateAutoImportAttributesOrFail(): void
+    {
+        $missingAttributes = [];
+        if (! array_key_exists($this->configuration->getEmailBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getEmailBindAttribute();
+        }
+        if (! array_key_exists($this->configuration->getUserAliasBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getUserAliasBindAttribute();
+        }
+        if (! array_key_exists($this->configuration->getUserNameBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getUserNameBindAttribute();
+        }
+
+        if (! empty($missingAttributes)) {
+            $ex = SSOAuthenticationException::AutoImportBindAttributeNotFound($missingAttributes);
+            $this->logExceptionInLoginLogFile("Some bind attributes can\'t be found in user informations", $ex);
+            throw $ex;
+        }
+    }
+
+    /**
      * Log error when response from external provider contains error or is empty
      *
      * @param array<string,string> $content
@@ -679,7 +723,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
             sprintf(
-                "[Openid] [Error] $message",
+                "[Openid] [Error] %s, [%s]: %s",
+                $message,
                 get_class($e),
                 $e->getMessage()
             )

@@ -54,7 +54,7 @@ class DbConfigurationBuilder
             ) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();
             }
-            if ($customConfiguration['auto_import'] === '1') {
+            if ($customConfiguration['auto_import'] === true) {
                 self::validateParametersForAutoImport(
                     $customConfiguration['contact_template'],
                     $customConfiguration['email_bind_attribute'],
@@ -69,7 +69,7 @@ class DbConfigurationBuilder
             ->setForced($record['is_forced'] === '1')
             ->setActive($record['is_active'] === '1')
             ->setClientId($customConfiguration['client_id'])
-            ->setAutoImportEnabled($customConfiguration['auto_import'] === '1')
+            ->setAutoImportEnabled($customConfiguration['auto_import'])
             ->setClientSecret($customConfiguration['client_secret'])
             ->setBaseUrl($customConfiguration['base_url'])
             ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])

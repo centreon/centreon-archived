@@ -46,12 +46,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             $alias,
             'name',
-            'email',
-            false,
-            'light'
+            'email'
         );
     }
 
@@ -73,12 +70,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             $alias,
             'name',
-            'email',
-            false,
-            'light'
+            'email'
         );
     }
 
@@ -100,12 +94,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             'alias',
             $name,
-            'email',
-            false,
-            'light'
+            'email'
         );
     }
 
@@ -127,12 +118,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             'alias',
             $name,
-            'email',
-            false,
-            'light'
+            'email'
         );
     }
 
@@ -154,12 +142,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             'alias',
             'name',
-            $email,
-            false,
-            'light'
+            $email
         );
     }
 
@@ -181,12 +166,9 @@ class UserTest extends TestCase
         );
 
         new User(
-            1,
             'alias',
             'name',
-            $email,
-            false,
-            'light'
+            $email
         );
     }
 
@@ -202,13 +184,13 @@ class UserTest extends TestCase
         $isAdmin = true;
 
         $user = new User(
-            $id,
             $alias,
             $name,
-            $email,
-            $isAdmin,
-            'light'
+            $email
         );
+        $user
+            ->setId($id)
+            ->setAdmin($isAdmin);
 
         $this->assertEquals($id, $user->getId());
         $this->assertEquals($alias, $user->getAlias());
