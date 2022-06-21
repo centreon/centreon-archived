@@ -5173,10 +5173,6 @@ msgstr "Informations sur Centreon"
 msgid "Directory"
 msgstr "Répertoire"
 
-#: centreon-web/www/include/Administration/parameters/general/form.php:78
-msgid "Centreon Web Directory"
-msgstr "Répertoire Web de Centreon"
-
 #: centreon-web/www/include/Administration/parameters/general/form.php:80
 msgid "Sessions Expiration Time"
 msgstr "Durée d'expiration de la session"
