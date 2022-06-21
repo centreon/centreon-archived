@@ -39,14 +39,29 @@ class User
                  THEME_LIGHT = 'light',
                  THEME_DARK = 'dark';
 
+    /**
+     * @var integer|null
+     */
     private ?int $id = null;
 
+    /**
+     * @var bool
+     */
     private bool $isActivate = true;
 
+    /**
+     * @var bool
+     */
     private bool $isAdmin = false;
 
+    /**
+     * @var string
+     */
     private string $theme = self::THEME_LIGHT;
 
+    /**
+     * @var ContactTemplate|null
+     */
     private ?ContactTemplate $contactTemplate = null;
 
     /**
@@ -65,6 +80,10 @@ class User
         $this->setEmail($email);
     }
 
+    /**
+     * @param int|null $id
+     * @return self
+     */
     public function setId(?int $id): self
     {
         $this->id = $id;
