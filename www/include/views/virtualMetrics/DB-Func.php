@@ -467,8 +467,12 @@ function disableVirtualMetricInDB($vmetric_id = null, $force = 0)
     if (!count($v_dis)) {
         return 0;
     }
+    $statement = $pearDB->prepare(
+        "UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` = :vmetric_id"
+    );
     foreach ($v_dis as $vm) {
-        $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='$vm';");
+        $statement->bindValue(':vmetric_id', (int) $vm, \PDO::PARAM_INT);
+        $statement->execute();
     }
     return 1;
 }
@@ -481,15 +485,25 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     $repA = array("*", "+", "-", "?", "^", "$");
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
-    $l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='$v_id'$l_where;");
-    if ($l_pqy->rowCount() == 1) {
-        $vmetric = $l_pqy->fetch();
-        $l_pqy->closeCursor();
-        $query = "SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='" . $vmetric["index_id"] .
-            "' AND `vmetric_activate` = '1' " .
-            "AND `rpn_function` REGEXP '(^|,)" . str_replace($repA, $repB, $vmetric["vmetric_name"]) . "(,|$)';";
-        $l_pqy = $pearDB->query($query);
-        while ($d_vmetric = $l_pqy->fetch()) {
+    $statement = $pearDB->prepare(
+        "SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`=:vmetric_id$l_where;"
+    );
+    $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
+    $statement->execute();
+    if ($statement->rowCount() == 1) {
+        $vmetric = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
+        $query = "SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`= :index_id AND `vmetric_activate` = '1' " .
+            "AND `rpn_function` REGEXP :rpn_function";
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':index_id', (int) $vmetric["index_id"], \PDO::PARAM_INT);
+        $statement->bindValue(
+            ':rpn_function',
+            '(^|,)' . str_replace($repA, $repB, $vmetric["vmetric_name"]) . '(,|$)',
+            \PDO::PARAM_STR
+        );
+        $statement->execute();
+        while ($d_vmetric = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);
             if (is_array($lv_dis)) {
                 foreach ($lv_dis as $pkey => $vm) {
@@ -497,7 +511,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
                 }
             }
         }
-        $l_pqy->closeCursor();
+        $statement->closeCursor();
         if (!$force) {
             $v_dis[] = $v_id;
         }
@@ -517,13 +531,17 @@ function enableVirtualMetricInDB($vmetric_id = null)
     if (!count($v_ena)) {
         return 0;
     }
+    $statement = $pearDB->prepare(
+        "UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` = :vmetric_id"
+    );
     foreach ($v_ena as $v_id) {
         list($rc, $output) = checkRRDGraphData($v_id);
         if ($rc) {
             $error = preg_replace('/^ERROR:\s*/', '', $output);
             throw new Exception("Wrong RPN syntax (RRDtool said: $error)");
         }
-        $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='$v_id';");
+        $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
+        $statement->execute();
     }
     return 1;
 }
@@ -533,16 +551,23 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
     global $pearDB;
     $v_ena = array();
 
-    $l_where = "vmetric_id = '$v_id'";
+    $l_where = "vmetric_id = :vmetric_id";
     if (is_null($v_id)) {
-        $l_where = "vmetric_name = '$v_name' AND index_id ='$index_id'";
+        $l_where = "vmetric_name = :vmetric_name AND index_id = :index_id";
     }
 
     $query = "SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics " .
         "WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);";
-    $l_pqy = $pearDB->query($query);
-    if ($l_pqy->rowCount() == 1) {
-        $p_vmetric = $l_pqy->fetch();
+    $statement = $pearDB->prepare($query);
+    if (is_null($v_id)) {
+        $statement->bindValue(':vmetric_name', $v_name, \PDO::PARAM_STR);
+        $statement->bindValue(':index_id', (int) $index_id, \PDO::PARAM_INT);
+    } else {
+        $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    if ($statement->rowCount() == 1) {
+        $p_vmetric = $statement->fetch(\PDO::FETCH_ASSOC);
         $l_mlist = preg_split("/\,/", $p_vmetric["rpn_function"]);
         foreach ($l_mlist as $l_mnane) {
             $lv_ena = enableVirtualMetric(null, $l_mnane, $p_vmetric["index_id"]);
@@ -554,7 +579,7 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
         }
         $v_ena[] = $p_vmetric["vmetric_id"];
     }
-    $l_pqy->closeCursor();
+    $statement->closeCursor();
     return $v_ena;
 }
 
@@ -567,9 +592,11 @@ function checkRRDGraphData($v_id = null, $force = 0)
 
     /* Check if already Valid */
     $query = "SELECT vmetric_id, def_type FROM virtual_metrics " .
-        "WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );";
-    $l_pqy = $pearDB->query($query);
-    if ($l_pqy->rowCount() == 1) {
+        "WHERE vmetric_id = :vmetric_id AND ( ck_state <> '1' OR ck_state IS NULL );";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
+    $statement->execute();
+    if ($statement->rowCount() == 1) {
         /**
          * Create XML Request Objects
          */
@@ -599,7 +626,12 @@ function checkRRDGraphData($v_id = null, $force = 0)
          */
         $lastline = exec($oreon->optGen["rrdtool_path_bin"] . $obj->displayImageFlow() . " 2>&1", $result, $rc);
         $ckstate = (!$rc) ? '1' : '2';
-        $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '$ckstate' WHERE `vmetric_id` ='$v_id';");
+        $statement = $pearDB->prepare(
+            "UPDATE `virtual_metrics` SET `ck_state` = :ck_state WHERE `vmetric_id` = :vmetric_id"
+        );
+        $statement->bindValue(':ck_state', $ckstate, \PDO::PARAM_STR);
+        $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
+        $statement->execute();
         return array($rc, $lastline);
     }
     return null;
