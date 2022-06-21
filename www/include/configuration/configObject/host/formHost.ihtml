@@ -91,7 +91,7 @@
 				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
 			{if $o == "mc"}
-			<tr class="list_two">	
+			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_tplp.label}</td>
 				<td class="FormRowValue">{$form.mc_mod_tplp.html}</td>
 			</tr>
@@ -423,7 +423,7 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
-	
+
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
       <h4>{$History_Options}</h4>
     </td></tr>
@@ -527,7 +527,11 @@
 <script>
 	var alert_check_interval = null;
 	{if isset($alert_check_interval)}
-		alert_check_interval = "{$alert_check_interval}";
+	alert_check_interval = "{$alert_check_interval}";
+	{/if}
+	var alert_max_size_exceeded = null;
+	{ if isset($alert_max_size_exceeded)}
+		alert_max_size_exceeded = "{$alert_max_size_exceeded}";
 	{/if}
 {literal}
 jQuery('input[name=host_check_interval]').change(function(){
@@ -535,6 +539,26 @@ jQuery('input[name=host_check_interval]').change(function(){
         alert(alert_check_interval);
     }
 });
+
+jQuery('input[name=ehi_notes_url]').change(function () {
+	if (jQuery(this).val().length > 2048) {
+		alert(alert_max_size_exceeded.replace('#input#', 'notes_url (max: 2048)'));
+	}
+});
+
+jQuery('input[name=ehi_action_url]').change(function () {
+	if (jQuery(this).val().length > 2048) {
+		alert(alert_max_size_exceeded.replace('#input#', 'action_url (max: 2048)'));
+	}
+});
+
+jQuery('input[name=ehi_notes]').change(function () {
+	if (jQuery(this).val().length > 512) {
+		alert(alert_max_size_exceeded.replace('#input#', 'notes (max: 512)'));
+	}
+});
+
+// .replace('N/A, ', '');
 
 jQuery(function() {
     setListener(jQuery('select[name=command_command_id]'));
@@ -671,7 +695,7 @@ function setListener(elem){
     }
 
     elem.on('change',function(event,data){
-        if(typeof data != "undefined" && typeof data.origin !=undefined 
+        if(typeof data != "undefined" && typeof data.origin !=undefined
             && data.origin == "select2defaultinit"){
             return false;
         }
@@ -688,7 +712,7 @@ function clonerefreshListener(el){
     setListener(el.find('select[name^=tpSelect]'));
 }
 
-{/literal}{if $o != "mc"}{literal}    
+{/literal}{if $o != "mc"}{literal}
     function doAjaxLoad(elems) {
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
@@ -701,7 +725,7 @@ function clonerefreshListener(el){
                     jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
                     sheepIt.removeAllForms();
                     for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
-                        sheepIt.addForm();	
+                        sheepIt.addForm();
                     }
 
                     sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
