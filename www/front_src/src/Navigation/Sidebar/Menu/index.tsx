@@ -1,12 +1,12 @@
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
-import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import { ListItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -19,6 +19,7 @@ import {
   setHoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 
 import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
@@ -47,6 +48,7 @@ const NavigationMenu = ({
   const classes = useStyles();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const theme = useTheme();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
@@ -56,7 +58,9 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const [isDoubleClickedFromRoot, setIsDoubleClickedFromRoot] = useState(false);
   const timeoutRef = useRef<null | NodeJS.Timeout>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -71,20 +75,7 @@ const NavigationMenu = ({
 
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
-
-  const props = {
-    collapseScrollMaxHeight,
-    collapseScrollMaxWidth,
-    currentTop,
-    currentWidth,
-    hoveredIndex,
-    isDrawerOpen,
-    level: 1,
-    pathname,
-    search,
-    setCollapseScrollMaxHeight,
-    setCollapseScrollMaxWidth,
-  };
+  const dismissMenuDuration = theme.transitions.duration.complex;
 
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -96,10 +87,9 @@ const NavigationMenu = ({
   };
 
   const discardTimeout = (): void => {
-    if (isNil(timeoutRef.current)) {
-      return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
@@ -107,26 +97,16 @@ const NavigationMenu = ({
     timeoutRef.current = setTimeout((): void => {
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
-    }, 500);
-  };
-
-  const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
-    const page = isNil(entryProps?.page) ? '' : entryProps.page;
-    const options = isNil(entryProps?.options) ? '' : entryProps.options;
-
-    const urlOptions = `${page}${options}`;
-    const url = entryProps.is_react
-      ? entryProps.url
-      : `/main.php?p=${urlOptions}`;
-
-    return url;
+    }, dismissMenuDuration);
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (isNil(getUrlFromEntry(currentPage))) {
+    if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
-    navigate(getUrlFromEntry(currentPage) as string);
+    setIsDoubleClickedFromRoot(true);
+    setHoveredIndex(null);
+    navigate(searchUrlFromEntry(currentPage) as string);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
@@ -239,44 +219,85 @@ const NavigationMenu = ({
     });
   };
 
-  const handleWindowClose = (): void => {
-    setSelectedNavigationItems(null);
-    setHoveredNavigationItems(null);
+  const collapseMenu = (): void => {
+    setHoveredIndex(null);
+  };
+
+  const leaveMenuItem = (): void => {
+    setIsDoubleClickedFromRoot(false);
+  };
+
+  const setDefaultItems = (): void => {
+    navigationData?.forEach((item) => {
+      const searchedItems = searchItemsHoveredByDefault(item);
+      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+
+      if (isEmpty(filteredResult)) {
+        return;
+      }
+
+      addSelectedNavigationItemsByDefault(filteredResult);
+    });
+  };
+
+  const closeMenu = (event): void => {
+    const mouseOver = menuRef?.current?.contains(event.target);
+    if (!mouseOver) {
+      handleLeave();
+    }
+  };
+
+  const visibilitychange = (): void => {
+    if (equals(document.visibilityState, 'visible')) {
+      setDefaultItems();
+    }
   };
 
   useEffect(() => {
-    navigationData?.forEach((item) => {
-      const searchedItems = searchItemsHoveredByDefault(item);
-      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+    window.addEventListener('visibilitychange', visibilitychange);
 
-      if (isEmpty(filteredResult)) {
-        return;
-      }
-
-      addSelectedNavigationItemsByDefault(filteredResult);
-    });
-    window.addEventListener('beforeunload', handleWindowClose);
-
-    return () => window.removeEventListener('beforeunload', handleWindowClose);
+    return () => {
+      window.removeEventListener('visibilitychange', visibilitychange);
+    };
   }, []);
 
   useEffect(() => {
-    navigationData?.forEach((item) => {
-      const searchedItems = searchItemsHoveredByDefault(item);
-      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+    setDefaultItems();
 
-      if (isEmpty(filteredResult)) {
-        return;
-      }
+    const isLegacyRoute = pathname.includes('main.php');
+    const iframe = document.getElementById('main-content') as HTMLIFrameElement;
 
-      addSelectedNavigationItemsByDefault(filteredResult);
-    });
+    if (isLegacyRoute) {
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow?.document?.addEventListener(
+          'mousemove',
+          closeMenu,
+        );
+      });
+    } else {
+      window.addEventListener('mousemove', closeMenu);
+    }
   }, [pathname, search]);
+
+  const props = {
+    collapseScrollMaxHeight,
+    collapseScrollMaxWidth,
+    currentTop,
+    currentWidth,
+    hoveredIndex,
+    isDrawerOpen,
+    level: 1,
+    pathname,
+    search,
+    setCollapseScrollMaxHeight,
+    setCollapseScrollMaxWidth,
+  };
 
   return useMemoComponent({
     Component: (
       <List
         className={classes.list}
+        ref={menuRef}
         onMouseEnter={discardTimeout}
         onMouseLeave={handleLeave}
       >
@@ -296,9 +317,11 @@ const NavigationMenu = ({
                 data={item}
                 hover={hover}
                 icon={<MenuIcon className={classes.icon} />}
+                isDoubleClickedFromRoot={isDoubleClickedFromRoot}
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
+                onLeaveMenuItem={leaveMenuItem}
                 onMouseEnter={(e: MouseEvent<HTMLElement>): void =>
                   hoverItem({ currentPage: item, e, index })
                 }
@@ -309,10 +332,9 @@ const NavigationMenu = ({
                 item.children.length > 0 && (
                   <CollapsibleItems
                     {...props}
+                    collapseMenu={collapseMenu}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onClick={handleClickItem}
-                    onLeave={handleLeave}
                   />
                 )}
             </ListItem>
@@ -322,6 +344,7 @@ const NavigationMenu = ({
     ),
     memoProps: [
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       hoveredIndex,
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,

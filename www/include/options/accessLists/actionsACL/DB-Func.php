@@ -411,6 +411,8 @@ function listActions()
     $actions[] = "global_host_obsess";
     $actions[] = "global_perf_data";
 
+    $actions[] = "create_edit_poller_cfg";
+    $actions[] = "delete_poller_cfg";
     $actions[] = "generate_cfg";
     $actions[] = "generate_trap";
 

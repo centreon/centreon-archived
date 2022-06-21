@@ -32,11 +32,19 @@ $help['tip_display_poller_listing'] = dgettext(
 );
 
 /**
- * Generation of files
+ * Poller configuration - Generation of configuration files
  */
-$help['tip_display_generate_cfg'] = dgettext(
+$help['create_edit_pollers'] = dgettext(
     'help',
-    'Allows user to generate and export configuration, and restart poller.'
+    'Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers.'
+);
+$help['delete_pollers'] = dgettext(
+    'help',
+    'Allows user to delete pollers.'
+);
+$help['deploy_pollers'] = dgettext(
+    'help',
+    'Allows user to deploy configuration.'
 );
 $help['tip_display_generate_trap'] = dgettext(
     'help',

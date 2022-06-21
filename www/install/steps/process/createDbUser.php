@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -69,19 +70,11 @@ if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhos
     $host = explode(":", $getIpQuery->fetchAll(PDO::FETCH_COLUMN)[0])[0];
 }
 
-$queryValues = [];
-$queryValues[':dbUser'] = $parameters['db_user'];
-$queryValues[':host'] = $host;
-$queryValues[':dbPass'] = $parameters['db_password'];
-
-// Compatibility adaptation for mysql 8 with php7.1 before 7.1.16, or php7.2 before 7.2.4.
-$createUser = "CREATE USER :dbUser@:host IDENTIFIED BY :dbPass";
-
-// As ALTER USER won't work on a mariaDB < 10.2, we need to check it before trying this request
-$checkMysqlVersion = "SHOW VARIABLES WHERE Variable_name LIKE 'version%'";
-
-// creating the user - mandatory for MySQL DB
-$alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
+$queryValues = [
+    ':dbUser' => $parameters['db_user'],
+    ':host' => $host,
+    ':dbPass' => $parameters['db_password'],
+];
 
 // Set defined privileges for the user.
 $mandatoryPrivileges = [
@@ -109,29 +102,33 @@ try {
     $findUserStatement->execute();
     // If user doesn't exist, create it
     if ($result = $findUserStatement->fetch(\PDO::FETCH_ASSOC) === false) {
-        $prepareCreate = $link->prepare($createUser);
-        $prepareAlter = $link->prepare($alterQuery);
+        // creating the user - mandatory for MySQL DB
+        $prepareCreate = $link->prepare("CREATE USER :dbUser@:host IDENTIFIED BY :dbPass");
         foreach ($queryValues as $key => $value) {
             $prepareCreate->bindValue($key, $value, \PDO::PARAM_STR);
-            $prepareAlter->bindValue($key, $value, \PDO::PARAM_STR);
         }
         // creating the user
         $prepareCreate->execute();
 
         // checking mysql version before trying to alter the password plugin
-        $prepareCheckVersion = $link->query($checkMysqlVersion);
+        // As ALTER USER won't work on a mariaDB < 10.2, we need to check it before trying this request
+        $prepareCheckVersion = $link->query("SHOW VARIABLES WHERE Variable_name IN ('version', 'version_comment')");
         $versionName = $versionNumber = "";
         while ($row = $prepareCheckVersion->fetch()) {
             if ($row['Variable_name'] === "version") {
-                $versionNumber = $row['Variable_name'];
+                $versionNumber = $row['Value'];
             } elseif ($row['Variable_name'] === "version_comment") {
-                $versionName = $row['Variable_name'];
+                $versionName = $row['Value'];
             }
         }
-        if (
-            (strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.2.0') >= 0)
-            || (strpos($versionName, "MySQL") !== false && version_compare($versionNumber, '8.0.0') >= 0)
-        ) {
+        if (strpos($versionName, "MySQL") !== false && version_compare($versionNumber, '8.0.0', '>=')) {
+            // Compatibility adaptation for mysql 8 with php7.1 before 7.1.16, or php7.2 before 7.2.4.
+            $prepareAlter = $link->prepare(
+                "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass"
+            );
+            foreach ($queryValues as $key => $value) {
+                $prepareAlter->bindValue($key, $value, \PDO::PARAM_STR);
+            }
             // altering the mysql's password plugin using the ALTER USER request
             $prepareAlter->execute();
         }

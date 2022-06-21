@@ -16839,6 +16839,30 @@ msgstr "Le modèle de contact '%s' n'existe pas"
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
 
+msgid "At least one authorization relation is required"
+msgstr "Au moins une relation d'autorisation est requise"
+
+msgid "Authorization value"
+msgstr "Valeur d'autorisation"
+
+msgid "Access group"
+msgstr "Groupe d'accès"
+
+msgid "Define the relation between authorization value and access group"
+msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès"
+
+msgid "Delete the relation"
+msgstr "Supprimer la relation"
+
+msgid "Authorization key"
+msgstr "Clé d'autorisation"
+
+msgid "Authorizations"
+msgstr "Autorisations"
+
+msgid "You are not allowed to access contact groups"
+msgstr "Vous n'êtes pas autorisé à accéder aux groupes de contacts"
+
 msgid "Error while searching for the host template %d"
 msgstr "Erreur lors de la recherche du modèle d'hôte %d"
 
@@ -16858,8 +16882,35 @@ msgstr "Raison: le fichier PHP d'environnement n'est pas éditable"
 msgid "Resource Status mod"
 msgstr "Mode pour Resource Status"
 
+msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+msgstr "Cette section vous permet de donner des autorisations afin de lier un utilisateur importé à un groupe d'accès."
+
+msgid "Contact group: Define a contact group for the imported user."
+msgstr "Groupe de contact : Définir un groupe de contact pour l'utilisateur importé."
+
+msgid "Authorization key: The key"
+msgstr "Clé d'autorisation : La clé"
+
+msgid "is defined by default. You can define another one."
+msgstr "est définie par défaut. Vous pouvez en définir une autre."
+
+msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès : Vous pouvez lier une valeur d'autorisation à un groupe d'accès."
+
+msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+msgstr "Si nous considérons l'exemple suivant dans le JSON reçu depuis le point d'accès d'autorisation, une relation est définie entre la valeur"
+
+msgid "and an access group:"
+msgstr "et un groupe d'accès :"
+
 msgid "License end date:"
 msgstr "Date de fin de licence :"
 
 msgid "License expired"
 msgstr "Licence expirée"
+
+msgid "The contact group id #%d doesn't exist"
+msgstr "L'id de groupe de contacts #%d n'existe pas"
+
+msgid "Parent alias"
+msgstr "Alias parent"

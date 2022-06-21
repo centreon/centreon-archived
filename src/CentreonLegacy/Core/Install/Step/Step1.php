@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,25 +40,27 @@ class Step1 extends AbstractStep
 {
     public function getContent()
     {
-        $this->setConfiguration();
-
         $installDir = __DIR__ . '/../../../../../www/install';
         require_once $installDir . '/steps/functions.php';
+
         $template = getTemplate($installDir . '/steps/templates');
 
-        //setSessionVariables($this->configuration);
+        try {
+            checkPhpPrerequisite();
+            $this->setConfiguration();
+        } catch (\Exception $e) {
+            $template->assign('errorMessage', $e->getMessage());
+            $template->assign('validate', false);
+        }
 
         $template->assign('title', _('Welcome to Centreon Setup'));
         $template->assign('step', 1);
+
         return $template->fetch('content.tpl');
     }
 
     public function setConfiguration()
     {
-        if (version_compare(phpversion(), '7.2', '<')) {
-            throw new \Exception('Please update your PHP to 7.2 or upper.');
-        }
-
         $configurationFile = __DIR__ . "/../../../../../www/install/install.conf.php";
 
         if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {

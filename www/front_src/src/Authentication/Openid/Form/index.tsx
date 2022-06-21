@@ -1,4 +1,4 @@
-import { Formik } from 'formik';
+import { Formik, FormikValues } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pick, pipe, values, or, all, not } from 'ramda';
 
@@ -64,20 +64,27 @@ const Form = ({
       })
       .finally(() => setSubmitting(false));
 
-  const validate = (formikValues): object => {
+  const validate = (formikValues: FormikValues): object => {
     const isUserInfoOrIntrospectionTokenEmpty = pipe(
       pick(['introspectionTokenEndpoint', 'userinfoEndpoint']),
       values,
       all(isNilOrEmpty),
     )(formikValues);
 
-    if (not(isUserInfoOrIntrospectionTokenEmpty)) {
+    const contactGroupError =
+      not(isEmpty(formikValues.authorizationRules)) &&
+      isNil(formikValues.contactGroup)
+        ? { contactGroup: t(labelRequired) }
+        : undefined;
+
+    if (not(isUserInfoOrIntrospectionTokenEmpty) && isNil(contactGroupError)) {
       return {};
     }
 
     return {
       introspectionTokenEndpoint: t(labelRequired),
       userinfoEndpoint: t(labelRequired),
+      ...contactGroupError,
     };
   };
 

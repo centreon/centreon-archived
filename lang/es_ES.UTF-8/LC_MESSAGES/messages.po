@@ -15119,11 +15119,58 @@ msgstr ""
 # msgid "Do not use configured proxy to connect to this server"
 # msgstr ""
 
+# msgid "At least one authorization relation is required"
+# msgstr ""
+
+# msgid "Authorization value"
+# msgstr ""
+
+# msgid "Access group"
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group"
+# msgstr ""
+
+# msgid "Delete the relation"
+# msgstr ""
+
+# msgid "Authorization key"
+# msgstr ""
+
+# msgid "Authorizations"
+# msgstr ""
+
 #  msgid "Error while searching for the host template %d"
 #  msgstr ""
+
+# msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+# msgstr ""
+
+# msgid "Contact group: Define a contact group for the imported user."
+# msgstr ""
+
+# msgid "Authorization key: The key"
+# msgstr ""
+
+# msgid "key is defined by default. You can define another one."
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+# msgstr ""
+
+# msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+# msgstr ""
+
+# msgid "and an access group:"
+# msgstr ""
 
 # msgid "License end date:"
 # msgstr ""
 
 # msgid "License expired"
 # msgstr ""
+
+# msgid "Parent alias
+# msgstr ""
+
+

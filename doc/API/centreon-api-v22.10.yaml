@@ -967,6 +967,58 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/contacts/groups:
+    get:
+      tags:
+      - User
+      summary: "List contact groups"
+      description: "List configured contact groups"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.ContactGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/access-groups:
+    get:
+      tags:
+      - Access Control
+      summary: "List access groups"
+      description: "List access groups available for a user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.AccessGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -3714,7 +3766,7 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+                  $ref: '#/components/schemas/ReadAuthenticationOpenIdProvider'
     put:
       tags:
         - Administration
@@ -3724,7 +3776,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+              $ref: '#/components/schemas/WriteAuthenticationOpenIdProvider'
       responses:
         '204':
             description: "Configuration updated"
@@ -4390,6 +4442,9 @@ components:
         - email_bind_attribute
         - alias_bind_attribute
         - fullname_bind_attribute
+        - contact_group
+        - authorization_claim
+        - authorization_relations
       properties:
         is_active:
           type: boolean
@@ -4508,6 +4563,68 @@ components:
           description: "Fullname bind attribute"
           example: "name"
           nullable: true
+        claim_name:
+          type: string
+          description: "Authorization claim"
+          example: "groups"
+          nullable: true
+    ReadAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              description: "Contact group ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact group name"
+              example: "Default"
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group:
+                type: object
+                description: "Access group"
+                properties:
+                  id:
+                    type: integer
+                    description: "Access group ID"
+                    example: 1
+                  name:
+                    type: string
+                    description: "Access group name"
+                    example: "Default"
+    WriteAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group_id:
+          type: integer
+          description: "Contact group ID"
+          example: 1
+          nullable: true
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group_id:
+                type: integer
+                description: "Access group ID"
+                example: 1
     Comment.Resources:
       type: object
       required: [ resources ]
@@ -4869,6 +4986,47 @@ components:
           type: string
           description: "Contact template name"
           example: "Contact Template"
+    Configuration.ContactGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Contact group id"
+          example: 1
+        name:
+          type: string
+          description: "Contact group name"
+          example: "Contact group"
+    Configuration.AccessGroup:
+      type: object
+      required:
+        - id
+        - name
+        - alias
+        - is_activated
+        - has_changed
+      properties:
+        id:
+          type: integer
+          description: "Access group id"
+          example: 1
+        name:
+          type: string
+          description: "Access group name"
+          example: "Access group"
+        alias:
+          type: string
+          description: "Access group alias"
+          example: "Access group alias"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the access group is activated or not"
+        has_changed:
+          type: boolean
+          description: "Indicates whether the access group has changed or not"
     Media.NullableImage:
       type: object
       nullable: true

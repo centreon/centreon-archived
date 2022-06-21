@@ -54,6 +54,7 @@ const DialogAcknowledge = ({
   handleChange,
 }: Props): JSX.Element => {
   const classes = useStyles();
+
   const { t } = useTranslation();
 
   const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =

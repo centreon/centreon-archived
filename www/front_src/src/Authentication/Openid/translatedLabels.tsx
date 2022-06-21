@@ -35,3 +35,24 @@ export const labelAliasAttributeToBind = 'Alias attribute to bind';
 export const labelFullnameAttributeToBind = 'Fullname attribute to bind';
 export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
+export const labelContactGroup = 'Contact group';
+export const labelAtLeastOneAuthorizationIsRequired =
+  'At least one authorization relation is required';
+export const labelAuthorizationValue = 'Authorization value';
+export const labelAccessGroup = 'Access group';
+export const labelDefineRelationAuthorizationValueAndAccessGroup =
+  'Define the relation between authorization value and access group';
+export const labelDeleteRelation = 'Delete the relation';
+export const labelAuthorizationKey = 'Authorization key';
+export const labelAuthorizationSummary =
+  'This section allows you to give authorizations in order to link an imported user to an access group.';
+export const labelContactGroupFieldDescription = `${labelContactGroup}: Define a contact group for the imported user.`;
+export const labelAuthorizationKeyIsDefined = `${labelAuthorizationKey}: The key`;
+export const labelGroups = 'groups';
+export const labelAuthorizationKeyDefinedByDefault =
+  'is defined by default. You can define another one.';
+export const labelDefineRelationsDescription = `${labelDefineRelationAuthorizationValueAndAccessGroup}: You can link an authorization value to an access group.`;
+export const labelIfWeConsiderTheFollowingExample =
+  'If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value';
+export const labelTechnical = 'technical';
+export const labelAndAnAccessGroup = 'and an access group:';

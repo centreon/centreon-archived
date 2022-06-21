@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 export DH_VERBOSE=1
-
+export CYPRESS_CACHE_FOLDER=$PWD/cypress_cache
 %:
 	dh $@
 
@@ -14,5 +14,7 @@ override_dh_auto_build:
 	composer install --no-dev --optimize-autoloader -n
 	npm ci
 	npm run build
-	find . -type f | xargs -d '\n' sed -i -f debian/extra/centreon-web/centreon-macroreplacement.txt
+	find . -type f | \
+		grep -v debian/extra/centreon-web/centreon-macroreplacement.txt | \
+		xargs -d '\n' sed -i -f debian/extra/centreon-web/centreon-macroreplacement.txt
 	mv config/centreon.config.php.template config/centreon.config.php

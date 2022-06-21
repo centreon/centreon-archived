@@ -18,12 +18,6 @@ export interface RedirectAPI {
   redirect_uri?: string;
 }
 
-export interface PlatformVersions {
-  web: {
-    version: string;
-  };
-}
-
 export interface ProviderConfiguration {
   authenticationUri: string;
   id: number;

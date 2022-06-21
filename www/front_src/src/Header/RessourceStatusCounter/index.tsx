@@ -7,9 +7,8 @@ import { useAtomValue } from 'jotai/utils';
 import { ClickAwayListener } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
+import { MenuSkeleton } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
-
-import MenuLoader from '../../components/MenuLoader';
 
 export const useStyles = makeStyles((theme) => ({
   link: {
@@ -96,7 +95,7 @@ const RessourceStatusCounter = <
   }
 
   if (!data) {
-    return <MenuLoader width={loaderWidth} />;
+    return <MenuSkeleton width={loaderWidth} />;
   }
 
   const hasPending = data.pending > 0;

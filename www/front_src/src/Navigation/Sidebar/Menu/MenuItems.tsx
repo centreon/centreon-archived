@@ -1,7 +1,18 @@
-import { MouseEvent, MouseEventHandler, ReactNode } from 'react';
+import {
+  forwardRef,
+  MouseEvent,
+  MouseEventHandler,
+  ReactNode,
+  useMemo,
+} from 'react';
 
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+} from 'react-router-dom';
+import { equals } from 'ramda';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -11,6 +22,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
   hoveredNavigationItemsAtom,
@@ -25,10 +37,13 @@ interface Props {
   data: Page;
   hover: boolean;
   icon?: ReactNode;
+  isDoubleClickedFromRoot?: boolean;
   isDrawerOpen?: boolean;
+  isItemClicked?: () => void;
   isOpen: boolean;
   isRoot?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  onLeaveMenuItem?: () => void;
   onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
 }
 
@@ -75,29 +90,53 @@ const useStyles = makeStyles((theme) => ({
 const MenuItems = ({
   onMouseEnter,
   onClick,
+  onLeaveMenuItem,
+  isItemClicked,
   isOpen,
   icon,
   hover,
   data,
   isDrawerOpen,
   isRoot,
+  isDoubleClickedFromRoot,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
   const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
+  const canNavigate =
+    !Array.isArray(data?.groups) || equals(data?.groups.length, 0);
+
+  const memoizedUrl = useMemo(() => searchUrlFromEntry(data) as string, [data]);
+
+  const ItemLink = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>(
+    (props, ref) => <RouterLink ref={ref} to={memoizedUrl} {...props} />,
+  );
+
+  const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
+    if (!isRoot && canNavigate) {
+      isItemClicked?.();
+
+      return;
+    }
+
+    e.preventDefault();
+  };
+
   return useMemoComponent({
     Component: (
       <ListItemButton
+        disableTouchRipple
         className={clsx(classes.listButton, {
           [classes.activated]: hover,
         })}
-        component="div"
+        component={ItemLink}
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
-        onClick={!isRoot ? onClick : undefined}
+        onClick={handleClickItem}
         onDoubleClick={isRoot ? onClick : undefined}
-        onMouseEnter={onMouseEnter}
+        onMouseEnter={!isDoubleClickedFromRoot ? onMouseEnter : undefined}
+        onMouseLeave={onLeaveMenuItem}
       >
         {isRoot ? (
           <>
@@ -132,6 +171,7 @@ const MenuItems = ({
       isOpen,
       isRoot,
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       user,
       hoveredNavigationItems,
       selectedNavigationItems,

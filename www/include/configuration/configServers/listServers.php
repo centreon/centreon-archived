@@ -65,15 +65,9 @@ if ($search) {
 }
 
 // Get Authorized Actions
-if ($is_admin == 0) {
-    if ($centreon->user->access->checkAction('generate_cfg')) {
-        $can_generate = 1;
-    } else {
-        $can_generate = 0;
-    }
-} else {
-    $can_generate = 0;
-}
+$can_generate = $centreon->user->access->checkAction('generate_cfg');
+$can_create_edit = $centreon->user->access->checkAction('create_edit_poller_cfg');
+$can_delete = $centreon->user->access->checkAction('delete_poller_cfg');
 
 /*
  * nagios servers comes from DB
@@ -382,6 +376,8 @@ if (!$isRemote) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);
 $tpl->assign("can_generate", $can_generate);
+$tpl->assign("can_create_edit", $can_create_edit);
+$tpl->assign("can_delete", $can_delete);
 $tpl->assign("is_admin", $is_admin);
 $tpl->assign("isRemote", $isRemote);
 

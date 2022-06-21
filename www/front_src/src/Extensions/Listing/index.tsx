@@ -18,11 +18,11 @@ import {
   useSnackbar,
 } from '@centreon/ui';
 
-import Hook from '../../components/Hook';
+import FederatedComponents from '../../components/FederatedComponents';
 import useNavigation from '../../Navigation/useNavigation';
-import useExternalComponents from '../../externalComponents/useExternalComponents';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
 import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
+import usePlatformVersions from '../../Main/usePlatformVersions';
 
 import { deleteExtension } from './api';
 import ExtensionsHolder from './ExtensionsHolder';
@@ -131,9 +131,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     }).then(({ status, result }) => {
       if (status) {
         setExtension(result as Extensions);
-      } else {
-        showErrorMessage(result as string);
+
+        return;
       }
+
+      showErrorMessage(result as string);
     });
   }, [getAppliedFilterCriteriasAtom]);
 
@@ -416,7 +418,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           >
             {t(labelInstallAll)}
           </Button>
-          <Hook path="/administration/extensions/manager" />
+          <FederatedComponents path="/lm/administration/extensions/manager" />
         </Stack>
       </div>
       {extensions && (
@@ -484,11 +486,11 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
 const ExtensionsRoute = (): JSX.Element => {
   const { getNavigation } = useNavigation();
-  const { getExternalComponents } = useExternalComponents();
+  const { getPlatformVersions } = usePlatformVersions();
 
   const reloadNavigation = useCallback(() => {
     getNavigation();
-    getExternalComponents();
+    getPlatformVersions();
   }, []);
 
   return <ExtensionsManager reloadNavigation={reloadNavigation} />;

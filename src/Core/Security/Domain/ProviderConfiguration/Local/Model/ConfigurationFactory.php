@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Domain\ProviderConfiguration\Local\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
+use Core\Security\Application\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
 
 class ConfigurationFactory
 {
