@@ -1050,6 +1050,11 @@ function myReplace()
 }
 
 $form->applyFilter('__ALL__', 'myTrim');
+
+$form->applyFilter('ehi_notes', 'limitNotesLength');
+$form->applyFilter('ehi_notes_url', 'limitUrlLength');
+$form->applyFilter('ehi_action_url', 'limitUrlLength');
+
 $from_list_menu = false;
 if ($o !== HOST_MASSIVE_CHANGE) {
     $form->applyFilter('host_name', 'myReplace');
@@ -1114,7 +1119,7 @@ $tpl->assign(
 );
 
 $tpl->assign(
-    'alert_max_size_exceeded',
+    'alert_max_length_exceeded',
     _("Warning, maximum size exceeded for input #input#, it will be be truncated upon saving")
 );
 

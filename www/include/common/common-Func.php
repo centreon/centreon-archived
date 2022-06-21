@@ -252,6 +252,16 @@ function myTrim($str)
     return (trim($str));
 }
 
+function limitNotesLength($value)
+{
+    return substr($value, 0, 512);
+}
+
+function limitUrlLength($value)
+{
+    return substr($value, 0, 2048);
+}
+
 /*
  * Hosts Functions
  */

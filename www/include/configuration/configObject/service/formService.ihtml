@@ -16,8 +16,8 @@
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Notifications{/t}</a></li>
         <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{t}Relations{/t}</a></li>
-        <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>     
-        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>       
+        <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>
+        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>
     </ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c" || $o == "mc"}
@@ -299,7 +299,7 @@
             <h3>| {$form.header.title3}</h3>
           </td>
         </tr>
-        
+
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.treatment}</h4>
@@ -312,7 +312,7 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$Freshness_Control_options}</h4>
           </td>
-        </tr>   
+        </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
 
@@ -320,7 +320,7 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$Flapping_Options}</h4>
           </td>
-        </tr>       
+        </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
@@ -349,7 +349,7 @@
                 {/if}
             </td>
         </tr>
-        {if $v > "1"}       
+        {if $v > "1"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
         {if $o == "a" || $o == "c"}
         &nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" style='cursor: pointer;margin: 0 6px;vertical-align: middle;' alt="*" onClick="set_arg('example2','command_command_id_arg2');"><input type="text" name="example2" disabled>
@@ -372,7 +372,7 @@
           </td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
-        
+
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sc.label}</td><td class="FormRowValue">{$form.mc_mod_sc.html}</td></tr>
         {/if}
@@ -429,10 +429,33 @@ var alert_check_interval = null;
     var alert_check_interval = "{$alert_check_interval}";
 {/if}
 
+var alert_max_length_exceeded = null;
+{ if isset($alert_max_length_exceeded)}
+alert_max_length_exceeded = "{$alert_max_length_exceeded}";
+{/if}
+
 {literal}
 jQuery('input[name=service_normal_check_interval]').change(function() {
     if (parseInt(jQuery(this).val()) >= 1440) {
         alert(alert_check_interval);
+    }
+});
+
+jQuery('input[name=esi_notes_url]').change(function () {
+    if (jQuery(this).val().length > 2048) {
+        alert(alert_max_length_exceeded.replace('#input#', 'notes_url (max: 2048)'));
+    }
+});
+
+jQuery('input[name=esi_action_url]').change(function () {
+    if (jQuery(this).val().length > 2048) {
+        alert(alert_max_length_exceeded.replace('#input#', 'action_url (max: 2048)'));
+    }
+});
+
+jQuery('input[name=esi_notes]').change(function () {
+    if (jQuery(this).val().length > 512) {
+        alert(alert_max_length_exceeded.replace('#input#', 'notes (max: 512)'));
     }
 });
 

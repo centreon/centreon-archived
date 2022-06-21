@@ -529,9 +529,9 @@
 	{if isset($alert_check_interval)}
 	alert_check_interval = "{$alert_check_interval}";
 	{/if}
-	var alert_max_size_exceeded = null;
-	{ if isset($alert_max_size_exceeded)}
-		alert_max_size_exceeded = "{$alert_max_size_exceeded}";
+	var alert_max_length_exceeded = null;
+	{ if isset($alert_max_length_exceeded)}
+		alert_max_length_exceeded = "{$alert_max_length_exceeded}";
 	{/if}
 {literal}
 jQuery('input[name=host_check_interval]').change(function(){
@@ -542,23 +542,21 @@ jQuery('input[name=host_check_interval]').change(function(){
 
 jQuery('input[name=ehi_notes_url]').change(function () {
 	if (jQuery(this).val().length > 2048) {
-		alert(alert_max_size_exceeded.replace('#input#', 'notes_url (max: 2048)'));
+		alert(alert_max_length_exceeded.replace('#input#', 'notes_url (max: 2048)'));
 	}
 });
 
 jQuery('input[name=ehi_action_url]').change(function () {
 	if (jQuery(this).val().length > 2048) {
-		alert(alert_max_size_exceeded.replace('#input#', 'action_url (max: 2048)'));
+		alert(alert_max_length_exceeded.replace('#input#', 'action_url (max: 2048)'));
 	}
 });
 
 jQuery('input[name=ehi_notes]').change(function () {
 	if (jQuery(this).val().length > 512) {
-		alert(alert_max_size_exceeded.replace('#input#', 'notes (max: 512)'));
+		alert(alert_max_length_exceeded.replace('#input#', 'notes (max: 512)'));
 	}
 });
-
-// .replace('N/A, ', '');
 
 jQuery(function() {
     setListener(jQuery('select[name=command_command_id]'));
