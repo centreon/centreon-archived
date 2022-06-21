@@ -138,18 +138,18 @@ class LoginOpenIdSession
                 }
             }
         } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
-            $this->error('An unexpected error occured while authenticating with OpenID', [
+            $this->error('An unexpected error occurred while authenticating with OpenID', [
                 'trace' => $e->getTraceAsString()
             ]);
             $presenter->present($this->createResponse(null, $e->getMessage()));
             return;
         } catch (\Throwable $e) {
-            $this->error('An unexpected error occured while authenticating with OpenID', [
+            $this->error('An unexpected error occurred while authenticating with OpenID', [
                 'trace' => $e->getTraceAsString()
             ]);
             $presenter->present($this->createResponse(
                 null,
-                'An unexpected error occured while authenticating with OpenID'
+                'An unexpected error occurred while authenticating with OpenID'
             ));
             return;
         }

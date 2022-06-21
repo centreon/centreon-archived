@@ -16915,5 +16915,5 @@ msgstr "L'id de groupe de contacts #%d n'existe pas"
 msgid "Parent alias"
 msgstr "Alias parent"
 
-msgid "Following bound attributes are missing: %s"
+msgid "The following bound attributes are missing: %s"
 msgstr "Les attributs liés suivants sont manquants : %s"
