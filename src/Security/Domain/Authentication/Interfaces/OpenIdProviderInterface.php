@@ -47,7 +47,7 @@ interface OpenIdProviderInterface extends ProviderInterface
 
     /**
      * Create user with informations from identity provider
-     * @throws \Throwable|SSOAuthenticationException
+     * @throws \Throwable
      */
     public function createUser(): void;
 

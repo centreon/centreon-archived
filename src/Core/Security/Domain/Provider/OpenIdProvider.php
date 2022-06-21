@@ -139,7 +139,8 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws SSOAuthenticationException
      */
     public function createUser(): void
     {
