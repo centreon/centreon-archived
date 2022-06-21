@@ -636,7 +636,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
 
         if (! empty($missingAttributes)) {
-            $ex = SSOAuthenticationException::AutoImportBindAttributeNotFound($missingAttributes);
+            $ex = SSOAuthenticationException::autoImportBindAttributeNotFound($missingAttributes);
             $this->logExceptionInLoginLogFile("Some bind attributes can\'t be found in user information", $ex);
             throw $ex;
         }
