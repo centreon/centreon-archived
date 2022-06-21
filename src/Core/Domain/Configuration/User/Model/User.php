@@ -53,8 +53,6 @@ class User
      * @param string $alias
      * @param string $name
      * @param string $email
-     * @param bool $isAdmin
-     * @param string $theme
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(

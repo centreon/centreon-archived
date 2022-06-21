@@ -160,7 +160,6 @@ class OpenIdProvider implements OpenIdProviderInterface
             "user_fullname" => $this->userInformations[$this->configuration->getUserNameBindAttribute()],
             "user_email" => $this->userInformations[$this->configuration->getEmailBindAttribute()]
         ]);
-
     }
 
     /**

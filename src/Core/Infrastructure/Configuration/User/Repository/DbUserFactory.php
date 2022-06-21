@@ -40,6 +40,5 @@ class DbUserFactory
         ))->setId((int) $user['contact_id'])
             ->setAdmin($user['contact_admin'] === '1')
             ->setTheme($user['contact_theme']);
-
     }
 }
