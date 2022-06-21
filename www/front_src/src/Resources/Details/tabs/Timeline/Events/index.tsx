@@ -129,6 +129,13 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
             not(isEmpty(formattedDivisionDates)) &&
             equals(formattedDivisionDates[1], formattedDivisionDates[3]);
 
+          const eventDate = areStartAndEndDateEqual
+            ? format({
+                date: (startDate?.(formattedLocale) as Dayjs)?.toISOString(),
+                formatString: 'LL',
+              })
+            : formattedDivisionDates.join(' ');
+
           return (
             <div key={label}>
               <div className={classes.events}>
@@ -140,16 +147,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                   >
                     {t(label)}
                     <span className={classes.divisionSubtitle}>
-                      <Typography display="inline">
-                        {areStartAndEndDateEqual
-                          ? format({
-                              date: (
-                                startDate?.(formattedLocale) as Dayjs
-                              )?.toISOString(),
-                              formatString: 'LL',
-                            })
-                          : formattedDivisionDates.join(' ')}
-                      </Typography>
+                      <Typography display="inline">{eventDate}</Typography>
                     </span>
                   </Typography>
                   {eventsByDate.map((event) => {
