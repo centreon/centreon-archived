@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: theme.spacing(1),
-    padding: theme.spacing(0, 1, 0, 1),
+    padding: theme.spacing(0, 1),
     rowGap: theme.spacing(1),
   },
   info: {
