@@ -360,7 +360,8 @@ class QueryGenerator
         if (count($this->tabHostIds) == 0 && count($this->tabSvc) == 0) {
             if ($this->engine == "false") {
                 $req .= " AND `msg_type` NOT IN ('4','5') ";
-                $req .= " AND logs.host_name NOT LIKE '_Module_BAM%' ";
+                $req .= " AND logs.host_name NOT LIKE '\\_Module\\_BAM%' ";
+
             }
         } else {
             foreach ($this->tabHostIds as $host_id) {
