@@ -200,7 +200,6 @@ try {
         checkoutCentreonBuild()
         sh 'rm -rf output'
         unstash 'tar-sources'
-        unstash 'api-doc'
         unstash 'rpms-alma8'
         unstash 'rpms-centos7'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
