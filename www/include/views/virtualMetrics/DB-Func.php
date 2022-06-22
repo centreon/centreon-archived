@@ -486,7 +486,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
     $statement = $pearDB->prepare(
-        "SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`=:vmetric_id$l_where;"
+        "SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`=:vmetric_id$l_where"
     );
     $statement->bindValue(':vmetric_id', (int) $v_id, \PDO::PARAM_INT);
     $statement->execute();
