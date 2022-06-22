@@ -29,6 +29,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -180,21 +181,24 @@ class TimelineControllerTest extends TestCase
             ->expects($this->once())
             ->method('findOneService')
             ->willReturn($this->service);
-
         $this->requestParameters
             ->expects($this->once())
             ->method('setPage')
             ->with($this->equalTo(1));
-
         $this->requestParameters
             ->expects($this->once())
             ->method('setLimit')
             ->with($this->equalTo(100000000000));
+        $this->timelineService->expects($this->once())
+            ->method('findTimelineEventsByService')
+            ->willReturn([$this->timelineEvent]);
 
         $controller = new TimelineController($this->monitoringService, $this->timelineService);
         $controller->setContainer($this->container);
-        $controller->downloadServiceTimeline(1, 1, $this->requestParameters);
+        $response = $controller->downloadServiceTimeline(1, 1, $this->requestParameters);
 
-        $this->assertTrue(true);
+        $this->assertInstanceOf(StreamedResponse::class, $response);
+        $this->assertSame('application/force-download', $response->headers->get('Content-Type'));
+        $this->assertSame('attachment; filename="export.csv"', $response->headers->get('content-disposition'));
     }
 }
