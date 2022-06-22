@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Configuration\User\Repository;
 
-use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
