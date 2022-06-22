@@ -75,13 +75,13 @@ class FindUsersPresenterTest extends TestCase
         ];
 
         $userModel = new User(
+            1,
             'alias',
             'name',
             'root@localhost',
+            true,
+            'light'
         );
-        $userModel
-            ->setId(1)
-            ->setAdmin(true);
 
         $this->requestParameters->expects($this->once())
             ->method('toArray')

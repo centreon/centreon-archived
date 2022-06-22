@@ -33,12 +33,13 @@ class DbUserFactory
      */
     public static function createFromRecord(array $user): User
     {
-        return (new User(
+        return new User(
+            (int) $user['contact_id'],
             $user['contact_alias'],
             $user['contact_name'],
             $user['contact_email'],
-        ))->setId((int) $user['contact_id'])
-            ->setAdmin($user['contact_admin'] === '1')
-            ->setTheme($user['contact_theme']);
+            $user['contact_admin'] === '1',
+            $user['contact_theme']
+        );
     }
 }
