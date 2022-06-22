@@ -184,7 +184,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   const userMenu = useRef<HTMLDivElement>();
   const autologinNode = useRef<HTMLTextAreaElement>();
   const refreshTimeout = useRef<NodeJS.Timeout>();
-  const userContainer = useRef<HTMLDivElement>(null);
+  const userIconRef = useRef<SVGSVGElement | null>(null);
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
   });
@@ -246,13 +246,13 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
       return;
     }
     setAnchorEl(event.currentTarget);
-    if (!isNil(headerRef?.current) && !isNil(userContainer?.current)) {
+    if (!isNil(headerRef?.current) && !isNil(userIconRef?.current)) {
       const headerHeight = headerRef?.current?.getBoundingClientRect().height;
 
-      const userMenuHeight =
-        userContainer.current?.getBoundingClientRect().height;
+      const userMenuBottom =
+        userIconRef?.current?.getBoundingClientRect()?.bottom;
 
-      setAnchorHeight(headerHeight - userMenuHeight + 10);
+      setAnchorHeight(headerHeight - userMenuBottom);
     }
   };
 
@@ -336,10 +336,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   };
 
   return (
-    <div
-      className={clsx(classes.wrapRightUser)}
-      ref={userContainer as RefObject<HTMLDivElement>}
-    >
+    <div className={clsx(classes.wrapRightUser)}>
       <div
         className={clsx(classes.wrapRightUserItems)}
         ref={profile as RefObject<HTMLDivElement>}
@@ -364,6 +361,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
                 aria-label={t(labelProfile)}
                 className={clsx(classes.userIcon)}
                 fontSize="large"
+                ref={userIconRef}
                 onClick={toggle}
               />
             </Badge>
