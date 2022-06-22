@@ -163,7 +163,8 @@ class SSOAuthenticationException extends \Exception
     public static function autoImportBindAttributeNotFound(array $missingAttributes): self
     {
         return new self(sprintf(
-            _('The following bound attributes are missing: %s'), implode(", ", $missingAttributes)
+            _('The following bound attributes are missing: %s'),
+            implode(", ", $missingAttributes)
         ));
     }
 }
