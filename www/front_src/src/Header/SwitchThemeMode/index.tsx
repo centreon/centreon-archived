@@ -1,16 +1,16 @@
-/* eslint-disable hooks/sort */
-import { useTransition, useState } from 'react';
+import { useState, useTransition, SetStateAction } from 'react';
 
-import { equals } from 'ramda';
-import { useAtom } from 'jotai';
-import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
+import { equals } from 'ramda';
+import { useLocation } from 'react-router-dom';
 
-import { Switch, ListItemText } from '@mui/material';
+import { ListItemText, Switch } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { userAtom, ThemeMode } from '@centreon/ui-context';
 import { patchData, useRequest } from '@centreon/ui';
+import { ThemeMode, User } from '@centreon/ui-context';
+
+import { enhancedComponent } from './enhancedComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -47,17 +47,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SwitchThemeMode = (): JSX.Element => {
+interface Props {
+  setUser: (update: SetStateAction<User>) => void;
+  user: User;
+}
+
+const SwitchThemeMode = ({ user, setUser }: Props): JSX.Element => {
   const classes = useStyles();
   const { pathname } = useLocation();
+  const isDarkMode = equals(user.themeMode, ThemeMode.dark);
+
+  const [isDark, setIsDark] = useState(isDarkMode);
+
   const { sendRequest } = useRequest({
     request: patchData,
   });
-  const [user, setUser] = useAtom(userAtom);
   const [isPending, startTransition] = useTransition();
 
-  const isDarkMode = equals(user.themeMode, ThemeMode.dark);
-  const [isDark, setIsDark] = useState(isDarkMode);
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
@@ -108,4 +114,4 @@ const SwitchThemeMode = (): JSX.Element => {
   );
 };
 
-export default SwitchThemeMode;
+export default enhancedComponent(SwitchThemeMode);
