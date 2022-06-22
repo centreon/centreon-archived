@@ -16923,12 +16923,3 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories de s
 
 msgid "An error occured while retrieving host categories"
 msgstr "Une erreur s'est produite lors de la récupération des catégories d'hôte"
-
-msgid "Categories"
-msgstr "Catégories"
-
-msgid "Host category"
-msgstr "Catégories d'hôtes"
-
-msgid "Service category"
-msgstr "Catégories de services"
