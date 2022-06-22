@@ -32,8 +32,6 @@ use Core\Domain\Configuration\User\Model\User;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
 {
-    use LoggerTrait;
-
     /**
      * @param DatabaseConnection $db
      */
