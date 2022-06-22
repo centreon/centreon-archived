@@ -51,8 +51,6 @@ class ParametersController extends AbstractController
                   DEFAULT_DOWNTIME_FIXED = 'monitoring_dwt_fixed',
                   DEFAULT_DOWNTIME_WITH_SERVICES = 'monitoring_dwt_svc';
 
-    private const RESOURCE_STATUS_OPTIMIZED_REPOSITORY = 'optimized';
-
     /**
      * Needed to make response "more readable"
      */
@@ -164,9 +162,6 @@ class ParametersController extends AbstractController
             $isAcknowledgementForceActiveChecks;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_FIXED]] = $isDowntimeFixed;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_WITH_SERVICES]] = $isDowntimeWithServices;
-
-        $parameters['use_resource_storage_optimization'] =
-            $this->getParameter('resource.status.repository') === self::RESOURCE_STATUS_OPTIMIZED_REPOSITORY;
 
         return $this->view($parameters);
     }

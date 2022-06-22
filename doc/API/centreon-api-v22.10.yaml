@@ -4081,7 +4081,7 @@ components:
       in: query
       name: service_category_names
       required: false
-      description: "Filter the resources by service category names (only functional with optimized mod)"
+      description: "Filter the resources by service category names"
       schema:
         type: array
         items:
@@ -4091,7 +4091,7 @@ components:
       in: query
       name: host_category_names
       required: false
-      description: "Filter the resources by host category names (only functional with optimized mod)"
+      description: "Filter the resources by host category names"
       schema:
         type: array
         items:

@@ -36,12 +36,4 @@ interface BrokerRepositoryInterface
         int $monitoringServerId,
         string $configKey
     ): array;
-
-    /**
-     * Returns all the broker configurations available
-     *
-     * @return BrokerConfiguration[]
-     * @throws \Throwable
-     */
-    public function findAllConfigurations(): array;
 }

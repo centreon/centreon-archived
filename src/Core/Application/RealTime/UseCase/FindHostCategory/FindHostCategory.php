@@ -22,27 +22,22 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHostCategory;
 
-use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Configuration\Broker\BrokerBBDO;
 use Core\Application\Common\UseCase\IncompatibilityResponse;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 
-class FindHostCategory extends BrokerBBDO
+class FindHostCategory
 {
     use LoggerTrait;
 
     /**
      * @param ReadTagRepositoryInterface $repository
-     * @param BrokerRepositoryInterface $brokerRepository
      */
     public function __construct(
-        private ReadTagRepositoryInterface $repository,
-        protected BrokerRepositoryInterface $brokerRepository
+        private ReadTagRepositoryInterface $repository
     ) {
-        parent::__construct($brokerRepository);
     }
 
     /**
@@ -54,10 +49,6 @@ class FindHostCategory extends BrokerBBDO
 
         try {
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
-            if (empty($hostCategories) && ! $this->isBBDOVersionCompatible()) {
-                $this->handleIncompatibleBBDOVersion($presenter);
-                return;
-            }
         } catch (\Throwable $e) {
             $this->error('An error occured while retrieving host categories');
             $presenter->setResponseStatus(new ErrorResponse('An error occured while retrieving host categories'));
@@ -76,17 +67,5 @@ class FindHostCategory extends BrokerBBDO
     private function createResponse(array $categories): FindHostCategoryResponse
     {
         return new FindHostCategoryResponse($categories);
-    }
-
-    /**
-     * @param FindHostCategoryPresenterInterface $presenter
-     * @return void
-     */
-    private function handleIncompatibleBBDOVersion(FindHostCategoryPresenterInterface $presenter): void
-    {
-        $message = 'BBDO protocol version enabled not compatible with this feature. Version needed '
-            . self::MINIMUM_BBDO_VERSION_SUPPORTED . ' or higher';
-        $this->error($message);
-        $presenter->setResponseStatus(new IncompatibilityResponse($message));
     }
 }

@@ -23,10 +23,7 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindHostCategory;
 
 use Core\Domain\RealTime\Model\Tag;
-use Centreon\Domain\Broker\BrokerConfiguration;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\IncompatibilityResponse;
-use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterStub;
@@ -34,7 +31,6 @@ use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPre
 beforeEach(function () {
     $this->category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
     $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $this->brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
 });
 
 it('should find all categories', function () {
@@ -42,7 +38,7 @@ it('should find all categories', function () {
         ->method('findAllByTypeId')
         ->willReturn([$this->category]);
 
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
@@ -57,7 +53,7 @@ it('should present an ErrorResponse on repository error', function () {
         ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
@@ -67,32 +63,3 @@ it('should present an ErrorResponse on repository error', function () {
         'An error occured while retrieving host categories'
     );
 });
-
-it('should present an IncompatibilityResponse on bbdo version imcompatible', function ($bbdoVersion) {
-    $this->tagRepository->expects($this->once())
-        ->method('findAllByTypeId')
-        ->willReturn([]);
-
-    $brokerConfiguration = (new BrokerConfiguration())
-        ->setConfigurationKey('bbdo_version')
-        ->setConfigurationValue($bbdoVersion);
-
-    $this->brokerRepository->expects($this->once())
-        ->method('findAllConfigurations')
-        ->willReturn([$brokerConfiguration]);
-
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
-
-    $presenter = new FindHostCategoryPresenterStub();
-    $useCase($presenter);
-
-    expect($presenter->getResponseStatus())->toBeInstanceOf(IncompatibilityResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'BBDO protocol version enabled not compatible with this feature. Version needed 3.0.0 or higher'
-    );
-})->with([
-    '1.0.0',
-    '2.0.0',
-    '2.9.90',
-    null
-]);
