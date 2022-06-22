@@ -167,10 +167,9 @@ $release = $dbResult->fetchRow();
                         </tr>
                         <tr>
                             <td>Colin Gagnaire</td>
-                            <td>Remi Grès</td>
+                            <td>Lotfi Zaouche</td>
                         </tr>
                         <tr>
-                            <td>Lotfi Zaouche</td>
                             <td>Stéphane Chapron</td>
                         </tr>
                         <tr>

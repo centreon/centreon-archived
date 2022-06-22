@@ -63,6 +63,7 @@ immediately.
 <a href="https://github.com/a-launois"><img src="https://avatars.githubusercontent.com/u/88387848?v=4" title="Allyriane Launois" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/Jordan91"><img src="https://avatars.githubusercontent.com/u/16045498?v=4" title="Jordan Caro" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/TamazC"><img src="https://avatars.githubusercontent.com/u/103252125?v=4" title="Tamaz Cheishvili" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/rem31"><img src="https://avatars.githubusercontent.com/u/73845199?s=400&v=4" title="Rémi Grès" width="80" height="80"></a> &nbsp;
 
 <h4> Quality Assurance </h4>
 
