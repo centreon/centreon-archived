@@ -89,6 +89,7 @@ $release = $dbResult->fetchRow();
                     <p>Laurent Pinsivy</p>
                     <p>Maximilien Bersoult</p>
                     <p>Quentin Garnier</p>
+                    <p>Rémi Grès</p>
                     <p>Tamaz Cheishvili</p>
                     <p>Tom Darneix</p>
                     <p>Thomas Arnaud</p>
