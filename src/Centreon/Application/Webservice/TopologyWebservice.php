@@ -189,8 +189,8 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
             ->getRepository(TopologyRepository::class)
             ->getTopologyList($user);
 
-        if ($pollerWizardEntities = $this->determinePollerWizardAccess($user)) {
-            $dbResult[] = $pollerWizardEntities;
+        if ($pollerWizardEntity = $this->determinePollerWizardAccess($user)) {
+            $dbResult[] = $pollerWizardEntity;
         }
 
         $status = true;
