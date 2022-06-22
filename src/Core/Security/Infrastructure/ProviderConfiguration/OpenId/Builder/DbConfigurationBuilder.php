@@ -41,6 +41,10 @@ class DbConfigurationBuilder
      */
     public static function create(array $record, array $customConfiguration): Configuration
     {
+        /**
+         * If the configuration is active, check that all mandatory parameters are correctly set to be able to use this
+         * provider configuration
+         */
         if ($record['is_active'] === true) {
             Assertion::notEmpty($customConfiguration['client_id'], "Configuration::clientId");
             Assertion::notEmpty($customConfiguration['client_secret'], "Configuration::clientSecret");
@@ -54,7 +58,7 @@ class DbConfigurationBuilder
             ) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();
             }
-            if ($customConfiguration['auto_import'] === '1') {
+            if ($customConfiguration['auto_import'] === true) {
                 self::validateParametersForAutoImport(
                     $customConfiguration['contact_template'],
                     $customConfiguration['email_bind_attribute'],
@@ -69,7 +73,7 @@ class DbConfigurationBuilder
             ->setForced($record['is_forced'] === '1')
             ->setActive($record['is_active'] === '1')
             ->setClientId($customConfiguration['client_id'])
-            ->setAutoImportEnabled($customConfiguration['auto_import'] === '1')
+            ->setAutoImportEnabled($customConfiguration['auto_import'])
             ->setClientSecret($customConfiguration['client_secret'])
             ->setBaseUrl($customConfiguration['base_url'])
             ->setAuthorizationEndpoint($customConfiguration['authorization_endpoint'])

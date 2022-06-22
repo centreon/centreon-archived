@@ -23,9 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Domain\Configuration\User\Model;
 
-use Centreon\Domain\Common\Assertion\Assertion;
-
-class User
+class User extends NewUser
 {
     public const MIN_ALIAS_LENGTH = 1,
                  MAX_ALIAS_LENGTH = 255,
@@ -34,7 +32,9 @@ class User
                  MIN_EMAIL_LENGTH = 1,
                  MAX_EMAIL_LENGTH = 255,
                  MIN_THEME_LENGTH = 1,
-                 MAX_THEME_LENGTH = 100;
+                 MAX_THEME_LENGTH = 100,
+                 THEME_LIGHT = 'light',
+                 THEME_DARK = 'dark';
 
     /**
      * @param int $id
@@ -47,15 +47,13 @@ class User
      */
     public function __construct(
         private int $id,
-        private string $alias,
-        private string $name,
-        private string $email,
-        private bool $isAdmin,
-        private string $theme,
+        protected string $alias,
+        protected string $name,
+        protected string $email,
+        protected bool $isAdmin,
+        protected string $theme,
     ) {
-        $this->setAlias($alias);
-        $this->setName($name);
-        $this->setEmail($email);
+        parent::__construct($alias, $name, $email);
         $this->setTheme($theme);
     }
 
@@ -65,108 +63,5 @@ class User
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @param string $alias
-     * @return self
-     * @throws \Assert\AssertionFailedException
-     */
-    public function setAlias(string $alias): self
-    {
-        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'User::alias');
-        Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'User::alias');
-        $this->alias = $alias;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return self
-     * @throws \Assert\AssertionFailedException
-     */
-    public function setName(string $name): self
-    {
-        Assertion::minLength($name, self::MIN_ALIAS_LENGTH, 'User::name');
-        Assertion::maxLength($name, self::MAX_ALIAS_LENGTH, 'User::name');
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     * @return self
-     * @throws \Assert\AssertionFailedException
-     */
-    public function setEmail(string $email): self
-    {
-        // Email format validation cannot be done here until legacy form does not check it
-        Assertion::minLength($email, self::MIN_EMAIL_LENGTH, 'User::email');
-        Assertion::maxLength($email, self::MAX_EMAIL_LENGTH, 'User::email');
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAdmin(): bool
-    {
-        return $this->isAdmin;
-    }
-
-    /**
-     * @param bool $isAdmin
-     * @return self
-     */
-    public function setAdmin(bool $isAdmin): self
-    {
-        $this->isAdmin = $isAdmin;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTheme(): string
-    {
-        return $this->theme;
-    }
-
-    /**
-     * @param string $theme
-     * @return self
-     * @throws \Assert\AssertionFailedException
-     */
-    public function setTheme(string $theme): self
-    {
-        Assertion::minLength($theme, self::MIN_THEME_LENGTH, 'User::theme');
-        Assertion::maxLength($theme, self::MAX_THEME_LENGTH, 'User::theme');
-        $this->theme = $theme;
-        return $this;
     }
 }

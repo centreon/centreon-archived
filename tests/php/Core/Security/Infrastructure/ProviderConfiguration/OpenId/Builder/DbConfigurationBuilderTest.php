@@ -35,7 +35,7 @@ beforeEach(function () {
         'client_id' => 'clientid',
         'client_secret' => 'clientsecret',
         'base_url' => 'http://127.0.0.1/openid',
-        'auto_import' => '1',
+        'auto_import' => true,
         'authorization_endpoint' => '/authorize',
         'token_endpoint' => '/token',
         'introspection_token_endpoint' => '/introspect',
