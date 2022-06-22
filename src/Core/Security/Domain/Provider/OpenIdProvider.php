@@ -637,7 +637,10 @@ class OpenIdProvider implements OpenIdProviderInterface
 
         if (! empty($missingAttributes)) {
             $ex = SSOAuthenticationException::autoImportBindAttributeNotFound($missingAttributes);
-            $this->logExceptionInLoginLogFile("Some bind attributes can\'t be found in user information", $ex);
+            $this->logExceptionInLoginLogFile(
+                "Some bind attributes can't be found in user information: %s, message: %s'",
+                $ex
+            );
             throw $ex;
         }
     }
@@ -723,8 +726,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
             sprintf(
-                "[Openid] [Error] %s, [%s]: %s",
-                $message,
+                "[Openid] [Error] $message",
                 get_class($e),
                 $e->getMessage()
             )
