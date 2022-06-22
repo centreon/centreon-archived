@@ -59,6 +59,9 @@ class User extends NewUser
         $this->setTheme($theme);
     }
 
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
