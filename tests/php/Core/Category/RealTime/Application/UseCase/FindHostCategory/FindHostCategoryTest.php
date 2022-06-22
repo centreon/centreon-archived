@@ -60,6 +60,6 @@ it('should present an ErrorResponse on repository error', function () {
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'An error occured while retrieving host categories'
+        'An error occurred while retrieving host categories'
     );
 });

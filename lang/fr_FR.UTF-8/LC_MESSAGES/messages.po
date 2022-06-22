@@ -16919,7 +16919,7 @@ msgid "The following bound attributes are missing: %s"
 msgstr "Les attributs liés suivants sont manquants : %s"
 
 msgid "An error occured while retrieving service categories"
-msgstr "Une erreur s'est produite lors de la récupération des catégories de service"
+msgstr "Une erreur s'est produite lors de la récupération des catégories de services"
 
 msgid "An error occured while retrieving host categories"
-msgstr "Une erreur s'est produite lors de la récupération des catégories d'hôte"
+msgstr "Une erreur s'est produite lors de la récupération des catégories d'hôtes"

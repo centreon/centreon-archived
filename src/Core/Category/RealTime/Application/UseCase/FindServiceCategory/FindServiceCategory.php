@@ -49,8 +49,8 @@ class FindServiceCategory
         try {
             $serviceCategories = $this->repository->findAllByTypeId(Tag::SERVICE_CATEGORY_TYPE_ID);
         } catch (\Throwable $e) {
-            $this->error('An error occured while retrieving service categories');
-            $presenter->setResponseStatus(new ErrorResponse('An error occured while retrieving service categories'));
+            $this->error('An error occurred while retrieving service categories');
+            $presenter->setResponseStatus(new ErrorResponse('An error occurred while retrieving service categories'));
             return;
         }
 

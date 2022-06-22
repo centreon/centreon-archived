@@ -58,6 +58,6 @@ it('Find all service categories repository error', function () {
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'An error occured while retrieving service categories'
+        'An error occurred while retrieving service categories'
     );
 });

@@ -300,9 +300,9 @@ paths:
     get:
       tags:
         - Service category
-      summary: "List all service categories"
+      summary: "List all real-time service categories"
       description: |
-        List of all service categories in real time context
+        List of all service categories in real-time context
       responses:
         "200":
           description: "OK"
@@ -1586,9 +1586,9 @@ paths:
     get:
       tags:
         - Host category
-      summary: "List all host categories"
+      summary: "List all real-time host categories"
       description: |
-        List of all host categories in real time context
+        List of all host categories in real-time context
       responses:
         "200":
           description: "OK"

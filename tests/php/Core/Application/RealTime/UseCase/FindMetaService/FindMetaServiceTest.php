@@ -80,7 +80,7 @@ it('should present a NotFoundResponse if meta service configuration not found as
     );
 });
 
-it('should present a NotFoundResponse if meta service configuraiton not found as non-admin', function () {
+it('should present a NotFoundResponse if meta service configuration not found as non-admin', function () {
     $findMetaService = new FindMetaService(
         $this->repository,
         $this->configurationRepository,

@@ -49,8 +49,8 @@ class FindHostCategory
         try {
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
         } catch (\Throwable $e) {
-            $this->error('An error occured while retrieving host categories');
-            $presenter->setResponseStatus(new ErrorResponse('An error occured while retrieving host categories'));
+            $this->error('An error occurred while retrieving host categories');
+            $presenter->setResponseStatus(new ErrorResponse('An error occurred while retrieving host categories'));
             return;
         }
 
