@@ -532,6 +532,7 @@ class QueryGenerator
                 $flag_begin = 1;
             }
         }
+
         if ($this->alert == 'true') {
             if (count($this->hostMsgStatusSet)) {
                 if ($flag_begin) {

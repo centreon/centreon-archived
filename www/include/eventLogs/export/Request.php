@@ -156,6 +156,13 @@ class Request
         return $end;
     }
 
+    /**
+     * Converts date string to timestamp
+     * Expected format of date string : 06/22/2022 00:00
+     *
+     * @param string $dateString
+     * @return int
+     */
     private function dateStringToTimestamp(string $dateString): int
     {
         preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $dateString, $matchesD);

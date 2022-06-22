@@ -24,6 +24,7 @@ declare(strict_types=1);
 class Presenter
 {
     private const DELIMITER = ';';
+
     private array $heads = [];
     private iterable $logs;
     private array $metaData;
