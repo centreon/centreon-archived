@@ -721,32 +721,40 @@ function multipleServiceInDB(
                             "servicegroup_relation WHERE service_service_id = '" . $key . "'";
                         $dbResult = $pearDB->query($query);
                         $fields["service_sgs"] = "";
+                        $query = "INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, " .
+                                 "service_service_id, servicegroup_sg_id)
+                                 VALUES (:host_host_id,:hostgroup_hg_id,:service_service_id,:servicegroup_sg_id)";
+                        $statement = $pearDB->prepare($query);
                         while ($Sg = $dbResult->fetch()) {
                             if (isset($host) && $host) {
                                 $host_id = $host;
                             } else {
-                                $Sg["host_host_id"] ? $host_id = "'" . $Sg["host_host_id"] . "'" : $host_id = "NULL";
+                                $Sg["host_host_id"] ? $host_id = $Sg["host_host_id"] : $host_id = null;
                             }
                             if (isset($hostgroup) && $hostgroup) {
                                 $hg_id = $hostgroup;
                             } else {
-                                $Sg["hostgroup_hg_id"] ? $hg_id = "'" . $Sg["hostgroup_hg_id"] . "'" : $hg_id = "NULL";
+                                $Sg["hostgroup_hg_id"] ? $hg_id = $Sg["hostgroup_hg_id"] : $hg_id = null;
                             }
-                            $query = "INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, " .
-                                "service_service_id, servicegroup_sg_id)
-                                 VALUES (:host_host_id,:hostgroup_hg_id,:service_service_id,:servicegroup_sg_id)";
-                            $statement = $pearDB->prepare($query);
-                            $statement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
-                            $statement->bindValue(':hostgroup_hg_id', (int) $hg_id, \PDO::PARAM_INT);
+                            $statement->bindValue(
+                                ':host_host_id',
+                                (int) $host_id,
+                                $host_id ? \PDO::PARAM_INT : \PDO::PARAM_NULL
+                            );
+                            $statement->bindValue(
+                                ':hostgroup_hg_id',
+                                (int) $hg_id,
+                                $hg_id ? \PDO::PARAM_INT : \PDO::PARAM_NULL
+                            );
                             $statement->bindValue(
                                 ':service_service_id',
                                 (int) $maxId["MAX(service_id)"],
-                                PDO::PARAM_INT
+                                \PDO::PARAM_INT
                             );
                             $statement->bindValue(
                                 ':servicegroup_sg_id',
                                 (int) $Sg["servicegroup_sg_id"],
-                                PDO::PARAM_INT
+                                $Sg["servicegroup_sg_id"] ? \PDO::PARAM_INT : \PDO::PARAM_NULL
                             );
                             $statement->execute();
                             if ($Sg["host_host_id"]) {
