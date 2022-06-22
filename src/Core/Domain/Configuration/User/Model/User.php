@@ -22,6 +22,7 @@
 declare(strict_types=1);
 
 namespace Core\Domain\Configuration\User\Model;
+use Core\Domain\Configuration\User\Model\NewUser;
 
 class User extends NewUser
 {
@@ -46,16 +47,14 @@ class User extends NewUser
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
-        protected int $id,
+        private int $id,
         protected string $alias,
         protected string $name,
         protected string $email,
         protected bool $isAdmin,
         protected string $theme,
     ) {
-        $this->setAlias($alias);
-        $this->setName($name);
-        $this->setEmail($email);
+        parent::__construct($alias, $name, $email);
         $this->setTheme($theme);
     }
 
