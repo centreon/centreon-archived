@@ -136,6 +136,7 @@ def checkoutCentreonBuild() {
 */
 stage('Deliver sources') {
   node {
+    cleanWs()
     dir('centreon-web') {
       checkout scm
     }
@@ -151,34 +152,14 @@ stage('Deliver sources') {
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
-    stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
   }
 }
 
 try {
   stage('Unit tests // Sonar analysis // RPMs Packaging') {
-    parallel 'rpm packaging centos7': {
+    parallel 'Debian 11 packaging': {
       node {
-        checkoutCentreonBuild()
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
-        archiveArtifacts artifacts: "rpms-centos7.tar.gz"
-        stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'
-      }
-    },
-    'rpm packaging alma8': {
-      node {
-        checkoutCentreonBuild()
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
-        archiveArtifacts artifacts: "rpms-alma8.tar.gz"
-        stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'
-      }
-    },
-    'Debian 11 packaging': {
-      node {
+        cleanWs()
         dir('centreon') {
           checkout scm
         }
@@ -198,12 +179,6 @@ try {
     stage("$DELIVERY_STAGE") {
       node {
         cleanWs()
-        checkoutCentreonBuild()
-        sh 'rm -rf output'
-        unstash 'tar-sources'
-        unstash 'rpms-alma8'
-        unstash 'rpms-centos7'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
         withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
           checkout scm
           unstash "Debian11"
