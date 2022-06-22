@@ -24,12 +24,16 @@ namespace Centreon\Application\Controller\Monitoring;
 
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
 /**
  * @package Centreon\Application\Controller\Monitoring
@@ -118,44 +122,41 @@ class TimelineController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        /**
-         * @var Contact $user
-         */
-        $user = $this->getUser();
-        $this->monitoringService->filterByContact($user);
-        $this->timelineService->filterByContact($user);
-
-        $host = $this->monitoringService->findOneHost($hostId);
-        if ($host === null) {
-            throw new EntityNotFoundException(
-                sprintf(_('Host id %d not found'), $hostId)
-            );
-        }
-
-        $service = $this->monitoringService->findOneService($hostId, $serviceId);
-        if ($service === null) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Service %d on host %d not found'),
-                    $hostId,
-                    $serviceId
-                )
-            );
-        }
-        $service->setHost($host);
-
-        $timeline = $this->timelineService->findTimelineEventsByService($service);
-
         $context = (new Context())
             ->setGroups(static::SERIALIZER_GROUPS_MAIN)
             ->enableMaxDepth();
 
         return $this->view(
             [
-                'result' => $timeline,
+                'result' => $this->getTimelines($hostId, $serviceId),
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    public function downloadServiceTimeline(int $hostId, int $serviceId, RequestParametersInterface $requestParameters)
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $requestParameters->setPage(1);
+        $requestParameters->setLimit(100000000000);
+        $timeLines = $this->formatTimeLinesForDownload($this->getTimelines($hostId, $serviceId));
+
+        $response = new StreamedResponse();
+        $response->setCallback(function () use ($timeLines) {
+            $handle = fopen('php://output', 'r+');
+            $header = ['id', 'type', 'date', 'startDate', 'endDate', 'content', 'contact', 'status', 'tries',];
+            fputcsv($handle, $header, ';');
+
+            foreach ($timeLines as $timeLine) {
+                fputcsv($handle, $timeLine, ';');
+            }
+
+            fclose($handle);
+        });
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
+
+        return $response;
     }
 
     /**
@@ -211,5 +212,69 @@ class TimelineController extends AbstractController
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @return TimelineEvent[]
+     * @throws EntityNotFoundException
+     */
+    private function getTimelines(int $hostId, int $serviceId): array
+    {
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+        $this->monitoringService->filterByContact($user);
+        $this->timelineService->filterByContact($user);
+
+        $host = $this->monitoringService->findOneHost($hostId);
+        if ($host === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host id %d not found'), $hostId)
+            );
+        }
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Service %d on host %d not found'),
+                    $hostId,
+                    $serviceId
+                )
+            );
+        }
+        $service->setHost($host);
+
+        return $this->timelineService->findTimelineEventsByService($service);
+    }
+
+    /**
+     * @param TimelineEvent[] $timeLines
+     * @return iterable
+     */
+    private function formatTimeLinesForDownload(array $timeLines): iterable
+    {
+        foreach ($timeLines as $timeLine) {
+            $date = $timeLine->getDate() instanceof \DateTime ? $timeLine->getDate()->format('c') : '';
+            $startDate = $timeLine->getStartDate() instanceof \DateTime ? $timeLine->getStartDate()->format('c') : '';
+            $endDate = $timeLine->getEndDate() instanceof \DateTime ? $timeLine->getEndDate()->format('c') : '';
+            $contact = $timeLine->getContact() instanceof TimelineContact ? $timeLine->getContact()->getName() : '';
+            $status = $timeLine->getStatus() instanceof ResourceStatus ? $timeLine->getStatus()->getName() : '';
+
+            yield [
+                'id' => $timeLine->getId(),
+                'type' => $timeLine->getType() ?? '',
+                'date' => $date,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'content' => $timeLine->getContent(),
+                'contact' => $contact,
+                'status' => $status,
+                'tries' => $timeLine->getTries(),
+            ];
+        }
     }
 }
