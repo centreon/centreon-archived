@@ -1,0 +1,56 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ]; then
+
+    if [ "$(getent group nagios)" ]; then
+        /usr/sbin/usermod -a -G centreon,nagios,centreon-broker centreon-engine
+        /usr/sbin/usermod -a -G centreon,nagios centreon-broker
+        /usr/sbin/usermod -a -G centreon-engine nagios
+    fi
+
+    /usr/sbin/usermod -a -G centreon-engine,centreon-broker centreon
+    /usr/sbin/usermod -a -G centreon-engine centreon-gorgone
+    /usr/sbin/usermod -a -G centreon-broker centreon-gorgone
+
+    # Change right for Centreon Engine and Centreon Broker
+    if [ -d /etc/centreon-broker ]; then
+        chown -R centreon-broker: /etc/centreon-broker
+        chmod -R g+w /etc/centreon-broker
+    fi
+    if [ -d /etc/centreon-engine ]; then
+        chown -R centreon-engine: /etc/centreon-engine
+        chmod -R g+w /etc/centreon-engine
+    fi
+
+    chmod -v +x /usr/share/centreon/bin/centreontrapd
+
+    # snmpd.conf file
+    if [ -f "/etc/snmpd/snmpd.conf" ]; then
+        # Add right in SNMP
+        sed -i \
+            -e "/^view.*\.1\.3\.6\.1\.2\.1\.1$/i\
+view centreon included .1.3.6.1" \
+            -e "/^access.*$/i\
+access notConfigGroup \"\" any noauth exact centreon none none" \
+        /etc/snmp/snmpd.conf
+    fi
+
+    # Fix centreon configuration permissions
+    chmod -v 0775 \
+        /etc/centreon \
+        /etc/centreon/config.d
+    chmod -v 0664 \
+        /etc/centreon/centreontrapd.pm \
+        /etc/centreon/config.yaml \
+        /etc/centreon/conf.pm
+    chown -v centreon:centreon \
+        /etc/centreon/centreontrapd.pm \
+        /etc/centreon/conf.pm
+
+    if [ "$(getent passwd centreon-broker)" -a "$(getent passwd centreon-engine)" ]; then
+        usermod -a -G centreon-engine centreon-broker
+        usermod -a -G centreon-broker centreon-engine
+    fi    
+
+fi
+exit 0

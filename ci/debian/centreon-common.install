@@ -1,0 +1,2 @@
+debian/extra/centreon-common/centreon.service   lib/systemd/system
+debian/extra/centreon-common/config.yaml        etc/centreon
