@@ -123,3 +123,7 @@ Centreon\Domain\Monitoring\Resource:
             type: bool
             groups:
                 - 'resource_main'
+        severity:
+            type: Core\Severity\RealTime\Domain\Model\Severity
+            groups:
+                - 'resource_main'

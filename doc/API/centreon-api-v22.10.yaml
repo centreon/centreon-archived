@@ -1233,6 +1233,10 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterStatus'
         - $ref: '#/components/parameters/ResourceFilterHostgroupName'
         - $ref: '#/components/parameters/ResourceFilterServicegroupName'
+        - $ref: '#/components/parameters/ResourceFilterHostSeverityName'
+        - $ref: '#/components/parameters/ResourceFilterServiceSeverityName'
+        - $ref: '#/components/parameters/ResourceFilterHostSeverityLevel'
+        - $ref: '#/components/parameters/ResourceFilterServiceSeverityLevel'
         - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
         - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
@@ -4071,6 +4075,46 @@ components:
         items:
           type: string
         example: '["Memory-Services", "Ping-Services"]'
+    ResourceFilterServiceSeverityName:
+      in: query
+      name: service_severity_names
+      required: false
+      description: "Filter the resources by service severity names (only functional with optimized mod)"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["High", "Low"]'
+    ResourceFilterHostSeverityName:
+      in: query
+      name: host_severity_names
+      required: false
+      description: "Filter the resources by host severity names (only functional with optimized mod)"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["High", "Low"]'
+    ResourceFilterHostSeverityLevel:
+      in: query
+      name: host_severity_levels
+      required: false
+      description: "Filter the resources by host severity levels (only functional with optimized mod)"
+      schema:
+        type: array
+        items:
+          type: integer
+        example: '[50, 75]'
+    ResourceFilterServiceSeverityLevel:
+      in: query
+      name: service_severity_levels
+      required: false
+      description: "Filter the resources by service severity levels (only functional with optimized mod)"
+      schema:
+        type: array
+        items:
+          type: integer
+        example: '[50, 75]'
     ResourceFilterMonitoringServerName:
       in: query
       name: monitoring_server_names

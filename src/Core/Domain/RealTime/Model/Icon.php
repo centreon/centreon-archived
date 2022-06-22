@@ -24,6 +24,13 @@ namespace Core\Domain\RealTime\Model;
 
 class Icon
 {
+    public const SERIALIZER_GROUP_MAIN = 'core_icon_main';
+
+    /**
+     * @var int|null
+     */
+    private $id;
+
     /**
      * @var string|null
      */
@@ -68,5 +75,24 @@ class Icon
     {
         $this->url = $url;
         return $this;
+    }
+
+    /**
+     * @param integer|null $id
+     * @return self
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 }

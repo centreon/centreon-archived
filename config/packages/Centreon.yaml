@@ -10,6 +10,9 @@ jms_serializer:
             infrastructure:
                 namespace_prefix: "Centreon\\Infrastructure"
                 path: '%kernel.project_dir%/config/packages/serializer/Infrastructure'
+            core:
+                namespace_prefix: "Core\\"
+                path: '%kernel.project_dir%/config/packages/serializer/Core'
 parameters:
     api.header: "Api-Version"
     api.version.latest: "22.04"

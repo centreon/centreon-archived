@@ -28,6 +28,7 @@ use Centreon\Domain\Common\Assertion\Assertion;
 
 class Severity
 {
+    public const SERIALIZER_GROUP_MAIN = 'severity_main';
     public const MAX_NAME_LENGTH = 255;
 
     public const SERVICE_SEVERITY_TYPE_ID = 0,

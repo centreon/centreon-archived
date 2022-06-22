@@ -149,6 +149,26 @@ class ResourceFilter
     private $statusTypes = [];
 
     /**
+     * @var string[]
+     */
+    private array $serviceSeverityNames = [];
+
+    /**
+     * @var string[]
+     */
+    private array $hostSeverityNames = [];
+
+    /**
+     * @var int[]
+     */
+    private array $serviceSeverityLevels = [];
+
+    /**
+     * @var int[]
+     */
+    private array $hostSeverityLevels = [];
+
+    /**
      * Transform result by map
      *
      * @param array<mixed, mixed> $list
@@ -420,5 +440,81 @@ class ResourceFilter
     {
         $this->statusTypes = $statusTypes;
         return $this;
+    }
+
+    /**
+     * @param string[] $serviceSeverityNames
+     * @return self
+     */
+    public function setServiceSeverityNames(array $serviceSeverityNames): self
+    {
+        $this->serviceSeverityNames = $serviceSeverityNames;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getServiceSeverityNames(): array
+    {
+        return $this->serviceSeverityNames;
+    }
+
+    /**
+     * @param string[] $hostSeverityNames
+     * @return self
+     */
+    public function setHostSeverityNames(array $hostSeverityNames): self
+    {
+        $this->hostSeverityNames = $hostSeverityNames;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getHostSeverityNames(): array
+    {
+        return $this->hostSeverityNames;
+    }
+
+    /**
+     * @param int[] $serviceSeverityLevels
+     * @return self
+     */
+    public function setServiceSeverityLevels(array $serviceSeverityLevels): self
+    {
+        $this->serviceSeverityLevels = $serviceSeverityLevels;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getServiceSeverityLevels(): array
+    {
+        return $this->serviceSeverityLevels;
+    }
+
+    /**
+     * @param int[] $hostSeverityLevels
+     * @return self
+     */
+    public function setHostSeverityLevels(array $hostSeverityLevels): self
+    {
+        $this->hostSeverityLevels = $hostSeverityLevels;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getHostSeverityLevels(): array
+    {
+        return $this->hostSeverityLevels;
     }
 }

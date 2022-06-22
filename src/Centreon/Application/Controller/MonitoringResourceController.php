@@ -31,6 +31,8 @@ use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Severity\RealTime\Domain\Model\Severity;
+use Core\Domain\RealTime\Model\Icon as NewIconModel;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -60,6 +62,10 @@ class MonitoringResourceController extends AbstractController
         'hostgroup_names',
         'servicegroup_names',
         'monitoring_server_names',
+        'service_severity_names',
+        'host_severity_names',
+        'host_severity_levels',
+        'service_severity_levels',
         'status_types',
     ];
 
@@ -121,6 +127,8 @@ class MonitoringResourceController extends AbstractController
         ResourceEntity::SERIALIZER_GROUP_PARENT,
         Icon::SERIALIZER_GROUP_MAIN,
         ResourceStatus::SERIALIZER_GROUP_MAIN,
+        NewIconModel::SERIALIZER_GROUP_MAIN,
+        Severity::SERIALIZER_GROUP_MAIN,
     ];
 
     // Groups for validation
@@ -235,6 +243,10 @@ class MonitoringResourceController extends AbstractController
 
             if ($resource->getParent() !== null && $resource->getParent()->getIcon() instanceof Icon) {
                 $this->iconUrlNormalizer->normalize($resource->getParent()->getIcon());
+            }
+
+            if ($resource->getSeverity() !== null && $resource->getSeverity()->getIcon() instanceof NewIconModel) {
+                $this->iconUrlNormalizer->normalize($resource->getSeverity()->getIcon());
             }
 
             // add shortcuts
