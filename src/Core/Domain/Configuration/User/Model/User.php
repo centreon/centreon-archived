@@ -22,7 +22,6 @@
 declare(strict_types=1);
 
 namespace Core\Domain\Configuration\User\Model;
-use Core\Domain\Configuration\User\Model\NewUser;
 
 class User extends NewUser
 {
