@@ -22,8 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindService;
 
-use Core\Domain\RealTime\Model\Tag;
-use Centreon\Domain\Contact\Contact;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
@@ -33,12 +32,12 @@ use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindService\FindService;
 use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
-use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\RealTime\Api\FindService\FindServicePresenter;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
+use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;

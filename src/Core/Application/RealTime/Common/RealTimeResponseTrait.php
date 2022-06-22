@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Common;
 
-use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Status;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
 

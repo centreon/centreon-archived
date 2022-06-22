@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\Resource;
 
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
-use Core\Domain\RealTime\Model\Tag;
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;

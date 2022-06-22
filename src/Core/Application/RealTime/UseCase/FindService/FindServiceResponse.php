@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindService;
 
-use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
