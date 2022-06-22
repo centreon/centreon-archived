@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\Tag;
 use Core\Domain\RealTime\Model\Icon;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Core\Domain\RealTime\Model\HostStatus;
 use Centreon\Domain\Common\Assertion\Assertion;

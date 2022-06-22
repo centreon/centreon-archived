@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Domain\RealTime\Model;
 
 use Core\Domain\RealTime\Model\Icon;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
