@@ -134,7 +134,7 @@ class TimelineController extends AbstractController
         )->setContext($context);
     }
 
-    public function downloadServiceTimeline(int $hostId, int $serviceId, RequestParametersInterface $requestParameters)
+    public function downloadServiceTimeline(int $hostId, int $serviceId, RequestParametersInterface $requestParameters): StreamedResponse
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $requestParameters->setPage(1);
@@ -144,7 +144,7 @@ class TimelineController extends AbstractController
         $response = new StreamedResponse();
         $response->setCallback(function () use ($timeLines) {
             $handle = fopen('php://output', 'r+');
-            $header = ['id', 'type', 'date', 'startDate', 'endDate', 'content', 'contact', 'status', 'tries',];
+            $header = ['type', 'date', 'content', 'contact', 'status', 'tries',];
             fputcsv($handle, $header, ';');
 
             foreach ($timeLines as $timeLine) {
@@ -259,17 +259,12 @@ class TimelineController extends AbstractController
     {
         foreach ($timeLines as $timeLine) {
             $date = $timeLine->getDate() instanceof \DateTime ? $timeLine->getDate()->format('c') : '';
-            $startDate = $timeLine->getStartDate() instanceof \DateTime ? $timeLine->getStartDate()->format('c') : '';
-            $endDate = $timeLine->getEndDate() instanceof \DateTime ? $timeLine->getEndDate()->format('c') : '';
             $contact = $timeLine->getContact() instanceof TimelineContact ? $timeLine->getContact()->getName() : '';
             $status = $timeLine->getStatus() instanceof ResourceStatus ? $timeLine->getStatus()->getName() : '';
 
             yield [
-                'id' => $timeLine->getId(),
                 'type' => $timeLine->getType() ?? '',
                 'date' => $date,
-                'startDate' => $startDate,
-                'endDate' => $endDate,
                 'content' => $timeLine->getContent(),
                 'contact' => $contact,
                 'status' => $status,
