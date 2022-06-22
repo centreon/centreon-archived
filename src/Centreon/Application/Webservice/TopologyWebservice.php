@@ -214,15 +214,14 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
             return null;
         }
 
-        $entity = new Topology();
-        $entity->setTopologyUrl("/poller-wizard/1");
-        $entity->setTopologyPage('60959');
-        $entity->setTopologyParent('60901');
-        $entity->setTopologyName("Poller Wizard Page");
-        $entity->setTopologyShow('0');
-        $entity->setIsReact('1');
-        $entities[] = $entity;
+        $topology = new Topology();
+        $topology->setTopologyUrl("/poller-wizard/1");
+        $topology->setTopologyPage('60959');
+        $topology->setTopologyParent('60901');
+        $topology->setTopologyName("Poller Wizard Page");
+        $topology->setTopologyShow('0');
+        $topology->setIsReact('1');
 
-        return $entity;
+        return $topology;
     }
 }
