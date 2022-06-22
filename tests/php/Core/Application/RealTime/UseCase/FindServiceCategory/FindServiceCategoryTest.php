@@ -66,35 +66,3 @@ it('Find all service categories repository error', function () {
         'An error occured while retrieving service categories'
     );
 });
-
-it('Find all service categories repository bbdo version imcompatible', function ($bbdoVersion) {
-    $tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
-
-    $brokerConfiguration = (new BrokerConfiguration())
-        ->setConfigurationKey('bbdo_version')
-        ->setConfigurationValue($bbdoVersion);
-
-    $tagRepository->expects($this->once())
-        ->method('findAllByTypeId')
-        ->willReturn([]);
-
-    $brokerRepository->expects($this->once())
-        ->method('findAllConfigurations')
-        ->willReturn([$brokerConfiguration]);
-
-    $useCase = new FindServiceCategory($tagRepository, $brokerRepository);
-
-    $presenter = new FindServiceCategoryPresenterStub();
-    $useCase($presenter);
-
-    expect($presenter->getResponseStatus())->toBeInstanceOf(IncompatibilityResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'BBDO protocol version enabled not compatible with this feature. Version needed 3.0.0 or higher'
-    );
-})->with([
-    '1.0.0',
-    '2.0.0',
-    '2.9.90',
-    null
-]);

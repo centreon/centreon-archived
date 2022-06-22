@@ -25,7 +25,6 @@ namespace Centreon\Infrastructure\Broker;
 
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
-use Core\Application\Configuration\Broker\BrokerBBDO;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 
 class BrokerRepositoryRDB implements BrokerRepositoryInterface
@@ -73,33 +72,6 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
                 ->setId((int) $result['id'])
                 ->setConfigurationKey($configKey)
                 ->setConfigurationValue($result['config_value']);
-        }
-
-        return $brokerConfigurations;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findAllConfigurations(): array
-    {
-        $statement = $this->db->query("
-            SELECT cb.config_id, cb.bbdo_version
-            FROM cfg_centreonbroker cb
-            INNER JOIN cfg_centreonbroker_info cbi
-                ON cbi.config_id = cb.config_id
-                AND config_group = 'output'
-                AND config_key = 'type'
-                AND config_value = 'unified_sql'
-            WHERE cb.daemon = 1
-        ");
-
-        $brokerConfigurations = [];
-        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $brokerConfigurations[] = (new BrokerConfiguration())
-                ->setId((int) $result['config_id'])
-                ->setConfigurationKey(BrokerBBDO::BBDO_VERSION_CONFIG_KEY)
-                ->setConfigurationValue($result['bbdo_version']);
         }
 
         return $brokerConfigurations;

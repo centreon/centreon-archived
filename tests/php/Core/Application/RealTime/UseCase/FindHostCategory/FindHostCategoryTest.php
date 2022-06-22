@@ -67,32 +67,3 @@ it('should present an ErrorResponse on repository error', function () {
         'An error occured while retrieving host categories'
     );
 });
-
-it('should present an IncompatibilityResponse on bbdo version imcompatible', function ($bbdoVersion) {
-    $this->tagRepository->expects($this->once())
-        ->method('findAllByTypeId')
-        ->willReturn([]);
-
-    $brokerConfiguration = (new BrokerConfiguration())
-        ->setConfigurationKey('bbdo_version')
-        ->setConfigurationValue($bbdoVersion);
-
-    $this->brokerRepository->expects($this->once())
-        ->method('findAllConfigurations')
-        ->willReturn([$brokerConfiguration]);
-
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
-
-    $presenter = new FindHostCategoryPresenterStub();
-    $useCase($presenter);
-
-    expect($presenter->getResponseStatus())->toBeInstanceOf(IncompatibilityResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe(
-        'BBDO protocol version enabled not compatible with this feature. Version needed 3.0.0 or higher'
-    );
-})->with([
-    '1.0.0',
-    '2.0.0',
-    '2.9.90',
-    null
-]);
