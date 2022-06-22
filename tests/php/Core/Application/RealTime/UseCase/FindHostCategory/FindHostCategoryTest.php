@@ -23,10 +23,7 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindHostCategory;
 
 use Core\Domain\RealTime\Model\Tag;
-use Centreon\Domain\Broker\BrokerConfiguration;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\IncompatibilityResponse;
-use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategory;
 use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPresenterStub;
@@ -34,7 +31,6 @@ use Tests\Core\Application\RealTime\UseCase\FindHostCategory\FindHostCategoryPre
 beforeEach(function () {
     $this->category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
     $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
-    $this->brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
 });
 
 it('should find all categories', function () {
@@ -42,7 +38,7 @@ it('should find all categories', function () {
         ->method('findAllByTypeId')
         ->willReturn([$this->category]);
 
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
@@ -57,7 +53,7 @@ it('should present an ErrorResponse on repository error', function () {
         ->method('findAllByTypeId')
         ->willThrowException(new \Exception());
 
-    $useCase = new FindHostCategory($this->tagRepository, $this->brokerRepository);
+    $useCase = new FindHostCategory($this->tagRepository);
 
     $presenter = new FindHostCategoryPresenterStub();
     $useCase($presenter);
