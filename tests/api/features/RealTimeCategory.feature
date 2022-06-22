@@ -27,7 +27,7 @@ Feature:
         "result": [
             {
                 "id": 1,
-                "name": "host-cat1",
+                "name": "host-cat1"
             }
         ],
         "meta": {
