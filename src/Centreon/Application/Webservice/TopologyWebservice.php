@@ -40,6 +40,7 @@ use Centreon\Infrastructure\Webservice;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Application\DataRepresenter\Topology\NavigationList;
 use Centreon\Domain\Repository\TopologyRepository;
+use Centreon\Domain\Entity\Topology;
 use Centreon\ServiceProvider;
 
 /**
@@ -188,10 +189,40 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
             ->getRepository(TopologyRepository::class)
             ->getTopologyList($user);
 
+        if ($pollerWizardEntities = $this->determinePollerWizardAccess($user)) {
+            $dbResult[] = $pollerWizardEntities;
+        }
+
         $status = true;
         $navConfig = $this->getDi()[ServiceProvider::YML_CONFIG]['navigation'];
         $result = new NavigationList($dbResult, $navConfig);
 
         return new Response($result, $status);
+    }
+
+    /**
+     * @param \CentreonUser $user
+     * @return Topology|null
+     */
+    private function determinePollerWizardAccess(\CentreonUser $user): ?Topology
+    {
+        $userTopologyAccess = $user->access->getTopology();
+        if (
+            ! isset($userTopologyAccess[60901])
+            || (int) $userTopologyAccess[60901] !== \CentreonACL::ACL_ACCESS_READ_WRITE
+        ) {
+            return null;
+        }
+
+        $entity = new Topology();
+        $entity->setTopologyUrl("/poller-wizard/1");
+        $entity->setTopologyPage('60959');
+        $entity->setTopologyParent('60901');
+        $entity->setTopologyName("Poller Wizard Page");
+        $entity->setTopologyShow('0');
+        $entity->setIsReact('1');
+        $entities[] = $entity;
+
+        return $entity;
     }
 }
