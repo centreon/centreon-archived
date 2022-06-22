@@ -40,19 +40,14 @@ use PHPUnit\Framework\TestCase;
 
 class TimelineControllerTest extends TestCase
 {
-    protected $adminContact;
-
-    protected $host;
-    protected $service;
-
-    protected $timelineEvent;
-
-    protected $monitoringService;
-    protected $timelineService;
-
-    protected $container;
-
-    protected $requestParameters;
+    protected Contact $adminContact;
+    protected Host $host;
+    protected Service $service;
+    protected TimelineEvent $timelineEvent;
+    protected MonitoringServiceInterface $monitoringService;
+    protected TimelineServiceInterface $timelineService;
+    protected ContainerInterface $container;
+    protected RequestParametersInterface $requestParameters;
 
     protected function setUp(): void
     {
@@ -84,6 +79,10 @@ class TimelineControllerTest extends TestCase
             ->setTries(1);
 
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
+        $this->monitoringService->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+
         $this->timelineService = $this->createMock(TimelineServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -120,12 +119,8 @@ class TimelineControllerTest extends TestCase
     /**
      * test getHostTimeline
      */
-    public function testGetHostTimeline()
+    public function testGetHostTimeline(): void
     {
-        $this->monitoringService->expects($this->once())
-            ->method('findOneHost')
-            ->willReturn($this->host);
-
         $this->timelineService->expects($this->once())
             ->method('findTimelineEventsByHost')
             ->willReturn([$this->timelineEvent]);
@@ -151,12 +146,8 @@ class TimelineControllerTest extends TestCase
     /**
      * test getServiceTimeline
      */
-    public function testGetServiceTimeline()
+    public function testGetServiceTimeline(): void
     {
-        $this->monitoringService->expects($this->once())
-            ->method('findOneHost')
-            ->willReturn($this->host);
-
         $this->monitoringService->expects($this->once())
             ->method('findOneService')
             ->willReturn($this->service);
@@ -181,5 +172,29 @@ class TimelineControllerTest extends TestCase
                 'meta' => []
             ])->setContext($context)
         );
+    }
+
+    public function testDownloadServiceTimeline()
+    {
+        $this->monitoringService
+            ->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+
+        $this->requestParameters
+            ->expects($this->once())
+            ->method('setPage')
+            ->with($this->equalTo(1));
+
+        $this->requestParameters
+            ->expects($this->once())
+            ->method('setLimit')
+            ->with($this->equalTo(100000000000));
+
+        $controller = new TimelineController($this->monitoringService, $this->timelineService);
+        $controller->setContainer($this->container);
+        $controller->downloadServiceTimeline(1, 1, $this->requestParameters);
+
+        $this->assertTrue(true);
     }
 }
