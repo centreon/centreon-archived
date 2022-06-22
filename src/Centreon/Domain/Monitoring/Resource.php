@@ -28,6 +28,7 @@ use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceLinks;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 /**
@@ -55,6 +56,11 @@ class Resource
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
     public const TYPE_META = 'metaservice';
+
+    /**
+     * @var int|null
+     */
+    private $resourceId;
 
     /**
      * @var int|null
@@ -266,6 +272,11 @@ class Resource
      * @var bool
      */
     private $hasGraph = false;
+
+    /**
+    * @var Severity|null
+    */
+    private $severity;
 
     /**
      * Resource constructor.
@@ -1103,5 +1114,43 @@ class Resource
     public function hasGraph(): bool
     {
         return $this->hasGraph;
+    }
+
+    /**
+     * @param integer|null $resourceId
+     * @return self
+     */
+    public function setResourceId(?int $resourceId): self
+    {
+        $this->resourceId = $resourceId;
+
+        return $this;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getResourceId(): ?int
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * @param Severity|null $severity
+     * @return self
+     */
+    public function setSeverity(?Severity $severity): self
+    {
+        $this->severity = $severity;
+
+        return $this;
+    }
+
+    /**
+     * @return Severity|null
+     */
+    public function getSeverity(): ?Severity
+    {
+        return $this->severity;
     }
 }

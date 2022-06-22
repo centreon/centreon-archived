@@ -36,10 +36,17 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
+use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 class DbReadResourceRepository extends AbstractRepositoryDRB implements ResourceRepositoryInterface
 {
     use LoggerTrait;
+
+    /**
+     * @var ResourceEntity[]
+     */
+    private array $resources = [];
 
     private const RESOURCE_TYPE_SERVICE = 0,
                   RESOURCE_TYPE_HOST = 1,
@@ -134,10 +141,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
      */
     public function findResources(ResourceFilter $filter): array
     {
-        $resources = [];
-
         if ($this->hasNotEnoughRightsToContinue()) {
-            return $resources;
+            return $this->resources;
         }
 
         $collector = new StatementCollector();
@@ -156,7 +161,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             parent_resource.status AS `parent_status`,
             parent_resource.alias AS `parent_alias`,
             parent_resource.status_ordered AS `parent_status_ordered`,
+            severities.id AS `severity_id`,
             severities.level AS `severity_level`,
+            severities.name AS `severity_name`,
+            severities.type AS `severity_type`,
+            severities.icon_id AS `severity_icon_id`,
             resources.type,
             resources.status,
             resources.status_ordered,
@@ -178,7 +187,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             resources.has_graph,
             instances.name AS `monitoring_server_name`,
             resources.enabled,
-            resources.icon_id
+            resources.icon_id,
+            resources.severity_id
         FROM `:dbstg`.`resources`
         LEFT JOIN `:dbstg`.`resources` parent_resource
             ON parent_resource.id = resources.parent_id
@@ -256,6 +266,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $request .= $this->addMonitoringServerSubRequest($filter, $collector);
 
         /**
+         * Severity filter (levels and/or names)
+         */
+        $request .= $this->addSeveritySubRequest($filter, $collector);
+
+        /**
          * Resource tag filter by name
          * - servicegroups
          * - hostgroups
@@ -293,15 +308,210 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         }
 
         while ($resourceRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $resources[] = DbResourceFactory::createFromRecord($resourceRecord);
+            $this->resources[] = DbResourceFactory::createFromRecord($resourceRecord);
         }
 
-        /**
-         * Loop on resources on a private method to get icon ids and add them to the entity
-         */
-        $resources = $this->getIconsForResources($resources);
+        $iconIds = $this->getIconIdsFromResources();
+        $icons = $this->getIconsDataForResources($iconIds);
+        $this->completeResourcesWithIcons($icons);
 
-        return $resources;
+        return $this->resources;
+    }
+
+    /**
+     * @param array<int, array<string, string>> $icons
+     * @return void
+     */
+    private function completeResourcesWithIcons(array $icons): void
+    {
+        foreach ($this->resources as $resource) {
+            if ($resource->getIcon() !== null) {
+                $resourceIconId = $resource->getIcon()->getId();
+                $resource->getIcon()
+                    ->setName($icons[$resourceIconId]['name'])
+                    ->setUrl($icons[$resourceIconId]['url']);
+            }
+
+            if ($resource->getSeverity() !== null) {
+                $resourceSeverityIconId = $resource->getSeverity()->getIcon()->getId();
+                $resource->getSeverity()->getIcon()
+                    ->setName($icons[$resourceSeverityIconId]['name'])
+                    ->setUrl($icons[$resourceSeverityIconId]['url']);
+            }
+        }
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function getIconIdsFromResources(): array
+    {
+        $resourceIconIds = $this->getResourceIconIdsFromResources();
+        $severityIconIds = $this->getSeverityIconIdsFromResources();
+
+        return array_unique(array_merge($resourceIconIds, $severityIconIds));
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function getResourceIconIdsFromResources(): array
+    {
+        $resourcesWithIcons = array_filter(
+            $this->resources,
+            fn (ResourceEntity $resource) => $resource->getIcon() !== null
+        );
+
+        /**
+         * @todo replace by foreach
+         */
+        return array_map(
+            fn (ResourceEntity $resource) => $resource->getIcon()?->getId(),
+            $resourcesWithIcons
+        );
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function getSeverityIconIdsFromResources(): array
+    {
+        $resourcesWithSeverities = array_filter(
+            $this->resources,
+            fn (ResourceEntity $resource) => $resource->getSeverity() !== null
+        );
+
+        /**
+         * @todo replace by foreach
+         */
+        return array_map(
+            fn (ResourceEntity $resource) => $resource->getSeverity()?->getIcon()?->getId(),
+            $resourcesWithSeverities
+        );
+    }
+
+    /**
+     * @param ResourceFilter $filter
+     * @return int[]
+     */
+    private function getSeverityLevelsFromFilter(ResourceFilter $filter): array
+    {
+        $levels = [];
+        if (! empty($filter->getHostSeverityLevels())) {
+            foreach ($filter->getHostSeverityLevels() as $level) {
+                $levels[] = $level;
+            }
+        }
+
+        if (! empty($filter->getServiceSeverityLevels())) {
+            foreach ($filter->getServiceSeverityLevels() as $level) {
+                $levels[] = $level;
+            }
+        }
+        return array_unique($levels);
+    }
+
+    /**
+     * @param ResourceFilter $filter
+     * @return int[]
+     */
+    private function getSeverityTypesFromFilter(ResourceFilter $filter): array
+    {
+        $types = [];
+        if (
+            ! empty($filter->getHostSeverityLevels())
+            || ! empty($filter->getHostSeverityNames())
+        ) {
+            $types[] = Severity::HOST_SEVERITY_TYPE_ID;
+        }
+
+        if (
+            ! empty($filter->getServiceSeverityLevels())
+            || ! empty($filter->getServiceSeverityNames())
+        ) {
+            $types[] = Severity::SERVICE_SEVERITY_TYPE_ID;
+        }
+
+        return $types;
+    }
+
+    /**
+     * @param ResourceFilter $filter
+     * @return string[]
+     */
+    private function getSeverityNamesFromFilter(ResourceFilter $filter): array
+    {
+        $names = [];
+        if (! empty($filter->getHostSeverityNames())) {
+            foreach ($filter->getHostSeverityNames() as $hostSeverityName) {
+                $names[] = $hostSeverityName;
+            }
+        }
+
+        if (! empty($filter->getServiceSeverityNames())) {
+            foreach ($filter->getServiceSeverityNames() as $serviceSeverityName) {
+                $names[] = $serviceSeverityName;
+            }
+        }
+
+        return array_unique($names);
+    }
+
+    /**
+     * @param ResourceFilter $filter
+     * @param StatementCollector $collector
+     * @return string
+     */
+    private function addSeveritySubRequest(ResourceFilter $filter, StatementCollector $collector): string
+    {
+        $subRequest = '';
+        $filteredNames = [];
+        $filteredTypes = [];
+        $filteredLevels = [];
+
+        $names = $this->getSeverityNamesFromFilter($filter);
+        $levels = $this->getSeverityLevelsFromFilter($filter);
+        $types = $this->getSeverityTypesFromFilter($filter);
+
+        foreach ($names as $index => $name) {
+            $key = ":severityName_{$index}";
+            $filteredNames[] = $key;
+            $collector->addValue($key, $name, \PDO::PARAM_STR);
+        }
+
+        foreach ($levels as $index => $level) {
+            $key = ":severityLevel_{$index}";
+            $filteredLevels[] = $key;
+            $collector->addValue($key, $level, \PDO::PARAM_INT);
+        }
+
+        foreach ($types as $index => $type) {
+            $key = ":severityType_{$index}";
+            $filteredTypes[] = $key;
+            $collector->addValue($key, $type, \PDO::PARAM_INT);
+        }
+
+        if (
+            ! empty($filteredNames)
+            || ! empty($filteredLevels)
+        ) {
+            $subRequest = ' AND EXISTS (
+                SELECT 1 FROM `:dbstg`.severities
+                WHERE severities.severity_id = resources.severity_id
+                    AND severities.type IN (' . implode(', ', $filteredTypes) . ')';
+
+            $subRequest .= ! empty($filteredNames)
+                ? ' AND severities.name IN (' . implode(', ', $filteredNames) . ')'
+                : '';
+
+            $subRequest .= ! empty($filteredLevels)
+                ? ' AND severities.level IN (' . implode(', ', $filteredLevels) . ')'
+                : '';
+
+            $subRequest .= ' LIMIT 1)';
+        }
+
+        return $subRequest;
     }
 
     /**
@@ -535,18 +745,12 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     /**
      * Get icons for resources
      *
-     * @param ResourceEntity[] $resources
-     * @return ResourceEntity[]
+     * @param array<int, int|null> $iconIds
+     * @return array<int, array<string, string>>
      */
-    private function getIconsForResources(array $resources): array
+    private function getIconsDataForResources(array $iconIds): array
     {
-        $iconIds = [];
-        foreach ($resources as $index => $resource) {
-            if ($resource->getIcon() !== null) {
-                $iconIds[$index] = $resource->getIcon()->getId();
-            }
-        }
-
+        $icons = [];
         if (! empty($iconIds)) {
             $request = 'SELECT
                 img_id AS `icon_id`,
@@ -564,16 +768,13 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             $statement->execute(array_values($iconIds));
 
             while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $resourceIndexes = array_keys($iconIds, (int) $record['icon_id']);
-
-                foreach ($resourceIndexes as $resourceIndex) {
-                    $resources[$resourceIndex]->getIcon()
-                        ?->setName($record['icon_name'])
-                        ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
-                }
+                $icons[(int) $record['icon_id']] = [
+                    'name' => $record['icon_name'],
+                    'url' => $record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']
+                ];
             }
         }
 
-        return $resources;
+        return $icons;
     }
 }

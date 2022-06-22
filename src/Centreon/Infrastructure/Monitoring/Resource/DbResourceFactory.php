@@ -22,9 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\Resource;
 
-use Centreon\Domain\Monitoring\Icon;
+use Core\Domain\RealTime\Model\Icon;
 use Centreon\Domain\Monitoring\Notes;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Severity\RealTime\Domain\Model\Severity;
+use Centreon\Domain\Monitoring\Icon as LegacyIconModel;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
@@ -69,6 +71,21 @@ class DbResourceFactory
         $tries = $record['check_attempts']
             . '/' . $record['max_check_attempts'] . ' (' . $statusConfirmedAsString . ')';
 
+
+        $severity = null;
+        if (! empty($record['severity_id'])) {
+            $severityIcon = (new Icon())
+                ->setId((int) $record['severity_icon_id']);
+
+            $severity = new Severity(
+                (int) $record['severity_id'],
+                $record['severity_name'],
+                (int) $record['severity_level'],
+                (int) $record['severity_type'],
+                $severityIcon
+            );
+        }
+
         $resource = (new ResourceEntity())
             ->setType($resourceType)
             ->setParent($parent)
@@ -92,7 +109,7 @@ class DbResourceFactory
             ->setMonitoringServerName($record['monitoring_server_name'])
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $record['last_status_change']))
             ->setHasGraph((int) $record['has_graph'] === 1)
-            ->setSeverityLevel((int) $record['severity_level']);
+            ->setSeverity($severity);
 
         /**
          * Handle special case of Meta Service resource type
@@ -107,7 +124,7 @@ class DbResourceFactory
         $resource->getLinks()->getExternals()->setNotes($notes);
 
         if (empty($record['icon_id']) === false) {
-            $resource->setIcon((new Icon())->setId((int) $record['icon_id']));
+            $resource->setIcon((new LegacyIconModel())->setId((int) $record['icon_id']));
         }
 
         return $resource;
