@@ -510,7 +510,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfoInLoginLogFile('User Information: ', $content);
-        $this->info('User information found');
+        $this->debug('User information found', $content);
         $this->userInformations = $content;
     }
 

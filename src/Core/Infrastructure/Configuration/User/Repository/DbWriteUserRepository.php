@@ -71,7 +71,6 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
      */
     public function create(User $user): void
     {
-        $this->info('creating user in database');
         $statement = $this->db->prepare(
             $this->translateDbName(
                 'INSERT INTO `:db`.contact

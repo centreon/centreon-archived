@@ -41,6 +41,10 @@ class DbConfigurationBuilder
      */
     public static function create(array $record, array $customConfiguration): Configuration
     {
+        /**
+         * If the configuration is active, check that all mandatory parameters are correctly set to be able to use this
+         * provider configuration
+         */
         if ($record['is_active'] === true) {
             Assertion::notEmpty($customConfiguration['client_id'], "Configuration::clientId");
             Assertion::notEmpty($customConfiguration['client_secret'], "Configuration::clientSecret");
