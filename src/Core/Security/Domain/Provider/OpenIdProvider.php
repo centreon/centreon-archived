@@ -23,24 +23,24 @@ declare(strict_types=1);
 
 namespace Core\Security\Domain\Provider;
 
+use CentreonUserLog;
+use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Core\Domain\Configuration\User\Model\NewUser;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use CentreonUserLog;
-use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
-use Core\Domain\Configuration\User\Model\User;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
-use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -149,7 +149,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         ]);
         $this->validateAutoImportAttributesOrFail();
 
-        $user = new User(
+        $user = new NewUser(
             $this->username,
             $this->userInformations[$this->configuration->getUserNameBindAttribute()],
             $this->userInformations[$this->configuration->getEmailBindAttribute()],

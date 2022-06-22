@@ -27,6 +27,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Configuration\User\Model\NewUser;
 use Core\Domain\Configuration\User\Model\User;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
@@ -69,7 +70,7 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
     /**
      * @inheritDoc
      */
-    public function create(User $user): void
+    public function create(NewUser $user): void
     {
         $statement = $this->db->prepare(
             $this->translateDbName(

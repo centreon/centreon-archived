@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\User\Repository;
 
 use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\User\Model\NewUser;
 
 interface WriteUserRepositoryInterface
 {
@@ -40,5 +41,5 @@ interface WriteUserRepositoryInterface
      * @param User $user
      * @throws \Throwable
      */
-    public function create(User $user): void;
+    public function create(NewUser $user): void;
 }
