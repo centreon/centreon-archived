@@ -29,6 +29,9 @@ class Formatter
     private const ACKNOWLEDGMENT_MESSAGE_TYPE = 'ACK';
     private const INITIAL_STATE_VALUE = 'INITIAL STATE';
     private const NOTIFICATION_TYPE_VALUE = 'NOTIF';
+    /**
+     * @var string[]
+     */
     private array $hosts = [];
     private array $serviceStatuses = ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN'];
     private array $hostStatuses = ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE',];
@@ -155,7 +158,7 @@ class Formatter
     }
 
     /**
-     * @param array $hosts
+     * @param string[] $hosts
      * @return void
      */
     public function setHosts(array $hosts): void
