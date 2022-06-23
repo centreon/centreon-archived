@@ -15630,5 +15630,5 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de serviços"
 msgid "An error occured while retrieving host categories"
 msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 
-#  msgid "Warning, maximum size exceeded for input #input#, it will be be truncated upon saving."
+#  msgid "Warning, maximum size exceeded for input #input#, it will be truncated upon saving."
 #  msgstr ""

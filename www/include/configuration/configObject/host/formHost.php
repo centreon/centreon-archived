@@ -1120,7 +1120,7 @@ $tpl->assign(
 
 $tpl->assign(
     'alert_max_length_exceeded',
-    _("Warning, maximum size exceeded for input #input#, it will be be truncated upon saving")
+    _("Warning, maximum size exceeded for input #input#, it will be truncated upon saving")
 );
 
 if ($o === HOST_WATCH) {
