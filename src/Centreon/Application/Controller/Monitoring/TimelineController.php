@@ -134,11 +134,14 @@ class TimelineController extends AbstractController
         )->setContext($context);
     }
 
-    public function downloadServiceTimeline(int $hostId, int $serviceId, RequestParametersInterface $requestParameters): StreamedResponse
-    {
+    public function downloadServiceTimeline(
+        int $hostId,
+        int $serviceId,
+        RequestParametersInterface $requestParameters
+    ): StreamedResponse {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $requestParameters->setPage(1);
-        $requestParameters->setLimit(100000000000);
+        $requestParameters->setLimit(1000000000);
         $timeLines = $this->formatTimeLinesForDownload($this->getTimelines($hostId, $serviceId));
 
         $response = new StreamedResponse();

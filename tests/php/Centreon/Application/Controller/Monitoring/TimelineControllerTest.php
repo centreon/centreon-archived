@@ -21,6 +21,7 @@
 
 namespace Tests\Centreon\Application\Controller\Monitoring;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
@@ -43,12 +44,36 @@ class TimelineControllerTest extends TestCase
 {
     protected Contact $adminContact;
     protected Host $host;
-    protected Service $service;
-    protected TimelineEvent $timelineEvent;
-    protected MonitoringServiceInterface $monitoringService;
-    protected TimelineServiceInterface $timelineService;
-    protected ContainerInterface $container;
-    protected RequestParametersInterface $requestParameters;
+
+    /**
+     * @var MockObject|Service
+     */
+    protected $service;
+
+    /**
+     * @var MockObject|TimelineEvent
+     */
+    protected $timelineEvent;
+
+    /**
+     * @var MockObject|MonitoringServiceInterface
+     */
+    protected $monitoringService;
+
+    /**
+     * @var MockObject|TimelineServiceInterface
+     */
+    protected $timelineService;
+
+    /**
+     * @var MockObject|ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @var MockObject|RequestParametersInterface
+     */
+    protected $requestParameters;
 
     protected function setUp(): void
     {
@@ -188,17 +213,26 @@ class TimelineControllerTest extends TestCase
         $this->requestParameters
             ->expects($this->once())
             ->method('setLimit')
-            ->with($this->equalTo(100000000000));
+            ->with($this->equalTo(1000000000));
         $this->timelineService->expects($this->once())
             ->method('findTimelineEventsByService')
             ->willReturn([$this->timelineEvent]);
 
         $controller = new TimelineController($this->monitoringService, $this->timelineService);
+        //buffer output for streamed response
+        ob_start();
         $controller->setContainer($this->container);
         $response = $controller->downloadServiceTimeline(1, 1, $this->requestParameters);
+        $response->sendContent();
+        echo($response->getContent());
+        $actualContent = ob_get_contents();
+        ob_end_clean();
 
         $this->assertInstanceOf(StreamedResponse::class, $response);
         $this->assertSame('application/force-download', $response->headers->get('Content-Type'));
         $this->assertSame('attachment; filename="export.csv"', $response->headers->get('content-disposition'));
+        $expectedContent = 'type;date;content;contact;status;tries' . PHP_EOL;
+        $expectedContent .= 'event;2020-02-18T00:00:00+01:00;output;;UP;1' . PHP_EOL;
+        $this->assertEquals($expectedContent, $actualContent);
     }
 }
