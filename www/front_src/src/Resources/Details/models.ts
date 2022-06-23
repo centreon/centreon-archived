@@ -18,6 +18,7 @@ export interface Group extends NamedEntity {
 export interface Category extends NamedEntity {
   configuration_uri: string | null;
 }
+
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
