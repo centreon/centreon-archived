@@ -60,6 +60,39 @@ Description: The package contains base configuration for Centreon Engine and Cen
  two Centreon Broker instances to store real-time information in database and
  performance data in RRD files.
 
+Package: centreon-poller
+Architecture: all
+Depends: 
+    centreon-common (>= ${centreon:version}~),
+    centreon-trap (>= ${centreon:version}~),
+    centreon-engine (>= ${centreon:version}~),
+    centreon-broker (>= ${centreon:version}~),
+    centreon-broker-cbmod (>= ${centreon:version}~),
+    centreon-broker-storage (>= ${centreon:version}~),
+    centreon-connector (>= ${centreon:version}~),
+    centreon-gorgone (>= ${centreon:version}~),
+    libdbd-mysql-perl,
+    libdbd-sqlite3-perl,
+    centreon-plugin-Applications-Databases-Mysql,
+    centreon-plugin-Applications-Monitoring-Centreon-Central,
+    centreon-plugin-Applications-Monitoring-Centreon-Database,
+    centreon-plugin-Applications-Monitoring-Centreon-Map4-Jmx,
+    centreon-plugin-Applications-Monitoring-Centreon-Poller,
+    centreon-plugin-Applications-Protocol-Dns,
+    centreon-plugin-Applications-Protocol-Ftp,
+    centreon-plugin-Applications-Protocol-Http,
+    centreon-plugin-Applications-Protocol-Ldap,
+    centreon-plugin-Applications-Databases-Mysql,
+    centreon-plugin-Hardware-Printers-Generic-Snmp,
+    centreon-plugin-Hardware-Ups-Standard-Rfc1628-Snmp,
+    centreon-plugin-Network-Cisco-Standard-Snmp,
+    centreon-plugin-Operatingsystems-Linux-Snmp,
+    centreon-plugin-Operatingsystems-Windows-Snmp,
+    monitoring-plugins-basic
+Description: This package add rights and default directories for a poller
+  managed by Centreon. This includes the default central poller.
+
+
 Package: centreon-web-common
 Architecture: all
 Depends: 
