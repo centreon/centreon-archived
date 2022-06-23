@@ -21,7 +21,6 @@ import { labelActivation } from '../translatedLabels';
 
 import {
   labelAccessGroup,
-  labelAliasAttributeToBind,
   labelAuthorizationEndpoint,
   labelAuthorizationKey,
   labelAuthorizationValue,
@@ -33,11 +32,11 @@ import {
   labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
   labelDisableVerifyPeer,
-  labelEmailAttributeToBind,
+  labelEmailAttribute,
   labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
-  labelFullnameAttributeToBind,
+  labelFullnameAttribute,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
   labelInvalidURL,
@@ -70,7 +69,6 @@ const renderOpenidConfigurationForm = (): RenderResult =>
   render(<OpenidConfigurationForm />);
 
 const retrievedOpenidConfiguration = {
-  alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
   authorization_rules: [
@@ -111,7 +109,6 @@ const retrievedOpenidConfiguration = {
 };
 
 const retrievedOpenidConfigurationWithEmptyAuthorization = {
-  alias_bind_attribute: 'firstname',
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
   authorization_rules: [],
@@ -243,13 +240,8 @@ describe('Openid configuration form', () => {
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
     expect(screen.getByLabelText(labelEnableAutoImport)).toBeChecked();
-    expect(screen.getByLabelText(labelEmailAttributeToBind)).toHaveValue(
-      'email',
-    );
-    expect(screen.getByLabelText(labelAliasAttributeToBind)).toHaveValue(
-      'firstname',
-    );
-    expect(screen.getByLabelText(labelFullnameAttributeToBind)).toHaveValue(
+    expect(screen.getByLabelText(labelEmailAttribute)).toHaveValue('email');
+    expect(screen.getByLabelText(labelFullnameAttribute)).toHaveValue(
       'lastname',
     );
     expect(screen.getByText('Contact group')).toBeInTheDocument();
@@ -416,12 +408,10 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText(labelEmailAttributeToBind),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText(labelEmailAttribute)).toBeInTheDocument();
     });
 
-    userEvent.type(screen.getByLabelText(labelEmailAttributeToBind), '');
+    userEvent.type(screen.getByLabelText(labelEmailAttribute), '');
 
     await waitFor(() => {
       expect(screen.getByText(labelSave)).toBeDisabled();
