@@ -15611,3 +15611,9 @@ msgstr ""
 
 # msgid "Parent alias
 # msgstr ""
+
+msgid "An error occured while retrieving service categories"
+msgstr "Ocorreu um erro durante a recuperação das categorias de serviços"
+
+msgid "An error occured while retrieving host categories"
+msgstr "Se ha producido un error al recuperar los categorías de hosts"
