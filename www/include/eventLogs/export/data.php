@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -50,7 +51,8 @@ $pearDBO->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 
 // Security check
 CentreonSession::start(1);
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+$sessionId = session_id();
+if (!CentreonSession::checkSession((string) $sessionId, $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -65,26 +67,24 @@ bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-$sid = session_id() ?? '-1';
-$contact_id = check_session($sid, $pearDB);
+$sid = $sessionId === false ? '-1' : $sessionId;
+$contact_id = check_session($sid, $pearDB); //@phpstan-ignore-line
 
-$is_admin = isUserAdmin($sid);
-$lca = [];
-if (isset($sid) && $sid) {
-    $access = new CentreonAcl($contact_id, $is_admin);
-    $lca = [
-        "LcaHost" => $access->getHostsServices($pearDBO, 1),
-        "LcaHostGroup" => $access->getHostGroups(),
-        "LcaSG" => $access->getServiceGroups()
-    ];
-}
+$is_admin = isUserAdmin($sid);//@phpstan-ignore-line
+$access = new CentreonACL($contact_id, $is_admin);
+$lca = [
+    "LcaHost" => $access->getHostsServices($pearDBO, true),
+    "LcaHostGroup" => $access->getHostGroups(),
+    "LcaSG" => $access->getServiceGroups()
+];
+
 require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Request.php');
-$requestHandler = new Request();
+$requestHandler = new Centreon\Legacy\EventLogs\Export\Request();
 $requestHandler->setIsAdmin($is_admin);
 $requestHandler->setLca($lca);
 
 require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'QueryGenerator.php');
-$queryGenerator = new QueryGenerator($pearDBO);
+$queryGenerator = new Centreon\Legacy\EventLogs\Export\QueryGenerator($pearDBO);
 $queryGenerator->setIsAdmin($is_admin);
 $queryGenerator->setEngine($requestHandler->getEngine());
 $queryGenerator->setOpenid($requestHandler->getOpenid());
@@ -117,13 +117,17 @@ $stmt->execute();
 
 $HostCache = [];
 $dbResult = $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
+if (! $dbResult instanceof PDOStatement) {
+    throw new \RuntimeException('An error occurred. Hosts could not be found');
+}
+
 while ($h = $dbResult->fetch()) {
     $HostCache[$h["host_name"]] = $h["host_address"];
 }
 $dbResult->closeCursor();
 
 require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Formatter.php');
-$formatter = new Formatter();
+$formatter = new Centreon\Legacy\EventLogs\Export\Formatter();
 $formatter->setHosts($HostCache);
 $formatter->setStart($requestHandler->getStart());
 $formatter->setEnd($requestHandler->getEnd());
@@ -143,7 +147,7 @@ $metaData = $formatter->formatMetaData();
 unset($formatter);
 
 require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Presenter.php');
-$presenter = new Presenter();
+$presenter = new Centreon\Legacy\EventLogs\Export\Presenter();
 $presenter->setMetaData($metaData);
 $presenter->setHeads($logHeads);
 $presenter->setLogs($formattedLogs);

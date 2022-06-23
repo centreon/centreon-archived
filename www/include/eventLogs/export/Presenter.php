@@ -21,16 +21,29 @@
 
 declare(strict_types=1);
 
+namespace Centreon\Legacy\EventLogs\Export;
+
 class Presenter
 {
     private const DELIMITER = ';';
 
+    /**
+     * @var String[]
+     */
     private array $heads = [];
+
+    /**
+     * @var \Iterator<String[]>
+     */
     private iterable $logs;
+
+    /**
+     * @var mixed[]
+     */
     private array $metaData;
 
     /**
-     * @param array $heads
+     * @param String[] $heads
      * @return void
      */
     public function setHeads(array $heads): void
@@ -39,7 +52,7 @@ class Presenter
     }
 
     /**
-     * @param array $metaData
+     * @param mixed[] $metaData
      * @return void
      */
     public function setMetaData(array $metaData): void
@@ -48,7 +61,7 @@ class Presenter
     }
 
     /**
-     * @param iterable $logs
+     * @param \Iterator<String[]> $logs
      * @return void
      */
     public function setLogs(iterable $logs): void
@@ -68,6 +81,10 @@ class Presenter
         header("Pragma: public");
 
         $f = fopen('php://output', 'w');
+
+        if ($f === false) {
+            throw new \RuntimeException('Unable to write content in output');
+        }
 
         //print meta data
         foreach ($this->metaData as $metaData) {

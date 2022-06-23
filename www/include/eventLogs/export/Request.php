@@ -21,6 +21,8 @@
 
 declare(strict_types=1);
 
+namespace Centreon\Legacy\EventLogs\Export;
+
 class Request
 {
     private const STATUS_UP = 0;
@@ -32,6 +34,9 @@ class Request
     private const STATUS_UNKNOWN = 3;
 
     private ?int $is_admin;
+    /**
+     * @var array<string,mixed>
+     */
     private array $lca = [];
     private ?string $lang = null;
     private ?string $id = null;
@@ -59,9 +64,21 @@ class Request
     private string $searchHost = '';
     private string $searchService = '';
     private string $export = '0';
+    /**
+     * @var array<int, string>
+     */
     private array $hostMsgStatusSet = [];
+    /**
+     * @var array<int, string>
+     */
     private array $svcMsgStatusSet = [];
+    /**
+     * @var array<int, string>
+     */
     private array $tabHostIds = [];
+    /**
+     * @var mixed[]
+     */
     private array $tabSvc = [];
 
     public function __construct()
@@ -108,7 +125,13 @@ class Request
      */
     public function getOpenid(): string
     {
-        return filter_var($this->getId() ?? '-1', FILTER_SANITIZE_STRING);
+        $sanitized = filter_var($this->getId() ?? '-1', FILTER_SANITIZE_STRING);
+
+        if ($sanitized !== false) {
+            return $sanitized;
+        }
+
+        return '';
     }
 
     /**
@@ -128,7 +151,7 @@ class Request
         $start = 0;
 
         if ($this->startDate != '') {
-            $start = $this->dateStringToTimestamp($this->startDate);
+            $start = $this->dateStringToTimestamp((string) $this->startDate);
         }
 
         // setting the startDate/Time using the user's chosen period
@@ -150,7 +173,7 @@ class Request
         $end = time();
 
         if ($this->endDate != '') {
-            $end = $this->dateStringToTimestamp($this->endDate);
+            $end = $this->dateStringToTimestamp((string) $this->endDate);
         }
 
         return $end;
@@ -168,7 +191,7 @@ class Request
         preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $dateString, $matchesD);
         preg_match("/^([0-9]*):([0-9]*)/", $dateString, $matchesT);
 
-        return mktime(
+        $tmstp = mktime(
             (int) $matchesT[1],
             (int) $matchesT[2],
             0,
@@ -176,6 +199,12 @@ class Request
             (int) $matchesD[2],
             (int) $matchesD[3]
         );
+
+        if ($tmstp === false) {
+            throw new \InvalidArgumentException('Unable to convert string to timestamp');
+        }
+
+        return $tmstp;
     }
 
     /**
@@ -292,9 +321,9 @@ class Request
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getNotification(): ?string
+    public function getNotification(): string
     {
         if ($this->getEngine() === 'true') {
             return 'false';
@@ -328,9 +357,9 @@ class Request
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getError(): ?string
+    public function getError(): string
     {
         return $this->error;
     }
@@ -377,7 +406,7 @@ class Request
 
     /**
      * Retrieves list of host message statuses depending on request parameters
-     * @return array
+     * @return String[]
      */
     public function getHostMsgStatusSet(): array
     {
@@ -396,7 +425,7 @@ class Request
 
     /**
      * Retrieves list of service message statuses depending on request parameters
-     * @return array
+     * @return String[]
      */
     public function getSvcMsgStatusSet(): array
     {
@@ -418,11 +447,15 @@ class Request
 
     /**
      * Retrieves host ids depending on open id parameter
-     * @return array
+     * @return mixed[]
      */
     public function getTabHostIds(): array
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
+        if ($tab_id === false) {
+            throw new \InvalidArgumentException('Unable to parse open ID');
+        }
+
         foreach ($tab_id as $openid) {
             $openIdChunks = $this->splitOpenId($openid);
             $id = $openIdChunks['id'];
@@ -433,7 +466,7 @@ class Request
             }
 
             if ($type == 'HG' && (isset($this->lca["LcaHostGroup"][$id]) || $this->is_admin)) {
-                // Get hosts from hostgroups
+                // Get hosts from hostgroups @phpstan-ignore-next-line
                 $hosts = getMyHostGroupHosts($id);
                 if (count($hosts) == 0) {
                     $this->tabHostIds[] = "-1";
@@ -456,7 +489,7 @@ class Request
      * Splits open id string into associative array of id, hostId and type
      *
      * @param string $openid
-     * @return array|string[]
+     * @return array<string, string>
      */
     private function splitOpenId(string $openid): array
     {
@@ -469,10 +502,10 @@ class Request
         $hostId = '';
 
         if (isset($chunks[2])) {
-            $hostId = (int) $chunks[1];
-            $id = (int) $chunks[2];
+            $hostId = $chunks[1];
+            $id = $chunks[2];
         } elseif (isset($chunks[1])) {
-            $id = (int)$chunks[1];
+            $id = $chunks[1];
         }
 
         return ['id' => $id, 'hostId' => $hostId, 'type' => $chunks[0]];
@@ -480,11 +513,12 @@ class Request
 
     /**
      * Retrieves service ids depending on open id parameter
-     * @return array
+     * @return array<mixed>
      */
     public function getTabSvc(): array
     {
         $tab_id = preg_split("/\,/", $this->getOpenid());
+        /** @phpstan-ignore-next-line */
         foreach ($tab_id as $openid) {
             $openIdChunks = $this->splitOpenId($openid);
             $id = $openIdChunks['id'];
@@ -496,7 +530,7 @@ class Request
             }
 
             if ($type == "HG" && (isset($this->lca["LcaHostGroup"][$id]) || $this->is_admin)) {
-                // Get hosts from hostgroups
+                // Get hosts from hostgroups @phpstan-ignore-next-line
                 $hosts = getMyHostGroupHosts($id);
                 if (count($hosts) !== 0) {
                     foreach ($hosts as $h_id) {
@@ -506,14 +540,15 @@ class Request
                     }
                 }
             } elseif ($type == 'SG' && (isset($this->lca["LcaSG"][$id]) || $this->is_admin)) {
+                /** @phpstan-ignore-next-line */
                 $services = getMyServiceGroupServices($id);
                 if (count($services) == 0) {
                     $this->tabSvc[] = "-1";
                 } else {
                     foreach ($services as $svc_id => $svc_name) {
-                        $tab_tmp = preg_split("/\_/", $svc_id);
+                        $tab_tmp = preg_split("/\_/", $svc_id);/** @phpstan-ignore-line @phpstan-ignore-next-line */
                         $tmp_host_id = $tab_tmp[0];
-                        $tmp_service_id = $tab_tmp[1];
+                        $tmp_service_id = $tab_tmp[1]; //@phpstan-ignore-line
                         if (isset($this->lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
                             $this->tabSvc[$tmp_host_id][$tmp_service_id] =
                                 $this->lca["LcaHost"][$tmp_host_id][$tmp_service_id];
@@ -545,9 +580,17 @@ class Request
         $inputPost = filter_input_array(INPUT_POST, $inputArguments);
 
         foreach (array_keys($inputArguments) as $argumentName) {
-            if (!empty($inputGet[$argumentName])) {
+            if (
+                is_array($inputGet) &&
+                array_key_exists($argumentName, $inputGet) &&
+                !empty($inputGet[$argumentName])
+            ) {
                 $this->populateClassPropertyWithRequestArgument($argumentName, $inputGet[$argumentName]);
-            } elseif (!empty($inputPost[$argumentName])) {
+            } elseif (
+                is_array($inputPost) &&
+                array_key_exists($argumentName, $inputPost) &&
+                !empty($inputPost[$argumentName])
+            ) {
                 $this->populateClassPropertyWithRequestArgument($argumentName, $inputPost[$argumentName]);
             }
         }
@@ -570,10 +613,10 @@ class Request
 
     /**
      * Converts string to camelCase literal
-     * @param $string
+     * @param string $string
      * @return string
      */
-    private function stringToCamelCase($string): string
+    private function stringToCamelCase(string $string): string
     {
         $str = str_replace('_', '', ucwords($string, '_'));
 
@@ -584,7 +627,7 @@ class Request
      * Array of available request argument.
      * Array keys are available request arguments. Values sanitizing rules
      * @param int $defaultLimit
-     * @return array
+     * @return array<string, mixed>
      */
     private function getInputFilters(int $defaultLimit = 30): array
     {

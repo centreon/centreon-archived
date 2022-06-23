@@ -21,13 +21,22 @@
 
 declare(strict_types=1);
 
+namespace Centreon\Legacy\EventLogs\Export;
+
+use CentreonACL;
+use CentreonDB;
+use PDOStatement;
+
 class QueryGenerator
 {
+    /**
+     * @var array<array<int,mixed>>
+     */
     private array $queryValues = [];
     private ?int $is_admin;
     private string $openid = '';
     private string $output = '';
-    private ?CentreonAcl $access;
+    private CentreonACL $access;
     private int $start;
     private int $end;
     private string $up;
@@ -41,10 +50,22 @@ class QueryGenerator
     private string $alert;
     private string $error;
     private string $oh;
+    /**
+     * @var String[]
+     */
     private array $hostMsgStatusSet = [];
+    /**
+     * @var String[]
+     */
     private array $svcMsgStatusSet = [];
+    /**
+     * @var String[]
+     */
     private array $tabHostIds = [];
     private string $searchHost = '';
+    /**
+     * @var array<mixed>
+     */
     private array $tabSvc;
     private string $searchService = '';
     private string $engine;
@@ -84,10 +105,10 @@ class QueryGenerator
     }
 
     /**
-     * @param CentreonAcl|null $access
+     * @param CentreonACL $access
      * @return void
      */
-    public function setAccess(?CentreonAcl $access): void
+    public function setAccess(CentreonACL $access): void
     {
         $this->access = $access;
     }
@@ -210,7 +231,7 @@ class QueryGenerator
     }
 
     /**
-     * @param array $hostMsgStatusSet
+     * @param String[] $hostMsgStatusSet
      * @return void
      */
     public function setHostMsgStatusSet(array $hostMsgStatusSet): void
@@ -219,7 +240,7 @@ class QueryGenerator
     }
 
     /***
-     * @param array $svcMsgStatusSet
+     * @param String[] $svcMsgStatusSet
      * @return void
      */
     public function setSvcMsgStatusSet(array $svcMsgStatusSet): void
@@ -228,7 +249,7 @@ class QueryGenerator
     }
 
     /**
-     * @param array $tabHostIds
+     * @param String[] $tabHostIds
      * @return void
      */
     public function setTabHostIds(array $tabHostIds): void
@@ -246,7 +267,7 @@ class QueryGenerator
     }
 
     /**
-     * @param array $tabSvc
+     * @param String[] $tabSvc
      * @return void
      */
     public function setTabSvc(array $tabSvc): void

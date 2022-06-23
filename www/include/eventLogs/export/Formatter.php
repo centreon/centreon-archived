@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Legacy\EventLogs\Export;
 
 class Formatter
 {
@@ -33,8 +34,17 @@ class Formatter
      * @var string[]
      */
     private array $hosts = [];
+    /**
+     * @var string[]
+     */
     private array $serviceStatuses = ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN'];
+    /**
+     * @var string[]
+     */
     private array $hostStatuses = ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE',];
+    /**
+     * @var string[]
+     */
     private array $notificationTypes = ['1' => 'HARD', '0' => 'SOFT'];
     private int $start = 0;
     private int $end = 0;
@@ -168,7 +178,7 @@ class Formatter
 
     /**
      * Generates an array with metadata (filter values from http request)
-     * @return array
+     * @return mixed[]
      */
     public function formatMetaData(): array
     {
@@ -199,8 +209,8 @@ class Formatter
 
     /**
      * Generates formatted CSV  data
-     * @param iterable $logs
-     * @return iterable
+     * @param \PDOStatement $logs
+     * @return \Iterator<String[]>
      */
     public function formatLogs(iterable $logs): iterable
     {
@@ -211,8 +221,8 @@ class Formatter
 
     /**
      * Formats individual log data for CSV
-     * @param array $log
-     * @return array
+     * @param String[] $log
+     * @return String[]
      */
     private function formatLog(array $log): array
     {
