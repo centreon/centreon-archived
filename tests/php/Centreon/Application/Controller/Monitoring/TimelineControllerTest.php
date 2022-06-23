@@ -200,7 +200,7 @@ class TimelineControllerTest extends TestCase
         );
     }
 
-    public function testDownloadServiceTimeline()
+    public function testDownloadServiceTimeline(): void
     {
         $this->monitoringService
             ->expects($this->once())
