@@ -71,7 +71,7 @@ $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
-        contact_theme, enable_one_click_export
+        contact_theme
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -173,15 +173,6 @@ $form->addElement(
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
-if (!$isRemote) {
-    $form->addElement(
-        'checkbox',
-        'enable_one_click_export',
-        _("Enable the one-click export button for poller configuration [BETA]"),
-        null,
-        $attrsText
-    );
-}
 
 
 /* ------------------------ Topoogy ---------------------------- */
@@ -452,7 +443,6 @@ if ($form->validate()) {
     if (
         $form->getSubmitValue("contact_lang") !== $cct['contact_lang']
         || $showDeprecatedPages !== $cct['show_deprecated_pages']
-        || $form->getSubmitValue('enable_one_click_export') !== $cct['enable_one_click_export']
     ) {
         $contactStatement = $pearDB->prepare(
             'SELECT * FROM contact WHERE contact_id = :contact_id'
