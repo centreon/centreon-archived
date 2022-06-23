@@ -252,12 +252,20 @@ function myTrim($str)
     return (trim($str));
 }
 
-function limitNotesLength($value)
+/**
+ * @param string $value
+ * @return string
+ */
+function limitNotesLength(string $value): string
 {
     return substr($value, 0, 512);
 }
 
-function limitUrlLength($value)
+/**
+ * @param string $value
+ * @return string
+ */
+function limitUrlLength(string $value): string
 {
     return substr($value, 0, 2048);
 }
