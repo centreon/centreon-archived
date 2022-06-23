@@ -170,7 +170,6 @@ const filter = {
       object_type: 'service_groups',
       value: [webAccessServiceGroup],
     },
-
     { name: 'search', value: 'Search me' },
     { name: 'sort', value: [defaultSortField, defaultSortOrder] },
   ],
