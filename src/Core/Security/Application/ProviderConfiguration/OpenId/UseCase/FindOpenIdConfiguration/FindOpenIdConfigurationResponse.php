@@ -127,11 +127,6 @@ class FindOpenIdConfigurationResponse
     /**
      * @var string|null
      */
-    public ?string $userAliasBindAttribute = null;
-
-    /**
-     * @var string|null
-     */
     public ?string $userNameBindAttribute = null;
 
     /**

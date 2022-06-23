@@ -175,7 +175,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $missingParameters = [
         'contact_template',
         'email_bind_attribute',
-        'alias_bind_attribute',
         'fullname_bind_attribute',
     ];
 
@@ -226,7 +225,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->isAutoImportEnabled = true;
     $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
     $request->emailBindAttribute = 'email';
-    $request->userAliasBindAttribute = 'alias';
     $request->userNameBindAttribute = 'name';
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
