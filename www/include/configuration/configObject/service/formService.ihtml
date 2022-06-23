@@ -441,21 +441,17 @@ jQuery('input[name=service_normal_check_interval]').change(function() {
     }
 });
 
-jQuery('input[name=esi_notes_url]').change(function () {
-    if (jQuery(this).val().length > 2048) {
-        alert(alert_max_length_exceeded.replace('#input#', 'notes_url (max: 2048)'));
+$('input[name=esi_notes_url], input[name=esi_action_url]').change(function () {
+    inputName = $(this).parent('td').prev().text();
+    if ($(this).val().length > 2048) {
+        alert(alert_max_length_exceeded.replace('#input#', $.trim(inputName)).replace('#maxLength#', '2048'));
     }
 });
 
-jQuery('input[name=esi_action_url]').change(function () {
-    if (jQuery(this).val().length > 2048) {
-        alert(alert_max_length_exceeded.replace('#input#', 'action_url (max: 2048)'));
-    }
-});
-
-jQuery('input[name=esi_notes]').change(function () {
-    if (jQuery(this).val().length > 512) {
-        alert(alert_max_length_exceeded.replace('#input#', 'notes (max: 512)'));
+$('input[name=esi_notes]').change(function () {
+    inputName = $(this).parent('td').prev().text();
+    if ($(this).val().length > 512) {
+        alert(alert_max_length_exceeded.replace('#input#', $.trim(inputName)).replace('#maxLength#', '512'));
     }
 });
 

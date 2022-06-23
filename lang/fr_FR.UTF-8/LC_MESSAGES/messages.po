@@ -16924,5 +16924,5 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories de s
 msgid "An error occured while retrieving host categories"
 msgstr "Une erreur s'est produite lors de la récupération des catégories d'hôtes"
 
-msgid "Warning, maximum size exceeded for input #input#, it will be truncated upon saving."
-msgstr "Attention, taille maximale dépassée pour le champ #input#, il sera tronqué à l'enregistrement."
+msgid "Warning, maximum size exceeded for input #input# (max: #maxLength#), it will be truncated upon saving."
+msgstr "Attention, taille maximale dépassée pour le champ #input# (max: #maxLength#), il sera tronqué à l'enregistrement."
