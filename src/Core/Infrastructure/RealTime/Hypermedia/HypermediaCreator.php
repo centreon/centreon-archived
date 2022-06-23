@@ -21,16 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
-
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface;
+namespace Core\Infrastructure\RealTime\Hypermedia;
 
 class HypermediaCreator
 {
     /**
      * @var HypermediaProviderInterface[]
      */
-    private $hypermediaProviders;
+    private array $hypermediaProviders;
 
     /**
      * @param iterable<HypermediaProviderInterface> $hypermediaProviders
@@ -105,13 +103,39 @@ class HypermediaCreator
      * ]
      *
      * @param mixed $response
-     * @return array<array<string, string|null>>
+     * @return array<array<string, string|int|null>>
      */
-    public function createInternalGroupsUri(mixed $response): array
+    public function convertGroupsForPresenter(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createInternalGroupsUri($response);
+                return $hypermediaProvider->convertGroupsForPresenter($response->groups);
+            }
+        }
+        return [];
+    }
+
+    /**
+     * This method will add the redirection uri to the category configuration page.
+     * This will be done regarding the Users rights and the Resource Type.
+     * ex: For a Host resource type will add the redirection link to the host category
+     * configuration page.
+     * [
+     *   [
+     *      'id' => 1,
+     *      'name' => ALL,
+     *      'configuration_uri' => 'http://localhost:8080/centreon/main.php?p=60104&o=c&hc_id=53'
+     *   ]
+     * ]
+     *
+     * @param mixed $response
+     * @return array<array<string, string|int|null>>
+     */
+    public function convertCategoriesForPresenter(mixed $response): array
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->convertCategoriesForPresenter($response->categories);
             }
         }
         return [];
