@@ -79,7 +79,7 @@ class Request
     }
 
     /**
-     * @param array $lca
+     * @param array<string,mixed> $lca
      * @return void
      */
     public function setLca(array $lca): void
