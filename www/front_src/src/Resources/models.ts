@@ -15,6 +15,7 @@ export interface NamedEntity {
 }
 
 export interface Icon {
+  id?: number;
   name: string;
   url: string;
 }
@@ -23,6 +24,14 @@ export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
   name: string;
   severity_code: number;
+}
+
+export interface Severity {
+  icon: Icon;
+  id: number;
+  level: number;
+  name: string;
+  type: string;
 }
 
 export interface Resource extends NamedEntity {
@@ -37,6 +46,7 @@ export interface Resource extends NamedEntity {
   notification_enabled?: boolean;
   parent?: Parent;
   passive_checks?: boolean;
+  severity?: Severity;
   severity_level?: number;
   short_type: ResourceShortType;
   status?: Status;

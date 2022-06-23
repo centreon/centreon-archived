@@ -169,6 +169,8 @@ const ResourceListing = (): JSX.Element => {
     },
   ];
 
+  console.log('rooowa', listing);
+
   return (
     <Listing
       checkable

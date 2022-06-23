@@ -22,6 +22,7 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
+import { mockedResourceListing } from '../mockedResults/mockedResourceListing';
 import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
@@ -180,7 +181,7 @@ const useLoadResources = (): LoadResources => {
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),
       statuses: getCriteriaIds('statuses'),
-    }).then(setListing);
+    }).then(() => setListing(mockedResourceListing));
 
     if (isNil(details)) {
       return;
