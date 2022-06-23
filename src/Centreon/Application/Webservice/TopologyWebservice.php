@@ -205,7 +205,7 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
 
     /**
      * @param \CentreonUser $user
-     * @return Topology|null
+     * @return bool
      */
     private function isPollerWizardAccessible(\CentreonUser $user): bool
     {
@@ -219,6 +219,9 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
         return false;
     }
 
+    /**
+     * @return Topology|null
+     */
     private function createPollerWizardTopology(): ?Topology
     {
         $topology = new Topology();
