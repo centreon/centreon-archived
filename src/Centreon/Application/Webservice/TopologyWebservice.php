@@ -220,9 +220,9 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
     }
 
     /**
-     * @return Topology|null
+     * @return Topology
      */
-    private function createPollerWizardTopology(): ?Topology
+    private function createPollerWizardTopology(): Topology
     {
         $topology = new Topology();
         $topology->setTopologyUrl("/poller-wizard/1");
