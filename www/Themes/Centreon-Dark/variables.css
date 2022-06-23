@@ -133,8 +133,8 @@
     --WzBodyI-font-color: var(--color-white);
     --WzTtDi-border-color: var(--body-color);
     --wzclose-font-color: var(--color-primary-light);
-    --wzclose-background-color : var(--wzclose-font-color);
-    --wzclose-border-color : var(--body-background);
+    --wzclose-background-color : var(--body-background);
+    --wzclose-border-color : var(--wzclose-font-color);
     --pluginpack-block-h2-font-color: var(--body-color);
     --pp-can-be-installed-border-color: var(--body-color);
     --pp-bottom-border-top-color: var(--pp-can-be-installed-border-color);
@@ -171,7 +171,7 @@
     --ui-timepicker-minute-cell-background-color: var(--color-cinder);
     --ui-timepicker-minute-cell-border-color: var(--body-color);
     --ui-timepicker-minute-cell-font-color: var(--color-white);
-    --jquery-ui-widget-content-background-color: var(--body-color);
+    --jquery-ui-widget-content-background-color: var(--body-background);
     --view-body-ui-widget-header-font-color: var(--color-white);
     --update-font-color: var(--color-black);
     --tabs-periods-background-color: var(--body-background);

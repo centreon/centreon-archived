@@ -23,22 +23,24 @@ declare(strict_types=1);
 
 namespace Core\Security\Domain\Provider;
 
+use CentreonUserLog;
+use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Core\Domain\Configuration\User\Model\NewUser;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use CentreonUserLog;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
-use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -87,6 +89,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         private UrlGeneratorInterface $router,
         private ContactServiceInterface $contactService,
         private Container $dependencyInjector,
+        private WriteUserRepositoryInterface $userRepository
     ) {
         $pearDB = $this->dependencyInjector['configuration_db'];
         $this->centreonLog = new CentreonUserLog(-1, $pearDB);
@@ -132,16 +135,32 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function canCreateUser(): bool
     {
-        return true;
+        return $this->configuration->isAutoImportEnabled();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws SSOAuthenticationException
      */
-    public function createUser(): ?ContactInterface
+    public function createUser(): void
     {
-        // @todo: implement this method when handling autoimport
-        return null;
+        $this->info('Auto import starting...', [
+            "user" => $this->username
+        ]);
+        $this->validateAutoImportAttributesOrFail();
+
+        $user = new NewUser(
+            $this->username,
+            $this->userInformations[$this->configuration->getUserNameBindAttribute()],
+            $this->userInformations[$this->configuration->getEmailBindAttribute()],
+        );
+        $user->setContactTemplate($this->configuration->getContactTemplate());
+        $this->userRepository->create($user);
+        $this->info('Auto import complete', [
+            "user_alias" => $this->username,
+            "user_fullname" => $this->userInformations[$this->configuration->getUserNameBindAttribute()],
+            "user_email" => $this->userInformations[$this->configuration->getEmailBindAttribute()]
+        ]);
     }
 
     /**
@@ -274,17 +293,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
-        $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
-        $accessTokenLog = [
-            'provider_token' => '...' . substr($content['access_token'], -10)
-        ];
-        if (array_key_exists('refresh_token', $content)) {
-            $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
-        }
-        $this->info(
-            'Access Token return by external provider',
-            $accessTokenLog
-        );
+        $this->logAuthenticationInfo('Token Access Information:', $content);
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content ['expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
@@ -357,17 +366,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
-        $this->logAuthenticationInfoInLoginLogFile('Token Access Information:', $content);
-        $accessTokenLog = [
-            'provider_token' => '...' . substr($content['access_token'], -10)
-        ];
-        if (array_key_exists('refresh_token', $content)) {
-            $accessTokenLog['refresh_token'] = '...' . substr($content['refresh_token'], -10);
-        }
-        $this->info(
-            'Access Token return by external provider',
-            $accessTokenLog
-        );
+        $this->logAuthenticationInfo('Token Access Information:', $content);
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
@@ -444,8 +443,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
-        $this->logAuthenticationInfoInLoginLogFile('Token Introspection Information: ', $content);
-        $this->info('Introspection token information found');
+        $this->logAuthenticationInfo('Token Introspection Information: ', $content);
         $this->userInformations = $content;
     }
 
@@ -490,7 +488,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
-        $this->info('User information found');
+        $this->logAuthenticationInfo('User Information: ', $content);
         $this->userInformations = $content;
     }
 
@@ -599,6 +597,33 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * Validate that auto import attributes are present in user informations from provider
+     * @throws SSOAuthenticationException
+     */
+    private function validateAutoImportAttributesOrFail(): void
+    {
+        $missingAttributes = [];
+        if (! array_key_exists($this->configuration->getEmailBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getEmailBindAttribute();
+        }
+        if (! array_key_exists($this->configuration->getUserAliasBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getUserAliasBindAttribute();
+        }
+        if (! array_key_exists($this->configuration->getUserNameBindAttribute(), $this->userInformations)) {
+            $missingAttributes[] = $this->configuration->getUserNameBindAttribute();
+        }
+
+        if (! empty($missingAttributes)) {
+            $ex = SSOAuthenticationException::autoImportBindAttributeNotFound($missingAttributes);
+            $this->logExceptionInLoginLogFile(
+                "Some bind attributes can't be found in user information: %s, message: %s",
+                $ex
+            );
+            throw $ex;
+        }
+    }
+
+    /**
      * Log error when response from external provider contains error or is empty
      *
      * @param array<string,string> $content
@@ -646,12 +671,12 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Log Authentication informations in login.log file
+     * Log Authentication informations
      *
      * @param string $message
      * @param array<string,string> $content
      */
-    private function logAuthenticationInfoInLoginLogFile(string $message, array $content): void
+    private function logAuthenticationInfo(string $message, array $content): void
     {
         if (isset($content['jti'])) {
             $content['jti'] = substr($content['jti'], -10);
@@ -662,10 +687,17 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (isset($content['refresh_token'])) {
             $content['refresh_token'] = substr($content['refresh_token'], -10);
         }
+        if (isset($content['id_token'])) {
+            $content['id_token'] = substr($content['id_token'], -10);
+        }
+        if (isset($content['provider_token'])) {
+            $content['provider_token'] = substr($content['provider_token'], -10);
+        }
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
             "[Openid] [Debug] $message " . json_encode($content)
         );
+        $this->debug('Authentication informations : ', $content);
     }
 
     /**
