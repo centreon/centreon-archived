@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller\Monitoring;
 
 use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
@@ -147,6 +148,9 @@ class TimelineController extends AbstractController
         $response = new StreamedResponse();
         $response->setCallback(function () use ($timeLines) {
             $handle = fopen('php://output', 'r+');
+            if ($handle === false) {
+                throw new \RuntimeException('Unable to generate file');
+            }
             $header = ['type', 'date', 'content', 'contact', 'status', 'tries',];
             fputcsv($handle, $header, ';');
 
@@ -194,7 +198,14 @@ class TimelineController extends AbstractController
             );
         }
 
-        $host = $this->monitoringService->findOneHost($service->getHost()->getId());
+        $serviceHost = $service->getHost();
+        if (!$serviceHost instanceof Host) {
+            throw new EntityNotFoundException(sprintf(_('Unable to find host by service id %d'), $service->getId()));
+        }
+
+        $serviceHostId = $serviceHost->getId() ?? 0;
+
+        $host = $this->monitoringService->findOneHost($serviceHostId);
         if (is_null($host)) {
             throw new EntityNotFoundException(
                 sprintf(_('Host meta for meta service %d not found'), $metaId)
@@ -256,7 +267,7 @@ class TimelineController extends AbstractController
 
     /**
      * @param TimelineEvent[] $timeLines
-     * @return iterable
+     * @return \Iterator
      */
     private function formatTimeLinesForDownload(array $timeLines): iterable
     {
@@ -264,6 +275,7 @@ class TimelineController extends AbstractController
             $date = $timeLine->getDate() instanceof \DateTime ? $timeLine->getDate()->format('c') : '';
             $contact = $timeLine->getContact() instanceof TimelineContact ? $timeLine->getContact()->getName() : '';
             $status = $timeLine->getStatus() instanceof ResourceStatus ? $timeLine->getStatus()->getName() : '';
+            $tries = $timeLine->getTries() ?? '';
 
             yield [
                 'type' => $timeLine->getType() ?? '',
@@ -271,7 +283,7 @@ class TimelineController extends AbstractController
                 'content' => $timeLine->getContent(),
                 'contact' => $contact,
                 'status' => $status,
-                'tries' => $timeLine->getTries(),
+                'tries' => (string) $tries,
             ];
         }
     }
