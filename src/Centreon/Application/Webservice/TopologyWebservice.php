@@ -49,6 +49,9 @@ use Centreon\ServiceProvider;
 class TopologyWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizePublicInterface
 {
+    /** @var int */
+    private const POLLER_PAGE = 60901;
+
     /**
      * List of required services
      *
@@ -189,8 +192,8 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
             ->getRepository(TopologyRepository::class)
             ->getTopologyList($user);
 
-        if ($pollerWizardEntity = $this->determinePollerWizardAccess($user)) {
-            $dbResult[] = $pollerWizardEntity;
+        if ($this->isPollerWizardAccessible($user)) {
+            $dbResult[] = $this->createPollerWizardTopology();
         }
 
         $status = true;
@@ -204,20 +207,24 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
      * @param \CentreonUser $user
      * @return Topology|null
      */
-    private function determinePollerWizardAccess(\CentreonUser $user): ?Topology
+    private function isPollerWizardAccessible(\CentreonUser $user): bool
     {
         $userTopologyAccess = $user->access->getTopology();
         if (
-            ! isset($userTopologyAccess[60901])
-            || (int) $userTopologyAccess[60901] !== \CentreonACL::ACL_ACCESS_READ_WRITE
+            isset($userTopologyAccess[self::POLLER_PAGE])
+            && (int) $userTopologyAccess[self::POLLER_PAGE] === \CentreonACL::ACL_ACCESS_READ_WRITE
         ) {
-            return null;
+            return true;
         }
+        return false;
+    }
 
+    private function createPollerWizardTopology(): ?Topology
+    {
         $topology = new Topology();
         $topology->setTopologyUrl("/poller-wizard/1");
         $topology->setTopologyPage('60959');
-        $topology->setTopologyParent('60901');
+        $topology->setTopologyParent(self::POLLER_PAGE);
         $topology->setTopologyName("Poller Wizard Page");
         $topology->setTopologyShow('0');
         $topology->setIsReact('1');
