@@ -25,11 +25,15 @@ import {
   labelStatusType,
   labelHard,
   labelSoft,
+  labelServiceSeverities,
+  labelHostSeverities,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
+  buildHostServeritiesEndpoint,
+  buildServiceSeveritiesEndpoint,
 } from '../api/endpoint';
 
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
@@ -184,9 +188,11 @@ export interface CriteriaById {
 
 export enum CriteriaNames {
   hostGroups = 'host_groups',
+  hostSeverities = 'host_severities',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceGroups = 'service_groups',
+  serviceSeverities = 'service_severities',
   states = 'states',
   statusTypes = 'status_types',
   statuses = 'statuses',
@@ -216,6 +222,14 @@ const selectableCriterias: CriteriaById = {
   [CriteriaNames.serviceGroups]: {
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
     label: labelServiceGroup,
+  },
+  [CriteriaNames.hostSeverities]: {
+    buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
+    label: labelHostSeverities,
+  },
+  [CriteriaNames.serviceSeverities]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
+    label: labelServiceSeverities,
   },
   [CriteriaNames.monitoringServers]: {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },

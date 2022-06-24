@@ -10,6 +10,8 @@ import { monitoringEndpoint } from '../../api/endpoint';
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;
+const hostSeveritiesEndpoint = `${monitoringEndpoint}/hosts/severities`;
+const serviceSeveritiesEndpoint = `${monitoringEndpoint}/severities/service`;
 
 const buildHostGroupsEndpoint = (parameters: ListingParameters): string => {
   return buildListingEndpoint({
@@ -18,6 +20,19 @@ const buildHostGroupsEndpoint = (parameters: ListingParameters): string => {
   });
 };
 
+const buildHostServeritiesEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: hostSeveritiesEndpoint,
+    parameters,
+  });
+};
+
+const buildServiceSeveritiesEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: serviceSeveritiesEndpoint,
+    parameters,
+  });
+};
 const buildServiceGroupsEndpoint = (
   parameters: BuildListingEndpointParameters,
 ): string => {
@@ -40,4 +55,6 @@ export {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
   buildMonitoringServersEndpoint,
+  buildServiceSeveritiesEndpoint,
+  buildHostServeritiesEndpoint,
 };
