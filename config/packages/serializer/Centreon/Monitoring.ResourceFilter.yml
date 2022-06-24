@@ -10,6 +10,10 @@ Centreon\Domain\Monitoring\ResourceFilter:
             type: array<string>
         servicegroupNames:
             type: array<string>
+        serviceCategoryNames:
+            type: array<string>
+        hostCategoryNames:
+            type: array<string>
         monitoringServerNames:
             type: array<string>
         statusTypes:

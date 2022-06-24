@@ -44,7 +44,6 @@ import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../../translatedLabels';
-import ApiNotFoundMessage from '../ApiNotFoundMessage';
 import { ResourceDetails } from '../../Details/models';
 import {
   appliedFilterAtom,
@@ -65,7 +64,7 @@ const useLoadResources = (): LoadResources => {
   const { sendRequest, sending } = useRequest<ResourceListing>({
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
+      always(t(labelNoResourceFound)),
       pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
     ),
     request: listResources,
@@ -169,12 +168,14 @@ const useLoadResources = (): LoadResources => {
     }
 
     sendRequest({
+      hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
+      serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
