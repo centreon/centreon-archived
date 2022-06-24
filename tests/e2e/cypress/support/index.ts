@@ -15,5 +15,6 @@ Cypress.on('uncaught:exception', (err) => {
   ) {
     return false;
   }
+
   return true;
 });
