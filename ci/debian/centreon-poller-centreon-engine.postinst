@@ -25,14 +25,14 @@ if [ "$1" = "configure" ]; then
     chmod -v +x /usr/share/centreon/bin/centreontrapd
 
     # snmpd.conf file
-    if [ -f "/etc/snmpd/snmpd.conf" ]; then
+    if [ -e "/etc/snmpd/snmpd.conf" ]; then
         # Add right in SNMP
-        sed -i \
-            -e "/^view.*\.1\.3\.6\.1\.2\.1\.1$/i\
-view centreon included .1.3.6.1" \
-            -e "/^access.*$/i\
-access notConfigGroup \"\" any noauth exact centreon none none" \
-        /etc/snmp/snmpd.conf
+        if [ ! "$(grep 'view   centreon' /etc/snmp/snmpd.conf)" ]; then
+            sed -i '/^#  system + hrSystem groups only/a view   centreon    included   .1.3.6.1' /etc/snmp/snmpd.conf
+        fi
+        if [ ! "$(grep 'centreoncommunity default' /etc/snmp/snmpd.conf)" ]; then
+            sed -i '/^# Read-only access to everyone to the systemonly view/a rocommunity  centreoncommunity default -V centreon' /etc/snmp/snmpd.conf
+        fi
     fi
 
     # Fix centreon configuration permissions
