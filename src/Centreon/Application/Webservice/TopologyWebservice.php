@@ -210,13 +210,11 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
     private function isPollerWizardAccessible(\CentreonUser $user): bool
     {
         $userTopologyAccess = $user->access->getTopology();
-        if (
+
+        return (
             isset($userTopologyAccess[self::POLLER_PAGE])
             && (int) $userTopologyAccess[self::POLLER_PAGE] === \CentreonACL::ACL_ACCESS_READ_WRITE
-        ) {
-            return true;
-        }
-        return false;
+        );
     }
 
     /**
