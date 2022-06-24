@@ -184,11 +184,6 @@ class Contact implements UserInterface, ContactInterface
     private $useDeprecatedPages;
 
     /**
-     * @var bool
-     */
-    private $isOneClickExportEnabled = false;
-
-    /**
      * @var string|null
      */
     private $theme;
@@ -635,25 +630,6 @@ class Contact implements UserInterface, ContactInterface
     public function setUseDeprecatedPages(bool $useDeprecatedPages): static
     {
         $this->useDeprecatedPages = $useDeprecatedPages;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOneClickExportEnabled(): bool
-    {
-        return $this->isOneClickExportEnabled;
-    }
-
-    /**
-     * @param bool $isOneClickExportEnabled
-     * @return self
-     */
-    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): self
-    {
-        $this->isOneClickExportEnabled = $isOneClickExportEnabled;
 
         return $this;
     }
