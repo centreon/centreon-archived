@@ -1285,15 +1285,12 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterStatus'
         - $ref: '#/components/parameters/ResourceFilterHostgroupName'
         - $ref: '#/components/parameters/ResourceFilterServicegroupName'
-<<<<<<< HEAD
         - $ref: '#/components/parameters/ResourceFilterServiceCategoryName'
         - $ref: '#/components/parameters/ResourceFilterHostCategoryName'
-=======
         - $ref: '#/components/parameters/ResourceFilterHostSeverityName'
         - $ref: '#/components/parameters/ResourceFilterServiceSeverityName'
         - $ref: '#/components/parameters/ResourceFilterHostSeverityLevel'
         - $ref: '#/components/parameters/ResourceFilterServiceSeverityLevel'
->>>>>>> 9dfca04fda (enh(resources): handle severities in the listing)
         - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
         - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
@@ -4162,11 +4159,6 @@ components:
       name: service_category_names
       required: false
       description: "Filter the resources by service category names"
-    ResourceFilterServiceSeverityName:
-      in: query
-      name: service_severity_names
-      required: false
-      description: "Filter the resources by service severity names (only functional with optimized mod)"
       schema:
         type: array
         items:
@@ -4177,7 +4169,21 @@ components:
       name: host_category_names
       required: false
       description: "Filter the resources by host category names"
-        example: '["High", "Low"]'
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Linux", "Windows"]'
+    ResourceFilterServiceSeverityName:
+      in: query
+      name: service_severity_names
+      required: false
+      description: "Filter the resources by service severity names (only functional with optimized mod)"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Ping", "CPUs"]'
     ResourceFilterHostSeverityName:
       in: query
       name: host_severity_names
@@ -4188,7 +4194,6 @@ components:
         items:
           type: string
         example: '["Linux", "Windows"]'
-        example: '["High", "Low"]'
     ResourceFilterHostSeverityLevel:
       in: query
       name: host_severity_levels
