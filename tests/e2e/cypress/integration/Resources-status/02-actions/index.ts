@@ -2,7 +2,6 @@ import { When, Then } from 'cypress-cucumber-preprocessor/steps';
 
 import {
   stateFilterContainer,
-  resourceMonitoringApi,
   actionBackgroundColors,
   actions,
   insertResourceFixtures,
@@ -14,14 +13,7 @@ const serviceName = 'service_test';
 const serviceInDowntimeName = 'service_test_dt';
 
 before(() => {
-  insertResourceFixtures().then(() => {
-    cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
-
-    cy.intercept({
-      method: 'GET',
-      url: resourceMonitoringApi,
-    });
-  });
+  insertResourceFixtures();
 });
 
 When('I select the acknowledge action on a problematic Resource', () => {
@@ -41,6 +33,7 @@ When('I select the acknowledge action on a problematic Resource', () => {
 });
 
 Then('the problematic Resource is displayed as acknowledged', () => {
+  cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
   cy.waitUntil(() => {
     return refreshListing()
       .then(() => cy.contains(serviceName))

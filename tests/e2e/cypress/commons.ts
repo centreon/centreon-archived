@@ -167,7 +167,7 @@ const insertFixture = (file: string): Cypress.Chainable => {
   return cy.fixture(file).then(executeActionViaClapi);
 };
 
-const logout = () =>
+const logout = (): Cypress.Chainable =>
   cy.request({
     body: {},
     method: 'POST',

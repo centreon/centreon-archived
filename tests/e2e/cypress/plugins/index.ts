@@ -3,7 +3,7 @@
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
-module.exports = (on) => {
+module.exports = (on): void => {
   const options = {
     webpackOptions: require('../webpack.config'),
   };
