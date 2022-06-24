@@ -6,35 +6,44 @@ import { ComponentColumnProps } from '@centreon/ui';
 import ShortTypeChip from '../../ShortTypeChip';
 import { Severity } from '../../models';
 
-const useStyles = makeStyles({
-  root: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gridTemplateRows: 'repeat(2,minmax(15px,5px))',
-    rowGap: 3,
+const useStyles = makeStyles((theme) => ({
+  firstColumn: {
+    display: 'flex',
+    minWidth: theme.spacing(5),
   },
-});
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  rowContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  text: {
+    display: 'flex',
+  },
+}));
 
 const Title = ({ severity }: { severity: Severity }): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <div style={{ background: 'orange', display: 'flex' }}>
-        <div style={{ background: 'red' }}>severity_name:</div>
-        <div> {severity.name}</div>
+      <div className={classes.rowContainer}>
+        <div className={classes.firstColumn}>name:</div>
+        <div className={classes.text}>{severity.name}</div>
       </div>
-      <div style={{ background: 'green', display: 'flex' }}>
-        <div style={{ background: 'blue' }}>level</div>
-        <div>{severity.level}</div>
+
+      <div className={classes.rowContainer}>
+        <div className={classes.firstColumn}>level:</div>
+        <div className={classes.text}>{severity.level}</div>
       </div>
     </div>
   );
 };
 
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  console.log('rooooow', row);
-
   if (!row.severity_level) {
     return null;
   }
