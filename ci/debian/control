@@ -64,6 +64,7 @@ Package: centreon-poller
 Architecture: all
 Depends: 
     centreon-common (>= ${centreon:version}~),
+    centreon-poller-centreon-engine (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-broker (>= ${centreon:version}~),
