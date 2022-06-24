@@ -77,8 +77,7 @@ class Presenter
     {
         header('Content-Disposition: attachment;filename="EventLogs.csv";');
         header('Content-Type: application/csv; charset=UTF-8');
-        header("Cache-Control: cache, must-revalidate");
-        header("Pragma: public");
+        header("Pragma: no-cache");
 
         $f = fopen('php://output', 'w');
 
