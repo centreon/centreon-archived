@@ -34,7 +34,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 /**
  * Database repository for the access groups
  */
-class DbReadAccessGroupRepository implements ReadAccessGroupRepositoryInterface
+class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements ReadAccessGroupRepositoryInterface
 {
     use LoggerTrait;
 
