@@ -91,7 +91,6 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'auto_import' => $configuration->isAutoImportEnabled(),
             'contact_template_id' => $configuration->getContactTemplate()?->getId(),
             'email_bind_attribute' => $configuration->getEmailBindAttribute(),
-            'alias_bind_attribute' => $configuration->getUserAliasBindAttribute(),
             'fullname_bind_attribute' => $configuration->getUserNameBindAttribute(),
             'claim_name' => $configuration->getClaimName(),
             'contact_group_id' => $configuration->getContactGroup()?->getId()

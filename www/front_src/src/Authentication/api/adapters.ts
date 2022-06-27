@@ -101,13 +101,11 @@ export const adaptOpenidConfigurationToAPI = ({
   autoImport,
   contactTemplate,
   emailBindAttribute,
-  aliasBindAttribute,
   fullnameBindAttribute,
   contactGroup,
   claimName,
   authorizationRules,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
-  alias_bind_attribute: aliasBindAttribute || null,
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
   authorization_rules:

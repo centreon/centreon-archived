@@ -95,7 +95,6 @@ it('should present a provider configuration', function () {
         expect($presenter->response->contactTemplate)->toBe(['id' => 1, 'name' => 'contact_template']);
         expect($presenter->response->isAutoImportEnabled)->toBeFalse();
         expect($presenter->response->emailBindAttribute)->toBeNull();
-        expect($presenter->response->userAliasBindAttribute)->toBeNull();
         expect($presenter->response->userNameBindAttribute)->toBeNull();
         expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
 });
