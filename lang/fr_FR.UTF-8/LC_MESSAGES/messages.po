@@ -16726,7 +16726,7 @@ msgid "Email attribute"
 msgstr "Attribut de l'email"
 
 msgid "Fullname attribute"
-msgstr "Attribut de nom complet"
+msgstr "Attribut du nom complet"
 
 # msgid "You are not authorized to access the configuration"
 # msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
