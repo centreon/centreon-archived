@@ -14758,3 +14758,6 @@ msgstr ""
 
 # msgid "Force active checks"
 # msgstr ""
+
+#  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+#  msgstr ""

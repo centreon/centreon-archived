@@ -16326,3 +16326,6 @@ msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être diff�
 
 # msgid "Force active checks"
 # msgstr "Forcer les contrôles actif"
+
+msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
