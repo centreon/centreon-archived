@@ -27,6 +27,10 @@ import {
   labelSoft,
   labelHostCategory,
   labelServiceCategory,
+  labelServiceSeverities,
+  labelHostSeverities,
+  labelHostSeverityLevel,
+  labelServiceSeverityLevel,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -34,6 +38,10 @@ import {
   buildServiceCategoriesEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
+  buildHostServeritiesEndpoint,
+  buildServiceSeveritiesEndpoint,
+  buildHostServeritiesLevelEndpoint,
+  buildServiceSeveritiesLevelEndpoint,
 } from '../api/endpoint';
 
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
@@ -189,10 +197,14 @@ export interface CriteriaById {
 export enum CriteriaNames {
   hostCategories = 'host_categories',
   hostGroups = 'host_groups',
+  hostSeverities = 'host_severities',
+  hostSeveritiesLevel = 'host_severities_level',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
+  serviceSeverities = 'service_severities',
+  serviceSeveritiesLevel = 'service_severities_level',
   states = 'states',
   statusTypes = 'status_types',
   statuses = 'statuses',
@@ -235,6 +247,22 @@ const selectableCriterias: CriteriaById = {
   [CriteriaNames.serviceCategories]: {
     buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
     label: labelServiceCategory,
+  },
+  [CriteriaNames.hostSeverities]: {
+    buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
+    label: labelHostSeverities,
+  },
+  [CriteriaNames.serviceSeverities]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
+    label: labelServiceSeverities,
+  },
+  [CriteriaNames.hostSeveritiesLevel]: {
+    buildAutocompleteEndpoint: buildHostServeritiesLevelEndpoint,
+    label: labelHostSeverityLevel,
+  },
+  [CriteriaNames.serviceSeveritiesLevel]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesLevelEndpoint,
+    label: labelServiceSeverityLevel,
   },
 };
 

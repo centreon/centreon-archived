@@ -12,6 +12,10 @@ const serviceCategoriesEndpoint = `${monitoringEndpoint}/services/categories`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;
+const hostSeveritiesEndpoint = `${monitoringEndpoint}/hosts/severities`;
+const serviceSeveritiesEndpoint = `${monitoringEndpoint}/severities/service`;
+const hostSeveritiesLevelEndpoint = ``;
+const serviceSeveritiesLevelEndpoint = ``;
 
 const buildHostGroupsEndpoint = (parameters: ListingParameters): string => {
   return buildListingEndpoint({
@@ -55,6 +59,32 @@ const buildServiceCategoriesEndpoint = (
     parameters,
   });
 };
+const buildHostServeritiesEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: hostSeveritiesEndpoint,
+    parameters,
+  });
+};
+
+const buildServiceSeveritiesEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: serviceSeveritiesEndpoint,
+    parameters,
+  });
+};
+const buildHostServeritiesLevelEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: hostSeveritiesLevelEndpoint,
+    parameters,
+  });
+};
+
+const buildServiceSeveritiesLevelEndpoint = (parameters): string => {
+  return buildListingEndpoint({
+    baseEndpoint: serviceSeveritiesLevelEndpoint,
+    parameters,
+  });
+};
 
 export {
   buildHostCategoriesEndpoint,
@@ -62,4 +92,8 @@ export {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
   buildMonitoringServersEndpoint,
+  buildHostServeritiesEndpoint,
+  buildServiceSeveritiesEndpoint,
+  buildServiceSeveritiesLevelEndpoint,
+  buildHostServeritiesLevelEndpoint,
 };

@@ -72,6 +72,10 @@ export const dynamicCriteriaValuesByName = [
   CriteriaNames.serviceGroups,
   CriteriaNames.serviceCategories,
   CriteriaNames.hostCategories,
+  CriteriaNames.hostSeverities,
+  CriteriaNames.serviceSeverities,
+  CriteriaNames.hostSeveritiesLevel,
+  CriteriaNames.serviceSeveritiesLevel,
 ];
 
 export const getSelectableCriteriasByName = (
