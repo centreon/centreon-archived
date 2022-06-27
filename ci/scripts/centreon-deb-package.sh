@@ -12,7 +12,7 @@ AUTHOR="Luiz Costa"
 AUTHOR_EMAIL="me@luizgustavo.pro.br"
 
 # Get COMMIT number
-COMMIT=$(git log -1 HEAD --pretty=format:%h)
+COMMIT=$(cd centreon && git log -1 HEAD --pretty=format:%h)
 
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
