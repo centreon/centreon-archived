@@ -31,7 +31,7 @@ export const labelMixed = 'Mixed';
 export const labelEnableAutoImport = 'Enable auto import';
 export const labelContactTemplate = 'Contact template';
 export const labelEmailAttribute = 'Email attribute';
-export const labelFullnameAttribute = 'Fullname attribute';
+export const labelFullnameAttribute = 'Full name attribute';
 export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
 export const labelContactGroup = 'Contact group';
