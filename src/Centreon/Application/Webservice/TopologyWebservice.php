@@ -40,6 +40,7 @@ use Centreon\Infrastructure\Webservice;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Application\DataRepresenter\Topology\NavigationList;
 use Centreon\Domain\Repository\TopologyRepository;
+use Centreon\Domain\Entity\Topology;
 use Centreon\ServiceProvider;
 
 /**
@@ -48,6 +49,9 @@ use Centreon\ServiceProvider;
 class TopologyWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizePublicInterface
 {
+    /** @var int */
+    private const POLLER_PAGE = 60901;
+
     /**
      * List of required services
      *
@@ -188,10 +192,44 @@ class TopologyWebservice extends Webservice\WebServiceAbstract implements
             ->getRepository(TopologyRepository::class)
             ->getTopologyList($user);
 
+        if ($this->isPollerWizardAccessible($user)) {
+            $dbResult[] = $this->createPollerWizardTopology();
+        }
+
         $status = true;
         $navConfig = $this->getDi()[ServiceProvider::YML_CONFIG]['navigation'];
         $result = new NavigationList($dbResult, $navConfig);
 
         return new Response($result, $status);
+    }
+
+    /**
+     * @param \CentreonUser $user
+     * @return bool
+     */
+    private function isPollerWizardAccessible(\CentreonUser $user): bool
+    {
+        $userTopologyAccess = $user->access->getTopology();
+
+        return (
+            isset($userTopologyAccess[self::POLLER_PAGE])
+            && (int) $userTopologyAccess[self::POLLER_PAGE] === \CentreonACL::ACL_ACCESS_READ_WRITE
+        );
+    }
+
+    /**
+     * @return Topology
+     */
+    private function createPollerWizardTopology(): Topology
+    {
+        $topology = new Topology();
+        $topology->setTopologyUrl("/poller-wizard/1");
+        $topology->setTopologyPage('60959');
+        $topology->setTopologyParent(self::POLLER_PAGE);
+        $topology->setTopologyName("Poller Wizard Page");
+        $topology->setTopologyShow('0');
+        $topology->setIsReact('1');
+
+        return $topology;
     }
 }

@@ -4,6 +4,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    realtime_category:
+      paths: [ "%paths.base%/features/RealTimeCategory.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\RealTimeCategoryContext
     host_category:
       paths: [ "%paths.base%/features/HostCategory.feature" ]
       contexts:

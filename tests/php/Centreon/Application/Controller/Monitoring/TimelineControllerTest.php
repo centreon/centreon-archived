@@ -21,6 +21,7 @@
 
 namespace Tests\Centreon\Application\Controller\Monitoring;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
@@ -29,6 +30,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -40,18 +42,37 @@ use PHPUnit\Framework\TestCase;
 
 class TimelineControllerTest extends TestCase
 {
-    protected $adminContact;
+    protected Contact $adminContact;
+    protected Host $host;
 
-    protected $host;
+    /**
+     * @var MockObject|Service
+     */
     protected $service;
 
+    /**
+     * @var MockObject|TimelineEvent
+     */
     protected $timelineEvent;
 
+    /**
+     * @var MockObject|MonitoringServiceInterface
+     */
     protected $monitoringService;
+
+    /**
+     * @var MockObject|TimelineServiceInterface
+     */
     protected $timelineService;
 
+    /**
+     * @var MockObject|ContainerInterface
+     */
     protected $container;
 
+    /**
+     * @var MockObject|RequestParametersInterface
+     */
     protected $requestParameters;
 
     protected function setUp(): void
@@ -84,6 +105,10 @@ class TimelineControllerTest extends TestCase
             ->setTries(1);
 
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
+        $this->monitoringService->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+
         $this->timelineService = $this->createMock(TimelineServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -120,12 +145,8 @@ class TimelineControllerTest extends TestCase
     /**
      * test getHostTimeline
      */
-    public function testGetHostTimeline()
+    public function testGetHostTimeline(): void
     {
-        $this->monitoringService->expects($this->once())
-            ->method('findOneHost')
-            ->willReturn($this->host);
-
         $this->timelineService->expects($this->once())
             ->method('findTimelineEventsByHost')
             ->willReturn([$this->timelineEvent]);
@@ -151,12 +172,8 @@ class TimelineControllerTest extends TestCase
     /**
      * test getServiceTimeline
      */
-    public function testGetServiceTimeline()
+    public function testGetServiceTimeline(): void
     {
-        $this->monitoringService->expects($this->once())
-            ->method('findOneHost')
-            ->willReturn($this->host);
-
         $this->monitoringService->expects($this->once())
             ->method('findOneService')
             ->willReturn($this->service);
@@ -181,5 +198,41 @@ class TimelineControllerTest extends TestCase
                 'meta' => []
             ])->setContext($context)
         );
+    }
+
+    public function testDownloadServiceTimeline(): void
+    {
+        $this->monitoringService
+            ->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->requestParameters
+            ->expects($this->once())
+            ->method('setPage')
+            ->with($this->equalTo(1));
+        $this->requestParameters
+            ->expects($this->once())
+            ->method('setLimit')
+            ->with($this->equalTo(1000000000));
+        $this->timelineService->expects($this->once())
+            ->method('findTimelineEventsByService')
+            ->willReturn([$this->timelineEvent]);
+
+        $controller = new TimelineController($this->monitoringService, $this->timelineService);
+        //buffer output for streamed response
+        ob_start();
+        $controller->setContainer($this->container);
+        $response = $controller->downloadServiceTimeline(1, 1, $this->requestParameters);
+        $response->sendContent();
+        echo($response->getContent());
+        $actualContent = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertInstanceOf(StreamedResponse::class, $response);
+        $this->assertSame('application/force-download', $response->headers->get('Content-Type'));
+        $this->assertSame('attachment; filename="export.csv"', $response->headers->get('content-disposition'));
+        $expectedContent = 'type;date;content;contact;status;tries' . PHP_EOL;
+        $expectedContent .= 'event;2020-02-18T00:00:00+01:00;output;;UP;1' . PHP_EOL;
+        $this->assertEquals($expectedContent, $actualContent);
     }
 }

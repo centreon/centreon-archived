@@ -148,8 +148,7 @@ function updateContact($contactId = null)
           'default_page = :defaultPage, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
-          'contact_theme = :contactTheme, ' .
-          'enable_one_click_export = :enableOneClickExport';
+          'contact_theme = :contactTheme';
     $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
@@ -183,7 +182,6 @@ function updateContact($contactId = null)
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
-    $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
     $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
 
