@@ -15023,7 +15023,7 @@ msgstr ""
 # msgid "Email attribute"
 # msgstr ""
 
-# msgid "Fullname attribute"
+# msgid "Full name attribute"
 # msgstr ""
 
 # msgid "You are not authorized to access the configuration"
