@@ -606,9 +606,6 @@ class OpenIdProvider implements OpenIdProviderInterface
         if (! array_key_exists($this->configuration->getEmailBindAttribute(), $this->userInformations)) {
             $missingAttributes[] = $this->configuration->getEmailBindAttribute();
         }
-        if (! array_key_exists($this->configuration->getUserAliasBindAttribute(), $this->userInformations)) {
-            $missingAttributes[] = $this->configuration->getUserAliasBindAttribute();
-        }
         if (! array_key_exists($this->configuration->getUserNameBindAttribute(), $this->userInformations)) {
             $missingAttributes[] = $this->configuration->getUserNameBindAttribute();
         }

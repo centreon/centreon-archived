@@ -62,7 +62,6 @@ class DbConfigurationBuilder
                 self::validateParametersForAutoImport(
                     $customConfiguration['contact_template'],
                     $customConfiguration['email_bind_attribute'],
-                    $customConfiguration['alias_bind_attribute'],
                     $customConfiguration['fullname_bind_attribute']
                 );
             }
@@ -82,7 +81,6 @@ class DbConfigurationBuilder
             ->setUserInformationEndpoint($customConfiguration['userinfo_endpoint'])
             ->setContactTemplate($customConfiguration['contact_template'])
             ->setEmailBindAttribute($customConfiguration['email_bind_attribute'])
-            ->setUserAliasBindAttribute($customConfiguration['alias_bind_attribute'])
             ->setUserNameBindAttribute($customConfiguration['fullname_bind_attribute'])
             ->setTrustedClientAddresses($customConfiguration['trusted_client_addresses'])
             ->setBlacklistClientAddresses($customConfiguration['blacklist_client_addresses'])
@@ -101,14 +99,12 @@ class DbConfigurationBuilder
      *
      * @param ContactTemplate|null $contactTemplate
      * @param string|null $emailBindAttribute
-     * @param string|null $userAliasBindAttribute
      * @param string|null $userNameBindAttribute
      * @throws OpenIdConfigurationException
      */
     private static function validateParametersForAutoImport(
         ?ContactTemplate $contactTemplate,
         ?string $emailBindAttribute,
-        ?string $userAliasBindAttribute,
         ?string $userNameBindAttribute
     ): void {
         $missingMandatoryParameters = [];
@@ -117,9 +113,6 @@ class DbConfigurationBuilder
         }
         if (empty($emailBindAttribute)) {
             $missingMandatoryParameters[] = 'email_bind_attribute';
-        }
-        if (empty($userAliasBindAttribute)) {
-            $missingMandatoryParameters[] = 'alias_bind_attribute';
         }
         if (empty($userNameBindAttribute)) {
             $missingMandatoryParameters[] = 'fullname_bind_attribute';

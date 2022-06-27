@@ -68,7 +68,6 @@ class ConfigurationBuilder
                 self::validateParametersForAutoImport(
                     $contactTemplate,
                     $request->emailBindAttribute,
-                    $request->userAliasBindAttribute,
                     $request->userNameBindAttribute
                 );
             }
@@ -95,7 +94,6 @@ class ConfigurationBuilder
             ->setUserInformationEndpoint($request->userInformationEndpoint)
             ->setContactTemplate($contactTemplate)
             ->setEmailBindAttribute($request->emailBindAttribute)
-            ->setUserAliasBindAttribute($request->userAliasBindAttribute)
             ->setUserNameBindAttribute($request->userNameBindAttribute)
             ->setContactGroup($contactGroup)
             ->setClaimName($request->claimName);
@@ -106,14 +104,12 @@ class ConfigurationBuilder
      *
      * @param ContactTemplate|null $contactTemplate
      * @param string|null $emailBindAttribute
-     * @param string|null $userAliasBindAttribute
      * @param string|null $userNameBindAttribute
      * @throws OpenIdConfigurationException
      */
     private static function validateParametersForAutoImport(
         ?ContactTemplate $contactTemplate,
         ?string $emailBindAttribute,
-        ?string $userAliasBindAttribute,
         ?string $userNameBindAttribute
     ): void {
         $missingMandatoryParameters = [];
@@ -122,9 +118,6 @@ class ConfigurationBuilder
         }
         if (empty($emailBindAttribute)) {
             $missingMandatoryParameters[] = 'email_bind_attribute';
-        }
-        if (empty($userAliasBindAttribute)) {
-            $missingMandatoryParameters[] = 'alias_bind_attribute';
         }
         if (empty($userNameBindAttribute)) {
             $missingMandatoryParameters[] = 'fullname_bind_attribute';

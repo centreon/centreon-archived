@@ -27,14 +27,6 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   });
 
   return Yup.object({
-    aliasBindAttribute: Yup.string().when(
-      'autoImport',
-      (autoImport, schema) => {
-        return autoImport
-          ? schema.nullable().required(t(labelRequired))
-          : schema.nullable();
-      },
-    ),
     authenticationType: Yup.string().required(t(labelRequired)),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
     authorizationRules: Yup.array()

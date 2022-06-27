@@ -87,7 +87,7 @@ it(
 )->throws(
     OpenIdConfigurationException::class,
     OpenIdConfigurationException::missingAutoImportMandatoryParameters(
-        ['contact_template', 'email_bind_attribute', 'alias_bind_attribute', 'fullname_bind_attribute']
+        ['contact_template', 'email_bind_attribute', 'fullname_bind_attribute']
     )->getMessage()
 );
 
@@ -101,7 +101,6 @@ it('should return a Configuration when all mandatory parameters are present', fu
     $request->isActive = true;
     $request->introspectionTokenEndpoint = '/introspect';
     $request->isAutoImportEnabled = true;
-    $request->userAliasBindAttribute = 'alias';
     $request->userNameBindAttribute = 'name';
     $request->emailBindAttribute = 'email';
     $contactTemplate = new ContactTemplate(1, 'contact_template');
