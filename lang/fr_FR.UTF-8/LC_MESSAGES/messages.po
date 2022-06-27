@@ -16725,7 +16725,7 @@ msgstr "Activer l'importation automatique"
 msgid "Email attribute"
 msgstr "Attribut de l'email"
 
-msgid "Fullname attribute"
+msgid "Full name attribute"
 msgstr "Attribut du nom complet"
 
 # msgid "You are not authorized to access the configuration"
