@@ -30,8 +30,8 @@ if [ "$1" = "configure" ]; then
         if [ ! "$(grep 'view   centreon' /etc/snmp/snmpd.conf)" ]; then
             sed -i '/^#  system + hrSystem groups only/a view   centreon    included   .1.3.6.1' /etc/snmp/snmpd.conf
         fi
-        if [ ! "$(grep 'centreoncommunity default' /etc/snmp/snmpd.conf)" ]; then
-            sed -i '/^# Read-only access to everyone to the systemonly view/a rocommunity  centreoncommunity default -V centreon' /etc/snmp/snmpd.conf
+        if [ ! "$(grep 'public default -V centreon' /etc/snmp/snmpd.conf)" ]; then
+            sed -i '/^# Read-only access to everyone to the systemonly view/a rocommunity  public default -V centreon' /etc/snmp/snmpd.conf
         fi
     fi
 
