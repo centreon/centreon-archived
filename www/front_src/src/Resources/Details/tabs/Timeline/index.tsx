@@ -4,19 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Paper, Stack, Link } from '@mui/material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
-  IconButton,
   useRequest,
   ListingModel,
   MultiAutocompleteField,
   SearchParameter,
 } from '@centreon/ui';
 
-import { labelEvent, labelExportToCsv } from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
@@ -32,6 +30,7 @@ import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
+import ExportToCsv from './ExportToCsv';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
@@ -115,12 +114,6 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTypes(typeIds);
   };
 
-  const openInNewTab = (url): void => {
-    window.open(url);
-  };
-
-  const exportToCsv = (): void => openInNewTab('https://google.com');
-
   return (
     <InfiniteScroll
       details={details}
@@ -135,15 +128,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
             value={selectedTypes}
             onChange={changeSelectedTypes}
           />
-          <Stack>
-            <IconButton
-              data-testid={labelExportToCsv}
-              title={t(labelExportToCsv)}
-              onClick={exportToCsv}
-            >
-              <FileDownloadIcon style={{ fontSize: 18 }} />
-            </IconButton>
-          </Stack>
+          <ExportToCsv />
         </Paper>
       }
       limit={limit}
