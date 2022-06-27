@@ -24,8 +24,6 @@ namespace Core\Domain\RealTime\Model;
 
 class Icon
 {
-    public const SERIALIZER_GROUP_MAIN = 'core_icon_main';
-
     /**
      * @var int|null
      */

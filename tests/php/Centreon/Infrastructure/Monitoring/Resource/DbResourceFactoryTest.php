@@ -27,8 +27,6 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Infrastructure\Monitoring\Resource\DbResourceFactory;
 
-use function PHPUnit\Framework\assertNotNull;
-
 beforeEach(function () {
     $this->record = [
         'resource_id' => '9',

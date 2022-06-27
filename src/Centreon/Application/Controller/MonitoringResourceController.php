@@ -129,12 +129,14 @@ class MonitoringResourceController extends AbstractController
         ResourceEntity::SERIALIZER_GROUP_PARENT,
         Icon::SERIALIZER_GROUP_MAIN,
         ResourceStatus::SERIALIZER_GROUP_MAIN,
-        NewIconModel::SERIALIZER_GROUP_MAIN,
-        Severity::SERIALIZER_GROUP_MAIN,
+        self::ICON_GROUP_MAIN,
+        self::SEVERITY_GROUP_MAIN,
     ];
 
     // Groups for validation
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
+    public const SEVERITY_GROUP_MAIN = 'severity_main';
+    public const ICON_GROUP_MAIN = 'core_icon_main';
 
     /**
      * @var ResourceServiceInterface
