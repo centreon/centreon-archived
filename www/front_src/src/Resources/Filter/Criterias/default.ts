@@ -7,10 +7,14 @@ import { Criteria } from './models';
 interface DefaultCriteriaValues {
   hostCategories?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
+  hostSeverities?: Array<SelectEntry>;
+  hostSeveritiesLevel?: Array<SelectEntry>;
   monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
   serviceCategories?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
+  serviceSeverities?: Array<SelectEntry>;
+  serviceSeveritiesLeveL?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statusTypes?: Array<SelectEntry>;
   statuses?: Array<SelectEntry>;
@@ -23,6 +27,10 @@ const getDefaultCriterias = (
   {
     resourceTypes = [],
     states = [],
+    serviceSeverities = [],
+    serviceSeveritiesLeveL = [],
+    hostSeverities = [],
+    hostSeveritiesLevel = [],
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
@@ -31,12 +39,15 @@ const getDefaultCriterias = (
     hostCategories = [],
     serviceCategories = [],
   }: DefaultCriteriaValues = {
-    hostCategories: [],
     hostGroups: [],
+    hostSeverities: [],
+    hostSeveritiesLevel: [],
     monitoringServers: [],
     resourceTypes: [],
     serviceCategories: [],
     serviceGroups: [],
+    serviceSeverities: [],
+    serviceSeveritiesLeveL: [],
     states: [],
     statusTypes: [],
     statuses: [],
@@ -74,10 +85,34 @@ const getDefaultCriterias = (
       value: hostGroups,
     },
     {
+      name: 'host_severities',
+      object_type: 'host_severities',
+      type: 'multi_select',
+      value: hostSeverities,
+    },
+    {
+      name: 'host_severities_level',
+      object_type: 'host_severities_level',
+      type: 'multi_select',
+      value: hostSeveritiesLevel,
+    },
+    {
       name: 'service_groups',
       object_type: 'service_groups',
       type: 'multi_select',
       value: serviceGroups,
+    },
+    {
+      name: 'service_severities',
+      object_type: 'service_severities',
+      type: 'multi_select',
+      value: serviceSeverities,
+    },
+    {
+      name: 'service_severities_level',
+      object_type: 'service_severities_level',
+      type: 'multi_select',
+      value: serviceSeveritiesLeveL,
     },
     {
       name: 'monitoring_servers',
