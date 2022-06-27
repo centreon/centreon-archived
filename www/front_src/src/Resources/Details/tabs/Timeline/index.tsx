@@ -4,19 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Paper, Stack, Link } from '@mui/material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
-  IconButton,
   useRequest,
   ListingModel,
   MultiAutocompleteField,
   SearchParameter,
 } from '@centreon/ui';
 
-import { labelEvent, labelExportToCsv } from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
