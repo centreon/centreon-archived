@@ -92,7 +92,7 @@ const LoadComponent = ({
   return (
     <Suspense
       fallback={
-        isFederatedModule ? <MenuSkeleton width={29} /> : <PageSkeleton />
+        isFederatedModule ? <MenuSkeleton width={27} /> : <PageSkeleton />
       }
     >
       <Component {...props} />

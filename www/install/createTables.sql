@@ -712,7 +712,6 @@ CREATE TABLE `contact` (
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
-  `enable_one_click_export` enum('0','1') DEFAULT '0',
   `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
   `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`contact_id`),

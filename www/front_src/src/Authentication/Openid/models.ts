@@ -14,7 +14,6 @@ export interface AuthorizationRelationToAPI {
 }
 
 export interface OpenidConfiguration {
-  aliasBindAttribute?: string | null;
   authenticationType: string | null;
   authorizationEndpoint: string | null;
   authorizationRules: Array<AuthorizationRule>;
@@ -41,7 +40,6 @@ export interface OpenidConfiguration {
 }
 
 export interface OpenidConfigurationToAPI {
-  alias_bind_attribute: string | null;
   authentication_type: string | null;
   authorization_endpoint: string | null;
   authorization_rules: Array<AuthorizationRelationToAPI>;

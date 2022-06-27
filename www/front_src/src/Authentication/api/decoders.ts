@@ -73,7 +73,6 @@ const authorization = JsonDecoder.object<AuthorizationRule>(
 export const openidConfigurationDecoder =
   JsonDecoder.object<OpenidConfiguration>(
     {
-      aliasBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       authorizationRules: JsonDecoder.array(
@@ -116,7 +115,6 @@ export const openidConfigurationDecoder =
     },
     'Open ID Configuration',
     {
-      aliasBindAttribute: 'alias_bind_attribute',
       authenticationType: 'authentication_type',
       authorizationEndpoint: 'authorization_endpoint',
       authorizationRules: 'authorization_rules',

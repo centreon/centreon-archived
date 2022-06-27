@@ -15020,16 +15020,10 @@ msgstr ""
 # msgid "Enable auto import"
 # msgstr ""
 
-# msgid "Email attribute to bind"
+# msgid "Email attribute"
 # msgstr ""
 
-# msgid "Alias attribute to bind"
-# msgstr ""
-
-# msgid "Fullname attribute to bind"
-# msgstr ""
-
-# msgid "Auto import"
+# msgid "Fullname attribute"
 # msgstr ""
 
 # msgid "You are not authorized to access the configuration"
@@ -15173,4 +15167,8 @@ msgstr ""
 # msgid "Parent alias
 # msgstr ""
 
+msgid "An error occured while retrieving service categories"
+msgstr "Se ha producido un error al recuperar los categorías de servicios"
 
+msgid "An error occured while retrieving host categories"
+msgstr "Se ha producido un error al recuperar los categorías de hosts"

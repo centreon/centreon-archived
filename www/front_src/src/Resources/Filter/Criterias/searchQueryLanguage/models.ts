@@ -25,6 +25,8 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.states]: 2,
   [CriteriaNames.statuses]: 3,
   [CriteriaNames.statusTypes]: 4,
+  [CriteriaNames.serviceCategories]: 9,
+  [CriteriaNames.hostCategories]: 8,
 };
 
 export interface AutocompleteSuggestionProps {
@@ -68,6 +70,8 @@ export const dynamicCriteriaValuesByName = [
   CriteriaNames.hostGroups,
   CriteriaNames.monitoringServers,
   CriteriaNames.serviceGroups,
+  CriteriaNames.serviceCategories,
+  CriteriaNames.hostCategories,
 ];
 
 export const getSelectableCriteriasByName = (

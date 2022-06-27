@@ -27,9 +27,13 @@ import {
   labelSoft,
   labelServiceSeverities,
   labelHostSeverities,
+  labelHostCategory,
+  labelServiceCategory,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
+  buildHostCategoriesEndpoint,
+  buildServiceCategoriesEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
   buildHostServeritiesEndpoint,
@@ -187,10 +191,12 @@ export interface CriteriaById {
 }
 
 export enum CriteriaNames {
+  hostCategories = 'host_categories',
   hostGroups = 'host_groups',
   hostSeverities = 'host_severities',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
+  serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
   serviceSeverities = 'service_severities',
   states = 'states',
@@ -235,6 +241,14 @@ const selectableCriterias: CriteriaById = {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
+  },
+  [CriteriaNames.hostCategories]: {
+    buildAutocompleteEndpoint: buildHostCategoriesEndpoint,
+    label: labelHostCategory,
+  },
+  [CriteriaNames.serviceCategories]: {
+    buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
+    label: labelServiceCategory,
   },
 };
 

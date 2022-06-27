@@ -1,15 +1,12 @@
 module.exports = {
-  resolve: {
-    extensions: ['.ts', '.js'],
-  },
   module: {
     rules: [
       {
-        test: /\.ts?$/,
         exclude: [/node_modules/],
+        test: /\.ts?$/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: 'swc-loader',
           },
         ],
       },
@@ -30,5 +27,8 @@ module.exports = {
         ],
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
 };

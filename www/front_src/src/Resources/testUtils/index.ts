@@ -7,12 +7,14 @@ import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { SortOrder } from '../models';
 
 interface EndpointParams {
+  hostCategories?: Array<string>;
   hostGroups?: Array<string>;
   limit?: number;
   monitoringServers?: Array<string>;
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
+  serviceCategories?: Array<string>;
   serviceGroups?: Array<string>;
   sort?;
   states?: Array<string>;
@@ -38,12 +40,15 @@ const getListingEndpoint = ({
   states = defaultStates,
   resourceTypes = defaultResourceTypes,
   hostGroups = [],
+  hostCategories = [],
+  serviceCategories = [],
   serviceGroups = [],
   monitoringServers = [],
   search,
   statusTypes = defaultStateTypes,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
+    hostCategories,
     hostGroups,
     limit,
     monitoringServers,
@@ -57,6 +62,7 @@ const getListingEndpoint = ({
           },
         }
       : undefined,
+    serviceCategories,
     serviceGroups,
     sort,
     states,
