@@ -16911,3 +16911,6 @@ msgstr "Alias parent"
 
 msgid "The following bound attributes are missing: %s"
 msgstr "Les attributs liés suivants sont manquants : %s"
+
+msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"

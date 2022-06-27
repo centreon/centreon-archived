@@ -252,6 +252,24 @@ function myTrim($str)
     return (trim($str));
 }
 
+/**
+ * @param string $value
+ * @return string
+ */
+function limitNotesLength(string $value): string
+{
+    return substr($value, 0, 512);
+}
+
+/**
+ * @param string $value
+ * @return string
+ */
+function limitUrlLength(string $value): string
+{
+    return substr($value, 0, 2048);
+}
+
 /*
  * Hosts Functions
  */
