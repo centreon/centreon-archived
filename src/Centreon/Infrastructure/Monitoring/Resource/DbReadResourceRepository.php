@@ -141,6 +141,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
      */
     public function findResources(ResourceFilter $filter): array
     {
+        $this->resources = [];
+
         if ($this->hasNotEnoughRightsToContinue()) {
             return $this->resources;
         }

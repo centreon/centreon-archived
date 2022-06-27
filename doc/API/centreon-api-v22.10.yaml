@@ -4178,7 +4178,7 @@ components:
       in: query
       name: service_severity_names
       required: false
-      description: "Filter the resources by service severity names (only functional with optimized mod)"
+      description: "Filter the resources by service severity names"
       schema:
         type: array
         items:
@@ -4188,7 +4188,7 @@ components:
       in: query
       name: host_severity_names
       required: false
-      description: "Filter the resources by host severity names (only functional with optimized mod)"
+      description: "Filter the resources by host severity names"
       schema:
         type: array
         items:
@@ -4198,7 +4198,7 @@ components:
       in: query
       name: host_severity_levels
       required: false
-      description: "Filter the resources by host severity levels (only functional with optimized mod)"
+      description: "Filter the resources by host severity levels"
       schema:
         type: array
         items:
@@ -4208,7 +4208,7 @@ components:
       in: query
       name: service_severity_levels
       required: false
-      description: "Filter the resources by service severity levels (only functional with optimized mod)"
+      description: "Filter the resources by service severity levels"
       schema:
         type: array
         items:
