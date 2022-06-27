@@ -4514,7 +4514,6 @@ components:
         - auto_import
         - contact_template
         - email_bind_attribute
-        - alias_bind_attribute
         - fullname_bind_attribute
         - contact_group
         - authorization_claim
@@ -4626,11 +4625,6 @@ components:
           type: string
           description: "Email bind attribute"
           example: "email"
-          nullable: true
-        alias_bind_attribute:
-          type: string
-          description: "Alias bind attribute"
-          example: "preferred_username"
           nullable: true
         fullname_bind_attribute:
           type: string

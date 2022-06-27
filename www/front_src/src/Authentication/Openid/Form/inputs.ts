@@ -3,7 +3,6 @@ import { FormikValues } from 'formik';
 
 import {
   labelAccessGroup,
-  labelAliasAttributeToBind,
   labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
   labelAuthenticationMode,
   labelAuthorizationEndpoint,
@@ -14,11 +13,11 @@ import {
   labelContactGroup,
   labelContactTemplate,
   labelDisableVerifyPeer,
-  labelEmailAttributeToBind,
+  labelEmailAttribute,
   labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
-  labelFullnameAttributeToBind,
+  labelFullnameAttribute,
   labelIntrospectionTokenEndpoint,
   labelLoginClaimValue,
   labelMixed,
@@ -38,7 +37,7 @@ import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
   labelAuthorizations,
-  labelAutoImport,
+  labelAutoImportUsers,
   labelClientAddresses,
   labelIdentityProvider,
 } from '../../translatedLabels';
@@ -183,13 +182,13 @@ export const inputs: Array<InputProps> = [
     type: InputType.Switch,
   },
   {
-    category: labelAutoImport,
+    category: labelAutoImportUsers,
     fieldName: 'autoImport',
     label: labelEnableAutoImport,
     type: InputType.Switch,
   },
   {
-    category: labelAutoImport,
+    category: labelAutoImportUsers,
     endpoint: contactTemplatesEndpoint,
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
@@ -198,27 +197,19 @@ export const inputs: Array<InputProps> = [
     type: InputType.ConnectedAutocomplete,
   },
   {
-    category: labelAutoImport,
+    category: labelAutoImportUsers,
     fieldName: 'emailBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
-    label: labelEmailAttributeToBind,
+    label: labelEmailAttribute,
     type: InputType.Text,
   },
   {
-    category: labelAutoImport,
-    fieldName: 'aliasBindAttribute',
-    getDisabled: isAutoImportDisabled,
-    getRequired: isAutoImportEnabled,
-    label: labelAliasAttributeToBind,
-    type: InputType.Text,
-  },
-  {
-    category: labelAutoImport,
+    category: labelAutoImportUsers,
     fieldName: 'fullnameBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
-    label: labelFullnameAttributeToBind,
+    label: labelFullnameAttribute,
     type: InputType.Text,
   },
   {

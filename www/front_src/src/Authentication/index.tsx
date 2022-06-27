@@ -22,7 +22,7 @@ import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
   labelAuthorizations,
-  labelAutoImport,
+  labelAutoImportUsers,
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
@@ -67,7 +67,7 @@ export const categories: Array<Category> = [
     order: 3,
   },
   {
-    name: labelAutoImport,
+    name: labelAutoImportUsers,
     order: 3,
   },
   {

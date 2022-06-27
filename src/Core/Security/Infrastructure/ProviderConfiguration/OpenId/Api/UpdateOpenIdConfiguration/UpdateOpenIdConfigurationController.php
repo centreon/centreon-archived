@@ -79,7 +79,6 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->isAutoImportEnabled = $requestData['auto_import'];
         $updateOpenIdConfigurationRequest->contactTemplate = $requestData['contact_template'];
         $updateOpenIdConfigurationRequest->emailBindAttribute = $requestData['email_bind_attribute'];
-        $updateOpenIdConfigurationRequest->userAliasBindAttribute = $requestData['alias_bind_attribute'];
         $updateOpenIdConfigurationRequest->userNameBindAttribute = $requestData['fullname_bind_attribute'];
         $updateOpenIdConfigurationRequest->claimName = $requestData['claim_name'];
         $updateOpenIdConfigurationRequest->authorizationRules = $requestData['authorization_rules'];

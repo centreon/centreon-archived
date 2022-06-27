@@ -23,7 +23,6 @@
         "auto_import",
         "contact_template",
         "email_bind_attribute",
-        "alias_bind_attribute",
         "fullname_bind_attribute",
         "contact_group_id",
         "claim_name",
@@ -102,9 +101,6 @@
         }
       },
       "email_bind_attribute": {
-        "type": ["string", "null"]
-      },
-      "alias_bind_attribute": {
         "type": ["string", "null"]
       },
       "fullname_bind_attribute": {
