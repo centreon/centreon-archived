@@ -16723,7 +16723,7 @@ msgid "Enable auto import"
 msgstr "Activer l'importation automatique"
 
 msgid "Email attribute"
-msgstr "Attribut de mail"
+msgstr "Attribut de l'email"
 
 msgid "Fullname attribute"
 msgstr "Attribut de nom complet"
