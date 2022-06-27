@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindService;
 
+use Core\Domain\RealTime\Model\Icon;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Tests\Core\Domain\RealTime\Model\ServiceTest;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -43,6 +45,7 @@ use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindService\FindServicePresenterStub;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadServiceRepositoryInterface::class);
@@ -55,6 +58,7 @@ beforeEach(function () {
     $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
     $this->hostRepository = $this->createMock(ReadHostRepositoryInterface::class);
     $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $this->severityRepository = $this->createMock(ReadSeverityRepositoryInterface::class);
 
     $this->downtime = (new Downtime(1, 1, 10))
         ->setCancelled(false);
@@ -67,6 +71,8 @@ beforeEach(function () {
     $this->service = ServiceTest::createServiceModel();
     $this->servicegroup = new Servicegroup(1, 'ALL');
     $this->category = new Tag(1, 'service-category-name', Tag::SERVICE_CATEGORY_TYPE_ID);
+    $icon = (new Icon())->setId(1)->setName('centreon')->setUrl('ppm/centreon.png');
+    $this->severity = new Severity(1, 'severityName', 10, Severity::SERVICE_SEVERITY_TYPE_ID, $icon);
 });
 
 it('should present a NotFoundResponse if host not found as admin', function () {
@@ -80,6 +86,7 @@ it('should present a NotFoundResponse if host not found as admin', function () {
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -113,6 +120,7 @@ it('should present a NotFoundResponse if host not found as non admin', function 
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -151,6 +159,7 @@ it('should present a NotFoundResponse if service not found as admin', function (
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -189,6 +198,7 @@ it('should present a NotFoundResponse if service not found as non admin', functi
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -232,6 +242,7 @@ it('should find service as admin', function () {
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -269,6 +280,11 @@ it('should find service as admin', function () {
         ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
         ->willReturn($this->acknowledgement);
 
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
+
     $presenter = new FindServicePresenterStub();
 
     $findService(1, 10, $presenter);
@@ -289,7 +305,6 @@ it('should find service as admin', function () {
     expect($presenter->response->statusChangePercentage)->toBe($this->service->getStatusChangePercentage());
     expect($presenter->response->hasActiveChecks)->toBe($this->service->hasActiveChecks());
     expect($presenter->response->hasPassiveChecks)->toBe($this->service->hasPassiveChecks());
-    expect($presenter->response->severityLevel)->toBe($this->service->getSeverityLevel());
     expect($presenter->response->checkAttempts)->toBe($this->service->getCheckAttempts());
     expect($presenter->response->maxCheckAttempts)->toBe($this->service->getMaxCheckAttempts());
     expect($presenter->response->lastTimeOk)->toBe($this->service->getLastTimeOk());
@@ -314,6 +329,10 @@ it('should find service as admin', function () {
     expect($presenter->response->acknowledgement['service_id'])
         ->toBe($this->acknowledgement->getServiceId());
     expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
+    expect($presenter->response->severity['id'])->toBe($this->severity->getId());
+    expect($presenter->response->severity['name'])->toBe($this->severity->getName());
+    expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
 });
 
 it('FindService service found as non admin', function () {
@@ -327,6 +346,7 @@ it('FindService service found as non admin', function () {
         $this->acknowledgementRepository,
         $this->monitoringService,
         $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -359,6 +379,11 @@ it('FindService service found as non admin', function () {
         ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
         ->willReturn($this->acknowledgement);
 
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
+
     $presenter = new FindServicePresenterStub();
 
     $findService(1, 10, $presenter);
@@ -379,7 +404,6 @@ it('FindService service found as non admin', function () {
     expect($presenter->response->statusChangePercentage)->toBe($this->service->getStatusChangePercentage());
     expect($presenter->response->hasActiveChecks)->toBe($this->service->hasActiveChecks());
     expect($presenter->response->hasPassiveChecks)->toBe($this->service->hasPassiveChecks());
-    expect($presenter->response->severityLevel)->toBe($this->service->getSeverityLevel());
     expect($presenter->response->checkAttempts)->toBe($this->service->getCheckAttempts());
     expect($presenter->response->maxCheckAttempts)->toBe($this->service->getMaxCheckAttempts());
     expect($presenter->response->lastTimeOk)->toBe($this->service->getLastTimeOk());
@@ -404,4 +428,8 @@ it('FindService service found as non admin', function () {
     expect($presenter->response->acknowledgement['service_id'])
         ->toBe($this->acknowledgement->getServiceId());
     expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
+    expect($presenter->response->severity['id'])->toBe($this->severity->getId());
+    expect($presenter->response->severity['name'])->toBe($this->severity->getName());
+    expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
 });

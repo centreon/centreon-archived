@@ -28,6 +28,7 @@ use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Core\Domain\RealTime\Model\HostStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
 
 class FindHostResponse
@@ -132,11 +133,6 @@ class FindHostResponse
     /**
      * @var int|null
      */
-    public $severityLevel;
-
-    /**
-     * @var int|null
-     */
     public $checkAttempts;
 
     /**
@@ -175,6 +171,11 @@ class FindHostResponse
     public $categories;
 
     /**
+     * @var array<string, mixed>
+     */
+    public $severity;
+
+    /**
      * @param int $id
      * @param string $name
      * @param string $address
@@ -185,6 +186,7 @@ class FindHostResponse
      * @param Downtime[] $downtimes
      * @param Acknowledgement|null $acknowledgement,
      * @param Tag[] $categories
+     * @param Severity|null $severity
      */
     public function __construct(
         public int $id,
@@ -197,6 +199,7 @@ class FindHostResponse
         array $downtimes,
         ?Acknowledgement $acknowledgement,
         array $categories,
+        ?Severity $severity
     ) {
         $this->icon = $this->iconToArray($icon);
         $this->status = $this->statusToArray($status);
@@ -204,6 +207,7 @@ class FindHostResponse
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->categories = $this->tagsToArray($categories);
+        $this->severity = $this->severityToArray($severity);
     }
 
     /**

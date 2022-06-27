@@ -29,6 +29,7 @@ use Core\Domain\RealTime\Model\Service;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
@@ -44,6 +45,7 @@ use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
 class FindService
 {
@@ -70,6 +72,7 @@ class FindService
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService,
         private ReadTagRepositoryInterface $tagRepository,
+        private ReadSeverityRepositoryInterface $severityRepository
     ) {
     }
 
@@ -146,6 +149,14 @@ class FindService
         );
 
         $service->setCategories($serviceCategories);
+
+        $severity = $this->severityRepository->findByResourceAndTypeId(
+            $serviceId,
+            $hostId,
+            Severity::SERVICE_SEVERITY_TYPE_ID
+        );
+
+        $service->setSeverity($severity);
 
         /**
          * Obfuscate the passwords in Service commandLine
@@ -225,6 +236,7 @@ class FindService
             $acknowledgement,
             $host,
             $service->getCategories(),
+            $service->getSeverity()
         );
 
         $findServiceResponse->isFlapping = $service->isFlapping();
@@ -244,7 +256,6 @@ class FindService
         $findServiceResponse->hasPassiveChecks = $service->hasPassiveChecks();
         $findServiceResponse->hasActiveChecks = $service->hasActiveChecks();
         $findServiceResponse->lastTimeOk = $service->getLastTimeOk();
-        $findServiceResponse->severityLevel = $service->getSeverityLevel();
         $findServiceResponse->checkAttempts = $service->getCheckAttempts();
         $findServiceResponse->maxCheckAttempts = $service->getMaxCheckAttempts();
         $findServiceResponse->hasGraphData = $service->hasGraphData();

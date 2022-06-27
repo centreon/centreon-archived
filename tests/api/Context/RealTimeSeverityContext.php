@@ -18,29 +18,11 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
 
-namespace Core\Severity\RealTime\Application\Repository;
+namespace Centreon\Test\Api\Context;
 
-use Core\Severity\RealTime\Domain\Model\Severity;
+use Centreon\Test\Behat\Api\Context\ApiContext;
 
-interface ReadSeverityRepositoryInterface
+class RealTimeSeverityContext extends ApiContext
 {
-    /**
-     * Returns all the severities from the RealTime of provided type id
-     *
-     * @param integer $typeId
-     * @return Severity[]
-     */
-    public function findAllByTypeId(int $typeId): array;
-
-    /**
-     * Finds a Severity by id, parentId and typeId
-     *
-     * @param integer $id
-     * @param integer $parentId
-     * @param integer $typeId
-     * @return Severity|null
-     */
-    public function findByResourceAndTypeId(int $id, int $parentId, int $typeId): ?Severity;
 }

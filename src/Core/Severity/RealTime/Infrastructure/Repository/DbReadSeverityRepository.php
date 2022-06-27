@@ -28,6 +28,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeverityRepositoryInterface
 {
@@ -60,7 +61,12 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
      */
     public function findAllByTypeId(int $typeId): array
     {
-        $this->info('Fetching severities from the database');
+        $this->info(
+            'Fetching severities from the database by typeId',
+            [
+                'typeId' => $typeId
+            ]
+        );
 
         $request = 'SELECT SQL_CALC_FOUND_ROWS
             severity_id,
@@ -114,5 +120,55 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
         }
 
         return $severities;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByResourceAndTypeId(int $id, int $parentId, int $typeId): ?Severity
+    {
+        $this->info(
+            'Fetching severity from the database for resource',
+            [
+                'id' => $id,
+                'parentId' => $parentId,
+                'typeId' => $typeId
+            ]
+        );
+
+        $request = 'SELECT
+            resources.severity_id,
+            s.id,
+            s.name,
+            s.level,
+            s.type,
+            s.icon_id,
+            img_name AS `icon_name`,
+            img_path AS `icon_path`,
+            imgd.dir_name AS `icon_directory`
+        FROM `:dbstg`.resources
+        INNER JOIN `:dbstg`.severities s
+            ON s.severity_id = resources.severity_id
+        INNER JOIN `:db`.view_img img
+            ON s.icon_id = img.img_id
+        LEFT JOIN `:db`.view_img_dir_relation imgdr
+            ON imgdr.img_img_id = img.img_id
+        INNER JOIN `:db`.view_img_dir imgd
+            ON imgd.dir_id = imgdr.dir_dir_parent_id
+        WHERE resources.id = :id AND resources.parent_id = :parentId AND s.type = :typeId';
+
+        $statement = $this->db->prepare($this->translateDbName($request));
+
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->bindValue(':parentId', $parentId, \PDO::PARAM_INT);
+        $statement->bindValue(':typeId', $typeId, \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            return DbSeverityFactory::createFromRecord($record);
+        }
+
+        return null;
     }
 }
