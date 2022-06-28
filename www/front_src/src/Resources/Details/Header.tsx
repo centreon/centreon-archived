@@ -141,10 +141,12 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   return (
     <div className={classes.header}>
-      {details?.severity_level && (
-        <StatusChip
-          label={details?.severity_level.toString()}
-          severityCode={SeverityCode.None}
+      {details.severity && (
+        <img
+          alt="severity"
+          height={24}
+          src={details?.severity.icon.url}
+          width={24}
         />
       )}
       <StatusChip
