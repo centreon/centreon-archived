@@ -162,6 +162,16 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('name')) as Array<string>;
     };
 
+    const getCriteriaLevel = (name: string): Array<number> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      const results = criteriaValue?.map(prop('name'));
+
+      return results?.map((item) => Number(item)) as Array<number>;
+    };
+
     if (getUrlQueryParameters().fromTopCounter) {
       return;
     }
@@ -170,7 +180,7 @@ const useLoadResources = (): LoadResources => {
       hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
       hostSeverities: getCriteriaNames('host_severities'),
-      hostSeveritiesLevel: getCriteriaNames('host_severities_level'),
+      hostSeveritiesLevels: getCriteriaLevel('host_severities_levels'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
@@ -179,7 +189,7 @@ const useLoadResources = (): LoadResources => {
       serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
       serviceSeverities: getCriteriaNames('service_severities'),
-      serviceSeveritiesLevel: getCriteriaNames('service_severities_level'),
+      serviceSeveritiesLevels: getCriteriaLevel('service_severities_levels'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),

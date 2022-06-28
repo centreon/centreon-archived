@@ -8,7 +8,7 @@ interface DefaultCriteriaValues {
   hostCategories?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
   hostSeverities?: Array<SelectEntry>;
-  hostSeveritiesLevel?: Array<SelectEntry>;
+  hostSeveritiesLevels?: Array<SelectEntry>;
   monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
   serviceCategories?: Array<SelectEntry>;
@@ -30,7 +30,7 @@ const getDefaultCriterias = (
     serviceSeverities = [],
     serviceSeveritiesLevel = [],
     hostSeverities = [],
-    hostSeveritiesLevel = [],
+    hostSeveritiesLevels = [],
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
@@ -41,7 +41,7 @@ const getDefaultCriterias = (
   }: DefaultCriteriaValues = {
     hostGroups: [],
     hostSeverities: [],
-    hostSeveritiesLevel: [],
+    hostSeveritiesLevels: [],
     monitoringServers: [],
     resourceTypes: [],
     serviceCategories: [],
@@ -91,10 +91,10 @@ const getDefaultCriterias = (
       value: hostSeverities,
     },
     {
-      name: 'host_severities_level',
-      object_type: 'host_severities_level',
+      name: 'host_severities_levels',
+      object_type: 'host_severities_levels',
       type: 'multi_select',
-      value: hostSeveritiesLevel,
+      value: hostSeveritiesLevels,
     },
     {
       name: 'service_groups',
@@ -109,8 +109,8 @@ const getDefaultCriterias = (
       value: serviceSeverities,
     },
     {
-      name: 'service_severities_level',
-      object_type: 'service_severities_level',
+      name: 'service_severities_levels',
+      object_type: 'service_severities_levels',
       type: 'multi_select',
       value: serviceSeveritiesLevel,
     },

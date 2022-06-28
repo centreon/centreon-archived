@@ -27,8 +27,8 @@ import {
   labelSoft,
   labelHostCategory,
   labelServiceCategory,
-  labelServiceSeverities,
-  labelHostSeverities,
+  labelServiceSeverity,
+  labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
 } from '../../translatedLabels';
@@ -40,8 +40,6 @@ import {
   buildServiceGroupsEndpoint,
   buildHostServeritiesEndpoint,
   buildServiceSeveritiesEndpoint,
-  buildHostServeritiesLevelEndpoint,
-  buildServiceSeveritiesLevelEndpoint,
 } from '../api/endpoint';
 
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
@@ -198,13 +196,13 @@ export enum CriteriaNames {
   hostCategories = 'host_categories',
   hostGroups = 'host_groups',
   hostSeverities = 'host_severities',
-  hostSeveritiesLevel = 'host_severities_level',
+  hostSeveritiesLevels = 'host_severities_levels',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
   serviceSeverities = 'service_severities',
-  serviceSeveritiesLevel = 'service_severities_level',
+  serviceSeveritiesLevels = 'service_severities_levels',
   states = 'states',
   statusTypes = 'status_types',
   statuses = 'statuses',
@@ -250,18 +248,18 @@ const selectableCriterias: CriteriaById = {
   },
   [CriteriaNames.hostSeverities]: {
     buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
-    label: labelHostSeverities,
+    label: labelHostSeverity,
   },
   [CriteriaNames.serviceSeverities]: {
     buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
-    label: labelServiceSeverities,
+    label: labelServiceSeverity,
   },
-  [CriteriaNames.hostSeveritiesLevel]: {
-    buildAutocompleteEndpoint: buildHostServeritiesLevelEndpoint,
+  [CriteriaNames.hostSeveritiesLevels]: {
+    buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
     label: labelHostSeverityLevel,
   },
-  [CriteriaNames.serviceSeveritiesLevel]: {
-    buildAutocompleteEndpoint: buildServiceSeveritiesLevelEndpoint,
+  [CriteriaNames.serviceSeveritiesLevels]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
     label: labelServiceSeverityLevel,
   },
 };
