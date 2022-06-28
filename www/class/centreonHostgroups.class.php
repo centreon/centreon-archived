@@ -333,6 +333,11 @@ class CentreonHostgroups
         if (empty($values)) {
             return $items;
         }
+        
+        $hostgroups = [];
+        foreach ($values as $value) {
+            $hostgroups = array_merge($hostgroups, explode(',', $value));
+        }
 
         // get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
@@ -347,7 +352,7 @@ class CentreonHostgroups
                     'conditions' => array(
                         'hostgroup.hg_id' => array(
                             'IN',
-                            $values
+                            $hostgroups
                         )
                     )
                 ),
