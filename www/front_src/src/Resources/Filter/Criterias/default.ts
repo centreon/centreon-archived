@@ -14,7 +14,7 @@ interface DefaultCriteriaValues {
   serviceCategories?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
   serviceSeverities?: Array<SelectEntry>;
-  serviceSeveritiesLeveL?: Array<SelectEntry>;
+  serviceSeveritiesLevel?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statusTypes?: Array<SelectEntry>;
   statuses?: Array<SelectEntry>;
@@ -28,7 +28,7 @@ const getDefaultCriterias = (
     resourceTypes = [],
     states = [],
     serviceSeverities = [],
-    serviceSeveritiesLeveL = [],
+    serviceSeveritiesLevel = [],
     hostSeverities = [],
     hostSeveritiesLevel = [],
     statuses = [],
@@ -47,7 +47,7 @@ const getDefaultCriterias = (
     serviceCategories: [],
     serviceGroups: [],
     serviceSeverities: [],
-    serviceSeveritiesLeveL: [],
+    serviceSeveritiesLevel: [],
     states: [],
     statusTypes: [],
     statuses: [],
@@ -112,7 +112,7 @@ const getDefaultCriterias = (
       name: 'service_severities_level',
       object_type: 'service_severities_level',
       type: 'multi_select',
-      value: serviceSeveritiesLeveL,
+      value: serviceSeveritiesLevel,
     },
     {
       name: 'monitoring_servers',
