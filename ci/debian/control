@@ -184,6 +184,7 @@ Depends:
     centreon-broker (>= ${centreon:version}~),
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
+    centreon-engine-extcommands (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
     centreon-plugin-applications-monitoring-centreon-central,
     centreon-plugin-applications-monitoring-centreon-poller,
