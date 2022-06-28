@@ -96,14 +96,18 @@ import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
 
 import Details from '.';
-import { renderHook } from '@testing-library/react-hooks';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-// jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
-//   jest.fn(),
-// );
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: () => {},
+  },
+});
+
+jest.spyOn(navigator.clipboard, 'writeText');
 
 jest.mock('@visx/visx', () => {
   return {
@@ -815,18 +819,9 @@ describe(Details, () => {
     expect(downtimeAnnotations).toHaveLength(2);
   });
 
-  it.only('copies the command line to clipboard when the copy button is clicked', async () => {
+  it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-
-    const { result } = renderHook(() =>
-      useCopyToClipboard({
-        errorMessage: '',
-        successMessage: '',
-      }),
-    );
   
-  // jest.spyOn(result.current, 'copy').mockImplementation(() => jest.fn);
-
     setUrlQueryParameters([
       {
         name: 'details',
@@ -843,7 +838,7 @@ describe(Details, () => {
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
-      expect(result.current.copy).toHaveBeenCalledWith(
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -1146,13 +1141,6 @@ describe(Details, () => {
       data: retrievedDetails,
     });
 
-    // const { result } = renderHook(() =>
-    //   useCopyToClipboard({
-    //     errorMessage: '',
-    //     successMessage: '',
-    //   }),
-    // );
-
     setUrlQueryParameters([
       {
         name: 'details',
@@ -1177,7 +1165,7 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(result.current.copy).toHaveBeenCalledWith(window.location.href);
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(window.location.href);
     });
   });
 
