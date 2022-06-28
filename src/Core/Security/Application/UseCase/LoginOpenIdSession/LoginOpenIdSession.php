@@ -26,22 +26,27 @@ namespace Core\Security\Application\UseCase\LoginOpenIdSession;
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
+use Core\Contact\Domain\Model\ContactGroup;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Domain\AccessGroup\Model\AccessGroupUserRelation;
+use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
+use Core\Security\Application\Repository\WriteAccessGroupRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
-use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 class LoginOpenIdSession
 {
@@ -68,6 +73,8 @@ class LoginOpenIdSession
         private AuthenticationRepositoryInterface $authenticationRepository,
         private SessionRepositoryInterface $sessionRepository,
         private DataStorageEngineInterface $dataStorageEngine,
+        private WriteContactGroupRepositoryInterface $contactGroupRepository,
+        private WriteAccessGroupRepositoryInterface $accessGroupRepository,
     ) {
     }
 
@@ -87,18 +94,8 @@ class LoginOpenIdSession
             }
             $this->provider->setConfiguration($openIdProviderConfiguration);
             $this->provider->authenticateOrFail($request->authorizationCode, $request->clientIp);
-            $user = $this->provider->getUser();
-            if ($user === null) {
-                if (!$this->provider->canCreateUser()) {
-                    throw new NotFoundException('User not found');
-                }
-                $this->info("User not found, start auto import");
-                $this->provider->createUser();
-                $user = $this->provider->getUser();
-                if ($user === null) {
-                    throw new NotFoundException('User not found');
-                }
-            }
+            $user = $this->findUserOrFail();
+            $this->updateUserACL($user);
             $sessionUserInfos = [
                 'contact_id' => $user->getId(),
                 'contact_name' => $user->getName(),
@@ -276,5 +273,135 @@ class LoginOpenIdSession
         $response->error = $error;
 
         return $response;
+    }
+
+    /**
+     * Find User in Centreon or throw an exception
+     *
+     * @return ContactInterface
+     * @throws NotFoundException
+     */
+    private function findUserOrFail(): ContactInterface
+    {
+        $user = $this->provider->getUser();
+        if ($user === null) {
+            if (!$this->provider->canCreateUser()) {
+                throw new NotFoundException('User not found');
+            }
+            $this->info("User not found, start auto import");
+            $this->provider->createUser();
+            $user = $this->provider->getUser();
+            if ($user === null) {
+                throw new NotFoundException('User not found');
+            }
+        }
+
+        return $user;
+    }
+
+    /**
+     * Update User ACL On authentication
+     *
+     * @param ContactInterface $user
+     */
+    private function updateUserACL(ContactInterface $user): void
+    {
+        $configuration  = $this->provider->getConfiguration();
+        $userInformation = $this->provider->getUserInformation();
+        if (! array_key_exists($configuration->getClaimName(), $userInformation)) {
+            $this->info(
+                "configured claim name not found in user information, default contact group ACL will be apply",
+                ["claim_name" => $configuration->getClaimName()]
+            );
+        } else {
+            $userAccessGroups = $this->getUserAccessGroupsFromUserInformation($userInformation, $configuration);
+            $this->updateAccessGroupsForUser($user, $userAccessGroups);
+        }
+
+        $this->updateContactGroupsForUser($user, $configuration->getContactGroup());
+    }
+
+    /**
+     * @param array<string,mixed> $userInformation
+     * @param Configuration $configuration
+     * @return AccessGroup[]
+     */
+    private function getUserAccessGroupsFromUserInformation(array $userInformation, Configuration $configuration): array
+    {
+        $userAccessGroups = [];
+        $userInfoAccessGroups = explode(",", $userInformation[$configuration->getClaimName()]);
+        foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
+            if (! in_array($authorizationRule->getClaimValue(), $userInfoAccessGroups)) {
+                $this->info(
+                    "Configured Claim Value not found in user information",
+                    ["claim_value" => $authorizationRule->getClaimValue()]
+                );
+
+                continue;
+            }
+
+            $userAccessGroups[] = $authorizationRule->getAccessGroup();
+        }
+
+        return $userAccessGroups;
+    }
+
+    /**
+     * Delete and Insert Access Groups for authenticated user
+     *
+     * @param AccessGroup[] $userAccessGroups
+     * @return void
+     */
+    private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
+    {
+        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
+            if (! $isAlreadyInTransaction) {
+                $this->dataStorageEngine->startTransaction();
+            }
+            try {
+                $this->accessGroupRepository->deleteAccessGroupsForUser($user);
+                $this->accessGroupRepository->insertAccessGroupsForUser($user, $userAccessGroups);
+                if (!$isAlreadyInTransaction) {
+                    $this->dataStorageEngine->commitTransaction();
+                }
+            } catch (\Exception $ex) {
+                if (!$isAlreadyInTransaction) {
+                    $this->dataStorageEngine->rollbackTransaction();
+                }
+                $this->error('Error during ACL update', [
+                    "user_id" => $user->getId(),
+                    "access_groups" => $userAccessGroups,
+                    "trace" => $ex->getTraceAsString()
+                ]);
+            }
+    }
+
+    /**
+     * Delete and Insert Contact Group for authenticated user
+     *
+     * @param ContactInterface $user
+     */
+    private function updateContactGroupsForUser(ContactInterface $user, ContactGroup $contactGroup): void
+    {
+        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
+        if (! $isAlreadyInTransaction) {
+            $this->dataStorageEngine->startTransaction();
+        }
+        try {
+            $this->contactGroupRepository->deleteContactGroupsForUser($user);
+            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->commitTransaction();
+            }
+        } catch (\Exception $ex) {
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->rollbackTransaction();
+            }
+            $this->error('Error during ACL update', [
+                "user_id" => $user->getId(),
+                "contact_group" => $contactGroup,
+                "trace" => $ex->getTraceAsString()
+            ]);
+        }
     }
 }

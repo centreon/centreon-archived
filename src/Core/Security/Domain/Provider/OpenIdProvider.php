@@ -327,6 +327,14 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getUserInformation(): array
+    {
+        return $this->userInformations;
+    }
+
+    /**
      * Get Connection Token from OpenId Provider.
      *
      * @param string $authorizationCode

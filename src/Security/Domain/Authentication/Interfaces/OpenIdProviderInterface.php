@@ -57,4 +57,11 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @param string|null $authorizationCode
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void;
+
+    /**
+     * Get User information gathered from IdP
+     *
+     * @return array<string,mixed>
+     */
+    public function getUserInformation(): array;
 }
