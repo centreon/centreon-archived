@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Update platform versions",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "centreon-web"
+    ],
+    "properties": {
+        "centreon-web": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+    }
+}
