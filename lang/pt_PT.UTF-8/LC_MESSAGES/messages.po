@@ -6552,10 +6552,6 @@ msgstr "Diretório de backup para particionamento"
 msgid "Centreon information"
 msgstr "IInformações Centreon"
 
-#: centreon-web/www/include/Administration/parameters/general/form.php:79
-msgid "Centreon Web Directory"
-msgstr "Diretorio Centreon Web"
-
 #: centreon-web/www/include/Administration/parameters/general/form.php:81
 msgid "Sessions Expiration Time"
 msgstr "Duração  do tempo de sessão"

@@ -4857,10 +4857,6 @@ msgstr "Información sobre Centreon"
 msgid "Directory"
 msgstr "repertorio"
 
-#: centreon-web/www/include/Administration/parameters/general/form.php:78
-msgid "Centreon Web Directory"
-msgstr "Directorio web de Centreon"
-
 #: centreon-web/www/include/Administration/parameters/general/form.php:80
 msgid "Sessions Expiration Time"
 msgstr "Plazo de la sesión"
