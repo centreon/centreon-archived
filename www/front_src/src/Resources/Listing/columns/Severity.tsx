@@ -71,12 +71,7 @@ const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   if (isSeverityIcon) {
     return (
       <WrapperTooltip title={<Title severity={row?.severity} />}>
-        <img
-          alt="severity"
-          height={24}
-          src={row.severity.icon.url}
-          width={24}
-        />
+        <img alt="" height={24} src={row.severity.icon.url} width={24} />
       </WrapperTooltip>
     );
   }

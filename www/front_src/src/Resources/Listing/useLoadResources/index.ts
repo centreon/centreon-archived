@@ -97,7 +97,6 @@ const useLoadResources = (): LoadResources => {
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
-
   const refreshIntervalRef = useRef<number>();
 
   const refreshIntervalMs = refreshInterval * 1000;
@@ -170,6 +169,8 @@ const useLoadResources = (): LoadResources => {
     sendRequest({
       hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
+      hostSeverities: getCriteriaNames('host_severities'),
+      hostSeveritiesLevel: getCriteriaValue('host_severities_level'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
@@ -177,6 +178,8 @@ const useLoadResources = (): LoadResources => {
       search,
       serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
+      serviceSeverities: getCriteriaValue('service_severities'),
+      serviceSeveritiesLeveL: getCriteriaValue('service_severities_level'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),
