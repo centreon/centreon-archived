@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace Core\Platform\Application\Repository;
 
-interface WriteVersionRepositoryInterface
+interface ReadVersionRepositoryInterface
 {
     /**
-     * Run given update
+     * Get available updates
      *
-     * @param string $update
+     * @return string[]
      */
-    public function runUpdate(string $update): void;
+    public function getAvailableUpdates(): array;
 }

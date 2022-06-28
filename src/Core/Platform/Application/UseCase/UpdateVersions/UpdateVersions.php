@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
@@ -32,10 +33,12 @@ class UpdateVersions
     use LoggerTrait;
 
     /**
+     * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param WriteVersionRepositoryInterface $writeVersionRepository
      */
     public function __construct(
-        private WriteVersionRepositoryInterface $writeVersionRepository
+        private ReadVersionRepositoryInterface $readVersionRepository,
+        private WriteVersionRepositoryInterface $writeVersionRepository,
     ) {
     }
 
