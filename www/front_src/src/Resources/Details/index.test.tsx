@@ -13,7 +13,7 @@ import {
   act,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  copyToClipboard,
+  useCopyToClipboard,
   screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
@@ -96,13 +96,14 @@ import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
 
 import Details from '.';
+import { renderHook } from '@testing-library/react-hooks';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
-  jest.fn(),
-);
+// jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
+//   jest.fn(),
+// );
 
 jest.mock('@visx/visx', () => {
   return {
@@ -814,8 +815,17 @@ describe(Details, () => {
     expect(downtimeAnnotations).toHaveLength(2);
   });
 
-  it('copies the command line to clipboard when the copy button is clicked', async () => {
+  it.only('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const { result } = renderHook(() =>
+      useCopyToClipboard({
+        errorMessage: '',
+        successMessage: '',
+      }),
+    );
+  
+  // jest.spyOn(result.current, 'copy').mockImplementation(() => jest.fn);
 
     setUrlQueryParameters([
       {
@@ -833,7 +843,7 @@ describe(Details, () => {
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
-      expect(copyToClipboard).toHaveBeenCalledWith(
+      expect(result.current.copy).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -1136,6 +1146,13 @@ describe(Details, () => {
       data: retrievedDetails,
     });
 
+    // const { result } = renderHook(() =>
+    //   useCopyToClipboard({
+    //     errorMessage: '',
+    //     successMessage: '',
+    //   }),
+    // );
+
     setUrlQueryParameters([
       {
         name: 'details',
@@ -1160,7 +1177,7 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+      expect(result.current.copy).toHaveBeenCalledWith(window.location.href);
     });
   });
 
