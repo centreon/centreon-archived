@@ -172,9 +172,9 @@ class FindServiceResponse
     public $hasGraphData;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, mixed>|null
      */
-    public array $severity;
+    public ?array $severity = null;
 
     /**
      * @param int $id
@@ -209,7 +209,7 @@ class FindServiceResponse
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->host = $this->hostToArray($host);
         $this->categories = $this->tagsToArray($serviceCategories);
-        $this->severity = $this->severityToArray($severity);
+        $this->severity = is_null($severity) ? $severity : $this->severityToArray($severity);
     }
 
     /**

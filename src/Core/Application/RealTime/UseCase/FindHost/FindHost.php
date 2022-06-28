@@ -114,8 +114,16 @@ class FindHost
 
         $host->setCategories($categories);
 
+        $this->info(
+            'Fetching severity from the database for host',
+            [
+                'hostId' => $hostId,
+                'typeId' => Severity::HOST_SEVERITY_TYPE_ID
+            ]
+        );
+
         $severity = $this->severityRepository->findByResourceAndTypeId(
-            $host->getId(),
+            $hostId,
             0,
             Severity::HOST_SEVERITY_TYPE_ID
         );

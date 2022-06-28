@@ -168,12 +168,12 @@ class FindHostResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $categories;
+    public array $categories = [];
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, mixed>|null
      */
-    public $severity;
+    public ?array $severity = null;
 
     /**
      * @param int $id
@@ -207,7 +207,7 @@ class FindHostResponse
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->categories = $this->tagsToArray($categories);
-        $this->severity = $this->severityToArray($severity);
+        $this->severity = is_null($severity) ? $severity : $this->severityToArray($severity);
     }
 
     /**

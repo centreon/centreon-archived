@@ -125,17 +125,8 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
     /**
      * @inheritDoc
      */
-    public function findByResourceAndTypeId(int $id, int $parentId, int $typeId): ?Severity
+    public function findByResourceAndTypeId(int $resourceId, int $parentResourceId, int $typeId): ?Severity
     {
-        $this->info(
-            'Fetching severity from the database for resource',
-            [
-                'id' => $id,
-                'parentId' => $parentId,
-                'typeId' => $typeId
-            ]
-        );
-
         $request = 'SELECT
             resources.severity_id,
             s.id,
@@ -155,12 +146,12 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
             ON imgdr.img_img_id = img.img_id
         INNER JOIN `:db`.view_img_dir imgd
             ON imgd.dir_id = imgdr.dir_dir_parent_id
-        WHERE resources.id = :id AND resources.parent_id = :parentId AND s.type = :typeId';
+        WHERE resources.id = :resourceId AND resources.parent_id = :parentResourceId AND s.type = :typeId';
 
         $statement = $this->db->prepare($this->translateDbName($request));
 
-        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-        $statement->bindValue(':parentId', $parentId, \PDO::PARAM_INT);
+        $statement->bindValue(':resourceId', $resourceId, \PDO::PARAM_INT);
+        $statement->bindValue(':parentResourceId', $parentResourceId, \PDO::PARAM_INT);
         $statement->bindValue(':typeId', $typeId, \PDO::PARAM_INT);
 
         $statement->execute();

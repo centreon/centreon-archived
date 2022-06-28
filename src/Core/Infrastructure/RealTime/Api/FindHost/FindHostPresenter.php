@@ -83,19 +83,16 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
             'icon' => $response->icon,
             'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
             'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
+            'severity' => $response->severity,
         ];
 
-        $severity = null;
-
-        if (! empty($response->severity)) {
+        if ($presenterResponse['severity'] !== null) {
             /**
              * normalize the URL to the severity icon
              */
-            $severity = $response->severity;
-            $severity['icon']['url'] = $this->getBaseUri() . '/' . $response->severity['icon']['url'];
+            $presenterResponse['severity']['icon']['url'] = $this->getBaseUri()
+                . '/' . $response->severity['icon']['url'];
         }
-
-        $presenterResponse['severity'] = $severity;
 
         $acknowledgement = null;
 

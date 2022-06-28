@@ -231,10 +231,16 @@ it('should find the host as admin', function () {
     expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
     expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
     expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
-    expect($presenter->response->severity['id'])->toBe($this->severity->getId());
-    expect($presenter->response->severity['name'])->toBe($this->severity->getName());
-    expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
-    expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
+
+    if ($presenter->response->severity !== null) {
+        expect($presenter->response->severity['id'])->toBe($this->severity->getId());
+        expect($presenter->response->severity['name'])->toBe($this->severity->getName());
+        expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
+        expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
+        expect($presenter->response->severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+        expect($presenter->response->severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+        expect($presenter->response->severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
+    }
 });
 
 it('should find the host as non admin', function () {
@@ -331,8 +337,14 @@ it('should find the host as non admin', function () {
     expect($presenter->response->acknowledgement['entry_time'])->toBe($this->acknowledgement->getEntryTime());
     expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
     expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
-    expect($presenter->response->severity['id'])->toBe($this->severity->getId());
-    expect($presenter->response->severity['name'])->toBe($this->severity->getName());
-    expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
-    expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
+
+    if ($presenter->response->severity !== null) {
+        expect($presenter->response->severity['id'])->toBe($this->severity->getId());
+        expect($presenter->response->severity['name'])->toBe($this->severity->getName());
+        expect($presenter->response->severity['type'])->toBe($this->severity->getTypeAsString());
+        expect($presenter->response->severity['level'])->toBe($this->severity->getLevel());
+        expect($presenter->response->severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+        expect($presenter->response->severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+        expect($presenter->response->severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
+    }
 });

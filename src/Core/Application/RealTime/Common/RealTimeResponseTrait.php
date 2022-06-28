@@ -52,13 +52,14 @@ trait RealTimeResponseTrait
      * Converts an Icon model into an array
      *
      * @param Icon|null $icon
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     public function iconToArray(?Icon $icon): array
     {
         return is_null($icon)
             ? []
             : [
+                'id' => $icon->getId(),
                 'name' => $icon->getName(),
                 'url' => $icon->getUrl()
             ];
@@ -144,19 +145,17 @@ trait RealTimeResponseTrait
     /**
      * Converts Severity model into an array for DTO
      *
-     * @param Severity|null $severity
+     * @param Severity $severity
      * @return array<string, mixed>
      */
-    private function severityToArray(?Severity $severity): array
+    private function severityToArray(Severity $severity): array
     {
-        return is_null($severity)
-            ? []
-            : [
-                'id' => $severity->getId(),
-                'name' => $severity->getName(),
-                'level' => $severity->getLevel(),
-                'type' => $severity->getTypeAsString(),
-                'icon' => $this->iconToArray($severity->getIcon())
-            ];
+        return [
+            'id' => $severity->getId(),
+            'name' => $severity->getName(),
+            'level' => $severity->getLevel(),
+            'type' => $severity->getTypeAsString(),
+            'icon' => $this->iconToArray($severity->getIcon())
+        ];
     }
 }

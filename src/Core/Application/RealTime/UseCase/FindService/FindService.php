@@ -150,6 +150,15 @@ class FindService
 
         $service->setCategories($serviceCategories);
 
+        $this->info(
+            'Fetching severity from the database for host',
+            [
+                'hostId' => $hostId,
+                'serviceId' => $serviceId,
+                'typeId' => Severity::HOST_SEVERITY_TYPE_ID
+            ]
+        );
+
         $severity = $this->severityRepository->findByResourceAndTypeId(
             $serviceId,
             $hostId,

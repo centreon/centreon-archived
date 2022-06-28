@@ -80,19 +80,16 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
             'parent' => $response->host,
             'monitoring_server_name' => $response->host['monitoring_server_name'],
             'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
+            'severity' => $response->severity,
         ];
 
-        $severity = null;
-
-        if (! empty($response->severity)) {
+        if ($presenterResponse['severity'] !== null) {
             /**
              * normalize the URL to the severity icon
              */
-            $severity = $response->severity;
-            $severity['icon']['url'] = $this->getBaseUri() . '/' . $response->severity['icon']['url'];
+            $presenterResponse['severity']['icon']['url'] = $this->getBaseUri()
+                . '/' . $response->severity['icon']['url'];
         }
-
-        $presenterResponse['severity'] = $severity;
 
         $acknowledgement = null;
 

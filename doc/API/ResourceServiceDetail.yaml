@@ -188,6 +188,8 @@ Monitoring.ServiceDetail:
         level:
           type: integer
           description: "Level of the Severity"
+          minimum: 0
+          maximum: 100
           example: 50
         icon:
           type: object
