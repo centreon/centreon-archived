@@ -53,9 +53,11 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
-            $updates = $this->getAvailableUpdates();
+            $availableUpdates = $this->getAvailableUpdates();
 
-            $this->runUpdates($updates);
+            $desiredUpdates = $this->filterUpdatesUntil($request->centreonWebVersion, $availableUpdates);
+
+            $this->runUpdates($desiredUpdates);
         } catch (\Throwable $e) {
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
             return;
@@ -74,7 +76,7 @@ class UpdateVersions
         try {
             $this->info('Getting available updates');
 
-            return $this->repository->getAvailableUpdates();
+            return $this->readVersionRepository->getAvailableUpdates();
         } catch (\Throwable $e) {
             $this->error(
                 'An error occurred when getting available updates',
@@ -92,20 +94,48 @@ class UpdateVersions
      */
     private function runUpdates(array $updates): void
     {
-        try {
-            foreach ($updates as $update) {
-                $this->repository->runUpdate($update);
-            }
-        } catch (\Throwable $e) {
-            $this->error(
-                'An error occurred when applying update',
-                [
-                    'update' => $update,
-                    'trace' => $e->getTraceAsString(),
-                ],
-            );
+        foreach ($updates as $update) {
+            try {
+                $this->writeVersionRepository->runUpdate($update);
+            } catch (\Throwable $e) {
+                $this->error(
+                    'An error occurred when applying update',
+                    [
+                        'update' => $update,
+                        'trace' => $e->getTraceAsString(),
+                    ],
+                );
 
-            throw $e;
+                throw $e;
+            }
         }
+    }
+
+    /**
+     * filter updates which are anterior to given version
+     *
+     * @param string $version
+     * @param string[] $updates
+     * @return array
+     *
+     * @throws \Exception
+     */
+    private function filterUpdatesUntil(string $version, array $updates): array
+    {
+        $filteredUpdates = [];
+        foreach ($updates as $update) {
+            $filteredUpdates[] = $update;
+            if ($update === $version) {
+                return $filteredUpdates;
+            }
+        }
+
+        $errorMessage = "Update to $version is not available";
+        $this->error(
+            $errorMessage,
+            ['available_versions' => implode(', ', $updates)],
+        );
+
+        throw new \Exception($errorMessage);
     }
 }
