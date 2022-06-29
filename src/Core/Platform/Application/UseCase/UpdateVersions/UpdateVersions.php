@@ -53,7 +53,9 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
-            $availableUpdates = $this->getAvailableUpdates();
+            $currentVersion = $this->getCurrentVersion();
+
+            $availableUpdates = $this->getAvailableUpdates($currentVersion);
 
             $desiredUpdates = $this->readVersionRepository->filterUpdatesUntil(
                 $request->centreonWebVersion,
@@ -63,6 +65,7 @@ class UpdateVersions
             $this->runUpdates($desiredUpdates);
         } catch (\Throwable $e) {
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
+
             return;
         }
 
@@ -70,16 +73,38 @@ class UpdateVersions
     }
 
     /**
+     * Get current version or fail
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getCurrentVersion(): string
+    {
+        $this->info('Getting current version');
+        $currentVersion = $this->readVersionRepository->getCurrentVersion();
+
+        if ($currentVersion === null) {
+            $errorMessage = 'Cannot retrieve current version';
+            $this->error($errorMessage);
+
+            throw new \Exception($errorMessage);
+        }
+
+        return $currentVersion;
+    }
+
+    /**
      * Get available updates
      *
+     * @param string $currentVersion
      * @return string[]
      */
-    private function getAvailableUpdates(): array
+    private function getAvailableUpdates(string $currentVersion): array
     {
         try {
             $this->info('Getting available updates');
 
-            return $this->readVersionRepository->getAvailableUpdates();
+            return $this->readVersionRepository->getOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
             $this->error(
                 'An error occurred when getting available updates',
@@ -99,6 +124,7 @@ class UpdateVersions
     {
         foreach ($updates as $update) {
             try {
+                $this->info("Running update $update");
                 $this->writeVersionRepository->runUpdate($update);
             } catch (\Throwable $e) {
                 $this->error(

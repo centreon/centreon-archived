@@ -25,11 +25,19 @@ namespace Core\Platform\Application\Repository;
 interface ReadVersionRepositoryInterface
 {
     /**
-     * Get available updates
+     * Get current version
      *
+     * @return string|null
+     */
+    public function getCurrentVersion(): ?string;
+
+    /**
+     * Get ordered available updates
+     *
+     * @param string $currentVersion
      * @return string[]
      */
-    public function getAvailableUpdates(): array;
+    public function getOrderedAvailableUpdates(string $currentVersion): array;
 
     /**
      * filter updates which are anterior to given version

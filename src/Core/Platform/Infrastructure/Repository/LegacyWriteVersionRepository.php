@@ -28,7 +28,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
 
-class DbWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
+class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
 {
     /**
      * @inheritDoc
