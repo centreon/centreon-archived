@@ -1,0 +1,17 @@
+"200":
+  description: "OK"
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          result:
+            type: array
+            items:
+              $ref: '../Schemas/category.yaml'
+          meta:
+            $ref: '../../Common/Schemas/meta.yaml'
+'403':
+  $ref: '../../Common/Responses/forbidden.yaml'
+'500':
+  $ref: '../../Common/Responses/internal_server_error.yaml'

@@ -1,0 +1,8 @@
+get:
+  tags:
+    - Service category
+  summary: "List all real-time service categories"
+  description: |
+    List of all service categories in real-time context
+  responses:
+    $ref: "./Responses/category.yaml"

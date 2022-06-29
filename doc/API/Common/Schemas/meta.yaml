@@ -1,0 +1,20 @@
+type: object
+properties:
+  page:
+    type: integer
+    description: "Number of the pagined page"
+    example: 1
+  limit:
+    type: integer
+    description: "Number of items per page"
+    example: 10
+  search:
+    type: object
+    description: "Search parameter passed to URL"
+  sort_by:
+    type: object
+    description: "Sort parameter passed to URL"
+  total:
+    type: integer
+    description: "Number of items found"
+    example: 1
