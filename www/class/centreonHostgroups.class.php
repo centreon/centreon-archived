@@ -333,7 +333,7 @@ class CentreonHostgroups
         if (empty($values)) {
             return $items;
         }
-        
+
         $hostgroups = [];
         // $values structure: ['1,2,3,4'], keeping the foreach in case it could have more than one index
         foreach ($values as $value) {
@@ -364,14 +364,14 @@ class CentreonHostgroups
         // get list of selected hostgroups
         $listValues = '';
         $queryValues = array();
-        
+
         foreach ($hostgroups as $item) {
-            // the below explode may not be useful 
+            // the below explode may not be useful
             $ids = explode('-', $item);
             $listValues .= ':hgId_' . $ids[0] . ', ';
             $queryValues['hgId_' . $ids[0]] = (int)$ids[0];
         }
-        
+
         $listValues = rtrim($listValues, ', ');
         $query = 'SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (' . $listValues . ') ORDER BY hg_name ';
         $stmt = $this->DB->prepare($query);
