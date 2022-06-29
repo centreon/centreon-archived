@@ -329,6 +329,7 @@ function enableServiceInDB($service_id = null, $service_arr = array())
         $service_arr = array($service_id => "1");
     }
     foreach ($service_arr as $key => $value) {
+        signalConfigurationChange((int) $key);
         $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '" . $key . "'");
         $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
@@ -347,6 +348,7 @@ function disableServiceInDB($service_id = null, $service_arr = array())
         $service_arr = array($service_id => "1");
     }
     foreach ($service_arr as $key => $value) {
+        signalConfigurationChange((int) $key);
         $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '" . $key . "'");
         $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
@@ -362,9 +364,9 @@ function removeRelationLastServiceDependency(int $serviceId): void
 {
     global $pearDB;
 
-    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
-              FROM dependency_serviceParent_relation 
-              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation 
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id
+              FROM dependency_serviceParent_relation
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation
                                          WHERE service_service_id =  ' . $serviceId . ')';
     $dbResult = $pearDB->query($query);
     $result = $dbResult->fetch();
@@ -382,6 +384,7 @@ function deleteServiceInDB($services = array())
     $query = 'UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = :service_id';
     $statement = $pearDB->prepare($query);
     foreach ($services as $key => $value) {
+        signalConfigurationChange((int) $key);
         removeRelationLastServiceDependency((int)$key);
         $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
         $dbResult = $pearDB->query($query);
@@ -452,8 +455,8 @@ function divideHostGroupsToHostGroup($service_id)
     $query = "SELECT hostgroup_hg_id FROM host_service_relation " .
         "WHERE service_service_id = '" . $service_id . "' AND hostgroup_hg_id IS NOT NULL";
     $dbResult3 = $pearDB->query($query);
-    $query = "UPDATE index_data 
-              SET service_id = :sv_id 
+    $query = "UPDATE index_data
+              SET service_id = :sv_id
               WHERE host_id = :host_id AND service_id = :service_id";
     $statement = $pearDBO->prepare($query);
     while ($data = $dbResult3->fetch()) {
@@ -483,8 +486,8 @@ function divideHostGroupsToHost($service_id)
     global $pearDB, $pearDBO;
 
     $dbResult = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '" . $service_id . "'");
-    $query = "UPDATE index_data 
-              SET service_id = :sv_id 
+    $query = "UPDATE index_data
+              SET service_id = :sv_id
               WHERE host_id = :host_id AND service_id = :service_id";
     $statement = $pearDBO->prepare($query);
     while ($relation = $dbResult->fetch()) {
@@ -603,7 +606,7 @@ function multipleServiceInDB(
                     if (isset($maxId["MAX(service_id)"])) {
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
-                            $query = "INSERT INTO host_service_relation 
+                            $query = "INSERT INTO host_service_relation
                                       VALUES (NULL, NULL, :host_id, NULL, :service_id)";
                             $statement = $pearDB->prepare($query);
                             $statement->bindValue(':host_id', (int) $host, \PDO::PARAM_INT);
@@ -611,8 +614,8 @@ function multipleServiceInDB(
                             $statement->execute();
                             setHostChangeFlag($pearDB, $host, null);
                         } elseif ($hostgroup) {
-                            $query = "INSERT INTO host_service_relation 
-                                      VALUES (NULL, :hostgroup_id, NULL, 
+                            $query = "INSERT INTO host_service_relation
+                                      VALUES (NULL, :hostgroup_id, NULL,
                                               NULL, :service_id)";
                             $statement = $pearDB->prepare($query);
                             $statement->bindValue(':hostgroup_id', (int) $hostgroup, \PDO::PARAM_INT);
@@ -626,8 +629,8 @@ function multipleServiceInDB(
                             $dbResult = $pearDB->query($query);
                             $fields["service_hPars"] = "";
                             $fields["service_hgPars"] = "";
-                            $query = "INSERT INTO host_service_relation 
-                                      VALUES (NULL, :hostgroup_hg_id, :host_host_id, 
+                            $query = "INSERT INTO host_service_relation
+                                      VALUES (NULL, :hostgroup_hg_id, :host_host_id,
                                               NULL, :service_id)";
                             $statement = $pearDB->prepare($query);
                             while ($service = $dbResult->fetch()) {
@@ -674,6 +677,7 @@ function multipleServiceInDB(
                             $fields["service_hPars"] = trim($fields["service_hPars"], ",");
                             $fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
                         }
+                        signalConfigurationChange($maxId["MAX(service_id)"]);
 
                         /*
                          * Contact duplication
@@ -699,7 +703,7 @@ function multipleServiceInDB(
                             "WHERE service_service_id = '" . $key . "'";
                         $dbResult = $pearDB->query($query);
                         $fields["service_cgs"] = "";
-                        $query = "INSERT INTO contactgroup_service_relation 
+                        $query = "INSERT INTO contactgroup_service_relation
                             VALUES (:contactgroup_cg_id,:service_id)";
                         $statement = $pearDB->prepare($query);
                         while ($Cg = $dbResult->fetch()) {
@@ -818,7 +822,7 @@ function multipleServiceInDB(
                                 $sv["is_password"] = '0';
                             }
                             $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, " .
-                                "`svc_macro_value`, `is_password`) 
+                                "`svc_macro_value`, `is_password`)
                                 VALUES (:svc_svc_id, :svc_macro_name, :svc_macro_value , :is_password)";
                             $statement = $pearDB->prepare($mTpRq2);
                             $statement->bindValue(':svc_svc_id', $maxId["MAX(service_id)"], \PDO::PARAM_INT);
@@ -2287,8 +2291,8 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
     if (count($ret1) == 1) {
         foreach ($cache as $host_id => $flag) {
             if (!isset($cacheEsc[$host_id]) && count($cacheEsc)) {
-                $query = "UPDATE escalation_service_relation 
-                          SET host_host_id = :host_host_id 
+                $query = "UPDATE escalation_service_relation
+                          SET host_host_id = :host_host_id
                           WHERE service_service_id = :service_id";
                 $statement = $pearDB->prepare($query);
                 $statement->bindValue(':host_host_id', (int) $ret1[0], \PDO::PARAM_INT);
@@ -2299,7 +2303,7 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
     } else {
         foreach ($cache as $host_id) {
             if (!isset($cache[$host_id]) && count($cacheEsc)) {
-                $query = "DELETE FROM escalation_service_relation 
+                $query = "DELETE FROM escalation_service_relation
                     WHERE host_host_id = :host_host_id AND service_service_id = :service_id";
                 $statement = $pearDB->prepare($query);
                 $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
@@ -2355,6 +2359,7 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
             setHostChangeFlag($pearDB, $ret1[$i], null);
         }
     }
+    signalConfigurationChange($service_id, array_keys($cache));
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
@@ -2412,6 +2417,7 @@ function updateServiceHost_MC($service_id = null)
             }
         }
     }
+    signalConfigurationChange($service_id, array_keys($hsvs));
 }
 
 function updateServiceExtInfos($service_id = null, $ret = array())
@@ -2584,11 +2590,11 @@ function setServiceCriticality($serviceId, $criticalityId)
     global $pearDB;
 
     $statement = $pearDB->prepare(
-        "DELETE FROM service_categories_relation 
+        "DELETE FROM service_categories_relation
                 WHERE service_service_id =:service_service_id
                 AND NOT EXISTS(
-                    SELECT sc_id 
-                    FROM service_categories sc 
+                    SELECT sc_id
+                    FROM service_categories sc
                     WHERE sc.sc_id = service_categories_relation.sc_id
                     AND sc.level IS NULL)"
     );
@@ -2614,4 +2620,71 @@ function setServiceCriticality($serviceId, $criticalityId)
 function testCg2($list)
 {
     return CentreonContactgroup::verifiedExists($list);
+}
+
+/**
+ * Mark pollers affected by service change (set 'updated' flag)
+ *
+ * @param int $serviceId
+ * @param int[] $additionalHostIds additional hosts whose pollers are affected
+ */
+function signalConfigurationChange(int $serviceId, array $additionalHosts = []): void
+{
+    $hostIds = getHostIdsFromServiceId($serviceId);
+    $pollerIds = getElligiblePollersForConfigUpdate(array_merge($hostIds, $additionalHosts));
+
+    setPollersToUpdated($pollerIds);
+}
+
+/**
+ * Return hosts linked to a service
+ * @param int $serviceId
+ * @return int[]
+ */
+function getHostIdsFromServiceId(int $serviceId): array
+{
+    global $pearDB;
+
+    $query = "SELECT host_host_id
+        FROM host_service_relation hsr
+        JOIN host ON host.host_id = hsr.host_host_id
+        WHERE host.host_activate = '1' AND hsr.service_service_id = :serviceId";
+    $stmt = $pearDB->prepare($query);
+    $stmt->bindValue(':serviceId', $serviceId);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+/**
+ * Return poller ids linked to enabled hosts
+ *
+ * @param int[] $hostIds
+ * @return int[]
+ */
+function getElligiblePollersForConfigUpdate(array $hostIds): array
+{
+    if (empty($hostIds)) {
+        return [];
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($hostIds as $key => $hostId) {
+        $bindedParams[':host_id_' . $key] = $hostId;
+    }
+
+    $query = "SELECT DISTINCT(phr.nagios_server_id)
+        FROM ns_host_relation phr
+        JOIN host ON host.host_id = phr.host_host_id
+        WHERE host.host_activate = '1' AND phr.host_host_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }

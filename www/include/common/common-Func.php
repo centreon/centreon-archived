@@ -2498,3 +2498,29 @@ function unvalidFormMessage()
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
         "</div>";
 }
+
+
+/**
+ * Set 'updated' flag to '1' for all listed poller ids
+ *
+ * @param int[] $pollerIds
+ */
+function setPollersToUpdated(array $pollerIds): void
+{
+    if (empty($pollerIds)) {
+        return;
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($pollerIds as $key => $pollerId) {
+        $bindedParams[':poller_id_' . $key] = $pollerId;
+    }
+    $query = "UPDATE nagios_server SET updated = '1' WHERE id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+}
