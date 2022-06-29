@@ -199,7 +199,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
-        onClick={() => copy(window.location.href)}
+        onClick={(): void => copy(window.location.href)}
       >
         <CopyIcon fontSize="small" />
       </IconButton>

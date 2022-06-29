@@ -45,7 +45,10 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
         <Grid container alignItems="center" spacing={1}>
           <Grid item>{t(labelCommand)}</Grid>
           <Grid item>
-            <Tooltip title={labelCopy} onClick={() => copy(details.command_line as string)}>
+            <Tooltip
+              title={labelCopy}
+              onClick={(): void => copy(details.command_line as string)}
+            >
               <IconButton data-testid={labelCopy} size="small">
                 <IconCopyFile color="primary" fontSize="small" />
               </IconButton>
