@@ -329,7 +329,7 @@ function enableServiceInDB($service_id = null, $service_arr = array())
         $service_arr = array($service_id => "1");
     }
     foreach ($service_arr as $key => $value) {
-        signalConfigurationChange((int) $key);
+        signalServiceConfigurationChange((int) $key);
         $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '" . $key . "'");
         $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
@@ -348,7 +348,7 @@ function disableServiceInDB($service_id = null, $service_arr = array())
         $service_arr = array($service_id => "1");
     }
     foreach ($service_arr as $key => $value) {
-        signalConfigurationChange((int) $key);
+        signalServiceConfigurationChange((int) $key);
         $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '" . $key . "'");
         $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
@@ -384,7 +384,7 @@ function deleteServiceInDB($services = array())
     $query = 'UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = :service_id';
     $statement = $pearDB->prepare($query);
     foreach ($services as $key => $value) {
-        signalConfigurationChange((int) $key);
+        signalServiceConfigurationChange((int) $key);
         removeRelationLastServiceDependency((int)$key);
         $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
         $dbResult = $pearDB->query($query);
@@ -677,7 +677,7 @@ function multipleServiceInDB(
                             $fields["service_hPars"] = trim($fields["service_hPars"], ",");
                             $fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
                         }
-                        signalConfigurationChange($maxId["MAX(service_id)"]);
+                        signalServiceConfigurationChange($maxId["MAX(service_id)"]);
 
                         /*
                          * Contact duplication
@@ -2359,7 +2359,7 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
             setHostChangeFlag($pearDB, $ret1[$i], null);
         }
     }
-    signalConfigurationChange($service_id, array_keys($cache));
+    signalServiceConfigurationChange($service_id, array_keys($cache));
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
@@ -2417,7 +2417,7 @@ function updateServiceHost_MC($service_id = null)
             }
         }
     }
-    signalConfigurationChange($service_id, array_keys($hsvs));
+    signalServiceConfigurationChange($service_id, array_keys($hsvs));
 }
 
 function updateServiceExtInfos($service_id = null, $ret = array())
@@ -2628,7 +2628,7 @@ function testCg2($list)
  * @param int $serviceId
  * @param int[] $additionalHostIds additional hosts whose pollers are affected
  */
-function signalConfigurationChange(int $serviceId, array $additionalHosts = []): void
+function signalServiceConfigurationChange(int $serviceId, array $additionalHosts = []): void
 {
     $hostIds = getHostIdsFromServiceId($serviceId);
     $pollerIds = getElligiblePollersForConfigUpdate(array_merge($hostIds, $additionalHosts));
