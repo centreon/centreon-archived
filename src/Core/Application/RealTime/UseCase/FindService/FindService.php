@@ -151,11 +151,11 @@ class FindService
         $service->setCategories($serviceCategories);
 
         $this->info(
-            'Fetching severity from the database for host',
+            'Fetching severity from the database for service',
             [
                 'hostId' => $hostId,
                 'serviceId' => $serviceId,
-                'typeId' => Severity::HOST_SEVERITY_TYPE_ID
+                'typeId' => Severity::SERVICE_SEVERITY_TYPE_ID
             ]
         );
 
