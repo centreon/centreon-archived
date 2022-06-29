@@ -141,7 +141,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.tooltip,
   },
   switchItem: {
-    padding: theme.spacing(0, 2, 0.25, 1.75),
+    padding: theme.spacing(0, 2, 0.25, 11 / 8),
   },
   text: {
     overflow: 'hidden',
@@ -336,9 +336,9 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   };
 
   return (
-    <div className={clsx(classes.wrapRightUser)}>
+    <div className={classes.wrapRightUser}>
       <div
-        className={clsx(classes.wrapRightUserItems)}
+        className={classes.wrapRightUserItems}
         ref={profile as RefObject<HTMLDivElement>}
       >
         <Clock />
@@ -359,7 +359,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             >
               <UserIcon
                 aria-label={t(labelProfile)}
-                className={clsx(classes.userIcon)}
+                className={classes.userIcon}
                 fontSize="large"
                 ref={userIconRef}
                 onClick={toggle}
@@ -379,7 +379,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
               },
             ]}
             open={not(isNil(anchorEl))}
-            placement="bottom-end"
           >
             {({ TransitionProps }): JSX.Element => (
               <Fade {...TransitionProps} timeout={350}>

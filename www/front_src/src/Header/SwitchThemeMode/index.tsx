@@ -1,16 +1,14 @@
-import { useState, useTransition, SetStateAction } from 'react';
+import { useState, useTransition } from 'react';
 
 import clsx from 'clsx';
-import { equals } from 'ramda';
 import { useLocation } from 'react-router-dom';
 
 import { ListItemText, Switch } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { patchData, useRequest } from '@centreon/ui';
-import { ThemeMode, User } from '@centreon/ui-context';
 
-import { enhancedComponent } from './enhancedComponent';
+import useSwitchThemeMode from './useSwitchThemeMode';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -29,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
   },
   containerSwitch: {
+    '& .MuiSwitch-switchBase': {
+      padding: theme.spacing(0.5, 0.5, 0.5, 6 / 8),
+    },
     '&.Mui-checked': {
       '&:hover': {
         backgroundColor: 'unset',
@@ -47,15 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
-  setUser: (update: SetStateAction<User>) => void;
-  user: User;
-}
-
-const SwitchThemeMode = ({ user, setUser }: Props): JSX.Element => {
+const SwitchThemeMode = (): JSX.Element => {
   const classes = useStyles();
   const { pathname } = useLocation();
-  const isDarkMode = equals(user.themeMode, ThemeMode.dark);
+  const [isDarkMode, themeMode, updateUser] = useSwitchThemeMode();
 
   const [isDark, setIsDark] = useState(isDarkMode);
 
@@ -67,14 +63,10 @@ const SwitchThemeMode = ({ user, setUser }: Props): JSX.Element => {
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
-    const themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
     const isCurrentPageLegacy = pathname.includes('php');
     setIsDark(!isDark);
     startTransition(() => {
-      setUser({
-        ...user,
-        themeMode,
-      });
+      updateUser();
     });
     sendRequest({
       data: { theme: themeMode },
@@ -114,4 +106,4 @@ const SwitchThemeMode = ({ user, setUser }: Props): JSX.Element => {
   );
 };
 
-export default enhancedComponent(SwitchThemeMode);
+export default SwitchThemeMode;
