@@ -30,6 +30,7 @@ import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
+import ExportToCsv from './ExportToCsv';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
@@ -124,6 +125,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
             value={selectedTypes}
             onChange={changeSelectedTypes}
           />
+          <ExportToCsv />
         </Paper>
       }
       limit={limit}
