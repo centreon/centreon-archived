@@ -69,11 +69,25 @@ const getTypeIds = (): Array<string> => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  chip: {
+    display: 'flex',
+  },
   event: {
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     padding: theme.spacing(1),
+  },
+  eventTimeLineContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    flexGrow: 0.5,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing(1),
+    padding: theme.spacing(0, 1),
+    rowGap: theme.spacing(1),
   },
   info: {
     display: 'grid',
@@ -88,6 +102,12 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
     marginBottom: theme.spacing(1),
     marginRight: theme.spacing(2),
+  },
+  outputContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    marginBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(12 / 8),
   },
   title: {
     alignItems: 'center',
@@ -133,22 +153,25 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.infoHeader}>
-        <Date event={event} />
-        <CompactStatusChip
-          label={t(event.status?.name as string)}
-          severityCode={event.status?.severity_code as number}
-        />
-        <Typography
-          style={{
-            justifySelf: 'end',
-          }}
-          variant="caption"
-        >
-          {`${t(labelTries)}: ${event.tries}`}
-        </Typography>
+      <div className={classes.eventTimeLineContainer}>
+        <div>
+          <Date event={event} />
+        </div>
+        <div className={classes.chip}>
+          <CompactStatusChip
+            label={t(event.status?.name as string)}
+            severityCode={event.status?.severity_code as number}
+          />
+        </div>
+        <div>
+          <Typography variant="caption">
+            {`${t(labelTries)}: ${event.tries}`}
+          </Typography>
+        </div>
+        <div>
+          <OutputInformation bold content={event.content} />
+        </div>
       </div>
-      <OutputInformation bold content={event.content} />
     </div>
   );
 };
