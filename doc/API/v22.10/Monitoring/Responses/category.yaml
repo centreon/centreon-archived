@@ -1,3 +1,4 @@
+---
 "200":
   description: "OK"
   content:
@@ -15,3 +16,4 @@
   $ref: '../../Common/Responses/forbidden.yaml'
 '500':
   $ref: '../../Common/Responses/internal_server_error.yaml'
+...

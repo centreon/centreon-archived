@@ -1,3 +1,4 @@
+---
 get:
   tags:
     - Service category
@@ -6,3 +7,4 @@ get:
     List of all service categories in real-time context
   responses:
     $ref: "./Responses/category.yaml"
+...

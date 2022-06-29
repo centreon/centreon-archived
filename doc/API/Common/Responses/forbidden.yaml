@@ -1,3 +1,4 @@
+---
 description: "Forbidden"
 content:
   application/json:
@@ -11,3 +12,4 @@ content:
         message:
           type: string
           example: "You are not authorized to access this resource"
+...

@@ -1,3 +1,4 @@
+---
 type: object
 properties:
   id:
@@ -8,3 +9,4 @@ properties:
     type: string
     description: "Category name"
     example: "Category name"
+...

@@ -1,3 +1,4 @@
+---
 description: "Internal Server Error"
 content:
   application/json:
@@ -11,3 +12,4 @@ content:
         message:
           type: string
           example: "Internal Server Error"
+...

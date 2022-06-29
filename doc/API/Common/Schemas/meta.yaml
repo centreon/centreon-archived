@@ -1,3 +1,4 @@
+---
 type: object
 properties:
   page:
@@ -18,3 +19,4 @@ properties:
     type: integer
     description: "Number of items found"
     example: 1
+...
