@@ -53,7 +53,7 @@ function testExistence(?string $name = null): bool
 
     $id = isset($form) ? $form->getSubmitValue('esc_id') : null;
 
-    $stmt = $pearDB->prepare("SELECT esc_name, esc_id FROM escalation WHERE esc_name = :name");
+    $stmt = $pearDB->prepare("SELECT esc_id FROM escalation WHERE esc_name = :name");
     $stmt->bindValue(':name', html_entity_decode($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
     $stmt->execute();
 
@@ -463,6 +463,10 @@ function updateEscalationContactGroups(CentreonDB $pearDB, array $escalationCont
         $queryParams[] = "(:escalationId, :contactGroupId{$key})";
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_contactgroup_relation (escalation_esc_id, contactgroup_cg_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -470,10 +474,8 @@ function updateEscalationContactGroups(CentreonDB $pearDB, array $escalationCont
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 /**
@@ -498,6 +500,10 @@ function updateEscalationHosts(CentreonDB $pearDB, array $escalationHosts, int $
         $queryParams[] = "(:escalationId, :hostId{$key})";
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_host_relation (escalation_esc_id, host_host_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -505,10 +511,8 @@ function updateEscalationHosts(CentreonDB $pearDB, array $escalationHosts, int $
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 /**
@@ -533,6 +537,10 @@ function updateEscalationHostGroups(CentreonDB $pearDB, array $escalationHostGro
         $queryParams[] = "(:escalationId, :hostGroupId{$key})";
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_hostgroup_relation (escalation_esc_id, hostgroup_hg_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -540,10 +548,8 @@ function updateEscalationHostGroups(CentreonDB $pearDB, array $escalationHostGro
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 /**
@@ -568,6 +574,10 @@ function updateEscalationServiceGroups(CentreonDB $pearDB, array $escalationServ
         $queryParams[] = "(:escalationId, :serviceGroupId{$key})";
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_servicegroup_relation (escalation_esc_id, servicegroup_sg_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -575,10 +585,8 @@ function updateEscalationServiceGroups(CentreonDB $pearDB, array $escalationServ
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 /**
@@ -608,6 +616,10 @@ function updateEscalationServices(CentreonDB $pearDB, array $escalationServices,
         }
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_service_relation (escalation_esc_id, service_service_id, host_host_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -615,10 +627,8 @@ function updateEscalationServices(CentreonDB $pearDB, array $escalationServices,
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 /**
@@ -643,6 +653,10 @@ function updateEscalationMetaServices(CentreonDB $pearDB, array $escalationMetas
         $queryParams[] = "(:escalationId, :metaServiceId{$key})";
     }
 
+    if (empty($params)) {
+        return;
+    }
+
     $query = "INSERT INTO escalation_meta_service_relation (escalation_esc_id, meta_service_meta_id) VALUES ";
     $query .= implode(', ', $queryParams);
 
@@ -650,8 +664,6 @@ function updateEscalationMetaServices(CentreonDB $pearDB, array $escalationMetas
     foreach ($params as $paramName => $value) {
         $stmt->bindValue($paramName, $value, \PDO::PARAM_INT);
     }
-    if (count($params)) {
-        $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
+    $stmt->bindValue(':escalationId', $escalationId, \PDO::PARAM_INT);
+    $stmt->execute();
 }
