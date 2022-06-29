@@ -16916,3 +16916,6 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
+
+msgid "Export to csv"
+msgstr "Exporter comme csv"

@@ -253,3 +253,4 @@ export const labelParentAlias = 'Parent alias';
 export const labelCategories = 'Categories';
 export const labelHostCategory = 'Host category';
 export const labelServiceCategory = 'Service category';
+export const labelExportToCsv = 'Export to csv';
