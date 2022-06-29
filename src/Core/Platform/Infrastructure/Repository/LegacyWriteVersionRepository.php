@@ -30,10 +30,91 @@ use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
 
 class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
 {
+    use LoggerTrait;
+
+    /**
+     * @param DatabaseConnection $db
+     */
+    public function __construct(DatabaseConnection $db)
+    {
+        $this->db = $db;
+    }
+
     /**
      * @inheritDoc
      */
     public function runUpdate(string $update): void
     {
+        $this->runMonitoringSql($update);
+        $this->runScript($update);
+        $this->runConfigurationSql($update);
+        $this->runPostScript($update);
+        $this->updateVersionInformation($update);
+    }
+
+    /**
+     * Run sql queries on monitoring database
+     *
+     * @param string $version
+     */
+    private function runMonitoringSql(string $version): void
+    {
+        $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centstorage/Update-CSTG-' . $version . '.sql';
+        if (is_file($upgradeFilePath)) {
+        }
+    }
+
+    /**
+     * Run php upgrade script
+     *
+     * @param string $version
+     */
+    private function runScript(string $version): void
+    {
+        $upgradeFilePath = __DIR__ . '/../../../../../www/install/php/Update-' . $version . '.php';
+        if (is_file($upgradeFilePath)) {
+            include_once $upgradeFilePath;
+        }
+    }
+
+    /**
+     * Run sql queries on configuration database
+     *
+     * @param string $version
+     */
+    private function runConfigurationSql(string $version): void
+    {
+        $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centreon/Update-DB-' . $version . '.sql';
+        if (is_file($upgradeFilePath)) {
+        }
+    }
+
+    /**
+     * Run php post upgrade script
+     *
+     * @param string $version
+     */
+    private function runPostScript(string $version): void
+    {
+        $upgradeFilePath = __DIR__ . '/../../../../../www/install/php/Update-' . $version . '.post.php';
+        if (is_file($upgradeFilePath)) {
+            include_once $upgradeFilePath;
+        }
+    }
+
+    /**
+     * Update version information
+     *
+     * @param string $version
+     */
+    private function updateVersionInformation(string $version): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "UPDATE `:db`.`informations` SET `value` = :version WHERE `key` = 'version'"
+            )
+        );
+        $statement->bindValue(':version', $version, \PDO::PARAM_STR);
+        //$statement->execute();
     }
 }
