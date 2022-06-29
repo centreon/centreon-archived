@@ -61,6 +61,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     {
         $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centstorage/Update-CSTG-' . $version . '.sql';
         if (is_file($upgradeFilePath)) {
+            $this->db->switchToDb($this->db->getStorageDbName());
+            $this->runSqlFile($upgradeFilePath);
         }
     }
 
@@ -86,6 +88,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     {
         $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centreon/Update-DB-' . $version . '.sql';
         if (is_file($upgradeFilePath)) {
+            $this->db->switchToDb($this->db->getCentreonDbName());
+            $this->runSqlFile($upgradeFilePath);
         }
     }
 
@@ -116,5 +120,52 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         );
         $statement->bindValue(':version', $version, \PDO::PARAM_STR);
         //$statement->execute();
+    }
+
+    private function runSqlFile(string $filePath): void
+    {
+        set_time_limit(0);
+        $count = 0;
+        $start = 0;
+        $fileName = basename($filePath);
+        $tmpFile = __DIR__ . '/../../../../../www/install/tmp/' . $fileName;
+        if (is_file($tmpFile)) {
+            $start = file_get_contents($tmpFile);
+        }
+        if (is_file($filePath)) {
+            $file = fopen($filePath, 'r');
+            if (is_resource($file)) {
+                $query = [];
+                $line = 0;
+                while (! feof($file)) {
+                    $line++;
+                    $currentLine = fgets($file);
+                    if (substr(trim($currentLine), 0, 2) !== '--') {
+                        $query[] = $currentLine;
+                    }
+                    if (preg_match('~' . preg_quote(';', '~') . '\s*$~iS', end($query))) {
+                        $query = trim(implode('', $query));
+                        $count++;
+                        if ($count > $start) {
+                            try {
+                                $this->db->query($query);
+                            } catch (\Exception $e) {
+                                $this->error('Cannot execute query : ' . $query);
+                                throw $e;
+                            }
+                            while (ob_get_level() > 0) {
+                                ob_end_flush();
+                            }
+                            flush();
+                            dump(file_put_contents($tmpFile, $count));
+                        }
+                    }
+                    if (is_string($query)) {
+                        $query = [];
+                    }
+                }
+                fclose($file);
+            }
+        }
     }
 }
