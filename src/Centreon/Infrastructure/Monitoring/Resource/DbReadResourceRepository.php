@@ -26,6 +26,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Centreon\Domain\Repository\RepositoryException;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -61,6 +62,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     private $accessGroups = [];
 
     /**
+     * @var ResourceTypeInterface[]
+     */
+    private array $resourceTypes = [];
+
+    /**
      * @var array<string, string>
      */
     private $resourceConcordances = [
@@ -91,10 +97,18 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
 
     /**
      * @param DatabaseConnection $db
+     * @param \Traversable<ResourceTypeInterface> $resourceTypes
      */
-    public function __construct(DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db, \Traversable $resourceTypes)
     {
         $this->db = $db;
+        if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
+            throw new \InvalidArgumentException(
+                _('You must at least add one resource provider')
+            );
+        }
+
+        $this->resourceTypes = iterator_to_array($resourceTypes);
     }
 
     /**
@@ -125,7 +139,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
      */
     public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
-        $this->accessGroups = $accessGroups;
+        $this->accessGroups = $accessGroups === null ? [] : $accessGroups;
         return $this;
     }
 
@@ -336,15 +350,17 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
      */
     private function addResourceTypeSubRequest(ResourceFilter $filter): string
     {
+        /**
+         * @var int[] $resourceTypes
+         */
         $resourceTypes = [];
         $subRequest = '';
-        foreach ($filter->getTypes() as $resourceType) {
-            if ($resourceType === ResourceEntity::TYPE_HOST) {
-                $resourceTypes[] = self::RESOURCE_TYPE_HOST;
-            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-                $resourceTypes[] = self::RESOURCE_TYPE_SERVICE;
-            } elseif ($resourceType === ResourceEntity::TYPE_META) {
-                $resourceTypes[] = self::RESOURCE_TYPE_METASERVICE;
+        foreach ($filter->getTypes() as $filterType) {
+            foreach ($this->resourceTypes as $resourceType) {
+                if ($resourceType->isValidFor($filterType)) {
+                    $resourceTypes[] = $resourceType->getId();
+                    break;
+                }
             }
         }
 
