@@ -28,9 +28,9 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.serviceCategories]: 9,
   [CriteriaNames.hostCategories]: 8,
   [CriteriaNames.hostSeverities]: 10,
-  [CriteriaNames.hostSeveritiesLevels]: 11,
+  [CriteriaNames.hostSeverityLevels]: 11,
   [CriteriaNames.serviceSeverities]: 12,
-  [CriteriaNames.serviceSeveritiesLevels]: 13,
+  [CriteriaNames.serviceSeverityLevels]: 13,
 };
 
 export interface AutocompleteSuggestionProps {
@@ -78,8 +78,8 @@ export const dynamicCriteriaValuesByName = [
   CriteriaNames.hostCategories,
   CriteriaNames.hostSeverities,
   CriteriaNames.serviceSeverities,
-  CriteriaNames.hostSeveritiesLevels,
-  CriteriaNames.serviceSeveritiesLevels,
+  CriteriaNames.hostSeverityLevels,
+  CriteriaNames.serviceSeverityLevels,
 ];
 
 export const getSelectableCriteriasByName = (

@@ -196,13 +196,13 @@ export enum CriteriaNames {
   hostCategories = 'host_categories',
   hostGroups = 'host_groups',
   hostSeverities = 'host_severities',
-  hostSeveritiesLevels = 'host_severities_levels',
+  hostSeverityLevels = 'host_severity_levels',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
   serviceSeverities = 'service_severities',
-  serviceSeveritiesLevels = 'service_severities_levels',
+  serviceSeverityLevels = 'service_severity_levels',
   states = 'states',
   statusTypes = 'status_types',
   statuses = 'statuses',
@@ -254,11 +254,11 @@ const selectableCriterias: CriteriaById = {
     buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
     label: labelServiceSeverity,
   },
-  [CriteriaNames.hostSeveritiesLevels]: {
+  [CriteriaNames.hostSeverityLevels]: {
     buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
     label: labelHostSeverityLevel,
   },
-  [CriteriaNames.serviceSeveritiesLevels]: {
+  [CriteriaNames.serviceSeverityLevels]: {
     buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
     label: labelServiceSeverityLevel,
   },

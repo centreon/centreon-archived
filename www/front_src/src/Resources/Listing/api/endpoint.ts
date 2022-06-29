@@ -6,14 +6,14 @@ export type ListResourcesProps = {
   hostCategories: Array<string>;
   hostGroups: Array<string>;
   hostSeverities: Array<string>;
-  hostSeveritiesLevels: Array<number>;
+  hostSeverityLevels: Array<number>;
   monitoringServers: Array<string>;
   onlyWithPerformanceData?: boolean;
   resourceTypes: Array<string>;
   serviceCategories: Array<string>;
   serviceGroups: Array<string>;
   serviceSeverities: Array<string>;
-  serviceSeveritiesLevels: Array<number>;
+  serviceSeverityLevels: Array<number>;
   states: Array<string>;
   statusTypes: Array<string>;
   statuses: Array<string>;
@@ -42,10 +42,10 @@ const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
       { name: 'service_severity_names', value: parameters.serviceSeverities },
       {
         name: 'service_severity_levels',
-        value: parameters.serviceSeveritiesLevels,
+        value: parameters.serviceSeverityLevels,
       },
       { name: 'host_severity_names', value: parameters.hostSeverities },
-      { name: 'host_severity_levels', value: parameters.hostSeveritiesLevels },
+      { name: 'host_severity_levels', value: parameters.hostSeverityLevels },
     ],
     parameters,
   });
