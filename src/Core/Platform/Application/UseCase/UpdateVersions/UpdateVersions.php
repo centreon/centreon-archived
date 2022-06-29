@@ -55,7 +55,10 @@ class UpdateVersions
         try {
             $availableUpdates = $this->getAvailableUpdates();
 
-            $desiredUpdates = $this->filterUpdatesUntil($request->centreonWebVersion, $availableUpdates);
+            $desiredUpdates = $this->readVersionRepository->filterUpdatesUntil(
+                $request->centreonWebVersion,
+                $availableUpdates
+            );
 
             $this->runUpdates($desiredUpdates);
         } catch (\Throwable $e) {
@@ -109,33 +112,5 @@ class UpdateVersions
                 throw $e;
             }
         }
-    }
-
-    /**
-     * filter updates which are anterior to given version
-     *
-     * @param string $version
-     * @param string[] $updates
-     * @return array
-     *
-     * @throws \Exception
-     */
-    private function filterUpdatesUntil(string $version, array $updates): array
-    {
-        $filteredUpdates = [];
-        foreach ($updates as $update) {
-            $filteredUpdates[] = $update;
-            if ($update === $version) {
-                return $filteredUpdates;
-            }
-        }
-
-        $errorMessage = "Update to $version is not available";
-        $this->error(
-            $errorMessage,
-            ['available_versions' => implode(', ', $updates)],
-        );
-
-        throw new \Exception($errorMessage);
     }
 }

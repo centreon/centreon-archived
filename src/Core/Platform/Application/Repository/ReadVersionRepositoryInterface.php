@@ -30,4 +30,15 @@ interface ReadVersionRepositoryInterface
      * @return string[]
      */
     public function getAvailableUpdates(): array;
+
+    /**
+     * filter updates which are anterior to given version
+     *
+     * @param string $version
+     * @param string[] $updates
+     * @return array
+     *
+     * @throws \Exception
+     */
+    public function filterUpdatesUntil(string $version, array $updates): array;
 }

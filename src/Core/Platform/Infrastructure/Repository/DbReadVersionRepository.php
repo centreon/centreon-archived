@@ -30,11 +30,41 @@ use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 
 class DbReadVersionRepository extends AbstractRepositoryDRB implements ReadVersionRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @inheritDoc
      */
     public function getAvailableUpdates(): array
     {
         return [];
+    }
+
+    /**
+     * filter updates which are anterior to given version
+     *
+     * @param string $version
+     * @param string[] $updates
+     * @return array
+     *
+     * @throws \Exception
+     */
+    public function filterUpdatesUntil(string $version, array $updates): array
+    {
+        $filteredUpdates = [];
+        foreach ($updates as $update) {
+            $filteredUpdates[] = $update;
+            if ($update === $version) {
+                return $filteredUpdates;
+            }
+        }
+
+        $errorMessage = "Update to $version is not available";
+        $this->error(
+            $errorMessage,
+            ['available_versions' => implode(', ', $updates)],
+        );
+
+        throw new \Exception($errorMessage);
     }
 }
