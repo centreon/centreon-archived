@@ -293,14 +293,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     logout();
   };
 
-  const capitalizeFirstLetter = (input: string | null): string => {
-    if (isNil(input)) {
-      return '';
-    }
-
-    return input.charAt(0).toUpperCase() + input.slice(1);
-  };
-
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
     loadUserData();
@@ -394,7 +386,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
-                        {capitalizeFirstLetter(data.username)}
+                        {data.username}
                       </ListItemText>
                     </ListItem>
                     <Divider className={classes.divider} />
