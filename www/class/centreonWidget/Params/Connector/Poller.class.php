@@ -89,6 +89,7 @@ class CentreonWidgetParamsConnectorPoller extends CentreonWidgetParamsList
                     );
                 }
 
+                $tab = array(null => null);
                 while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
                     $tab[$record['id']] = $record['name'];
                 }
