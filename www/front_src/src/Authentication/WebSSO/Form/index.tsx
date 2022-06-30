@@ -65,22 +65,6 @@ const WebSSOForm = ({
       validationSchema={validationSchema}
     />
   );
-
-  // return (
-  //   <Formik
-  //     enableReinitialize
-  //     validateOnBlur
-  //     validateOnMount
-  //     initialValues={initialValues}
-  //     validationSchema={validationSchema}
-  //     onSubmit={submit}
-  //   >
-  //     <div className={classes.formContainer}>
-  //       <Inputs categories={categories} inputs={inputs} />
-  //       <FormButtons />
-  //     </div>
-  //   </Formik>
-  // );
 };
 
 export default WebSSOForm;

@@ -2,8 +2,6 @@ import { FormikValues } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pick, pipe, values, or, all, not } from 'ramda';
 
-import { makeStyles } from '@mui/styles';
-
 import { useRequest, useSnackbar, Form } from '@centreon/ui';
 
 import useValidationSchema from '../useValidationSchema';
@@ -21,12 +19,6 @@ import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
 
 import { inputs } from './inputs';
 
-const useStyles = makeStyles((theme) => ({
-  formContainer: {
-    margin: theme.spacing(2, 0, 0),
-  },
-}));
-
 interface Props {
   initialValues: OpenidConfiguration;
   isLoading: boolean;
@@ -40,7 +32,6 @@ const OpenidForm = ({
   loadOpenidConfiguration,
   isLoading,
 }: Props): JSX.Element => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const { sendRequest } = useRequest({
@@ -101,23 +92,6 @@ const OpenidForm = ({
       validationSchema={validationSchema}
     />
   );
-
-  // return (
-  //   <Formik
-  //     enableReinitialize
-  //     validateOnBlur
-  //     validateOnMount
-  //     initialValues={initialValues}
-  //     validate={validate}
-  //     validationSchema={validationSchema}
-  //     onSubmit={submit}
-  //   >
-  //     <div className={classes.formContainer}>
-  //       <Inputs categories={categories} inputs={inputs} />
-  //       <FormButtons />
-  //     </div>
-  //   </Formik>
-  // );
 };
 
 export default OpenidForm;
