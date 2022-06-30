@@ -14,7 +14,7 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import { labelStatus } from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
@@ -124,7 +124,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
             spacing={1}
           >
             <MultiAutocompleteField
-              label={t(labelStatus)}
+              label={t(labelEvent)}
               limitTags={3}
               options={translatedTypes}
               placeholder=""

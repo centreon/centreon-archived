@@ -27,6 +27,7 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeLastYear,
+  labelStatus,
 } from '../../../translatedLabels';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
@@ -40,7 +41,7 @@ import { TimelineEvent, Type } from './models';
 const types: Array<Type> = [
   {
     id: 'event',
-    name: labelEvent,
+    name: labelStatus,
   },
 
   {
