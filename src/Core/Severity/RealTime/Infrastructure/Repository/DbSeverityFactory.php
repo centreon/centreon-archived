@@ -34,6 +34,7 @@ class DbSeverityFactory
     public static function createFromRecord(array $record): Severity
     {
         $icon = (new Icon())
+            ->setId((int) $record['icon_id'])
             ->setName($record['icon_name'])
             ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
 

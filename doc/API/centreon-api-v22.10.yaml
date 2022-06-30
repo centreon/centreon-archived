@@ -1256,7 +1256,6 @@ paths:
         * notes_url
         * parent_name
         * parent_status
-        * severity_level
         * in_downtime
         * acknowledged
         * last_status_change
@@ -6153,11 +6152,6 @@ components:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        severity_level:
-          type: integer
-          nullable: true
-          description: "level of the severity"
-          example: 1
         duration:
           type: string
           nullable: true

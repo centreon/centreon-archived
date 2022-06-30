@@ -168,11 +168,6 @@ class Resource
     private $links;
 
     /**
-     * @var int|null
-     */
-    private $severityLevel;
-
-    /**
      * @var string|null
      */
     private $chartUrl;
@@ -734,25 +729,6 @@ class Resource
     public function setLinks(ResourceLinks $links): self
     {
         $this->links = $links;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getSeverityLevel(): ?int
-    {
-        return $this->severityLevel;
-    }
-
-    /**
-     * @param int|null $severityLevel
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setSeverityLevel(?int $severityLevel): self
-    {
-        $this->severityLevel = $severityLevel;
-
         return $this;
     }
 

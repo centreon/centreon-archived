@@ -33,4 +33,14 @@ interface ReadSeverityRepositoryInterface
      * @return Severity[]
      */
     public function findAllByTypeId(int $typeId): array;
+
+    /**
+     * Finds a Severity by id, parentId and typeId
+     *
+     * @param integer $resourceId
+     * @param integer $parentResourceId
+     * @param integer $typeId
+     * @return Severity|null
+     */
+    public function findByResourceAndTypeId(int $resourceId, int $parentResourceId, int $typeId): ?Severity;
 }

@@ -364,9 +364,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             fn (ResourceEntity $resource) => $resource->getIcon() !== null
         );
 
-        /**
-         * @todo replace by foreach
-         */
         return array_map(
             fn (ResourceEntity $resource) => $resource->getIcon()?->getId(),
             $resourcesWithIcons
@@ -383,9 +380,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             fn (ResourceEntity $resource) => $resource->getSeverity() !== null
         );
 
-        /**
-         * @todo replace by foreach
-         */
         return array_map(
             fn (ResourceEntity $resource) => $resource->getSeverity()?->getIcon()?->getId(),
             $resourcesWithSeverities
