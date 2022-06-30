@@ -6,14 +6,12 @@ import { isNil, not } from 'ramda';
 import { LinearProgress, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
 import useTab from '../useTab';
 
 import { labelDefineOpenIDConnectConfiguration } from './translatedLabels';
 import useOpenid from './useOpenid';
 import Form from './Form';
 import { OpenidConfiguration } from './models';
-import { inputs } from './Form/inputs';
 
 const useStyles = makeStyles((theme) => ({
   loading: {
@@ -52,14 +50,11 @@ const OpenidConfigurationForm = (): JSX.Element => {
           <LinearProgress />
         )}
       </div>
-      {isOpenidConfigurationEmpty ? (
-        <LoadingSkeletonForm inputs={inputs} />
-      ) : (
-        <Form
-          initialValues={initialOpenidConfiguration as OpenidConfiguration}
-          loadOpenidConfiguration={loadOpenidConfiguration}
-        />
-      )}
+      <Form
+        initialValues={initialOpenidConfiguration as OpenidConfiguration}
+        isLoading={isOpenidConfigurationEmpty}
+        loadOpenidConfiguration={loadOpenidConfiguration}
+      />
     </div>
   );
 };

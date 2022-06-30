@@ -31,12 +31,10 @@ export const inputs: Array<InputProps> = [
     radio: {
       options: [
         {
-          // isChecked: (value: boolean): boolean => value,
           label: labelWebSSOOnly,
           value: true,
         },
         {
-          // isChecked: (value: boolean): boolean => !value,
           label: labelMixed,
           value: false,
         },

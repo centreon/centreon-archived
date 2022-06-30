@@ -1,10 +1,10 @@
-import { Formik, FormikValues } from 'formik';
+import { FormikValues } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pick, pipe, values, or, all, not } from 'ramda';
 
 import { makeStyles } from '@mui/styles';
 
-import { useRequest, useSnackbar } from '@centreon/ui';
+import { useRequest, useSnackbar, Form } from '@centreon/ui';
 
 import useValidationSchema from '../useValidationSchema';
 import {
@@ -15,7 +15,6 @@ import {
 import { putProviderConfiguration } from '../../api';
 import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
-import Inputs from '../../FormInputs';
 import { categories } from '../..';
 import { Provider } from '../../models';
 import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
@@ -30,14 +29,16 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   initialValues: OpenidConfiguration;
+  isLoading: boolean;
   loadOpenidConfiguration: () => void;
 }
 
 const isNilOrEmpty = (value): boolean => or(isNil(value), isEmpty(value));
 
-const Form = ({
+const OpenidForm = ({
   initialValues,
   loadOpenidConfiguration,
+  isLoading,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -89,21 +90,34 @@ const Form = ({
   };
 
   return (
-    <Formik
-      enableReinitialize
-      validateOnBlur
-      validateOnMount
+    <Form<OpenidConfiguration>
+      Buttons={FormButtons}
+      groups={categories}
       initialValues={initialValues}
+      inputs={inputs}
+      isLoading={isLoading}
+      submit={submit}
       validate={validate}
       validationSchema={validationSchema}
-      onSubmit={submit}
-    >
-      <div className={classes.formContainer}>
-        <Inputs categories={categories} inputs={inputs} />
-        <FormButtons />
-      </div>
-    </Formik>
+    />
   );
+
+  // return (
+  //   <Formik
+  //     enableReinitialize
+  //     validateOnBlur
+  //     validateOnMount
+  //     initialValues={initialValues}
+  //     validate={validate}
+  //     validationSchema={validationSchema}
+  //     onSubmit={submit}
+  //   >
+  //     <div className={classes.formContainer}>
+  //       <Inputs categories={categories} inputs={inputs} />
+  //       <FormButtons />
+  //     </div>
+  //   </Formik>
+  // );
 };
 
-export default Form;
+export default OpenidForm;
