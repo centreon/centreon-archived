@@ -144,9 +144,9 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       {details.severity && (
         <img
           alt="severity"
-          height={24}
+          height={16}
           src={details?.severity.icon.url}
-          width={24}
+          width={16}
         />
       )}
       <StatusChip
