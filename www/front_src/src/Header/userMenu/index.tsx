@@ -239,13 +239,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     }, 60000);
   };
 
-  const toggle = (event: MouseEvent<SVGSVGElement>): void => {
-    if (anchorEl) {
-      setAnchorEl(null);
-
-      return;
-    }
-    setAnchorEl(event.currentTarget);
+  const getPositionOfPopper = (): void => {
     if (isNil(headerRef?.current) || isNil(userIconRef?.current)) {
       return;
     }
@@ -255,6 +249,16 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
       userIconRef?.current?.getBoundingClientRect()?.bottom;
 
     setAnchorHeight(headerHeight - userMenuBottom);
+  };
+
+  const toggle = (event: MouseEvent<SVGSVGElement>): void => {
+    if (anchorEl) {
+      setAnchorEl(null);
+
+      return;
+    }
+    setAnchorEl(event.currentTarget);
+    getPositionOfPopper();
   };
 
   const closeUserMenu = (): void => {
@@ -294,12 +298,20 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     logout();
   };
 
+  const handleResizedScreen = (): void => {
+    getPositionOfPopper();
+  };
+
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
+    window.addEventListener('resize', handleResizedScreen);
+
     loadUserData();
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
+      window.removeEventListener('resize', handleResizedScreen);
+
       if (refreshTimeout.current) {
         clearTimeout(refreshTimeout.current);
       }
