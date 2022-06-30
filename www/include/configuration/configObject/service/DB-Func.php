@@ -2655,36 +2655,3 @@ function getHostIdsFromServiceId(int $serviceId): array
 
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
-
-/**
- * Return poller ids linked to enabled hosts
- *
- * @param int[] $hostIds
- * @return int[]
- */
-function getElligiblePollersForConfigUpdate(array $hostIds): array
-{
-    if (empty($hostIds)) {
-        return [];
-    }
-
-    global $pearDB;
-
-    $bindedParams = [];
-    foreach ($hostIds as $key => $hostId) {
-        $bindedParams[':host_id_' . $key] = $hostId;
-    }
-
-    $query = "SELECT DISTINCT(phr.nagios_server_id)
-        FROM ns_host_relation phr
-        JOIN host ON host.host_id = phr.host_host_id
-        WHERE host.host_activate = '1' AND phr.host_host_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
-
-    $stmt = $pearDB->prepare($query);
-    foreach ($bindedParams as $bindedParam => $bindedValue) {
-        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
-    }
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
