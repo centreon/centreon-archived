@@ -246,14 +246,15 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
       return;
     }
     setAnchorEl(event.currentTarget);
-    if (!isNil(headerRef?.current) && !isNil(userIconRef?.current)) {
-      const headerHeight = headerRef?.current?.getBoundingClientRect().height;
-
-      const userMenuBottom =
-        userIconRef?.current?.getBoundingClientRect()?.bottom;
-
-      setAnchorHeight(headerHeight - userMenuBottom);
+    if (isNil(headerRef?.current) || isNil(userIconRef?.current)) {
+      return;
     }
+    const headerHeight = headerRef?.current?.getBoundingClientRect().height;
+
+    const userMenuBottom =
+      userIconRef?.current?.getBoundingClientRect()?.bottom;
+
+    setAnchorHeight(headerHeight - userMenuBottom);
   };
 
   const closeUserMenu = (): void => {
