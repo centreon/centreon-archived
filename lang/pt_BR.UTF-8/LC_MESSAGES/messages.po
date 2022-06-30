@@ -15623,5 +15623,5 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
-msgid "Export to csv"
-msgstr ""
+# msgid "Export to CSV"
+# msgstr ""

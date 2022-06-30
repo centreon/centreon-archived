@@ -14,12 +14,8 @@ const ExportToCsv = (): JSX.Element => {
   const details = useAtomValue(detailsAtom);
   const downloadTimelineFile = `${details?.links.endpoints.timeline}/download`;
 
-  const openInNewTab = (url): void => {
-    window.open(url, 'noopener', 'noreferrer');
-  };
-
   const exportToCsv = (): void => {
-    openInNewTab(downloadTimelineFile);
+    window.open(downloadTimelineFile, 'noopener', 'noreferrer');
   };
 
   return (
