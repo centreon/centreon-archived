@@ -76,8 +76,7 @@
         "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*",
         "psr/container": "1.1.1",
-        "lcobucci/jwt": "^4.1",
-        "lexik/jwt-authentication-bundle": "^2.16"
+        "lcobucci/jwt": "^4.1"
     },
     "autoload": {
         "psr-4": {
