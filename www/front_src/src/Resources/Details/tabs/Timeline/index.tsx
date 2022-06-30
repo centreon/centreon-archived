@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Paper } from '@mui/material';
+import { Paper, Stack } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
@@ -14,7 +14,7 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import { labelEvent } from '../../../translatedLabels';
+import { labelStatus } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
@@ -117,15 +117,22 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       filter={
         <Paper className={classes.filter}>
           <TimePeriodButtonGroup disableGraphOptions disablePaper />
-          <MultiAutocompleteField
-            fullWidth
-            label={t(labelEvent)}
-            limitTags={3}
-            options={translatedTypes}
-            value={selectedTypes}
-            onChange={changeSelectedTypes}
-          />
-          <ExportToCsv />
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="center"
+            spacing={1}
+          >
+            <MultiAutocompleteField
+              label={t(labelStatus)}
+              limitTags={3}
+              options={translatedTypes}
+              placeholder=""
+              value={selectedTypes}
+              onChange={changeSelectedTypes}
+            />
+            <ExportToCsv />
+          </Stack>
         </Paper>
       }
       limit={limit}
