@@ -34,6 +34,8 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
     successMessage: t(labelCommandCopied),
   });
 
+  const copyCommandLine = (): void => copy(details.command_line as string);
+
   return (
     <Card className={classes.commandLineCard} elevation={0}>
       <Typography
@@ -47,7 +49,7 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
           <Grid item>
             <Tooltip
               title={labelCopy}
-              onClick={(): void => copy(details.command_line as string)}
+              onClick={copyCommandLine}
             >
               <IconButton data-testid={labelCopy} size="small">
                 <IconCopyFile color="primary" fontSize="small" />

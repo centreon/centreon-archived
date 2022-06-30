@@ -114,6 +114,8 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     successMessage: t(labelLinkCopied),
   });
 
+  const copyLink = (): void => copy(window.location.href);
+
   if (details === undefined) {
     return <LoadingSkeleton />;
   }
@@ -199,7 +201,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
-        onClick={(): void => copy(window.location.href)}
+        onClick={copyLink}
       >
         <CopyIcon fontSize="small" />
       </IconButton>
