@@ -40,7 +40,7 @@ interface ReadVersionRepositoryInterface
     public function getOrderedAvailableUpdates(string $currentVersion): array;
 
     /**
-     * filter updates which are anterior to given version
+     * Get updates which are anterior to given version
      *
      * @param string $version
      * @param string[] $updates
@@ -48,5 +48,5 @@ interface ReadVersionRepositoryInterface
      *
      * @throws \Exception
      */
-    public function filterUpdatesUntil(string $version, array $updates): array;
+    public function getUpdatesUntil(string $version, array $updates): array;
 }

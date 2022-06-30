@@ -68,15 +68,9 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
     }
 
     /**
-     * filter updates which are anterior to given version
-     *
-     * @param string $version
-     * @param string[] $updates
-     * @return array
-     *
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function filterUpdatesUntil(string $version, array $updates): array
+    public function getUpdatesUntil(string $version, array $updates): array
     {
         $filteredUpdates = [];
         foreach ($updates as $update) {

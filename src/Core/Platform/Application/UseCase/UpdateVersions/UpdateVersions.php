@@ -57,7 +57,7 @@ class UpdateVersions
 
             $availableUpdates = $this->getAvailableUpdates($currentVersion);
 
-            $desiredUpdates = $this->readVersionRepository->filterUpdatesUntil(
+            $desiredUpdates = $this->readVersionRepository->getUpdatesUntil(
                 $request->centreonWebVersion,
                 $availableUpdates
             );

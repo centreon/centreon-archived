@@ -119,9 +119,15 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
             )
         );
         $statement->bindValue(':version', $version, \PDO::PARAM_STR);
-        //$statement->execute();
+        $statement->execute();
     }
 
+    /**
+     * Run sql file and use temporary file to store last executed line
+     *
+     * @param string $filePath
+     * @return void
+     */
     private function runSqlFile(string $filePath): void
     {
         set_time_limit(0);
