@@ -112,6 +112,12 @@
     "justinrainbow/json-schema": {
         "version": "5.2.11"
     },
+    "lcobucci/clock": {
+        "version": "2.2.0"
+    },
+    "lcobucci/jwt": {
+        "version": "4.1.5"
+    },
     "league/openapi-psr7-validator": {
         "version": "0.16.3"
     },
@@ -121,11 +127,26 @@
     "league/uri-interfaces": {
         "version": "2.3.0"
     },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.16",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "./config/packages/lexik_jwt_authentication.yaml"
+        ]
+    },
     "monolog/monolog": {
         "version": "2.3.4"
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -353,6 +374,9 @@
         "files": [
             "phpcs.xml.dist"
         ]
+    },
+    "stella-maris/clock": {
+        "version": "0.1.4"
     },
     "symfony/cache": {
         "version": "v5.3.8"
