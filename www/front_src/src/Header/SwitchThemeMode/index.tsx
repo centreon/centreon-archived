@@ -1,4 +1,4 @@
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
@@ -51,23 +51,20 @@ const useStyles = makeStyles((theme) => ({
 const SwitchThemeMode = (): JSX.Element => {
   const classes = useStyles();
   const { pathname } = useLocation();
-  const [isDarkMode, themeMode, updateUser] = useSwitchThemeMode();
+  const [isPending, isDarkMode, themeMode, updateUser] = useSwitchThemeMode();
 
   const [isDark, setIsDark] = useState(isDarkMode);
 
   const { sendRequest } = useRequest({
     request: patchData,
   });
-  const [isPending, startTransition] = useTransition();
 
   const switchEndPoint = './api/latest/configuration/users/current/parameters';
 
   const switchThemeMode = (): void => {
     const isCurrentPageLegacy = pathname.includes('php');
     setIsDark(!isDark);
-    startTransition(() => {
-      updateUser();
-    });
+    updateUser();
     sendRequest({
       data: { theme: themeMode },
       endpoint: switchEndPoint,
