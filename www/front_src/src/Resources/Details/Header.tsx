@@ -114,7 +114,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     successMessage: t(labelLinkCopied),
   });
 
-  const copyLink = (): void => copy(window.location.href);
+  const copyLink = (): Promise<void> => copy(window.location.href);
 
   if (details === undefined) {
     return <LoadingSkeleton />;

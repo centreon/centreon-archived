@@ -34,7 +34,7 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
     successMessage: t(labelCommandCopied),
   });
 
-  const copyCommandLine = (): void => copy(details.command_line as string);
+  const copyCommandLine = (): Promise<void> => copy(details.command_line as string);
 
   return (
     <Card className={classes.commandLineCard} elevation={0}>
