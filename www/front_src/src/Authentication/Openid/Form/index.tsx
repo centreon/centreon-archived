@@ -13,7 +13,7 @@ import {
 import { putProviderConfiguration } from '../../api';
 import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
-import { categories } from '../..';
+import { groups } from '../..';
 import { Provider } from '../../models';
 import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
 
@@ -83,7 +83,7 @@ const OpenidForm = ({
   return (
     <Form<OpenidConfiguration>
       Buttons={FormButtons}
-      groups={categories}
+      groups={groups}
       initialValues={initialValues}
       inputs={inputs}
       isLoading={isLoading}

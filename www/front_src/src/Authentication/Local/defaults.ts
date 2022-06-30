@@ -1,16 +1,17 @@
-import { adaptPasswordSecurityPolicyToAPI } from '../../api/adapters';
+import { adaptPasswordSecurityPolicyToAPI } from '../api/adapters';
+
 import {
   PasswordSecurityPolicy,
   PasswordSecurityPolicyFromAPI,
   PasswordSecurityPolicyToAPI,
-} from '../models';
+} from './models';
 import {
   fifteenMinutes,
   oneDay,
   oneHour,
   sevenDays,
   twelveMonths,
-} from '../timestamps';
+} from './timestamps';
 
 export const defaultPasswordSecurityPolicy: PasswordSecurityPolicyFromAPI = {
   password_security_policy: {
@@ -30,22 +31,22 @@ export const defaultPasswordSecurityPolicy: PasswordSecurityPolicyFromAPI = {
   },
 };
 
-export const defaultPasswordSecurityPolicyWithNullValues: PasswordSecurityPolicyFromAPI =
+export const defaultPasswordSecurityPolicyWithNullValues: PasswordSecurityPolicyToAPI =
   {
     password_security_policy: {
       attempts: null,
-      blockingDuration: null,
-      canReusePasswords: false,
-      delayBeforeNewPassword: null,
-      hasLowerCase: false,
-      hasNumber: false,
-      hasSpecialCharacter: false,
-      hasUpperCase: false,
-      passwordExpiration: {
-        excludedUsers: [],
-        expirationDelay: null,
+      blocking_duration: null,
+      can_reuse_passwords: false,
+      delay_before_new_password: null,
+      has_lowercase: false,
+      has_number: false,
+      has_special_character: false,
+      has_uppercase: false,
+      password_expiration: {
+        excluded_users: [],
+        expiration_delay: null,
       },
-      passwordMinLength: 12,
+      password_min_length: 12,
     },
   };
 
@@ -71,8 +72,8 @@ export const retrievedPasswordSecurityPolicyAPI: PasswordSecurityPolicyToAPI =
     passwordMinLength: 42,
   });
 
-export const securityPolicyWithInvalidPasswordExpiration: PasswordSecurityPolicy =
-  {
+export const securityPolicyWithInvalidPasswordExpiration: PasswordSecurityPolicyToAPI =
+  adaptPasswordSecurityPolicyToAPI({
     attempts: 5,
     blockingDuration: fifteenMinutes,
     canReusePasswords: false,
@@ -86,10 +87,10 @@ export const securityPolicyWithInvalidPasswordExpiration: PasswordSecurityPolicy
       expirationDelay: twelveMonths + oneDay,
     },
     passwordMinLength: 12,
-  };
+  });
 
-export const securityPolicyWithInvalidDelayBeforeNewPassword: PasswordSecurityPolicy =
-  {
+export const securityPolicyWithInvalidDelayBeforeNewPassword: PasswordSecurityPolicyToAPI =
+  adaptPasswordSecurityPolicyToAPI({
     attempts: 5,
     blockingDuration: fifteenMinutes,
     canReusePasswords: false,
@@ -103,10 +104,10 @@ export const securityPolicyWithInvalidDelayBeforeNewPassword: PasswordSecurityPo
       expirationDelay: sevenDays,
     },
     passwordMinLength: 12,
-  };
+  });
 
-export const securityPolicyWithInvalidBlockingDuration: PasswordSecurityPolicy =
-  {
+export const securityPolicyWithInvalidBlockingDuration: PasswordSecurityPolicyToAPI =
+  adaptPasswordSecurityPolicyToAPI({
     attempts: 5,
     blockingDuration: sevenDays + oneHour,
     canReusePasswords: false,
@@ -120,4 +121,4 @@ export const securityPolicyWithInvalidBlockingDuration: PasswordSecurityPolicy =
       expirationDelay: sevenDays,
     },
     passwordMinLength: 12,
-  };
+  });

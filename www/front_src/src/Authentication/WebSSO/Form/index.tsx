@@ -9,7 +9,7 @@ import {
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
 import { WebSSOConfiguration, WebSSOConfigurationToAPI } from '../models';
-import { categories } from '../..';
+import { groups } from '../..';
 import { Provider } from '../../models';
 import { adaptWebSSOConfigurationToAPI } from '../../api/adapters';
 import FormButtons from '../../FormButtons';
@@ -57,7 +57,7 @@ const WebSSOForm = ({
   return (
     <Form<WebSSOConfiguration>
       Buttons={FormButtons}
-      groups={categories}
+      groups={groups}
       initialValues={initialValues}
       inputs={inputs}
       isLoading={isLoading}

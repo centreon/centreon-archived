@@ -10,13 +10,11 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelPasswordExpiresAfter } from '../../../translatedLabels';
-import { getField } from '../../utils';
-import TimeInputs from '../../../TimeInputs';
-import { TimeInputConfiguration } from '../../../models';
-import { twelveMonths } from '../../../timestamps';
-
-import ExcludedUsers from './ExcludedUsers';
+import { labelPasswordExpiresAfter } from '../../translatedLabels';
+import { getField } from '../utils';
+import TimeInputs from '../../TimeInputs';
+import { TimeInputConfiguration } from '../../models';
+import { twelveMonths } from '../../timestamps';
 
 const passwordExpirationFieldName = 'passwordExpiration.expirationDelay';
 
@@ -80,24 +78,19 @@ const PasswordExpiration = (): JSX.Element => {
 
   return useMemoComponent({
     Component: (
-      <div className={classes.container}>
-        <div className={classes.passwordExpiration}>
-          <FormLabel>{t(labelPasswordExpiresAfter)}</FormLabel>
-          <TimeInputs
-            baseName={passwordExpirationFieldName}
-            inputLabel={labelPasswordExpiresAfter}
-            maxDuration={twelveMonths}
-            timeInputConfigurations={timeInputConfiguration}
-            timeValue={passwordExpirationValue}
-            onChange={change}
-          />
-          {passwordExpirationError && (
-            <FormHelperText error>{passwordExpirationError}</FormHelperText>
-          )}
-        </div>
-        <div>
-          <ExcludedUsers />
-        </div>
+      <div className={classes.passwordExpiration}>
+        <FormLabel>{t(labelPasswordExpiresAfter)}</FormLabel>
+        <TimeInputs
+          baseName={passwordExpirationFieldName}
+          inputLabel={labelPasswordExpiresAfter}
+          maxDuration={twelveMonths}
+          timeInputConfigurations={timeInputConfiguration}
+          timeValue={passwordExpirationValue}
+          onChange={change}
+        />
+        {passwordExpirationError && (
+          <FormHelperText error>{passwordExpirationError}</FormHelperText>
+        )}
       </div>
     ),
     memoProps: [passwordExpirationValue, passwordExpirationError, classes],
