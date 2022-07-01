@@ -1797,4 +1797,15 @@ describe(Details, () => {
       expect(getByText(email)).toBeInTheDocument();
     });
   });
+  it.only('Export Timeline events to CSV file when download button is clicked ', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+    console.log(retrievedTimeline);
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.timeline}/download`,
+        expect.anything(),
+      );
+    });
+  });
 });
