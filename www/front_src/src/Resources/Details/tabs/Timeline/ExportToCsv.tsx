@@ -5,7 +5,7 @@ import { IconButton } from 'centreon-frontend/packages/centreon-ui/src';
 import { Box } from '@mui/material';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 
-import { labelExportToCsv } from '../../../translatedLabels';
+import { labelExportToCSV } from '../../../translatedLabels';
 import { detailsAtom } from '../../detailsAtoms';
 
 const ExportToCsv = (): JSX.Element => {
@@ -21,8 +21,8 @@ const ExportToCsv = (): JSX.Element => {
   return (
     <Box>
       <IconButton
-        data-testid={labelExportToCsv}
-        title={t(labelExportToCsv)}
+        data-testid={labelExportToCSV}
+        title={t(labelExportToCSV)}
         onClick={exportToCsv}
       >
         <SaveAsImageIcon style={{ fontSize: 18 }} />

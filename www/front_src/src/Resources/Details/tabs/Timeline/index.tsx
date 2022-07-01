@@ -121,9 +121,12 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
             alignItems="center"
             direction="row"
             justifyContent="center"
+            paddingLeft={3}
+            paddingRight={1}
             spacing={1}
           >
             <MultiAutocompleteField
+              fullWidth
               label={t(labelEvent)}
               limitTags={3}
               options={translatedTypes}
