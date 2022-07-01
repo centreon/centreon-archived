@@ -344,6 +344,10 @@ class LoginOpenIdSession
             );
         }
 
+        /**
+         * Claims can sometime be listed as a string e.g: "claim1,claim2,claim3" so we explode
+         * them to handle only one format
+         */
         if (! is_array($userClaims)) {
             $userClaims = explode(",", $userClaims);
         }
