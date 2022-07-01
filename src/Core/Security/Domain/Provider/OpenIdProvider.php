@@ -419,13 +419,13 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Create Authentication Tokens
-     *
-     * @param array<string,mixed> $connectionTokenResponseContent
      */
     private function createAuthenticationTokens(): void
     {
         $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $this->connectionTokenResponseContent['expires_in'] . 'S'));
+        $providerTokenExpiration = (new \DateTime())->add(
+            new \DateInterval('PT' . $this->connectionTokenResponseContent['expires_in'] . 'S')
+        );
         $this->providerToken =  new ProviderToken(
             null,
             $this->connectionTokenResponseContent['access_token'],

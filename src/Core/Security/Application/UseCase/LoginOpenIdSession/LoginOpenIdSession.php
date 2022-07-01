@@ -338,7 +338,7 @@ class LoginOpenIdSession
             $userClaims = $userInformation[$configuration->getClaimName()];
         } else {
             $this->info(
-                "configured claim name not found in user information or id_token, ".
+                "configured claim name not found in user information or id_token, " .
                 "default contact group ACL will be apply",
                 ["claim_name" => $configuration->getClaimName()]
             );
@@ -383,7 +383,8 @@ class LoginOpenIdSession
     /**
      * Delete and Insert Access Groups for authenticated user
      *
-     * @param AccessGroup[] $userAccessGroups
+     * @param ContactInterface $user
+     * @param array $userAccessGroups
      */
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
     {
