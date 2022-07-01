@@ -682,9 +682,9 @@ function multipleServiceInDB(
                             "WHERE service_service_id = '" . $key . "'";
                         $dbResult = $pearDB->query($query);
                         $fields["service_cs"] = "";
+                        $query = "INSERT INTO contact_service_relation VALUES (:service_id,:contact_id )";
+                        $statement = $pearDB->prepare($query);
                         while ($C = $dbResult->fetch()) {
-                            $query = "INSERT INTO contact_service_relation VALUES (:service_id,:contact_id )";
-                            $statement = $pearDB->prepare($query);
                             $statement->bindValue(':service_id', (int) $maxId["MAX(service_id)"], \PDO::PARAM_INT);
                             $statement->bindValue(':contact_id', (int) $C["contact_id"], \PDO::PARAM_INT);
                             $statement->execute();
@@ -699,10 +699,10 @@ function multipleServiceInDB(
                             "WHERE service_service_id = '" . $key . "'";
                         $dbResult = $pearDB->query($query);
                         $fields["service_cgs"] = "";
-                        while ($Cg = $dbResult->fetch()) {
-                            $query = "INSERT INTO contactgroup_service_relation 
+                        $query = "INSERT INTO contactgroup_service_relation 
                             VALUES (:contactgroup_cg_id,:service_id)";
-                            $statement = $pearDB->prepare($query);
+                        $statement = $pearDB->prepare($query);
+                        while ($Cg = $dbResult->fetch()) {
                             $statement->bindValue(
                                 ':contactgroup_cg_id',
                                 (int) $Cg["contactgroup_cg_id"],
@@ -729,12 +729,12 @@ function multipleServiceInDB(
                             if (isset($host) && $host) {
                                 $host_id = $host;
                             } else {
-                                $Sg["host_host_id"] ? $host_id = $Sg["host_host_id"] : $host_id = null;
+                                $host_id = $Sg["host_host_id"] ?? null;
                             }
                             if (isset($hostgroup) && $hostgroup) {
                                 $hg_id = $hostgroup;
                             } else {
-                                $Sg["hostgroup_hg_id"] ? $hg_id = $Sg["hostgroup_hg_id"] : $hg_id = null;
+                                $hg_id = $Sg["hostgroup_hg_id"] ?? null;
                             }
                             $statement->bindValue(
                                 ':host_host_id',
