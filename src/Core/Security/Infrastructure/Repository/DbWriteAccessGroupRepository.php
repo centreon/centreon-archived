@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Infrastructure\Repository;
 
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\Application\Repository\WriteAccessGroupRepositoryInterface;
@@ -30,11 +31,24 @@ use Core\Security\Application\Repository\WriteAccessGroupRepositoryInterface;
 class DbWriteAccessGroupRepository extends AbstractRepositoryDRB implements WriteAccessGroupRepositoryInterface
 {
     /**
+     * @param DatabaseConnection $db
+     */
+    public function __construct(DatabaseConnection $db)
+    {
+        $this->db = $db;
+    }
+
+    /**
      * @inheritDoc
      */
     public function deleteAccessGroupsForUser(ContactInterface $user): void
     {
         //@todo: implements this method
+        $statement = $this->db->prepare($this->translateDbName(
+            "DELETE FROM acl_group_contacts_relations WHERE contact_contact_id = :userId"
+        ));
+        $statement->bindValue(':userId', $user->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
@@ -42,6 +56,13 @@ class DbWriteAccessGroupRepository extends AbstractRepositoryDRB implements Writ
      */
     public function insertAccessGroupsForUser(ContactInterface $user, array $accessGroups): void
     {
-        //@todo: implements this method
+        $statement = $this->db->prepare($this->translateDbName(
+            "INSERT INTO acl_group_contacts_relations VALUES (:userId, :accessGroupId)"
+        ));
+        $statement->bindValue(':userId', $user->getId(), \PDO::PARAM_INT);
+        foreach ($accessGroups as $accessGroup) {
+            $statement->bindValue(':accessGroupId', $accessGroup->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 }

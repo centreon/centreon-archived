@@ -23,19 +23,32 @@ declare(strict_types=1);
 
 namespace Core\Contact\Infrastructure\Repository;
 
+use Core\Contact\Domain\Model\ContactGroup;
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
-use Core\Contact\Domain\Model\ContactGroup;
 
 class DbWriteContactGroupRepository extends AbstractRepositoryDRB implements WriteContactGroupRepositoryInterface
 {
+    /**
+     * @param DatabaseConnection $db
+     */
+    public function __construct(DatabaseConnection $db)
+    {
+        $this->db = $db;
+    }
+
     /**
      * @inheritDoc
      */
     public function deleteContactGroupsForUser(ContactInterface $user): void
     {
-        //@todo: implements this method
+        $statement = $this->db->prepare($this->translateDbName(
+            "DELETE FROM `:db`.contactgroup_contact_relation WHERE contact_contact_id = :userId"
+        ));
+        $statement->bindValue(':userId', $user->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
@@ -43,6 +56,11 @@ class DbWriteContactGroupRepository extends AbstractRepositoryDRB implements Wri
      */
     public function insertContactGroupForUser(ContactInterface $user, ContactGroup $contactGroup): void
     {
-        //@todo: implements this method
+        $statement = $this->db->prepare($this->translateDbName(
+            "INSERT INTO contactgroup_contact_relation VALUES (:userId, :contactGroupId)"
+        ));
+        $statement->bindValue(':userId', $user->getId(), \PDO::PARAM_INT);
+        $statement->bindValue(':contactGroupId', $contactGroup->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 }
