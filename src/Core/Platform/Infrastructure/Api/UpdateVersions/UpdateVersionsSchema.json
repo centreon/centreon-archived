@@ -3,13 +3,23 @@
     "title": "Update platform versions",
     "type": "object",
     "additionalProperties": false,
-    "required": [
-        "centreon-web"
-    ],
+    "required": ["components"],
     "properties": {
-        "centreon-web": {
-            "type": "string",
-            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        "components": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": ["centreon-web"]
+                    }
+                }
+            }
         }
     }
 }

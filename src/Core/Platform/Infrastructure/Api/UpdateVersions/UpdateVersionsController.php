@@ -79,7 +79,7 @@ class UpdateVersionsController extends AbstractController
         $requestData = json_decode((string) $request->getContent(), true);
 
         $updateVersionsRequest = new UpdateVersionsRequest();
-        $updateVersionsRequest->centreonWebVersion = $requestData['centreon-web'];
+        $updateVersionsRequest->centreonWebVersion = $requestData['components']['centreon-web'];
 
         return $updateVersionsRequest;
     }

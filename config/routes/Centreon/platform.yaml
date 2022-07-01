@@ -5,8 +5,8 @@ centreon_application_platform_getversion:
   condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_platform_updateversions:
-  methods: PUT
-  path: /platform/updates/centreon-web
+  methods: PATCH
+  path: /platform/updates
   controller: 'Core\Platform\Infrastructure\Api\UpdateVersions\UpdateVersionsController'
   condition: "request.attributes.get('version') >= 22.04"
 
