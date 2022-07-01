@@ -86,7 +86,6 @@ $form->addElement('header', 'title', _("Modify General Options"));
  */
 $form->addElement('header', 'oreon', _("Centreon information"));
 $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
-$form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
 
@@ -222,7 +221,6 @@ $form->applyFilter('nagios_path', 'slash');
 $form->applyFilter('nagios_path_img', 'slash');
 $form->applyFilter('nagios_path_plugins', 'slash');
 $form->applyFilter('oreon_path', 'slash');
-$form->applyFilter('oreon_web_path', 'slash');
 $form->applyFilter('debug_path', 'slash');
 $form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 $form->registerRule('is_readable_path', 'callback', 'is_readable_path');
@@ -232,7 +230,6 @@ $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->addRule('oreon_path', _('Mandatory field'), 'required');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-$form->addRule('oreon_web_path', _('Mandatory field'), 'required');
 $form->addRule('AjaxTimeReloadMonitoring', _('Mandatory field'), 'required');
 $form->addRule('AjaxTimeReloadMonitoring', _('Must be a number'), 'numeric');
 $form->addRule('AjaxTimeReloadStatistic', _('Mandatory field'), 'required');

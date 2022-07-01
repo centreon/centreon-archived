@@ -574,12 +574,6 @@ function updateGeneralConfigData()
     );
     updateOption(
         $pearDB,
-        "oreon_web_path",
-        isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != null
-            ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8") : null
-    );
-    updateOption(
-        $pearDB,
         "oreon_refresh",
         isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != null
             ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8") : null

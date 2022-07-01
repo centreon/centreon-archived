@@ -14,6 +14,7 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import { CreateCSSProperties } from '@mui/styles';
 
+import { userAtom } from '@centreon/ui-context';
 import { useMemoComponent } from '@centreon/ui';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
@@ -73,6 +74,8 @@ const TimePeriodButtonGroup = ({
 
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const { themeMode } = useAtomValue(userAtom);
+
   const changeCustomTimePeriod = useUpdateAtom(
     changeCustomTimePeriodDerivedAtom,
   );
@@ -140,11 +143,12 @@ const TimePeriodButtonGroup = ({
       </Responsive.ParentSize>
     ),
     memoProps: [
+      customTimePeriod,
       disabled,
       disableGraphOptions,
       disablePaper,
       selectedTimePeriod?.id,
-      customTimePeriod,
+      themeMode,
     ],
   });
 };
