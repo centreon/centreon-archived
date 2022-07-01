@@ -17,9 +17,6 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
-    "brick/math": {
-        "version": "0.9.3"
-    },
     "cebe/php-openapi": {
         "version": "1.5.2"
     },
@@ -58,9 +55,6 @@
     },
     "facade/ignition-contracts": {
         "version": "1.0.2"
-    },
-    "fgrosse/phpasn1": {
-        "version": "v2.4.0"
     },
     "filp/whoops": {
         "version": "2.14.5"
@@ -347,12 +341,6 @@
     },
     "smarty/smarty": {
         "version": "v3.1.39"
-    },
-    "spomky-labs/aes-key-wrap": {
-        "version": "v6.0.0"
-    },
-    "spomky-labs/base64url": {
-        "version": "v2.0.4"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.6",
@@ -654,17 +642,11 @@
     "symfony/yaml": {
         "version": "v4.4.29"
     },
-    "thecodingmachine/safe": {
-        "version": "v1.3.3"
-    },
     "theseer/tokenizer": {
         "version": "1.2.1"
     },
     "twig/twig": {
         "version": "v2.14.7"
-    },
-    "web-token/jwt-framework": {
-        "version": "v2.2.11"
     },
     "webmozart/assert": {
         "version": "1.10.0"

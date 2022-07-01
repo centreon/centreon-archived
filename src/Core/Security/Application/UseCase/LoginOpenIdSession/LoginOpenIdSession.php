@@ -34,7 +34,6 @@ use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Security\Domain\Authentication\AuthenticationException;
-use Core\Security\Domain\AccessGroup\Model\AccessGroupUserRelation;
 use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
@@ -307,31 +306,41 @@ class LoginOpenIdSession
     private function updateUserACL(ContactInterface $user): void
     {
         $configuration  = $this->provider->getConfiguration();
+        $idTokenPayload = $this->provider->getIdTokenPayload();
         $userInformation = $this->provider->getUserInformation();
-        if (! array_key_exists($configuration->getClaimName(), $userInformation)) {
+        $userClaims = [];
+        if (array_key_exists($configuration->getClaimName(), $idTokenPayload)) {
+            $userClaims = $idTokenPayload[$configuration->getClaimName()];
+        } elseif (array_key_exists($configuration->getClaimName(), $userInformation)) {
+            $userClaims = $userInformation[$configuration->getClaimName()];
+        } else {
             $this->info(
-                "configured claim name not found in user information, default contact group ACL will be apply",
+                "configured claim name not found in user information or id_token, ".
+                "default contact group ACL will be apply",
                 ["claim_name" => $configuration->getClaimName()]
             );
-        } else {
-            $userAccessGroups = $this->getUserAccessGroupsFromUserInformation($userInformation, $configuration);
-            $this->updateAccessGroupsForUser($user, $userAccessGroups);
         }
-
+        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims, $configuration);
+        $this->updateAccessGroupsForUser($user, $userAccessGroups);
         $this->updateContactGroupsForUser($user, $configuration->getContactGroup());
     }
 
     /**
-     * @param array<string,mixed> $userInformation
+     * Get Access Group linked to user claims.
+     * @param string|array<string,mixed> $claims
      * @param Configuration $configuration
      * @return AccessGroup[]
      */
-    private function getUserAccessGroupsFromUserInformation(array $userInformation, Configuration $configuration): array
+    private function getUserAccessGroupsFromClaims(mixed $claims, Configuration $configuration): array
     {
+        if (! is_array($claims)) {
+            $claimAccessGroups = explode(",", $claims);
+        } else {
+            $claimAccessGroups = $claims;
+        }
         $userAccessGroups = [];
-        $userInfoAccessGroups = explode(",", $userInformation[$configuration->getClaimName()]);
         foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
-            if (! in_array($authorizationRule->getClaimValue(), $userInfoAccessGroups)) {
+            if (! in_array($authorizationRule->getClaimValue(), $claimAccessGroups)) {
                 $this->info(
                     "Configured Claim Value not found in user information",
                     ["claim_value" => $authorizationRule->getClaimValue()]
@@ -343,7 +352,8 @@ class LoginOpenIdSession
             $userAccessGroups[] = $authorizationRule->getAccessGroup();
         }
 
-        return $userAccessGroups;
+        // We return an array unique to avoid duplication of access groups that could be linked to more than one claims
+        return array_unique($userAccessGroups);
     }
 
     /**

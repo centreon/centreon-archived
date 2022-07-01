@@ -64,4 +64,11 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @return array<string,mixed>
      */
     public function getUserInformation(): array;
+
+    /**
+     * Get information store in id_token JWT Payload
+     *
+     * @return array<string,mixed>
+     */
+    public function getIdTokenPayload(): array;
 }

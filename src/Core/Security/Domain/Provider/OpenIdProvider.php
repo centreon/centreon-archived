@@ -82,6 +82,20 @@ class OpenIdProvider implements OpenIdProviderInterface
     private CentreonUserLog $centreonLog;
 
     /**
+     * Array of information store in id_token JWT Payload
+     *
+     * @var array<string,mixed>
+     */
+    private array $idTokenPayload;
+
+    /**
+     * Content of the connexion token response.
+     *
+     * @var array<string,mixed>
+     */
+    private array $connectionTokenResponseContent;
+
+    /**
      * @param HttpClientInterface $client
      */
     public function __construct(
@@ -228,6 +242,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
 
         $this->sendRequestForConnectionTokenOrFail($authorizationCode);
+        $this->createAuthenticationTokens();
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
             throw SSOAuthenticationException::tokensExpired(Configuration::NAME);
         }
@@ -235,6 +250,9 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->sendRequestForIntrospectionTokenOrFail();
         }
 
+        if (array_key_exists("id_token", $this->connectionTokenResponseContent)) {
+            $this->idTokenPayload = $this->extractTokenPayload($this->connectionTokenResponseContent["id_token"]);
+        }
         $this->username = $this->getUsernameFromLoginClaim();
     }
 
@@ -335,6 +353,27 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getIdTokenPayload(): array
+    {
+        return $this->idTokenPayload;
+    }
+
+    /**
+     * Extract Payload from JWT token
+     *
+     * @param string $token
+     * @return array<string,mixed>
+     */
+    private function extractTokenPayload(string $token): array
+    {
+        $tokenParts = explode(".", $token);
+
+        return json_decode(base64_decode($tokenParts[1]), true);
+    }
+
+    /**
      * Get Connection Token from OpenId Provider.
      *
      * @param string $authorizationCode
@@ -375,25 +414,34 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfo('Token Access Information:', $content);
-        // Create Provider and Refresh Tokens
+        $this->connectionTokenResponseContent = $content;
+    }
+
+    /**
+     * Create Authentication Tokens
+     *
+     * @param array<string,mixed> $connectionTokenResponseContent
+     */
+    private function createAuthenticationTokens(): void
+    {
         $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
+        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $this->connectionTokenResponseContent['expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
             null,
-            $content['access_token'],
+            $this->connectionTokenResponseContent['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
-        if (array_key_exists('refresh_token', $content)) {
-            $expirationDelay = $content['expires_in'] + 3600;
-            if (array_key_exists('refresh_expires_in', $content)) {
-                $expirationDelay = $content['refresh_expires_in'];
+        if (array_key_exists('refresh_token', $this->connectionTokenResponseContent)) {
+            $expirationDelay = $this->connectionTokenResponseContent['expires_in'] + 3600;
+            if (array_key_exists('refresh_expires_in', $this->connectionTokenResponseContent)) {
+                $expirationDelay = $this->connectionTokenResponseContent['refresh_expires_in'];
             }
             $refreshTokenExpiration = (new \DateTime())
                 ->add(new \DateInterval('PT' . $expirationDelay . 'S'));
             $this->refreshToken = new ProviderToken(
                 null,
-                $content['refresh_token'],
+                $this->connectionTokenResponseContent['refresh_token'],
                 $creationDate,
                 $refreshTokenExpiration
             );
