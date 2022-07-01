@@ -220,6 +220,14 @@ services:
         class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
+    Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\LegacyReadVersionRepository
+        public: true
+
+    Core\Platform\Application\Repository\WriteVersionRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\LegacyWriteVersionRepository
+        public: true
+
     # Monitoring resources
     _instanceof:
         Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
