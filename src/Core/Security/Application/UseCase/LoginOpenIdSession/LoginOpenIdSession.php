@@ -308,6 +308,29 @@ class LoginOpenIdSession
         $configuration  = $this->provider->getConfiguration();
         $idTokenPayload = $this->provider->getIdTokenPayload();
         $userInformation = $this->provider->getUserInformation();
+        $userClaims = $this->getUserClaimsFromIdTokenOrUserInformation(
+            $configuration,
+            $idTokenPayload,
+            $userInformation
+        );
+        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims, $configuration);
+        $this->updateAccessGroupsForUser($user, $userAccessGroups);
+        $this->updateContactGroupsForUser($user, $configuration->getContactGroup());
+    }
+
+    /**
+     * Parse Id Token and User Information to get claims
+     *
+     * @param Configuration $configuration
+     * @param array<string,mixed> $idTokenPayload
+     * @param array<string,mixed> $userInformation
+     * @return string[]
+     */
+    private function getUserClaimsFromIdTokenOrUserInformation(
+        Configuration $configuration,
+        array $idTokenPayload,
+        array $userInformation
+    ): array {
         $userClaims = [];
         if (array_key_exists($configuration->getClaimName(), $idTokenPayload)) {
             $userClaims = $idTokenPayload[$configuration->getClaimName()];
@@ -320,27 +343,26 @@ class LoginOpenIdSession
                 ["claim_name" => $configuration->getClaimName()]
             );
         }
-        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims, $configuration);
-        $this->updateAccessGroupsForUser($user, $userAccessGroups);
-        $this->updateContactGroupsForUser($user, $configuration->getContactGroup());
+
+        if (! is_array($userClaims)) {
+            $userClaims = explode(",", $userClaims);
+        }
+
+        return $userClaims;
     }
 
     /**
-     * Get Access Group linked to user claims.
-     * @param string|array<string,mixed> $claims
+     * Get Access Group linked to user claims
+     *
+     * @param string[] $claims
      * @param Configuration $configuration
      * @return AccessGroup[]
      */
-    private function getUserAccessGroupsFromClaims(mixed $claims, Configuration $configuration): array
+    private function getUserAccessGroupsFromClaims(array $claims, Configuration $configuration): array
     {
-        if (! is_array($claims)) {
-            $claimAccessGroups = explode(",", $claims);
-        } else {
-            $claimAccessGroups = $claims;
-        }
         $userAccessGroups = [];
         foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
-            if (! in_array($authorizationRule->getClaimValue(), $claimAccessGroups)) {
+            if (! in_array($authorizationRule->getClaimValue(), $claims)) {
                 $this->info(
                     "Configured Claim Value not found in user claims",
                     ["claim_value" => $authorizationRule->getClaimValue()]
@@ -348,10 +370,9 @@ class LoginOpenIdSession
 
                 continue;
             }
-
+            // We ensure here to not duplicate access group while using their id as index
             $userAccessGroups[$authorizationRule->getAccessGroup()->getId()] = $authorizationRule->getAccessGroup();
         }
-        // We return an array unique to avoid duplication of access groups that could be linked to more than one claims
         return $userAccessGroups;
     }
 
