@@ -72,28 +72,6 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getUpdatesUntil(string $version, array $updates): array
-    {
-        $filteredUpdates = [];
-        foreach ($updates as $update) {
-            $filteredUpdates[] = $update;
-            if ($update === $version) {
-                return $filteredUpdates;
-            }
-        }
-
-        $errorMessage = "Update to $version is not available";
-        $this->error(
-            $errorMessage,
-            ['available_versions' => implode(', ', $updates)],
-        );
-
-        throw new \Exception($errorMessage);
-    }
-
-    /**
      * Get available updates
      *
      * @param string $currentVersion
@@ -110,12 +88,11 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
         foreach ($updateFiles as $updateFile) {
             if (preg_match($fileNameVersionRegex, $updateFile->getFilename(), $matches)) {
                 if (version_compare($matches['version'], $currentVersion, '>')) {
+                    $this->error('Update version found: ' . $matches['version']);
                     $availableUpdates[] = $matches['version'];
                 }
             }
         }
-
-        dump($availableUpdates);
 
         return $availableUpdates;
     }
@@ -128,7 +105,10 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
      */
     private function orderUpdates(array $updates): array
     {
-        usort($updates, 'version_compare');
+        usort(
+            $updates,
+            fn (string $versionA, string $versionB) => version_compare($versionA, $versionB),
+        );
 
         return $updates;
     }

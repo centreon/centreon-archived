@@ -38,15 +38,4 @@ interface ReadVersionRepositoryInterface
      * @return string[]
      */
     public function getOrderedAvailableUpdates(string $currentVersion): array;
-
-    /**
-     * Get updates which are anterior to given version
-     *
-     * @param string $version
-     * @param string[] $updates
-     * @return string[]
-     *
-     * @throws \Exception
-     */
-    public function getUpdatesUntil(string $version, array $updates): array;
 }

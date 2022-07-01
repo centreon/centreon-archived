@@ -64,23 +64,8 @@ class UpdateVersionsController extends AbstractController
         $this->info('Validating request body...');
         $this->validateDataSent($request, __DIR__ . '/UpdateVersionsSchema.json');
 
-        $updateVersionsRequest = $this->createUpdateVersionsRequest($request);
-        $useCase($presenter, $updateVersionsRequest);
+        $useCase($presenter);
 
         return $presenter->show();
-    }
-
-    /**
-     * @param Request $request
-     * @return UpdateVersionsRequest
-     */
-    private function createUpdateVersionsRequest(Request $request): UpdateVersionsRequest
-    {
-        $requestData = json_decode((string) $request->getContent(), true);
-
-        $updateVersionsRequest = new UpdateVersionsRequest();
-        $updateVersionsRequest->centreonWebVersion = $requestData['components']['centreon-web'];
-
-        return $updateVersionsRequest;
     }
 }

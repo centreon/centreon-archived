@@ -44,11 +44,9 @@ class UpdateVersions
 
     /**
      * @param UpdateVersionsPresenterInterface $presenter
-     * @param UpdateVersionsRequest $request
      */
     public function __invoke(
         UpdateVersionsPresenterInterface $presenter,
-        UpdateVersionsRequest $request,
     ): void {
         $this->info('Updating versions');
 
@@ -57,12 +55,7 @@ class UpdateVersions
 
             $availableUpdates = $this->getAvailableUpdates($currentVersion);
 
-            $desiredUpdates = $this->readVersionRepository->getUpdatesUntil(
-                $request->centreonWebVersion,
-                $availableUpdates
-            );
-
-            $this->runUpdates($desiredUpdates);
+            $this->runUpdates($availableUpdates);
         } catch (\Throwable $e) {
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
 
