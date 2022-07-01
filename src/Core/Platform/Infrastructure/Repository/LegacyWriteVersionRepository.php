@@ -141,16 +141,15 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         if (is_file($filePath)) {
             $file = fopen($filePath, 'r');
             if (is_resource($file)) {
-                $query = [];
+                $query = '';
                 $line = 0;
                 while (! feof($file)) {
                     $line++;
                     $currentLine = fgets($file);
-                    if (substr(trim($currentLine), 0, 2) !== '--') {
-                        $query[] = $currentLine;
+                    if ($currentLine && ! str_starts_with('--', trim($currentLine))) {
+                        $query .= ' ' . trim($currentLine);
                     }
-                    if (preg_match('~' . preg_quote(';', '~') . '\s*$~iS', end($query))) {
-                        $query = trim(implode('', $query));
+                    if (! empty($query) && preg_match('/;\s*$/', $query)) {
                         $count++;
                         if ($count > $start) {
                             try {
@@ -163,11 +162,9 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
                                 ob_end_flush();
                             }
                             flush();
-                            dump(file_put_contents($tmpFile, $count));
+                            $query = '';
+                            file_put_contents($tmpFile, $count);
                         }
-                    }
-                    if (is_string($query)) {
-                        $query = [];
                     }
                 }
                 fclose($file);
