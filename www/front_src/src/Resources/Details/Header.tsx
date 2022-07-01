@@ -106,7 +106,7 @@ type Props = {
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const classes = useStyles({
-    displaySeverity: not(isNil(details?.severity_level)),
+    displaySeverity: not(isNil(details?.severity)),
   });
   const { t } = useTranslation();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
@@ -144,9 +144,9 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       {details.severity && (
         <img
           alt="severity"
-          height={16}
+          height={24}
           src={details?.severity.icon.url}
-          width={16}
+          width={24}
         />
       )}
       <StatusChip
