@@ -162,7 +162,7 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('name')) as Array<string>;
     };
 
-    const getCriteriaLevel = (name: string): Array<number> => {
+    const getCriteriaLevels = (name: string): Array<number> => {
       const criteriaValue = getCriteriaValue(name) as
         | Array<SelectEntry>
         | undefined;
@@ -180,7 +180,7 @@ const useLoadResources = (): LoadResources => {
       hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
       hostSeverities: getCriteriaNames('host_severities'),
-      hostSeverityLevels: getCriteriaLevel('host_severity_levels'),
+      hostSeverityLevels: getCriteriaLevels('host_severity_levels'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
@@ -189,7 +189,7 @@ const useLoadResources = (): LoadResources => {
       serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
       serviceSeverities: getCriteriaNames('service_severities'),
-      serviceSeverityLevels: getCriteriaLevel('service_severity_levels'),
+      serviceSeverityLevels: getCriteriaLevels('service_severity_levels'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),

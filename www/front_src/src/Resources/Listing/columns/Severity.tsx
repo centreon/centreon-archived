@@ -81,7 +81,7 @@ const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
           <img
             alt="severity"
             height={24}
-            src={row.severity.icon?.url}
+            src={row.severity?.icon?.url}
             width={24}
           />
         </WrapperTooltip>

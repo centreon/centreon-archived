@@ -145,7 +145,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         <img
           alt="severity"
           height={24}
-          src={details?.severity.icon.url}
+          src={details?.severity?.icon?.url}
           width={24}
         />
       )}
