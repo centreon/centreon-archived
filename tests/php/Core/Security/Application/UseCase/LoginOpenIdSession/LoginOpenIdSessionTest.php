@@ -280,7 +280,71 @@ it('should update access group for the authenticated user', function () {
     $this->accessGroupRepository
         ->expects($this->once())
         ->method('insertAccessGroupsForUser')
-        ->with($contact, [$accessGroup1, $accessGroup2]);
+        ->with($contact, [$accessGroup1->getId() => $accessGroup1, $accessGroup2->getId() => $accessGroup2]);
+
+    $useCase = new LoginOpenIdSession(
+        '/monitoring/ressources',
+        $this->repository,
+        $this->provider,
+        $this->requestStack,
+        $this->dependencyInjector,
+        $this->authenticationService,
+        $this->authenticationRepository,
+        $this->sessionRepository,
+        $this->dataStorageEngine,
+        $this->contactGroupRepository,
+        $this->accessGroupRepository
+    );
+
+    $useCase($request, $this->presenter);
+});
+
+it('should not duplicate ACL insertion while Access group is in differents authorization rules', function () {
+    $request = new LoginOpenIdSessionRequest();
+    $request->authorizationCode = 'abcde-fghij-klmno';
+    $request->clientIp = '127.0.0.1';
+    $accessGroup1 = new AccessGroup(1, "access_group_1", "access_group_1");
+    $authorizationRules = [
+        new AuthorizationRule("group1", $accessGroup1),
+        new AuthorizationRule("group2", $accessGroup1)
+    ];
+    $this->validOpenIdConfiguration->setAuthorizationRules($authorizationRules);
+
+    $this->repository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn($this->validOpenIdConfiguration);
+
+    $this->provider
+        ->expects($this->once())
+        ->method('getConfiguration')
+        ->willReturn($this->validOpenIdConfiguration);
+
+    $contact = (new Contact())->setId(1);
+    $this->provider
+        ->expects($this->once())
+        ->method('getUser')
+        ->willReturn($contact);
+
+    $this->provider
+        ->expects($this->once())
+        ->method('getIdTokenPayload')
+        ->willReturn([]);
+
+    $this->provider
+        ->expects($this->once())
+        ->method('getUserInformation')
+        ->willReturn(["groups" => "group1,group2"]);
+
+    $this->accessGroupRepository
+        ->expects($this->once())
+        ->method('deleteAccessGroupsForUser')
+        ->with($contact);
+
+    $this->accessGroupRepository
+        ->expects($this->once())
+        ->method('insertAccessGroupsForUser')
+        ->with($contact, [$accessGroup1->getId() => $accessGroup1]);
 
     $useCase = new LoginOpenIdSession(
         '/monitoring/ressources',

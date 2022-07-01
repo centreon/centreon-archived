@@ -342,18 +342,17 @@ class LoginOpenIdSession
         foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
             if (! in_array($authorizationRule->getClaimValue(), $claimAccessGroups)) {
                 $this->info(
-                    "Configured Claim Value not found in user information",
+                    "Configured Claim Value not found in user claims",
                     ["claim_value" => $authorizationRule->getClaimValue()]
                 );
 
                 continue;
             }
 
-            $userAccessGroups[] = $authorizationRule->getAccessGroup();
+            $userAccessGroups[$authorizationRule->getAccessGroup()->getId()] = $authorizationRule->getAccessGroup();
         }
-
         // We return an array unique to avoid duplication of access groups that could be linked to more than one claims
-        return array_unique($userAccessGroups);
+        return $userAccessGroups;
     }
 
     /**
