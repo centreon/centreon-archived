@@ -16918,4 +16918,4 @@ msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be trunc
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
 
 msgid "Export to CSV"
-msgstr "Exporter comme CSV"
+msgstr "Exporter en CSV"
