@@ -360,30 +360,29 @@ class LoginOpenIdSession
      * Delete and Insert Access Groups for authenticated user
      *
      * @param AccessGroup[] $userAccessGroups
-     * @return void
      */
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
     {
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
-            if (! $isAlreadyInTransaction) {
-                $this->dataStorageEngine->startTransaction();
+        if (! $isAlreadyInTransaction) {
+            $this->dataStorageEngine->startTransaction();
+        }
+        try {
+            $this->accessGroupRepository->deleteAccessGroupsForUser($user);
+            $this->accessGroupRepository->insertAccessGroupsForUser($user, $userAccessGroups);
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->commitTransaction();
             }
-            try {
-                $this->accessGroupRepository->deleteAccessGroupsForUser($user);
-                $this->accessGroupRepository->insertAccessGroupsForUser($user, $userAccessGroups);
-                if (!$isAlreadyInTransaction) {
-                    $this->dataStorageEngine->commitTransaction();
-                }
-            } catch (\Exception $ex) {
-                if (!$isAlreadyInTransaction) {
-                    $this->dataStorageEngine->rollbackTransaction();
-                }
-                $this->error('Error during ACL update', [
-                    "user_id" => $user->getId(),
-                    "access_groups" => $userAccessGroups,
-                    "trace" => $ex->getTraceAsString()
-                ]);
+        } catch (\Exception $ex) {
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->rollbackTransaction();
             }
+            $this->error('Error during ACL update', [
+                "user_id" => $user->getId(),
+                "access_groups" => $userAccessGroups,
+                "trace" => $ex->getTraceAsString()
+            ]);
+        }
     }
 
     /**
@@ -407,7 +406,7 @@ class LoginOpenIdSession
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }
-            $this->error('Error during ACL update', [
+            $this->error('Error during contact group update', [
                 "user_id" => $user->getId(),
                 "contact_group" => $contactGroup,
                 "trace" => $ex->getTraceAsString()
