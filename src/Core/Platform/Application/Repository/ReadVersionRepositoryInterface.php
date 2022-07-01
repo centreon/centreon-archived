@@ -44,7 +44,7 @@ interface ReadVersionRepositoryInterface
      *
      * @param string $version
      * @param string[] $updates
-     * @return array
+     * @return string[]
      *
      * @throws \Exception
      */

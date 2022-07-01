@@ -27,16 +27,20 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
+use Symfony\Component\Finder\Finder;
 
 class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadVersionRepositoryInterface
 {
     use LoggerTrait;
 
     /**
+     * @param Finder $finder
      * @param DatabaseConnection $db
      */
-    public function __construct(DatabaseConnection $db)
-    {
+    public function __construct(
+        private Finder $finder,
+        DatabaseConnection $db,
+    ) {
         $this->db = $db;
     }
 
@@ -97,17 +101,21 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
      */
     private function getAvailableUpdates(string $currentVersion): array
     {
+        $fileNameVersionRegex = '/Update-(?<version>[a-zA-Z0-9\-\.]+)\.php/';
         $availableUpdates = [];
-        if ($handle = opendir(__DIR__ . '/../../../../../www/install/php')) {
-            while (false !== ($file = readdir($handle))) {
-                if (preg_match('/Update-(?<version>[a-zA-Z0-9\-\.]+)\.php/', $file, $matches)) {
-                    if (version_compare($matches['version'], $currentVersion, '>')) {
-                        $availableUpdates[] = $matches['version'];
-                    }
+        $updateFiles = $this->finder->files()
+            ->in(__DIR__ . '/../../../../../www/install/php')
+            ->name($fileNameVersionRegex);
+
+        foreach ($updateFiles as $updateFile) {
+            if (preg_match($fileNameVersionRegex, $updateFile->getFilename(), $matches)) {
+                if (version_compare($matches['version'], $currentVersion, '>')) {
+                    $availableUpdates[] = $matches['version'];
                 }
             }
-            closedir($handle);
         }
+
+        dump($availableUpdates);
 
         return $availableUpdates;
     }

@@ -66,6 +66,9 @@ services:
         decorates: router
         arguments: ['@.inner']
 
+    Symfony\Component\Finder\Finder:
+        shared: false
+
 
     # Security
     Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface:
