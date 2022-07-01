@@ -7,10 +7,12 @@ import { makeStyles } from '@mui/styles';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
-import ShortTypeChip from '../../ShortTypeChip';
 import { Severity } from '../../models';
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+  },
   firstColumn: {
     display: 'flex',
     minWidth: theme.spacing(5),
@@ -31,12 +33,13 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   children: ReactNode;
+  className?: string;
   title: TooltipProps['title'];
 }
 
-const WrapperTooltip = ({ title, children }: Props): JSX.Element => {
+const WrapperTooltip = ({ title, children, className }: Props): JSX.Element => {
   return (
-    <Tooltip title={title}>
+    <Tooltip className={className} title={title}>
       <div>{children}</div>
     </Tooltip>
   );
@@ -61,26 +64,26 @@ const Title = ({ severity }: { severity: Severity }): JSX.Element => {
 };
 
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  const isSeverityIcon = !isNil(row?.severity?.icon.url);
-  const isSeverityLevel = !isNil(row?.severity?.level);
+  const classes = useStyles();
+  const isSeverityIcon = !isNil(row?.severity?.icon?.url);
 
   if (!row?.severity) {
     return null;
   }
 
-  if (isSeverityIcon) {
-    return (
-      <WrapperTooltip title={<Title severity={row?.severity} />}>
-        <img alt="" height={24} src={row.severity.icon.url} width={24} />
-      </WrapperTooltip>
-    );
-  }
-
   return (
     <div>
-      {isSeverityLevel && (
-        <WrapperTooltip title={<Title severity={row?.severity} />}>
-          <ShortTypeChip label={row.severity_level?.toString()} />
+      {isSeverityIcon && (
+        <WrapperTooltip
+          className={classes.container}
+          title={<Title severity={row?.severity} />}
+        >
+          <img
+            alt="severity"
+            height={24}
+            src={row.severity.icon?.url}
+            width={24}
+          />
         </WrapperTooltip>
       )}
     </div>
