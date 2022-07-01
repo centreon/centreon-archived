@@ -56,6 +56,7 @@ it('should present a FindSeverityResponse', function () {
     $useCase = new FindSeverity($this->repository);
 
     $icon = (new Icon())
+        ->setId(1)
         ->setName('icon-name')
         ->setUrl('ppm/icon-name.png');
 
@@ -77,6 +78,7 @@ it('should present a FindSeverityResponse', function () {
                 'level' => 50,
                 'type' => 'host',
                 'icon' => [
+                    'id' => 1,
                     'name' => 'icon-name',
                     'url' => 'ppm/icon-name.png'
                 ]

@@ -27,6 +27,7 @@ use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Core\Domain\RealTime\Model\HostStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 /**
  * Class representing a host entity in real time context.
@@ -140,11 +141,6 @@ class Host
     private $lastTimeUp;
 
     /**
-     * @var int|null
-     */
-    private $severityLevel;
-
-    /**
      * @var Hostgroup[]
      */
     private array $groups = [];
@@ -168,6 +164,11 @@ class Host
      * @var Tag[]
      */
     private array $categories = [];
+
+    /**
+     * @var Severity|null
+     */
+    private ?Severity $severity;
 
     /**
      * Host constructor
@@ -590,24 +591,6 @@ class Host
     }
 
     /**
-     * @param int|null $severityLevel
-     * @return self
-     */
-    public function setSeverityLevel(?int $severityLevel): self
-    {
-        $this->severityLevel = $severityLevel;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getSeverityLevel(): ?int
-    {
-        return $this->severityLevel;
-    }
-
-    /**
      * @param Hostgroup $group
      * @return self
      */
@@ -733,5 +716,25 @@ class Host
         }
 
         return $this;
+    }
+
+    /**
+     * @param Severity|null $severity
+     * @return self
+     * @throws \TypeError
+     */
+    public function setSeverity(?Severity $severity): self
+    {
+        $this->severity = $severity;
+
+        return $this;
+    }
+
+    /**
+     * @return Severity|null
+     */
+    public function getSeverity(): ?Severity
+    {
+        return $this->severity;
     }
 }

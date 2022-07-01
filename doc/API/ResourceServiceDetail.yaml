@@ -123,16 +123,10 @@ Monitoring.ServiceDetail:
       type: boolean
       description: "Indicates whether the check script is active or not"
       example: true
-    severity_level:
-      type: integer
-      nullable: true
-      description: "Indicates the severity level"
-      example: 1
     parent:
       $ref: './ResourceHostDetail.yaml'
     icon:
       type: object
-      nullable: true
       properties:
         name:
           type: string
@@ -154,6 +148,65 @@ Monitoring.ServiceDetail:
           type: string
           description: "Name of the servicegroup"
           example: "All-Cpu-Services"
+        configuration_uri:
+          type: string
+          nullable: true
+          description: "Internal URI to reach group configuration"
+    categories:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the service category"
+          example: 28
+        name:
+          type: string
+          description: "Name of the service category"
+          example: "All-Cpu-Services"
+        configuration_uri:
+          type: string
+          nullable: true
+          description: "Internal URI to reach category configuration"
+    severity:
+      type: object
+      nullable: true
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the Severity"
+          example: 28
+        name:
+          type: string
+          description: "Name of the Severity"
+          example: "High"
+        type:
+          type: string
+          description: "Type of the Severity"
+          enum: ['host', 'service']
+        level:
+          type: integer
+          description: "Level of the Severity"
+          minimum: 0
+          maximum: 100
+          example: 50
+        icon:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the Icon"
+              example: 10
+            name:
+              type: string
+              description: "Name of the Icon"
+              example: "dog.png"
+            url:
+              type: string
+              description: "URL of the Icon"
+              example: "baseUri/ppm/dog.png"
     acknowledgement:
       type: object
       nullable: true

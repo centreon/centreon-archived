@@ -27,12 +27,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
 class FindServicePresenter extends AbstractPresenter implements FindServicePresenterInterface
 {
     use PresenterTrait;
+    use HttpUrlTrait;
 
     /**
      * @var ResponseStatusInterface|null
@@ -73,13 +75,21 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
             'passive_checks' => $response->hasPassiveChecks,
             'execution_time' => $response->executionTime,
             'active_checks' => $response->hasActiveChecks,
-            'severity_level' => $response->severityLevel,
             'icon' => $response->icon,
             'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
             'parent' => $response->host,
             'monitoring_server_name' => $response->host['monitoring_server_name'],
             'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
+            'severity' => $response->severity,
         ];
+
+        if ($presenterResponse['severity'] !== null) {
+            /**
+             * normalize the URL to the severity icon
+             */
+            $presenterResponse['severity']['icon']['url'] = $this->getBaseUri()
+                . '/' . $response->severity['icon']['url'];
+        }
 
         $acknowledgement = null;
 

@@ -4,6 +4,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    realtime_severity:
+      paths: [ "%paths.base%/features/RealTimeSeverity.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\RealTimeSeverityContext
     realtime_category:
       paths: [ "%paths.base%/features/RealTimeCategory.feature" ]
       contexts:
