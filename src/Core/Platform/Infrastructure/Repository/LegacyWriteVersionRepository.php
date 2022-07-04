@@ -133,27 +133,26 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     private function runSqlFile(string $filePath): void
     {
         set_time_limit(0);
-        $count = 0;
-        $start = 0;
+
         $fileName = basename($filePath);
         $tmpFile = self::INSTALL_DIR . '/tmp/' . $fileName;
-        if (is_readable($tmpFile)) {
-            $start = file_get_contents($tmpFile);
-        }
+
+        $alreadyExecutedQueriesCount = $this->getAlreadyExecutedQueriesCount($tmpFile);
+
         if (is_readable($filePath)) {
-            $file = fopen($filePath, 'r');
-            if (is_resource($file)) {
+            $fileStream = fopen($filePath, 'r');
+            if (is_resource($fileStream)) {
                 $query = '';
-                $line = 0;
-                while (! feof($file)) {
-                    $line++;
-                    $currentLine = fgets($file);
+                $currentLineNumber = 0;
+                $executedQueriesCount = 0;
+                while (! feof($fileStream)) {
+                    $currentLineNumber++;
+                    $currentLine = fgets($fileStream);
                     if ($currentLine && ! str_starts_with('--', trim($currentLine))) {
                         $query .= ' ' . trim($currentLine);
                     }
                     if (! empty($query) && preg_match('/;\s*$/', $query)) {
-                        $count++;
-                        if ($count > $start) {
+                        if ($executedQueriesCount > $alreadyExecutedQueriesCount) {
                             try {
                                 $this->db->query($query);
                             } catch (\Exception $e) {
@@ -165,17 +164,45 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
                             }
                             flush();
                             $query = '';
-                            if (is_writable($tmpFile)) {
-                                $this->warning('Writing in temporary file : ' . $tmpFile);
-                                file_put_contents($tmpFile, $count);
-                            } else {
-                                $this->warning('Cannot write in temporary file : ' . $tmpFile);
-                            }
+                            $executedQueriesCount++;
+                            $this->writeExecutedQueriesCountInTemporaryFile($tmpFile, $executedQueriesCount);
                         }
                     }
                 }
-                fclose($file);
+                fclose($fileStream);
             }
+        }
+    }
+
+    /**
+     * Get stored executed queries count in temporary file to retrieve next query to run in case of an error occurred
+     *
+     * @param string $tmpFile
+     * @return int
+     */
+    private function getAlreadyExecutedQueriesCount(string $tmpFile): int
+    {
+        $startLineNumber = 0;
+        if (is_readable($tmpFile)) {
+            $startLineNumber = file_get_contents($tmpFile);
+        }
+
+        return $startLineNumber;
+    }
+
+    /**
+     * Write executed queries count in temporary file to retrieve upgrade when an error occurred
+     *
+     * @param string $tmpFile
+     * @param int $count
+     */
+    private function writeExecutedQueriesCountInTemporaryFile(string $tmpFile, int $count): void
+    {
+        if (is_writable($tmpFile)) {
+            $this->warning('Writing in temporary file : ' . $tmpFile);
+            file_put_contents($tmpFile, $count);
+        } else {
+            $this->warning('Cannot write in temporary file : ' . $tmpFile);
         }
     }
 }
