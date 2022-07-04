@@ -13,7 +13,6 @@ import {
   act,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  copyToClipboard,
   screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
@@ -100,9 +99,14 @@ import Details from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
-  jest.fn(),
-);
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: () => Promise.resolve(),
+  },
+});
+
+jest.spyOn(navigator.clipboard, 'writeText');
 
 jest.mock('@visx/visx', () => {
   return {
@@ -833,7 +837,7 @@ describe(Details, () => {
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
-      expect(copyToClipboard).toHaveBeenCalledWith(
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -1160,7 +1164,9 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        window.location.href,
+      );
     });
   });
 
