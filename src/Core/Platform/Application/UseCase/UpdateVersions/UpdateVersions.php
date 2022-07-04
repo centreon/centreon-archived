@@ -64,6 +64,11 @@ class UpdateVersions
 
             $this->unlockUpdate();
         } catch (\Throwable $e) {
+            $this->error(
+                $e->getMessage(),
+                ['trace' => $e->getTraceAsString()],
+            );
+
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
 
             return;
@@ -106,10 +111,7 @@ class UpdateVersions
         $currentVersion = $this->readVersionRepository->getCurrentVersion();
 
         if ($currentVersion === null) {
-            $errorMessage = 'Cannot retrieve current version';
-            $this->error($errorMessage);
-
-            throw new \Exception($errorMessage);
+            throw new \Exception('Cannot retrieve current version');
         }
 
         return $currentVersion;
