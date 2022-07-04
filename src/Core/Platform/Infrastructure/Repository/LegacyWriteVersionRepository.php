@@ -27,6 +27,8 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
 {
@@ -36,9 +38,14 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
 
     /**
      * @param DatabaseConnection $db
+     * @param Filesystem $filesystem
+     * @param ParameterBagInterface $parameterBag
      */
-    public function __construct(DatabaseConnection $db)
-    {
+    public function __construct(
+        DatabaseConnection $db,
+        private Filesystem $filesystem,
+        private ParameterBagInterface $parameterBag,
+    ) {
         $this->db = $db;
     }
 
@@ -52,6 +59,32 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         $this->runConfigurationSql($update);
         $this->runPostScript($update);
         $this->updateVersionInformation($update);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function runPostUpdate(string $currentVersion): void
+    {
+        $centreonVarLibPath = $this->parameterBag->get('centreon_var_lib');
+        if (! is_string($centreonVarLibPath)) {
+            throw new \Exception('Cannot get centreon var lib path from configuration');
+        }
+
+        $backupDirectory = $centreonVarLibPath . '/installs/install-' . $currentVersion . '-' . date('Ymd_His');
+
+        $this->info(
+            "Backuping installation directory...",
+            [
+                'source' => self::INSTALL_DIR,
+                'destination' => $backupDirectory,
+            ],
+        );
+
+        $this->filesystem->rename(
+            self::INSTALL_DIR,
+            $backupDirectory,
+        );
     }
 
     /**

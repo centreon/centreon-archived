@@ -56,6 +56,8 @@ class UpdateVersions
             $availableUpdates = $this->getAvailableUpdates($currentVersion);
 
             $this->runUpdates($availableUpdates);
+
+            $this->runPostUpdate($this->getCurrentVersion());
         } catch (\Throwable $e) {
             $this->error(
                 $e->getMessage(),
@@ -133,5 +135,16 @@ class UpdateVersions
                 throw $e;
             }
         }
+    }
+
+    /**
+     * Run post update actions
+     *
+     * @param string $currentVersion
+     */
+    private function runPostUpdate(string $currentVersion): void
+    {
+        $this->info("Running post update actions");
+        $this->writeVersionRepository->runPostUpdate($currentVersion);
     }
 }
