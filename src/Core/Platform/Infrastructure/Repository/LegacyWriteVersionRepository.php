@@ -32,6 +32,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
 {
     use LoggerTrait;
 
+    private const INSTALL_DIR = __DIR__ . '/../../../../../www/install';
+
     /**
      * @param DatabaseConnection $db
      */
@@ -59,8 +61,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runMonitoringSql(string $version): void
     {
-        $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centstorage/Update-CSTG-' . $version . '.sql';
-        if (is_file($upgradeFilePath)) {
+        $upgradeFilePath = self::INSTALL_DIR . '/sql/centstorage/Update-CSTG-' . $version . '.sql';
+        if (is_readable($upgradeFilePath)) {
             $this->db->switchToDb($this->db->getStorageDbName());
             $this->runSqlFile($upgradeFilePath);
         }
@@ -73,8 +75,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runScript(string $version): void
     {
-        $upgradeFilePath = __DIR__ . '/../../../../../www/install/php/Update-' . $version . '.php';
-        if (is_file($upgradeFilePath)) {
+        $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.php';
+        if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
         }
     }
@@ -86,8 +88,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runConfigurationSql(string $version): void
     {
-        $upgradeFilePath = __DIR__ . '/../../../../../www/install/sql/centreon/Update-DB-' . $version . '.sql';
-        if (is_file($upgradeFilePath)) {
+        $upgradeFilePath = self::INSTALL_DIR . '/sql/centreon/Update-DB-' . $version . '.sql';
+        if (is_readable($upgradeFilePath)) {
             $this->db->switchToDb($this->db->getCentreonDbName());
             $this->runSqlFile($upgradeFilePath);
         }
@@ -100,8 +102,8 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runPostScript(string $version): void
     {
-        $upgradeFilePath = __DIR__ . '/../../../../../www/install/php/Update-' . $version . '.post.php';
-        if (is_file($upgradeFilePath)) {
+        $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.post.php';
+        if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
         }
     }
@@ -134,11 +136,11 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         $count = 0;
         $start = 0;
         $fileName = basename($filePath);
-        $tmpFile = __DIR__ . '/../../../../../www/install/tmp/' . $fileName;
-        if (is_file($tmpFile)) {
+        $tmpFile = self::INSTALL_DIR . '/tmp/' . $fileName;
+        if (is_readable($tmpFile)) {
             $start = file_get_contents($tmpFile);
         }
-        if (is_file($filePath)) {
+        if (is_readable($filePath)) {
             $file = fopen($filePath, 'r');
             if (is_resource($file)) {
                 $query = '';
@@ -163,7 +165,12 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
                             }
                             flush();
                             $query = '';
-                            file_put_contents($tmpFile, $count);
+                            if (is_writable($tmpFile)) {
+                                $this->warning('Writing in temporary file : ' . $tmpFile);
+                                file_put_contents($tmpFile, $count);
+                            } else {
+                                $this->warning('Cannot write in temporary file : ' . $tmpFile);
+                            }
                         }
                     }
                 }

@@ -88,7 +88,7 @@ class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadV
         foreach ($updateFiles as $updateFile) {
             if (preg_match($fileNameVersionRegex, $updateFile->getFilename(), $matches)) {
                 if (version_compare($matches['version'], $currentVersion, '>')) {
-                    $this->error('Update version found: ' . $matches['version']);
+                    $this->info('Update version found: ' . $matches['version']);
                     $availableUpdates[] = $matches['version'];
                 }
             }
