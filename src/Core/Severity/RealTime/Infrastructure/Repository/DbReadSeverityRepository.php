@@ -51,6 +51,7 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
         $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 's.id',
             'name' => 's.name',
             'level' => 's.level'
         ]);
