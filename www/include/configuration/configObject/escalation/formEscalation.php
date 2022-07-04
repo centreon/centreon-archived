@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -48,7 +49,7 @@ if (($o == "c" || $o == "w") && $esc_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '" . $esc_id . "' LIMIT 1");
 
     # Set base value
-    $esc = array_map("myDecode", $DBRESULT->fetchRow());
+    $esc = array_map("myEncode", $DBRESULT->fetchRow());
 
     # Set Host Options
     $esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
@@ -221,7 +222,6 @@ $form->addRule('first_notification', _("Required Field"), 'required');
 $form->addRule('last_notification', _("Required Field"), 'required');
 $form->addRule('notification_interval', _("Required Field"), 'required');
 $form->addRule('esc_cgs', _("Required Field"), 'required');
-// $form->addRule('dep_hostChilds', _("Required Field"), 'required'); - Fields is not added so rule is not needed
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('esc_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
