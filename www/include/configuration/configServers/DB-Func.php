@@ -1178,7 +1178,7 @@ AND (
       )
       OR object_id IN (
         SELECT host_host_id
-        FROM `{$conf_centreon['db']}`.ns_host_relation`
+        FROM `{$conf_centreon['db']}`.ns_host_relation
         WHERE nagios_server_id = $poller_id
       )
     )
