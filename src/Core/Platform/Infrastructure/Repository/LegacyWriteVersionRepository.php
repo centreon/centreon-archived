@@ -148,25 +148,20 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
                 while (! feof($fileStream)) {
                     $currentLineNumber++;
                     $currentLine = fgets($fileStream);
-                    if ($currentLine && ! str_starts_with('--', trim($currentLine))) {
+                    if ($currentLine && ! $this->isSqlComment($currentLine)) {
                         $query .= ' ' . trim($currentLine);
                     }
-                    if (! empty($query) && preg_match('/;\s*$/', $query)) {
+
+                    if ($this->isSqlCompleteQuery($query)) {
+                        $executedQueriesCount++;
                         if ($executedQueriesCount > $alreadyExecutedQueriesCount) {
-                            try {
-                                $this->db->query($query);
-                            } catch (\Exception $e) {
-                                $this->error('Cannot execute query : ' . $query);
-                                throw $e;
-                            }
-                            while (ob_get_level() > 0) {
-                                ob_end_flush();
-                            }
-                            flush();
-                            $query = '';
-                            $executedQueriesCount++;
+                            $this->executeQuery($query);
+
+                            $this->flushFileBuffer();
+
                             $this->writeExecutedQueriesCountInTemporaryFile($tmpFile, $executedQueriesCount);
                         }
+                        $query = '';
                     }
                 }
                 fclose($fileStream);
@@ -184,7 +179,10 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     {
         $startLineNumber = 0;
         if (is_readable($tmpFile)) {
-            $startLineNumber = file_get_contents($tmpFile);
+            $lineNumber = file_get_contents($tmpFile);
+            if (is_numeric($lineNumber)) {
+                $startLineNumber = (int) $lineNumber;
+            }
         }
 
         return $startLineNumber;
@@ -198,11 +196,61 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function writeExecutedQueriesCountInTemporaryFile(string $tmpFile, int $count): void
     {
-        if (is_writable($tmpFile)) {
-            $this->warning('Writing in temporary file : ' . $tmpFile);
+        if (! file_exists($tmpFile) || is_writable($tmpFile)) {
+            $this->info('Writing in temporary file : ' . $tmpFile);
             file_put_contents($tmpFile, $count);
         } else {
             $this->warning('Cannot write in temporary file : ' . $tmpFile);
         }
+    }
+
+    /**
+     * Check if a line a sql comment
+     *
+     * @param string $line
+     * @return bool
+     */
+    private function isSqlComment(string $line): bool
+    {
+        return str_starts_with('--', trim($line));
+    }
+
+    /**
+     * Check if a query is complete (trailing semicolon)
+     *
+     * @param string $query
+     * @return bool
+     */
+    private function isSqlCompleteQuery(string $query): bool
+    {
+        return ! empty(trim($query)) && preg_match('/;\s*$/', $query);
+    }
+
+    /**
+     * Execute sql query
+     *
+     * @param string $query
+     *
+     * @throws \Exception
+     */
+    private function executeQuery(string $query): void
+    {
+        try {
+            $this->db->query($query);
+        } catch (\Exception $e) {
+            $this->error('Cannot execute query : ' . $query);
+            throw $e;
+        }
+    }
+
+    /**
+     * Flush system output buffer
+     */
+    private function flushFileBuffer(): void
+    {
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        flush();
     }
 }
