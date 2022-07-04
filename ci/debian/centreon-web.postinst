@@ -55,7 +55,9 @@ if [ "$1" = "configure" ] ; then
 
 fi
 
-# rebuild symfony cache
-su - www-data -s /bin/bash -c "/usr/share/centreon/bin/console cache:clear"
+# rebuild symfony cache on upgrade
+if [ -n "$2" ]; then
+  su - www-data -s /bin/bash -c "/usr/share/centreon/bin/console cache:clear"
+fi
 
 exit 0
