@@ -72,6 +72,9 @@ class UpdateVersions
         $presenter->setResponseStatus(new NoContentResponse());
     }
 
+    /**
+     * Lock update process
+     */
     private function lockUpdate(): void
     {
         $this->info('Locking centreon update process...');
@@ -81,6 +84,9 @@ class UpdateVersions
         }
     }
 
+    /**
+     * Unlock update process
+     */
     private function unlockUpdate(): void
     {
         $this->info('Unlocking centreon update process...');
