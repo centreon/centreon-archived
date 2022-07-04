@@ -239,7 +239,7 @@ it(
     }
 );
 
-it('should update access group for the authenticated user', function () {
+it('should update access groups for the authenticated user', function () {
     $request = new LoginOpenIdSessionRequest();
     $request->authorizationCode = 'abcde-fghij-klmno';
     $request->clientIp = '127.0.0.1';
@@ -299,7 +299,7 @@ it('should update access group for the authenticated user', function () {
     $useCase($request, $this->presenter);
 });
 
-it('should not duplicate ACL insertion while Access group is in differents authorization rules', function () {
+it('should not duplicate ACL insertion when access group is in multiple authorization rules', function () {
     $request = new LoginOpenIdSessionRequest();
     $request->authorizationCode = 'abcde-fghij-klmno';
     $request->clientIp = '127.0.0.1';

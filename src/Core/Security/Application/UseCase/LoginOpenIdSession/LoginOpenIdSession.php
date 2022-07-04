@@ -61,6 +61,8 @@ class LoginOpenIdSession
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param SessionRepositoryInterface $sessionRepository
      * @param DataStorageEngineInterface $dataStorageEngine
+     * @param WriteContactGroupRepositoryInterface $contactGroupRepository
+     * @param WriteAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         private string $redirectDefaultPage,
@@ -348,7 +350,7 @@ class LoginOpenIdSession
          * Claims can sometime be listed as a string e.g: "claim1,claim2,claim3" so we explode
          * them to handle only one format
          */
-        if (! is_array($userClaims)) {
+        if (is_string($userClaims)) {
             $userClaims = explode(",", $userClaims);
         }
 
@@ -384,7 +386,7 @@ class LoginOpenIdSession
      * Delete and Insert Access Groups for authenticated user
      *
      * @param ContactInterface $user
-     * @param array $userAccessGroups
+     * @param AccessGroup[] $userAccessGroups
      */
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
     {
