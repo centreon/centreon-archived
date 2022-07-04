@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
@@ -33,10 +34,12 @@ class UpdateVersions
     use LoggerTrait;
 
     /**
+     * @param UpdateLockerRepositoryInterface $updateLocker
      * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param WriteVersionRepositoryInterface $writeVersionRepository
      */
     public function __construct(
+        private UpdateLockerRepositoryInterface $updateLocker,
         private ReadVersionRepositoryInterface $readVersionRepository,
         private WriteVersionRepositoryInterface $writeVersionRepository,
     ) {
@@ -51,11 +54,15 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
+            $this->lockUpdate();
+
             $currentVersion = $this->getCurrentVersion();
 
             $availableUpdates = $this->getAvailableUpdates($currentVersion);
 
             $this->runUpdates($availableUpdates);
+
+            $this->unlockUpdate();
         } catch (\Throwable $e) {
             $presenter->setResponseStatus(new ErrorResponse($e->getMessage()));
 
@@ -63,6 +70,22 @@ class UpdateVersions
         }
 
         $presenter->setResponseStatus(new NoContentResponse());
+    }
+
+    private function lockUpdate(): void
+    {
+        $this->info('Locking centreon update process...');
+
+        if (!$this->updateLocker->lock()) {
+            throw new \Exception('multiple updates are done in the same time');
+        }
+    }
+
+    private function unlockUpdate(): void
+    {
+        $this->info('Unlocking centreon update process...');
+
+        $this->updateLocker->unlock();
     }
 
     /**
