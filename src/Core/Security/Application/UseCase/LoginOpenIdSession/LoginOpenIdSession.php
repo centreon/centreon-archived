@@ -307,33 +307,23 @@ class LoginOpenIdSession
      */
     private function updateUserACL(ContactInterface $user): void
     {
-        $configuration  = $this->provider->getConfiguration();
-        $idTokenPayload = $this->provider->getIdTokenPayload();
-        $userInformation = $this->provider->getUserInformation();
-        $userClaims = $this->getUserClaimsFromIdTokenOrUserInformation(
-            $configuration,
-            $idTokenPayload,
-            $userInformation
-        );
-        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims, $configuration);
+        $userClaims = $this->getUserClaimsFromIdTokenOrUserInformation();
+        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims);
         $this->updateAccessGroupsForUser($user, $userAccessGroups);
-        $this->updateContactGroupsForUser($user, $configuration->getContactGroup());
+        $this->updateContactGroupsForUser($user);
     }
 
     /**
      * Parse Id Token and User Information to get claims
      *
-     * @param Configuration $configuration
-     * @param array<string,mixed> $idTokenPayload
-     * @param array<string,mixed> $userInformation
      * @return string[]
      */
     private function getUserClaimsFromIdTokenOrUserInformation(
-        Configuration $configuration,
-        array $idTokenPayload,
-        array $userInformation
     ): array {
         $userClaims = [];
+        $configuration = $this->provider->getConfiguration();
+        $idTokenPayload = $this->provider->getIdTokenPayload();
+        $userInformation = $this->provider->getUserInformation();
         if (array_key_exists($configuration->getClaimName(), $idTokenPayload)) {
             $userClaims = $idTokenPayload[$configuration->getClaimName()];
         } elseif (array_key_exists($configuration->getClaimName(), $userInformation)) {
@@ -364,9 +354,10 @@ class LoginOpenIdSession
      * @param Configuration $configuration
      * @return AccessGroup[]
      */
-    private function getUserAccessGroupsFromClaims(array $claims, Configuration $configuration): array
+    private function getUserAccessGroupsFromClaims(array $claims): array
     {
         $userAccessGroups = [];
+        $configuration = $this->provider->getConfiguration();
         foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
             if (! in_array($authorizationRule->getClaimValue(), $claims)) {
                 $this->info(
@@ -417,27 +408,78 @@ class LoginOpenIdSession
      *
      * @param ContactInterface $user
      */
-    private function updateContactGroupsForUser(ContactInterface $user, ContactGroup $contactGroup): void
+    private function updateContactGroupsForUser(ContactInterface $user): void
     {
-        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
-        if (! $isAlreadyInTransaction) {
-            $this->dataStorageEngine->startTransaction();
+        $contactGroup = $this->provider->getConfiguration()->getContactGroup();
+        if ($this->dataStorageEngine->isAlreadyinTransaction()) {
+            $this->updateUserContactGroupsWithTransaction($user, $contactGroup);
+        } else {
+            $this->updateUserContactGroupsWithoutTransaction($user, $contactGroup);
         }
+    }
+
+    /**
+     * Execute the repository methods to delete and insert contact groups
+     *
+     * @param ContactInterface $user
+     * @param ContactGroup $contactGroup
+     */
+    private function updateUserContactGroups(ContactInterface $user, ContactGroup $contactGroup): void
+    {
+        $this->contactGroupRepository->deleteContactGroupsForUser($user);
+        $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+    }
+
+    /**
+     * Update contact group outside of a transaction
+     *
+     * @param ContactInterface $user
+     * @param ContactGroup $contactGroup
+     */
+    private function updateUserContactGroupsWithoutTransaction(ContactInterface $user, ContactGroup $contactGroup): void
+    {
         try {
-            $this->contactGroupRepository->deleteContactGroupsForUser($user);
-            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
-            if (!$isAlreadyInTransaction) {
-                $this->dataStorageEngine->commitTransaction();
-            }
+            $this->updateUserContactGroups($user, $contactGroup);
         } catch (\Exception $ex) {
-            if (!$isAlreadyInTransaction) {
-                $this->dataStorageEngine->rollbackTransaction();
-            }
-            $this->error('Error during contact group update', [
-                "user_id" => $user->getId(),
-                "contact_group" => $contactGroup,
-                "trace" => $ex->getTraceAsString()
-            ]);
+            $this->logUserContactGroupUpdateError($user, $contactGroup,$ex);
         }
+    }
+
+    /**
+     * Update contact group in a transaction
+     *
+     * @param ContactInterface $user
+     * @param ContactGroup $contactGroup
+     * @return void
+     */
+    private function updateUserContactGroupsWithTransaction(ContactInterface $user, ContactGroup $contactGroup): void
+    {
+        try {
+            $this->dataStorageEngine->startTransaction();
+            $this->updateUserContactGroups($user, $contactGroup);
+            $this->dataStorageEngine->commitTransaction();
+        } catch (\Exception $ex) {
+            $this->dataStorageEngine->rollbackTransaction();
+            $this->logUserContactGroupUpdateError($user, $contactGroup,$ex);
+        }
+    }
+
+    /**
+     * Log Contact Group update.
+     *
+     * @param ContactInterface $user
+     * @param ContactGroup $contactGroup
+     * @param \Exception $ex
+     */
+    private function logUserContactGroupUpdateError(
+        ContactInterface $user,
+        ContactGroup $contactGroup,
+        \Exception $ex
+    ) {
+        $this->error('Error during contact group update', [
+            "user_id" => $user->getId(),
+            "contact_group" => $contactGroup,
+            "trace" => $ex->getTraceAsString()
+        ]);
     }
 }

@@ -257,7 +257,7 @@ it('should update access groups for the authenticated user', function () {
         ->willReturn($this->validOpenIdConfiguration);
 
     $this->provider
-        ->expects($this->once())
+        ->expects($this->any())
         ->method('getConfiguration')
         ->willReturn($this->validOpenIdConfiguration);
 
@@ -316,7 +316,7 @@ it('should not duplicate ACL insertion when access group is in multiple authoriz
         ->willReturn($this->validOpenIdConfiguration);
 
     $this->provider
-        ->expects($this->once())
+        ->expects($this->any())
         ->method('getConfiguration')
         ->willReturn($this->validOpenIdConfiguration);
 
@@ -374,7 +374,7 @@ it('should update contact group for the authenticated user', function () {
         ->willReturn($this->validOpenIdConfiguration);
 
     $this->provider
-        ->expects($this->once())
+        ->expects($this->any())
         ->method('getConfiguration')
         ->willReturn($this->validOpenIdConfiguration);
 
