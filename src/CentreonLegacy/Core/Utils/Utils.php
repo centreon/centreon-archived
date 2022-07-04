@@ -216,7 +216,7 @@ class Utils
                 $encodePassword = password_hash($password, PASSWORD_BCRYPT);
                 break;
             default:
-                $encodePassword .= 'md5__' . md5($password);
+                $encodePassword = password_hash($password, PASSWORD_BCRYPT);
                 break;
         }
         return $encodePassword;
