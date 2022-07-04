@@ -423,13 +423,12 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function createAuthenticationTokens(): void
     {
         $creationDate = new \DateTime();
-        if (array_key_exists('expires_in', $this->connectionTokenResponseContent)) {
-            $providerTokenExpiration = (new \DateTime())->add(
-                new \DateInterval('PT' . $this->connectionTokenResponseContent['expires_in'] . 'S')
-            );
-        } else {
-            $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . 3600 . 'S'));
-        }
+        $expirationDelay = array_key_exists('expires_in', $this->connectionTokenResponseContent)
+            ? $this->connectionTokenResponseContent['expires_in']
+            : 3600;
+        $providerTokenExpiration = (new \DateTime())->add(
+            new \DateInterval('PT' . $expirationDelay . 'S')
+        );
         $this->providerToken =  new ProviderToken(
             null,
             $this->connectionTokenResponseContent['access_token'],
