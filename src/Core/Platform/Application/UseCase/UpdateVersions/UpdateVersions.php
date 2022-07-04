@@ -80,7 +80,7 @@ class UpdateVersions
         $this->info('Locking centreon update process...');
 
         if (!$this->updateLocker->lock()) {
-            throw new \Exception('multiple updates are done in the same time');
+            throw new \Exception('Update already in progress');
         }
     }
 
