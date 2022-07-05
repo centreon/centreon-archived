@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Core\Platform\Application\Repository;
 
-interface WriteVersionRepositoryInterface
+interface WriteUpdateRepositoryInterface
 {
     /**
-     * Run given update
+     * Run update according to given version
      *
-     * @param string $update
+     * @param string $version
      */
-    public function runUpdate(string $update): void;
+    public function runUpdate(string $version): void;
 
     /**
      * Run post update actions

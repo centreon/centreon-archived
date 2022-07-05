@@ -24,7 +24,8 @@ namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
@@ -34,11 +35,13 @@ class UpdateVersions
 
     /**
      * @param ReadVersionRepositoryInterface $readVersionRepository
-     * @param WriteVersionRepositoryInterface $writeVersionRepository
+     * @param ReadUpdateRepositoryInterface $readUpdateRepository
+     * @param WriteUpdateRepositoryInterface $writeUpdateRepository
      */
     public function __construct(
         private ReadVersionRepositoryInterface $readVersionRepository,
-        private WriteVersionRepositoryInterface $writeVersionRepository,
+        private ReadUpdateRepositoryInterface $readUpdateRepository,
+        private WriteUpdateRepositoryInterface $writeUpdateRepository,
     ) {
     }
 
@@ -51,13 +54,13 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
-            $currentVersion = $this->getCurrentVersion();
+            $currentVersion = $this->getCurrentVersionOrFail();
 
-            $availableUpdates = $this->getAvailableUpdates($currentVersion);
+            $availableUpdates = $this->getAvailableUpdatesOrFail($currentVersion);
 
             $this->runUpdates($availableUpdates);
 
-            $this->runPostUpdate($this->getCurrentVersion());
+            $this->runPostUpdate($this->getCurrentVersionOrFail());
         } catch (\Throwable $e) {
             $this->error(
                 $e->getMessage(),
@@ -76,12 +79,18 @@ class UpdateVersions
      * Get current version or fail
      *
      * @return string
+     *
      * @throws \Exception
      */
-    private function getCurrentVersion(): string
+    private function getCurrentVersionOrFail(): string
     {
         $this->info('Getting current version');
-        $currentVersion = $this->readVersionRepository->getCurrentVersion();
+
+        try {
+            $currentVersion = $this->readVersionRepository->findCurrentVersion();
+        } catch (\Exception $e) {
+            throw new \Exception('An error occurred when retrieving current version', 0, $e);
+        }
 
         if ($currentVersion === null) {
             throw new \Exception('Cannot retrieve current version');
@@ -96,43 +105,41 @@ class UpdateVersions
      * @param string $currentVersion
      * @return string[]
      */
-    private function getAvailableUpdates(string $currentVersion): array
+    private function getAvailableUpdatesOrFail(string $currentVersion): array
     {
         try {
-            $this->info('Getting available updates');
-
-            return $this->readVersionRepository->getOrderedAvailableUpdates($currentVersion);
-        } catch (\Throwable $e) {
-            $this->error(
-                'An error occurred when getting available updates',
-                ['trace' => $e->getTraceAsString()],
+            $this->info(
+                'Getting available updates',
+                [
+                    'current_version' => $currentVersion,
+                ],
             );
 
-            throw $e;
+            return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
+        } catch (\Throwable $e) {
+            throw new \Exception('An error occurred when getting available updates', 0, $e);
         }
     }
 
     /**
-     * Run given updates
+     * Run given version updates
      *
-     * @param string[] $updates
+     * @param string[] $versions
+     *
+     * @throws \Throwable
      */
-    private function runUpdates(array $updates): void
+    private function runUpdates(array $versions): void
     {
-        foreach ($updates as $update) {
+        foreach ($versions as $version) {
             try {
-                $this->info("Running update $update");
-                $this->writeVersionRepository->runUpdate($update);
+                $this->info("Running update $version");
+                $this->writeUpdateRepository->runUpdate($version);
             } catch (\Throwable $e) {
-                $this->error(
-                    'An error occurred when applying update',
-                    [
-                        'update' => $update,
-                        'trace' => $e->getTraceAsString(),
-                    ],
+                throw new \Exception(
+                    'An error occurred when applying update ' . $version . ': ' . $e->getMessage(),
+                    0,
+                    $e,
                 );
-
-                throw $e;
             }
         }
     }

@@ -22,12 +22,13 @@ declare(strict_types=1);
 
 namespace Core\Platform\Application\Repository;
 
-interface ReadVersionRepositoryInterface
+interface ReadUpdateRepositoryInterface
 {
     /**
-     * Get current version
+     * Get ordered available updates
      *
-     * @return string|null
+     * @param string $currentVersion
+     * @return string[]
      */
-    public function findCurrentVersion(): ?string;
+    public function findOrderedAvailableUpdates(string $currentVersion): array;
 }

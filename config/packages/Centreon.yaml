@@ -221,11 +221,15 @@ services:
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
     Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
-        class: Core\Platform\Infrastructure\Repository\LegacyReadVersionRepository
+        class: Core\Platform\Infrastructure\Repository\DbReadVersionRepository
         public: true
 
-    Core\Platform\Application\Repository\WriteVersionRepositoryInterface:
-        class: Core\Platform\Infrastructure\Repository\LegacyWriteVersionRepository
+    Core\Platform\Application\Repository\ReadUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\FsReadUpdateRepository
+        public: true
+
+    Core\Platform\Application\Repository\WriteUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\DbWriteUpdateRepository
         public: true
 
     # Monitoring resources

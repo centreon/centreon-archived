@@ -23,25 +23,29 @@ declare(strict_types=1);
 
 namespace Core\Platform\Infrastructure\Repository;
 
+use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Centreon\Domain\Repository\RepositoryException;
 
-class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
+class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpdateRepositoryInterface
 {
     use LoggerTrait;
 
     private const INSTALL_DIR = __DIR__ . '/../../../../../www/install';
 
     /**
+     * @param Container $dependencyInjector
      * @param DatabaseConnection $db
      * @param Filesystem $filesystem
      * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
+        private Container $dependencyInjector,
         DatabaseConnection $db,
         private Filesystem $filesystem,
         private ParameterBagInterface $parameterBag,
@@ -52,13 +56,13 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     /**
      * @inheritDoc
      */
-    public function runUpdate(string $update): void
+    public function runUpdate(string $version): void
     {
-        $this->runMonitoringSql($update);
-        $this->runScript($update);
-        $this->runConfigurationSql($update);
-        $this->runPostScript($update);
-        $this->updateVersionInformation($update);
+        $this->runMonitoringSql($version);
+        $this->runScript($version);
+        $this->runConfigurationSql($version);
+        $this->runPostScript($version);
+        $this->updateVersionInformation($version);
     }
 
     /**
@@ -109,6 +113,9 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runScript(string $version): void
     {
+        $pearDB = $this->dependencyInjector['configuration_db'];
+        $pearDBO = $this->dependencyInjector['realtime_db'];
+
         $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.php';
         if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
@@ -136,6 +143,9 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
      */
     private function runPostScript(string $version): void
     {
+        $pearDB = $this->dependencyInjector['configuration_db'];
+        $pearDBO = $this->dependencyInjector['realtime_db'];
+
         $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.post.php';
         if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
@@ -179,26 +189,34 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
                 $query = '';
                 $currentLineNumber = 0;
                 $executedQueriesCount = 0;
-                while (! feof($fileStream)) {
-                    $currentLineNumber++;
-                    $currentLine = fgets($fileStream);
-                    if ($currentLine && ! $this->isSqlComment($currentLine)) {
-                        $query .= ' ' . trim($currentLine);
-                    }
-
-                    if ($this->isSqlCompleteQuery($query)) {
-                        $executedQueriesCount++;
-                        if ($executedQueriesCount > $alreadyExecutedQueriesCount) {
-                            $this->executeQuery($query);
-
-                            $this->flushFileBuffer();
-
-                            $this->writeExecutedQueriesCountInTemporaryFile($tmpFile, $executedQueriesCount);
+                try {
+                    while (! feof($fileStream)) {
+                        $currentLineNumber++;
+                        $currentLine = fgets($fileStream);
+                        if ($currentLine && ! $this->isSqlComment($currentLine)) {
+                            $query .= ' ' . trim($currentLine);
                         }
-                        $query = '';
+
+                        if ($this->isSqlCompleteQuery($query)) {
+                            $executedQueriesCount++;
+                            if ($executedQueriesCount > $alreadyExecutedQueriesCount) {
+                                try {
+                                    $this->executeQuery($query);
+                                } catch (RepositoryException $e) {
+                                    throw $e;
+                                }
+
+                                $this->writeExecutedQueriesCountInTemporaryFile($tmpFile, $executedQueriesCount);
+                            }
+                            $query = '';
+                        }
                     }
+                } catch (\Throwable $e) {
+                    $this->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                    throw $e;
+                } finally {
+                    fclose($fileStream);
                 }
-                fclose($fileStream);
             }
         }
     }
@@ -272,19 +290,7 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         try {
             $this->db->query($query);
         } catch (\Exception $e) {
-            $this->error('Cannot execute query : ' . $query);
-            throw $e;
+            throw new RepositoryException('Cannot execute query: ' . $query, 0, $e);
         }
-    }
-
-    /**
-     * Flush system output buffer
-     */
-    private function flushFileBuffer(): void
-    {
-        while (ob_get_level() > 0) {
-            ob_end_flush();
-        }
-        flush();
     }
 }
