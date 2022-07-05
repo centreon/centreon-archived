@@ -135,7 +135,12 @@ class UpdateVersions
     private function getAvailableUpdatesOrFail(string $currentVersion): array
     {
         try {
-            $this->info('Getting available updates');
+            $this->info(
+                'Getting available updates',
+                [
+                    'current_version' => $currentVersion,
+                ],
+            );
 
             return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
@@ -144,20 +149,24 @@ class UpdateVersions
     }
 
     /**
-     * Run given updates
+     * Run given version updates
      *
-     * @param string[] $updates
+     * @param string[] $versions
      *
      * @throws \Throwable
      */
-    private function runUpdates(array $updates): void
+    private function runUpdates(array $versions): void
     {
-        foreach ($updates as $update) {
+        foreach ($versions as $version) {
             try {
-                $this->info("Running update $update");
-                $this->writeUpdateRepository->runUpdate($update);
+                $this->info("Running update $version");
+                $this->writeUpdateRepository->runUpdate($version);
             } catch (\Throwable $e) {
-                throw new \Exception('An error occurred when applying update: ' . $update, 0, $e);
+                throw new \Exception(
+                    'An error occurred when applying update ' . $version . ': ' . $e->getMessage(),
+                    0,
+                    $e,
+                );
             }
         }
     }
