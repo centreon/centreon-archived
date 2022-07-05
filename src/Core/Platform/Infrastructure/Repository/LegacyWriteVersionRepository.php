@@ -74,7 +74,7 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         $backupDirectory = $centreonVarLibPath . '/installs/install-' . $currentVersion . '-' . date('Ymd_His');
 
         $this->info(
-            "Backuping installation directory...",
+            "Backing up installation directory...",
             [
                 'source' => self::INSTALL_DIR,
                 'destination' => $backupDirectory,
@@ -82,8 +82,9 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
         );
 
         $this->filesystem->rename(
-            self::INSTALL_DIR,
+            realpath(self::INSTALL_DIR),
             $backupDirectory,
+            true,
         );
     }
 
