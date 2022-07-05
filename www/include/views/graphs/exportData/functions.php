@@ -89,18 +89,11 @@ function extractHostIdAndServiceIdFromChartId(string $chartId): array
         throw new \InvalidArgumentException('Chart ID is missing');
     }
 
-    if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches) !== 1) {
+    if (preg_match('/^(\d+)_(\d+)$/', $chartId, $matches) !== 1) {
         throw new \InvalidArgumentException('Unable to parse chart ID');
     }
 
-    $hostId = (int) $matches[1];
-    $serviceId = (int) $matches[2];
-
-    if ($hostId <= 0 || $serviceId <= 0) {
-        throw new \InvalidArgumentException('Bad formatted chart ID');
-    }
-
-    return ['hostId' => $hostId, 'serviceId' => $serviceId];
+    return ['hostId' => (int) $matches[1], 'serviceId' => (int) $matches[2]];
 }
 
 function findIndexByHostIdAndServiceId(int $hostId, int $serviceId, CentreonDB $pearDBO): int
