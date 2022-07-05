@@ -23,7 +23,6 @@ interface Props {
 
 const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const { t } = useTranslation();
-
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,
   );
@@ -56,7 +55,9 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 
   if (isNil(options)) {
     const isOptionEqualToValue = (option, selectedValue): boolean =>
-      isNil(option) ? false : equals(option.name, selectedValue.name);
+      isNil(option)
+        ? false
+        : equals(option.name.toString(), selectedValue.name);
 
     const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({
@@ -65,10 +66,13 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
         search,
       });
 
+    const displayedColumn = label.includes('level') ? 'level' : '';
+
     return (
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
         disableSortedOptions
+        column={displayedColumn}
         field="name"
         getEndpoint={getEndpoint}
         isOptionEqualToValue={isOptionEqualToValue}
