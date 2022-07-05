@@ -152,6 +152,6 @@ class UpdateVersions
     private function runPostUpdate(string $currentVersion): void
     {
         $this->info("Running post update actions");
-        $this->writeVersionRepository->runPostUpdate($currentVersion);
+        $this->writeUpdateRepository->runPostUpdate($currentVersion);
     }
 }

@@ -25,16 +25,21 @@ namespace Core\Platform\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class FsReadUpdateRepository implements ReadUpdateRepositoryInterface
 {
     use LoggerTrait;
 
+    private const INSTALL_DIR = __DIR__ . '/../../../../../www/install';
+
     /**
+     * @param Filesystem $filesystem
      * @param Finder $finder
      */
     public function __construct(
+        private Filesystem $filesystem,
         private Finder $finder,
     ) {
     }
@@ -57,10 +62,15 @@ class FsReadUpdateRepository implements ReadUpdateRepositoryInterface
      */
     private function findAvailableUpdates(string $currentVersion): array
     {
+        if (! $this->filesystem->exists(self::INSTALL_DIR)) {
+            return [];
+        }
+
         $fileNameVersionRegex = '/Update-(?<version>[a-zA-Z0-9\-\.]+)\.php/';
         $availableUpdates = [];
+
         $updateFiles = $this->finder->files()
-            ->in(__DIR__ . '/../../../../../www/install/php')
+            ->in(self::INSTALL_DIR)
             ->name($fileNameVersionRegex);
 
         foreach ($updateFiles as $updateFile) {

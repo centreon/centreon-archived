@@ -29,6 +29,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -42,12 +43,14 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      * @param Container $dependencyInjector
      * @param DatabaseConnection $db
      * @param Filesystem $filesystem
+     * @param Finder $finder
      * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
         private Container $dependencyInjector,
         DatabaseConnection $db,
         private Filesystem $filesystem,
+        private Finder $finder,
         private ParameterBagInterface $parameterBag,
     ) {
         $this->db = $db;
@@ -70,6 +73,12 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     public function runPostUpdate(string $currentVersion): void
     {
+        $this->copyInstallDirectory($currentVersion);
+        $this->removeInstallDirectory();
+    }
+
+    private function copyInstallDirectory(string $currentVersion): void
+    {
         $centreonVarLibPath = $this->parameterBag->get('centreon_var_lib');
         if (! is_string($centreonVarLibPath)) {
             throw new \Exception('Cannot get centreon var lib path from configuration');
@@ -80,16 +89,27 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         $this->info(
             "Backing up installation directory...",
             [
-                'source' => self::INSTALL_DIR,
+                'source' => realpath(self::INSTALL_DIR),
                 'destination' => $backupDirectory,
             ],
         );
 
-        $this->filesystem->rename(
-            realpath(self::INSTALL_DIR),
+        $this->filesystem->mirror(
+            self::INSTALL_DIR,
             $backupDirectory,
-            true,
         );
+    }
+
+    private function removeInstallDirectory(): void
+    {
+        $this->info(
+            "Removing installation directory...",
+            [
+                'installation_directory' => realpath(self::INSTALL_DIR),
+            ],
+        );
+
+        $this->filesystem->remove(self::INSTALL_DIR);
     }
 
     /**
