@@ -286,7 +286,7 @@ class CentreonContact extends CentreonObject
     }
 
     /**
-     * Initiliaze user information
+     * Initialize user information
      *
      * @param array<int,mixed> $params
      */
