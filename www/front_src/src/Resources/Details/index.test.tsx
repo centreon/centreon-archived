@@ -1800,7 +1800,7 @@ describe(Details, () => {
   });
   it.only('Export Timeline events to CSV file when download button is clicked ', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    const { getByTestId, getByLabelText } = renderDetails();
+    const { getByTestId } = renderDetails();
 
     await waitFor(() => {
       expect(getByTestId(labelExportToCSV)).toBeInTheDocument();
