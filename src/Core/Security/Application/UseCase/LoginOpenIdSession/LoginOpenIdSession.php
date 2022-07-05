@@ -287,7 +287,7 @@ class LoginOpenIdSession
         $user = $this->provider->getUser();
         if ($user === null) {
             if (!$this->provider->canCreateUser()) {
-                throw new NotFoundException('User not found');
+                throw new NotFoundException('User could not be created');
             }
             $this->info("User not found, start auto import");
             $this->provider->createUser();
@@ -318,8 +318,8 @@ class LoginOpenIdSession
      *
      * @return string[]
      */
-    private function getUserClaimsFromIdTokenOrUserInformation(
-    ): array {
+    private function getUserClaimsFromIdTokenOrUserInformation(): array
+    {
         $userClaims = [];
         $configuration = $this->provider->getConfiguration();
         $idTokenPayload = $this->provider->getIdTokenPayload();
@@ -351,7 +351,6 @@ class LoginOpenIdSession
      * Get Access Group linked to user claims
      *
      * @param string[] $claims
-     * @param Configuration $configuration
      * @return AccessGroup[]
      */
     private function getUserAccessGroupsFromClaims(array $claims): array
@@ -441,7 +440,7 @@ class LoginOpenIdSession
         try {
             $this->updateUserContactGroups($user, $contactGroup);
         } catch (\Exception $ex) {
-            $this->logUserContactGroupUpdateError($user, $contactGroup,$ex);
+            $this->logUserContactGroupUpdateError($user, $contactGroup, $ex);
         }
     }
 
@@ -450,7 +449,6 @@ class LoginOpenIdSession
      *
      * @param ContactInterface $user
      * @param ContactGroup $contactGroup
-     * @return void
      */
     private function updateUserContactGroupsWithTransaction(ContactInterface $user, ContactGroup $contactGroup): void
     {
@@ -460,7 +458,7 @@ class LoginOpenIdSession
             $this->dataStorageEngine->commitTransaction();
         } catch (\Exception $ex) {
             $this->dataStorageEngine->rollbackTransaction();
-            $this->logUserContactGroupUpdateError($user, $contactGroup,$ex);
+            $this->logUserContactGroupUpdateError($user, $contactGroup, $ex);
         }
     }
 
@@ -475,7 +473,7 @@ class LoginOpenIdSession
         ContactInterface $user,
         ContactGroup $contactGroup,
         \Exception $ex
-    ) {
+    ): void {
         $this->error('Error during contact group update', [
             "user_id" => $user->getId(),
             "contact_group" => $contactGroup,
