@@ -26,9 +26,9 @@ namespace Core\Platform\Infrastructure\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 
-class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements WriteVersionRepositoryInterface
+class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpdateRepositoryInterface
 {
     use LoggerTrait;
 
@@ -45,13 +45,13 @@ class LegacyWriteVersionRepository extends AbstractRepositoryDRB implements Writ
     /**
      * @inheritDoc
      */
-    public function runUpdate(string $update): void
+    public function runUpdate(string $version): void
     {
-        $this->runMonitoringSql($update);
-        $this->runScript($update);
-        $this->runConfigurationSql($update);
-        $this->runPostScript($update);
-        $this->updateVersionInformation($update);
+        $this->runMonitoringSql($version);
+        $this->runScript($version);
+        $this->runConfigurationSql($version);
+        $this->runPostScript($version);
+        $this->updateVersionInformation($version);
     }
 
     /**

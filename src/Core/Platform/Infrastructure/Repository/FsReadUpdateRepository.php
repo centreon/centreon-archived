@@ -24,41 +24,19 @@ declare(strict_types=1);
 namespace Core\Platform\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
+use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Symfony\Component\Finder\Finder;
 
-class LegacyReadVersionRepository extends AbstractRepositoryDRB implements ReadVersionRepositoryInterface
+class FsReadUpdateRepository implements ReadUpdateRepositoryInterface
 {
     use LoggerTrait;
 
     /**
      * @param Finder $finder
-     * @param DatabaseConnection $db
      */
     public function __construct(
         private Finder $finder,
-        DatabaseConnection $db,
     ) {
-        $this->db = $db;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCurrentVersion(): ?string
-    {
-        $currentVersion = null;
-
-        $statement = $this->db->query(
-            "SELECT `value` FROM `informations` WHERE `key` = 'version'"
-        );
-        if ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $currentVersion = $result['value'];
-        }
-
-        return $currentVersion;
     }
 
     /**

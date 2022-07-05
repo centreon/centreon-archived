@@ -24,7 +24,8 @@ namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
@@ -34,11 +35,13 @@ class UpdateVersions
 
     /**
      * @param ReadVersionRepositoryInterface $readVersionRepository
-     * @param WriteVersionRepositoryInterface $writeVersionRepository
+     * @param ReadUpdateRepositoryInterface $readUpdateRepository
+     * @param WriteUpdateRepositoryInterface $writeUpdateRepository
      */
     public function __construct(
         private ReadVersionRepositoryInterface $readVersionRepository,
-        private WriteVersionRepositoryInterface $writeVersionRepository,
+        private ReadUpdateRepositoryInterface $readUpdateRepository,
+        private WriteUpdateRepositoryInterface $writeUpdateRepository,
     ) {
     }
 
@@ -74,12 +77,18 @@ class UpdateVersions
      * Get current version or fail
      *
      * @return string
+     *
      * @throws \Exception
      */
     private function getCurrentVersion(): string
     {
         $this->info('Getting current version');
-        $currentVersion = $this->readVersionRepository->getCurrentVersion();
+
+        try {
+            $currentVersion = $this->readVersionRepository->getCurrentVersion();
+        } catch (\Exception $e) {
+            throw new \Exception('An error occurred when retrieving current version', 0, $e);
+        }
 
         if ($currentVersion === null) {
             throw new \Exception('Cannot retrieve current version');
@@ -99,14 +108,9 @@ class UpdateVersions
         try {
             $this->info('Getting available updates');
 
-            return $this->readVersionRepository->getOrderedAvailableUpdates($currentVersion);
+            return $this->readUpdateRepository->getOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
-            $this->error(
-                'An error occurred when getting available updates',
-                ['trace' => $e->getTraceAsString()],
-            );
-
-            throw $e;
+            throw new \Exception('An error occurred when getting available updates', 0, $e);
         }
     }
 
@@ -114,23 +118,17 @@ class UpdateVersions
      * Run given updates
      *
      * @param string[] $updates
+     *
+     * @throws \Throwable
      */
     private function runUpdates(array $updates): void
     {
         foreach ($updates as $update) {
             try {
                 $this->info("Running update $update");
-                $this->writeVersionRepository->runUpdate($update);
+                $this->writeUpdateRepository->runUpdate($update);
             } catch (\Throwable $e) {
-                $this->error(
-                    'An error occurred when applying update',
-                    [
-                        'update' => $update,
-                        'trace' => $e->getTraceAsString(),
-                    ],
-                );
-
-                throw $e;
+                throw new \Exception('An error occurred when applying update: ' . $update, 0, $e);
             }
         }
     }
