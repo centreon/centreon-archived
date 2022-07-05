@@ -77,6 +77,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -1799,8 +1800,17 @@ describe(Details, () => {
   });
   it.only('Export Timeline events to CSV file when download button is clicked ', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
-    console.log(retrievedTimeline);
+    const { getByTestId, getByLabelText } = renderDetails();
+
+    await waitFor(() => {
+      expect(getByTestId(labelExportToCSV)).toBeInTheDocument();
+    });
+    act(() => {
+      fireEvent.click(
+        getByTestId(labelExportToCSV).firstElementChild as HTMLElement,
+      );
+    });
+
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.timeline}/download`,
