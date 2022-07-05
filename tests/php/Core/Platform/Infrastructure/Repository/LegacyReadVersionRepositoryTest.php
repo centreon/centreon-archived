@@ -57,7 +57,7 @@ it('should order found updates', function () {
             ]
         );
 
-    $availableUpdates = $repository->getOrderedAvailableUpdates('22.04.0');
+    $availableUpdates = $repository->findOrderedAvailableUpdates('22.04.0');
     expect($availableUpdates)->toEqual([
         '22.10.0-alpha.1',
         '22.10.0-beta.3',

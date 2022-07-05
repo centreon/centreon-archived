@@ -47,7 +47,7 @@ it('should present an error response if current version is not found', function 
 
     $this->readVersionRepository
         ->expects($this->once())
-        ->method('getCurrentVersion')
+        ->method('findCurrentVersion')
         ->willReturn(null);
 
     $this->presenter
@@ -67,12 +67,12 @@ it('should run found updates', function () {
 
     $this->readVersionRepository
         ->expects($this->once())
-        ->method('getCurrentVersion')
+        ->method('findCurrentVersion')
         ->willReturn('22.04.0');
 
     $this->readUpdateRepository
         ->expects($this->once())
-        ->method('getOrderedAvailableUpdates')
+        ->method('findOrderedAvailableUpdates')
         ->with('22.04.0')
         ->willReturn(['22.10.0-beta.1', '22.10.0', '22.10.1']);
 

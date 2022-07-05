@@ -54,9 +54,9 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
-            $currentVersion = $this->getCurrentVersion();
+            $currentVersion = $this->getCurrentVersionOrFail();
 
-            $availableUpdates = $this->getAvailableUpdates($currentVersion);
+            $availableUpdates = $this->getAvailableUpdatesOrFail($currentVersion);
 
             $this->runUpdates($availableUpdates);
         } catch (\Throwable $e) {
@@ -80,12 +80,12 @@ class UpdateVersions
      *
      * @throws \Exception
      */
-    private function getCurrentVersion(): string
+    private function getCurrentVersionOrFail(): string
     {
         $this->info('Getting current version');
 
         try {
-            $currentVersion = $this->readVersionRepository->getCurrentVersion();
+            $currentVersion = $this->readVersionRepository->findCurrentVersion();
         } catch (\Exception $e) {
             throw new \Exception('An error occurred when retrieving current version', 0, $e);
         }
@@ -103,12 +103,12 @@ class UpdateVersions
      * @param string $currentVersion
      * @return string[]
      */
-    private function getAvailableUpdates(string $currentVersion): array
+    private function getAvailableUpdatesOrFail(string $currentVersion): array
     {
         try {
             $this->info('Getting available updates');
 
-            return $this->readUpdateRepository->getOrderedAvailableUpdates($currentVersion);
+            return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
             throw new \Exception('An error occurred when getting available updates', 0, $e);
         }

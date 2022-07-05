@@ -29,5 +29,5 @@ interface ReadVersionRepositoryInterface
      *
      * @return string|null
      */
-    public function getCurrentVersion(): ?string;
+    public function findCurrentVersion(): ?string;
 }

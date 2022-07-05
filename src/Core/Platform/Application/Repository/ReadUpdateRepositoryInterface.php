@@ -30,5 +30,5 @@ interface ReadUpdateRepositoryInterface
      * @param string $currentVersion
      * @return string[]
      */
-    public function getOrderedAvailableUpdates(string $currentVersion): array;
+    public function findOrderedAvailableUpdates(string $currentVersion): array;
 }

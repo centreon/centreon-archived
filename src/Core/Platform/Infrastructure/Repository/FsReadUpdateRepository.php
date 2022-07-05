@@ -42,9 +42,9 @@ class FsReadUpdateRepository implements ReadUpdateRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getOrderedAvailableUpdates(string $currentVersion): array
+    public function findOrderedAvailableUpdates(string $currentVersion): array
     {
-        $availableUpdates = $this->getAvailableUpdates($currentVersion);
+        $availableUpdates = $this->findAvailableUpdates($currentVersion);
 
         return $this->orderUpdates($availableUpdates);
     }
@@ -55,7 +55,7 @@ class FsReadUpdateRepository implements ReadUpdateRepositoryInterface
      * @param string $currentVersion
      * @return string[]
      */
-    private function getAvailableUpdates(string $currentVersion): array
+    private function findAvailableUpdates(string $currentVersion): array
     {
         $fileNameVersionRegex = '/Update-(?<version>[a-zA-Z0-9\-\.]+)\.php/';
         $availableUpdates = [];

@@ -44,7 +44,7 @@ class DbReadVersionRepository extends AbstractRepositoryDRB implements ReadVersi
     /**
      * @inheritDoc
      */
-    public function getCurrentVersion(): ?string
+    public function findCurrentVersion(): ?string
     {
         $currentVersion = null;
 
