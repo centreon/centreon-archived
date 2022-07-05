@@ -193,7 +193,7 @@ it(
             $this->accessGroupRepository
         );
         $useCase($request, $this->presenter);
-        expect($this->presenter->getPresentedData()->error)->toBe('User not found');
+        expect($this->presenter->getPresentedData()->error)->toBe('User could not be created');
     }
 );
 
