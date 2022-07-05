@@ -23,19 +23,15 @@ declare(strict_types=1);
 
 namespace Tests\Core\Platform\Infrastructure\Repository;
 
-use Core\Platform\Infrastructure\Repository\LegacyReadVersionRepository;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Platform\Infrastructure\Repository\FsReadUpdateRepository;
 use Symfony\Component\Finder\Finder;
 
 beforeEach(function () {
     $this->finder = $this->createMock(Finder::class);
-    $this->db = $this->createMock(DatabaseConnection::class);
 });
 
 it('should order found updates', function () {
-    $repository = new LegacyReadVersionRepository($this->finder, $this->db);
+    $repository = new FsReadUpdateRepository($this->finder);
 
     $this->finder
         ->expects($this->once())
