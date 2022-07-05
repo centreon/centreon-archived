@@ -416,7 +416,7 @@ class LoginOpenIdSession
             $this->contactGroupRepository->deleteContactGroupsForUser($user);
             $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
             $this->dataStorageEngine->commitTransaction();
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             $this->dataStorageEngine->rollbackTransaction();
             $this->error('Error during contact group update', [
                 "user_id" => $user->getId(),
