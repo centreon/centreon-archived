@@ -134,7 +134,11 @@ class UpdateVersions
                 $this->writeUpdateRepository->runUpdate($version);
             } catch (\Throwable $e) {
                 throw new \Exception(
-                    'An error occurred when applying update ' . $version . ': ' . $e->getMessage(),
+                   sprintf(
+                       'An error occurred when applying update %s (%s)',
+                       $version,
+                       $e->getMessage()
+                   ),
                     0,
                     $e,
                 );
