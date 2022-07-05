@@ -212,9 +212,6 @@ class Utils
             case 'md5':
                 $encodePassword .= 'md5__' . md5($password);
                 break;
-            case PASSWORD_BCRYPT:
-                $encodePassword = password_hash($password, PASSWORD_BCRYPT);
-                break;
             default:
                 $encodePassword = password_hash($password, PASSWORD_BCRYPT);
                 break;
