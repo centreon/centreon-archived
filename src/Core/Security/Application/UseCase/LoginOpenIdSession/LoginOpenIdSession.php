@@ -380,20 +380,17 @@ class LoginOpenIdSession
      */
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
     {
-        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
-        if (! $isAlreadyInTransaction) {
-            $this->dataStorageEngine->startTransaction();
-        }
         try {
+            $this->info("Updating User Access Groups", [
+                "user_id" => $user->getId(),
+                "access_groups" => $userAccessGroups
+            ]);
+            $this->dataStorageEngine->startTransaction();
             $this->accessGroupRepository->deleteAccessGroupsForUser($user);
             $this->accessGroupRepository->insertAccessGroupsForUser($user, $userAccessGroups);
-            if (!$isAlreadyInTransaction) {
-                $this->dataStorageEngine->commitTransaction();
-            }
+            $this->dataStorageEngine->commitTransaction();
         } catch (\Exception $ex) {
-            if (!$isAlreadyInTransaction) {
-                $this->dataStorageEngine->rollbackTransaction();
-            }
+            $this->dataStorageEngine->rollbackTransaction();
             $this->error('Error during ACL update', [
                 "user_id" => $user->getId(),
                 "access_groups" => $userAccessGroups,
@@ -410,74 +407,22 @@ class LoginOpenIdSession
     private function updateContactGroupsForUser(ContactInterface $user): void
     {
         $contactGroup = $this->provider->getConfiguration()->getContactGroup();
-        if ($this->dataStorageEngine->isAlreadyinTransaction()) {
-            $this->updateUserContactGroupsWithTransaction($user, $contactGroup);
-        } else {
-            $this->updateUserContactGroupsWithoutTransaction($user, $contactGroup);
-        }
-    }
-
-    /**
-     * Execute the repository methods to delete and insert contact groups
-     *
-     * @param ContactInterface $user
-     * @param ContactGroup $contactGroup
-     */
-    private function updateUserContactGroups(ContactInterface $user, ContactGroup $contactGroup): void
-    {
-        $this->contactGroupRepository->deleteContactGroupsForUser($user);
-        $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
-    }
-
-    /**
-     * Update contact group outside of a transaction
-     *
-     * @param ContactInterface $user
-     * @param ContactGroup $contactGroup
-     */
-    private function updateUserContactGroupsWithoutTransaction(ContactInterface $user, ContactGroup $contactGroup): void
-    {
         try {
-            $this->updateUserContactGroups($user, $contactGroup);
-        } catch (\Exception $ex) {
-            $this->logUserContactGroupUpdateError($user, $contactGroup, $ex);
-        }
-    }
-
-    /**
-     * Update contact group in a transaction
-     *
-     * @param ContactInterface $user
-     * @param ContactGroup $contactGroup
-     */
-    private function updateUserContactGroupsWithTransaction(ContactInterface $user, ContactGroup $contactGroup): void
-    {
-        try {
+            $this->info('Updating User Contact Group', [
+                "user_id" => $user->getId(),
+                "contact_group" => $contactGroup,
+            ]);
             $this->dataStorageEngine->startTransaction();
-            $this->updateUserContactGroups($user, $contactGroup);
+            $this->contactGroupRepository->deleteContactGroupsForUser($user);
+            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
             $this->dataStorageEngine->commitTransaction();
-        } catch (\Exception $ex) {
+        } catch (\Exception $ex){
             $this->dataStorageEngine->rollbackTransaction();
-            $this->logUserContactGroupUpdateError($user, $contactGroup, $ex);
+            $this->error('Error during contact group update', [
+                "user_id" => $user->getId(),
+                "contact_group" => $contactGroup,
+                "trace" => $ex->getTraceAsString()
+            ]);
         }
-    }
-
-    /**
-     * Log Contact Group update.
-     *
-     * @param ContactInterface $user
-     * @param ContactGroup $contactGroup
-     * @param \Exception $ex
-     */
-    private function logUserContactGroupUpdateError(
-        ContactInterface $user,
-        ContactGroup $contactGroup,
-        \Exception $ex
-    ): void {
-        $this->error('Error during contact group update', [
-            "user_id" => $user->getId(),
-            "contact_group" => $contactGroup,
-            "trace" => $ex->getTraceAsString()
-        ]);
     }
 }

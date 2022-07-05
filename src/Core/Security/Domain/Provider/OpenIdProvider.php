@@ -40,6 +40,7 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Domain\Authentication\AuthenticationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
@@ -86,14 +87,14 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @var array<string,mixed>
      */
-    private array $idTokenPayload;
+    private array $idTokenPayload = [];
 
     /**
      * Content of the connexion token response.
      *
      * @var array<string,mixed>
      */
-    private array $connectionTokenResponseContent;
+    private array $connectionTokenResponseContent = [];
 
     /**
      * @param HttpClientInterface $client
@@ -365,12 +366,20 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @param string $token
      * @return array<string,mixed>
+     * @throws SSOAuthenticationException
      */
     private function extractTokenPayload(string $token): array
     {
-        $tokenParts = explode(".", $token);
-
-        return json_decode(base64_decode($tokenParts[1]), true);
+        try {
+            $tokenParts = explode(".", $token);
+            return json_decode(base64_decode($tokenParts[1]), true);
+        } catch ( \Throwable $ex) {
+            $this->error(
+                SSOAuthenticationException::unableToDecodeIdToken()->getMessage(),
+                ['trace' => $ex->getTraceAsString()]
+            );
+            throw SSOAuthenticationException::unableToDecodeIdToken();
+        }
     }
 
     /**

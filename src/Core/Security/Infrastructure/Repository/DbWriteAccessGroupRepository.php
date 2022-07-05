@@ -43,7 +43,6 @@ class DbWriteAccessGroupRepository extends AbstractRepositoryDRB implements Writ
      */
     public function deleteAccessGroupsForUser(ContactInterface $user): void
     {
-        //@todo: implements this method
         $statement = $this->db->prepare($this->translateDbName(
             "DELETE FROM acl_group_contacts_relations WHERE contact_contact_id = :userId"
         ));
