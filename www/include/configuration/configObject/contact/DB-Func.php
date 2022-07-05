@@ -697,7 +697,8 @@ function updateContact_MC($contact_id = null)
     $ret = array();
     $ret = $form->getSubmitValues();
 
-    // Remove all parameters that have an empty value in order to keep the contact properties that have not been modified
+    // Remove all parameters that have an empty value in order to keep
+    // the contact properties that have not been modified
     foreach ($ret as $name => $value) {
         if (is_string($value) && empty($value)) {
             unset($ret[$name]);
