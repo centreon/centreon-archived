@@ -23,19 +23,15 @@ declare(strict_types=1);
 
 namespace Tests\Core\Platform\Infrastructure\Repository;
 
-use Core\Platform\Infrastructure\Repository\LegacyReadVersionRepository;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Platform\Infrastructure\Repository\FsReadUpdateRepository;
 use Symfony\Component\Finder\Finder;
 
 beforeEach(function () {
     $this->finder = $this->createMock(Finder::class);
-    $this->db = $this->createMock(DatabaseConnection::class);
 });
 
 it('should order found updates', function () {
-    $repository = new LegacyReadVersionRepository($this->finder, $this->db);
+    $repository = new FsReadUpdateRepository($this->finder);
 
     $this->finder
         ->expects($this->once())
@@ -61,7 +57,7 @@ it('should order found updates', function () {
             ]
         );
 
-    $availableUpdates = $repository->getOrderedAvailableUpdates('22.04.0');
+    $availableUpdates = $repository->findOrderedAvailableUpdates('22.04.0');
     expect($availableUpdates)->toEqual([
         '22.10.0-alpha.1',
         '22.10.0-beta.3',

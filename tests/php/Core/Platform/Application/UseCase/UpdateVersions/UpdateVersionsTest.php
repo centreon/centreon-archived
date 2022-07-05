@@ -25,23 +25,58 @@ namespace Tests\Core\Platform\Application\UseCase\UpdateVersions;
 
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersions;
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersionsPresenterInterface;
+use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
 beforeEach(function () {
+    $this->updateLockerRepository = $this->createMock(UpdateLockerRepositoryInterface::class);
     $this->readVersionRepository = $this->createMock(ReadVersionRepositoryInterface::class);
-    $this->writeVersionRepository = $this->createMock(WriteVersionRepositoryInterface::class);
+    $this->readUpdateRepository = $this->createMock(ReadUpdateRepositoryInterface::class);
+    $this->writeUpdateRepository = $this->createMock(WriteUpdateRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateVersionsPresenterInterface::class);
 });
 
+it('should stop update process when an other update is already started', function () {
+    $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
+        $this->readVersionRepository,
+        $this->readUpdateRepository,
+        $this->writeUpdateRepository,
+    );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(false);
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse('Update already in progress'));
+
+    $updateVersions($this->presenter);
+});
+
 it('should present an error response if current version is not found', function () {
-    $updateVersions = new UpdateVersions($this->readVersionRepository, $this->writeVersionRepository);
+    $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
+        $this->readVersionRepository,
+        $this->readUpdateRepository,
+        $this->writeUpdateRepository,
+    );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(true);
 
     $this->readVersionRepository
         ->expects($this->once())
-        ->method('getCurrentVersion')
+        ->method('findCurrentVersion')
         ->willReturn(null);
 
     $this->presenter
@@ -53,20 +88,30 @@ it('should present an error response if current version is not found', function 
 });
 
 it('should run found updates', function () {
-    $updateVersions = new UpdateVersions($this->readVersionRepository, $this->writeVersionRepository);
+    $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
+        $this->readVersionRepository,
+        $this->readUpdateRepository,
+        $this->writeUpdateRepository,
+    );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(true);
 
     $this->readVersionRepository
         ->expects($this->once())
-        ->method('getCurrentVersion')
+        ->method('findCurrentVersion')
         ->willReturn('22.04.0');
 
-    $this->readVersionRepository
+    $this->readUpdateRepository
         ->expects($this->once())
-        ->method('getOrderedAvailableUpdates')
+        ->method('findOrderedAvailableUpdates')
         ->with('22.04.0')
         ->willReturn(['22.10.0-beta.1', '22.10.0', '22.10.1']);
 
-    $this->writeVersionRepository
+    $this->writeUpdateRepository
         ->expects($this->exactly(3))
         ->method('runUpdate')
         ->withConsecutive(

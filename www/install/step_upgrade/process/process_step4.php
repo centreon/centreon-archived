@@ -24,14 +24,15 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 require_once __DIR__ . '/../../../class/centreonDB.class.php';
 require_once __DIR__ . '/../../steps/functions.php';
 
-use Core\Platform\Application\Repository\WriteVersionRepositoryInterface;
+use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 
 $current = $_POST['current'];
 $next = $_POST['next'];
 $status = 0;
 
 $kernel = \App\Kernel::createForWeb();
-$upgradeWriteRepository = $kernel->getContainer()->get(WriteVersionRepositoryInterface::class);
+$upgradeWriteRepository = $kernel->getContainer()->get(WriteUpdateRepositoryInterface::class);
 try {
     $upgradeWriteRepository->runUpdate($next);
 } catch (\Throwable $e) {
@@ -40,7 +41,7 @@ try {
 
 $current = $next;
 
-$upgradeReadRepository = $kernel->getContainer()->get(ReadVersionRepositoryInterface::class);
+$upgradeReadRepository = $kernel->getContainer()->get(ReadUpdateRepositoryInterface::class);
 $availableUpdates = $upgradeReadRepository->getOrderedAvailableUpdates($current);
 $next = empty($availableUpdates) ? '' : array_shift($availableUpdates);
 
