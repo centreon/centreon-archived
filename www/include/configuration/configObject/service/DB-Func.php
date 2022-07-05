@@ -738,13 +738,13 @@ function multipleServiceInDB(
                             }
                             $statement->bindValue(
                                 ':host_host_id',
-                                (int) $host_id,
-                                $host_id ? \PDO::PARAM_INT : \PDO::PARAM_NULL
+                                $host_id,
+                                \PDO::PARAM_INT
                             );
                             $statement->bindValue(
                                 ':hostgroup_hg_id',
-                                (int) $hg_id,
-                                $hg_id ? \PDO::PARAM_INT : \PDO::PARAM_NULL
+                                $hg_id,
+                                \PDO::PARAM_INT
                             );
                             $statement->bindValue(
                                 ':service_service_id',
@@ -753,8 +753,8 @@ function multipleServiceInDB(
                             );
                             $statement->bindValue(
                                 ':servicegroup_sg_id',
-                                (int) $Sg["servicegroup_sg_id"],
-                                $Sg["servicegroup_sg_id"] ? \PDO::PARAM_INT : \PDO::PARAM_NULL
+                                $Sg["servicegroup_sg_id"],
+                                \PDO::PARAM_INT
                             );
                             $statement->execute();
                             if ($Sg["host_host_id"]) {
