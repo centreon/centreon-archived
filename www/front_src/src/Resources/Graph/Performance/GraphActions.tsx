@@ -2,9 +2,10 @@ import { MouseEvent, MutableRefObject, useState } from 'react';
 
 import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 
-import { Menu, MenuItem } from '@mui/material';
+import { Divider, Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -17,6 +18,7 @@ import {
 
 import {
   labelAsDisplayed,
+  labelExportToCSV,
   labelExportToPng,
   labelMediumSize,
   labelPerformancePage,
@@ -25,6 +27,7 @@ import {
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
+import { detailsAtom } from '../../Details/detailsAtoms';
 
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
@@ -68,6 +71,14 @@ const GraphActions = ({
   const closeSizeExportMenu = (): void => {
     setMenuAnchor(null);
   };
+
+  const details = useAtomValue(detailsAtom);
+  const downloadGraphhFile = `${details?.links.endpoints}/graph/download`;
+
+  const exportToCsv = (): void => {
+    window.open(downloadGraphhFile, 'noopener', 'noreferrer');
+  };
+
   const goToPerformancePage = (): void => {
     const startTimestamp = format({
       date: customTimePeriod?.start as Date,
@@ -141,6 +152,11 @@ const GraphActions = ({
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
+            <MenuItem data-testid={labelExportToPng}>
+              {t(labelExportToPng)}
+            </MenuItem>
+            <Divider />
+
             <MenuItem
               data-testid={labelAsDisplayed}
               onClick={(): void => convertToPng(1)}
@@ -158,6 +174,10 @@ const GraphActions = ({
               onClick={(): void => convertToPng(0.5)}
             >
               {t(labelSmallSize)}
+            </MenuItem>
+            <Divider />
+            <MenuItem data-testid={labelExportToCSV} onClick={exportToCsv}>
+              {t(labelExportToCSV)}
             </MenuItem>
           </Menu>
         </>
