@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     background: 'transparent',
     border: 'none',
   },
+  labelCategorieToExport: {
+    fontWeight: 'bold',
+  },
 }));
 
 const GraphActions = ({
@@ -152,7 +155,11 @@ const GraphActions = ({
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
-            <MenuItem data-testid={labelExportToPng}>
+            <MenuItem
+              className={classes.labelCategorieToExport}
+              data-testid={labelExportToPng}
+              sx={{ cursor: 'auto' }}
+            >
               {t(labelExportToPng)}
             </MenuItem>
             <Divider />
@@ -176,7 +183,11 @@ const GraphActions = ({
               {t(labelSmallSize)}
             </MenuItem>
             <Divider />
-            <MenuItem data-testid={labelExportToCSV} onClick={exportToCsv}>
+            <MenuItem
+              className={classes.labelCategorieToExport}
+              data-testid={labelExportToCSV}
+              onClick={exportToCsv}
+            >
               {t(labelExportToCSV)}
             </MenuItem>
           </Menu>
