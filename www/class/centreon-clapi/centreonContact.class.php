@@ -264,6 +264,7 @@ class CentreonContact extends CentreonObject
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        $this->addParams = [];
         $this->initUniqueField($params);
         $this->initUserInformation($params);
         $this->initPassword($params);
