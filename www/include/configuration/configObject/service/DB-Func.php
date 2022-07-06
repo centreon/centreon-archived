@@ -328,13 +328,14 @@ function enableServiceInDB($service_id = null, $service_arr = array())
     if ($service_id) {
         $service_arr = array($service_id => "1");
     }
-    foreach ($service_arr as $key => $value) {
-        signalServiceConfigurationChange((int) $key);
-        $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '" . $key . "'");
-        $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
+    foreach (array_keys($service_arr) as $serviceId) {
+        $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '" . $serviceId . "'");
+        $query = "SELECT service_description FROM `service` WHERE service_id = '" . $serviceId . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
         $row = $dbResult2->fetch();
-        $centreon->CentreonLogAction->insertLog("service", $key, $row['service_description'], "enable");
+
+        signalConfigurationChange('service', (int) $serviceId);
+        $centreon->CentreonLogAction->insertLog("service", $serviceId, $row['service_description'], "enable");
     }
 }
 
@@ -347,13 +348,14 @@ function disableServiceInDB($service_id = null, $service_arr = array())
     if ($service_id) {
         $service_arr = array($service_id => "1");
     }
-    foreach ($service_arr as $key => $value) {
-        signalServiceConfigurationChange((int) $key);
-        $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '" . $key . "'");
-        $query = "SELECT service_description FROM `service` WHERE service_id = '" . $key . "' LIMIT 1";
+    foreach (array_keys($service_arr) as $serviceId) {
+        $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '" . $serviceId . "'");
+        $query = "SELECT service_description FROM `service` WHERE service_id = '" . $serviceId . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
         $row = $dbResult2->fetch();
-        $centreon->CentreonLogAction->insertLog("service", $key, $row['service_description'], "disable");
+
+        signalConfigurationChange('service', (int) $serviceId, [], false);
+        $centreon->CentreonLogAction->insertLog("service", $serviceId, $row['service_description'], "disable");
     }
 }
 
@@ -383,24 +385,26 @@ function deleteServiceInDB($services = array())
 
     $query = 'UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = :service_id';
     $statement = $pearDB->prepare($query);
-    foreach ($services as $key => $value) {
-        signalServiceConfigurationChange((int) $key);
-        removeRelationLastServiceDependency((int)$key);
-        $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
+    foreach (array_keys($services) as $serviceId) {
+        $previousPollerIds = getPollersForConfigChangeFlagFromServiceId($serviceId);
+        removeRelationLastServiceDependency((int)$serviceId);
+        $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $serviceId . "'";
         $dbResult = $pearDB->query($query);
         while ($row = $dbResult->fetch()) {
             $statement->bindValue(':service_id', (int) $row["service_id"], \PDO::PARAM_INT);
             $statement->execute();
         }
-        $query = "SELECT service_description FROM `service` WHERE `service_id` = '" . $key . "' LIMIT 1";
+        $query = "SELECT service_description FROM `service` WHERE `service_id` = '" . $serviceId . "' LIMIT 1";
         $dbResult3 = $pearDB->query($query);
         $svcname = $dbResult3->fetch();
-        $centreon->CentreonLogAction->insertLog("service", $key, $svcname['service_description'], "d");
-        $pearDB->query("DELETE FROM service WHERE service_id = '" . $key . "'");
-        $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '" . $key . "'");
-        $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '" . $key . "'");
+        $centreon->CentreonLogAction->insertLog("service", $serviceId, $svcname['service_description'], "d");
+        $pearDB->query("DELETE FROM service WHERE service_id = '" . $serviceId . "'");
+        $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '" . $serviceId . "'");
+        $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '" . $serviceId . "'");
+
+        signalConfigurationChange('service', (int) $serviceId, $previousPollerIds);
     }
-    $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $key, "action" => "DELETE"));
+    $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $serviceId, "action" => "DELETE"));
 }
 
 function divideGroupedServiceInDB($service_id = null, $service_arr = array(), $toHost = null)
@@ -677,7 +681,6 @@ function multipleServiceInDB(
                             $fields["service_hPars"] = trim($fields["service_hPars"], ",");
                             $fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
                         }
-                        signalServiceConfigurationChange($maxId["MAX(service_id)"]);
 
                         /*
                          * Contact duplication
@@ -871,6 +874,8 @@ function multipleServiceInDB(
                                 $fields
                             );
                         }
+
+                        signalConfigurationChange('service', (int) $maxId["MAX(service_id)"]);
                     }
                 }
             }
@@ -902,6 +907,8 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     }
 
     $isServiceTemplate = isset($ret['service_register']) && $ret['service_register'] === '0';
+
+    $previousPollerIds = getPollersForConfigChangeFlagFromServiceId($service_id);
 
     if ($from_MC) {
         updateService_MC($service_id);
@@ -1044,6 +1051,8 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     } else {
         updateServiceCategories($service_id);
     }
+
+    signalConfigurationChange('service', $service_id, $previousPollerIds);
 }
 
 function insertServiceInDB($ret = array(), $macro_on_demand = null)
@@ -1063,6 +1072,8 @@ function insertServiceInDB($ret = array(), $macro_on_demand = null)
     insertServiceExtInfos($service_id, $ret);
     updateServiceTrap($service_id, $ret);
     updateServiceCategories($service_id, $ret);
+
+    signalConfigurationChange('service', $service_id);
     $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $service_id, "action" => "ADD"));
     return ($service_id);
 }
@@ -2359,7 +2370,6 @@ function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
             setHostChangeFlag($pearDB, $ret1[$i], null);
         }
     }
-    signalServiceConfigurationChange($service_id, array_keys($cache));
 }
 
 // For massive change. We just add the new list if the elem doesn't exist yet
@@ -2417,7 +2427,6 @@ function updateServiceHost_MC($service_id = null)
             }
         }
     }
-    signalServiceConfigurationChange($service_id, array_keys($hsvs));
 }
 
 function updateServiceExtInfos($service_id = null, $ret = array())
@@ -2623,35 +2632,11 @@ function testCg2($list)
 }
 
 /**
- * Mark pollers affected by service change (set 'updated' flag)
- *
- * @param int $serviceId
- * @param int[] $additionalHostIds additional hosts whose pollers are affected
- */
-function signalServiceConfigurationChange(int $serviceId, array $additionalHosts = []): void
-{
-    $hostIds = getHostIdsFromServiceId($serviceId);
-    $pollerIds = getElligiblePollersForConfigUpdate(array_merge($hostIds, $additionalHosts));
-
-    setPollersToUpdated($pollerIds);
-}
-
-/**
- * Return hosts linked to a service
  * @param int $serviceId
  * @return int[]
  */
-function getHostIdsFromServiceId(int $serviceId): array
+function getPollersForConfigChangeFlagFromServiceId(int $serviceId): array
 {
-    global $pearDB;
-
-    $query = "SELECT host_host_id
-        FROM host_service_relation hsr
-        JOIN host ON host.host_id = hsr.host_host_id
-        WHERE host.host_activate = '1' AND hsr.service_service_id = :serviceId";
-    $stmt = $pearDB->prepare($query);
-    $stmt->bindValue(':serviceId', $serviceId);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $hostIds = getHostsForConfigChangeFlagFromServiceIds([$serviceId]);
+    return getPollersForConfigChangeFlagFromHostIds($hostIds);
 }

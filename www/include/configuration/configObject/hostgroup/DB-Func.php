@@ -100,7 +100,7 @@ function enableHostGroupInDB($hg_id = null, $hg_arr = array())
         $stmt->execute();
         $hostgroupName = $stmt->fetchColumn();
 
-        signalHostgroupConfigurationChange($hostgroupId);
+        signalConfigurationChange('hostgroup', $hostgroupId);
         $centreon->CentreonLogAction->insertLog("hostgroup", $hostgroupId, $hostgroupName, "enable");
     }
 }
@@ -126,7 +126,7 @@ function disableHostGroupInDB($hg_id = null, $hg_arr = array())
         $stmt->execute();
         $hostgroupName = $stmt->fetchColumn();
 
-        signalHostgroupConfigurationChange($hostgroupId);
+        signalConfigurationChange('hostgroup', $hostgroupId, [], false);
         $centreon->CentreonLogAction->insertLog("hostgroup", $hostgroupId, $hostgroupName, "disable");
     }
 }
@@ -156,9 +156,8 @@ function deleteHostGroupInDB($hostGroups = array())
     global $pearDB, $centreon;
 
     foreach (array_keys($hostGroups) as $hostgroupId) {
-        if (isHostgroupEnabled((int) $hostgroupId)) {
-            signalHostgroupConfigurationChange((int) $hostgroupId);
-        }
+        $previousPollerIds = getPollersForConfigChangeFlagFromHostgroupId((int) $hostgroupId);
+
         removeRelationLastHostgroupDependency((int) $hostgroupId);
         $rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = " .
             "hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM " .
@@ -176,6 +175,8 @@ function deleteHostGroupInDB($hostGroups = array())
         $row = $dbResult3->fetch();
 
         $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '" . $hostgroupId . "'");
+
+        signalConfigurationChange('hostgroup', (int) $hostgroupId, $previousPollerIds);
         $centreon->CentreonLogAction->insertLog("hostgroup", $hostgroupId, $row['hg_name'], "d");
     }
     $centreon->user->access->updateACL();
@@ -252,9 +253,7 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                         $statement->execute();
                     }
 
-                    if (isHostgroupEnabled((int) $maxId["MAX(hg_id)"])) {
-                        signalHostgroupConfigurationChange((int) $maxId["MAX(hg_id)"]);
-                    }
+                    signalConfigurationChange('hostgroup', (int) $maxId["MAX(hg_id)"]);
                     $centreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
                 }
             }
@@ -270,10 +269,10 @@ function insertHostGroupInDB($ret = array())
 
     $hg_id = insertHostGroup($ret);
     updateHostGroupHosts($hg_id, $ret);
-    if (isHostgroupEnabled($hg_id)) {
-        signalHostgroupConfigurationChange($hg_id);
-    }
+
+    signalConfigurationChange('hostgroup', $hg_id);
     $centreon->user->access->updateACL();
+
     return $hg_id;
 }
 
@@ -283,12 +282,12 @@ function updateHostGroupInDB($hg_id = null, $ret = array(), $increment = false)
     if (!$hg_id) {
         return;
     }
-    $previousHostIds = getHostIdsFromHostgroupId($hg_id);
+    $previousPollerIds = getPollersForConfigChangeFlagFromHostgroupId($hg_id);
+
     updateHostGroup($hg_id, $ret);
     updateHostGroupHosts($hg_id, $ret, $increment);
-    if (isHostgroupEnabled($hg_id)) {
-        signalHostgroupConfigurationChange($hg_id, $previousHostIds);
-    }
+
+    signalConfigurationChange('hostgroup', $hg_id, $previousPollerIds);
     $centreon->user->access->updateACL();
 }
 
@@ -550,46 +549,12 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $svcObj->cleanServiceRelations("downtime_service_relation", "host_host_id", "service_service_id");
 }
 
-
-function isHostgroupEnabled(int $hostgroupId): bool
-{
-    global $pearDB;
-
-    $stmt = $pearDB->prepare("SELECT 1 FROM hostgroup WHERE hg_activate = '1' AND hg_id = :hostgroupId");
-    $stmt->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
-    $stmt->execute();
-
-    return ! empty($stmt->fetch());
-}
-
 /**
  * @param int $hostgroupId
- * @return array
+ * @return int[]
  */
-function getHostIdsFromHostgroupId(int $hostgroupId): array
+function getPollersForConfigChangeFlagFromHostgroupId(int $hostgroupId): array
 {
-    global $pearDB;
-
-    $query = "SELECT host_host_id
-        FROM hostgroup_relation hgr
-        JOIN host ON host.host_id = hgr.host_host_id
-        WHERE hgr.hostgroup_hg_id = :hostgroupId";
-    $stmt = $pearDB->prepare($query);
-    $stmt->bindValue(':hostgroupId', $hostgroupId);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
-
-/**
- * Undocumented function
- *
- * @param int $hostgroupId
- */
-function signalHostgroupConfigurationChange(int $hostgroupId, array $additionalHostIds = []): void
-{
-    $hostIds = getHostIdsFromHostgroupId($hostgroupId);
-    $pollerIds = getElligiblePollersForConfigUpdate(array_merge($hostIds, $additionalHostIds));
-
-    setPollersToUpdated($pollerIds);
+    $hostIds = getHostsForConfigChangeFlagFromHostgroupIds([$hostgroupId]);
+    return getPollersForConfigChangeFlagFromHostIds($hostIds);
 }

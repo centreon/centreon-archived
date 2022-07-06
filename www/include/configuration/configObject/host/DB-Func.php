@@ -279,9 +279,10 @@ function enableHostInDB($host_id = null, $host_arr = array())
         $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         $stmt->execute();
         $hostName = $stmt->fetchColumn();
+
+        signalConfigurationChange('host', (int) $hostId);
         $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "enable");
 
-        signalHostConfigurationChange((int) $hostId);
     }
 }
 
@@ -304,9 +305,9 @@ function disableHostInDB($host_id = null, $host_arr = array())
         $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         $stmt->execute();
         $hostName = $stmt->fetchColumn();
-        $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "disable");
 
-        signalHostConfigurationChange((int) $hostId);
+        signalConfigurationChange('host', (int) $hostId, [], false);
+        $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "disable");
     }
 }
 
@@ -356,9 +357,7 @@ function deleteHostInDB($hosts = array())
     global $pearDB, $centreon;
 
     foreach (array_keys($hosts) as $hostId) {
-        if (isHostEnabled((int) $hostId)) {
-            signalHostConfigurationChange((int) $hostId);
-        }
+        $previousPollerIds = getPollersForConfigChangeFlagFromHostIds([$hostId]);
 
         removeRelationLastHostDependency((int) $hostId);
         $rq = "SELECT @nbr := (SELECT COUNT( * )
@@ -397,6 +396,8 @@ function deleteHostInDB($hosts = array())
         $dbResult = $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '" . (int) $hostId . "'");
         $dbResult = $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . (int) $hostId . "'");
         $dbResult = $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '" . (int) $hostId . "'");
+
+        signalConfigurationChange('host', (int) $hostId, $previousPollerIds);
         $centreon->CentreonLogAction->insertLog("host", $hostId, $hostname['host_name'], "d");
     }
 }
@@ -695,9 +696,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $statement->bindValue(':host_id', (int) $key, \PDO::PARAM_INT);
                     $statement->execute();
 
-                    if (isHostEnabled((int) $maxId["MAX(host_id)"])) {
-                        signalHostConfigurationChange((int) $maxId["MAX(host_id)"]);
-                    }
+                    signalConfigurationChange('host', (int) $maxId["MAX(host_id)"]);
                     $centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $hostName, "a", $fields);
                 }
             }
@@ -728,6 +727,8 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
     } else {
         $ret = $cfg;
     }
+
+    $previousPollerIds = getPollersForConfigChangeFlagFromHostIds([$host_id]);
 
     /*
      *  Global function to use
@@ -906,17 +907,13 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostExtInfos($host_id, $ret);
     }
 
-    $previousPollerId = getPollerFromHostId($host_id);
-
     # Function for updating host hg
     # 1 - MC with deletion of existing hg
     # 2 - MC with addition of new hg
     # 3 - Normal update
     updateNagiosServerRelation($host_id);
 
-    if (isHostEnabled($host_id)) {
-        signalHostConfigurationChange($host_id, $previousPollerId);
-    }
+    signalConfigurationChange('host', $host_id, $previousPollerIds);
 
     return ($host_id);
 }
@@ -949,9 +946,8 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
     if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
         createHostTemplateService($host_id);
     }
-    if (isHostEnabled($host_id)) {
-        signalHostConfigurationChange($host_id);
-    }
+
+    signalConfigurationChange('host', $host_id);
     $centreon->user->access->updateACL(array(
         "type" => 'HOST',
         'id' => $host_id,
@@ -2736,52 +2732,4 @@ function sanitizeFormHostParameters(array $ret): array
         }
     }
     return $bindParams;
-}
-
-
-// TODO : add @throws in phpdocs
-
-
-/**
- * Mark pollers affected by host change (set 'updated' flag)
- *
- * @param int $hostId
- * @return int|null
- */
-function getPollerFromHostId(int $hostId): ?int
-{
-    global $pearDB;
-
-    $query = "SELECT DISTINCT(phr.nagios_server_id) FROM ns_host_relation phr WHERE host_host_id = :hostId";
-
-    $stmt = $pearDB->prepare($query);
-    $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-    $stmt->execute();
-    $pollerId = $stmt->fetchColumn();
-
-    return $pollerId !== false ? $pollerId : null;
-}
-
-function isHostEnabled(int $hostId): bool
-{
-    global $pearDB;
-
-    $stmt = $pearDB->prepare("SELECT 1 FROM host WHERE host_activate = '1' AND host_id = :hostId");
-    $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-    $stmt->execute();
-
-    return ! empty($stmt->fetch());
-}
-
-/**
- * Mark pollers affected by host change (set 'updated' flag)
- *
- * @param int $hostId
- * @param int $pollerId
- */
-function signalHostConfigurationChange(int $hostId, int $additionalPollerId = null): void
-{
-    $pollerId = getPollerFromHostId($hostId);
-
-    setPollersToUpdated([$pollerId, $additionalPollerId]);
 }

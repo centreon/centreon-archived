@@ -77,6 +77,8 @@ function enableServiceGroupInDB($sgId = null)
     $statement2->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
     $statement2->execute();
     $row = $statement2->fetch();
+
+    signalConfigurationChange('servicegroup', $sgId);
     $centreon->CentreonLogAction->insertLog("servicegroup", $sgId, $row['sg_name'], "enable");
 }
 
@@ -97,6 +99,8 @@ function disableServiceGroupInDB($sgId = null)
     $statement2->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
     $statement2->execute();
     $row = $statement2->fetch();
+
+    signalConfigurationChange('servicegroup', $sgId, [], false);
     $centreon->CentreonLogAction->insertLog("servicegroup", $sgId, $row['sg_name'], "disable");
 }
 
@@ -107,9 +111,9 @@ function removeRelationLastServicegroupDependency(int $servicegroupId): void
 {
     global $pearDB;
 
-    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
-              FROM dependency_servicegroupParent_relation 
-              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_servicegroupParent_relation 
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id
+              FROM dependency_servicegroupParent_relation
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_servicegroupParent_relation
                                          WHERE servicegroup_sg_id =  ' . $servicegroupId . ')';
     $dbResult = $pearDB->query($query);
     $result = $dbResult->fetch();
@@ -129,6 +133,9 @@ function deleteServiceGroupInDB($serviceGroups = [])
 
     foreach (array_keys($serviceGroups) as $key) {
         $sgId = filter_var($key, FILTER_VALIDATE_INT);
+
+        $previousPollerIds = getPollersForConfigChangeFlagFromServicegroupId((int) $sgId);
+
         removeRelationLastServicegroupDependency((int)$sgId);
         $statement = $pearDB->prepare("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = :sg_id LIMIT 1");
         $statement->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
@@ -139,6 +146,7 @@ function deleteServiceGroupInDB($serviceGroups = [])
         $statement2->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
         $statement2->execute();
 
+        signalConfigurationChange('servicegroup', $sgId, $previousPollerIds);
         $centreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
     }
     $centreon->user->access->updateACL();
@@ -265,6 +273,8 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                         $fields["sg_hgServices"] .= $service["service_service_id"] . ",";
                     }
                     $fields["sg_hgServices"] = trim($fields["sg_hgServices"], ",");
+
+                    signalConfigurationChange('servicegroup', $maxId["MAX(sg_id)"]);
                     $centreon->CentreonLogAction->insertLog(
                         "servicegroup",
                         $maxId["MAX(sg_id)"],
@@ -286,6 +296,8 @@ function insertServiceGroupInDB($ret = [])
 
     $sgId = insertServiceGroup($ret);
     updateServiceGroupServices($sgId, $ret);
+
+    signalConfigurationChange('servicegroup', $sgId);
     $centreon->user->access->updateACL();
     return $sgId;
 }
@@ -297,8 +309,13 @@ function updateServiceGroupInDB($sgId = null, $ret = [], $increment = false)
     if (!$sgId) {
         return;
     }
+
+    $previousPollerIds = getPollersForConfigChangeFlagFromServiceGroupId($sgId);
+
     updateServiceGroup($sgId, $ret);
     updateServiceGroupServices($sgId, $ret, $increment);
+
+    signalConfigurationChange('servicegroup', $sgId, $previousPollerIds);
     $centreon->user->access->updateACL();
 }
 
@@ -560,4 +577,14 @@ function updateServiceGroupServices($sgId, $ret = [], $increment = false)
             $statement2->execute();
         }
     }
+}
+
+/**
+ * @param int $servicegroupId
+ * @return int[]
+ */
+function getPollersForConfigChangeFlagFromServiceGroupId(int $servicegroupId): array
+{
+    $hostIds = getHostsForConfigChangeFlagFromServiceGroupId($servicegroupId);
+    return getPollersForConfigChangeFlagFromHostIds($hostIds);
 }
