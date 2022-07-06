@@ -26,7 +26,6 @@ namespace Core\Security\Application\UseCase\LoginOpenIdSession;
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
-use Core\Contact\Domain\Model\ContactGroup;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
@@ -137,12 +136,14 @@ class LoginOpenIdSession
             }
         } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
             $this->error('An unexpected error occurred while authenticating with OpenID', [
+                'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             $presenter->present($this->createResponse(null, $e->getMessage()));
             return;
         } catch (\Throwable $e) {
             $this->error('An unexpected error occurred while authenticating with OpenID', [
+                'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             $presenter->present($this->createResponse(
@@ -286,11 +287,11 @@ class LoginOpenIdSession
     {
         $user = $this->provider->getUser();
         if ($user === null) {
+            $this->info("User not found");
             if (! $this->provider->canCreateUser()) {
-                $this->error("User not found, and could not been created");
                 throw new NotFoundException('User could not be created');
             }
-            $this->info("User not found, start auto import");
+            $this->info("Start auto import");
             $this->provider->createUser();
             $user = $this->provider->getUser();
             if ($user === null) {
@@ -416,7 +417,7 @@ class LoginOpenIdSession
         try {
             $this->info('Updating User Contact Group', [
                 "user_id" => $user->getId(),
-                "contact_group" => $contactGroup,
+                "contact_group_id" => $contactGroup->getId(),
             ]);
             $this->dataStorageEngine->startTransaction();
             $this->contactGroupRepository->deleteContactGroupsForUser($user);
@@ -426,7 +427,7 @@ class LoginOpenIdSession
             $this->dataStorageEngine->rollbackTransaction();
             $this->error('Error during contact group update', [
                 "user_id" => $user->getId(),
-                "contact_group" => $contactGroup,
+                "contact_group_id" => $contactGroup->getId(),
                 "trace" => $ex->getTraceAsString()
             ]);
         }
