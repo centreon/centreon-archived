@@ -31,6 +31,7 @@ use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -48,6 +49,11 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
  */
 class MonitoringResourceController extends AbstractController
 {
+    /**
+     * @var ResourceTypeInterface[]
+     */
+    private array $resourceTypes = [];
+
     /**
      * List of external parameters for list action
      *
@@ -129,33 +135,24 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var ResourceServiceInterface
-     */
-    protected $resource;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
-
-    /**
-     * @var IconUrlNormalizer
-     */
-    protected $iconUrlNormalizer;
-
-    /**
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      * @param IconUrlNormalizer $iconUrlNormalizer
+     * @param \Traversable<ResourceTypeInterface> $resourceTypes
      */
     public function __construct(
-        ResourceServiceInterface $resource,
-        UrlGeneratorInterface $router,
-        IconUrlNormalizer $iconUrlNormalizer
+        protected ResourceServiceInterface $resource,
+        protected UrlGeneratorInterface $router,
+        protected IconUrlNormalizer $iconUrlNormalizer,
+        \Traversable $resourceTypes
     ) {
-        $this->resource = $resource;
-        $this->router = $router;
-        $this->iconUrlNormalizer = $iconUrlNormalizer;
+        if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
+            throw new \InvalidArgumentException(
+                _('You must at least add one resource provider')
+            );
+        }
+
+        $this->resourceTypes = iterator_to_array($resourceTypes);
     }
 
     /**
@@ -218,6 +215,8 @@ class MonitoringResourceController extends AbstractController
             'json'
         );
 
+        $this->validateResourceTypeFilterOrFail($filter);
+
         $context = (new Context())
             ->setGroups(self::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
@@ -247,6 +246,30 @@ class MonitoringResourceController extends AbstractController
             'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
+    }
+
+    /**
+     * Checks that filter types provided in the payload are supported.
+     *
+     * @param ResourceFilter $filter
+     * @throws \InvalidArgumentException
+     */
+    private function validateResourceTypeFilterOrFail(ResourceFilter $filter): void
+    {
+        /**
+         * Checking types provided in the ResourceFilter entity and check
+         * if it is part of the available resourceTypes
+         */
+        $availableResourceTypes = array_map(
+            fn (ResourceTypeInterface $resourceType) => $resourceType->getName(),
+            $this->resourceTypes
+        );
+
+        foreach ($filter->getTypes() as $resourceType) {
+            if (! in_array($resourceType, $availableResourceTypes)) {
+                throw new \InvalidArgumentException(_('Resource type provided not supported'));
+            }
+        }
     }
 
     /**

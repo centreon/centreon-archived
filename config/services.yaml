@@ -33,6 +33,8 @@ services:
     _instanceof:
         Security\Domain\Authentication\Interfaces\ProviderInterface:
             tags: ['authentication.providers']
+        Core\Domain\RealTime\ResourceTypeInterface:
+            tags: ['monitoring.resource.type']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'
@@ -90,3 +92,14 @@ services:
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
+    Centreon\Application\Controller\MonitoringResourceController:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
