@@ -286,7 +286,8 @@ class LoginOpenIdSession
     {
         $user = $this->provider->getUser();
         if ($user === null) {
-            if (!$this->provider->canCreateUser()) {
+            if (! $this->provider->canCreateUser()) {
+                $this->error("User not found, and could not been created");
                 throw new NotFoundException('User could not be created');
             }
             $this->info("User not found, start auto import");
@@ -343,6 +344,11 @@ class LoginOpenIdSession
         if (is_string($userClaims)) {
             $userClaims = explode(",", $userClaims);
         }
+
+        $this->info("Claims found", [
+            "claims_value" => implode(", ", $userClaims),
+            "claim_name" => $configuration->getClaimName()
+        ]);
 
         return $userClaims;
     }
