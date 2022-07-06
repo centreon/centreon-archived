@@ -282,7 +282,11 @@ class CentreonContact extends CentreonObject
      */
     protected function initUniqueField(array $params): void
     {
-        $this->addParams[$this->object->getUniqueLabelField()] = str_replace(" ", "_", $params[static::ORDER_UNIQUENAME]);
+        $this->addParams[$this->object->getUniqueLabelField()] = str_replace(
+            " ",
+            "_",
+            $params[static::ORDER_UNIQUENAME]
+        );
     }
 
     /**
