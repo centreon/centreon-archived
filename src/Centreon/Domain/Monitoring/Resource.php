@@ -62,6 +62,11 @@ class Resource
     private $id;
 
     /**
+     * @var integer|null
+     */
+    private ?int $internalId = null;
+
+    /**
      * @var string|null
      */
     private $type;
@@ -1103,5 +1108,24 @@ class Resource
     public function hasGraph(): bool
     {
         return $this->hasGraph;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getInternalId(): ?int
+    {
+        return $this->internalId;
+    }
+
+    /**
+     * @param integer|null $internalId
+     * @return self
+     */
+    public function setInternalId(?int $internalId): self
+    {
+        $this->internalId = $internalId;
+
+        return $this;
     }
 }

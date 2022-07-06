@@ -31,14 +31,16 @@ use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
+use Centreon\Application\Controller\AbstractController;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaProviderInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 /**
@@ -48,6 +50,16 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
  */
 class MonitoringResourceController extends AbstractController
 {
+    /**
+     * @var ResourceTypeInterface[]
+     */
+    private array $resourceTypes = [];
+
+    /**
+     * @var HypermediaProviderInterface[]
+     */
+    private array $hyperMediaProviders = [];
+
     /**
      * List of external parameters for list action
      *
@@ -67,26 +79,6 @@ class MonitoringResourceController extends AbstractController
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
 
-
-    private const META_SERVICE_CONFIGURATION_URI = '/main.php?p=60204&o=c&meta_id={resource_id}';
-    private const META_SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_meta_service';
-    private const META_SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebymetaservices';
-    private const META_SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addMetaServiceDowntime';
-    private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE =
-        'centreon_application_acknowledgement_addmetaserviceacknowledgement';
-    private const META_SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getMetaServiceStatusMetrics';
-    private const META_SERVICE_METRIC_LIST_ROUTE = 'centreon_application_find_meta_service_metrics';
-    private const META_SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getMetaServicePerformanceMetrics';
-
-    private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
-    private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
-    private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
-    private const SERVICE_LOGS_URI = '/main.php?p=20301&svc={parent_resource_id}_{resource_id}';
-    private const META_SERVICE_LOGS_URI = '/main.php?p=20301&svc={host_id}_{service_id}';
-    private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
-    private const SERVICE_REPORTING_URI =
-        '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
-
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 
     public const TAB_DETAILS_NAME = 'details';
@@ -103,20 +95,6 @@ class MonitoringResourceController extends AbstractController
         self::TAB_SHORTCUTS_NAME,
     ];
 
-    private const HOST_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addhostacknowledgement';
-    private const SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addserviceacknowledgement';
-    private const HOST_DOWNTIME_ROUTE = 'monitoring.downtime.addHostDowntime';
-    private const SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addServiceDowntime';
-    private const HOST_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_host';
-    private const SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_service';
-    private const HOST_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebyhost';
-    private const SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebyhostandservice';
-    private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
-    private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
-    private const HOST_NOTIFICATION_POLICY_ROUTE = 'configuration.host.notification-policy';
-    private const SERVICE_NOTIFICATION_POLICY_ROUTE = 'configuration.service.notification-policy';
-    private const META_SERVICE_NOTIFICATION_POLICY_ROUTE = 'configuration.metaservice.notification-policy';
-
     // Groups for serialization
     public const SERIALIZER_GROUPS_LISTING = [
         ResourceEntity::SERIALIZER_GROUP_MAIN,
@@ -129,33 +107,36 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var ResourceServiceInterface
-     */
-    protected $resource;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
-
-    /**
-     * @var IconUrlNormalizer
-     */
-    protected $iconUrlNormalizer;
-
-    /**
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      * @param IconUrlNormalizer $iconUrlNormalizer
+     * @param \Traversable<ResourceTypeInterface> $resourceTypes
+     * @param \Traversable<HypermediaProviderInterface> $hyperMediaProviders
      */
     public function __construct(
-        ResourceServiceInterface $resource,
-        UrlGeneratorInterface $router,
-        IconUrlNormalizer $iconUrlNormalizer
+        protected ResourceServiceInterface $resource,
+        protected UrlGeneratorInterface $router,
+        protected IconUrlNormalizer $iconUrlNormalizer,
+        \Traversable $resourceTypes,
+        \Traversable $hyperMediaProviders
     ) {
-        $this->resource = $resource;
-        $this->router = $router;
-        $this->iconUrlNormalizer = $iconUrlNormalizer;
+        $this->hasProviders($resourceTypes);
+        $this->resourceTypes = iterator_to_array($resourceTypes);
+        $this->hasProviders($hyperMediaProviders);
+        $this->hyperMediaProviders = iterator_to_array($hyperMediaProviders);
+    }
+
+    /**
+     * @param \Traversable<mixed> $providers
+     * @return void
+     */
+    private function hasProviders(\Traversable $providers): void
+    {
+        if ($providers instanceof \Countable && count($providers) === 0) {
+            throw new \InvalidArgumentException(
+                _('You must at least add one provider')
+            );
+        }
     }
 
     /**
@@ -218,6 +199,8 @@ class MonitoringResourceController extends AbstractController
             'json'
         );
 
+        $this->validateResourceTypeFilterOrFail($filter);
+
         $context = (new Context())
             ->setGroups(self::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
@@ -227,8 +210,6 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource
             ->filterByContact($contact)
             ->findResources($filter);
-
-        $this->providePerformanceGraphEndpoint($resources);
 
         foreach ($resources as $resource) {
             if ($resource->getIcon() instanceof Icon) {
@@ -240,7 +221,7 @@ class MonitoringResourceController extends AbstractController
             }
 
             // add shortcuts
-            $this->provideLinks($resource, $contact);
+            $this->provideLinks($resource);
         }
 
         return $this->view([
@@ -250,45 +231,25 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
-     * Add performance graph endpoint on resources which have performance data
+     * Checks that filter types provided in the payload are supported.
      *
-     * @param ResourceEntity[] $resources
-     * @return void
+     * @param ResourceFilter $filter
+     * @throws \InvalidArgumentException
      */
-    private function providePerformanceGraphEndpoint(array $resources)
+    private function validateResourceTypeFilterOrFail(ResourceFilter $filter): void
     {
-        $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
+        /**
+         * Checking types provided in the ResourceFilter entity and check
+         * if it is part of the available resourceTypes
+         */
+        $availableResourceTypes = array_map(
+            fn (ResourceTypeInterface $resourceType) => $resourceType->getName(),
+            $this->resourceTypes
+        );
 
-        foreach ($resources as $resource) {
-            foreach ($resourcesWithGraphData as $resourceWithGraphData) {
-                if (
-                    $resource->getType() === ResourceEntity::TYPE_SERVICE
-                    && $resourceWithGraphData->getType() === ResourceEntity::TYPE_SERVICE
-                    && $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
-                    && $resource->getId() === $resourceWithGraphData->getId()
-                ) {
-                    // set service performance graph endpoint from metrics controller
-                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
-                        $this->router->generate(
-                            self::SERVICE_PERFORMANCE_GRAPH_ROUTE,
-                            [
-                                'hostId' => $resource->getParent()->getId(),
-                                'serviceId' => $resource->getId(),
-                            ]
-                        )
-                    );
-                } elseif (
-                    $resource->getType() === ResourceEntity::TYPE_META
-                    && $resource->getId() === $resourceWithGraphData->getId()
-                ) {
-                    // set service performance graph endpoint from metrics controller
-                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
-                        $this->router->generate(
-                            self::META_SERVICE_PERFORMANCE_GRAPH_ROUTE,
-                            ['metaId' => $resource->getId()]
-                        )
-                    );
-                }
+        foreach ($filter->getTypes() as $resourceType) {
+            if (! in_array($resourceType, $availableResourceTypes)) {
+                throw new \InvalidArgumentException(_('Resource type provided not supported'));
             }
         }
     }
@@ -297,324 +258,42 @@ class MonitoringResourceController extends AbstractController
      * Add internal, external uris and endpoints to the given resource
      *
      * @param ResourceEntity $resource
-     * @param Contact $contact
      * @return void
      */
-    private function provideLinks(ResourceEntity $resource, Contact $contact): void
+    private function provideLinks(ResourceEntity $resource): void
     {
-        $this->provideEndpoints($resource);
-        $this->provideInternalUris($resource, $contact);
-    }
-
-    /**
-     * Add endpoints to the given resource
-     *
-     * @param ResourceEntity $resource
-     * @return void
-     */
-    private function provideEndpoints(ResourceEntity $resource): void
-    {
-        $acknowledgementFilter = ['limit' => 1];
-        $downtimeFilter = [
-            'search' => json_encode([
-                RequestParameters::AGGREGATE_OPERATOR_AND => [
-                    [
-                        'start_time' => [
-                            RequestParameters::OPERATOR_LESS_THAN => time(),
-                        ],
-                        'end_time' => [
-                            RequestParameters::OPERATOR_GREATER_THAN => time(),
-                        ],
-                        [
-                            RequestParameters::AGGREGATE_OPERATOR_OR => [
-                                'is_cancelled' => [
-                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
-                                ],
-                                'deletion_time' => [
-                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
-                                ],
-                            ],
-                        ]
-                    ]
-                ]
-            ])
+        $parameters = [
+            'internalId' => $resource->getInternalId(),
+            'hostId' => $resource->getHostId(),
+            'serviceId' => $resource->getServiceId(),
+            'hasGraphData' => $resource->hasGraph()
         ];
 
-        $hostResource = null;
+        $uris = [];
+        $endpoints = [];
 
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $hostResource = $resource;
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
-            $hostResource = $resource->getParent();
-
-            $parameters = [
-                'hostId' => $resource->getParent()->getId(),
-                'serviceId' => $resource->getId(),
-            ];
-
-            $resource->getLinks()->getEndpoints()->setDetails(
-                $this->router->generate(
-                    self::SERVICE_DETAILS_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setTimeline(
-                $this->router->generate(
-                    self::SERVICE_TIMELINE_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setAcknowledgement(
-                $this->router->generate(
-                    self::SERVICE_ACKNOWLEDGEMENT_ROUTE,
-                    array_merge($parameters, $acknowledgementFilter)
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setDowntime(
-                $this->router->generate(
-                    self::SERVICE_DOWNTIME_ROUTE,
-                    array_merge($parameters, $downtimeFilter)
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setStatusGraph(
-                $this->router->generate(
-                    self::SERVICE_STATUS_GRAPH_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setNotificationPolicy(
-                $this->router->generate(
-                    self::SERVICE_NOTIFICATION_POLICY_ROUTE,
-                    $parameters
-                )
-            );
-        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
-            $parameters = [
-                'metaId' => $resource->getId(),
-            ];
-
-            $resource->getLinks()->getEndpoints()->setDetails(
-                $this->router->generate(
-                    self::META_SERVICE_DETAILS_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setTimeline(
-                $this->router->generate(
-                    self::META_SERVICE_TIMELINE_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setAcknowledgement(
-                $this->router->generate(
-                    self::META_SERVICE_ACKNOWLEDGEMENT_ROUTE,
-                    array_merge($parameters, $acknowledgementFilter)
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setDowntime(
-                $this->router->generate(
-                    self::META_SERVICE_DOWNTIME_ROUTE,
-                    array_merge($parameters, $downtimeFilter)
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setStatusGraph(
-                $this->router->generate(
-                    self::META_SERVICE_STATUS_GRAPH_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setMetrics(
-                $this->router->generate(
-                    self::META_SERVICE_METRIC_LIST_ROUTE,
-                    $parameters
-                )
-            );
-
-            $resource->getLinks()->getEndpoints()->setNotificationPolicy(
-                $this->router->generate(
-                    self::META_SERVICE_NOTIFICATION_POLICY_ROUTE,
-                    ['metaServiceId' => $resource->getId()]
-                )
-            );
+        foreach ($this->hyperMediaProviders as $hyperMediaProvider) {
+            if (
+                $resource->getType() !== null
+                && $hyperMediaProvider->isValidFor($resource->getType())
+            ) {
+                $endpoints = $hyperMediaProvider->createEndpoints($parameters);
+                $uris = $hyperMediaProvider->createInternalUris($parameters);
+            }
         }
 
-        if ($hostResource !== null) {
-            $parameters = [
-                'hostId' => $hostResource->getId(),
-            ];
+        $resource->getLinks()->getEndpoints()
+            ->setDetails($endpoints['details'])
+            ->setPerformanceGraph($endpoints['performance_graph'])
+            ->setStatusGraph($endpoints['status_graph'])
+            ->setDowntime($endpoints['downtime'])
+            ->setAcknowledgement($endpoints['acknowledgement'])
+            ->setTimeline($endpoints['timeline']);
 
-            $hostResource->getLinks()->getEndpoints()->setDetails(
-                $this->router->generate(
-                    self::HOST_DETAILS_ROUTE,
-                    $parameters
-                )
-            );
-
-            $hostResource->getLinks()->getEndpoints()->setTimeline(
-                $this->router->generate(
-                    self::HOST_TIMELINE_ROUTE,
-                    $parameters
-                )
-            );
-
-            $hostResource->getLinks()->getEndpoints()->setAcknowledgement(
-                $this->router->generate(
-                    self::HOST_ACKNOWLEDGEMENT_ROUTE,
-                    array_merge($parameters, $acknowledgementFilter)
-                )
-            );
-
-            $hostResource->getLinks()->getEndpoints()->setDowntime(
-                $this->router->generate(
-                    self::HOST_DOWNTIME_ROUTE,
-                    array_merge($parameters, $downtimeFilter)
-                )
-            );
-
-            $hostResource->getLinks()->getEndpoints()->setNotificationPolicy(
-                $this->router->generate(
-                    self::HOST_NOTIFICATION_POLICY_ROUTE,
-                    $parameters
-                )
-            );
-        }
-    }
-
-    /**
-     * Add internal uris (configuration, logs, reporting) to the given resource
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
-            $this->provideHostInternalUris($resource->getParent(), $contact);
-            $this->provideServiceInternalUris($resource, $contact);
-        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
-            $this->provideMetaServiceInternalUris($resource, $contact);
-        } else {
-            $this->provideHostInternalUris($resource, $contact);
-        }
-    }
-
-    /**
-     * Add host internal uris (configuration, logs, reporting) to the given resource
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideHostInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if (
-            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
-            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
-        ) {
-            $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, self::HOST_CONFIGURATION_URI)
-            );
-        }
-
-        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
-            $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, self::HOST_LOGS_URI)
-            );
-        }
-
-        if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)) {
-            $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, self::HOST_REPORTING_URI)
-            );
-        }
-    }
-
-    /**
-     * Add service internal uris (configuration, logs, reporting) to the given resource
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideServiceInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if (
-            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
-            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
-        ) {
-            $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, self::SERVICE_CONFIGURATION_URI)
-            );
-        }
-
-        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
-            $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, self::SERVICE_LOGS_URI)
-            );
-        }
-
-        if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
-            $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, self::SERVICE_REPORTING_URI)
-            );
-        }
-    }
-
-    /**
-     * Add service internal uris (configuration, logs, reporting) to the given resource
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideMetaServiceInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if (
-            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_WRITE)
-            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_READ)
-            || $contact->isAdmin()
-        ) {
-            $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, self::META_SERVICE_CONFIGURATION_URI)
-            );
-        }
-
-        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
-            $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, self::META_SERVICE_LOGS_URI)
-            );
-        }
-    }
-
-    /**
-     * Generate full uri from relative path
-     *
-     * @param ResourceEntity $resource
-     * @param string $relativeUri
-     * @return string
-     */
-    private function generateResourceUri(ResourceEntity $resource, string $relativeUri): string
-    {
-        $relativeUri = str_replace('{resource_id}', (string) $resource->getId(), $relativeUri);
-        $relativeUri = str_replace('{host_id}', (string) $resource->getHostId(), $relativeUri);
-        $relativeUri = str_replace('{service_id}', (string) $resource->getServiceId(), $relativeUri);
-
-        if ($resource->getParent() !== null) {
-            $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
-        }
-
-        return $this->getBaseUri() . $relativeUri;
+        $resource->getLinks()->getUris()
+            ->setConfiguration($uris['configuration'])
+            ->setReporting($uris['reporting'])
+            ->setLogs($uris['logs']);
     }
 
     /**
@@ -717,7 +396,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param string[] $parameters
+     * @param array<string, mixed> $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string

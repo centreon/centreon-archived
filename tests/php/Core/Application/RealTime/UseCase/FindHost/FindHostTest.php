@@ -176,7 +176,7 @@ it('should find the host as admin', function () {
     $findHost(1, $presenter);
 
     expect($presenter->response->name)->toBe($this->host->getName());
-    expect($presenter->response->id)->toBe($this->host->getId());
+    expect($presenter->response->hostId)->toBe($this->host->getId());
     expect($presenter->response->address)->toBe($this->host->getAddress());
     expect($presenter->response->monitoringServerName)->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->timezone)->toBe($this->host->getTimezone());
@@ -266,7 +266,7 @@ it('should find the host as non admin', function () {
     $findHost(1, $presenter);
 
     expect($presenter->response->name)->toBe($this->host->getName());
-    expect($presenter->response->id)->toBe($this->host->getId());
+    expect($presenter->response->hostId)->toBe($this->host->getId());
     expect($presenter->response->address)->toBe($this->host->getAddress());
     expect($presenter->response->monitoringServerName)->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->timezone)->toBe($this->host->getTimezone());

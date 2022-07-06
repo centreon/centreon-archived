@@ -25,7 +25,10 @@ namespace Centreon\Infrastructure\Monitoring\Resource;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Notes;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
+use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbResourceFactory
@@ -34,25 +37,29 @@ class DbResourceFactory
 
     /**
      * @param array<string, mixed> $record
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return ResourceEntity
      */
-    public static function createFromRecord(array $record): ResourceEntity
+    public static function createFromRecord(array $record, array $availableResourceTypes): ResourceEntity
     {
-        $resourceType = self::normalizeType((int) $record['type']);
+        $resourceType = self::normalizeType((int) $record['type'], $availableResourceTypes);
 
         $parent = null;
 
-        if ($resourceType === ResourceEntity::TYPE_SERVICE) {
+        if (
+            $resourceType !== MetaServiceResourceType::TYPE_NAME
+            && $resourceType !== HostResourceType::TYPE_NAME
+        ) {
             $parentStatus = (new ResourceStatus())
                 ->setCode((int) $record['parent_status'])
-                ->setName(self::getStatusAsString(ResourceEntity::TYPE_HOST, (int) $record['parent_status']))
+                ->setName(self::getStatusAsString(HostResourceType::TYPE_NAME, (int) $record['parent_status']))
                 ->setSeverityCode(self::normalizeSeverityCode((int) $record['parent_status_ordered']));
 
             $parent = (new ResourceEntity())
                 ->setId((int) $record['parent_id'])
                 ->setName($record['parent_name'])
                 ->setAlias($record['parent_alias'])
-                ->setType(ResourceEntity::TYPE_HOST)
+                ->setType(HostResourceType::TYPE_NAME)
                 ->setStatus($parentStatus);
         }
 
@@ -70,6 +77,8 @@ class DbResourceFactory
             . '/' . $record['max_check_attempts'] . ' (' . $statusConfirmedAsString . ')';
 
         $resource = (new ResourceEntity())
+            ->setId((int) $record['id'])
+            ->setInternalId(self::getIntOrNull($record['internal_id']))
             ->setType($resourceType)
             ->setParent($parent)
             ->setStatus($status)
@@ -93,15 +102,6 @@ class DbResourceFactory
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $record['last_status_change']))
             ->setHasGraph((int) $record['has_graph'] === 1)
             ->setSeverityLevel((int) $record['severity_level']);
-
-        /**
-         * Handle special case of Meta Service resource type
-         */
-        $resourceId = $resource->getType() === ResourceEntity::TYPE_META
-            ? $record['internal_id']
-            : $record['id'];
-
-        $resource->setId((int) $resourceId);
 
         $resource->getLinks()->getExternals()->setActionUrl($record['action_url']);
         $resource->getLinks()->getExternals()->setNotes($notes);
@@ -164,15 +164,18 @@ class DbResourceFactory
      * Converts the resource type value stored as int into a string
      *
      * @param int $type
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return string
      */
-    private static function normalizeType(int $type): string
+    private static function normalizeType(int $type, array $availableResourceTypes): string
     {
-        return match ($type) {
-            0 => ResourceEntity::TYPE_SERVICE,
-            1 => ResourceEntity::TYPE_HOST,
-            2 => ResourceEntity::TYPE_META,
-            default => ResourceEntity::TYPE_SERVICE
-        };
+        $normalizedType = '';
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($type)) {
+                $normalizedType =  $resourceType->getName();
+            }
+        }
+
+        return $normalizedType;
     }
 }

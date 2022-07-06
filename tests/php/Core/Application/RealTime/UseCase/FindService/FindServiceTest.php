@@ -274,7 +274,7 @@ it('should find service as admin', function () {
     $findService(1, 10, $presenter);
 
     expect($presenter->response->name)->toBe($this->service->getName());
-    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->serviceId)->toBe($this->service->getId());
     expect($presenter->response->host['monitoring_server_name'])
         ->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());
@@ -364,7 +364,7 @@ it('FindService service found as non admin', function () {
     $findService(1, 10, $presenter);
 
     expect($presenter->response->name)->toBe($this->service->getName());
-    expect($presenter->response->id)->toBe($this->service->getId());
+    expect($presenter->response->serviceId)->toBe($this->service->getId());
     expect($presenter->response->host['monitoring_server_name'])
         ->toBe($this->host->getMonitoringServerName());
     expect($presenter->response->isFlapping)->toBe($this->service->isFlapping());

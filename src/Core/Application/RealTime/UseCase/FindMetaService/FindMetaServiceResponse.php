@@ -26,6 +26,7 @@ use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 
 class FindMetaServiceResponse
 {
@@ -147,7 +148,12 @@ class FindMetaServiceResponse
     public $hasGraphData;
 
     /**
-     * @param int $id
+     * @var string
+     */
+    public string $type = MetaServiceResourceType::TYPE_NAME;
+
+    /**
+     * @param int $metaId
      * @param int $hostId
      * @param int $serviceId
      * @param string $name
@@ -157,7 +163,7 @@ class FindMetaServiceResponse
      * @param Acknowledgement|null $acknowledgement
      */
     public function __construct(
-        public int $id,
+        public int $metaId,
         public int $hostId,
         public int $serviceId,
         public string $name,
