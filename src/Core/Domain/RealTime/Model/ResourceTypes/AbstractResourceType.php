@@ -26,7 +26,7 @@ use Core\Domain\RealTime\ResourceTypeInterface;
 
 abstract class AbstractResourceType implements ResourceTypeInterface
 {
-    protected string $type = '';
+    protected string $name = '';
 
     protected int $id = -1;
 
@@ -41,16 +41,16 @@ abstract class AbstractResourceType implements ResourceTypeInterface
     /**
      * @inheritDoc
      */
-    public function getType(): string
+    public function getName(): string
     {
-        return $this->type;
+        return $this->name;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidFor(string $type): bool
+    public function isValidFor(string $name): bool
     {
-        return $type === $this->type;
+        return $name === $this->name;
     }
 }

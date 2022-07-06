@@ -24,13 +24,15 @@ namespace Core\Domain\RealTime\Model\ResourceTypes;
 
 class ServiceResourceType extends AbstractResourceType
 {
+    public const SERVICE_RESOURCE_TYPE_NAME = 'service',
+                 SERVICE_RESOURCE_TYPE_ID = 0;
     /**
-     * @var string $type
+     * @var string $name
      */
-    protected string $type = 'service';
+    protected string $name = self::SERVICE_RESOURCE_TYPE_NAME;
 
     /**
      * @var integer $id
      */
-    protected int $id = 0;
+    protected int $id = self::SERVICE_RESOURCE_TYPE_ID;
 }

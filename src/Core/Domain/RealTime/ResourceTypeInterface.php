@@ -32,7 +32,7 @@ interface ResourceTypeInterface
     /**
      * @return string
      */
-    public function getType(): string;
+    public function getName(): string;
 
     /**
      * @param string $type

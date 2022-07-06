@@ -146,9 +146,6 @@ class MonitoringResourceController extends AbstractController
         protected IconUrlNormalizer $iconUrlNormalizer,
         \Traversable $resourceTypes
     ) {
-        $this->resource = $resource;
-        $this->router = $router;
-        $this->iconUrlNormalizer = $iconUrlNormalizer;
         if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
             throw new \InvalidArgumentException(
                 _('You must at least add one resource provider')
@@ -218,20 +215,7 @@ class MonitoringResourceController extends AbstractController
             'json'
         );
 
-        /**
-         * Checking types provided in the ResourceFilter entity and check
-         * if it is part of the available resourceTypes
-         */
-        $availableResourceTypes = array_map(
-            fn (ResourceTypeInterface $resourceType) => $resourceType->getType(),
-            $this->resourceTypes
-        );
-
-        foreach ($filter->getTypes() as $resourceType) {
-            if (! in_array($resourceType, $availableResourceTypes)) {
-                throw new \InvalidArgumentException(_('Unsupported resource type provided'));
-            }
-        }
+        $this->validateResourceTypeFilterOrFail($filter);
 
         $context = (new Context())
             ->setGroups(self::SERIALIZER_GROUPS_LISTING)
@@ -262,6 +246,30 @@ class MonitoringResourceController extends AbstractController
             'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
+    }
+
+    /**
+     * Checks that filter types provided in the payload are supported.
+     *
+     * @param ResourceFilter $filter
+     * @throws \InvalidArgumentException
+     */
+    private function validateResourceTypeFilterOrFail(ResourceFilter $filter): void
+    {
+        /**
+         * Checking types provided in the ResourceFilter entity and check
+         * if it is part of the available resourceTypes
+         */
+        $availableResourceTypes = array_map(
+            fn (ResourceTypeInterface $resourceType) => $resourceType->getName(),
+            $this->resourceTypes
+        );
+
+        foreach ($filter->getTypes() as $resourceType) {
+            if (! in_array($resourceType, $availableResourceTypes)) {
+                throw new \InvalidArgumentException(_('Resource type provided not supported'));
+            }
+        }
     }
 
     /**

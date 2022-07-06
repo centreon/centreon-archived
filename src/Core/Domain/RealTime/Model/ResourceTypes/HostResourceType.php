@@ -24,13 +24,16 @@ namespace Core\Domain\RealTime\Model\ResourceTypes;
 
 class HostResourceType extends AbstractResourceType
 {
+    public const HOST_RESOURCE_TYPE_NAME = 'host',
+                 HOST_RESOURCE_TYPE_ID = 1;
+
     /**
-     * @var string $type
+     * @var string $name
      */
-    protected string $type = 'host';
+    protected string $name = self::HOST_RESOURCE_TYPE_NAME;
 
     /**
      * @var integer $id
      */
-    protected int $id = 1;
+    protected int $id = self::HOST_RESOURCE_TYPE_ID;
 }

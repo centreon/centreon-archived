@@ -139,7 +139,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
      */
     public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
-        $this->accessGroups = $accessGroups === null ? [] : $accessGroups;
+        $this->accessGroups = $accessGroups ?? [];
         return $this;
     }
 
@@ -328,7 +328,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     {
         return array_filter(
             $resources,
-            fn(ResourceEntity $resource) => $resource->hasGraph(),
+            fn (ResourceEntity $resource) => $resource->hasGraph(),
         );
     }
 
