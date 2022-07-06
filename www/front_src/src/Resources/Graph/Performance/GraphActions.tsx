@@ -18,6 +18,7 @@ import {
 
 import {
   labelAsDisplayed,
+  labelExport,
   labelExportToCSV,
   labelExportToPng,
   labelMediumSize,
@@ -144,7 +145,7 @@ const GraphActions = ({
             data-testid={labelExportToPng}
             disabled={isNil(timeline)}
             size="large"
-            title={t(labelExportToPng)}
+            title={t(labelExport)}
             onClick={openSizeExportMenu}
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
@@ -157,13 +158,12 @@ const GraphActions = ({
           >
             <MenuItem
               className={classes.labelCategorieToExport}
-              data-testid={labelExportToPng}
+              data-testid={labelExport}
               sx={{ cursor: 'auto' }}
             >
-              {t(labelExportToPng)}
+              {t(labelExport)}
             </MenuItem>
             <Divider />
-
             <MenuItem
               data-testid={labelAsDisplayed}
               onClick={(): void => convertToPng(1)}
@@ -183,11 +183,7 @@ const GraphActions = ({
               {t(labelSmallSize)}
             </MenuItem>
             <Divider />
-            <MenuItem
-              className={classes.labelCategorieToExport}
-              data-testid={labelExportToCSV}
-              onClick={exportToCsv}
-            >
+            <MenuItem data-testid={labelExportToCSV} onClick={exportToCsv}>
               {t(labelExportToCSV)}
             </MenuItem>
           </Menu>
