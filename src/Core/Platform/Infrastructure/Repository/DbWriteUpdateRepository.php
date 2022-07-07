@@ -29,7 +29,6 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -43,14 +42,12 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      * @param Container $dependencyInjector
      * @param DatabaseConnection $db
      * @param Filesystem $filesystem
-     * @param Finder $finder
      * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
         private Container $dependencyInjector,
         DatabaseConnection $db,
         private Filesystem $filesystem,
-        private Finder $finder,
         private ParameterBagInterface $parameterBag,
     ) {
         $this->db = $db;

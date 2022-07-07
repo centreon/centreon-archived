@@ -101,9 +101,9 @@ it('should run found updates', function () {
         ->willReturn(true);
 
     $this->readVersionRepository
-        ->expects($this->once())
+        ->expects($this->exactly(2))
         ->method('findCurrentVersion')
-        ->willReturn('22.04.0');
+        ->will($this->onConsecutiveCalls('22.04.0', '22.10.1'));
 
     $this->readUpdateRepository
         ->expects($this->once())
