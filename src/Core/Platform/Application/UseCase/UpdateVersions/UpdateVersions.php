@@ -65,9 +65,9 @@ class UpdateVersions
 
             $this->runUpdates($availableUpdates);
 
-            $this->runPostUpdate($this->getCurrentVersionOrFail());
-
             $this->unlockUpdate();
+
+            $this->runPostUpdate($this->getCurrentVersionOrFail());
         } catch (\Throwable $e) {
             $this->error(
                 $e->getMessage(),
