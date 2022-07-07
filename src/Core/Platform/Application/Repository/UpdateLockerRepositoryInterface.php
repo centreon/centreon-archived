@@ -28,11 +28,15 @@ interface UpdateLockerRepositoryInterface
      * Lock update process
      *
      * @return bool if the lock has been properly acquired
+     *
+     * @throws UpdateLockerException
      */
     public function lock(): bool;
 
     /**
      * Unlock update process
+     *
+     * @throws UpdateLockerException
      */
     public function unlock(): void;
 }

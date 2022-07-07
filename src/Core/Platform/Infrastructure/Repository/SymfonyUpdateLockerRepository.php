@@ -25,14 +25,11 @@ namespace Core\Platform\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
+use Core\Platform\Application\Repository\UpdateLockerException;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
-use Symfony\Component\Lock\Exception\LockAcquiringException;
-use Symfony\Component\Lock\Exception\LockConflictedException;
-use Symfony\Component\Lock\Exception\LockExpiredException;
-use Symfony\Component\Lock\Exception\LockReleasingException;
 
-class FsUpdateLockerRepository implements UpdateLockerRepositoryInterface
+class SymfonyUpdateLockerRepository implements UpdateLockerRepositoryInterface
 {
     use LoggerTrait;
 
@@ -53,9 +50,7 @@ class FsUpdateLockerRepository implements UpdateLockerRepositoryInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @throws UpdateLockerException
+     * @inheritDoc
      */
     public function lock(): bool
     {
@@ -69,9 +64,7 @@ class FsUpdateLockerRepository implements UpdateLockerRepositoryInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @throws UpdateLockerException
+     * @inheritDoc
      */
     public function unlock(): void
     {

@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Infrastructure\Repository;
+namespace Core\Platform\Application\Repository;
 
 use Centreon\Domain\Repository\RepositoryException;
 

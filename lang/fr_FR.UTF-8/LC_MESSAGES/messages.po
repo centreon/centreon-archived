@@ -16916,3 +16916,24 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
+
+msgid "Update already in progress"
+msgstr "Mise à jour déjà en cours"
+
+msgid "An error occurred when retrieving current version"
+msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
+
+msgid "Cannot retrieve current version"
+msgstr "La version actuelle n'a pas pu être trouvée"
+
+msgid "An error occurred when getting available updates"
+msgstr "Une erreur s'est produite lors de la récupération des mises à jour disponibles"
+
+msgid "An error occurred when applying update %s (%s)"
+msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%s)"
+
+msgid "Error while locking update process"
+msgstr "Erreur lors du verouillage du processus de mise à jour"
+
+msgid "'Error while unlocking update process"
+msgstr "Erreur lors du dévérouillage du processus de mise à jour"

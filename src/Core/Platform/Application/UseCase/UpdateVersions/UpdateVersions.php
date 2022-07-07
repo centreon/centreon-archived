@@ -88,7 +88,7 @@ class UpdateVersions
         $this->info('Locking centreon update process...');
 
         if (!$this->updateLocker->lock()) {
-            throw new \Exception('Update already in progress');
+            throw UpdateVersionsException::updateAlreadyInProgress();
         }
     }
 
@@ -116,11 +116,11 @@ class UpdateVersions
         try {
             $currentVersion = $this->readVersionRepository->findCurrentVersion();
         } catch (\Exception $e) {
-            throw new \Exception('An error occurred when retrieving current version', 0, $e);
+            throw UpdateVersionsException::errorWhenRetrievingCurrentVersion($e);
         }
 
         if ($currentVersion === null) {
-            throw new \Exception('Cannot retrieve current version');
+            throw UpdateVersionsException::cannotRetrieveCurrentVersion();
         }
 
         return $currentVersion;
@@ -144,7 +144,7 @@ class UpdateVersions
 
             return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
-            throw new \Exception('An error occurred when getting available updates', 0, $e);
+            throw UpdateVersionsException::errorWhenRetrievingAvailableUpdates($e);
         }
     }
 
@@ -162,15 +162,7 @@ class UpdateVersions
                 $this->info("Running update $version");
                 $this->writeUpdateRepository->runUpdate($version);
             } catch (\Throwable $e) {
-                throw new \Exception(
-                    sprintf(
-                        'An error occurred when applying update %s (%s)',
-                        $version,
-                        $e->getMessage(),
-                    ),
-                    0,
-                    $e,
-                );
+                throw UpdateVersionsException::errorWhenApplyingUpdate($version, $e->getMessage(), $e);
             }
         }
     }
