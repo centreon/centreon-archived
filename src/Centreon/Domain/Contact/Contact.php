@@ -163,6 +163,11 @@ class Contact implements UserInterface, ContactInterface
     private $timezone;
 
     /**
+     * @var string
+     */
+    private string $timezoneId;
+
+    /**
      * @var string|null $locale locale of the user
      */
     private $locale;
@@ -188,6 +193,18 @@ class Contact implements UserInterface, ContactInterface
      * @var string|null
      */
     private $theme;
+
+    public function setTimezoneId(string $timezoneId): self
+    {
+        $this->timezoneId = $timezoneId;
+
+        return $this;
+    }
+
+    public function getTimezoneId(): string
+    {
+        return $this->timezoneId;
+    }
 
     /**
      * @return int

@@ -109,7 +109,7 @@ class LoginOpenIdSession
                 'contact_autologin_key' => '',
                 'contact_admin' => $user->isAdmin() ? '1' : '0',
                 'default_page' => $user->getDefaultPage(),
-                'contact_location' => $user->getLocale(),
+                'contact_location' => $user->getTimezoneId(),
                 'show_deprecated_pages' => $user->isUsingDeprecatedPages(),
                 'reach_api' => $user->hasAccessToApiConfiguration() ? 1 : 0,
                 'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0
