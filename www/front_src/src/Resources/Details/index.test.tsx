@@ -608,7 +608,10 @@ describe(Details, () => {
       );
     });
 
-    expect(getByText('Critical')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Critical')).toBeInTheDocument();
+    });
+
     expect(getByText('Centreon')).toBeInTheDocument();
 
     const fqdnText = await findByText(labelFqdn);
