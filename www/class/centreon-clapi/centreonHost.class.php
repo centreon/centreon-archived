@@ -37,6 +37,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
+require_once "centreonConfiguration.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
 require_once "centreonACL.class.php";
@@ -87,6 +88,8 @@ class CentreonHost extends CentreonObject
     public const INVALID_GEO_COORDS = "Invalid geo coords";
     public const UNKNOWN_TIMEZONE = "Invalid timezone";
     public const HOST_LOCATION = "timezone";
+
+    private const RESOURCE_TYPE = 'host';
 
     /**
      *
@@ -356,6 +359,19 @@ class CentreonHost extends CentreonObject
     }
 
     /**
+     * @param $parameters
+     * @return mixed
+     */
+    public function add($parameters): void
+    {
+        parent::add($parameters);
+
+        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $hostId = $this->getObjectId($this->params[$this->object->getUniqueLabelField()]);
+        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostId);
+    }
+
+    /**
      * Del Action
      * Must delete services as well
      *
@@ -365,7 +381,10 @@ class CentreonHost extends CentreonObject
      */
     public function del($objectName)
     {
-        $hostId = $this->getHostID($objectName);
+        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $hostId = $this->getObjectId($objectName);
+        $previousPollerIds = $centreonConfig->getPollersForConfigChangeFlagFromHostIds([$hostId]);
+
         $parentDependency = new \Centreon_Object_DependencyHostParent($this->dependencyInjector);
         $parentDependency->removeRelationLastHostDependency($hostId);
 
@@ -374,6 +393,61 @@ class CentreonHost extends CentreonObject
             "DELETE FROM service WHERE service_register = '1' "
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
+
+        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostId, $previousPollerIds);
+    }
+
+    /**
+     * @param array $parameters
+     * @throws CentreonClapiException
+     */
+    public function setParam($parameters = []): void
+    {
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
+        }
+        if (!empty($params)) {
+            $hostId = $params['objectId'];
+
+            $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+            $previousPollerIds = $centreonConfig->getPollersForConfigChangeFlagFromHostIds([$hostId]);
+
+            parent::setparam($parameters);
+
+            $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostId, $previousPollerIds);
+        }
+    }
+
+    /**
+     * Enable object
+     *
+     * @param string $objectName
+     * @return void
+     */
+    public function enable($objectName)
+    {
+        parent::enable($objectName);
+
+        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $hostId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostId);
+    }
+
+    /**
+     * Disable object
+     *
+     * @param string $objectName
+     * @return void
+     */
+    public function disable($objectName)
+    {
+        parent::disable($objectName);
+
+        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $hostId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostId, [], false);
     }
 
     /**
