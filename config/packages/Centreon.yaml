@@ -228,6 +228,10 @@ services:
         class: Core\Platform\Infrastructure\Repository\FsReadUpdateRepository
         public: true
 
+    Core\Platform\Application\Repository\UpdateLockerRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\SymfonyUpdateLockerRepository
+        public: true
+
     Core\Platform\Application\Repository\WriteUpdateRepositoryInterface:
         class: Core\Platform\Infrastructure\Repository\DbWriteUpdateRepository
         public: true
