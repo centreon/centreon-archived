@@ -73,11 +73,16 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     public function runPostUpdate(string $currentVersion): void
     {
-        $this->copyInstallDirectory($currentVersion);
+        $this->backupInstallDirectory($currentVersion);
         $this->removeInstallDirectory();
     }
 
-    private function copyInstallDirectory(string $currentVersion): void
+    /**
+     * Backup installation directory
+     *
+     * @param string $currentVersion
+     */
+    private function backupInstallDirectory(string $currentVersion): void
     {
         $centreonVarLibPath = $this->parameterBag->get('centreon_var_lib');
         if (! is_string($centreonVarLibPath)) {
@@ -100,6 +105,9 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         );
     }
 
+    /**
+     * Remove installation directory
+     */
     private function removeInstallDirectory(): void
     {
         $this->info(
