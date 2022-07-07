@@ -168,7 +168,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 interface Props {
-  headerRef: RefObject<HTMLElement>;
+  headerRef?: RefObject<HTMLElement>;
 }
 
 const UserMenu = ({ headerRef }: Props): JSX.Element => {
@@ -243,15 +243,19 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     if (isNil(headerRef?.current) || isNil(userIconRef?.current)) {
       return;
     }
-    const headerHeight = headerRef?.current?.getBoundingClientRect().height;
+    const headerHeight = headerRef?.current?.getBoundingClientRect()?.height;
 
     const userMenuBottom =
       userIconRef?.current?.getBoundingClientRect()?.bottom;
 
+    if (isNil(headerHeight)) {
+      return;
+    }
     setAnchorHeight(headerHeight - userMenuBottom);
   };
 
   const toggle = (event: MouseEvent<SVGSVGElement>): void => {
+    loadUserData();
     if (anchorEl) {
       setAnchorEl(null);
 
@@ -365,6 +369,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
               <UserIcon
                 aria-label={t(labelProfile)}
                 className={classes.userIcon}
+                data-cy="userIcon"
                 fontSize="large"
                 ref={userIconRef}
                 onClick={toggle}
@@ -375,6 +380,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             transition
             anchorEl={anchorEl}
             className={classes.popper}
+            data-cy="popper"
             modifiers={[
               {
                 name: 'offset',

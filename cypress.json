@@ -7,6 +7,6 @@
       "componentFolder": "./www/front_src/src",
       "testFiles": "./**/*.cypress.spec.{ts,tsx}"
     },
-    "viewportWidth": 720,
+    "viewportWidth": 920,
     "viewportHeight":  576
 } 
