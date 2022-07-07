@@ -86,34 +86,10 @@ const getDefaultCriterias = (
       value: hostGroups,
     },
     {
-      name: 'host_severities',
-      object_type: 'host_severities',
-      type: 'multi_select',
-      value: hostSeverities,
-    },
-    {
-      name: 'host_severity_levels',
-      object_type: 'host_severity_levels',
-      type: 'multi_select',
-      value: hostSeverityLevels,
-    },
-    {
       name: 'service_groups',
       object_type: 'service_groups',
       type: 'multi_select',
       value: serviceGroups,
-    },
-    {
-      name: 'service_severities',
-      object_type: 'service_severities',
-      type: 'multi_select',
-      value: serviceSeverities,
-    },
-    {
-      name: 'service_severity_levels',
-      object_type: 'service_severity_levels',
-      type: 'multi_select',
-      value: serviceSeverityLevels,
     },
     {
       name: 'monitoring_servers',
@@ -132,6 +108,30 @@ const getDefaultCriterias = (
       object_type: 'service_categories',
       type: 'multi_select',
       value: serviceCategories,
+    },
+    {
+      name: 'host_severities',
+      object_type: 'host_severities',
+      type: 'multi_select',
+      value: hostSeverities,
+    },
+    {
+      name: 'host_severity_levels',
+      object_type: 'host_severity_levels',
+      type: 'multi_select',
+      value: hostSeverityLevels,
+    },
+    {
+      name: 'service_severities',
+      object_type: 'service_severities',
+      type: 'multi_select',
+      value: serviceSeverities,
+    },
+    {
+      name: 'service_severity_levels',
+      object_type: 'service_severity_levels',
+      type: 'multi_select',
+      value: serviceSeverityLevels,
     },
     {
       name: 'search',

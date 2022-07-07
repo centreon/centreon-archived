@@ -70,6 +70,30 @@ const parsedSearch = [
     value: [],
   },
   {
+    name: 'host_severities',
+    object_type: 'host_severities',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'host_severity_levels',
+    object_type: 'host_severity_levels',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'service_severities',
+    object_type: 'service_severities',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'service_severity_levels',
+    object_type: 'service_severity_levels',
+    type: 'multi_select',
+    value: [],
+  },
+  {
     name: 'search',
     object_type: null,
     type: 'text',
