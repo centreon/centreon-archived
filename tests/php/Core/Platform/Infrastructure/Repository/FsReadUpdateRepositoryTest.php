@@ -33,7 +33,7 @@ beforeEach(function () {
 });
 
 it('should not find updates if install directory does not exist', function () {
-    $repository = new FsReadUpdateRepository($this->filesystem , $this->finder);
+    $repository = new FsReadUpdateRepository($this->filesystem ,$this->finder);
 
     $this->filesystem
         ->expects($this->once())
@@ -45,7 +45,7 @@ it('should not find updates if install directory does not exist', function () {
 });
 
 it('should order found updates', function () {
-    $repository = new FsReadUpdateRepository($this->filesystem , $this->finder);
+    $repository = new FsReadUpdateRepository($this->filesystem ,$this->finder);
 
     $this->filesystem
         ->expects($this->once())
