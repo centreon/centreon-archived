@@ -72,10 +72,10 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
         disableSortedOptions
-        column={displayedColumn}
         field="name"
         getEndpoint={getEndpoint}
         isOptionEqualToValue={isOptionEqualToValue}
+        labelKey={displayedColumn}
         value={value}
         onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);
