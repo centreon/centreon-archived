@@ -208,6 +208,10 @@ class Utils
     public function encodePass($password, $algo = 'md5')
     {
         $encodePassword = '';
+        /*
+         * Users passwords must be verified as md5 encrypted
+         * before they can be encrypted as bcrypt.
+         */
         switch ($algo) {
             case 'md5':
                 $encodePassword .= 'md5__' . md5($password);
