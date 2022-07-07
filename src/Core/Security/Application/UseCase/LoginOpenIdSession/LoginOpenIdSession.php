@@ -297,6 +297,7 @@ class LoginOpenIdSession
             if ($user === null) {
                 throw new NotFoundException('User not found');
             }
+            $this->info("User imported: " . $user->getName());
         }
 
         return $user;
