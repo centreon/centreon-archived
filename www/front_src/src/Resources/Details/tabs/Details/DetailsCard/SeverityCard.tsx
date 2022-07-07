@@ -29,13 +29,12 @@ interface Props {
   details: ResourceDetails;
 }
 
-const Line = ({
-  data,
-  className,
-}: {
+interface Line {
   className?: string;
   data: ReactNode;
-}): JSX.Element => (
+}
+
+const Line = ({ data, className }: Line): JSX.Element => (
   <Typography className={className} component="p" variant="body2">
     {data}
   </Typography>
