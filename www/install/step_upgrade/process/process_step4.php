@@ -24,25 +24,36 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 require_once __DIR__ . '/../../../class/centreonDB.class.php';
 require_once __DIR__ . '/../../steps/functions.php';
 
+use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
+use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersionsException;
 
 $current = $_POST['current'];
 $next = $_POST['next'];
 $status = 0;
 
 $kernel = \App\Kernel::createForWeb();
-$upgradeWriteRepository = $kernel->getContainer()->get(WriteUpdateRepositoryInterface::class);
+
+$updateLockerRepository = $kernel->getContainer()->get(UpdateLockerRepositoryInterface::class);
+$updateWriteRepository = $kernel->getContainer()->get(WriteUpdateRepositoryInterface::class);
+
 try {
-    $upgradeWriteRepository->runUpdate($next);
+    if (! $updateLockerRepository->lock()) {
+        throw UpdateVersionsException::updateAlreadyInProgress();
+    }
+
+    $updateWriteRepository->runUpdate($next);
+
+    $updateLockerRepository->unlock();
 } catch (\Throwable $e) {
     exitUpgradeProcess(1, $current, $next, $e->getMessage());
 }
 
 $current = $next;
 
-$upgradeReadRepository = $kernel->getContainer()->get(ReadUpdateRepositoryInterface::class);
-$availableUpdates = $upgradeReadRepository->getOrderedAvailableUpdates($current);
+$updateReadRepository = $kernel->getContainer()->get(ReadUpdateRepositoryInterface::class);
+$availableUpdates = $updateReadRepository->getOrderedAvailableUpdates($current);
 $next = empty($availableUpdates) ? '' : array_shift($availableUpdates);
 
 $_SESSION['CURRENT_VERSION'] = $current;

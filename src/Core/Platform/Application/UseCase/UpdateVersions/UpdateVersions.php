@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
@@ -34,11 +35,13 @@ class UpdateVersions
     use LoggerTrait;
 
     /**
+     * @param UpdateLockerRepositoryInterface $updateLocker
      * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param ReadUpdateRepositoryInterface $readUpdateRepository
      * @param WriteUpdateRepositoryInterface $writeUpdateRepository
      */
     public function __construct(
+        private UpdateLockerRepositoryInterface $updateLocker,
         private ReadVersionRepositoryInterface $readVersionRepository,
         private ReadUpdateRepositoryInterface $readUpdateRepository,
         private WriteUpdateRepositoryInterface $writeUpdateRepository,
@@ -54,6 +57,8 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
+            $this->lockUpdate();
+
             $currentVersion = $this->getCurrentVersionOrFail();
 
             $availableUpdates = $this->getAvailableUpdatesOrFail($currentVersion);
@@ -61,6 +66,8 @@ class UpdateVersions
             $this->runUpdates($availableUpdates);
 
             $this->runPostUpdate($this->getCurrentVersionOrFail());
+
+            $this->unlockUpdate();
         } catch (\Throwable $e) {
             $this->error(
                 $e->getMessage(),
@@ -73,6 +80,28 @@ class UpdateVersions
         }
 
         $presenter->setResponseStatus(new NoContentResponse());
+    }
+
+    /**
+     * Lock update process
+     */
+    private function lockUpdate(): void
+    {
+        $this->info('Locking centreon update process...');
+
+        if (!$this->updateLocker->lock()) {
+            throw UpdateVersionsException::updateAlreadyInProgress();
+        }
+    }
+
+    /**
+     * Unlock update process
+     */
+    private function unlockUpdate(): void
+    {
+        $this->info('Unlocking centreon update process...');
+
+        $this->updateLocker->unlock();
     }
 
     /**
@@ -89,11 +118,11 @@ class UpdateVersions
         try {
             $currentVersion = $this->readVersionRepository->findCurrentVersion();
         } catch (\Exception $e) {
-            throw new \Exception('An error occurred when retrieving current version', 0, $e);
+            throw UpdateVersionsException::errorWhenRetrievingCurrentVersion($e);
         }
 
         if ($currentVersion === null) {
-            throw new \Exception('Cannot retrieve current version');
+            throw UpdateVersionsException::cannotRetrieveCurrentVersion();
         }
 
         return $currentVersion;
@@ -117,7 +146,7 @@ class UpdateVersions
 
             return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
         } catch (\Throwable $e) {
-            throw new \Exception('An error occurred when getting available updates', 0, $e);
+            throw UpdateVersionsException::errorWhenRetrievingAvailableUpdates($e);
         }
     }
 
@@ -135,11 +164,7 @@ class UpdateVersions
                 $this->info("Running update $version");
                 $this->writeUpdateRepository->runUpdate($version);
             } catch (\Throwable $e) {
-                throw new \Exception(
-                    'An error occurred when applying update ' . $version . ': ' . $e->getMessage(),
-                    0,
-                    $e,
-                );
+                throw UpdateVersionsException::errorWhenApplyingUpdate($version, $e->getMessage(), $e);
             }
         }
     }
@@ -152,6 +177,11 @@ class UpdateVersions
     private function runPostUpdate(string $currentVersion): void
     {
         $this->info("Running post update actions");
-        $this->writeUpdateRepository->runPostUpdate($currentVersion);
+
+        try {
+            $this->writeUpdateRepository->runPostUpdate($currentVersion);
+        } catch (\Throwable $e) {
+            throw UpdateVersionsException::errorWhenApplyingPostUpdate($e);
+        }
     }
 }

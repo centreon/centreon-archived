@@ -37,44 +37,15 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../../steps/functions.php';
 
-function recurseRmdir($dir)
-{
-    $files = array_diff(scandir($dir), array('.', '..'));
-    foreach ($files as $file) {
-        (is_dir("$dir/$file")) ? recurseRmdir("$dir/$file") : unlink("$dir/$file");
-    }
-    return rmdir($dir);
-}
+use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
+use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersionsException;
 
-function recurseCopy($source, $dest)
-{
-    if (is_link($source)) {
-        return symlink(readlink($source), $dest);
-    }
+$kernel = \App\Kernel::createForWeb();
 
-    if (is_file($source)) {
-        return copy($source, $dest);
-    }
-
-    if (!is_dir($dest)) {
-        mkdir($dest);
-    }
-
-    $dir = dir($source);
-    while (false !== $entry = $dir->read()) {
-        if ($entry == '.' || $entry == '..') {
-            continue;
-        }
-
-        recurseCopy("$source/$entry", "$dest/$entry");
-    }
-
-    $dir->close();
-    return true;
-}
+$updateWriteRepository = $kernel->getContainer()->get(WriteUpdateRepositoryInterface::class);
 
 $parameters = filter_input_array(INPUT_POST);
-$current = filter_var($_POST['current'] ?? "step 5", FILTER_SANITIZE_STRING);
+$current = filter_var($_POST['current'] ?? "step 5", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if ($parameters) {
     if ((int)$parameters["send_statistics"] === 1) {
@@ -88,16 +59,19 @@ if ($parameters) {
     $db->query($query);
 }
 
-$name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
-$completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
-$sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) . '/../'));
-
 try {
-    if (recurseCopy($sourceInstallDir, $completeName)) {
-        recurseRmdir($sourceInstallDir);
+    if (!isset($_SESSION['CURRENT_VERSION']) || ! preg_match('/^\d+\.\d+\.\d+/', $_SESSION['CURRENT_VERSION'])) {
+        throw new \Exception('Cannot get current version');
     }
-} catch (Exception $e) {
-    exitUpgradeProcess(1, $current, '', $e->getMessage());
+
+    $updateWriteRepository->runPostUpdate($_SESSION['CURRENT_VERSION']);
+} catch (\Throwable $e) {
+    exitUpgradeProcess(
+        1,
+        $current,
+        '',
+        UpdateVersionsException::errorWhenApplyingPostUpdate($e)->getMessage()
+    );
 }
 
 session_destroy();
