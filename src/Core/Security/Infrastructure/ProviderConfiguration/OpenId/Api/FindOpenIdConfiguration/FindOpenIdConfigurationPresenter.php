@@ -57,7 +57,6 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'auto_import' => $response->isAutoImportEnabled,
             'contact_template' => $response->contactTemplate,
             'email_bind_attribute' => $response->emailBindAttribute,
-            'alias_bind_attribute' => $response->userAliasBindAttribute,
             'fullname_bind_attribute' => $response->userNameBindAttribute,
             'contact_group' => $response->contactGroup,
             'claim_name' => $response->claimName,

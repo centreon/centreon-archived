@@ -42,7 +42,6 @@ beforeEach(function () {
         'userinfo_endpoint' => '/userinfo',
         'contact_template' => new ContactTemplate(1, 'contact_template'),
         'email_bind_attribute' => 'email',
-        'alias_bind_attribute' => 'alias',
         'fullname_bind_attribute' => 'name',
         'trusted_client_addresses' => [],
         'blacklist_client_addresses' => [],
@@ -83,7 +82,6 @@ it(
     function () {
         $this->customConfiguration['contact_template'] = null;
         $this->customConfiguration['email_bind_attribute'] =  null;
-        $this->customConfiguration['alias_bind_attribute'] =  null;
         $this->customConfiguration['fullname_bind_attribute'] = null;
         DbConfigurationBuilder::create(
             ['id' => 2, 'is_active' => true, 'is_forced' => true],
@@ -93,7 +91,7 @@ it(
 )->throws(
     OpenIdConfigurationException::class,
     OpenIdConfigurationException::missingAutoImportMandatoryParameters(
-        ['contact_template', 'email_bind_attribute', 'alias_bind_attribute', 'fullname_bind_attribute']
+        ['contact_template', 'email_bind_attribute', 'fullname_bind_attribute']
     )->getMessage()
 );
 

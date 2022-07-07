@@ -30,9 +30,8 @@ export const labelOpenIDConnectOnly = 'OpenID Connect only';
 export const labelMixed = 'Mixed';
 export const labelEnableAutoImport = 'Enable auto import';
 export const labelContactTemplate = 'Contact template';
-export const labelEmailAttributeToBind = 'Email attribute to bind';
-export const labelAliasAttributeToBind = 'Alias attribute to bind';
-export const labelFullnameAttributeToBind = 'Fullname attribute to bind';
+export const labelEmailAttribute = 'Email attribute';
+export const labelFullnameAttribute = 'Full name attribute';
 export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
 export const labelContactGroup = 'Contact group';

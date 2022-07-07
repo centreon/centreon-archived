@@ -147,11 +147,6 @@ class Configuration implements ProviderConfigurationInterface
     /**
      * @var string|null
      */
-    private ?string $userAliasBindAttribute = null;
-
-    /**
-     * @var string|null
-     */
     private ?string $userNameBindAttribute = null;
 
     /**
@@ -325,14 +320,6 @@ class Configuration implements ProviderConfigurationInterface
     public function getEmailBindAttribute(): ?string
     {
         return $this->emailBindAttribute;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUserAliasBindAttribute(): ?string
-    {
-        return $this->userAliasBindAttribute;
     }
 
     /**
@@ -622,17 +609,6 @@ class Configuration implements ProviderConfigurationInterface
     public function setEmailBindAttribute(?string $emailBindAttribute): self
     {
         $this->emailBindAttribute = $emailBindAttribute;
-
-        return $this;
-    }
-
-    /**
-     * @param string|null $userAliasBindAttribute
-     * @return self
-     */
-    public function setUserAliasBindAttribute(?string $userAliasBindAttribute): self
-    {
-        $this->userAliasBindAttribute = $userAliasBindAttribute;
 
         return $this;
     }

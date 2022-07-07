@@ -64,7 +64,7 @@ class TopologyWebserviceTest extends TestCase
         // dependencies
         $this->container = new Container;
         $this->db = new CentreonDB;
-        
+
         $this->setUpCentreonDbManager($this->container);
 
         $this->webservice = $this->createPartialMock(TopologyWebservice::class, [
@@ -153,12 +153,21 @@ class TopologyWebserviceTest extends TestCase
                 return [];
             }));
 
+        $centreonAclMock = $this->createMock(\CentreonACL::class);
+        $centreonAclMock->method('getTopology')
+            ->will($this->returnCallback(function () {
+                return [];
+            }));
+
+        $userMock = $this->createMock(CentreonUser::class);
+        $userMock->access = $centreonAclMock;
+
         // register mocked repository in DB manager
         $this->container[ServiceProvider::CENTREON_DB_MANAGER]
             ->addRepositoryMock(TopologyRepository::class, $repository);
 
         // mock user service
-        $this->container[ServiceProvider::CENTREON_USER] = $this->createMock(CentreonUser::class);
+        $this->container[ServiceProvider::CENTREON_USER] = $userMock;
         $this->container[ServiceProvider::YML_CONFIG] = [
             'navigation' => [],
         ];
@@ -180,12 +189,21 @@ class TopologyWebserviceTest extends TestCase
                 return [];
             }));
 
+        $centreonAclMock = $this->createMock(\CentreonACL::class);
+        $centreonAclMock->method('getTopology')
+            ->will($this->returnCallback(function () {
+                return [];
+            }));
+
+        $userMock = $this->createMock(CentreonUser::class);
+        $userMock->access = $centreonAclMock;
+
         // register mocked repository in DB manager
         $this->container[ServiceProvider::CENTREON_DB_MANAGER]
             ->addRepositoryMock(TopologyRepository::class, $repository);
 
         // mock user service
-        $this->container[ServiceProvider::CENTREON_USER] = $this->createMock(CentreonUser::class);
+        $this->container[ServiceProvider::CENTREON_USER] = $userMock;
         $this->container[ServiceProvider::YML_CONFIG] = [
             'navigation' => [],
         ];

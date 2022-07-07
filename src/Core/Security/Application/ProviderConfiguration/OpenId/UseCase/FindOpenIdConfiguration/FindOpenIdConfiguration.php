@@ -85,7 +85,6 @@ class FindOpenIdConfiguration
             ? null
             : $findOpenIdConfigurationResponse::contactTemplateToArray($configuration->getContactTemplate());
         $findOpenIdConfigurationResponse->emailBindAttribute = $configuration->getEmailBindAttribute();
-        $findOpenIdConfigurationResponse->userAliasBindAttribute = $configuration->getUserAliasBindAttribute();
         $findOpenIdConfigurationResponse->userNameBindAttribute = $configuration->getUserNameBindAttribute();
         $findOpenIdConfigurationResponse->claimName = $configuration->getClaimName();
         $findOpenIdConfigurationResponse->contactGroup = $configuration->getContactGroup() === null

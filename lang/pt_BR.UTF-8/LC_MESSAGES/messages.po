@@ -15471,16 +15471,10 @@ msgstr ""
 # msgid "Enable auto import"
 # msgstr ""
 
-# msgid "Email attribute to bind"
+# msgid "Email attribute"
 # msgstr ""
 
-# msgid "Alias attribute to bind"
-# msgstr ""
-
-# msgid "Fullname attribute to bind"
-# msgstr ""
-
-# msgid "Auto import"
+# msgid "Full name attribute"
 # msgstr ""
 
 # msgid "You are not authorized to access the configuration"
@@ -15620,3 +15614,6 @@ msgstr ""
 
 # msgid "License expired"
 # msgstr ""
+
+#  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+#  msgstr ""

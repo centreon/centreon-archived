@@ -16722,17 +16722,11 @@ msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de donn�
 msgid "Enable auto import"
 msgstr "Activer l'importation automatique"
 
-msgid "Email attribute to bind"
-msgstr "Attribut de mail à lier"
+msgid "Email attribute"
+msgstr "Attribut de l'email"
 
-msgid "Alias attribute to bind"
-msgstr "Attribut d'alias à lier"
-
-msgid "Fullname attribute to bind"
-msgstr "Attribut de nom complet à lier"
-
-msgid "Auto import"
-msgstr "Importation automatique"
+msgid "Full name attribute"
+msgstr "Attribut du nom complet"
 
 # msgid "You are not authorized to access the configuration"
 # msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
@@ -16917,3 +16911,6 @@ msgstr "Alias parent"
 
 msgid "The following bound attributes are missing: %s"
 msgstr "Les attributs liés suivants sont manquants : %s"
+
+msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
