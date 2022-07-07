@@ -16918,7 +16918,7 @@ msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be trunc
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
 
 msgid "Update already in progress"
-msgstr "Mise à jour déjà en cours"
+msgstr "Une mise à jour est déjà en cours"
 
 msgid "An error occurred when retrieving current version"
 msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
