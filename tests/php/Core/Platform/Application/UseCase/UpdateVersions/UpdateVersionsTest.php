@@ -25,6 +25,7 @@ namespace Tests\Core\Platform\Application\UseCase\UpdateVersions;
 
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersions;
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersionsPresenterInterface;
+use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
@@ -32,18 +33,46 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
 beforeEach(function () {
+    $this->updateLockerRepository = $this->createMock(UpdateLockerRepositoryInterface::class);
     $this->readVersionRepository = $this->createMock(ReadVersionRepositoryInterface::class);
     $this->readUpdateRepository = $this->createMock(ReadUpdateRepositoryInterface::class);
     $this->writeUpdateRepository = $this->createMock(WriteUpdateRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateVersionsPresenterInterface::class);
 });
 
-it('should present an error response if current version is not found', function () {
+it('should stop update process when an other update is already started', function () {
     $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
         $this->readVersionRepository,
         $this->readUpdateRepository,
         $this->writeUpdateRepository,
     );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(false);
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse('Update already in progress'));
+
+    $updateVersions($this->presenter);
+});
+
+it('should present an error response if current version is not found', function () {
+    $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
+        $this->readVersionRepository,
+        $this->readUpdateRepository,
+        $this->writeUpdateRepository,
+    );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(true);
 
     $this->readVersionRepository
         ->expects($this->once())
@@ -60,10 +89,16 @@ it('should present an error response if current version is not found', function 
 
 it('should run found updates', function () {
     $updateVersions = new UpdateVersions(
+        $this->updateLockerRepository,
         $this->readVersionRepository,
         $this->readUpdateRepository,
         $this->writeUpdateRepository,
     );
+
+    $this->updateLockerRepository
+        ->expects($this->once())
+        ->method('lock')
+        ->willReturn(true);
 
     $this->readVersionRepository
         ->expects($this->once())
