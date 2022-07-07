@@ -114,6 +114,11 @@ class CentreonContact extends CentreonObject
     protected $timezoneObject;
 
     /**
+     * @var array<string,mixed>
+     */
+    protected $addParams = [];
+
+    /**
      * Constructor
      *
      * @return void
@@ -259,52 +264,113 @@ class CentreonContact extends CentreonObject
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        $this->addParams = [];
+        $this->initUniqueField($params);
+        $this->initUserInformation($params);
+        $this->initPassword($params);
+        $this->initUserAccess($params);
+        $this->initLang($params);
+        $this->initAuthenticationType($params);
 
-        $addParams = array();
-        $params[self::ORDER_UNIQUENAME] = str_replace(" ", "_", $params[self::ORDER_UNIQUENAME]);
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
-        $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
-        $addParams['contact_email'] = $params[self::ORDER_MAIL];
+        $this->params = array_merge($this->params, $this->addParams);
+        $this->checkParameters();
+    }
 
-        if (password_needs_rehash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+    /**
+     * Initialize Unique Field
+     *
+     * @param array<int,mixed> $params
+     */
+    protected function initUniqueField(array $params): void
+    {
+        $this->addParams[$this->object->getUniqueLabelField()] = str_replace(
+            " ",
+            "_",
+            $params[static::ORDER_UNIQUENAME]
+        );
+    }
+
+    /**
+     * Initialize user information
+     *
+     * @param array<int,mixed> $params
+     */
+    protected function initUserInformation(array $params): void
+    {
+        $this->addParams['contact_name'] = $this->checkIllegalChar($params[static::ORDER_NAME]);
+        $this->addParams['contact_email'] = $params[static::ORDER_MAIL];
+    }
+
+    /**
+     * Initialize password
+     *
+     * @param array<int,mixed> $params
+     */
+    protected function initPassword(array $params): void
+    {
+        if (password_needs_rehash($params[static::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
             $contact = new \CentreonContact($this->db);
             try {
-                $contact->respectPasswordPolicyOrFail($params[self::ORDER_PASS], null);
+                $contact->respectPasswordPolicyOrFail($params[static::ORDER_PASS], null);
             } catch (\Throwable $e) {
                 throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
             }
-            $addParams['contact_passwd'] = password_hash(
-                $params[self::ORDER_PASS],
+            $this->addParams['contact_passwd'] = password_hash(
+                $params[static::ORDER_PASS],
                 \CentreonAuth::PASSWORD_HASH_ALGORITHM
             );
         } else {
-            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
+            $this->addParams['contact_passwd'] = $params[static::ORDER_PASS];
         }
+    }
 
-        $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
-        if ($addParams['contact_admin'] == '') {
-            $addParams['contact_admin'] = '0';
+    /**
+     * Initialize user access
+     *
+     * @param array<int,mixed> $params
+     */
+    protected function initUserAccess(array $params): void
+    {
+        $this->addParams['contact_admin'] = $params[static::ORDER_ADMIN];
+        if ($this->addParams['contact_admin'] == '') {
+            $this->addParams['contact_admin'] = '0';
         }
-        $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
-        if ($addParams['contact_oreon'] == '') {
-            $addParams['contact_oreon'] = '1';
+        $this->addParams['contact_oreon'] = $params[static::ORDER_ACCESS];
+        if ($this->addParams['contact_oreon'] == '') {
+            $this->addParams['contact_oreon'] = '1';
         }
+    }
+
+    /**
+     * Initialize user langage
+     *
+     * @param array<int,mixed> $params
+     */
+    protected function initLang(array $params): void
+    {
         if (
-            empty($params[self::ORDER_LANG])
-            || strtolower($params[self::ORDER_LANG]) === "browser"
-            || strtoupper(substr($params[self::ORDER_LANG], -6)) === '.UTF-8'
+            empty($params[static::ORDER_LANG])
+            || strtolower($params[static::ORDER_LANG]) === "browser"
+            || strtoupper(substr($params[static::ORDER_LANG], -6)) === '.UTF-8'
         ) {
-            $completeLanguage = $params[self::ORDER_LANG];
+            $completeLanguage = $params[static::ORDER_LANG];
         } else {
-            $completeLanguage = $params[self::ORDER_LANG] . '.UTF-8';
+            $completeLanguage = $params[static::ORDER_LANG] . '.UTF-8';
         }
         if ($this->checkLang($completeLanguage) == false) {
-            throw new CentreonClapiException(self::UNKNOWN_LOCALE);
+            throw new CentreonClapiException(static::UNKNOWN_LOCALE);
         }
-        $addParams['contact_lang'] = $completeLanguage;
-        $addParams['contact_auth_type'] = $params[self::ORDER_AUTHTYPE];
-        $this->params = array_merge($this->params, $addParams);
-        $this->checkParameters();
+        $this->addParams['contact_lang'] = $completeLanguage;
+    }
+
+    /**
+     * Initialize authentication type
+     *
+     * @param array<int, mixed> $params
+     */
+    protected function initAuthenticationType(array $params): void
+    {
+        $this->addParams['contact_auth_type'] = $params[static::ORDER_AUTHTYPE];
     }
 
     /**
