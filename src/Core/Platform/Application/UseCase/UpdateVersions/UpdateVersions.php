@@ -173,6 +173,8 @@ class UpdateVersions
      * Run post update actions
      *
      * @param string $currentVersion
+     *
+     * @throws UpdateVersionsException
      */
     private function runPostUpdate(string $currentVersion): void
     {

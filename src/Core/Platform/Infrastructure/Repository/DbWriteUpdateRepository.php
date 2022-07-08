@@ -87,7 +87,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         $backupDirectory = $this->libDir . '/installs/install-' . $currentVersion . '-' . date('Ymd_His');
 
         $this->info(
-            "Backing up installation directory...",
+            "Backing up installation directory",
             [
                 'source' => $this->installDir,
                 'destination' => $backupDirectory,
@@ -106,7 +106,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
     private function removeInstallDirectory(): void
     {
         $this->info(
-            "Removing installation directory...",
+            "Removing installation directory",
             [
                 'installation_directory' => $this->installDir,
             ],
