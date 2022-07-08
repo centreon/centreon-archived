@@ -566,7 +566,7 @@ ENGINECFG;setparam;Centreon Engine Central;log_level_comments;err
 ENGINECFG;setparam;Centreon Engine Central;log_level_macros;err
 ENGINECFG;setparam;Centreon Engine Central;log_level_process;info
 ENGINECFG;setparam;Centreon Engine Central;log_level_runtime;err
-CONTACTTPL;ADD;contact_template;contact_template;;$2y$10$Yf78oIppk6wC7hMtDd0TKeXByb1kVD5IGvAEF/g.F4KtiMSbXvpT.;0;1;;local
+CONTACTTPL;ADD;contact_template;contact_template;;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
@@ -581,7 +581,7 @@ CONTACTTPL;setparam;contact_template;show_deprecated_pages;0
 CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
 CONTACTTPL;setparam;contact_template;enable_one_click_export;0
-CONTACTTPL;ADD;test_name;test_contact-template;;$2y$10$BqnZdxhI2wz1Ot/exXd73eOngqA2RPeBmjxSSyEzSygFXo3L9guAW;0;1;;local
+CONTACTTPL;ADD;test_name;test_contact-template;;0;1;;local
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
