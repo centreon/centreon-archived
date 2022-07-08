@@ -201,7 +201,7 @@ const Filter = (): JSX.Element => {
         ? pluck('level', result)
         : pluck('name', result);
 
-      const list = results.map((item) => item.toString());
+      const formattedResult = results.map((item) => item.toString());
 
       const lastValueEqualsToAResult = find(equals(lastValue), formattedResult);
 
