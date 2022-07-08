@@ -23,7 +23,7 @@ namespace Centreon\Test\Api\Context;
 
 use Centreon\Test\Behat\Api\Context\ApiContext;
 
-class PlatformInformationContext extends ApiContext
+class PlatformUpdateContext extends ApiContext
 {
     /**
      * Create an update file
