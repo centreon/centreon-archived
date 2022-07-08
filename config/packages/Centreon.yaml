@@ -226,6 +226,8 @@ services:
 
     Core\Platform\Application\Repository\ReadUpdateRepositoryInterface:
         class: Core\Platform\Infrastructure\Repository\FsReadUpdateRepository
+        arguments:
+            $installDir: '%centreon_install_path%'
         public: true
 
     Core\Platform\Application\Repository\UpdateLockerRepositoryInterface:

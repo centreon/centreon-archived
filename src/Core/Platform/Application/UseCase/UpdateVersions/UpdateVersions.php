@@ -27,7 +27,9 @@ use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
+use Core\Platform\Application\Repository\UpdateNotFoundException;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
 class UpdateVersions
@@ -68,6 +70,15 @@ class UpdateVersions
             $this->unlockUpdate();
 
             $this->runPostUpdate($this->getCurrentVersionOrFail());
+        } catch (UpdateNotFoundException $e) {
+            $this->error(
+                $e->getMessage(),
+                ['trace' => $e->getTraceAsString()],
+            );
+
+            $presenter->setResponseStatus(new NotFoundResponse('Updates'));
+
+            return;
         } catch (\Throwable $e) {
             $this->error(
                 $e->getMessage(),
@@ -145,6 +156,8 @@ class UpdateVersions
             );
 
             return $this->readUpdateRepository->findOrderedAvailableUpdates($currentVersion);
+        } catch (UpdateNotFoundException $e) {
+            throw $e;
         } catch (\Throwable $e) {
             throw UpdateVersionsException::errorWhenRetrievingAvailableUpdates($e);
         }

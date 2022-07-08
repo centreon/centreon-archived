@@ -16940,3 +16940,6 @@ msgstr "Erreur lors du déverrouillage du processus de mise à jour"
 
 msgid "An error occurred when applying post update actions"
 msgstr "Une erreur s'est produite lors de l'application des actions postérieures à la mise à jour"
+
+msgid "Updates not found"
+msgstr "Les mises à jour n'ont pas été trouvées"
