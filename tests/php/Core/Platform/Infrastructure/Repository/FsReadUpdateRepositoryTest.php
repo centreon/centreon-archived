@@ -24,14 +24,33 @@ declare(strict_types=1);
 namespace Tests\Core\Platform\Infrastructure\Repository;
 
 use Core\Platform\Infrastructure\Repository\FsReadUpdateRepository;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 beforeEach(function () {
+    $this->filesystem = $this->createMock(Filesystem::class);
     $this->finder = $this->createMock(Finder::class);
 });
 
+it('should not find updates if install directory does not exist', function () {
+    $repository = new FsReadUpdateRepository($this->filesystem, $this->finder);
+
+    $this->filesystem
+        ->expects($this->once())
+        ->method('exists')
+        ->willReturn(false);
+
+    $availableUpdates = $repository->findOrderedAvailableUpdates('22.04.0');
+    expect($availableUpdates)->toEqual([]);
+});
+
 it('should order found updates', function () {
-    $repository = new FsReadUpdateRepository($this->finder);
+    $repository = new FsReadUpdateRepository($this->filesystem, $this->finder);
+
+    $this->filesystem
+        ->expects($this->once())
+        ->method('exists')
+        ->willReturn(true);
 
     $this->finder
         ->expects($this->once())

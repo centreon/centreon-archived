@@ -30,4 +30,11 @@ interface WriteUpdateRepositoryInterface
      * @param string $version
      */
     public function runUpdate(string $version): void;
+
+    /**
+     * Run post update actions
+     *
+     * @param string $currentVersion
+     */
+    public function runPostUpdate(string $currentVersion): void;
 }
