@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Monitoring\Resource;
+namespace Core\Resources\Infrastructure\Repository;
 
 use Core\Domain\RealTime\Model\Icon;
 use Centreon\Domain\Monitoring\Notes;
@@ -55,6 +55,7 @@ class DbResourceFactory
                 ->setName($record['parent_name'])
                 ->setAlias($record['parent_alias'])
                 ->setType(ResourceEntity::TYPE_HOST)
+                ->setFqdn($record['parent_fqdn'])
                 ->setStatus($parentStatus);
         }
 

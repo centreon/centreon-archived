@@ -99,34 +99,6 @@ $scaleChoices = array(
 );
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
-$kernel = \App\Kernel::createForWeb();
-$resourceStatusMode = $kernel->getContainer()->getparameter('resource.status.repository');
-
-$resourceStatusModeElements = [
-    $form->createElement(
-        'radio',
-        'resource_status_mode',
-        null,
-        _("Legacy"),
-        'legacy',
-    ),
-    $form->createElement(
-        'radio',
-        'resource_status_mode',
-        null,
-        _("Optimized (beta)"),
-        'optimized',
-    ),
-];
-$form->addGroup($resourceStatusModeElements, 'resource_status_mode', _("Resource status mode"), '&nbsp;');
-$form->setDefaults(['resource_status_mode' => $resourceStatusMode]);
-$form->registerRule('canUseResourceStatusOptimized', 'callback', 'canUseResourceStatusOptimized');
-$form->addRule(
-    'resource_status_mode',
-    _("Optimized mode is not possible, BBDOv3 and unified SQL output must be configured"),
-    'canUseResourceStatusOptimized'
-);
-
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -175,7 +147,6 @@ if ($form->validate()) {
     try {
         // Update in DB
         updateNagiosConfigData($form->getSubmitValue("gopt_id"));
-        updateResourceStatusMode();
 
         // Update in Centreon Object
         $oreon->initOptGen($pearDB);
@@ -233,7 +204,6 @@ $tpl->assign("genOpt_mailer_path", _("Mailer path"));
 $tpl->assign("genOpt_monitoring_properties", "Monitoring properties");
 $tpl->assign("acknowledgement_default_settings", _("Default acknowledgement settings"));
 $tpl->assign("downtime_default_settings", _("Default downtime settings"));
-$tpl->assign("resource_status_mod", _("Resource Status mod"));
 $tpl->assign("seconds", _("seconds"));
 $tpl->assign('valid', $valid);
 
