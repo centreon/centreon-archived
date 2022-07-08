@@ -40,6 +40,7 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Domain\Authentication\AuthenticationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
@@ -80,6 +81,20 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @var CentreonUserLog
      */
     private CentreonUserLog $centreonLog;
+
+    /**
+     * Array of information store in id_token JWT Payload
+     *
+     * @var array<string,mixed>
+     */
+    private array $idTokenPayload = [];
+
+    /**
+     * Content of the connexion token response.
+     *
+     * @var array<string,mixed>
+     */
+    private array $connectionTokenResponseContent = [];
 
     /**
      * @param HttpClientInterface $client
@@ -228,6 +243,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
 
         $this->sendRequestForConnectionTokenOrFail($authorizationCode);
+        $this->createAuthenticationTokens();
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
             throw SSOAuthenticationException::tokensExpired(Configuration::NAME);
         }
@@ -235,6 +251,9 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->sendRequestForIntrospectionTokenOrFail();
         }
 
+        if (array_key_exists("id_token", $this->connectionTokenResponseContent)) {
+            $this->idTokenPayload = $this->extractTokenPayload($this->connectionTokenResponseContent["id_token"]);
+        }
         $this->username = $this->getUsernameFromLoginClaim();
     }
 
@@ -327,6 +346,43 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getUserInformation(): array
+    {
+        return $this->userInformations;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIdTokenPayload(): array
+    {
+        return $this->idTokenPayload;
+    }
+
+    /**
+     * Extract Payload from JWT token
+     *
+     * @param string $token
+     * @return array<string,mixed>
+     * @throws SSOAuthenticationException
+     */
+    private function extractTokenPayload(string $token): array
+    {
+        try {
+            $tokenParts = explode(".", $token);
+            return json_decode(base64_decode($tokenParts[1]), true);
+        } catch (\Throwable $ex) {
+            $this->error(
+                SSOAuthenticationException::unableToDecodeIdToken()->getMessage(),
+                ['trace' => $ex->getTraceAsString()]
+            );
+            throw SSOAuthenticationException::unableToDecodeIdToken();
+        }
+    }
+
+    /**
      * Get Connection Token from OpenId Provider.
      *
      * @param string $authorizationCode
@@ -367,25 +423,37 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider(Configuration::NAME);
         }
         $this->logAuthenticationInfo('Token Access Information:', $content);
-        // Create Provider and Refresh Tokens
+        $this->connectionTokenResponseContent = $content;
+    }
+
+    /**
+     * Create Authentication Tokens
+     */
+    private function createAuthenticationTokens(): void
+    {
         $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
+        $expirationDelay = array_key_exists('expires_in', $this->connectionTokenResponseContent)
+            ? $this->connectionTokenResponseContent['expires_in']
+            : 3600;
+        $providerTokenExpiration = (new \DateTime())->add(
+            new \DateInterval('PT' . $expirationDelay . 'S')
+        );
         $this->providerToken =  new ProviderToken(
             null,
-            $content['access_token'],
+            $this->connectionTokenResponseContent['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
-        if (array_key_exists('refresh_token', $content)) {
-            $expirationDelay = $content['expires_in'] + 3600;
-            if (array_key_exists('refresh_expires_in', $content)) {
-                $expirationDelay = $content['refresh_expires_in'];
+        if (array_key_exists('refresh_token', $this->connectionTokenResponseContent)) {
+            $expirationDelay = $this->connectionTokenResponseContent['expires_in'] + 3600;
+            if (array_key_exists('refresh_expires_in', $this->connectionTokenResponseContent)) {
+                $expirationDelay = $this->connectionTokenResponseContent['refresh_expires_in'];
             }
             $refreshTokenExpiration = (new \DateTime())
                 ->add(new \DateInterval('PT' . $expirationDelay . 'S'));
             $this->refreshToken = new ProviderToken(
                 null,
-                $content['refresh_token'],
+                $this->connectionTokenResponseContent['refresh_token'],
                 $creationDate,
                 $refreshTokenExpiration
             );
