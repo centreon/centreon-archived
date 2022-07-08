@@ -203,7 +203,7 @@ const Filter = (): JSX.Element => {
 
       const list = results.map((item) => item.toString());
 
-      const lastValueEqualsToAResult = find(equals(lastValue), list);
+      const lastValueEqualsToAResult = find(equals(lastValue), formattedResult);
 
       const notSelectedValues = difference(list, values);
 
