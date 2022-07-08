@@ -33,7 +33,7 @@ beforeEach(function () {
     $this->finder = $this->createMock(Finder::class);
 });
 
-it('should returns an error when install directory does not exist', function () {
+it('should return an error when install directory does not exist', function () {
     $repository = new FsReadUpdateRepository(sys_get_temp_dir(), $this->filesystem, $this->finder);
 
     $this->filesystem
