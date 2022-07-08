@@ -16920,3 +16920,15 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
+
+msgid "Service severity"
+msgstr "Criticité du service"
+
+msgid "Service severity level"
+msgstr "Niveau de criticité du service"
+
+msgid "Host severity"
+msgstr "Criticité d'hôte"
+
+msgid "Host severity level"
+msgstr "Niveau de criticité d'hôte"

@@ -15626,3 +15626,15 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
+
+msgid "Service severity"
+msgstr "Severidade de serviço"
+
+msgid "Service severity level"
+msgstr Nível de Severidade de serviço"
+
+msgid "Host severity"
+msgstr "Severidade de host"
+
+msgid "Host severity level"
+msgstr "Nível de Severidade de host"
