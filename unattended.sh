@@ -4,7 +4,7 @@
 OPTIONS=":t:v:r:l:"
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 declare -A SUPPORTED_TOPOLOGY=([central]=1 [poller]=1)
-declare -A SUPPORTED_VERSION=([22.04]=1)
+declare -A SUPPORTED_VERSION=([22.10]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
@@ -17,7 +17,7 @@ passwords_file=/etc/centreon/generated.tobesecured         #File where the gener
 tmp_passwords_file=$(mktemp /tmp/generated.XXXXXXXXXXXXXX) #Random tmp file as the /etc/centreon does not exist yet
 
 topology=${ENV_CENTREON_TOPOLOGY:-"central"}    #Default topology to be installed
-version=${ENV_CENTREON_VERSION:-"22.04"}        #Default version to be installed
+version=${ENV_CENTREON_VERSION:-"22.10"}        #Default version to be installed
 repo=${ENV_CENTREON_REPO:-"stable"}             #Default repository to used
 operation=${ENV_CENTREON_OPERATION:-"install"}  #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}      #Default log level to be used
@@ -65,7 +65,7 @@ if [ "$wizard_autoplay" == "true" ]; then
 fi
 
 CENTREON_MAJOR_VERSION=$version
-CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
+CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-1"
 
 # Static variables
 PHP_BIN="/usr/bin/php"
@@ -96,7 +96,7 @@ function usage() {
 	echo
 	echo "Usage :"
 	echo
-	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <22.04> (default: 22.04)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
+	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <22.10> (default: 22.10)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
 	echo
 	echo Example:
 	echo
