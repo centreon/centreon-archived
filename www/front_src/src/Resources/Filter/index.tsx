@@ -207,7 +207,7 @@ const Filter = (): JSX.Element => {
 
       const notSelectedValues = difference(formattedResult, values);
 
-      if (or(lastValueEqualsToAResult, isEmpty(list))) {
+      if (or(lastValueEqualsToAResult, isEmpty(formattedResult))) {
         const res = [
           ...notSelectedValues,
           ...map(concat(','), notSelectedValues),
