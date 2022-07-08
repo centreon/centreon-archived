@@ -234,6 +234,7 @@ services:
 
     Core\Platform\Application\Repository\WriteUpdateRepositoryInterface:
         class: Core\Platform\Infrastructure\Repository\DbWriteUpdateRepository
+        arguments: ['%centreon_var_lib%', '%centreon_install_path%']
         public: true
 
     # Monitoring resources

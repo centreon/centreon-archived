@@ -29,26 +29,25 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Centreon\Domain\Repository\RepositoryException;
 
 class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpdateRepositoryInterface
 {
     use LoggerTrait;
 
-    private const INSTALL_DIR = __DIR__ . '/../../../../../www/install';
-
     /**
+     * @param string $libDir
+     * @param string $installDir
      * @param Container $dependencyInjector
      * @param DatabaseConnection $db
      * @param Filesystem $filesystem
-     * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
+        private string $libDir,
+        private string $installDir,
         private Container $dependencyInjector,
         DatabaseConnection $db,
         private Filesystem $filesystem,
-        private ParameterBagInterface $parameterBag,
     ) {
         $this->db = $db;
     }
@@ -70,7 +69,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     public function runPostUpdate(string $currentVersion): void
     {
-        if (! $this->filesystem->exists(self::INSTALL_DIR)) {
+        if (! $this->filesystem->exists($this->installDir)) {
             return;
         }
 
@@ -85,23 +84,18 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     private function backupInstallDirectory(string $currentVersion): void
     {
-        $centreonVarLibPath = $this->parameterBag->get('centreon_var_lib');
-        if (! is_string($centreonVarLibPath)) {
-            throw new \Exception('Cannot get centreon var lib path from configuration');
-        }
-
-        $backupDirectory = $centreonVarLibPath . '/installs/install-' . $currentVersion . '-' . date('Ymd_His');
+        $backupDirectory = $this->libDir . '/installs/install-' . $currentVersion . '-' . date('Ymd_His');
 
         $this->info(
             "Backing up installation directory...",
             [
-                'source' => realpath(self::INSTALL_DIR),
+                'source' => $this->installDir,
                 'destination' => $backupDirectory,
             ],
         );
 
         $this->filesystem->mirror(
-            self::INSTALL_DIR,
+            $this->installDir,
             $backupDirectory,
         );
     }
@@ -114,11 +108,11 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         $this->info(
             "Removing installation directory...",
             [
-                'installation_directory' => realpath(self::INSTALL_DIR),
+                'installation_directory' => $this->installDir,
             ],
         );
 
-        $this->filesystem->remove(self::INSTALL_DIR);
+        $this->filesystem->remove($this->installDir);
     }
 
     /**
@@ -128,7 +122,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     private function runMonitoringSql(string $version): void
     {
-        $upgradeFilePath = self::INSTALL_DIR . '/sql/centstorage/Update-CSTG-' . $version . '.sql';
+        $upgradeFilePath = $this->installDir . '/sql/centstorage/Update-CSTG-' . $version . '.sql';
         if (is_readable($upgradeFilePath)) {
             $this->db->switchToDb($this->db->getStorageDbName());
             $this->runSqlFile($upgradeFilePath);
@@ -145,7 +139,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         $pearDB = $this->dependencyInjector['configuration_db'];
         $pearDBO = $this->dependencyInjector['realtime_db'];
 
-        $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.php';
+        $upgradeFilePath = $this->installDir . '/php/Update-' . $version . '.php';
         if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
         }
@@ -158,7 +152,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     private function runConfigurationSql(string $version): void
     {
-        $upgradeFilePath = self::INSTALL_DIR . '/sql/centreon/Update-DB-' . $version . '.sql';
+        $upgradeFilePath = $this->installDir . '/sql/centreon/Update-DB-' . $version . '.sql';
         if (is_readable($upgradeFilePath)) {
             $this->db->switchToDb($this->db->getCentreonDbName());
             $this->runSqlFile($upgradeFilePath);
@@ -175,7 +169,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         $pearDB = $this->dependencyInjector['configuration_db'];
         $pearDBO = $this->dependencyInjector['realtime_db'];
 
-        $upgradeFilePath = self::INSTALL_DIR . '/php/Update-' . $version . '.post.php';
+        $upgradeFilePath = $this->installDir . '/php/Update-' . $version . '.post.php';
         if (is_readable($upgradeFilePath)) {
             include_once $upgradeFilePath;
         }
@@ -208,7 +202,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
         set_time_limit(0);
 
         $fileName = basename($filePath);
-        $tmpFile = self::INSTALL_DIR . '/tmp/' . $fileName;
+        $tmpFile = $this->installDir . '/tmp/' . $fileName;
 
         $alreadyExecutedQueriesCount = $this->getAlreadyExecutedQueriesCount($tmpFile);
 
