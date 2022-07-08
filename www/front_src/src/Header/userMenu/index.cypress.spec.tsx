@@ -8,7 +8,7 @@ describe('User Menu', () => {
   beforeEach(() => {
     cy.fixture('userMenu').as('user');
     cy.server();
-    cy.route('GET', '**/internal.php?**', '@user').as('todos');
+    cy.route('GET', '**/internal.php?**', '@user').as('getUser');
 
     cy.intercept('PATCH', 'parameters', {
       theme: 'dark',
@@ -27,9 +27,10 @@ describe('User Menu', () => {
       .as('userIcon')
       .should('be.visible');
 
-    cy.get('@userIcon').click().wait('@todos');
+    cy.get('@userIcon').click();
 
     cy.get('[data-cy=popper]').as('popper').should('be.visible');
+    cy.get('@popper').contains('admin');
     cy.get('@popper').contains('Dark');
     cy.get('@popper').contains('Light');
     cy.get('@popper').contains('Logout');

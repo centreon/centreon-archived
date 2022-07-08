@@ -255,7 +255,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   };
 
   const toggle = (event: MouseEvent<SVGSVGElement>): void => {
-    loadUserData();
     if (anchorEl) {
       setAnchorEl(null);
 
