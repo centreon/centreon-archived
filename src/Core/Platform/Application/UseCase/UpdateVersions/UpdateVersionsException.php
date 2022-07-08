@@ -75,4 +75,13 @@ class UpdateVersionsException extends \Exception
             $e
         );
     }
+
+    /**
+     * @param \Throwable $e
+     * @return self
+     */
+    public static function errorWhenApplyingPostUpdate(\Throwable $e): self
+    {
+        return new self(_('An error occurred when applying post update actions'), 0, $e);
+    }
 }
