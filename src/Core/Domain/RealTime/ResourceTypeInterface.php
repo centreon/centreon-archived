@@ -35,8 +35,14 @@ interface ResourceTypeInterface
     public function getName(): string;
 
     /**
-     * @param string $type
+     * @param string $typeName
      * @return bool
      */
-    public function isValidFor(string $type): bool;
+    public function isValidForTypeName(string $typeName): bool;
+
+    /**
+     * @param integer $typeId
+     * @return bool
+     */
+    public function isValidForTypeId(int $typeId): bool;
 }

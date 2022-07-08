@@ -25,20 +25,23 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
+use Centreon\Domain\RequestParameters\RequestParameters;
+use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 class ServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
-    public const URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
+    public const ENDPOINT_SERVICE_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addserviceacknowledgement',
+                 ENDPOINT_SERVICE_DETAILS = 'centreon_application_monitoring_resource_details_service',
+                 ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addServiceDowntime',
+                 ENDPOINT_SERVICE_NOTIFICATION_POLICY = 'configuration.service.notification-policy',
+                 ENDPOINT_SERVICE_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
+                 ENDPOINT_SERVICE_STATUS_GRAPH = 'monitoring.metric.getServiceStatusMetrics',
+                 ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebyhostandservice',
+                 URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}',
                  URI_REPORTING = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}',
                  URI_SERVICEGROUP_CONFIGURATION = '/main.php?p=60203&o=c&sg_id={servicegroupId}',
                  URI_SERVICE_CATEGORY_CONFIGURATION = '/main.php?p=60209&o=c&sc_id={serviceCategoryId}';
-
-    public const ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebyhostandservice',
-                 ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
-                 ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getServiceStatusMetrics',
-                 ENDPOINT_SERVICE_NOTIFICATION_POLICY = 'configuration.service.notification-policy';
 
     /**
      * @param ContactInterface $contact
@@ -53,9 +56,9 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
     /**
      * @inheritDoc
      */
-    public function isValidFor(mixed $data): bool
+    public function isValidFor(string $resourceType): bool
     {
-        return ($data instanceof FindServiceResponse);
+        return $resourceType === ServiceResourceType::TYPE_NAME;
     }
 
     /**
@@ -124,37 +127,86 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, integer> $parameters
+     * @return string
      */
-    public function createEndpoints(mixed $response): array
+    private function generateDowntimeEndpoint(array $parameters): string
     {
-        $parameters = [
-            'hostId' => $response->hostId,
-            'serviceId' => $response->id,
+        $downtimeFilter = [
+            'search' => json_encode([
+                RequestParameters::AGGREGATE_OPERATOR_AND => [
+                    [
+                        'start_time' => [
+                            RequestParameters::OPERATOR_LESS_THAN => time(),
+                        ],
+                        'end_time' => [
+                            RequestParameters::OPERATOR_GREATER_THAN => time(),
+                        ],
+                        [
+                            RequestParameters::AGGREGATE_OPERATOR_OR => [
+                                'is_cancelled' => [
+                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
+                                ],
+                                'deletion_time' => [
+                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ])
         ];
 
+        return $this->uriGenerator->generateEndpoint(
+            self::ENDPOINT_SERVICE_DOWNTIME,
+            array_merge($parameters, $downtimeFilter)
+        );
+    }
+
+    /**
+     * @param array<string, integer> $parameters
+     * @return string
+     */
+    private function generateAcknowledgementEndpoint(array $parameters): string
+    {
+        $acknowledgementFilter = ['limit' => 1];
+
+        return $this->uriGenerator->generateEndpoint(
+            self::ENDPOINT_SERVICE_ACKNOWLEDGEMENT,
+            array_merge($parameters, $acknowledgementFilter)
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createEndpoints(array $parameters): array
+    {
+        $parametersIds = [
+            'serviceId' => $parameters['serviceId'],
+            'hostId' => $parameters['hostId'],
+        ];
         return [
-            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parameters),
-            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parameters),
-            'performance_graph' => $response->hasGraphData
-                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters)
+            'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $parametersIds),
+            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parametersIds),
+            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_STATUS_GRAPH, $parametersIds),
+            'performance_graph' => $parameters['hasGraphData']
+                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_PERFORMANCE_GRAPH, $parametersIds)
                 : null,
             'notification_policy' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_SERVICE_NOTIFICATION_POLICY,
-                $parameters
+                $parametersIds
             ),
+            'downtime' => $this->generateDowntimeEndpoint($parametersIds),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalUris(mixed $response): array
+    public function createInternalUris(array $parameters): array
     {
-        $parameters = [
-            'hostId' => $response->hostId,
-            'serviceId' => $response->id,
-        ];
         return [
             'configuration' => $this->createForConfiguration($parameters),
             'logs' => $this->createForEventLog($parameters),

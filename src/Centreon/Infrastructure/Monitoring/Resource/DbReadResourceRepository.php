@@ -307,7 +307,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         }
 
         while ($resourceRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $resources[] = DbResourceFactory::createFromRecord($resourceRecord);
+            $resources[] = DbResourceFactory::createFromRecord($resourceRecord, $this->resourceTypes);
         }
 
         /**
@@ -357,7 +357,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
         $subRequest = '';
         foreach ($filter->getTypes() as $filterType) {
             foreach ($this->resourceTypes as $resourceType) {
-                if ($resourceType->isValidFor($filterType)) {
+                if ($resourceType->isValidForTypeName($filterType)) {
                     $resourceTypes[] = $resourceType->getId();
                     break;
                 }

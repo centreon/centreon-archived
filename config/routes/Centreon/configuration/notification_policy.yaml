@@ -17,7 +17,7 @@ configuration.service.notification-policy:
 
 configuration.metaservice.notification-policy:
     methods: GET
-    path: /configuration/metaservices/{metaServiceId}/notification-policy
+    path: /configuration/metaservices/{metaId}/notification-policy
     controller: 'Core\Infrastructure\Configuration\NotificationPolicy\Api\FindMetaServiceNotificationPolicyController'
     requirements:
         metaServiceId: '\d+'

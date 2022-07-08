@@ -30,6 +30,7 @@ use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 class FindServiceResponse
 {
@@ -176,7 +177,12 @@ class FindServiceResponse
     public $hasGraphData;
 
     /**
-     * @param int $id
+     * @var string
+     */
+    public string $type = ServiceResourceType::TYPE_NAME;
+
+    /**
+     * @param int $serviceId
      * @param int $hostId
      * @param string $name
      * @param ServiceStatus $status
@@ -188,7 +194,7 @@ class FindServiceResponse
      * @param Tag[] $serviceCategories
      */
     public function __construct(
-        public int $id,
+        public int $serviceId,
         public int $hostId,
         public string $name,
         ServiceStatus $status,

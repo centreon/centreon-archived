@@ -49,8 +49,16 @@ abstract class AbstractResourceType implements ResourceTypeInterface
     /**
      * @inheritDoc
      */
-    public function isValidFor(string $name): bool
+    public function isValidForTypeName(string $typeName): bool
     {
-        return $name === $this->name;
+        return $typeName === $this->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isValidForTypeId(int $typeId): bool
+    {
+        return $typeId === $this->id;
     }
 }
