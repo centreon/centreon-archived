@@ -218,7 +218,7 @@ const Filter = (): JSX.Element => {
         return;
       }
 
-      setAutoCompleteSuggestions(list);
+      setAutoCompleteSuggestions(formattedResult);
     });
   };
 
