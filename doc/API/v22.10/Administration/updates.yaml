@@ -2,9 +2,9 @@
 patch:
   tags:
     - Platform
-  summary: "Update centreon web"
+  summary: "Update Centreon web"
   description: |
-    Update centreon web component
+    Update Centreon web component
   requestBody:
     required: true
     content:
