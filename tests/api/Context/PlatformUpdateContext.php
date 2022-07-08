@@ -33,9 +33,15 @@ class PlatformUpdateContext extends ApiContext
     public function anUpdateIsAvailable()
     {
         $this->getContainer()->execute(
-            'mkdir -p /usr/share/centreon/www/install/php '
-                . '&& echo \<?php /usr/share/centreon/www/install/php/Update-99.99.99.php '
-                . '&& chown -R apache. /usr/share/centreon/www/install',
+            'mkdir -p /usr/share/centreon/www/install/php',
+            'web'
+        );
+        $this->getContainer()->execute(
+            "sh -c 'echo \"<?php\" > /usr/share/centreon/www/install/php/Update-99.99.99.php'",
+            'web'
+        );
+        $this->getContainer()->execute(
+            'chown -R apache. /usr/share/centreon/www/install',
             'web'
         );
     }

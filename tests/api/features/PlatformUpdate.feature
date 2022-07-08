@@ -23,6 +23,10 @@ Feature:
         """
         Then the response code should be "204"
 
+        When I send a GET request to '/api/latest/platform/versions'
+        Then the response code should be "200"
+        And the JSON node "web.version" should be equal to the string "99.99.99"
+
         When I send a PATCH request to '/api/latest/platform/updates' with body:
         """
         {
@@ -34,3 +38,4 @@ Feature:
         }
         """
         Then the response code should be "404"
+        And the JSON node "message" should be equal to the string "Updates not found"

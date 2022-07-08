@@ -79,7 +79,7 @@ default:
     platform_update:
       paths: [ "%paths.base%/features/PlatformUpdate.feature" ]
       contexts:
-        - Centreon\Test\Behat\Api\Context\PlatformUpdateContext
+        - Centreon\Test\Api\Context\PlatformUpdateContext
     host_groups:
       paths: [ "%paths.base%/features/HostGroup.feature" ]
       contexts:
