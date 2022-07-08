@@ -109,7 +109,7 @@ describe('User Menu', () => {
     userEvent.click(screen.getByLabelText(labelProfile));
 
     await waitFor(() => {
-      expect(screen.getByText('Admin')).toBeInTheDocument();
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -137,7 +137,7 @@ describe('User Menu', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Admin')).toBeInTheDocument();
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText(labelCopyAutologinLink));
