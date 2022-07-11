@@ -24,6 +24,7 @@ namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
+use Core\Platform\Application\Repository\ReadRequirementsRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
@@ -37,12 +38,14 @@ class UpdateVersions
     use LoggerTrait;
 
     /**
+     * @param ReadRequirementsRepositoryInterface $readRequirementsRepository
      * @param UpdateLockerRepositoryInterface $updateLocker
      * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param ReadUpdateRepositoryInterface $readUpdateRepository
      * @param WriteUpdateRepositoryInterface $writeUpdateRepository
      */
     public function __construct(
+        private ReadRequirementsRepositoryInterface $readRequirementsRepository,
         private UpdateLockerRepositoryInterface $updateLocker,
         private ReadVersionRepositoryInterface $readVersionRepository,
         private ReadUpdateRepositoryInterface $readUpdateRepository,
@@ -59,6 +62,8 @@ class UpdateVersions
         $this->info('Updating versions');
 
         try {
+            $this->validateRequirementsOrFail();
+
             $this->lockUpdate();
 
             $currentVersion = $this->getCurrentVersionOrFail();
@@ -91,6 +96,18 @@ class UpdateVersions
         }
 
         $presenter->setResponseStatus(new NoContentResponse());
+    }
+
+    /**
+     * Validate platform requirements or fail
+     *
+     * @throws \Exception
+     */
+    private function validateRequirementsOrFail(): void
+    {
+        $this->info('Validating platform requirements');
+
+        $this->readRequirementsRepository->validateRequirementsOrFail();
     }
 
     /**

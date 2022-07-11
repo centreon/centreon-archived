@@ -220,6 +220,22 @@ services:
         class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
+    Core\Platform\Application\Repository\ReadRequirementsRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\ReadRequirementsRepository
+        arguments:
+            $requirementProviders: !tagged_iterator 'platform.requirement.provider.repositories'
+        public: true
+
+    Core\Platform\Infrastructure\Repository\RequirementProviders\PhpRequirementProviderRepository:
+        arguments:
+            $requiredPhpVersion: '%required_php_version%'
+        public: true
+
+    Core\Platform\Infrastructure\Repository\RequirementProviders\MariaDbRequirementProviderRepository:
+        arguments:
+            $requiredMariaDbMinVersion: '%required_mariadb_min_version%'
+        public: true
+
     Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
         class: Core\Platform\Infrastructure\Repository\DbReadVersionRepository
         public: true
@@ -254,6 +270,8 @@ services:
             tags: ['authentication.provider.responses']
         Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
+        Core\Platform\Application\Repository\RequirementProviderRepositoryInterface:
+            tags: ['platform.requirement.provider.repositories']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
         factory: ['@Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory', 'createResourceRepository']
