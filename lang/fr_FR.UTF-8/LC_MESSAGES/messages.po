@@ -16943,3 +16943,15 @@ msgstr "Une erreur s'est produite lors de l'application des actions postérieure
 
 msgid "Updates not found"
 msgstr "Les mises à jour n'ont pas été trouvées"
+
+msgid "PHP version %s required (%s installed)"
+msgstr "La version PHP %s est requise (%s installée)"
+
+msgid "PHP extension %s not loaded"
+msgstr "L'extension PHP %s n'est pas chargée"
+
+msgid "Error when getting MariaDb version"
+msgstr "Erreur lors de la récupération de la version MariaDb"
+
+msgid "MariaDb version %s required (%s installed)"
+msgstr "La version MariaDb %s est requise (%s installée)"
