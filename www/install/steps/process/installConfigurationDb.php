@@ -115,7 +115,7 @@ try {
         }
     }
     //Create table
-    $db->exec('use ' . $parameters['db_configuration']);
+    $db->exec('use `' . $parameters['db_configuration'] . '`');
     $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
     if ("0" != $result) {
         $return['msg'] = $result;

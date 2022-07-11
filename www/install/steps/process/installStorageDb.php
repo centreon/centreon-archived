@@ -90,7 +90,7 @@ try {
         $step->getEngineConfiguration(),
         $step->getBrokerConfiguration()
     );
-    $result = $db->query('use ' . $parameters['db_storage']);
+    $result = $db->query('use `' . $parameters['db_storage'] . '`');
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
     }
