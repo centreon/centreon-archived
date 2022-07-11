@@ -25,13 +25,12 @@ namespace Core\Platform\Infrastructure\Repository\RequirementProviders;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\RequirementProviderRepositoryInterface;
-use Core\Platform\Application\Repository\RequirementException;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\VersionHelper;
 
-class MariaDbRequirementProviderRepository extends AbstractRepositoryDRB
-    implements RequirementProviderRepositoryInterface
+class MariaDbRequirementProviderRepository extends AbstractRepositoryDRB implements
+    RequirementProviderRepositoryInterface
 {
     use LoggerTrait;
 

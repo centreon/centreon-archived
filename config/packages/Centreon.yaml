@@ -224,17 +224,14 @@ services:
         class: Core\Platform\Infrastructure\Repository\ReadRequirementsRepository
         arguments:
             $requirementProviders: !tagged_iterator 'platform.requirement.provider.repositories'
-        public: true
 
     Core\Platform\Infrastructure\Repository\RequirementProviders\PhpRequirementProviderRepository:
         arguments:
             $requiredPhpVersion: '%required_php_version%'
-        public: true
 
     Core\Platform\Infrastructure\Repository\RequirementProviders\MariaDbRequirementProviderRepository:
         arguments:
             $requiredMariaDbMinVersion: '%required_mariadb_min_version%'
-        public: true
 
     Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
         class: Core\Platform\Infrastructure\Repository\DbReadVersionRepository
