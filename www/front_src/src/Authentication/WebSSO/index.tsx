@@ -6,14 +6,12 @@ import { isNil, not } from 'ramda';
 import { LinearProgress, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
 import useTab from '../useTab';
 
 import { labelDefineWebSSOConfiguration } from './translatedLabels';
 import useWebSSO from './useWebSSO';
-import Form from './Form';
+import WebSSOForm from './Form';
 import { WebSSOConfiguration } from './models';
-import { inputs } from './Form/inputs';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,14 +54,11 @@ const WebSSOConfigurationForm = (): JSX.Element => {
           <LinearProgress />
         )}
       </div>
-      {isWebSSOConfigurationEmpty ? (
-        <LoadingSkeletonForm inputs={inputs} />
-      ) : (
-        <Form
-          initialValues={initialWebSSOConfiguration as WebSSOConfiguration}
-          loadWebSSOonfiguration={loadWebSSOonfiguration}
-        />
-      )}
+      <WebSSOForm
+        initialValues={initialWebSSOConfiguration as WebSSOConfiguration}
+        isLoading={isWebSSOConfigurationEmpty}
+        loadWebSSOonfiguration={loadWebSSOonfiguration}
+      />
     </div>
   );
 };

@@ -18,15 +18,16 @@ import {
   buildListingEndpoint,
 } from '@centreon/ui';
 
-import { labelAdmin, labelExcludedUsers } from '../../../translatedLabels';
-import { getField } from '../../utils';
-import { Contact } from '../../../models';
-import { contactsEndpoint } from '../../../../api/endpoints';
+import { labelAdmin, labelExcludedUsers } from '../../translatedLabels';
+import { getField } from '../utils';
+import { Contact } from '../../models';
+import { contactsEndpoint } from '../../../api/endpoints';
 
 const excludedUsersFieldName = 'passwordExpiration.excludedUsers';
 
 const useStyles = makeStyles((theme) => ({
   excludedUsersAutocomplete: {
+    height: 'auto',
     width: theme.spacing(32),
   },
   option: {

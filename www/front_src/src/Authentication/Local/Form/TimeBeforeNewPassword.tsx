@@ -9,11 +9,12 @@ import { FormHelperText, FormLabel } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelMinimumTimeBetweenPasswordChanges } from '../../translatedLabels';
-import { getField } from '../utils';
-import TimeInputs from '../../TimeInputs';
-import { TimeInputConfiguration } from '../../models';
-import { sevenDays } from '../../timestamps';
+import { labelMinimumTimeBetweenPasswordChanges } from '../translatedLabels';
+import TimeInputs from '../TimeInputs';
+import { TimeInputConfiguration } from '../models';
+import { sevenDays } from '../timestamps';
+
+import { getField } from './utils';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
 
