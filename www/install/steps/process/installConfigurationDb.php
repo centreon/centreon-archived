@@ -89,7 +89,7 @@ try {
 
     //If it doesn't exist, create it
     if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
-        $db->exec("CREATE DATABASE " . $parameters['db_configuration']);
+        $db->exec('CREATE DATABASE `' . $parameters['db_configuration'] . '`');
 
         //Create table
         $db->exec('use `' . $parameters['db_configuration'] . '`');

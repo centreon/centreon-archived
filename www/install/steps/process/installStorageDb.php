@@ -68,7 +68,7 @@ try {
 
     //If it doesn't exist, create it
     if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
-        $db->exec("CREATE DATABASE " . $parameters['db_storage']);
+        $db->exec('CREATE DATABASE `' . $parameters['db_storage'] . '`');
     } else {
         //If it exist, check if database is empty (no tables)
         $statement = $db->prepare(
