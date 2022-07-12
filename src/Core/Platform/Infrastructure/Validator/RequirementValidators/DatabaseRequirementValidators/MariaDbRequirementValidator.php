@@ -25,23 +25,18 @@ namespace Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseR
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidatorInterface;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\VersionHelper;
 
-class MariaDbRequirementValidator extends AbstractRepositoryDRB implements DatabaseRequirementValidatorInterface
+class MariaDbRequirementValidator implements DatabaseRequirementValidatorInterface
 {
     use LoggerTrait;
 
     /**
      * @param string $requiredMariaDbMinVersion
-     * @param DatabaseConnection $db
      */
     public function __construct(
         private string $requiredMariaDbMinVersion,
-        DatabaseConnection $db,
     ) {
-        $this->db = $db;
     }
 
     /**
