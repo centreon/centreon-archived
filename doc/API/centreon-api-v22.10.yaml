@@ -1733,7 +1733,7 @@ paths:
     get:
       tags:
         - Severity
-      summary: "List all host severities from the realtime"
+      summary: "List all host severities from real-time data"
       description: |
         List all the host severities in real-time monitoring.
 

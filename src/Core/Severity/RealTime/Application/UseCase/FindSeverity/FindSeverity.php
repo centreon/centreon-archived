@@ -52,7 +52,7 @@ class FindSeverity
             $severities = $this->repository->findAllByTypeId($severityTypeId);
         } catch (\Throwable $ex) {
             $this->error(
-                'An error occured while retrieving severities from the realtime',
+                'An error occured while retrieving severities from real-time data',
                 [
                     'typeId' => $severityTypeId,
                     'trace' => $ex->getTraceAsString()

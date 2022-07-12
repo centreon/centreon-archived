@@ -142,11 +142,11 @@ Monitoring.ServiceDetail:
         id:
           type: integer
           format: int64
-          description: "ID of the servicegroup"
+          description: "ID of the service group"
           example: 28
         name:
           type: string
-          description: "Name of the servicegroup"
+          description: "Name of the service group"
           example: "All-Cpu-Services"
         configuration_uri:
           type: string
@@ -175,19 +175,19 @@ Monitoring.ServiceDetail:
         id:
           type: integer
           format: int64
-          description: "ID of the Severity"
+          description: "ID of the severity"
           example: 28
         name:
           type: string
-          description: "Name of the Severity"
+          description: "Name of the severity"
           example: "High"
         type:
           type: string
-          description: "Type of the Severity"
+          description: "Type of the severity"
           enum: ['host', 'service']
         level:
           type: integer
-          description: "Level of the Severity"
+          description: "Level of the severity"
           minimum: 0
           maximum: 100
           example: 50
@@ -197,15 +197,15 @@ Monitoring.ServiceDetail:
             id:
               type: integer
               format: int64
-              description: "ID of the Icon"
+              description: "ID of the icon"
               example: 10
             name:
               type: string
-              description: "Name of the Icon"
+              description: "Name of the icon"
               example: "dog.png"
             url:
               type: string
-              description: "URL of the Icon"
+              description: "URL of the icon"
               example: "baseUri/ppm/dog.png"
     acknowledgement:
       type: object
