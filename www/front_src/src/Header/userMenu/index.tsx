@@ -301,9 +301,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     logout();
   };
 
-  const handleResizedScreen = (): void => {
-    getPositionOfPopper();
-  };
 
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
