@@ -33,7 +33,7 @@ class MariaDbRequirementException extends RequirementException
     public static function errorWhenGettingMariaDbVersion(\Throwable $e): self
     {
         return new self(
-            _('Error when getting MariaDb version'),
+            _('Error when getting MariaDB version'),
             0,
             $e,
         );
@@ -48,7 +48,7 @@ class MariaDbRequirementException extends RequirementException
     {
         return new self(
             sprintf(
-                _('MariaDb version %s required (%s installed)'),
+                _('MariaDB version %s required (%s installed)'),
                 $requiredMariaDbVersion,
                 $installedMariaDbVersion,
             ),
