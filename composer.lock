@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "088b354ec78505cefcc49b374ef1cf6b",
+    "content-hash": "94134d5a5dc2cb311e57863a9f0dafd8",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6546,16 +6546,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-custom-database-name",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "adfc3db66b3c1b0647a547048ef86629a0da970e"
+                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/adfc3db66b3c1b0647a547048ef86629a0da970e",
-                "reference": "adfc3db66b3c1b0647a547048ef86629a0da970e",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2aed30ebf46d7b76478166fdf122112a1c3722c6",
+                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6",
                 "shasum": ""
             },
             "require": {
@@ -6575,6 +6575,7 @@
                 "behat/mink-selenium2-driver": "Mink driver using Selenium",
                 "phpstan/phpstan": "PHP static analysis"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6597,9 +6598,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/custom-database-name"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-07-12T12:22:36+00:00"
+            "time": "2022-04-27T09:10:57+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -10884,5 +10885,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
