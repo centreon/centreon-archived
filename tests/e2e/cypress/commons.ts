@@ -39,7 +39,7 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
   const query = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
   const command = `docker exec -i ${Cypress.env(
     'dockerName',
-  )} mysql -ucentreon -pcentreon centreon_storage <<< "${query}"`;
+  )} mysql -ucentreon -pcentreon centreon-monitoring <<< "${query}"`;
 
   cy.exec(command).then(({ stdout }): Cypress.Chainable<null> | null => {
     servicesFoundStepCount += 1;
