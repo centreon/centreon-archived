@@ -253,7 +253,7 @@ class PartEngine
         }
 
         try {
-            $dbResult = $db->query("use " . $table->getSchema());
+            $dbResult = $db->query("use `" . $table->getSchema() . "`");
         } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "
