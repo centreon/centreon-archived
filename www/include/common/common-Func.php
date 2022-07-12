@@ -2565,7 +2565,8 @@ function getHostsForConfigChangeFlagFromServiceIds(array $serviceIds, bool $shou
         $query = "SELECT DISTINCT(hsr.host_host_id)
             FROM host_service_relation hsr
             JOIN service ON service.service_id = hsr.service_service_id
-            WHERE service.service_activate = '1' AND hsr.service_service_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+            WHERE service.service_activate = '1' AND hsr.service_service_id IN ("
+            . implode(', ', array_keys($bindedParams)) . ")";
     } else {
         $query = "SELECT DISTINCT(hsr.host_host_id)
             FROM host_service_relation hsr
@@ -2634,8 +2635,10 @@ function getServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemp
  * @return int[]
  * @throws \Exception
  */
-function getHostsForConfigChangeFlagFromServiceGroupId(int $servicegroupId, bool $shouldServicegroupBeEnabled = true): array
-{
+function getHostsForConfigChangeFlagFromServiceGroupId(
+    int $servicegroupId,
+    bool $shouldServicegroupBeEnabled = true
+): array {
     global $pearDB;
 
     $query = "SELECT sgr.*, service.service_register
@@ -2655,7 +2658,7 @@ function getHostsForConfigChangeFlagFromServiceGroupId(int $servicegroupId, bool
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
         if ($value['service_register'] === '0') {
             $serviceTemplateIds[] = $value['service_service_id'];
-        } else if ($value['hostgroup_hg_id'] !== null) {
+        } elseif ($value['hostgroup_hg_id'] !== null) {
             $hostgroupIds[] = $value['hostgroup_hg_id'];
         } else {
             $hostIds[] = $value['host_host_id'];
@@ -2746,21 +2749,34 @@ function setPollersToUpdated(array $pollerIds): void
  * @param bool $shouldResourceBeEnabled (default true)
  * @throws \Exception
  */
-function signalConfigurationChange(string $resourceType, int $resourceId, array $previousPollers = [], bool $shouldResourceBeEnabled = true): void
-{
+function signalConfigurationChange(
+    string $resourceType,
+    int $resourceId,
+    array $previousPollers = [],
+    bool $shouldResourceBeEnabled = true
+): void {
     $hostIds = [];
     switch ($resourceType) {
         case 'host':
             $hostIds[] = $resourceId;
             break;
         case 'hostgroup':
-            $hostIds = array_merge($hostIds, getHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled));
+            $hostIds = array_merge(
+                $hostIds,
+                getHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
+            );
             break;
         case 'service':
-            $hostIds = array_merge($hostIds, getHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled));
+            $hostIds = array_merge(
+                $hostIds,
+                getHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
+            );
             break;
         case 'servicegroup':
-            $hostIds = array_merge($hostIds, getHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled));
+            $hostIds = array_merge(
+                $hostIds,
+                getHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
+            );
             break;
     }
     $pollerIds = getPollersForConfigChangeFlagFromHostIds(

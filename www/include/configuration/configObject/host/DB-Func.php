@@ -282,7 +282,6 @@ function enableHostInDB($host_id = null, $host_arr = array())
 
         signalConfigurationChange('host', (int) $hostId);
         $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "enable");
-
     }
 }
 
