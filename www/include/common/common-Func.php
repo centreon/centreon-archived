@@ -1934,6 +1934,7 @@ function getCentreonVersion($pearDB)
     return $row['value'];
 }
 
+
 /**
  * Set relevent pollers as updated
  *
