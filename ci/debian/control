@@ -161,7 +161,7 @@ Depends:
     centreon-plugin-applications-protocol-ftp,
     centreon-plugin-applications-protocol-ldap,
     centreon-plugin-hardware-printers-generic-snmp,
-    centreon-plugin-hardware-ups-standard-rfc1628-Snmp,
+    centreon-plugin-hardware-ups-standard-rfc1628-snmp,
     centreon-plugin-network-cisco-standard-snmp,
     centreon-plugin-operatingsystems-linux-snmp,
     centreon-plugin-operatingsystems-windows-snmp,
