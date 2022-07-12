@@ -59,10 +59,11 @@ allow centreon_web_rw_t httpd_sys_rw_content_t:file { append create getattr seta
 
 #============= httpd_t ==============
 allow httpd_t centreon_etc_t:dir { add_name write };
-allow httpd_t centreon_etc_t:file { create getattr open read write };
+allow httpd_t centreon_etc_t:file { create getattr setattr open read write };
 allow httpd_t etc_t:dir { add_name write };
 allow httpd_t etc_t:file { create setattr write };
 allow httpd_t init_t:unix_stream_socket connectto;
+allow httpd_t var_t:file { getattr open read lock };
 allow httpd_t init_var_lib_t:file { read open lock getattr };
 allow httpd_t ld_so_cache_t:file execute;
 allow httpd_t self:capability { audit_write sys_resource };
@@ -74,6 +75,7 @@ allow httpd_t systemd_systemctl_exec_t:file { open read };
 allow httpd_t systemd_unit_file_t:service { reload status };
 allow httpd_t httpd_sys_content_t:dir { add_name write remove_name rmdir create };
 allow httpd_t httpd_sys_content_t:file { unlink };
+allow httpd_t snmpd_var_lib_t:file { getattr open read };
 allow httpd_t centreon_config_t:dir read;
 allow httpd_t centreon_config_t:file { getattr open read };
 allow httpd_t centreon_web_rw_t:dir { add_name remove_name write };
