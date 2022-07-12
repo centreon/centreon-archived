@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetrics;
-use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricsPresenterInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 
 class DownloadPerformanceMetricsController extends AbstractController
@@ -40,13 +39,7 @@ class DownloadPerformanceMetricsController extends AbstractController
     private ?DateTimeImmutable $endDate;
     private Request $request;
 
-    /**
-     * @param int $hostId
-     * @param FindPerformanceMetrics $useCase
-     * @param FindPerformanceMetricsPresenterInterface $presenter
-     * @return object
-     */
-    public function __invoke(int $hostId, int $serviceId, ReadIndexDataRepositoryInterface $indexDataRepository, ReadMetricRepositoryInterface $metricRepository, FindPerformanceMetrics $useCase, FindPerformanceMetricsPresenterInterface $presenter, Request $request): object
+    public function __invoke(int $hostId, int $serviceId, ReadIndexDataRepositoryInterface $indexDataRepository, ReadMetricRepositoryInterface $metricRepository, FindPerformanceMetrics $useCase, Request $request)
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -55,10 +48,9 @@ class DownloadPerformanceMetricsController extends AbstractController
         $metrics = $metricRepository->findMetricsByIndexId($index);
         $this->findStartDate();
         $this->findEndDate();
+        $fileName = $this->generateDownloadFileNameByIndex($index, $indexDataRepository);
 
-        $useCase($metrics, $this->startDate, $this->endDate, $presenter);
-
-        return $presenter->show();
+        return $useCase($metrics, $this->startDate, $this->endDate, $fileName);
     }
 
     private function findStartDate(): void
@@ -88,5 +80,19 @@ class DownloadPerformanceMetricsController extends AbstractController
         }
 
         return $dateTime;
+    }
+
+    private function generateDownloadFileNameByIndex(int $index, ReadIndexDataRepositoryInterface $indexDataRepository): string
+    {
+        $row = $indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
+
+        $hostName = $row['host_name'];
+        $serviceDescription = $row['service_description'];
+
+        if ($hostName !== '' && $serviceDescription !== '') {
+            return sprintf('%s_%s.csv', $hostName, $serviceDescription);
+        }
+
+        return sprintf('%s.csv', $index);
     }
 }

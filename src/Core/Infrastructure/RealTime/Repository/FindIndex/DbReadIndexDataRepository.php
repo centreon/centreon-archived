@@ -22,11 +22,9 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\FindIndex;
 
-use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
-use Core\Domain\RealTime\Model\DataBin;
 
 class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadIndexDataRepositoryInterface
 {
@@ -55,4 +53,13 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         return (int) $row['id'];
     }
 
+    public function findHostNameAndServiceDescriptionByIndex(int $index): array
+    {
+        $query = 'SELECT host_name, service_description FROM `:dbstg`.index_data WHERE id = :index';
+        $statement = $this->db->prepare($this->translateDbName($query));
+
+        $statement->bindValue(':index', $index, \PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetch();
+    }
 }

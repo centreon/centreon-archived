@@ -25,6 +25,7 @@ namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 use \DateTimeInterface ;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FindPerformanceMetrics
 {
@@ -32,10 +33,9 @@ class FindPerformanceMetrics
 
     public function __construct(private ReadDataBinRepositoryInterface $repository)
     {
-
     }
 
-    public function __invoke(array $metrics, DateTimeInterface  $startDate, DateTimeInterface  $endDate, FindPerformanceMetricsPresenterInterface $presenter): void
+    public function __invoke(array $metrics, DateTimeInterface  $startDate, DateTimeInterface  $endDate, string $fileName): StreamedResponse
     {
         $this->info(
             'Searching date_bin',
@@ -47,15 +47,30 @@ class FindPerformanceMetrics
         );
 
         $dataBin = $this->repository->findDataByMetricsAndDates($metrics, $startDate, $endDate);
-        $response = $this->createResponse($dataBin);
 
-        $presenter->present($response);
+        return $this->show($metrics, $dataBin, $fileName);
     }
 
-    private function createResponse(iterable $dataBin): FindPerformanceMetricsResponse
+    public function show(array $metrics, iterable $dataBin, string $fileName): StreamedResponse
     {
-        $findHostResponse = new FindPerformanceMetricsResponse($dataBin);
+        $response = new StreamedResponse();
+        $response->setCallback(function () use($dataBin, $metrics) {
+            $handle = fopen('php://output', 'r+');
+            if ($handle === false) {
+                throw new \RuntimeException('Unable to generate file');
+            }
+            $header = ['time', 'humantime', ...$metrics];
+            fputcsv($handle, $header, ';');
 
-        return $findHostResponse;
+            foreach ($dataBin as $data) {
+                fputcsv($handle, $data, ';');
+            }
+
+            fclose($handle);
+        });
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $response;
     }
 }

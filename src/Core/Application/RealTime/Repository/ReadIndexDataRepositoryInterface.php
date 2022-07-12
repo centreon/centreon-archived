@@ -25,4 +25,6 @@ namespace Core\Application\RealTime\Repository;
 interface ReadIndexDataRepositoryInterface
 {
     public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
+
+    public function findHostNameAndServiceDescriptionByIndex(int $index): array;
 }

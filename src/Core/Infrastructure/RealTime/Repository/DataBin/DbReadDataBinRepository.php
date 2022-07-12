@@ -66,9 +66,26 @@ class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataB
         $statement->execute();
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $dataBin) {
-            yield formatDataBin($dataBin);
+            yield $this->formatDataBin($dataBin);
         }
 
         $statement->closeCursor();
+    }
+
+    private function formatDataBin(array $dataBin): array
+    {
+        $formattedData = [
+            'time' => $dataBin['time'],
+            'humantime' => date('Y-m-d H:i:s', (int) $dataBin['time']),
+
+        ];
+
+        foreach ($dataBin as $columnName => $columnValue) {
+            if ($columnName !== 'time') {
+                $formattedData[$columnName] = sprintf('%f', $columnValue);
+            }
+        }
+
+        return $formattedData;
     }
 }
