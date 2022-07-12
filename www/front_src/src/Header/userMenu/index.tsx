@@ -310,7 +310,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
-      window.removeEventListener('resize', handleResizedScreen);
+      window.removeEventListener('resize', getPositionOfPopper);
 
       if (refreshTimeout.current) {
         clearTimeout(refreshTimeout.current);
