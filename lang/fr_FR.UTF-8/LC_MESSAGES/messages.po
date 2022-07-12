@@ -16950,8 +16950,11 @@ msgstr "La version %s de PHP est requise (%s installée)"
 msgid "PHP extension %s not loaded"
 msgstr "L'extension %s de PHP n'est pas chargée"
 
-msgid "Error when getting MariaDB version"
-msgstr "Erreur lors de la récupération de la version MariaDB"
+msgid "Error when getting database version"
+msgstr "Erreur lors de la récupération de la version de la base de données"
+
+msgid "Cannot retrieve database version information"
+msgstr "Les informations de version de la base de données n'ont pas pu être trouvées"
 
 msgid "MariaDB version %s required (%s installed)"
 msgstr "La version %s de MariaDB est requise (%s installée)"

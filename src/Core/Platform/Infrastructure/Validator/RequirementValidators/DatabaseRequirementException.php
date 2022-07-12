@@ -38,4 +38,12 @@ class DatabaseRequirementException extends RequirementException
             $e,
         );
     }
+
+    /**
+     * @return self
+     */
+    public static function cannotRetrieveVersionInformation(): self
+    {
+        return new self(_('Cannot retrieve database version information'));
+    }
 }
