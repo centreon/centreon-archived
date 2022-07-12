@@ -91,14 +91,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: '1.2fr 0.6fr',
     height: '100%',
+    justifyItems: 'center',
     overflowY: 'auto',
     padding: theme.spacing(3),
   },
   image: {
+    height: '200px',
     opacity: 0.5,
     padding: theme.spacing(0, 5),
     position: 'sticky',
     top: 0,
+    width: '200px',
   },
   panel: {
     height: '80%',
