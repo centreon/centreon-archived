@@ -16945,7 +16945,7 @@ msgid "Updates not found"
 msgstr "Les mises à jour n'ont pas été trouvées"
 
 msgid "PHP version %s required (%s installed)"
-msgstr "La version PHP %s est requise (%s installée)"
+msgstr "La version %s de PHP est requise (%s installée)"
 
 msgid "PHP extension %s not loaded"
 msgstr "L'extension %s de PHP n'est pas chargée"
