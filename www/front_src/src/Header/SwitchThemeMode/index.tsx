@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
   containerSwitch: {
     '& .MuiSwitch-switchBase': {
-      padding: theme.spacing(0.5, 0.5, 0.5, 6 / 8),
+      padding: theme.spacing(0.5, 0.5, 0.5, 0.75),
     },
     '&.Mui-checked': {
       '&:hover': {
