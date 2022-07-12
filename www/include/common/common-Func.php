@@ -234,9 +234,11 @@ function getMyHostName($host_id = null)
     if (!$host_id) {
         return;
     }
-    $query = "SELECT host_name FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+    $query = "SELECT host_name FROM host WHERE host_id = :host_id LIMIT 1";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    $row = $statement->fetchRow();
     if ($row["host_name"]) {
         return $row["host_name"];
     }
@@ -250,12 +252,16 @@ function getMyHostField($host_id, $field)
     }
     global $pearDB;
 
-    $query = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" .
-        CentreonDB::escape($host_id) . "' ORDER BY `order` ASC";
-    $DBRESULT = $pearDB->query($query);
-    while ($row = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT `" . $field . "` FROM host WHERE host_id = '" . $row['host_tpl_id'] . "'");
-        while ($row2 = $DBRESULT2->fetchRow()) {
+    $query = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = :host_id ORDER BY `order` ASC";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':host_id', (int)$host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($row = $statement->fetchRow()) {
+        $statement2 = $pearDB->prepare("SELECT :field  FROM host WHERE host_id = :host_tpl_id");
+        $statement2->bindValue(':host_tpl_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
+        $statement2->bindColumn(':field', $field, \PDO::PARAM_STR);
+        $statement2->execute();
+        while ($row2 = $statement2->fetchRow()) {
             if (isset($row2[$field]) && $row2[$field]) {
                 return $row2[$field];
             }
@@ -279,15 +285,22 @@ function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field)
     global $pearDB;
     $rq = "SELECT host_tpl_id " .
         "FROM host_template_relation " .
-        "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
+        "WHERE host_host_id = :host_host_id " .
         "ORDER BY `order`";
-    $DBRESULT = $pearDB->query($rq);
-    while ($row = $DBRESULT->fetchRow()) {
-        $rq2 = "SELECT ehi.`" . $field . "` " .
-            "FROM extended_host_information ehi " .
-            "WHERE ehi.host_host_id = '" . $row['host_tpl_id'] . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($rq2);
-        $row2 = $DBRESULT2->fetchRow();
+    $statement = $pearDB->prepare($rq);
+    $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($row = $statement->fetchRow()) {
+        $rq2 = "SELECT ehi.".":field" .
+            " FROM extended_host_information ehi " .
+            "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
+
+        $statement2 = $pearDB->prepare($rq2);
+        $statement2->bindValue(":host_host_id", (int)$row['host_tpl_id'], \PDO::PARAM_INT);
+        $statement2->bindColumn(":field", $field, \PDO::PARAM_STR);
+        $statement2->execute();
+
+        $row2 = $statement2->fetchRow();
         if (isset($row2[$field]) && $row2[$field]) {
             return $row2[$field];
         } else {
@@ -306,18 +319,22 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
     }
     global $pearDB;
 
-    $rq = "SELECT host_tpl_id " .
+
+    $statement = $pearDB->prepare("SELECT host_tpl_id " .
         "FROM host_template_relation " .
-        "WHERE host_host_id = '" . CentreonDB::escape($host_id) . "' " .
-        "ORDER BY `order`";
-    $DBRESULT = $pearDB->query($rq);
-    while ($row = $DBRESULT->fetchRow()) {
-        $rq2 = "SELECT macro.host_macro_value " .
+        "WHERE host_host_id = :host_host_id " .
+        "ORDER BY `order`");
+    $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($row = $statement->fetchRow()) {
+
+        $statement2 = $pearDB->prepare("SELECT macro.host_macro_value " .
             "FROM on_demand_macro_host macro " .
-            "WHERE macro.host_host_id = '" . $row["host_tpl_id"] .
-            "' AND macro.host_macro_name = '\$_HOST" . $field . "\$' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($rq2);
-        $row2 = $DBRESULT2->fetchRow();
+            "WHERE macro.host_host_id = :host_host_id  AND macro.host_macro_name = '\$_HOST" . ":field" . "\$' LIMIT 1");
+        $statement2->bindValue(':host_host_id', (int) $row["host_tpl_id"], \PDO::PARAM_INT);
+        $statement2->bindValue(':field',$field, \PDO::PARAM_STR);
+        $statement2->execute();
+        $row2 = $statement2->fetchRow();
         if (isset($row2["host_macro_value"]) && $row2["host_macro_value"]) {
             $macroValue = str_replace("#S#", "/", $row2["host_macro_value"]);
             $macroValue = str_replace("#BS#", "\\", $macroValue);
@@ -343,21 +360,22 @@ function getMyServiceCategories($service_id = null)
 
     $tab = array();
     while (1) {
-        $query = "SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc " .
-            "WHERE scr.service_service_id = '" . CentreonDB::escape($service_id) .
-            "' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'";
-        $DBRESULT = $pearDB->query($query);
-        if ($DBRESULT->rowCount()) {
+
+        $statement = $pearDB->prepare("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc " .
+        "WHERE scr.service_service_id = :service_id AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($statement->rowCount()) {
             $tabSC = array();
-            while ($row = $DBRESULT->fetchRow()) {
+            while ($row = $statement->fetchRow()) {
                 $tabSC[$row["sc_id"]] = $row["sc_id"];
             }
             return $tabSC;
         } else {
-            $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = '" .
-                CentreonDB::escape($service_id) . "'";
-            $DBRESULT = $pearDB->query($query);
-            $row = $DBRESULT->fetchRow();
+            $statement = $pearDB->prepare("SELECT service_template_model_stm_id FROM service WHERE service_id = :service_id");
+            $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+            $statement->execute();
+            $row = $statement->fetchRow();
             if ($row["service_template_model_stm_id"]) {
                 if (isset($tab[$row['service_template_model_stm_id']])) {
                     break;
@@ -378,9 +396,10 @@ function getMyCategorieName($sc_id = null)
     }
     global $pearDB, $oreon;
 
-    $query = "SELECT sc_name FROM service_categories WHERE sc_id = '" . CentreonDB::escape($sc_id) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+    $statement = $pearDB->prepare("SELECT sc_name FROM service_categories WHERE sc_id = :sc_id");
+    $statement->bindValue(':sc_id', (int) $sc_id, \PDO::PARAM_INT);
+    $statement->execute();
+    $row = $statement->fetchRow();
     return $row["sc_name"];
 }
 
@@ -417,11 +436,14 @@ function getMyHostExtendedInfoField($host_id, $field)
     }
     global $pearDB, $oreon;
 
-    $rq = "SELECT ehi.`" . $field . "` " .
+    $rq = "SELECT ehi.".":field"." " .
         "FROM extended_host_information ehi " .
-        "WHERE ehi.host_host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1";
-    $DBRESULT = $pearDB->query($rq);
-    $row = $DBRESULT->fetchRow();
+        "WHERE ehi.host_host_id = :host_id LIMIT 1";
+    $statement = $pearDB->prepare($rq);
+    $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
+    $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    $row = $statement->fetchRow();
     if (isset($row[$field]) && $row[$field]) {
         return $row[$field];
     } else {
@@ -524,11 +546,12 @@ function getMyHostMultipleTemplateModels($host_id = null)
 
     global $pearDB;
     $tplArr = array();
-    $query = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = '" .
-        CentreonDB::escape($host_id) . "' ORDER BY `order`";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = :host_id ORDER BY `order`";
+    $statement0 = $pearDB->prepare($query);
+    $statement0->bindValue(':host_id',(int) $host_id ,\PDO::PARAM_INT);
+    $statement0->execute();
     $statement = $pearDB->prepare("SELECT host_name FROM host WHERE host_id = :host_id LIMIT 1");
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $statement0->fetchRow()) {
         $statement->bindValue(':host_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
         $statement->execute();
         $hTpl = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -549,9 +572,11 @@ function getMyHostGroupName($hg_id = null)
     }
     global $pearDB;
 
-    $query = "SELECT hg_name FROM hostgroup WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' LIMIT 1";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+    $query = "SELECT hg_name FROM hostgroup WHERE hg_id = :hg_id LIMIT 1";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':hg_id', (int) $hg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    $row = $statement->fetchRow();
     if ($row["hg_name"]) {
         return html_entity_decode($row["hg_name"], ENT_QUOTES, "UTF-8");
     }
@@ -665,14 +690,16 @@ function getMyServiceGroupServices($sg_id = null)
      * ServiceGroups by host
      */
     $svs = array();
-    $DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+    $statement = $pearDB->prepare("SELECT service_description, service_id, host_host_id, host_name " .
         "FROM servicegroup_relation, service, host " .
-        "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
+        "WHERE servicegroup_sg_id = :sg_id " .
         "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
         "AND service.service_id = servicegroup_relation.service_service_id " .
         "AND servicegroup_relation.host_host_id = host.host_id " .
         "AND servicegroup_relation.host_host_id IS NOT NULL");
-    while ($elem = $DBRESULT->fetchRow()) {
+    $statement->bindValue(':sg_id', (int)$sg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($elem = $statement->fetchRow()) {
         $svs[$elem["host_host_id"] . "_" . $elem["service_id"]] =
             db2str($elem["service_description"]) . ":::" . $elem["host_name"];
     }
@@ -680,14 +707,16 @@ function getMyServiceGroupServices($sg_id = null)
     /*
      * ServiceGroups by hostGroups
      */
-    $DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
+    $statement1 = $pearDB->prepare("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
         "FROM servicegroup_relation, service, hostgroup " .
-        "WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' " .
+        "WHERE servicegroup_sg_id = :sg_id " .
         "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
         "AND service.service_id = servicegroup_relation.service_service_id " .
         "AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
         "AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
-    while ($elem = $DBRESULT->fetchRow()) {
+    $statement1->bindValue(':sg_id', (int)$sg_id, \PDO::PARAM_INT);
+    $statement1->execute();
+    while ($elem = $statement1->fetchRow()) {
         $hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
         foreach ($hosts as $key => $value) {
             $svs[$key . "_" . $elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $value;
@@ -711,10 +740,11 @@ function getMyServiceField($service_id, $field)
     $tab = array();
 
     while (1) {
-        $query = "SELECT `" . $field . "`, service_template_model_stm_id FROM service WHERE service_id = '" .
-            CentreonDB::escape($service_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
+        $statement = $pearDB->prepare("SELECT :field , service_template_model_stm_id FROM service WHERE service_id = :service_id LIMIT 1") ;
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
+        $statement->execute();
+        $row = $statement->fetchRow();
         $field_result = $row[$field];
         if ($row[$field]) {
             return $row[$field];
@@ -739,13 +769,15 @@ function getMyServiceExtendedInfoField($service_id, $field)
 
     $tab = array();
     while (1) {
-        $query = "SELECT `extended_service_information`.`" . $field . "`, `service`.`service_template_model_stm_id` " .
+        $statement = $pearDB->prepare("SELECT `extended_service_information`. :field , `service`.`service_template_model_stm_id` " .
             "FROM `service`, `extended_service_information` " .
-            "WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) .
-            "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
+            "WHERE `extended_service_information`.`service_service_id` =:service_id AND `service`.`service_id` = :service_id LIMIT 1") ;
 
-        if ($row = $DBRESULT->fetch()) {
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($row = $statement->fetch()) {
             if ($row[$field]) {
                 return $row[$field];
             } elseif ($row["service_template_model_stm_id"]) {
@@ -772,10 +804,10 @@ function getMyServiceName($service_id = null)
     $tab = array();
 
     while (1) {
-        $query = "SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '" .
-            CentreonDB::escape($service_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
+        $statement = $pearDB->prepare("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = :service_id LIMIT 1") ;
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetchRow();
         if ($row["service_description"]) {
             return html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
         } elseif ($row["service_template_model_stm_id"]) {
@@ -800,10 +832,11 @@ function getMyServiceAlias($service_id = null)
     $tab = array();
 
     while (1) {
-        $query = "SELECT service_alias, service_template_model_stm_id FROM service " .
-            "WHERE service_id = '" . CentreonDB::escape($service_id) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
+        $statement = $pearDB->prepare("SELECT service_alias, service_template_model_stm_id FROM service " .
+            "WHERE service_id = :service_id LIMIT 1") ;
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetchRow();
         if ($row["service_alias"]) {
             return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
         } elseif ($row["service_template_model_stm_id"]) {
@@ -827,11 +860,11 @@ function getMyServiceGraphID($service_id = null)
 
     $tab = array();
     while (1) {
-        $query = "SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi " .
-            "WHERE service_id = '" . CentreonDB::escape($service_id) .
-            "' AND esi.service_service_id = service_id LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
+        $statement = $pearDB->prepare("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi " .
+            "WHERE service_id = :service_id AND esi.service_service_id = service_id LIMIT 1") ;
+        $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetchRow();
         if ($row["graph_id"]) {
             return $row["graph_id"];
         } elseif ($row["service_template_model_stm_id"]) {
@@ -850,12 +883,15 @@ function getMyServiceGraphID($service_id = null)
 function getMyServiceIDStorage($service_description, $host_id)
 {
     $dbb = new CentreonDB("centstorage");
-    $query = "SELECT s.service_id FROM services s " .
-        " WHERE (s.description = '" . $dbb->escape($service_description) . "'
-                        OR s.description = '" . $dbb->escape(utf8_encode($service_description)) . "') "
-        . " AND s.host_id = " . $dbb->escape($host_id) . " LIMIT 1";
-    $DBRESULT = $dbb->query($query);
-    $row = $DBRESULT->fetchRow();
+    $statement = $dbb->prepare("SELECT s.service_id FROM services s " .
+        " WHERE (s.description = :service_description
+                        OR s.description = :utf8_uncoded_service_description ) "
+        . " AND s.host_id = :host_id LIMIT 1") ;
+    $statement->bindValue(':service_description',$service_description, \PDO::PARAM_STR);
+    $statement->bindValue(':utf8_uncoded_service_description',utf8_encode($service_description), \PDO::PARAM_STR);
+    $statement->bindValue(':host_id',(int) $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    $row = $statement->fetchRow();
     if ($row["service_id"]) {
         return $row["service_id"];
     }
