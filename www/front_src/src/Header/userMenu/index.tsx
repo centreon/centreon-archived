@@ -307,7 +307,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
 
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
-    window.addEventListener('resize', handleResizedScreen);
+    window.addEventListener('resize', getPositionOfPopper);
 
     loadUserData();
 
