@@ -20,10 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Application\Repository;
+namespace Core\Platform\Application\Validator;
 
-use Centreon\Domain\Repository\RepositoryException;
-
-class RequirementException extends RepositoryException
+interface RequirementValidatorInterface
 {
+    /**
+     * Validate requirement or fail
+     *
+     * @throws RequirementException
+     */
+    public function validateRequirementOrFail(): void;
 }

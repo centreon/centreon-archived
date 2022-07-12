@@ -21,13 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Platform\Infrastructure\Repository\RequirementProviders;
+namespace Core\Platform\Infrastructure\Validator\RequirementValidators;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Platform\Application\Repository\RequirementProviderRepositoryInterface;
+use Core\Platform\Application\Validator\RequirementValidatorInterface;
 use Centreon\Domain\VersionHelper;
 
-class PhpRequirementProviderRepository implements RequirementProviderRepositoryInterface
+class PhpRequirementValidator implements RequirementValidatorInterface
 {
     use LoggerTrait;
 

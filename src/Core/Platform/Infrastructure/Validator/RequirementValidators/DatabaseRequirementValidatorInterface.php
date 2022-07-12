@@ -20,14 +20,24 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Application\Repository;
+namespace Core\Platform\Infrastructure\Validator\RequirementValidators;
 
-interface ReadRequirementsRepositoryInterface
+interface DatabaseRequirementValidatorInterface
 {
     /**
-     * Validate platform requirements or fail
+     * Check if database validator is valid for given version and version comment
      *
-     * @throws \Exception
+     * @param string $versionComment
+     * @return bool
      */
-    public function validateRequirementsOrFail(): void;
+    public function isValidFor(string $versionComment): bool;
+
+    /**
+     * Validate requirement or fail
+     *
+     * @param string $version
+     *
+     * @throws DatabaseRequirementException
+     */
+    public function validateRequirementOrFail(string $version): void;
 }

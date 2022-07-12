@@ -20,25 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Infrastructure\Repository\RequirementProviders;
+namespace Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidators;
 
-use Core\Platform\Application\Repository\RequirementException;
+use Core\Platform\Application\Validator\RequirementException;
 
 class MariaDbRequirementException extends RequirementException
 {
-    /**
-     * @param \Throwable $e
-     * @return self
-     */
-    public static function errorWhenGettingMariaDbVersion(\Throwable $e): self
-    {
-        return new self(
-            _('Error when getting MariaDB version'),
-            0,
-            $e,
-        );
-    }
-
     /**
      * @param string $requiredMariaDbVersion
      * @param string $installedMariaDbVersion

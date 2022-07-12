@@ -20,14 +20,22 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Application\Repository;
+namespace Core\Platform\Infrastructure\Validator\RequirementValidators;
 
-interface RequirementProviderRepositoryInterface
+use Core\Platform\Application\Validator\RequirementException;
+
+class DatabaseRequirementException extends RequirementException
 {
     /**
-     * Validate requirement or fail
-     *
-     * @throws \Exception
+     * @param \Throwable $e
+     * @return self
      */
-    public function validateRequirementOrFail(): void;
+    public static function errorWhenGettingDatabaseVersion(\Throwable $e): self
+    {
+        return new self(
+            _('Error when getting database version'),
+            0,
+            $e,
+        );
+    }
 }

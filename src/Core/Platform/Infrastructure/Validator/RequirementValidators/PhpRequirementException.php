@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Core\Platform\Infrastructure\Repository\RequirementProviders;
+namespace Core\Platform\Infrastructure\Validator\RequirementValidators;
 
-use Core\Platform\Application\Repository\RequirementException;
+use Core\Platform\Application\Validator\RequirementException;
 
 class PhpRequirementException extends RequirementException
 {

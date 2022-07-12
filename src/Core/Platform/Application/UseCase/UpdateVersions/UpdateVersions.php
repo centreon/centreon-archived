@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Core\Platform\Application\UseCase\UpdateVersions;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Platform\Application\Validator\RequirementValidatorsInterface;
 use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
-use Core\Platform\Application\Repository\ReadRequirementsRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
 use Core\Platform\Application\Repository\WriteUpdateRepositoryInterface;
@@ -38,14 +38,14 @@ class UpdateVersions
     use LoggerTrait;
 
     /**
-     * @param ReadRequirementsRepositoryInterface $readRequirementsRepository
+     * @param RequirementValidatorsInterface $requirementValidators
      * @param UpdateLockerRepositoryInterface $updateLocker
      * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param ReadUpdateRepositoryInterface $readUpdateRepository
      * @param WriteUpdateRepositoryInterface $writeUpdateRepository
      */
     public function __construct(
-        private ReadRequirementsRepositoryInterface $readRequirementsRepository,
+        private RequirementValidatorsInterface $requirementValidators,
         private UpdateLockerRepositoryInterface $updateLocker,
         private ReadVersionRepositoryInterface $readVersionRepository,
         private ReadUpdateRepositoryInterface $readUpdateRepository,
@@ -107,7 +107,7 @@ class UpdateVersions
     {
         $this->info('Validating platform requirements');
 
-        $this->readRequirementsRepository->validateRequirementsOrFail();
+        $this->requirementValidators->validateRequirementsOrFail();
     }
 
     /**

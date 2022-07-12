@@ -21,32 +21,33 @@
 
 declare(strict_types=1);
 
-namespace Core\Platform\Infrastructure\Repository;
+namespace Core\Platform\Infrastructure\Validator;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Platform\Application\Repository\ReadRequirementsRepositoryInterface;
-use Core\Platform\Application\Repository\RequirementProviderRepositoryInterface;
+use Core\Platform\Application\Validator\RequirementValidatorsInterface;
+use Core\Platform\Application\Validator\RequirementValidatorInterface;
 
-class ReadRequirementsRepository implements ReadRequirementsRepositoryInterface
+class RequirementValidators implements RequirementValidatorsInterface
 {
     use LoggerTrait;
 
     /**
-     * @var RequirementProviderRepositoryInterface[]
+     * @var RequirementValidatorInterface[]
      */
-    private $requirementProviders;
+    private $requirementValidators;
 
     /**
-     * @param \Traversable<RequirementProviderRepositoryInterface> $requirementProviders
+     * @param \Traversable<RequirementValidatorInterface> $requirementValidators
+     *
      * @throws \Exception
      */
     public function __construct(
-        \Traversable $requirementProviders,
+        \Traversable $requirementValidators,
     ) {
-        if (iterator_count($requirementProviders) === 0) {
-            throw new \Exception('Requirement providers not found');
+        if (iterator_count($requirementValidators) === 0) {
+            throw new \Exception('Requirement validators not found');
         }
-        $this->requirementProviders = iterator_to_array($requirementProviders);
+        $this->requirementValidators = iterator_to_array($requirementValidators);
     }
 
     /**
@@ -54,9 +55,9 @@ class ReadRequirementsRepository implements ReadRequirementsRepositoryInterface
      */
     public function validateRequirementsOrFail(): void
     {
-        foreach ($this->requirementProviders as $requirementProvider) {
-            $this->info('Validating platform requirement with ' . $requirementProvider::class);
-            $requirementProvider->validateRequirementOrFail();
+        foreach ($this->requirementValidators as $requirementValidator) {
+            $this->info('Validating platform requirement with ' . $requirementValidator::class);
+            $requirementValidator->validateRequirementOrFail();
         }
     }
 }
