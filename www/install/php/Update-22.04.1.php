@@ -34,6 +34,7 @@ try {
 
     $errorMessage = "Unable to update 'custom_configuration' column on 'provider_configuration' table";
     updateOpenIdConfiguration($pearDB);
+    $pearDB->commit();
 
     $errorMessage = "Unable to create 'security_provider_access_group_relation' table";
     $pearDB->query("CREATE TABLE IF NOT EXISTS `security_provider_access_group_relation` (
@@ -49,8 +50,6 @@ try {
             REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ");
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
