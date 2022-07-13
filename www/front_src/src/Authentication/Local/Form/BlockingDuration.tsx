@@ -10,24 +10,24 @@ import { makeStyles } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import TimeInputs from '../../TimeInputs';
+import TimeInputs from '../TimeInputs';
 import {
   labelTimeThatMustPassBeforeNewConnection,
   labelGood,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
   labelWeak,
-} from '../../translatedLabels';
-import { getField } from '../utils';
-import StrengthProgress from '../../StrengthProgress';
+} from '../translatedLabels';
+import StrengthProgress from '../StrengthProgress';
 import {
   goodBlockingDuration,
   sevenDays,
   strongBlockingDuration,
   weakBlockingDuration,
-} from '../../timestamps';
-import { TimeInputConfiguration } from '../../models';
+} from '../timestamps';
+import { TimeInputConfiguration } from '../models';
 
+import { getField } from './utils';
 import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
