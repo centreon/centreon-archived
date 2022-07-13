@@ -29,9 +29,9 @@ import {
   labelStrong,
   labelUpperCase,
   labelWeak,
-} from '../../../translatedLabels';
-import StrengthProgress from '../../../StrengthProgress';
-import { getFields } from '../../utils';
+} from '../../translatedLabels';
+import StrengthProgress from '../../StrengthProgress';
+import { getFields } from '../utils';
 
 import LabelWithTooltip from './LabelWithTooltip';
 

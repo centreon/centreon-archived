@@ -15,9 +15,10 @@ import {
   labelStrong,
   labelUnknown,
   labelWeak,
-} from '../../translatedLabels';
-import { getField } from '../utils';
-import StrengthProgress from '../../StrengthProgress';
+} from '../translatedLabels';
+import StrengthProgress from '../StrengthProgress';
+
+import { getField } from './utils';
 
 export const attemptsFieldName = 'attempts';
 
