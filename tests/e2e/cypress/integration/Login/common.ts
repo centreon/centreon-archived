@@ -11,7 +11,7 @@ const initializeContactData = (): Cypress.Chainable => {
   return cy.wrap(Promise.all(files.map(insertFixture)));
 };
 
-const insertContactFixture = () => {
+const insertContactFixture = (): Cypress.Chainable => {
   return initializeContactData()
     .then(applyConfigurationViaClapi)
     .then(() => cy.visit(`${Cypress.config().baseUrl}`))

@@ -78,6 +78,18 @@ const retrievedCustomFilters = {
         value: [],
       },
       {
+        name: 'host_categories',
+        object_type: 'host_categories',
+        type: 'multi_select',
+        value: [],
+      },
+      {
+        name: 'service_categories',
+        object_type: 'service_categories',
+        type: 'multi_select',
+        value: [],
+      },
+      {
         name: 'search',
         object_type: null,
         type: 'text',

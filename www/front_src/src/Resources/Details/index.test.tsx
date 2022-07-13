@@ -13,7 +13,6 @@ import {
   act,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  copyToClipboard,
   screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
@@ -76,6 +75,7 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
   labelNotificationStatus,
+  labelCategories,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -99,9 +99,14 @@ import Details from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
-  jest.fn(),
-);
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: () => Promise.resolve(),
+  },
+});
+
+jest.spyOn(navigator.clipboard, 'writeText');
 
 jest.mock('@visx/visx', () => {
   return {
@@ -122,6 +127,14 @@ const groups = [
     configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
     id: 0,
     name: 'Linux-servers',
+  },
+];
+
+const categories = [
+  {
+    configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
+    id: 0,
+    name: 'Windows',
   },
 ];
 
@@ -205,6 +218,7 @@ const retrievedDetails = {
   },
   active_checks: false,
   alias: 'Central-Centreon',
+  categories,
   checked: true,
   command_line: 'base_host_alive',
   downtimes: [
@@ -676,6 +690,8 @@ describe(Details, () => {
 
     expect(getByText(labelGroups)).toBeInTheDocument();
     expect(getByText('Linux-servers')).toBeInTheDocument();
+    expect(getByText(labelCategories)).toBeInTheDocument();
+    expect(getByText('Windows')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
@@ -821,7 +837,7 @@ describe(Details, () => {
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
-      expect(copyToClipboard).toHaveBeenCalledWith(
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -1148,7 +1164,9 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        window.location.href,
+      );
     });
   });
 
@@ -1181,6 +1199,7 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
+        hostCategories: [],
         hostGroups: [],
         limit: 30,
         monitoringServers: [],
@@ -1196,6 +1215,7 @@ describe(Details, () => {
             },
           ],
         },
+        serviceCategories: [],
         serviceGroups: [],
         states: [],
         statusTypes: [],

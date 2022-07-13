@@ -18,8 +18,7 @@ import {
   StatusChip,
   SeverityCode,
   IconButton,
-  useSnackbar,
-  copyToClipboard,
+  useCopyToClipboard,
 } from '@centreon/ui';
 
 import {
@@ -109,16 +108,13 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     displaySeverity: not(isNil(details?.severity_level)),
   });
   const { t } = useTranslation();
-  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
-  const copyResourceLink = (): void => {
-    try {
-      copyToClipboard(window.location.href);
-      showSuccessMessage(t(labelLinkCopied));
-    } catch (_) {
-      showErrorMessage(t(labelSomethingWentWrong));
-    }
-  };
+  const { copy } = useCopyToClipboard({
+    errorMessage: t(labelSomethingWentWrong),
+    successMessage: t(labelLinkCopied),
+  });
+
+  const copyLink = (): Promise<void> => copy(window.location.href);
 
   if (details === undefined) {
     return <LoadingSkeleton />;
@@ -205,7 +201,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
-        onClick={copyResourceLink}
+        onClick={copyLink}
       >
         <CopyIcon fontSize="small" />
       </IconButton>

@@ -8,8 +8,10 @@ import { Responsive } from '@visx/visx';
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
+import { Group } from '@centreon/ui';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -20,14 +22,15 @@ import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
-  labelAutoImport,
+  labelAuthorizations,
+  labelAutoImportUsers,
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
-import { Category } from './FormInputs/models';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
+import Description from './Openid/Description';
 
 const panels = [
   {
@@ -50,7 +53,7 @@ const panels = [
   },
 ];
 
-export const categories: Array<Category> = [
+export const groups: Array<Group> = [
   {
     name: labelActivation,
     order: 1,
@@ -64,8 +67,14 @@ export const categories: Array<Category> = [
     order: 3,
   },
   {
-    name: labelAutoImport,
+    name: labelAutoImportUsers,
     order: 3,
+  },
+  {
+    EndIcon: HelpOutlineIcon,
+    TooltipContent: Description,
+    name: labelAuthorizations,
+    order: 4,
   },
 ];
 

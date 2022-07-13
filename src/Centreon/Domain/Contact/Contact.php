@@ -71,6 +71,10 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_CONFIGURATION_CONTACTS_READ = 'ROLE_CONFIGURATION_USERS_CONTACTS__USERS_R';
     public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ_WRITE = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_RW';
     public const ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_READ = 'ROLE_CONFIGURATION_USERS_CONTACT_GROUPS_R';
+    public const ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ = 'ROLE_CONFIGURATION_HOSTS_CATEGORIES_R';
+    public const ROLE_CONFIGURATION_HOSTS_CATEGORIES_READ_WRITE = 'ROLE_CONFIGURATION_HOSTS_CATEGORIES_RW';
+    public const ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ_WRITE = 'ROLE_CONFIGURATION_SERVICES_CATEGORIES_RW';
+    public const ROLE_CONFIGURATION_SERVICES_CATEGORIES_READ = 'ROLE_CONFIGURATION_SERVICES_CATEGORIES_R';
 
     /**
      * @var string
@@ -178,11 +182,6 @@ class Contact implements UserInterface, ContactInterface
      * @var bool
      */
     private $useDeprecatedPages;
-
-    /**
-     * @var bool
-     */
-    private $isOneClickExportEnabled = false;
 
     /**
      * @var string|null
@@ -631,25 +630,6 @@ class Contact implements UserInterface, ContactInterface
     public function setUseDeprecatedPages(bool $useDeprecatedPages): static
     {
         $this->useDeprecatedPages = $useDeprecatedPages;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOneClickExportEnabled(): bool
-    {
-        return $this->isOneClickExportEnabled;
-    }
-
-    /**
-     * @param bool $isOneClickExportEnabled
-     * @return self
-     */
-    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): self
-    {
-        $this->isOneClickExportEnabled = $isOneClickExportEnabled;
 
         return $this;
     }

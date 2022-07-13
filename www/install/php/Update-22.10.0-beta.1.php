@@ -18,3 +18,34 @@
  * For more information : contact@centreon.com
  *
  */
+
+require_once __DIR__ . '/../../class/centreonLog.class.php';
+
+$centreonLog = new CentreonLog();
+
+//error specific content
+$versionOfTheUpgrade = 'UPGRADE - 22.10.0-beta.1: ';
+$errorMessage = '';
+
+try {
+    $pearDB->beginTransaction();
+
+    $errorMessage = "Unable to delete 'oreon_web_path' option from database";
+    $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path'");
+
+    $pearDB->commit();
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int) $e->getCode(), $e);
+}

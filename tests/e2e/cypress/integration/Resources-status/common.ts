@@ -33,7 +33,7 @@ const resourceMonitoringApi = /.+api\/beta\/monitoring\/resources.?page.+/;
 
 const apiFilterResources = `${apiBase}/${versionApi}/users/filters/events-view`;
 
-const insertResourceFixtures = () => {
+const insertResourceFixtures = (): Cypress.Chainable => {
   return loginAsAdminViaApiV2()
     .then(initializeResourceData)
     .then(applyConfigurationViaClapi)
@@ -73,7 +73,7 @@ const deleteUserFilter = (): Cypress.Chainable => {
     });
 };
 
-const tearDownResource = () => {
+const tearDownResource = (): Cypress.Chainable => {
   return setUserTokenApiV1()
     .then(removeResourceData)
     .then(applyConfigurationViaClapi)

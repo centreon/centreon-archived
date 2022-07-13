@@ -61,6 +61,8 @@ tags:
   - name: Proxy
   - name: Service
   - name: Service group
+  - name: Service category
+  - name: Host category
   - name: Topology
 security:
   - Token: []
@@ -288,6 +290,31 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.Host.Category'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/categories:
+    get:
+      tags:
+        - Service category
+      summary: "List all real-time service categories"
+      description: |
+        List of all service categories in real-time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -967,6 +994,58 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/contacts/groups:
+    get:
+      tags:
+      - User
+      summary: "List contact groups"
+      description: "List configured contact groups"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.ContactGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/access-groups:
+    get:
+      tags:
+      - Access Control
+      summary: "List access groups"
+      description: "List access groups available for a user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.AccessGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -1205,6 +1284,8 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterStatus'
         - $ref: '#/components/parameters/ResourceFilterHostgroupName'
         - $ref: '#/components/parameters/ResourceFilterServicegroupName'
+        - $ref: '#/components/parameters/ResourceFilterServiceCategoryName'
+        - $ref: '#/components/parameters/ResourceFilterHostCategoryName'
         - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
         - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
@@ -1495,6 +1576,31 @@ paths:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/categories:
+    get:
+      tags:
+        - Host category
+      summary: "List all real-time host categories"
+      description: |
+        List of all host categories in real-time context
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -3714,7 +3820,7 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+                  $ref: '#/components/schemas/ReadAuthenticationOpenIdProvider'
     put:
       tags:
         - Administration
@@ -3724,7 +3830,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+              $ref: '#/components/schemas/WriteAuthenticationOpenIdProvider'
       responses:
         '204':
             description: "Configuration updated"
@@ -3971,6 +4077,26 @@ components:
         items:
           type: string
         example: '["Memory-Services", "Ping-Services"]'
+    ResourceFilterServiceCategoryName:
+      in: query
+      name: service_category_names
+      required: false
+      description: "Filter the resources by service category names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Ping", "CPUs"]'
+    ResourceFilterHostCategoryName:
+      in: query
+      name: host_category_names
+      required: false
+      description: "Filter the resources by host category names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Linux", "Windows"]'
     ResourceFilterMonitoringServerName:
       in: query
       name: monitoring_server_names
@@ -4388,8 +4514,10 @@ components:
         - auto_import
         - contact_template
         - email_bind_attribute
-        - alias_bind_attribute
         - fullname_bind_attribute
+        - contact_group
+        - authorization_claim
+        - authorization_relations
       properties:
         is_active:
           type: boolean
@@ -4498,16 +4626,73 @@ components:
           description: "Email bind attribute"
           example: "email"
           nullable: true
-        alias_bind_attribute:
-          type: string
-          description: "Alias bind attribute"
-          example: "preferred_username"
-          nullable: true
         fullname_bind_attribute:
           type: string
           description: "Fullname bind attribute"
           example: "name"
           nullable: true
+        claim_name:
+          type: string
+          description: "Authorization claim"
+          example: "groups"
+          nullable: true
+    ReadAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              description: "Contact group ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact group name"
+              example: "Default"
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group:
+                type: object
+                description: "Access group"
+                properties:
+                  id:
+                    type: integer
+                    description: "Access group ID"
+                    example: 1
+                  name:
+                    type: string
+                    description: "Access group name"
+                    example: "Default"
+    WriteAuthenticationOpenIdProvider:
+      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      properties:
+        contact_group_id:
+          type: integer
+          description: "Contact group ID"
+          example: 1
+          nullable: true
+        authorization_rules:
+          type: array
+          items:
+            type: object
+            properties:
+              claim_value:
+                type: string
+                description: "Authorization claim value"
+                example: "scope"
+              access_group_id:
+                type: integer
+                description: "Access group ID"
+                example: 1
     Comment.Resources:
       type: object
       required: [ resources ]
@@ -4869,6 +5054,47 @@ components:
           type: string
           description: "Contact template name"
           example: "Contact Template"
+    Configuration.ContactGroup:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Contact group id"
+          example: 1
+        name:
+          type: string
+          description: "Contact group name"
+          example: "Contact group"
+    Configuration.AccessGroup:
+      type: object
+      required:
+        - id
+        - name
+        - alias
+        - is_activated
+        - has_changed
+      properties:
+        id:
+          type: integer
+          description: "Access group id"
+          example: 1
+        name:
+          type: string
+          description: "Access group name"
+          example: "Access group"
+        alias:
+          type: string
+          description: "Access group alias"
+          example: "Access group alias"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the access group is activated or not"
+        has_changed:
+          type: boolean
+          description: "Indicates whether the access group has changed or not"
     Media.NullableImage:
       type: object
       nullable: true
@@ -5153,6 +5379,17 @@ components:
           description: "Version of the server (centreon-engine)"
           example: "20.10.0"
           nullable: true
+    Monitoring.Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Category Id"
+          example: 1
+        name:
+          type: string
+          description: "Category name"
+          example: "Category name"
     Acknowledgement.Resource:
       type: object
       properties:

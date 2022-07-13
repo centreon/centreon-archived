@@ -158,9 +158,20 @@ function table_not_exists($table_name)
     }
 }
 
-function myDecode($arg)
+function myDecode($data)
 {
-    return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+    if (is_string($data)) {
+        $data = html_entity_decode($data, ENT_QUOTES, "UTF-8");
+    }
+    return $data;
+}
+
+function myEncode($data)
+{
+    if (is_string($data)) {
+        $data = htmlentities($data);
+    }
+    return $data;
 }
 
 /*
@@ -250,6 +261,24 @@ function myTrim($str)
     global $form;
     $str = rtrim($str, '\\');
     return (trim($str));
+}
+
+/**
+ * @param string $value
+ * @return string
+ */
+function limitNotesLength(string $value): string
+{
+    return substr($value, 0, 512);
+}
+
+/**
+ * @param string $value
+ * @return string
+ */
+function limitUrlLength(string $value): string
+{
+    return substr($value, 0, 2048);
 }
 
 /*
