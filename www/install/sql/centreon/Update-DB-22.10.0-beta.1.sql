@@ -124,4 +124,4 @@ ALTER TABLE cfg_nagios MODIFY `debug_verbosity` enum('0','1');
 
 ALTER TABLE contact DROP COLUMN IF EXISTS `enable_one_click_export`;
 
-ALTER TABLE remote_servers DROP COLUMN IF EXISTS `app_key`;
+ALTER TABLE remote_servers DROP COLUMN `app_key`;

@@ -32,7 +32,8 @@ try {
 
     $errorMessage = "Unable to delete 'oreon_web_path' option from database";
     $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path'");
-    $errorMessage = "Unable to delete 'appKey' option from database";
+
+    $errorMessage = "Unable to delete 'appKey' information from database";
     $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
 
     $pearDB->commit();
