@@ -32,6 +32,7 @@ describe('User Menu', () => {
       </Router>,
     );
   });
+  
 
   it('matches the current snapshot "user menu"', () => {
     cy.get('[data-testid=AccountCircleIcon]')
