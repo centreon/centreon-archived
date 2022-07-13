@@ -15631,7 +15631,7 @@ msgid "Service severity"
 msgstr "Severidade de serviço"
 
 msgid "Service severity level"
-msgstr Nível de Severidade de serviço"
+msgstr "Nível de Severidade de serviço"
 
 msgid "Host severity"
 msgstr "Severidade de host"
