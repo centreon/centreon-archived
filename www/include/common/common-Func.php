@@ -236,7 +236,7 @@ function getMyHostName($host_id = null)
     }
     $query = "SELECT host_name FROM host WHERE host_id = :host_id LIMIT 1";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':host_id', (int) $host_id , \PDO::PARAM_INT);
+    $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
     $statement->execute();
     $row = $statement->fetchRow();
     if ($row["host_name"]) {
@@ -318,8 +318,6 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
         return null;
     }
     global $pearDB;
-
-
     $statement = $pearDB->prepare("SELECT host_tpl_id " .
         "FROM host_template_relation " .
         "WHERE host_host_id = :host_host_id " .
@@ -766,7 +764,7 @@ function getMyServiceExtendedInfoField($service_id, $field)
     $tab = array();
     while (1) {
      $statement = $pearDB->prepare("SELECT `extended_service_information`. :field ," .
-         " `service`.`service_template_model_stm_id` " .
+            " `service`.`service_template_model_stm_id` " .
             "FROM `service`, `extended_service_information` " .
             "WHERE `extended_service_information`.`service_service_id` =:service_id " .
             "AND `service`.`service_id` = :service_id LIMIT 1");
@@ -935,7 +933,7 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
         }
     }
     if ($hg_id) {
-        $statement2 = $pearDB->prepare( "SELECT service_id FROM service, host_service_relation hsr " .
+        $statement2 = $pearDB->prepare("SELECT service_id FROM service, host_service_relation hsr " .
             "WHERE hsr.hostgroup_hg_id = :hostgroup_hg_id AND hsr.service_service_id = service_id " .
             "AND service_description = :service_description LIMIT 1");
 
@@ -972,17 +970,13 @@ function getMyHostServices($host_id = null, $search = 0)
         $statement->bindValue(':host_id', (int)$host_id, \PDO::PARAM_INT);
         $statement->bindValue(':service_description', "'%" . $search . "%'", \PDO::PARAM_STR);
         $statement->execute();
-
     } else {
-
         $statement = $pearDB->prepare("SELECT service_id, service_description " .
             "FROM service, host_service_relation hsr " .
             "WHERE hsr.host_host_id = :host_id AND hsr.service_service_id = service_id");
         $statement->bindValue(':host_id', (int)$host_id, \PDO::PARAM_INT);
         $statement->execute();
-
     }
-
     while ($elem = $statement->fetchRow()) {
         $hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
     }
@@ -1067,7 +1061,7 @@ function getMyServiceHostGroups($service_id = null)
     $hgs = array();
     $statement = $pearDB->prepare("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr " .
         "WHERE hsr.service_service_id =  :service_service_id ");
-    $statement->bindValue(':service_service_id',(int) $service_id, \PDO::PARAM_INT);
+    $statement->bindValue(':service_service_id', (int)$service_id, \PDO::PARAM_INT);
     $statement->execute();
 
     while ($elem = $statement->fetchRow()) {
@@ -1087,8 +1081,7 @@ function getMyServiceTPLID($service_description = null)
     global $pearDB;
     $statement = $pearDB->prepare("SELECT service_id FROM service " .
         "WHERE service_description = :srv_desc AND service_register = '0' LIMIT 1");
-    $statement->bindValue(':srv_desc', htmlentities(str2db($service_description),
-        ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
+    $statement->bindValue(':srv_desc', htmlentities(str2db($service_description), ENT_QUOTES, "UTF-8"));
     $statement->execute();
     $row = $statement->fetchRow();
     if ($row["service_id"]) {
@@ -1104,7 +1097,6 @@ function getMyServiceTemplateModels($service_id = null)
     }
     global $pearDB;
     $tplArr = array();
-
     while (1) {
 
         $statement = $pearDB->prepare("SELECT service_description, service_template_model_stm_id FROM service " .
@@ -1147,7 +1139,7 @@ function getMyCheckCmdName($service_id = null)
     $query = "SELECT command_name FROM command WHERE command_id = :command_id LIMIT 1";
     $statement = $pearDB->prepare($query);
     while (1) {
-        $statement2 =$pearDB->prepare("SELECT command_command_id, service_template_model_stm_id FROM service " .
+        $statement2 = $pearDB->prepare("SELECT command_command_id, service_template_model_stm_id FROM service " .
             "WHERE service_id = :service_id LIMIT 1") ;
         $statement2->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement2->execute();
@@ -1346,8 +1338,6 @@ function service_has_graph($host, $service, $dbo = null)
         }
     }
     if (!is_numeric($host) && !is_numeric($service)) {
-
-
         $statement = $pearDBO->prepare("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id " .
             "AND i.host_name = :host_name AND i.service_description = :service_description");
         $statement->bindValue(':host_name', $host, \PDO::PARAM_STR);
@@ -1360,7 +1350,6 @@ function service_has_graph($host, $service, $dbo = null)
     }
     return false;
 }
-
 /*
  * function getNDOPrefix()
  * - This function return NDOPrefix tables.
@@ -1414,9 +1403,6 @@ function get_error($motif)
 }
 
 /* End Ajax Test */
-
-
-
 function GetMyHostPoller($pearDB, $host_name = null)
 {
     if (!isset($host_name)) {
@@ -1425,7 +1411,7 @@ function GetMyHostPoller($pearDB, $host_name = null)
      $statement = $pearDB->prepare("SELECT `id` FROM nagios_server, ns_host_relation, host " .
         "WHERE host.host_name = :host_name AND host.host_id = ns_host_relation.host_host_id " .
         "AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
-    $statement->bindValue(':host_name', $host_name , \PDO::PARAM_STR);
+    $statement->bindValue(':host_name', $host_name, \PDO::PARAM_STR);
     $statement->execute();
 
     $nagios_server = $statement->fetchRow();
@@ -1444,7 +1430,6 @@ function GetMyHostPoller($pearDB, $host_name = null)
 function check_session($sid, $pearDB)
 {
     if (isset($sid)) {
-
         $statement = $pearDB->prepare("SELECT * FROM session WHERE session_id = :sid");
         $statement->bindValue(':sid', htmlentities($sid, ENT_QUOTES, "UTF-8"));
         $statement->execute();
