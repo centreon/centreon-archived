@@ -236,7 +236,7 @@ class PartEngine
      */
     public function createParts($table, $db, $createPastPartitions): void
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
         if ($table->exists()) {
             throw new Exception("Warning: Table " . $tableName . " already exists\n");
         }
@@ -253,7 +253,7 @@ class PartEngine
         }
 
         try {
-            $dbResult = $db->query("use " . $table->getSchema());
+            $dbResult = $db->query("use `" . $table->getSchema() . "`");
         } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "
@@ -325,7 +325,7 @@ class PartEngine
             $condition = $this->purgeDailyPartitionCondition($table);
         }
 
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
         if (!$table->exists()) {
             throw new Exception("Error: Table " . $tableName . " does not exists\n");
         }
@@ -364,7 +364,7 @@ class PartEngine
      */
     public function migrate($table, $db)
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
 
         $db->query("SET bulk_insert_buffer_size= 1024 * 1024 * 256");
 
@@ -411,7 +411,7 @@ class PartEngine
      */
     public function updateParts($table, $db)
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
 
         //verifying if table is partitioned
         if ($this->isPartitioned($table, $db) === false) {
@@ -433,7 +433,7 @@ class PartEngine
      */
     public function optimizeTablePartitions($table, $db)
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
         if (!$table->exists()) {
             throw new Exception("Optimize error: Table " . $tableName . " does not exists\n");
         }
@@ -472,7 +472,7 @@ class PartEngine
      */
     public function listParts($table, $db, $throwException = true)
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
         if (!$table->exists()) {
             throw new Exception("Parts list error: Table " . $tableName . " does not exists\n");
         }
@@ -521,7 +521,7 @@ class PartEngine
      */
     public function backupParts($table, $db)
     {
-        $tableName = $table->getSchema() . "." . $table->getName();
+        $tableName = "`" . $table->getSchema() . "`." . $table->getName();
         if (!$table->exists()) {
             throw new Exception("Error: Table " . $tableName . " does not exists\n");
         }
