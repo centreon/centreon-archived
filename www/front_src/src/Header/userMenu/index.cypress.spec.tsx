@@ -1,8 +1,15 @@
+import React from 'react';
+
 import { BrowserRouter as Router } from 'react-router-dom';
 
+import Clock from '../Clock/index';
 import { mount } from '../../../../../cypress/support';
 
 import UserMenu from './index';
+
+before(() => {
+  document.getElementsByTagName('body')[0].style = 'margin:0px';
+});
 
 describe('User Menu', () => {
   beforeEach(() => {
@@ -14,43 +21,47 @@ describe('User Menu', () => {
       theme: 'dark',
     }).as('updateTheme');
 
+    cy.stub(Clock, 'useLocaleDateTimeFormat').returns({
+      format: (): string => 'April 28,2022',
+      toTime: (): string => '4:20 PM',
+    });
+
     mount(
       <Router>
-        <div style={{ background: 'black', width: '100%' }}>
-          <UserMenu />
-        </div>
+        <UserMenu />
       </Router>,
     );
   });
-  it.only('matches the current snapshot "initial menu"', () => {
+
+  it('matches the current snapshot "user menu"', () => {
     cy.get('[data-testid=AccountCircleIcon]')
       .as('userIcon')
       .should('be.visible');
 
-    cy.get('@userIcon').click();
+    cy.get('[data-cy=clock]').as('clock').should('be.visible');
+    cy.get('@clock').contains('April 28,2022');
+    cy.get('@clock').contains('4:20 PM');
 
+    cy.matchImageSnapshot();
+  });
+
+  it('expands the popper when the user icon is clicked', () => {
+    cy.get('[data-testid=AccountCircleIcon]').as('userIcon');
+    cy.get('@userIcon').click();
     cy.get('[data-cy=popper]').as('popper').should('be.visible');
     cy.get('@popper').contains('admin');
     cy.get('@popper').contains('Dark');
     cy.get('@popper').contains('Light');
     cy.get('@popper').contains('Logout');
-
-    // cy.matchImageSnapshot();
+    cy.matchImageSnapshot();
   });
 
-  it('switch theme mode', () => {
-    // cy.matchImageSnapshot();
-
+  it(' style change for dark/light texts when switch is clicked', () => {
     cy.get('[data-testid=AccountCircleIcon]').click();
-
-    cy.get('[data-cy=switch]').as('switchMode').should('be.visible');
-
+    cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
     cy.get('@switchMode').click();
-
-    cy.log('url', cy.url());
-
-    // cy.wait('@updateTheme').then((res) => cy.log('reeeeeeeeeees', res));
-
-    // cy.matchImageSnapshot();
+    cy.matchImageSnapshot();
+    cy.get('@switchMode').click();
+    cy.matchImageSnapshot();
   });
 });
