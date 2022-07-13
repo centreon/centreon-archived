@@ -155,6 +155,7 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapRightUser: {
     alignItems: 'center',
+    background: theme.palette.common.black,
     display: 'flex',
     flexWrap: 'wrap',
     marginLeft: theme.spacing(0.5),
@@ -300,7 +301,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
     e.preventDefault();
     logout();
   };
-
 
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);

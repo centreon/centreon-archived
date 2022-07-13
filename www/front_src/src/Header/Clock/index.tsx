@@ -20,7 +20,7 @@ const Clock = (): JSX.Element => {
     time: '',
   });
 
-  const { format, toTime } = useLocaleDateTimeFormat();
+  const { format, toTime } = Clock.useLocaleDateTimeFormat();
 
   const updateDateTime = (): void => {
     const now = new Date();
@@ -48,11 +48,13 @@ const Clock = (): JSX.Element => {
   const { date, time } = dateTime;
 
   return (
-    <div className={classes.dateTime}>
+    <div className={classes.dateTime} data-cy="clock">
       <Typography variant="body2">{date}</Typography>
       <Typography variant="body1">{time}</Typography>
     </div>
   );
 };
+
+Clock.useLocaleDateTimeFormat = useLocaleDateTimeFormat;
 
 export default Clock;
