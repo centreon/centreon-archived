@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -22,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
-use \DateTimeInterface ;
+use \DateTimeInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -35,8 +36,15 @@ class FindPerformanceMetrics
     {
     }
 
-    public function __invoke(array $metrics, DateTimeInterface  $startDate, DateTimeInterface  $endDate, string $fileName): StreamedResponse
-    {
+    /**
+     * @param array<int,string> $metrics
+     */
+    public function __invoke(
+        array $metrics,
+        DateTimeInterface $startDate,
+        DateTimeInterface $endDate,
+        string $fileName
+    ): StreamedResponse {
         $this->info(
             'Searching date_bin',
             [
@@ -51,6 +59,10 @@ class FindPerformanceMetrics
         return $this->show($metrics, $dataBin, $fileName);
     }
 
+    /**
+     * @param array<int,string> $metrics
+     * @param iterable<array<string,string>> $dataBin
+     */
     public function show(array $metrics, iterable $dataBin, string $fileName): StreamedResponse
     {
         $response = new StreamedResponse();

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -26,5 +27,15 @@ use \DateTimeInterface ;
 
 interface ReadDataBinRepositoryInterface
 {
-    public function findDataByMetricsAndDates(array $metrics, DateTimeInterface  $startDate, DateTimeInterface  $endDate): iterable;
+    /**
+     * @param array<int, string> $metrics
+     * @param DateTimeInterface $startDate
+     * @param DateTimeInterface $endDate
+     * @return iterable<String[]>
+     */
+    public function findDataByMetricsAndDates(
+        array $metrics,
+        DateTimeInterface $startDate,
+        DateTimeInterface $endDate
+    ): iterable;
 }

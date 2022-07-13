@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -26,5 +27,8 @@ interface ReadIndexDataRepositoryInterface
 {
     public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
 
+    /**
+     * @return String[]
+     */
     public function findHostNameAndServiceDescriptionByIndex(int $index): array;
 }

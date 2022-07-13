@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -24,5 +25,8 @@ namespace Core\Application\RealTime\Repository;
 
 interface ReadMetricRepositoryInterface
 {
+    /**
+     * @return array<int,string>
+     */
     public function findMetricsByIndexId(int $indexId): array;
 }

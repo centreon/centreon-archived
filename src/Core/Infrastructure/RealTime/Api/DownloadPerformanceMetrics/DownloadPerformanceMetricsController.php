@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -30,17 +31,24 @@ use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetrics;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DownloadPerformanceMetricsController extends AbstractController
 {
     private const START_DATE_PARAMETER_NAME = 'start_date';
     private const END_DATE_PARAMETER_NAME = 'end_date';
-    private ?DateTimeImmutable $startDate;
-    private ?DateTimeImmutable $endDate;
+    private DateTimeInterface $startDate;
+    private DateTimeInterface $endDate;
     private Request $request;
 
-    public function __invoke(int $hostId, int $serviceId, ReadIndexDataRepositoryInterface $indexDataRepository, ReadMetricRepositoryInterface $metricRepository, FindPerformanceMetrics $useCase, Request $request)
-    {
+    public function __invoke(
+        int $hostId,
+        int $serviceId,
+        ReadIndexDataRepositoryInterface $indexDataRepository,
+        ReadMetricRepositoryInterface $metricRepository,
+        FindPerformanceMetrics $useCase,
+        Request $request
+    ): StreamedResponse {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $this->request = $request;
@@ -68,22 +76,25 @@ class DownloadPerformanceMetricsController extends AbstractController
         $dateParameter = $this->request->query->get($parameterName);
 
         if (is_null($dateParameter)) {
-            throw new InvalidArgumentException('Unable to find date parameter ' . $parameterName .' into the http request');
+            $errorMessage = 'Unable to find date parameter ' . $parameterName . ' into the http request';
+            throw new InvalidArgumentException($errorMessage);
         }
 
-        $dateTime = new DateTimeImmutable($dateParameter);
+        $dateTime = new DateTimeImmutable((string) $dateParameter);
 
         if (!$dateTime instanceof DateTimeImmutable) {
-            $errorMessage = sprintf('Unable to parse date parameter %s.', $parameterName);
-            $errorMessage.= 'Expected is a date in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)';
+            $errorMessage = sprintf('Unable to parse date parameter %s. ', $parameterName);
+            $errorMessage .= 'Expected is a date in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)';
             throw new InvalidArgumentException($errorMessage);
         }
 
         return $dateTime;
     }
 
-    private function generateDownloadFileNameByIndex(int $index, ReadIndexDataRepositoryInterface $indexDataRepository): string
-    {
+    private function generateDownloadFileNameByIndex(
+        int $index,
+        ReadIndexDataRepositoryInterface $indexDataRepository
+    ): string {
         $row = $indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
 
         $hostName = $row['host_name'];
