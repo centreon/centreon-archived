@@ -144,7 +144,7 @@ const Authentication = (): JSX.Element => {
     };
   }, []);
 
-  const listingContainerHeight =
+  const formContainerHeight =
     windowHeight - (clientRect?.top || 0) - scrollMargin;
 
   const tabs = useMemo(
@@ -162,7 +162,7 @@ const Authentication = (): JSX.Element => {
           <Box
             ref={formContainerRef}
             sx={{
-              height: `${listingContainerHeight}px`,
+              height: `${formContainerHeight}px`,
               overflowY: 'auto',
             }}
           >
@@ -173,7 +173,7 @@ const Authentication = (): JSX.Element => {
           </Box>
         </TabPanel>
       )),
-    [themeMode, listingContainerHeight],
+    [themeMode, formContainerHeight],
   );
 
   return (
