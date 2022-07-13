@@ -95,7 +95,6 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             self::ENDPOINT_HOST_DOWNTIME,
             array_merge($parameters, $downtimeFilter)
         );
-
     }
 
     /**

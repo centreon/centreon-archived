@@ -34,6 +34,7 @@ use Core\Infrastructure\Common\Presenter\PresenterTrait;
 class FindHostPresenter extends AbstractPresenter implements FindHostPresenterInterface
 {
     use PresenterTrait;
+
     /**
      * @var ResponseStatusInterface|null
      */

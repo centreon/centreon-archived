@@ -189,7 +189,10 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
         return [
             'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $parametersIds),
             'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parametersIds),
-            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_STATUS_GRAPH, $parametersIds),
+            'status_graph' => $this->uriGenerator->generateEndpoint(
+                self::ENDPOINT_SERVICE_STATUS_GRAPH,
+                $parametersIds
+            ),
             'performance_graph' => $parameters['hasGraphData']
                 ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_PERFORMANCE_GRAPH, $parametersIds)
                 : null,

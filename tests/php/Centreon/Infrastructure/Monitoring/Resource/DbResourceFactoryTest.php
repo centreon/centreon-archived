@@ -112,7 +112,7 @@ it('should create a ResourceEntity', function () {
     expect($resource->getActiveChecks())->toBeTrue();
     expect($resource->isNotificationEnabled())->toBeTrue();
     expect((int) $this->record['last_check'], $resource->getLastCheck()?->getTimestamp());
-    expect((int) $this->record['last_status_change'],$resource->getLastStatusChange()?->getTimestamp());
+    expect((int) $this->record['last_status_change'], $resource->getLastStatusChange()?->getTimestamp());
     expect($this->record['notes'])->toBe($resource->getLinks()->getExternals()->getNotes()?->getLabel());
     expect($this->record['notes_url'])->toBe($resource->getLinks()->getExternals()->getNotes()?->getUrl());
     expect($this->record['action_url'])->toBe($resource->getLinks()->getExternals()->getActionUrl());
