@@ -65,7 +65,7 @@ try {
  * Create tables
  */
 try {
-    $result = $link->query('use ' . $parameters['db_configuration']);
+    $result = $link->query('use `' . $parameters['db_configuration'] . '`');
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_configuration'] . '" database');
     }
