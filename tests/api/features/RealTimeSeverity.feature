@@ -32,6 +32,7 @@ Feature:
                 "level": 42,
                 "type": "host",
                 "icon": {
+                    "id": 1,
                     "name": "centreon",
                     "url": "logos/centreon.png"
                 }
@@ -74,6 +75,7 @@ Feature:
                 "level": 42,
                 "type": "service",
                 "icon": {
+                    "id": 1,
                     "name": "centreon",
                     "url": "logos/centreon.png"
                 }
