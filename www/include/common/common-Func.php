@@ -763,7 +763,7 @@ function getMyServiceExtendedInfoField($service_id, $field)
 
     $tab = array();
     while (1) {
-     $statement = $pearDB->prepare("SELECT `extended_service_information`. :field ," .
+        $statement = $pearDB->prepare("SELECT `extended_service_information`. :field ," .
             " `service`.`service_template_model_stm_id` " .
             "FROM `service`, `extended_service_information` " .
             "WHERE `extended_service_information`.`service_service_id` =:service_id " .
@@ -1098,7 +1098,6 @@ function getMyServiceTemplateModels($service_id = null)
     global $pearDB;
     $tplArr = array();
     while (1) {
-
         $statement = $pearDB->prepare("SELECT service_description, service_template_model_stm_id FROM service " .
             "WHERE service_id = :service_id LIMIT 1");
         $statement->bindValue(':service_id', (int)$service_id, \PDO::PARAM_INT);
