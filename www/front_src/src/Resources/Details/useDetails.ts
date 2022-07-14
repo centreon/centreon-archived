@@ -18,13 +18,10 @@ import {
   defaultSelectedCustomTimePeriodAtom,
   defaultSelectedTimePeriodIdAtom,
   openDetailsTabIdAtom,
-  selectedResourceIdAtom,
-  selectedResourceParentIdAtom,
-  selectedResourceParentTypeAtom,
-  selectedResourceTypeAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
   tabParametersAtom,
+  selectedResourceDetailsEndpointAtom,
 } from './detailsAtoms';
 
 const useDetails = (): void => {
@@ -32,19 +29,9 @@ const useDetails = (): void => {
   const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
     selectedResourceUuidAtom,
   );
-  const [selectedResourceId, setSelectedResourceId] = useAtom(
-    selectedResourceIdAtom,
-  );
-  const [selectedResourceParentId, setSelectedResourceParentId] = useAtom(
-    selectedResourceParentIdAtom,
-  );
-  const [selectedResourceType, setSelectedResourceType] = useAtom(
-    selectedResourceTypeAtom,
-  );
-  const [selectedResourceParentType, setSelectedResourceParentType] = useAtom(
-    selectedResourceParentTypeAtom,
-  );
   const [tabParameters, setTabParameters] = useAtom(tabParametersAtom);
+  const [selectedResourceDetailsEndpoint, setSelectedResourceDetailsEndpoint] =
+    useAtom(selectedResourceDetailsEndpointAtom);
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
   const sendingDetails = useAtomValue(sendingDetailsAtom);
@@ -54,7 +41,6 @@ const useDetails = (): void => {
   const setDefaultSelectedCustomTimePeriod = useUpdateAtom(
     defaultSelectedCustomTimePeriodAtom,
   );
-
   useTimePeriod({
     sending: sendingDetails,
   });
@@ -71,14 +57,11 @@ const useDetails = (): void => {
 
     const {
       uuid,
-      id,
-      parentId,
-      type,
-      parentType,
       tab,
       tabParameters: tabParametersFromUrl,
       selectedTimePeriodId,
       customTimePeriod: customTimePeriodFromUrl,
+      selectedResourceDetailsEndpoint: selectedResourceDetailsEndpointFromUrl,
     } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
@@ -86,13 +69,10 @@ const useDetails = (): void => {
     }
 
     setSelectedResourceUuid(uuid);
-    setSelectedResourceId(id);
-    setSelectedResourceParentId(parentId);
-    setSelectedResourceType(type);
-    setSelectedResourceParentType(parentType);
     setTabParameters(tabParametersFromUrl || {});
     setDefaultSelectedTimePeriodId(selectedTimePeriodId);
     setDefaultSelectedCustomTimePeriod(customTimePeriodFromUrl);
+    setSelectedResourceDetailsEndpoint(selectedResourceDetailsEndpointFromUrl);
   }, []);
 
   useEffect(() => {
@@ -101,26 +81,20 @@ const useDetails = (): void => {
         name: 'details',
         value: {
           customTimePeriod,
-          id: selectedResourceId,
-          parentId: selectedResourceParentId,
-          parentType: selectedResourceParentType,
+          selectedResourceDetailsEndpoint,
           selectedTimePeriodId: selectedTimePeriod?.id,
           tab: getTabLabelFromId(openDetailsTabId),
           tabParameters,
-          type: selectedResourceType,
           uuid: selectedResourceUuid,
         },
       },
     ]);
   }, [
     openDetailsTabId,
-    selectedResourceId,
-    selectedResourceType,
-    selectedResourceParentType,
-    selectedResourceParentType,
     tabParameters,
     selectedTimePeriod,
     customTimePeriod,
+    selectedResourceDetailsEndpoint,
   ]);
 };
 

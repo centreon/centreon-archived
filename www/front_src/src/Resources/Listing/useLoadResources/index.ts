@@ -27,10 +27,9 @@ import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
-  selectedResourceDetailsEndpointDerivedAtom,
-  selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
+  selectedResourceDetailsEndpointAtom,
 } from '../../Details/detailsAtoms';
 import {
   enabledAutorefreshAtom,
@@ -40,6 +39,7 @@ import {
   sendingAtom,
 } from '../listingAtoms';
 import { listResources } from '../api';
+import { replaceBasename } from '../../helpers';
 import {
   labelNoResourceFound,
   labelSomethingWentWrong,
@@ -83,12 +83,11 @@ const useLoadResources = (): LoadResources => {
   const [page, setPage] = useAtom(pageAtom);
   const [details, setDetails] = useAtom(detailsAtom);
   const refreshInterval = useAtomValue(refreshIntervalAtom);
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const limit = useAtomValue(limitAtom);
   const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
+    selectedResourceDetailsEndpointAtom,
   );
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
@@ -101,6 +100,10 @@ const useLoadResources = (): LoadResources => {
   const refreshIntervalRef = useRef<number>();
 
   const refreshIntervalMs = refreshInterval * 1000;
+  const resourceDetailsEndPoint = replaceBasename({
+    endpoint: selectedResourceDetailsEndpoint || '',
+    newWord: './',
+  });
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
     const sort = getCriteriaValue('sort');
@@ -121,12 +124,12 @@ const useLoadResources = (): LoadResources => {
   };
 
   const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
+    if (isNil(selectedResourceDetailsEndpoint)) {
       return;
     }
 
     sendLoadDetailsRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: resourceDetailsEndPoint,
     })
       .then(setDetails)
       .catch(() => {
@@ -213,7 +216,7 @@ const useLoadResources = (): LoadResources => {
 
   useEffect(() => {
     initAutorefresh();
-  }, [enabledAutorefresh, selectedResourceId]);
+  }, [enabledAutorefresh, selectedResourceDetailsEndpoint]);
 
   useEffect(() => {
     return (): void => {
