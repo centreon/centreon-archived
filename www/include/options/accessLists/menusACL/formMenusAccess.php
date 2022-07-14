@@ -234,7 +234,8 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
 
         $c = 0;
         $query = "SELECT topology_id, topology_name, topology_parent, topology_page, topology_group, readonly " .
-            "FROM topology WHERE topology_parent = :topology_parent AND topology_page IS NOT NULL ORDER BY topology_group, topology_order";
+            "FROM topology WHERE topology_parent = :topology_parent " .
+            "AND topology_page IS NOT NULL ORDER BY topology_group, topology_order";
 
         $statement3 = $pearDB->prepare($query);
         $statement3->bindValue(':topology_parent', (int)$topo2["topology_page"], \PDO::PARAM_INT);
