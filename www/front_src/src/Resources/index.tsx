@@ -7,7 +7,7 @@ import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
 import Details from './Details';
 import EditFiltersPanel from './Filter/Edit';
-import { selectedResourceIdAtom } from './Details/detailsAtoms';
+import { selectedResourceDetailsEndpointAtom } from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
@@ -16,7 +16,10 @@ const Filter = lazy(() => import('./Filter'));
 const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResourceDetailsEndpoint = useAtomValue(
+    selectedResourceDetailsEndpointAtom,
+  );
+
   const editPanelOpen = useAtomValue(editPanelOpenAtom);
 
   return useMemoComponent({
@@ -26,11 +29,11 @@ const ResourcesPage = (): JSX.Element => {
           filter={<Filter />}
           listing={<Listing />}
           panel={<Details />}
-          panelOpen={!isNil(selectedResourceId)}
+          panelOpen={!isNil(selectedResourceDetailsEndpoint)}
         />
       </WithPanel>
     ),
-    memoProps: [selectedResourceId, editPanelOpen],
+    memoProps: [selectedResourceDetailsEndpoint, editPanelOpen],
   });
 };
 

@@ -152,7 +152,8 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
             'timeline' => $endpoints['timeline'],
             'status_graph' => $endpoints['status_graph'],
             'performance_graph' => $endpoints['performance_graph'],
-            'metrics' => $endpoints['metrics']
+            'metrics' => $endpoints['metrics'],
+            'details' => $endpoints['details']
         ];
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);

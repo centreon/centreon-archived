@@ -41,7 +41,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import { selectedResourceDetailsEndpointAtom } from '../../Details/detailsAtoms';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -168,7 +168,9 @@ const PerformanceGraph = ({
     request: getData,
   });
 
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResourceDetailsEndpoint = useAtomValue(
+    selectedResourceDetailsEndpointAtom,
+  );
 
   const timeValue = useAtomValue(timeValueAtom);
   const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
@@ -205,11 +207,11 @@ const PerformanceGraph = ({
   }, [endpoint]);
 
   useEffect(() => {
-    if (or(isNil(selectedResourceId), isNil(lineData))) {
+    if (or(isNil(selectedResourceDetailsEndpoint), isNil(lineData))) {
       return;
     }
     setLineData(undefined);
-  }, [selectedResourceId]);
+  }, [selectedResourceDetailsEndpoint]);
 
   useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {

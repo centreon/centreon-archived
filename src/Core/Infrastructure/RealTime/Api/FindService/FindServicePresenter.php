@@ -162,7 +162,8 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
             'notification_policy' => $endpoints['notification_policy'],
             'timeline' => $endpoints['timeline'],
             'status_graph' => $endpoints['status_graph'],
-            'performance_graph' => $endpoints['performance_graph']
+            'performance_graph' => $endpoints['performance_graph'],
+            'details' => $endpoints['details']
         ];
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);

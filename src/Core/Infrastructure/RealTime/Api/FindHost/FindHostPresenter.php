@@ -169,6 +169,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
         $presenterResponse['links']['endpoints'] = [
             'notification_policy' => $endpoints['notification_policy'],
             'timeline' => $endpoints['timeline'],
+            'details' => $endpoints['details']
         ];
 
         $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
