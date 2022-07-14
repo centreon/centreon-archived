@@ -15,10 +15,8 @@ import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
 import {
   openDetailsTabIdAtom,
   selectedResourceIdAtom,
-  selectedResourceParentIdAtom,
-  selectedResourceParentTypeAtom,
-  selectedResourceTypeAtom,
   selectedResourceUuidAtom,
+  selectedResourceDetailsEndpointAtom,
 } from '../Details/detailsAtoms';
 import {
   resourcesToAcknowledgeAtom,
@@ -65,12 +63,8 @@ const ResourceListing = (): JSX.Element => {
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const search = useAtomValue(searchAtom);
-  const setSelectedResourceParentType = useUpdateAtom(
-    selectedResourceParentTypeAtom,
-  );
-  const setSelectedResourceType = useUpdateAtom(selectedResourceTypeAtom);
-  const setSelectedResourceParentId = useUpdateAtom(
-    selectedResourceParentIdAtom,
+  const setSelectedResourceDetailsEndpoint = useUpdateAtom(
+    selectedResourceDetailsEndpointAtom,
   );
   const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
@@ -100,12 +94,10 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+  const selectResource = ({ uuid, id, links }: Resource): void => {
     setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
-    setSelectedResourceParentId(parent?.id);
-    setSelectedResourceType(type);
-    setSelectedResourceParentType(parent?.type);
+    setSelectedResourceDetailsEndpoint(links?.endpoints?.details);
   };
 
   const resourceDetailsOpenCondition = {

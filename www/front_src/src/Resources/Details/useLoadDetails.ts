@@ -18,12 +18,13 @@ import {
   resourceDetailsUpdatedAtom,
   selectedTimePeriodAtom,
 } from '../Graph/Performance/TimePeriods/timePeriodAtoms';
+import { replaceWord } from '../helpers';
 
 import { ResourceDetails } from './models';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
-  selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourceDetailsEndpointAtom,
   selectedResourceIdAtom,
   selectedResourceUuidAtom,
 } from './detailsAtoms';
@@ -50,12 +51,16 @@ const useLoadDetails = (): DetailsState => {
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
+    selectedResourceDetailsEndpointAtom,
   );
   const setDetails = useUpdateAtom(detailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
   const setSelectedTimePeriod = useUpdateAtom(selectedTimePeriodAtom);
   const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
+  const resourceDetailsEndPoint = replaceWord({
+    endpoint: selectedResourceDetailsEndpoint || '',
+    newWord: './',
+  });
 
   useTimePeriod({
     sending,
@@ -67,7 +72,7 @@ const useLoadDetails = (): DetailsState => {
     }
 
     sendRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: resourceDetailsEndPoint,
     })
       .then(setDetails)
       .catch(() => {

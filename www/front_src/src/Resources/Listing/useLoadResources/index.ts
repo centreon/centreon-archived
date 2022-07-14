@@ -27,10 +27,10 @@ import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
-  selectedResourceDetailsEndpointDerivedAtom,
   selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
+  selectedResourceDetailsEndpointAtom,
 } from '../../Details/detailsAtoms';
 import {
   enabledAutorefreshAtom,
@@ -50,6 +50,7 @@ import {
   customFiltersAtom,
   getCriteriaValueDerivedAtom,
 } from '../../Filter/filterAtoms';
+import { replaceWord } from '../../helpers';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -85,11 +86,11 @@ const useLoadResources = (): LoadResources => {
   const refreshInterval = useAtomValue(refreshIntervalAtom);
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
+  const selectedResourceDetailsEndpoint = useAtomValue(
+    selectedResourceDetailsEndpointAtom,
+  );
   const limit = useAtomValue(limitAtom);
   const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
-  const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
-  );
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
@@ -97,6 +98,10 @@ const useLoadResources = (): LoadResources => {
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+  const resourceDetailsEndPoint = replaceWord({
+    endpoint: selectedResourceDetailsEndpoint || '',
+    newWord: './',
+  });
 
   const refreshIntervalRef = useRef<number>();
 
@@ -126,7 +131,7 @@ const useLoadResources = (): LoadResources => {
     }
 
     sendLoadDetailsRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: resourceDetailsEndPoint,
     })
       .then(setDetails)
       .catch(() => {

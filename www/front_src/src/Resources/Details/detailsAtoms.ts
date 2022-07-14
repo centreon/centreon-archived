@@ -1,8 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { isNil } from 'ramda';
 
-import { resourcesEndpoint } from '../api/endpoint';
 import { Resource } from '../models';
 
 import {
@@ -21,6 +19,9 @@ export const panelWidthStorageAtom = atomWithStorage(
 );
 
 export const openDetailsTabIdAtom = atom<TabId>(0);
+export const selectedResourceDetailsEndpointAtom = atom<string | undefined>(
+  undefined,
+);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
 export const selectedResourceIdAtom = atom<number | undefined>(undefined);
 export const selectedResourceParentIdAtom = atom<number | undefined>(undefined);
@@ -70,18 +71,5 @@ export const setGraphTabParametersDerivedAtom = atom(
     set(tabParametersAtom, { ...get(tabParametersAtom), graph: parameters });
   },
 );
-
-export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
-  const selectedResourceParentId = get(selectedResourceParentIdAtom);
-  const selectedResourceParentType = get(selectedResourceParentTypeAtom);
-  const selectedResourceType = get(selectedResourceTypeAtom);
-  const selectedResourceId = get(selectedResourceIdAtom);
-
-  if (!isNil(selectedResourceParentId)) {
-    return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
-  }
-
-  return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
-});
 
 export const sendingDetailsAtom = atom(false);

@@ -22,12 +22,13 @@ import { ResourceDetails } from '../Details/models';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
-  selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourceDetailsEndpointAtom,
   selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
 } from '../Details/detailsAtoms';
 import { ChangeCustomTimePeriodProps } from '../Details/tabs/Graph/models';
+import { replaceWord } from '../helpers';
 
 export interface DetailsState {
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
@@ -50,13 +51,17 @@ const useLoadDetails = (): DetailsState => {
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointDerivedAtom,
+    selectedResourceDetailsEndpointAtom,
   );
   const sendingDetails = useAtomValue(sendingDetailsAtom);
   const setDetails = useUpdateAtom(detailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
   const setSelectedTimePeriod = useUpdateAtom(selectedTimePeriodAtom);
   const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
+  const resourceDetailsEndPoint = replaceWord({
+    endpoint: selectedResourceDetailsEndpoint || '',
+    newWord: './',
+  });
 
   useTimePeriod({
     sending: sendingDetails,
@@ -68,7 +73,7 @@ const useLoadDetails = (): DetailsState => {
     }
 
     sendRequest({
-      endpoint: selectedResourceDetailsEndpoint,
+      endpoint: resourceDetailsEndPoint,
     })
       .then(setDetails)
       .catch(() => {
