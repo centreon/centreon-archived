@@ -19,9 +19,9 @@ export const panelWidthStorageAtom = atomWithStorage(
 );
 
 export const openDetailsTabIdAtom = atom<TabId>(0);
-export const selectedResourceDetailsEndpointAtom = atom<string | undefined>(
-  undefined,
-);
+export const selectedResourceDetailsEndpointAtom = atomWithStorage<
+  string | undefined
+>('resourceDetailsEndpoint', undefined);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
 export const selectedResourceIdAtom = atom<number | undefined>(undefined);
 export const selectedResourceParentIdAtom = atom<number | undefined>(undefined);
