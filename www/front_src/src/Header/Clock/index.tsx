@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { centreonUi } from '../helpers/index';
 
 const useStyles = makeStyles((theme) => ({
   dateTime: {
@@ -20,7 +20,7 @@ const Clock = (): JSX.Element => {
     time: '',
   });
 
-  const { format, toTime } = Clock.useLocaleDateTimeFormat();
+  const { format, toTime } = centreonUi.useLocaleDateTimeFormat();
 
   const updateDateTime = (): void => {
     const now = new Date();
@@ -54,7 +54,5 @@ const Clock = (): JSX.Element => {
     </div>
   );
 };
-
-Clock.useLocaleDateTimeFormat = useLocaleDateTimeFormat;
 
 export default Clock;

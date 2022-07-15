@@ -2,8 +2,8 @@ import React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import Clock from '../Clock/index';
 import { mount } from '../../../../../cypress/support';
+import { centreonUi } from '../helpers';
 
 import UserMenu from './index';
 
@@ -21,7 +21,7 @@ describe('User Menu', () => {
       theme: 'dark',
     }).as('updateTheme');
 
-    cy.stub(Clock, 'useLocaleDateTimeFormat').returns({
+    cy.stub(centreonUi, 'useLocaleDateTimeFormat').returns({
       format: (): string => 'April 28,2022',
       toTime: (): string => '4:20 PM',
     });
