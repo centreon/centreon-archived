@@ -24,19 +24,19 @@ namespace Security\Domain\Authentication\Model;
 
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Domain\Security\User\Model\User;
+use Core\Security\Domain\User\Model\User;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Core\Domain\Security\Authentication\AuthenticationException;
-use Core\Domain\Security\Authentication\PasswordExpiredException;
+use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Domain\Authentication\PasswordExpiredException;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\Application\User\Repository\ReadUserRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\Local\ConfigurationException;
+use Core\Security\Application\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 /**

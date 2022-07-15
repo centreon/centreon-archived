@@ -15017,6 +15017,21 @@ msgstr ""
 # msgid "Login with"
 # msgstr ""
 
+# msgid "Enable auto import"
+# msgstr ""
+
+# msgid "Email attribute to bind"
+# msgstr ""
+
+# msgid "Alias attribute to bind"
+# msgstr ""
+
+# msgid "Fullname attribute to bind"
+# msgstr ""
+
+# msgid "Auto import"
+# msgstr ""
+
 # msgid "You are not authorized to access the configuration"
 # msgstr ""
 
@@ -15102,4 +15117,13 @@ msgstr ""
 # msgstr ""
 
 # msgid "Do not use configured proxy to connect to this server"
+# msgstr ""
+
+#  msgid "Error while searching for the host template %d"
+#  msgstr ""
+
+# msgid "License end date:"
+# msgstr ""
+
+# msgid "License expired"
 # msgstr ""

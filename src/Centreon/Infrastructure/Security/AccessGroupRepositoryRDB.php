@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,72 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Security;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Infrastructure\DatabaseConnection;
 
 /**
- * Database repository for the access groups.
- *
- * @package Centreon\Infrastructure\Security
+ * @deprecated this class has been moved to Core\Security namespace and will be removed in 22.10
  */
-final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface
+final class AccessGroupRepositoryRDB extends DbReadAccessGroupRepository implements AccessGroupRepositoryInterface
 {
-    /**
-     * @var DatabaseConnection
-     */
-    private $pdo;
-
-    /**
-     * AccessGroupRepositoryRDB constructor.
-     *
-     * @param DatabaseConnection $pdo
-     */
-    public function __construct(DatabaseConnection $pdo)
-    {
-        $this->pdo = $pdo;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findByContact(ContactInterface $contact): array
-    {
-        $contactGroups = [];
-        if (! is_null($contactId = $contact->getId())) {
-            /**
-             * Retrieve all access group from contact
-             * and contact groups linked to contact
-             */
-            $prepare = $this->pdo->prepare(
-                "SELECT * FROM acl_groups
-                WHERE acl_group_activate = '1'
-                AND (
-                  acl_group_id IN (
-                    SELECT acl_group_id FROM acl_group_contacts_relations
-                    WHERE contact_contact_id = :contact_id
-                  )
-                  OR acl_group_id IN (
-                    SELECT acl_group_id FROM acl_group_contactgroups_relations agcr
-                    INNER JOIN contactgroup_contact_relation cgcr
-                      ON cgcr.contactgroup_cg_id = agcr.cg_cg_id
-                    WHERE cgcr.contact_contact_id = :contact_id
-                  )
-                )"
-            );
-            $prepare->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
-            if ($prepare->execute()) {
-                while ($result = $prepare->fetch(\PDO::FETCH_ASSOC)) {
-                    $contactGroups[] = (new AccessGroup())
-                        ->setId((int) $result['acl_group_id'])
-                        ->setName($result['acl_group_name'])
-                        ->setAlias($result['acl_group_alias'])
-                        ->setActivate($result['acl_group_activate'] === '1');
-                }
-                return $contactGroups;
-            }
-        }
-        return $contactGroups;
-    }
 }

@@ -43,12 +43,14 @@ function getHGParents($hg_id, $parentList, $pearDB)
     /*
 	 * Get Parent Groups
 	 */
-    $dbResult = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '" . $hg_id . "'");
-    while ($hgs = $dbResult->fetch()) {
+    $statement = $pearDB->prepre("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = :hg_child_id");
+    $statement->bindValue(':hg_child_id', (int) $hg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while (($hgs = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         $parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
         $parentList = getHGParents($hgs["hg_parent_id"], $parentList, $pearDB);
     }
-    $dbResult->closeCursor();
+    $statement->closeCursor();
     unset($hgs);
     return $parentList;
 }
@@ -146,9 +148,11 @@ function deleteHostGroupInDB($hostGroups = array())
             "host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . $key . "'";
         $dbResult = $pearDB->query($rq);
 
+        $statement = $pearDB->prepare("DELETE FROM service WHERE service_id = :service_id");
         while ($row = $dbResult->fetch()) {
             if ($row["nbr"] == 1) {
-                $pearDB->query("DELETE FROM service WHERE service_id = '" . $row["service_service_id"] . "'");
+                $statement->bindValue(':service_id', (int) $row["service_service_id"], \PDO::PARAM_INT);
+                $statement->execute();
             }
         }
         $dbResult3 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '" . $key . "' LIMIT 1");
@@ -194,10 +198,13 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                     if (!$is_admin) {
                         $resource_list = $centreon->user->access->getResourceGroups();
                         if (count($resource_list)) {
+                            $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) 
+                                    VALUES (:acl_res_id, :hg_hg_id)";
+                            $statement = $pearDB->prepare($query);
                             foreach ($resource_list as $res_id => $res_name) {
-                                $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('" .
-                                    $res_id . "', '" . $maxId["MAX(hg_id)"] . "')";
-                                $pearDB->query($query);
+                                $statement->bindValue(':acl_res_id', (int) $res_id, \PDO::PARAM_INT);
+                                $statement->bindValue(':hg_hg_id', (int) $maxId["MAX(hg_id)"], \PDO::PARAM_INT);
+                                $statement->execute();
                             }
                             unset($resource_list);
                         }
@@ -207,20 +214,25 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                         "WHERE hgr.hostgroup_hg_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["hg_hosts"] = "";
+                    $query = "INSERT INTO hostgroup_relation VALUES (NULL, :hg_id, :host_host_id)";
+                    $statement = $pearDB->prepare($query);
                     while ($host = $dbResult->fetch()) {
-                        $query = "INSERT INTO hostgroup_relation VALUES (NULL, '" .
-                            $maxId["MAX(hg_id)"] . "', '" . $host["host_host_id"] . "')";
-                        $pearDB->query($query);
+                        $statement->bindValue(':hg_id', (int) $maxId["MAX(hg_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':host_host_id', (int) $host["host_host_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["hg_hosts"] .= $host["host_host_id"] . ",";
                     }
                     $fields["hg_hosts"] = trim($fields["hg_hosts"], ",");
                     $query = "SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr " .
                         "WHERE cghgr.hostgroup_hg_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
+                    $query = "INSERT INTO contactgroup_hostgroup_relation 
+                        VALUES (NULL, :contactgroup_cg_id, :hostgroup_hg_id)";
+                    $statement = $pearDB->prepare($query);
                     while ($cg = $dbResult->fetch()) {
-                        $query = "INSERT INTO contactgroup_hostgroup_relation VALUES (NULL, '" .
-                            $cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(hg_id)"] . "')";
-                        $pearDB->query($query);
+                        $statement->bindValue(':contactgroup_cg_id', (int) $cg["contactgroup_cg_id"], \PDO::PARAM_INT);
+                        $statement->bindValue(':hostgroup_hg_id', (int) $maxId["MAX(hg_id)"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     $centreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
                 }
@@ -308,10 +320,13 @@ function insertHostGroup($ret = array())
     if (!$centreon->user->admin) {
         $resource_list = $centreon->user->access->getResourceGroups();
         if (count($resource_list)) {
+            $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) 
+                VALUES (:acl_res_id, :hg_hg_id)";
+            $statement = $pearDB->prepare($query);
             foreach ($resource_list as $res_id => $res_name) {
-                $query = "INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) " .
-                    "VALUES ('" . $res_id . "', '" . $hg_id["MAX(hg_id)"] . "')";
-                $pearDB->query($query);
+                $statement->bindValue(':acl_res_id', (int) $res_id, \PDO::PARAM_INT);
+                $statement->bindValue(':hg_hg_id', (int) $hg_id["MAX(hg_id)"], \PDO::PARAM_INT);
+                $statement->execute();
             }
             unset($resource_list);
         }
@@ -412,11 +427,14 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Get initial Host list to make a diff after deletion
 	 */
     $hostsOLD = array();
-    $dbResult = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '" . $hg_id . "'");
-    while ($host = $dbResult->fetch()) {
+    $statement = $pearDB->prepare("SELECT host_host_id FROM hostgroup_relation 
+        WHERE hostgroup_hg_id = :hostgroup_hg_id");
+    $statement->bindValue(':hostgroup_hg_id', (int) $hg_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while (($host = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
     }
-    $dbResult->closeCursor();
+    $statement->closeCursor();
 
     /*
 	 * Get service lists linked to hostgroup
@@ -443,11 +461,14 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $hgNEW = array();
 
     $rq = "INSERT INTO hostgroup_relation (hostgroup_hg_id, host_host_id) VALUES ";
+    $query = "SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = :hostgroup_hg_id
+        AND host_host_id = :host_host_id";
+    $statement = $pearDB->prepare($query);
     for ($i = 0; $i < count($ret); $i++) {
-        $query = "SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = " . $hg_id .
-            " AND host_host_id = " . $ret[$i];
-        $resTest = $pearDB->query($query);
-        if (!$resTest->rowCount()) {
+        $statement->bindValue(':hostgroup_hg_id', (int) $hg_id, \PDO::PARAM_INT);
+        $statement->bindValue(':host_host_id', (int) $ret[$i], \PDO::PARAM_INT);
+        $statement->execute();
+        if (!$statement->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }
@@ -464,7 +485,9 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
 	 * Update HG HG relations
 	 */
     if ($increment == false) {
-        $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '" . $hg_id . "'");
+        $statement = $pearDB->prepare("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = :hg_parent_id");
+        $statement->bindValue(':hg_parent_id', (int) $hg_id, \PDO::PARAM_INT);
+        $statement->execute();
     }
     isset($ret["hg_hg"]) ? $ret = $ret["hg_hg"] : $ret = $form->getSubmitValue("hg_hg");
     $hgNEW = array();
@@ -472,11 +495,14 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $rq = "INSERT INTO hostgroup_hg_relation (hg_parent_id, hg_child_id) VALUES ";
     $loopCount = (is_array($ret) || $ret instanceof Countable) ? count($ret) : 0;
 
+    $query = "SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = :hg_parent_id
+            AND hg_child_id = :hg_child_id";
+    $statement = $pearDB->prepare($query);
     for ($i = 0; $i < $loopCount; $i++) {
-        $query = "SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = " . $hg_id .
-            " AND hg_child_id = " . $ret[$i];
-        $resTest = $pearDB->query($query);
-        if (!$resTest->rowCount()) {
+        $statement->bindValue(':hg_parent_id', (int) $hg_id, \PDO::PARAM_INT);
+        $statement->bindValue(':hg_child_id', (int) $ret[$i], \PDO::PARAM_INT);
+        $statement->execute();
+        if (!$statement->rowCount()) {
             if ($i != 0) {
                 $rq .= ", ";
             }

@@ -4,7 +4,7 @@ export interface License {
 }
 
 export interface LicenseProps {
-  color: string;
+  isInvalid: boolean;
   label: string;
 }
 

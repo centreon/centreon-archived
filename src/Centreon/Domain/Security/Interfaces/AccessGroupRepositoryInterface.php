@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Security\Interfaces;
 
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
-interface AccessGroupRepositoryInterface
+/**
+ * @deprecated this class has been moved to Core\Security namespace and will be removed in 22.10
+ */
+interface AccessGroupRepositoryInterface extends ReadAccessGroupRepositoryInterface
 {
-    /**
-     * Find all access groups according to a contact.
-     *
-     * @param ContactInterface $contact Contact for which we want to find the access groups.
-     * @return AccessGroup[]
-     */
-    public function findByContact(ContactInterface $contact): array;
 }

@@ -29,7 +29,7 @@ use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -41,7 +41,7 @@ class MonitoringServiceTest extends TestCase
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadAccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
@@ -57,7 +57,7 @@ class MonitoringServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->serviceConfiguration = $this->createMock(ServiceConfigurationServiceInterface::class);
         $this->hostConfiguration = $this->createMock(HostConfigurationServiceInterface::class);
     }

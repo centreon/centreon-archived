@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -53,6 +53,8 @@ interface Props {
   reloadNavigation: () => void;
 }
 
+const scrollMargin = 8;
+
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -86,6 +88,10 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
     string | null
   >(null);
+
+  const listingRef = useRef<HTMLDivElement | null>(null);
+
+  const [listingHeight, setListingHeight] = useState(window.innerHeight);
 
   const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
     request: getData,
@@ -343,6 +349,18 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
+  const resize = (): void => {
+    setListingHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   const allModulesInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
@@ -363,8 +381,19 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
 
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
+  const listingContainerHeight =
+    listingHeight -
+    (listingRef.current?.getBoundingClientRect().top || 0) -
+    scrollMargin;
+
   return (
-    <div>
+    <Box
+      ref={listingRef}
+      sx={{
+        height: listingContainerHeight,
+        overflowY: 'auto',
+      }}
+    >
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
           <Button
@@ -449,7 +478,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
           onConfirm={deleteById}
         />
       )}
-    </div>
+    </Box>
   );
 };
 

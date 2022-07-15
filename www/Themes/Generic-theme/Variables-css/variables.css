@@ -797,7 +797,7 @@
     --gorgone-config-file-font-color: var(--color-black);
     --gorgone-config-file-background-color: var(--body-background);
     /* Custom macros variables */
-    --custom-macros-placeholder-font-color: var(--color-white);
+    --custom-macros-placeholder-font-color: var(--color-black);
     --custom-macros-font-color: var(--color-black);
     --custom-macros-command-border-color: var(--color-menthol-2);
     --custom-macros-template-border-color: var(--color-rayola-2);
