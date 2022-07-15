@@ -157,19 +157,6 @@ stage('Deliver sources') {
 
 try {
   stage('Unit tests // Sonar analysis // RPMs Packaging') {
-    parallel 'Debian 11 packaging': {
-      node {
-        cleanWs()
-        dir('centreon') {
-          checkout scm
-        }
-        sh 'rm -rf *.deb'
-        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.10'
-        stash name: 'Debian11', includes: '*.deb'
-        archiveArtifacts artifacts: "*"
-        sh 'rm -rf *.deb'
-      }
-    },
     'Debian 11 packaging': {
       node {
         dir('centreon') {
