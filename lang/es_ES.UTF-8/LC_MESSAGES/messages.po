@@ -15183,7 +15183,7 @@ msgid "Service severity level"
 msgstr "Nivel de criticidad del servicio"
 
 msgid "Host severity"
-msgstr "criticidad del host"
+msgstr "Criticidad del host"
 
 msgid "Host severity level"
 msgstr "Nivel de criticidad del host"
