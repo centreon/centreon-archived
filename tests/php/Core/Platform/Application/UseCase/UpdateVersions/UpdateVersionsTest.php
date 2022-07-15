@@ -25,6 +25,8 @@ namespace Tests\Core\Platform\Application\UseCase\UpdateVersions;
 
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersions;
 use Core\Platform\Application\UseCase\UpdateVersions\UpdateVersionsPresenterInterface;
+use Core\Platform\Application\Validator\RequirementException;
+use Core\Platform\Application\Validator\RequirementValidatorsInterface;
 use Core\Platform\Application\Repository\UpdateLockerRepositoryInterface;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Platform\Application\Repository\ReadUpdateRepositoryInterface;
@@ -33,6 +35,7 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 
 beforeEach(function () {
+    $this->requirementValidators =  $this->createMock(RequirementValidatorsInterface::class);
     $this->updateLockerRepository = $this->createMock(UpdateLockerRepositoryInterface::class);
     $this->readVersionRepository = $this->createMock(ReadVersionRepositoryInterface::class);
     $this->readUpdateRepository = $this->createMock(ReadUpdateRepositoryInterface::class);
@@ -42,6 +45,7 @@ beforeEach(function () {
 
 it('should stop update process when an other update is already started', function () {
     $updateVersions = new UpdateVersions(
+        $this->requirementValidators,
         $this->updateLockerRepository,
         $this->readVersionRepository,
         $this->readUpdateRepository,
@@ -61,8 +65,31 @@ it('should stop update process when an other update is already started', functio
     $updateVersions($this->presenter);
 });
 
-it('should present an error response if current version is not found', function () {
+it('should present an error response if a requirement is not validated', function () {
     $updateVersions = new UpdateVersions(
+        $this->requirementValidators,
+        $this->updateLockerRepository,
+        $this->readVersionRepository,
+        $this->readUpdateRepository,
+        $this->writeUpdateRepository,
+    );
+
+    $this->requirementValidators
+        ->expects($this->once())
+        ->method('validateRequirementsOrFail')
+        ->willThrowException(new RequirementException('Requirement is not validated'));
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse('Requirement is not validated'));
+
+    $updateVersions($this->presenter);
+});
+
+it('should present an error response if current centreon version is not found', function () {
+    $updateVersions = new UpdateVersions(
+        $this->requirementValidators,
         $this->updateLockerRepository,
         $this->readVersionRepository,
         $this->readUpdateRepository,
@@ -89,6 +116,7 @@ it('should present an error response if current version is not found', function 
 
 it('should run found updates', function () {
     $updateVersions = new UpdateVersions(
+        $this->requirementValidators,
         $this->updateLockerRepository,
         $this->readVersionRepository,
         $this->readUpdateRepository,

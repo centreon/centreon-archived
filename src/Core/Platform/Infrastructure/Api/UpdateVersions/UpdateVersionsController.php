@@ -29,7 +29,6 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Contact\Contact;
 use Core\Platform\Application\UseCase\UpdateVersions\{
     UpdateVersions,
-    UpdateVersionsRequest,
     UpdateVersionsPresenterInterface
 };
 use Core\Application\Common\UseCase\UnauthorizedResponse;
