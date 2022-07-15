@@ -15177,7 +15177,7 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgstr ""
 
 msgid "Service severity"
-msgstr "criticidad del servicio"
+msgstr "Criticidad del servicio"
 
 msgid "Service severity level"
 msgstr "Nivel de criticidad del servicio"
