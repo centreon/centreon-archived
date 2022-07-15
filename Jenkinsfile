@@ -157,7 +157,118 @@ stage('Deliver sources') {
 
 try {
   stage('Unit tests // Sonar analysis // RPMs Packaging') {
-    parallel 'Debian 11 packaging': {
+    parallel 'frontend': {
+      if (!hasFrontendChanges) {
+        Utils.markStageSkippedForConditional('frontend')
+      } else {
+        node {
+          checkoutCentreonBuild()
+          unstash 'tar-sources'
+          unstash 'node_modules'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+            tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+            trendChartType: 'NONE'
+          )
+          junit 'ut-fe.xml'
+          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "coverage/lcov-report",
+            reportFiles: 'index.html',
+            reportName: 'Centreon Frontend Code Coverage',
+            reportTitles: ''
+          ])
+        }
+      }
+    },
+    'backend': {
+      if (!hasBackendChanges) {
+        Utils.markStageSkippedForConditional('backend')
+      } else {
+        node {
+          checkoutCentreonBuild()
+          unstash 'tar-sources'
+          unstash 'vendor'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+          //Recording issues in Jenkins job
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+            trendChartType: 'NONE'
+          )
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+            trendChartType: 'NONE'
+          )
+          junit 'ut-be.xml'
+          stash name: 'ut-be.xml', includes: 'ut-be.xml'
+          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
+          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+          stash name: 'phpstan.xml', includes: 'phpstan.xml'
+        }
+      }
+    },
+    'sonar': {
+      node {
+        if (securityAnalysisRequired == 'no') {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
+          checkoutCentreonBuild()
+          unstash 'git-sources'
+          unstash 'vendor'
+          unstash 'node_modules'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          sh 'rm -rf centreon-web/vendor && tar xzf vendor.tar.gz -C centreon-web'
+          sh 'rm -rf centreon-web/node_modules && tar xzf node_modules.tar.gz -C centreon-web'
+          withSonarQubeEnv('SonarQubeDev') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
+          // sonarQube step to get qualityGate result
+          timeout(time: 10, unit: 'MINUTES') {
+            def qualityGate = waitForQualityGate()
+            if (qualityGate.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+            }
+          }
+          if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+            error("Quality gate failure: ${qualityGate.status}.");
+          }
+        }
+      }
+    },
+    'rpm packaging centos7': {
+      node {
+        checkoutCentreonBuild()
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
+        archiveArtifacts artifacts: "rpms-centos7.tar.gz"
+        stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
+      }
+    },
+    'rpm packaging alma8': {
+      node {
+        checkoutCentreonBuild()
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
+        archiveArtifacts artifacts: "rpms-alma8.tar.gz"
+        stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
+      }
+    },
+    'Debian 11 packaging': {
       node {
         dir('centreon') {
           checkout scm
