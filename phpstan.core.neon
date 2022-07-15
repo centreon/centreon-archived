@@ -1,5 +1,5 @@
 includes:
-  - /vendor/centreon/centreon-test-lib/src/PHPStan/phpstan.neon
+    - vendor/centreon/centreon-test-lib/src/PHPStan/phpstan.neon
 
 parameters:
     level: max
