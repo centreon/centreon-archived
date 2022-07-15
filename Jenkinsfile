@@ -157,7 +157,7 @@ stage('Deliver sources') {
 
 try {
   stage('Unit tests // Sonar analysis // RPMs Packaging') {
-    'Debian 11 packaging': {
+    parallel 'Debian 11 packaging': {
       node {
         dir('centreon') {
           checkout scm
