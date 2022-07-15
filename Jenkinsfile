@@ -152,6 +152,41 @@ stage('Deliver sources') {
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
+    stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
+    stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
+    stash name: 'vendor', includes: 'vendor.tar.gz'
+    stash name: 'node_modules', includes: 'node_modules.tar.gz'
+    stash name: 'api-doc', includes: 'centreon-api-v22.10.html'
+    stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
+    publishHTML([
+      allowMissing: false,
+      keepAll: true,
+      reportDir: 'summary',
+      reportFiles: 'index.html',
+      reportName: 'Centreon Build Artifacts',
+      reportTitles: ''
+    ])
+
+
+    // get api feature files
+    apiFeatureFiles = sh(
+      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
+
+
+    // get tests E2E feature files
+    e2eFeatureFiles = sh(
+      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
+
+
+    //FIXME : reintegrate ldap features after fixing them
+    featureFiles = sh(
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    ).split()
   }
 }
 
