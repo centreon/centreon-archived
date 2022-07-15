@@ -1,6 +1,3 @@
-includes:
-  - %currentWorkingDirectory%/vendor/centreon/centreon-test-lib/src/PHPStan/phpstan.neon
-
 parameters:
   bootstrapFiles:
     - config/centreon.config.php.template
