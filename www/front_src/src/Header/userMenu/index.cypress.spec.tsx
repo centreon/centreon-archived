@@ -56,7 +56,7 @@ describe('User Menu', () => {
     cy.matchImageSnapshot();
   });
 
-  it(' style change for dark/light texts when switch is clicked', () => {
+  it('changes style when switch is clicked', () => {
     cy.get('[data-testid=AccountCircleIcon]').click();
     cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
     cy.get('@switchMode').click();
