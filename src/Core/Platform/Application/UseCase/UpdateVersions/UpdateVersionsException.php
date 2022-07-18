@@ -38,7 +38,7 @@ class UpdateVersionsException extends \Exception
      */
     public static function errorWhenRetrievingCurrentVersion(\Throwable $e): self
     {
-        return new self(_('An error occurred when retrieving current version'), 0, $e);
+        return new self(_('An error occurred when retrieving the current version'), 0, $e);
     }
 
     /**
@@ -46,7 +46,7 @@ class UpdateVersionsException extends \Exception
      */
     public static function cannotRetrieveCurrentVersion(): self
     {
-        return new self(_('Cannot retrieve current version'));
+        return new self(_('Cannot retrieve the current version'));
     }
 
     /**
@@ -55,7 +55,7 @@ class UpdateVersionsException extends \Exception
      */
     public static function errorWhenRetrievingAvailableUpdates(\Throwable $e): self
     {
-        return new self(_('An error occurred when getting available updates'), 0, $e);
+        return new self(_('An error occurred when retrieving available updates'), 0, $e);
     }
 
     /**
@@ -70,7 +70,7 @@ class UpdateVersionsException extends \Exception
         \Throwable $e
     ): self {
         return new self(
-            sprintf(_('An error occurred when applying update %s (%s)'), $version, $technicalMessage),
+            sprintf(_('An error occurred when applying the update %s (%s)'), $version, $technicalMessage),
             0,
             $e
         );

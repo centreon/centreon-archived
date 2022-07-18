@@ -33,7 +33,7 @@ class DatabaseRequirementException extends RequirementException
     public static function errorWhenGettingDatabaseVersion(\Throwable $e): self
     {
         return new self(
-            _('Error when getting database version'),
+            _('Error when retrieving the database version'),
             0,
             $e,
         );
@@ -44,6 +44,6 @@ class DatabaseRequirementException extends RequirementException
      */
     public static function cannotRetrieveVersionInformation(): self
     {
-        return new self(_('Cannot retrieve database version information'));
+        return new self(_('Cannot retrieve the database version information'));
     }
 }

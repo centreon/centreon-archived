@@ -109,7 +109,7 @@ it('should present an error response if current centreon version is not found', 
     $this->presenter
         ->expects($this->once())
         ->method('setResponseStatus')
-        ->with(new ErrorResponse('Cannot retrieve current version'));
+        ->with(new ErrorResponse('Cannot retrieve the current version'));
 
     $updateVersions($this->presenter);
 });

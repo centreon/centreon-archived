@@ -16920,19 +16920,19 @@ msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il s
 msgid "Update already in progress"
 msgstr "Une mise à jour est déjà en cours"
 
-msgid "An error occurred when retrieving current version"
+msgid "An error occurred when retrieving the current version"
 msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
 
-msgid "Cannot retrieve current version"
-msgstr "La version actuelle n'a pas pu être trouvée"
+msgid "Cannot retrieve the current version"
+msgstr "La version actuelle n'a pas pu être récupérée"
 
-msgid "An error occurred when getting available updates"
+msgid "An error occurred when retrieving available updates"
 msgstr "Une erreur s'est produite lors de la récupération des mises à jour disponibles"
 
-msgid "An error occurred when applying update %s (%s)"
+msgid "An error occurred when applying the update %s (%s)"
 msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%s)"
 
-msgid "Error while locking update process"
+msgid "Error while locking the update process"
 msgstr "Erreur lors du verrouillage du processus de mise à jour"
 
 msgid "Error while unlocking update process"
@@ -16950,11 +16950,11 @@ msgstr "La version %s de PHP est requise (%s installée)"
 msgid "PHP extension %s not loaded"
 msgstr "L'extension %s de PHP n'est pas chargée"
 
-msgid "Error when getting database version"
+msgid "Error when retrieving the database version"
 msgstr "Erreur lors de la récupération de la version de la base de données"
 
-msgid "Cannot retrieve database version information"
-msgstr "Les informations de version de la base de données n'ont pas pu être trouvées"
+msgid "Cannot retrieve the database version information"
+msgstr "Les informations de version de la base de données n'ont pas pu être récupérées"
 
 msgid "MariaDB version %s required (%s installed)"
 msgstr "La version %s de MariaDB est requise (%s installée)"

@@ -121,7 +121,7 @@ class DatabaseRequirementValidator extends AbstractRepositoryDRB implements Requ
         }
 
         if (empty($this->version) || empty($this->versionComment)) {
-            $this->info('Cannot retrieve database version information');
+            $this->info('Cannot retrieve the database version information');
             throw DatabaseRequirementException::cannotRetrieveVersionInformation();
         }
     }
