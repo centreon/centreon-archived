@@ -53,6 +53,14 @@ services:
         class: Centreon\Infrastructure\Serializer\ObjectConstructor
         public: false
 
+    json_presenter:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
+    Core\Infrastructure\Common\Presenter\PresenterFormatterInterface:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
     # Encryption
     Security\Interfaces\EncryptionInterface:
         class: Security\Encryption
@@ -132,12 +140,17 @@ services:
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
         class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
+    # Topology
+    Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface:
+        class: Core\Infrastructure\Platform\Api\FindInstallationStatus\FindInstallationStatusPresenter
+        arguments: ['@json_presenter']
+
     # Real time monitoring
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator
 
     Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
-        class: Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenter
+        class: Core\Infrastructure\Common\Presenter\CsvPresenter
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Monitoring\MonitoringService

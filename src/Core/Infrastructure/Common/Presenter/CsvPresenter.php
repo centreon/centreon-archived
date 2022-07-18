@@ -24,49 +24,54 @@ namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class CsvPresenter implements PresenterFormatterInterface
+class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterface
 {
     use LoggerTrait;
 
-    /**
-     * @var mixed $data
-     */
-    private mixed $data = null;
+    private iterable|null $data = null;
 
-    public function setResponseHeaders(array $responseHeaders): void
-    {
-        // TODO: Implement setResponseHeaders() method.
-    }
+    private StreamedResponse $response;
 
-    public function getResponseHeaders(): array
+    private string $fileName = 'export.csv';
+
+    public function __construct()
     {
-        // TODO: Implement getResponseHeaders() method.
     }
 
     public function present(mixed $data): void
     {
-        // TODO: Implement present() method.
+        $this->data = $data;
+    }
+
+    public function setFileName(string $fileName): void
+    {
+        $this->fileName = $fileName;
     }
 
     public function show(): Response
     {
+        if (!is_iterable($this->data)) {
+            return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_NOT_FOUND);
+        }
+
         $response = new StreamedResponse();
-        $response->setCallback(function () use($dataBin, $metrics) {
+        $response->setCallback(function () {
             $handle = fopen('php://output', 'r+');
             if ($handle === false) {
                 throw new \RuntimeException('Unable to generate file');
             }
 
-            foreach ($dataBin as $data) {
+            foreach ($this->data as $data) {
                 fputcsv($handle, $data, ';');
             }
 
             fclose($handle);
         });
         $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $this->fileName . '"');
 
         return $response;
     }

@@ -24,8 +24,6 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Common\UseCase\BodyResponseInterface;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\InvalidArgumentResponse;
@@ -36,39 +34,12 @@ use Core\Application\Common\UseCase\NoContentResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 
-class JsonPresenter implements PresenterFormatterInterface
+class JsonPresenter extends AbstractPresenter implements PresenterFormatterInterface
 {
     use LoggerTrait;
 
-    /**
-     * @var mixed $data
-     */
     private mixed $data = null;
 
-    /**
-     * @var mixed[] $responseHeaders
-     */
-    private array $responseHeaders = [];
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseHeaders(array $responseHeaders): void
-    {
-        $this->responseHeaders = $responseHeaders;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseHeaders(): array
-    {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function present(mixed $data): void
     {
         $this->data = $data;
@@ -82,88 +53,28 @@ class JsonPresenter implements PresenterFormatterInterface
         switch (true) {
             case is_a($this->data, NotFoundResponse::class, false):
                 $this->debug('Data not found. Generating a not found response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_NOT_FOUND),
-                    JsonResponse::HTTP_NOT_FOUND,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_NOT_FOUND);
             case is_a($this->data, ErrorResponse::class, false):
                 $this->debug('Data error. Generating an error response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_INTERNAL_SERVER_ERROR),
-                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
             case is_a($this->data, InvalidArgumentResponse::class, false):
                 $this->debug('Invalid argument. Generating an error response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_BAD_REQUEST),
-                    JsonResponse::HTTP_BAD_REQUEST,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_BAD_REQUEST);
             case is_a($this->data, UnauthorizedResponse::class, false):
                 $this->debug('Unauthorized. Generating an error response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
-                    JsonResponse::HTTP_UNAUTHORIZED,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_UNAUTHORIZED);
             case is_a($this->data, PaymentRequiredResponse::class, false):
                 $this->debug('Payment required. Generating an error response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_PAYMENT_REQUIRED),
-                    JsonResponse::HTTP_PAYMENT_REQUIRED,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_PAYMENT_REQUIRED);
             case is_a($this->data, ForbiddenResponse::class, false):
                 $this->debug('Forbidden. Generating an error response');
-                return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_FORBIDDEN),
-                    JsonResponse::HTTP_FORBIDDEN,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_FORBIDDEN);
             case is_a($this->data, CreatedResponse::class, false):
-                return new JsonResponse(
-                    null,
-                    JsonResponse::HTTP_CREATED,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonResponse(null, JsonResponse::HTTP_CREATED);
             case is_a($this->data, NoContentResponse::class, false):
-                return new JsonResponse(
-                    null,
-                    JsonResponse::HTTP_NO_CONTENT,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
             default:
-                return new JsonResponse(
-                    $this->data,
-                    JsonResponse::HTTP_OK,
-                    $this->responseHeaders,
-                );
+                return $this->generateJsonResponse($this->data, JsonResponse::HTTP_OK);
         }
-    }
-
-    /**
-     * Format content on error
-     *
-     * @param mixed $data
-     * @param integer $code
-     * @return mixed[]|null
-     */
-    private function formatErrorContent(mixed $data, int $code): ?array
-    {
-        $content = null;
-
-        if (is_a($data, ResponseStatusInterface::class)) {
-            $content = [
-                'code' => $code,
-                'message' => $data->getMessage(),
-            ];
-            if (is_a($data, BodyResponseInterface::class)) {
-                $content = array_merge($content, $data->getBody());
-            }
-        }
-
-        return $content;
     }
 }
