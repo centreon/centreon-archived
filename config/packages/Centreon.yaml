@@ -136,6 +136,9 @@ services:
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator
 
+    Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
+        class: Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenter
+
     Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Monitoring\MonitoringService
         public: true

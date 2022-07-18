@@ -27,11 +27,10 @@ use \DateTimeInterface;
 use \DateTimeImmutable;
 use \InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
-use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetrics;
-use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricRequest;
+use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface;
 
 class DownloadPerformanceMetricsController extends AbstractController
 {
@@ -40,25 +39,34 @@ class DownloadPerformanceMetricsController extends AbstractController
     private DateTimeInterface $startDate;
     private DateTimeInterface $endDate;
     private Request $request;
+    private FindPerformanceMetricRequest $performanceMetricRequest;
 
     public function __invoke(
         int $hostId,
         int $serviceId,
-        ReadIndexDataRepositoryInterface $indexDataRepository,
-        ReadMetricRepositoryInterface $metricRepository,
         FindPerformanceMetrics $useCase,
-        Request $request
-    ): StreamedResponse {
+        Request $request,
+        FindPerformanceMetricPresenterInterface $presenter
+    ): void {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $this->request = $request;
-        $index = $indexDataRepository->findIndexByHostIdAndServiceId($hostId, $serviceId);
-        $metrics = $metricRepository->findMetricsByIndexId($index);
+        $this->createPerformanceMetricRequest($hostId, $serviceId);
+
+        $useCase($this->performanceMetricRequest, $presenter);
+    }
+
+    private function createPerformanceMetricRequest(int $hostId, int $serviceId): void
+    {
         $this->findStartDate();
         $this->findEndDate();
-        $fileName = $this->generateDownloadFileNameByIndex($index, $indexDataRepository);
 
-        return $useCase($metrics, $this->startDate, $this->endDate, $fileName);
+        $this->performanceMetricRequest = new FindPerformanceMetricRequest(
+            $hostId,
+            $serviceId,
+            $this->startDate,
+            $this->endDate
+        );
     }
 
     private function findStartDate(): void
@@ -80,30 +88,6 @@ class DownloadPerformanceMetricsController extends AbstractController
             throw new InvalidArgumentException($errorMessage);
         }
 
-        $dateTime = new DateTimeImmutable((string) $dateParameter);
-
-        if (!$dateTime instanceof DateTimeImmutable) {
-            $errorMessage = sprintf('Unable to parse date parameter %s. ', $parameterName);
-            $errorMessage .= 'Expected is a date in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)';
-            throw new InvalidArgumentException($errorMessage);
-        }
-
-        return $dateTime;
-    }
-
-    private function generateDownloadFileNameByIndex(
-        int $index,
-        ReadIndexDataRepositoryInterface $indexDataRepository
-    ): string {
-        $row = $indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
-
-        $hostName = $row['host_name'];
-        $serviceDescription = $row['service_description'];
-
-        if ($hostName !== '' && $serviceDescription !== '') {
-            return sprintf('%s_%s.csv', $hostName, $serviceDescription);
-        }
-
-        return sprintf('%s.csv', $index);
+        return new DateTimeImmutable((string) $dateParameter);
     }
 }

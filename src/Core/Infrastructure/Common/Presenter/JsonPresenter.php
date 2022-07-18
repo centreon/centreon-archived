@@ -35,7 +35,6 @@ use Core\Application\Common\UseCase\ForbiddenResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 class JsonPresenter implements PresenterFormatterInterface
 {

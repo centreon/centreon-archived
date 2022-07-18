@@ -23,40 +23,65 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
-use \DateTimeInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FindPerformanceMetrics
 {
     use LoggerTrait;
 
-    public function __construct(private ReadDataBinRepositoryInterface $repository)
-    {
+    public function __construct(
+        private ReadIndexDataRepositoryInterface $indexDataRepository,
+        private ReadMetricRepositoryInterface $metricRepository,
+        private ReadDataBinRepositoryInterface $dataBinRepository
+    ) {
     }
 
-    /**
-     * @param array<int,string> $metrics
-     */
     public function __invoke(
-        array $metrics,
-        DateTimeInterface $startDate,
-        DateTimeInterface $endDate,
-        string $fileName
-    ): StreamedResponse {
-        $this->info(
+        FindPerformanceMetricRequest $request,
+        FindPerformanceMetricPresenterInterface $presenter
+    ): void {
+        $index = $this->indexDataRepository->findIndexByHostIdAndServiceId($request->hostId, $request->serviceId);
+        $metrics = $this->metricRepository->findMetricsByIndexId($index);
+
+        $fileName = $this->generateDownloadFileNameByIndex($index);
+
+        $dataBin = $this->dataBinRepository->findDataByMetricsAndDates($metrics, $request->startDate, $request->endDate);
+
+        $presenter->present(new FindPerformanceMetricResponse($dataBin, $fileName));
+
+
+/*        $this->info(
             'Searching date_bin',
             [
                 'metrics' => json_encode($metrics),
                 'startDate' => $startDate->format('c'),
                 'endDate' => $endDate->format('c')
             ]
-        );
+        );*/
+/*
+        $request = new FindPerformanceMetricRequest($hostId, $serviceId);
+        $this->request = $request;
 
-        $dataBin = $this->repository->findDataByMetricsAndDates($metrics, $startDate, $endDate);
 
-        return $this->show($metrics, $dataBin, $fileName);
+        return $this->show($metrics, $dataBin, $fileName);*/
+}
+
+    private function generateDownloadFileNameByIndex(int $index): string
+    {
+        $row = $this->indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
+
+        $hostName = $row['host_name'];
+        $serviceDescription = $row['service_description'];
+
+        if ($hostName !== '' && $serviceDescription !== '') {
+            return sprintf('%s_%s.csv', $hostName, $serviceDescription);
+        }
+
+        return sprintf('%s.csv', $index);
     }
 
     /**
