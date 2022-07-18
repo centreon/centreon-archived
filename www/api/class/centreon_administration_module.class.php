@@ -38,6 +38,8 @@ require_once __DIR__ . "/webService.class.php";
 require_once __DIR__ . '/../interface/di.interface.php';
 require_once __DIR__ . '/../trait/diAndUtilis.trait.php';
 
+use CentreonLegacy\Core\Module\Factory as ModuleFactory;
+
 class CentreonAdministrationModule extends CentreonWebService implements CentreonWebServiceDiInterface
 {
     use CentreonWebServiceDiAndUtilisTrait;
@@ -50,11 +52,14 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
     {
         if (!isset($this->arguments['name'])) {
             throw new \Exception('Missing argument : name');
-        } else {
-            $moduleName = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $moduleName = $this->arguments['name'];
+
+        $factory = new ModuleFactory($this->dependencyInjector, $this->utils);
+        $moduleInformation = $factory->newInformation();
+        var_dump($moduleInformation->getList());
+        die();
         $moduleInstaller = $factory->newInstaller($moduleName);
 
         return $moduleInstaller->install();
@@ -78,7 +83,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
             throw new \Exception('The module is not installed');
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $factory = new ModuleFactory($this->dependencyInjector, $this->utils);
         $moduleUpgrader = $factory->newUpgrader($moduleName, $moduleId);
 
         return $moduleUpgrader->upgrade();
@@ -102,7 +107,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
             throw new \Exception('The module is not installed');
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $factory = new ModuleFactory($this->dependencyInjector, $this->utils);
         $moduleRemover = $factory->newRemover($moduleName, $moduleId);
 
         return $moduleRemover->remove();
