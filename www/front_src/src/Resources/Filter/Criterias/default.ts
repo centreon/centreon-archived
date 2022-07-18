@@ -7,10 +7,14 @@ import { Criteria } from './models';
 interface DefaultCriteriaValues {
   hostCategories?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
+  hostSeverities?: Array<SelectEntry>;
+  hostSeverityLevels?: Array<SelectEntry>;
   monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
   serviceCategories?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
+  serviceSeverities?: Array<SelectEntry>;
+  serviceSeverityLevels?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statusTypes?: Array<SelectEntry>;
   statuses?: Array<SelectEntry>;
@@ -23,6 +27,10 @@ const getDefaultCriterias = (
   {
     resourceTypes = [],
     states = [],
+    serviceSeverities = [],
+    serviceSeverityLevels = [],
+    hostSeverities = [],
+    hostSeverityLevels = [],
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
@@ -33,10 +41,14 @@ const getDefaultCriterias = (
   }: DefaultCriteriaValues = {
     hostCategories: [],
     hostGroups: [],
+    hostSeverities: [],
+    hostSeverityLevels: [],
     monitoringServers: [],
     resourceTypes: [],
     serviceCategories: [],
     serviceGroups: [],
+    serviceSeverities: [],
+    serviceSeverityLevels: [],
     states: [],
     statusTypes: [],
     statuses: [],
@@ -96,6 +108,30 @@ const getDefaultCriterias = (
       object_type: 'service_categories',
       type: 'multi_select',
       value: serviceCategories,
+    },
+    {
+      name: 'host_severities',
+      object_type: 'host_severities',
+      type: 'multi_select',
+      value: hostSeverities,
+    },
+    {
+      name: 'host_severity_levels',
+      object_type: 'host_severity_levels',
+      type: 'multi_select',
+      value: hostSeverityLevels,
+    },
+    {
+      name: 'service_severities',
+      object_type: 'service_severities',
+      type: 'multi_select',
+      value: serviceSeverities,
+    },
+    {
+      name: 'service_severity_levels',
+      object_type: 'service_severity_levels',
+      type: 'multi_select',
+      value: serviceSeverityLevels,
     },
     {
       name: 'search',
