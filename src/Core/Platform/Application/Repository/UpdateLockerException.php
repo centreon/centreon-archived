@@ -39,6 +39,6 @@ class UpdateLockerException extends RepositoryException
      */
     public static function errorWhileUnlockingUpdate(\Throwable $e): self
     {
-        return new self(_('Error while unlocking update process'), 0, $e);
+        return new self(_('Error while unlocking the update process'), 0, $e);
     }
 }

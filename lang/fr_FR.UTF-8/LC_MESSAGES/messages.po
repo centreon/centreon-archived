@@ -16935,7 +16935,7 @@ msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%
 msgid "Error while locking the update process"
 msgstr "Erreur lors du verrouillage du processus de mise à jour"
 
-msgid "Error while unlocking update process"
+msgid "Error while unlocking the update process"
 msgstr "Erreur lors du déverrouillage du processus de mise à jour"
 
 msgid "An error occurred when applying post update actions"
