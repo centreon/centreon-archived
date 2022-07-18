@@ -1,12 +1,11 @@
-import { makeStyles } from '@mui/styles';
+import { useRef } from 'react';
 
-import Hook from '../components/Hook';
+import { makeStyles } from '@mui/styles';
 
 import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
-import SwitchMode from './SwitchThemeMode';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
@@ -30,12 +29,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   pollerContainer: {
-    flex: 0.5,
+    flex: 0.4,
   },
   rightContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 1.1,
+    flex: 0.9,
   },
   serviceStatusContainer: {
     display: 'flex',
@@ -49,16 +48,17 @@ const useStyles = makeStyles((theme) => ({
   userMenuContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 0.4,
+    flex: 0.3,
     justifyContent: 'flex-end',
   },
 }));
 
 const Header = (): JSX.Element => {
   const classes = useStyles();
+  const headerRef = useRef<HTMLElement>(null);
 
   return (
-    <header className={classes.header}>
+    <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
         <div className={classes.pollerContainer}>
           <PollerMenu />
@@ -74,10 +74,7 @@ const Header = (): JSX.Element => {
             <ServiceStatusCounter />
           </div>
           <div className={classes.userMenuContainer}>
-            <SwitchMode />
-            <div className={classes.userMenu}>
-              <UserMenu />
-            </div>
+            <UserMenu headerRef={headerRef} />
           </div>
         </div>
       </div>
