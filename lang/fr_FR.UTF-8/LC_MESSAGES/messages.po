@@ -16958,3 +16958,15 @@ msgstr "Les informations de version de la base de données n'ont pas pu être r�
 
 msgid "MariaDB version %s required (%s installed)"
 msgstr "La version %s de MariaDB est requise (%s installée)"
+
+msgid "Service severity"
+msgstr "Criticité du service"
+
+msgid "Service severity level"
+msgstr "Niveau de criticité du service"
+
+msgid "Host severity"
+msgstr "Criticité d'hôte"
+
+msgid "Host severity level"
+msgstr "Niveau de criticité d'hôte"
