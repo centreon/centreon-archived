@@ -41,8 +41,6 @@ Then('the problematic Resource is displayed as acknowledged', () => {
       .parent()
       .parent()
       .then((val) => {
-        console.log(val);
-
         return (
           val.css('background-color') === actionBackgroundColors.acknowledge
         );
