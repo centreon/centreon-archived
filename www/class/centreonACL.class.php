@@ -1741,9 +1741,9 @@ class CentreonACL
                                 ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES (:host_id, :data_id, :group_id)");
                             while ($row = $DBRESULT->fetchRow()) {
-                                $statement->bindValue(':host_id', (int) $host_id , \PDO::PARAM_INT);
-                                $statement->bindValue(':data_id', (int) $data["id"] , \PDO::PARAM_INT);
-                                $statement->bindValue(':group_id', (int) $row['group_id'] , \PDO::PARAM_INT);
+                                $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+                                $statement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                                $statement->bindValue(':group_id', (int) $row['group_id'], \PDO::PARAM_INT);
                                 $statement->execute();
                             }
                         }
