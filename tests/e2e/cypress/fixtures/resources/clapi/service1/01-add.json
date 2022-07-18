@@ -1,5 +1,5 @@
 {
   "action": "ADD",
   "object": "SERVICE",
-  "values": "test_host;service_test;Ping-LAN;"
+  "values": "test_host;service_test;SNMP-DISK-/;"
 }
