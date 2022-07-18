@@ -2,6 +2,8 @@ import { useRef } from 'react';
 
 import { makeStyles } from '@mui/styles';
 
+import Hook from '../components/Hook';
+
 import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
