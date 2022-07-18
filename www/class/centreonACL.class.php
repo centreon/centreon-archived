@@ -1693,27 +1693,27 @@ class CentreonACL
                         $request = "SELECT group_id FROM centreon_acl " .
                             "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NULL";
                         $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
-                        $statement = \CentreonDBInstance::getMonInstance()
+                        $hostAclStatement = \CentreonDBInstance::getMonInstance()
                             ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                 . "VALUES (:data_id, NULL, :group_id)");
-                        $statement2 = \CentreonDBInstance::getMonInstance()
+                        $serviceAclStatement = \CentreonDBInstance::getMonInstance()
                             ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                 . "VALUES (:data_id, :service_id, :group_id) "
                                 . "ON DUPLICATE KEY UPDATE group_id = :group_id");
                         while ($row = $DBRESULT->fetchRow()) {
                             // Insert New Host
-                            $statement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
-                            $statement->bindValue(':group_id', (int) $row['group_id'], \PDO::PARAM_INT);
-                            $statement->execute();
+                            $hostAclStatement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                            $hostAclStatement->bindValue(':group_id', (int) $row['group_id'], \PDO::PARAM_INT);
+                            $hostAclStatement->execute();
                             // Insert services
                             $request = "SELECT service_id, group_id FROM centreon_acl "
                                 . "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
                             $DBRESULT2 = \CentreonDBInstance::getMonInstance()->query($request);
                             while ($row2 = $DBRESULT2->fetch()) {
-                                $statement2->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
-                                $statement2->bindValue(':service_id', (int) $row2["service_id"], \PDO::PARAM_INT);
-                                $statement2->bindValue(':group_id', (int) $row2['group_id'], \PDO::PARAM_INT);
-                                $statement2->execute();
+                                $serviceAclStatement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                                $serviceAclStatement->bindValue(':service_id', (int) $row2["service_id"], \PDO::PARAM_INT);
+                                $serviceAclStatement->bindValue(':group_id', (int) $row2['group_id'], \PDO::PARAM_INT);
+                                $serviceAclStatement->execute();
                             }
                         }
                     }
