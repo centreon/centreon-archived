@@ -1711,7 +1711,8 @@ class CentreonACL
                             $DBRESULT2 = \CentreonDBInstance::getMonInstance()->query($request);
                             while ($row2 = $DBRESULT2->fetch()) {
                                 $serviceAclStatement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
-                                $serviceAclStatement->bindValue(':service_id', (int) $row2["service_id"], \PDO::PARAM_INT);
+                                $serviceAclStatement
+                                    ->bindValue(':service_id', (int) $row2["service_id"], \PDO::PARAM_INT);
                                 $serviceAclStatement->bindValue(':group_id', (int) $row2['group_id'], \PDO::PARAM_INT);
                                 $serviceAclStatement->execute();
                             }
