@@ -212,7 +212,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
         "WHERE topology_parent = :topology_parent ORDER BY topology_order";
 
     $statement2 = $pearDB->prepare($query);
-    $statement2->bindValue(':topology_parent', (int)$topo1["topology_page"], \PDO::PARAM_INT);
+    $statement2->bindValue(':topology_parent', (int) $topo1["topology_page"], \PDO::PARAM_INT);
     $statement2->execute();
     while ($topo2 = $statement2->fetchRow()) {
         $acl_topos2[$a]["childs"][$b] = array();
@@ -238,7 +238,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
             "AND topology_page IS NOT NULL ORDER BY topology_group, topology_order";
 
         $statement3 = $pearDB->prepare($query);
-        $statement3->bindValue(':topology_parent', (int)$topo2["topology_page"], \PDO::PARAM_INT);
+        $statement3->bindValue(':topology_parent', (int) $topo2["topology_page"], \PDO::PARAM_INT);
         $statement3->execute();
 
         while ($topo3 = $statement3->fetchRow()) {
@@ -273,7 +273,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
             $query = "SELECT topology_id, topology_name, topology_parent, readonly FROM topology " .
                 "WHERE topology_parent = :topology_parent  AND topology_page IS NOT NULL ORDER BY topology_order";
             $statement4 = $pearDB->prepare($query);
-            $statement4->bindValue(':topology_parent', (int)$topo3["topology_page"], \PDO::PARAM_INT);
+            $statement4->bindValue(':topology_parent', (int) $topo3["topology_page"], \PDO::PARAM_INT);
             $statement4->execute();
 
             while ($topo4 = $statement4->fetchRow()) {
