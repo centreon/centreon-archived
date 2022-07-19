@@ -16901,6 +16901,48 @@ msgstr "Une erreur s'est produite lors de la récupération des catégories d'h�
 msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
 
+msgid "Update already in progress"
+msgstr "Une mise à jour est déjà en cours"
+
+msgid "An error occurred when retrieving the current version"
+msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
+
+msgid "Cannot retrieve the current version"
+msgstr "La version actuelle n'a pas pu être récupérée"
+
+msgid "An error occurred when retrieving available updates"
+msgstr "Une erreur s'est produite lors de la récupération des mises à jour disponibles"
+
+msgid "An error occurred when applying the update %s (%s)"
+msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%s)"
+
+msgid "Error while locking the update process"
+msgstr "Erreur lors du verrouillage du processus de mise à jour"
+
+msgid "Error while unlocking the update process"
+msgstr "Erreur lors du déverrouillage du processus de mise à jour"
+
+msgid "An error occurred when applying post update actions"
+msgstr "Une erreur s'est produite lors de l'application des actions postérieures à la mise à jour"
+
+msgid "Updates not found"
+msgstr "Les mises à jour n'ont pas été trouvées"
+
+msgid "PHP version %s required (%s installed)"
+msgstr "La version %s de PHP est requise (%s installée)"
+
+msgid "PHP extension %s not loaded"
+msgstr "L'extension %s de PHP n'est pas chargée"
+
+msgid "Error when retrieving the database version"
+msgstr "Erreur lors de la récupération de la version de la base de données"
+
+msgid "Cannot retrieve the database version information"
+msgstr "Les informations de version de la base de données n'ont pas pu être récupérées"
+
+msgid "MariaDB version %s required (%s installed)"
+msgstr "La version %s de MariaDB est requise (%s installée)"
+
 msgid "Service severity"
 msgstr "Criticité du service"
 

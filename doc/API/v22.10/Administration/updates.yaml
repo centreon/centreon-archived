@@ -1,0 +1,30 @@
+---
+patch:
+  tags:
+    - Platform
+  summary: "Update Centreon web"
+  description: |
+    Update Centreon web component
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            components:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    enum: [ centreon-web ]
+  responses:
+    204:
+      description: "Platform updated"
+    404:
+      description: "Updates not found"
+    500:
+      $ref: "../../centreon-api-v22.10.yaml#/components/responses/InternalServerError"
+...
