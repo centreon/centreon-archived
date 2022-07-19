@@ -59,7 +59,7 @@ const Header = (): JSX.Element => {
 
   return (
     <header className={classes.header} ref={headerRef}>
-      <div>test</div>
+      <div>testo</div>
       <div className={classes.container}>
         <div className={classes.pollerContainer}>
           <PollerMenu />
