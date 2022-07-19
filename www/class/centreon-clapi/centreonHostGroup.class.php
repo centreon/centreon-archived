@@ -36,7 +36,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "centreonConfiguration.class.php";
+require_once "CentreonConfigurationChange.class.php";
 require_once "centreonACL.class.php";
 require_once "centreonHost.class.php";
 require_once "Centreon/Object/Host/Group.php";
@@ -59,8 +59,6 @@ class CentreonHostGroup extends CentreonObject
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
     public const INVALID_GEO_COORDS = "Invalid geo coords";
-
-    private const RESOURCE_TYPE = 'hostgroup';
 
     public static $aDepends = array(
         'HOST'
@@ -135,9 +133,9 @@ class CentreonHostGroup extends CentreonObject
     {
         parent::add($parameters);
 
-        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
         $hostgroupId = $this->getObjectId($this->params[$this->object->getUniqueLabelField()]);
-        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostgroupId);
+        $centreonConfig->signalConfigurationChange(CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP, $hostgroupId);
     }
 
     /**
@@ -152,9 +150,9 @@ class CentreonHostGroup extends CentreonObject
     {
         $hostgroupId = $this->getObjectId($objectName);
 
-        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
-        $hostIds = $centreonConfig->getHostsForConfigChangeFlagFromHostgroupIds([$hostgroupId]);
-        $previousPollerIds = $centreonConfig->getPollersForConfigChangeFlagFromHostIds($hostIds);
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromHostGroupIds([$hostgroupId]);
+        $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
 
         $parentDependency = new \Centreon_Object_DependencyHostgroupParent($this->dependencyInjector);
         $parentDependency->removeRelationLastHostgroupDependency($hostgroupId);
@@ -164,7 +162,11 @@ class CentreonHostGroup extends CentreonObject
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
 
-        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostgroupId, $previousPollerIds);
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP,
+            $hostgroupId,
+            $previousPollerIds
+        );
     }
 
 
@@ -182,13 +184,17 @@ class CentreonHostGroup extends CentreonObject
         if (!empty($params)) {
             $hostgroupId = $params['objectId'];
 
-            $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
-            $hostIds = $centreonConfig->getHostsForConfigChangeFlagFromHostgroupIds([$hostgroupId]);
-            $previousPollerIds = $centreonConfig->getPollersForConfigChangeFlagFromHostIds($hostIds);
+            $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+            $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromHostGroupIds([$hostgroupId]);
+            $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
 
             parent::setparam($parameters);
 
-            $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostgroupId, $previousPollerIds);
+            $centreonConfig->signalConfigurationChange(
+                CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP,
+                $hostgroupId,
+                $previousPollerIds
+            );
         }
     }
 
@@ -202,9 +208,9 @@ class CentreonHostGroup extends CentreonObject
     {
         parent::enable($objectName);
 
-        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
         $hostgroupId = $this->getObjectId($objectName);
-        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostgroupId);
+        $centreonConfig->signalConfigurationChange(CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP, $hostgroupId);
     }
 
     /**
@@ -217,9 +223,14 @@ class CentreonHostGroup extends CentreonObject
     {
         parent::disable($objectName);
 
-        $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
         $hostgroupId = $this->getObjectId($objectName);
-        $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $hostgroupId, [], false);
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP,
+            $hostgroupId,
+            [],
+            false
+        );
     }
 
     /**
@@ -396,9 +407,9 @@ class CentreonHostGroup extends CentreonObject
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
 
-                $centreonConfig = new CentreonConfiguration($this->dependencyInjector);
-                $hostIds = $centreonConfig->getHostsForConfigChangeFlagFromHostgroupIds([$groupId]);
-                $previousPollerIds = $centreonConfig->getPollersForConfigChangeFlagFromHostIds($hostIds);
+                $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+                $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromHostGroupIds([$groupId]);
+                $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
 
                 $relation = $args[1];
                 $relations = explode("|", $relation);
@@ -431,7 +442,11 @@ class CentreonHostGroup extends CentreonObject
                     }
                 }
 
-                $centreonConfig->signalConfigurationChange(self::RESOURCE_TYPE, $groupId, $previousPollerIds);
+                $centreonConfig->signalConfigurationChange(
+                    CentreonConfigurationChange::RESOURCE_TYPE_HOSTGROUP,
+                    $groupId,
+                    $previousPollerIds
+                );
 
                 $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);

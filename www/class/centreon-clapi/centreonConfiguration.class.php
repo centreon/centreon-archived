@@ -36,19 +36,22 @@
 
 namespace CentreonClapi;
 
-class CentreonConfiguration
+class CentreonConfigurationChange
 {
-    protected $db;
+    public const UNKNOWN_RESOURCE_TYPE = 'Unknown resource type';
+    public const RESOURCE_TYPE_HOST = 'host';
+    public const RESOURCE_TYPE_HOSTGROUP = 'hostgroup';
+    public const RESOURCE_TYPE_SERVICE = 'service';
+    public const RESOURCE_TYPE_SERVICEGROUP = 'servicegroup';
 
     /**
      * Constructor
      *
      * @return void
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
-    {
-        $this->db = $dependencyInjector['configuration_db'];
-    }
+    public function __construct(
+        private \CentreonDB $db
+    ) {}
 
     /**
      * Return ids of hosts linked to hostgroups
@@ -58,7 +61,7 @@ class CentreonConfiguration
      * @return int[]
      * @throws \Exception
      */
-    public function getHostsForConfigChangeFlagFromHostgroupIds(
+    public function findHostsForConfigChangeFlagFromHostGroupIds(
         array $hostgroupIds,
         bool $shouldHostgroupBeEnabled = true
     ): array {
@@ -99,7 +102,7 @@ class CentreonConfiguration
      * @return int[]
      * @throws \Exception
      */
-    public function getHostsForConfigChangeFlagFromServiceIds(
+    public function findHostsForConfigChangeFlagFromServiceIds(
         array $serviceIds,
         bool $shoudlServiceBeEnabled = true
     ): array {
@@ -140,7 +143,7 @@ class CentreonConfiguration
      * @return int[]
      * @throws \Exception
      */
-    private function getServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemplateIds): array
+    private function findServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemplateIds): array
     {
         if (empty($serviceTemplateIds)) {
             return [];
@@ -172,7 +175,7 @@ class CentreonConfiguration
         }
         return array_merge(
             $serviceIds,
-            $this->getServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds2)
+            $this->findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds2)
         );
     }
 
@@ -184,7 +187,7 @@ class CentreonConfiguration
      * @return int[]
      * @throws \Exception
      */
-    public function getHostsForConfigChangeFlagFromServiceGroupId(
+    public function findHostsForConfigChangeFlagFromServiceGroupId(
         int $servicegroupId,
         bool $shouldServicegroupBeEnabled = true
     ): array {
@@ -212,12 +215,12 @@ class CentreonConfiguration
             }
         }
 
-        $serviceIds = $this->getServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds);
+        $serviceIds = $this->findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds);
 
         return array_merge(
             $hostIds,
-            $this->getHostsForConfigChangeFlagFromHostgroupIds($hostgroupIds),
-            $this->getHostsForConfigChangeFlagFromServiceIds($serviceIds)
+            $this->findHostsForConfigChangeFlagFromHostGroupIds($hostgroupIds),
+            $this->findHostsForConfigChangeFlagFromServiceIds($serviceIds)
         );
     }
 
@@ -229,7 +232,7 @@ class CentreonConfiguration
      * @return int[]
      * @throws \Exception
      */
-    public function getPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHostBeEnabled = true): array
+    public function findPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHostBeEnabled = true): array
     {
         if (empty($hostIds)) {
             return [];
@@ -265,7 +268,7 @@ class CentreonConfiguration
      * @param int[] $pollerIds
      * @throws \Exception
      */
-    private function setPollersToUpdated(array $pollerIds): void
+    private function definePollersToUpdated(array $pollerIds): void
     {
         if (empty($pollerIds)) {
             return;
@@ -301,33 +304,36 @@ class CentreonConfiguration
     ): void {
         $hostIds = [];
         switch ($resourceType) {
-            case 'host':
+            case self::RESOURCE_TYPE_HOST:
                 $hostIds[] = $resourceId;
                 break;
-            case 'hostgroup':
+            case self::RESOURCE_TYPE_HOSTGROUP:
                 $hostIds = array_merge(
                     $hostIds,
-                    $this->getHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
+                    $this->findHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
                 );
                 break;
-            case 'service':
+            case self::RESOURCE_TYPE_SERVICE:
                 $hostIds = array_merge(
                     $hostIds,
-                    $this->getHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
+                    $this->findHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
                 );
                 break;
-            case 'servicegroup':
+            case self::RESOURCE_TYPE_SERVICEGROUP:
                 $hostIds = array_merge(
                     $hostIds,
-                    $this->getHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
+                    $this->findHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
                 );
                 break;
+            default:
+                throw new CentreonClapiException(self::UNKNOWN_RESOURCE_TYPE . ":" . $resourceType);
+            break;
         }
-        $pollerIds = $this->getPollersForConfigChangeFlagFromHostIds(
+        $pollerIds = $this->findPollersForConfigChangeFlagFromHostIds(
             $hostIds,
-            $resourceType === 'host' ? $shouldResourceBeEnabled : true
+            $resourceType === self::RESOURCE_TYPE_HOST ? $shouldResourceBeEnabled : true
         );
 
-        $this->setPollersToUpdated(array_merge($pollerIds, $previousPollers));
+        $this->definePollersToUpdated(array_merge($pollerIds, $previousPollers));
     }
 }
