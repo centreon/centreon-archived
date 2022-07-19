@@ -36,7 +36,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "CentreonConfigurationChange.class.php";
+require_once "centreonConfigurationChange.class.php";
 require_once "centreonACL.class.php";
 require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
