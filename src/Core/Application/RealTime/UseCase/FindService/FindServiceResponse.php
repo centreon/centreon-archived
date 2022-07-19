@@ -29,6 +29,7 @@ use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
 
 class FindServiceResponse
@@ -123,11 +124,6 @@ class FindServiceResponse
     /**
      * @var int|null
      */
-    public $severityLevel;
-
-    /**
-     * @var int|null
-     */
     public $checkAttempts;
 
     /**
@@ -176,6 +172,11 @@ class FindServiceResponse
     public $hasGraphData;
 
     /**
+     * @var array<string, mixed>|null
+     */
+    public ?array $severity = null;
+
+    /**
      * @param int $id
      * @param int $hostId
      * @param string $name
@@ -186,6 +187,7 @@ class FindServiceResponse
      * @param Acknowledgement|null $acknowledgement
      * @param Host $host
      * @param Tag[] $serviceCategories
+     * @param Severity|null $severity
      */
     public function __construct(
         public int $id,
@@ -197,7 +199,8 @@ class FindServiceResponse
         array $downtimes,
         ?Acknowledgement $acknowledgement,
         Host $host,
-        array $serviceCategories
+        array $serviceCategories,
+        ?Severity $severity
     ) {
         $this->groups = $this->servicegroupsToArray($servicegroups);
         $this->status = $this->statusToArray($status);
@@ -206,6 +209,7 @@ class FindServiceResponse
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
         $this->host = $this->hostToArray($host);
         $this->categories = $this->tagsToArray($serviceCategories);
+        $this->severity = is_null($severity) ? $severity : $this->severityToArray($severity);
     }
 
     /**

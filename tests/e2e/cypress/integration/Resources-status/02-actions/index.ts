@@ -9,7 +9,7 @@ import {
 } from '../common';
 import { refreshListing } from '../../../support/centreonData';
 
-const serviceName = 'service_test';
+const serviceInAcknowledgementName = 'service_test_ack';
 const serviceInDowntimeName = 'service_test_dt';
 
 before(() => {
@@ -17,7 +17,7 @@ before(() => {
 });
 
 When('I select the acknowledge action on a problematic Resource', () => {
-  cy.contains(serviceName)
+  cy.contains(serviceInAcknowledgementName)
     .parents('div[role="row"]:first')
     .find('input[type="checkbox"]:first')
     .click();
@@ -36,7 +36,7 @@ Then('the problematic Resource is displayed as acknowledged', () => {
   cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
   cy.waitUntil(() => {
     return refreshListing()
-      .then(() => cy.contains(serviceName))
+      .then(() => cy.contains(serviceInAcknowledgementName))
       .parent()
       .parent()
       .parent()
