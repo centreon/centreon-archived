@@ -27,16 +27,46 @@ use Core\Domain\RealTime\Model\PerformanceMetric;
 
 class FindPerformanceMetricResponse
 {
+    public ?string $filename = null;
     /**
-     * @param iterable<PerformanceMetric[]> $performanceMetrics
+     * @var iterable<mixed>
      */
-    public function __construct(private iterable $performanceMetrics, private string $fileName)
+    public iterable $performanceMetrics = [];
+
+    /**
+     * @param iterable<PerformanceMetric> $performanceMetrics
+     */
+    public function __construct(iterable $performanceMetrics, string $fileName = null)
     {
-        $this->performanceMetricsTmp = [];
+        $this->performanceMetrics = $this->performanceMetricToArray($performanceMetrics);
+        $this->filename = $fileName;
     }
 
-    private function performaceMetricToArray(): array
+    /**
+     * @param iterable<PerformanceMetric> $performanceMetrics
+     * @return iterable<mixed>
+     */
+    private function performanceMetricToArray(iterable $performanceMetrics): iterable
     {
-        return ['tr' => 1];
+        foreach ($performanceMetrics as $performanceMetric) {
+            yield $this->createPerformanceMetricToArray($performanceMetric);
+        }
+    }
+
+    /**
+     * @param PerformanceMetric $performanceMetric
+     * @return array<string, mixed>
+     */
+    private function createPerformanceMetricToArray(PerformanceMetric $performanceMetric): array
+    {
+        $tmp = [
+            'date' => $performanceMetric->getDateValue()->format(\DateTime::ISO8601)
+        ];
+
+        foreach ($performanceMetric->getMetricValues() as $metricValue) {
+            $tmp[$metricValue->getName()] = $metricValue->getValue();
+        }
+
+        return $tmp;
     }
 }

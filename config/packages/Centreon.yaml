@@ -93,6 +93,14 @@ services:
         class: Centreon\Domain\Contact\ContactProvider
         public: true
 
+    presenter.download.csv:
+        class: Core\Infrastructure\Common\Presenter\DownloadPresenter
+        arguments: ['@Core\Infrastructure\Common\Presenter\CsvPresenter']
+
+    Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
+        class: Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics\DownloadPerformanceMetricsPresenter
+        arguments: ['@presenter.download.csv']
+
     # Authentication
     Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface:
         class: Core\Security\Infrastructure\Repository\DbReadAccessGroupRepository
@@ -148,9 +156,6 @@ services:
     # Real time monitoring
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator
-
-    Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
-        class: Core\Infrastructure\Common\Presenter\CsvPresenter
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Monitoring\MonitoringService

@@ -22,6 +22,9 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\DataBin;
 
+use Core\Domain\RealTime\Model\Metric;
+use Core\Domain\RealTime\Model\MetricValue;
+use Core\Domain\RealTime\Model\PerformanceMetric;
 use \PDO;
 use \DateTimeInterface;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
@@ -41,24 +44,29 @@ class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataB
     /**
      * Retrieves raw data_bin with filters
      *
-     * @param  array<int, string> $metrics
-     * @return iterable<array<string,string>>
+     * @param  array<int, string> $metricsNames
+     * @return iterable<PerformanceMetric>
      */
-    public function findDataByMetricsAndDates(array $metrics, DateTimeInterface $startDate, DateTimeInterface $endDate): iterable
-    {
+    public function findDataByMetricsAndDates(
+        array $metricsNames,
+        DateTimeInterface $startDate,
+        DateTimeInterface $endDate
+    ): iterable {
         $this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 
         $columns = ['ctime AS time'];
-        foreach ($metrics as $metricId => $metricName) {
+        foreach ($metricsNames as $metricId => $metricName) {
             $columns[] = sprintf('AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s', $metricId, $metricName);
         }
 
         $query = sprintf(
-            'SELECT %s FROM `:dbstg`.data_bin WHERE ctime >= :start AND ctime < :end GROUP BY time',
+            'SELECT %s FROM `:dbstg`.data_bin
+            WHERE ctime >= :start AND ctime < :end GROUP BY time',
             join(',', $columns)
         );
 
+        $metrics = [];
         $statement = $this->db->prepare($this->translateDbName($query));
 
         $statement->bindValue(':start', $startDate->getTimestamp(), \PDO::PARAM_INT);
@@ -66,13 +74,42 @@ class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataB
         $statement->execute();
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $dataBin) {
-            yield $this->formatDataBin($dataBin);
+            $performanceMetric = new PerformanceMetric(
+                (new \DateTimeImmutable())->setTimestamp((int) $dataBin['time']),
+                $this->createMetricValues($dataBin)
+            );
+
+            yield $performanceMetric;
         }
 
         $statement->closeCursor();
     }
 
-    private function formatDataBin(array $dataBin): array
+    /**
+     * @param array<string, mixed> $data
+     * @return MetricValue[]
+     */
+    private function createMetricValues(array $data): array
+    {
+        $dateValue = (new \DateTimeImmutable())->setTimestamp((int) $data['time']);
+        $metricValues = [];
+        foreach ($data as $columnName => $columnValue) {
+            if ($columnName !== 'time') {
+                $metricValues[] = new MetricValue(
+                    $columnName,
+                    (float) $columnValue
+                );
+            }
+        }
+        return $metricValues;
+    }
+
+    /**
+     * @param array<string, mixed> $dataBin
+     * @param Metric[] $metrics
+     * @return array<string, mixed>
+     */
+    private function formatDataBin(array $dataBin, array &$metrics): array
     {
         $formattedData = [
             'time' => $dataBin['time'],

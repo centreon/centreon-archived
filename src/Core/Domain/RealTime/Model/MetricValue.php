@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -20,17 +21,40 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
+namespace Core\Domain\RealTime\Model;
 
-use \DateTimeInterface;
-
-class FindPerformanceMetricRequest
+class MetricValue
 {
-    public function __construct(
-        public int $hostId,
-        public int $serviceId,
-        public DateTimeInterface $startDate,
-        public DateTimeInterface $endDate
-    ) {
+    /**
+     * @param string $name
+     * @param float $value
+     * @param string|null $unitName
+     */
+    public function __construct(private string $name, private float $value, private ?string $unitName = null)
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return float
+     */
+    public function getValue(): float
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUnitName(): ?string
+    {
+        return $this->unitName;
     }
 }

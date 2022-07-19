@@ -49,26 +49,14 @@ class FindPerformanceMetrics
 
         $fileName = $this->generateDownloadFileNameByIndex($index);
 
-        $dataBin = $this->dataBinRepository->findDataByMetricsAndDates($metrics, $request->startDate, $request->endDate);
+        $dataBin = $this->dataBinRepository->findDataByMetricsAndDates(
+            $metrics,
+            $request->startDate,
+            $request->endDate
+        );
 
         $presenter->present(new FindPerformanceMetricResponse($dataBin, $fileName));
-
-
-/*        $this->info(
-            'Searching date_bin',
-            [
-                'metrics' => json_encode($metrics),
-                'startDate' => $startDate->format('c'),
-                'endDate' => $endDate->format('c')
-            ]
-        );*/
-/*
-        $request = new FindPerformanceMetricRequest($hostId, $serviceId);
-        $this->request = $request;
-
-
-        return $this->show($metrics, $dataBin, $fileName);*/
-}
+    }
 
     private function generateDownloadFileNameByIndex(int $index): string
     {

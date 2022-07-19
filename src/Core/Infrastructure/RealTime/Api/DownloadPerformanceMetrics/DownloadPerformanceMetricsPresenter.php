@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -20,17 +21,20 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
+namespace Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics;
 
-use \DateTimeInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface;
+use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 
-class FindPerformanceMetricRequest
+class DownloadPerformanceMetricsPresenter extends AbstractPresenter implements FindPerformanceMetricPresenterInterface
 {
-    public function __construct(
-        public int $hostId,
-        public int $serviceId,
-        public DateTimeInterface $startDate,
-        public DateTimeInterface $endDate
-    ) {
+    /**
+     * {@inheritDoc}
+     * @param FindPerformanceMetricResponse $presentedData
+     */
+    public function present(mixed $presentedData): void
+    {
+        parent::present($presentedData->performanceMetrics);
     }
 }

@@ -25,5 +25,35 @@ namespace Core\Domain\RealTime\Model;
 
 class PerformanceMetric
 {
+    /**
+     *
+     * @param \DateTimeImmutable $dateValue
+     * @param MetricValue[] $metricValues
+     */
+    public function __construct(
+        private \DateTimeImmutable $dateValue,
+        private array $metricValues = []
+    ) {
+    }
 
+    public function addMetricValue(MetricValue $metricValue): void
+    {
+        $this->metricValues[] = $metricValue;
+    }
+
+    /**
+     * @return MetricValue[]
+     */
+    public function getMetricValues(): array
+    {
+        return $this->metricValues;
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getDateValue(): \DateTimeImmutable
+    {
+        return $this->dateValue;
+    }
 }

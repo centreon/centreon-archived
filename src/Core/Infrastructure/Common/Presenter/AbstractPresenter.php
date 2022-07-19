@@ -29,6 +29,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class AbstractPresenter
 {
+    /**
+     * @var array<string, string>
+     */
     protected array $responseHeaders = [];
 
     public function setResponseHeaders(array $responseHeaders): void
@@ -74,6 +77,9 @@ abstract class AbstractPresenter
 
     protected function generateJsonResponse(mixed $data, int $code): JsonResponse
     {
+        if (is_a($data, \Generator::class)) {
+            $data = iterator_to_array($data);
+        }
         return new JsonResponse($data, $code, $this->responseHeaders);
     }
 }

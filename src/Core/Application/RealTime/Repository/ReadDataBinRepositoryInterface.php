@@ -23,19 +23,19 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Repository;
 
-use \DateTimeInterface ;
+use Core\Domain\RealTime\Model\PerformanceMetric;
 
 interface ReadDataBinRepositoryInterface
 {
     /**
      * @param array<int, string> $metrics
-     * @param DateTimeInterface $startDate
-     * @param DateTimeInterface $endDate
-     * @return iterable<String[]>
+     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $endDate
+     * @return iterable<PerformanceMetric>
      */
     public function findDataByMetricsAndDates(
         array $metrics,
-        DateTimeInterface $startDate,
-        DateTimeInterface $endDate
+        \DateTimeInterface $startDate,
+        \DateTimeInterface $endDate
     ): iterable;
 }

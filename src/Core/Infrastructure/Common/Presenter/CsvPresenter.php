@@ -31,11 +31,7 @@ class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterf
 {
     use LoggerTrait;
 
-    private iterable|null $data = null;
-
-    private StreamedResponse $response;
-
-    private string $fileName = 'export.csv';
+    private mixed $data = null;
 
     public function __construct()
     {
@@ -46,32 +42,27 @@ class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterf
         $this->data = $data;
     }
 
-    public function setFileName(string $fileName): void
-    {
-        $this->fileName = $fileName;
-    }
-
     public function show(): Response
     {
-        if (!is_iterable($this->data)) {
-            return $this->generateJsonErrorResponse($this->data, JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        $response = new StreamedResponse();
+        $response = new StreamedResponse(null, Response::HTTP_OK, $this->responseHeaders);
         $response->setCallback(function () {
             $handle = fopen('php://output', 'r+');
             if ($handle === false) {
-                throw new \RuntimeException('Unable to generate file');
+                throw new \RuntimeException('Unable to open the output buffer');
             }
-
+            $lineHeadersCreated = false;
             foreach ($this->data as $data) {
-                fputcsv($handle, $data, ';');
+                if (! $lineHeadersCreated) {
+                    $columnNames = array_keys($data);
+                    fputcsv($handle, $columnNames, ';');
+                    $lineHeadersCreated = true;
+                }
+                $columnValues = array_values($data);
+                fputcsv($handle, $columnValues, ';');
             }
 
             fclose($handle);
         });
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $this->fileName . '"');
 
         return $response;
     }
