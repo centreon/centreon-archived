@@ -1,0 +1,14 @@
+---
+centreon.severity.realtime.findHostSeverities:
+    methods: "GET"
+    path: "/monitoring/severities/host"
+    controller: >-
+        Core\Severity\RealTime\Infrastructure\API\FindSeverity\FindHostSeverityController
+    condition: "request.attributes.get('version') >= 22.04"
+
+centreon.severity.realtime.findServiceSeverities:
+    methods: "GET"
+    path: "/monitoring/severities/service"
+    controller: >-
+        Core\Severity\RealTime\Infrastructure\API\FindSeverity\FindServiceSeverityController
+    condition: "request.attributes.get('version') >= 22.04"

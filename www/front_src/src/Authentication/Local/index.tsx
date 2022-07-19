@@ -12,7 +12,6 @@ import { labelDefinePasswordPasswordSecurityPolicy } from './translatedLabels';
 import useAuthentication from './useAuthentication';
 import Form from './Form';
 import { PasswordSecurityPolicy } from './models';
-import LoadingSkeleton from './LoadingSkeleton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   loading: {
@@ -46,18 +45,13 @@ const LocalAuthentication = (): JSX.Element => {
         {not(isPasswordSecurityPolicyEmpty) &&
           sendingGetPasswordPasswordSecurityPolicy && <LinearProgress />}
       </div>
-      {isPasswordSecurityPolicyEmpty ? (
-        <LoadingSkeleton />
-      ) : (
-        <Form
-          initialValues={
-            initialPasswordPasswordSecurityPolicy as PasswordSecurityPolicy
-          }
-          loadPasswordPasswordSecurityPolicy={
-            loadPasswordPasswordSecurityPolicy
-          }
-        />
-      )}
+      <Form
+        initialValues={
+          initialPasswordPasswordSecurityPolicy as PasswordSecurityPolicy
+        }
+        isLoading={isPasswordSecurityPolicyEmpty}
+        loadPasswordSecurityPolicy={loadPasswordPasswordSecurityPolicy}
+      />
     </div>
   );
 };

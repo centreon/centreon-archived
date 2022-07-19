@@ -198,9 +198,12 @@ describe('Openid configuration form', () => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
-    ).toBeChecked();
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
+      ).toBeChecked();
+    });
+
     expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
@@ -263,7 +266,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -315,7 +318,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -367,7 +370,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -472,7 +475,9 @@ describe('Openid configuration form', () => {
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          `${endpoint}?page=1&sort_by=${encodeURIComponent('{"name":"ASC"}')}`,
+          `${endpoint}?page=1&sort_by=${encodeURIComponent(
+            '{"name":"ASC"}',
+          )}&search=${encodeURIComponent('{"$and":[]}')}`,
           cancelTokenRequestParam,
         );
       });
@@ -527,7 +532,7 @@ describe('Openid configuration form', () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${contactGroupsEndpoint}?page=1&sort_by=${encodeURIComponent(
           '{"name":"ASC"}',
-        )}`,
+        )}&search=${encodeURIComponent('{"$and":[]}')}`,
         cancelTokenRequestParam,
       );
     });

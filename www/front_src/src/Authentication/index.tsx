@@ -11,6 +11,7 @@ import { makeStyles } from '@mui/styles';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
+import { Group } from '@centreon/ui';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -26,7 +27,6 @@ import {
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
-import { Category } from './FormInputs/models';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
@@ -53,7 +53,7 @@ const panels = [
   },
 ];
 
-export const categories: Array<Category> = [
+export const groups: Array<Group> = [
   {
     name: labelActivation,
     order: 1,

@@ -63,6 +63,7 @@ tags:
   - name: Service group
   - name: Service category
   - name: Host category
+  - name: Severity
   - name: Topology
 security:
   - Token: []
@@ -1255,7 +1256,6 @@ paths:
         * notes_url
         * parent_name
         * parent_status
-        * severity_level
         * in_downtime
         * acknowledged
         * last_status_change
@@ -1286,6 +1286,10 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterServicegroupName'
         - $ref: '#/components/parameters/ResourceFilterServiceCategoryName'
         - $ref: '#/components/parameters/ResourceFilterHostCategoryName'
+        - $ref: '#/components/parameters/ResourceFilterHostSeverityName'
+        - $ref: '#/components/parameters/ResourceFilterServiceSeverityName'
+        - $ref: '#/components/parameters/ResourceFilterHostSeverityLevel'
+        - $ref: '#/components/parameters/ResourceFilterServiceSeverityLevel'
         - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
         - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
@@ -1683,6 +1687,78 @@ paths:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.ServiceGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/severities/service:
+    get:
+      tags:
+        - Severity
+      summary: "List all service severities from the realtime"
+      description: |
+        List all the service severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/severities/host:
+    get:
+      tags:
+        - Severity
+      summary: "List all host severities from real-time data"
+      description: |
+        List all the host severities in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * name
+        * level
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.Severity'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -3582,6 +3658,8 @@ paths:
                       moduleName:
                         type: object
                         $ref: '#/components/schemas/Platform.Versions'
+  /platform/updates:
+    $ref: "./v22.10/Administration/updates.yaml"
   /platform/installation/status:
     get:
       tags:
@@ -4097,6 +4175,46 @@ components:
         items:
           type: string
         example: '["Linux", "Windows"]'
+    ResourceFilterServiceSeverityName:
+      in: query
+      name: service_severity_names
+      required: false
+      description: "Filter the resources by service severity names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Ping", "CPUs"]'
+    ResourceFilterHostSeverityName:
+      in: query
+      name: host_severity_names
+      required: false
+      description: "Filter the resources by host severity names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Linux", "Windows"]'
+    ResourceFilterHostSeverityLevel:
+      in: query
+      name: host_severity_levels
+      required: false
+      description: "Filter the resources by host severity levels"
+      schema:
+        type: array
+        items:
+          type: integer
+        example: '[50, 75]'
+    ResourceFilterServiceSeverityLevel:
+      in: query
+      name: service_severity_levels
+      required: false
+      description: "Filter the resources by service severity levels"
+      schema:
+        type: array
+        items:
+          type: integer
+        example: '[50, 75]'
     ResourceFilterMonitoringServerName:
       in: query
       name: monitoring_server_names
@@ -6036,11 +6154,6 @@ components:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        severity_level:
-          type: integer
-          nullable: true
-          description: "level of the severity"
-          example: 1
         duration:
           type: string
           nullable: true
@@ -6477,6 +6590,39 @@ components:
           type: string
           description: "Name of the service group"
           example: "MySG"
+    Monitoring.Severity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the severity"
+          example: 13
+        name:
+          type: string
+          description: "Name of the severity"
+          example: "severity-name"
+        level:
+          type: integer
+          format: int64
+          description: "Level defined for the severity"
+          example: 50
+        type:
+          type: string
+          enum: [host, service]
+          description: "Type of the severity"
+          example: "host|service"
+        icon:
+          type: object
+          properties:
+            name:
+              type: string
+              description: "Name of the icon"
+              example: "centreon.png"
+            url:
+              type: string
+              description: "URL of the icon"
+              example: "img/centreon.png"
     Monitoring.ServiceMin:
       type: object
       properties:

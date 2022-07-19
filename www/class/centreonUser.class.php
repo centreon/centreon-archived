@@ -56,7 +56,6 @@ class CentreonUser
     public $groupListStr;
     public $access;
     public $log;
-    public $userCrypted;
     protected $token;
     public $default_page;
     private $showDeprecatedPages;
@@ -109,7 +108,6 @@ class CentreonUser
          * Initiate Log Class
          */
         $this->log = new CentreonUserLog($this->user_id, $pearDB);
-        $this->userCrypted = md5($this->alias);
 
         /**
          * Init rest api auth

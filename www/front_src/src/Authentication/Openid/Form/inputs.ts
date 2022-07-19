@@ -1,6 +1,8 @@
 import { equals, isEmpty, isNil, not, path, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
+import { InputProps, InputType } from '@centreon/ui';
+
 import {
   labelAccessGroup,
   labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
@@ -33,7 +35,6 @@ import {
   labelAuthorizationKey,
 } from '../translatedLabels';
 import { AuthenticationType, AuthorizationRule } from '../models';
-import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
   labelAuthorizations,
@@ -58,109 +59,120 @@ const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
 
 export const inputs: Array<InputProps> = [
   {
-    category: labelActivation,
     fieldName: 'isActive',
+    group: labelActivation,
     label: labelEnableOpenIDConnectAuthentication,
     type: InputType.Switch,
   },
   {
-    category: labelActivation,
     fieldName: 'isForced',
+    group: labelActivation,
     label: labelAuthenticationMode,
-    options: [
-      {
-        isChecked: (value: boolean): boolean => value,
-        label: labelOpenIDConnectOnly,
-        value: true,
-      },
-      {
-        isChecked: (value: boolean): boolean => !value,
-        label: labelMixed,
-        value: false,
-      },
-    ],
+    radio: {
+      options: [
+        {
+          label: labelOpenIDConnectOnly,
+          value: true,
+        },
+        {
+          label: labelMixed,
+          value: false,
+        },
+      ],
+    },
     type: InputType.Radio,
   },
   {
-    category: labelClientAddresses,
+    autocomplete: {
+      creatable: true,
+      options: [],
+    },
     fieldName: 'trustedClientAddresses',
+    group: labelClientAddresses,
     label: labelTrustedClientAddresses,
-    type: InputType.Multiple,
+    type: InputType.MultiAutocomplete,
   },
   {
-    category: labelClientAddresses,
+    autocomplete: {
+      creatable: true,
+      options: [],
+    },
     fieldName: 'blacklistClientAddresses',
+    group: labelClientAddresses,
     label: labelBlacklistClientAddresses,
-    type: InputType.Multiple,
+    type: InputType.MultiAutocomplete,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'baseUrl',
+    group: labelIdentityProvider,
     label: labelBaseUrl,
     required: true,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'authorizationEndpoint',
+    group: labelIdentityProvider,
     label: labelAuthorizationEndpoint,
     required: true,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'tokenEndpoint',
+    group: labelIdentityProvider,
     label: labelTokenEndpoint,
     required: true,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'clientId',
+    group: labelIdentityProvider,
     label: labelClientID,
     required: true,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'clientSecret',
+    group: labelIdentityProvider,
     label: labelClientSecret,
     required: true,
     type: InputType.Password,
   },
   {
-    category: labelIdentityProvider,
+    autocomplete: {
+      creatable: true,
+      options: [],
+    },
     fieldName: 'connectionScopes',
+    group: labelIdentityProvider,
     label: labelScopes,
-    type: InputType.Multiple,
+    type: InputType.MultiAutocomplete,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'loginClaim',
+    group: labelIdentityProvider,
     label: labelLoginClaimValue,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'endSessionEndpoint',
+    group: labelIdentityProvider,
     label: labelEndSessionEndpoint,
     type: InputType.Text,
   },
   {
     additionalLabel: labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled,
-    category: labelIdentityProvider,
     fieldName: 'introspectionTokenEndpoint',
+    group: labelIdentityProvider,
     label: labelIntrospectionTokenEndpoint,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'userinfoEndpoint',
+    group: labelIdentityProvider,
     label: labelUserInformationEndpoint,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     change: ({ setFieldValue, value }): void => {
       setFieldValue(
         'authenticationType',
@@ -170,67 +182,73 @@ export const inputs: Array<InputProps> = [
       );
     },
     fieldName: 'authenticationType',
-    getChecked: (value): boolean =>
-      equals(AuthenticationType.ClientSecretBasic, value),
+    group: labelIdentityProvider,
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
+    switchInput: {
+      getChecked: (value): boolean =>
+        equals(AuthenticationType.ClientSecretBasic, value),
+    },
     type: InputType.Switch,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'verifyPeer',
+    group: labelIdentityProvider,
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
   },
   {
-    category: labelAutoImportUsers,
     fieldName: 'autoImport',
+    group: labelAutoImportUsers,
     label: labelEnableAutoImport,
     type: InputType.Switch,
   },
   {
-    category: labelAutoImportUsers,
-    endpoint: contactTemplatesEndpoint,
+    connectedAutocomplete: {
+      endpoint: contactTemplatesEndpoint,
+    },
     fieldName: 'contactTemplate',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
+    group: labelAutoImportUsers,
     label: labelContactTemplate,
-    type: InputType.ConnectedAutocomplete,
+    type: InputType.SingleConnectedAutocomplete,
   },
   {
-    category: labelAutoImportUsers,
     fieldName: 'emailBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
+    group: labelAutoImportUsers,
     label: labelEmailAttribute,
     type: InputType.Text,
   },
   {
-    category: labelAutoImportUsers,
     fieldName: 'fullnameBindAttribute',
     getDisabled: isAutoImportDisabled,
     getRequired: isAutoImportEnabled,
+    group: labelAutoImportUsers,
     label: labelFullnameAttribute,
     type: InputType.Text,
   },
   {
-    category: labelAuthorizations,
-    endpoint: contactGroupsEndpoint,
+    connectedAutocomplete: {
+      endpoint: contactGroupsEndpoint,
+    },
     fieldName: 'contactGroup',
     getRequired: isAuthorizationRelationsFilled,
+    group: labelAuthorizations,
     label: labelContactGroup,
-    type: InputType.ConnectedAutocomplete,
+    type: InputType.SingleConnectedAutocomplete,
   },
   {
-    category: labelAuthorizations,
     fieldName: 'claimName',
+    group: labelAuthorizations,
     label: labelAuthorizationKey,
     type: InputType.Text,
   },
   {
-    additionalFieldsToMemoize: ['contactGroup'],
-    category: labelAuthorizations,
     fieldName: 'authorizationRules',
-    fieldsTableConfiguration: {
+    fieldsTable: {
+      additionalFieldsToMemoize: ['contactGroup'],
       columns: [
         {
           fieldName: 'claimValue',
@@ -238,10 +256,12 @@ export const inputs: Array<InputProps> = [
           type: InputType.Text,
         },
         {
-          endpoint: accessGroupsEndpoint,
+          connectedAutocomplete: {
+            endpoint: accessGroupsEndpoint,
+          },
           fieldName: 'accessGroup',
           label: labelAccessGroup,
-          type: InputType.ConnectedAutocomplete,
+          type: InputType.SingleConnectedAutocomplete,
         },
       ],
       defaultRowValue: {
@@ -264,6 +284,7 @@ export const inputs: Array<InputProps> = [
               isNil(rowValues?.accessGroup);
       },
     },
+    group: labelAuthorizations,
     label: labelDefineRelationAuthorizationValueAndAccessGroup,
     type: InputType.FieldsTable,
   },

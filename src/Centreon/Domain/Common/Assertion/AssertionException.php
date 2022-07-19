@@ -212,12 +212,12 @@ class AssertionException extends \InvalidArgumentException
     /**
      * Exception when the value is not expected.
      *
-     * @param string|null $propertyPath Property's path (ex: Host::name)
-     * @param string $value
+     * @param mixed $value
      * @param mixed[] $expectedValues
+     * @param string|null $propertyPath Property's path (ex: Host::name)
      * @return self
      */
-    public static function inArray(string $value, array $expectedValues, string $propertyPath = null): self
+    public static function inArray($value, array $expectedValues, string $propertyPath = null): self
     {
         return new self(
             sprintf(

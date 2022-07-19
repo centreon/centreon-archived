@@ -13,7 +13,6 @@ import {
   act,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  copyToClipboard,
   screen,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
@@ -100,9 +99,14 @@ import Details from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
-  jest.fn(),
-);
+
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: () => Promise.resolve(),
+  },
+});
+
+jest.spyOn(navigator.clipboard, 'writeText');
 
 jest.mock('@visx/visx', () => {
   return {
@@ -294,7 +298,6 @@ const retrievedDetails = {
   percent_state_change: 3.5,
   performance_data:
     'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
-  severity_level: 10,
   status: { name: 'Critical', severity_code: 1 },
   timezone: 'Europe/Paris',
   tries: '3/3 (Hard)',
@@ -610,10 +613,9 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(getByText('10')).toBeInTheDocument();
+      expect(getByText('Critical')).toBeInTheDocument();
     });
 
-    expect(getByText('Critical')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
     const fqdnText = await findByText(labelFqdn);
@@ -833,7 +835,7 @@ describe(Details, () => {
     fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
-      expect(copyToClipboard).toHaveBeenCalledWith(
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -1160,7 +1162,9 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        window.location.href,
+      );
     });
   });
 

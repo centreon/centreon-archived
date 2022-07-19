@@ -167,4 +167,14 @@ class SSOAuthenticationException extends \Exception
             implode(", ", $missingAttributes)
         ));
     }
+
+    /**
+     * Exception thrown when the id_token couldn't be decoded
+     *
+     * @return self
+     */
+    public static function unableToDecodeIdToken(): self
+    {
+        return new self(_("An error occured while decoding Identity Provider ID Token"));
+    }
 }

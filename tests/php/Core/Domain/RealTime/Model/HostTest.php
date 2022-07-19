@@ -118,7 +118,6 @@ class HostTest extends TestCase
             ->setIsAcknowledged(false)
             ->setActiveChecks(true)
             ->setPassiveChecks(false)
-            ->setSeverityLevel(10)
             ->setLastStatusChange(new \DateTime('1991-09-10'))
             ->setLastNotification(new \DateTime('1991-09-10'))
             ->setLastTimeUp(new \DateTime('1991-09-10'))

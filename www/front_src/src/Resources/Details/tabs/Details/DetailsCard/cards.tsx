@@ -27,6 +27,7 @@ import {
   labelCommand,
   labelLastCheckWithOkStatus,
   labelCategories,
+  labelSeverity,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -40,6 +41,7 @@ import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
 import GroupChips from './GroupChips';
+import SeverityCard from './SeverityCard';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -99,6 +101,13 @@ const getDetailCardLines = ({
       line: <AcknowledgementCard details={details} />,
       shouldBeDisplayed: !isNil(details.acknowledgement),
       title: labelAcknowledgement,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: <SeverityCard details={details} />,
+      shouldBeDisplayed: !isNil(details.severity),
+      title: labelSeverity,
       xs: 12,
     },
     {
@@ -187,7 +196,7 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
-      line: <DetailsLine line={details.parent.uuid} />,
+      line: <DetailsLine line={details.parent?.uuid} />,
       shouldBeDisplayed: !isNil(details.calculation_type),
       title: labelCalculationType,
     },
