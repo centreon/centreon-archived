@@ -121,6 +121,11 @@ class Module implements SourceDataInterface
     private $isUpdated = false;
 
     /**
+     * @var string[]
+     */
+    private array $dependencies = [];
+
+    /**
      * @return string
      */
     public function getId(): string
@@ -376,5 +381,21 @@ class Module implements SourceDataInterface
     public function setUpdated(bool $value): void
     {
         $this->isUpdated = $value;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDependencies(): array
+    {
+        return $this->dependencies;
+    }
+
+    /**
+     * @param string[] $dependencies
+     */
+    public function setDependencies(array $dependencies): void
+    {
+        $this->dependencies = $dependencies;
     }
 }

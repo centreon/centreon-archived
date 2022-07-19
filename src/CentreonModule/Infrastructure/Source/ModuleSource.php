@@ -79,7 +79,27 @@ class ModuleSource extends SourceAbstract
     }
 
     /**
-     * @param string $id
+     * Install module
+     *
+     * {@inheritDoc}
+     *
+     * @throws \Exception
+     */
+    public function install(string $id): ?Module
+    {
+        $this->installOrUpdateDependencies($id);
+
+        ($this->installer)($id)->install();
+
+        $this->initInfo();
+
+        return $this->getDetail($id);
+    }
+
+    /**
+     * Remove module
+     *
+     * {@inheritDoc}
      */
     public function remove(string $id): void
     {
@@ -92,10 +112,16 @@ class ModuleSource extends SourceAbstract
     }
 
     /**
-     * @param string $id
+     * Update module
+     *
+     * {@inheritDoc}
+     *
+     * @throws \Exception
      */
     public function update(string $id): ?Module
     {
+        $this->installOrUpdateDependencies($id);
+
         $recordId = $this->db
             ->getRepository(ModulesInformationsRepository::class)
             ->findIdByName($id)
@@ -211,6 +237,10 @@ class ModuleSource extends SourceAbstract
             }
         }
 
+        if (array_key_exists('dependencies', $info) && is_array($info['dependencies'])) {
+            $entity->setDependencies($info['dependencies']);
+        }
+
         // load information about installed modules/widgets
         if ($this->info === null) {
             $this->initInfo();
@@ -261,5 +291,69 @@ class ModuleSource extends SourceAbstract
         }
 
         return $license;
+    }
+
+    /**
+     * Install or update module dependencies when needed
+     *
+     * @param string $moduleId
+     *
+     * @throws \Exception
+     */
+    private function installOrUpdateDependencies(string $moduleId): void
+    {
+        $sortedDependencies = $this->getSortedDependencies($moduleId);
+        foreach ($sortedDependencies as $dependency) {
+            $dependencyDetails = $this->getDetail($dependency);
+            if ($dependencyDetails === null) {
+                throw new \Exception('Cannot find details of module ' . $dependency);
+            }
+
+            if (! $dependencyDetails->isInstalled()) {
+                $this->install($dependency);
+            } elseif (! $dependencyDetails->isUpdated()) {
+                $this->update($dependency);
+            }
+        }
+    }
+
+    /**
+     * Sort module dependencies
+     *
+     * @param string $moduleId (example: centreon-license-manager)
+     * @param string[] $alreadyProcessed
+     * @return string[]
+     *
+     * @throws \Exception
+     */
+    private function getSortedDependencies(
+        string $moduleId,
+        array $alreadyProcessed = []
+    ) {
+        $dependencies = [];
+
+        if (in_array($moduleId, $alreadyProcessed)) {
+            return $dependencies;
+        }
+
+        $alreadyProcessed[] = $moduleId;
+
+        $moduleDetails = $this->getDetail($moduleId);
+        if ($moduleDetails === null) {
+            throw new \Exception('Module ' . $moduleId . ' is required');
+        }
+
+        foreach ($moduleDetails->getDependencies() as $dependency) {
+            $dependencies[] = $dependency;
+
+            $dependencyDetails = $this->getDetail($dependency);
+
+            $dependencies = array_merge(
+                $dependencies,
+                $this->getSortedDependencies($dependencyDetails->getId(), $alreadyProcessed)
+            );
+        }
+
+        return $dependencies;
     }
 }

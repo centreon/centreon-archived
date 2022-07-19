@@ -93,6 +93,12 @@ abstract class SourceAbstract implements SourceInterface
         ;
     }
 
+    /**
+     * Install module or widget
+     *
+     * @param string $id
+     * @return Module|null
+     */
     public function install(string $id): ?Module
     {
         ($this->installer)($id)->install();
@@ -102,6 +108,12 @@ abstract class SourceAbstract implements SourceInterface
         return $this->getDetail($id);
     }
 
+    /**
+     * Update module or widget
+     *
+     * @param string $id
+     * @return Module|null
+     */
     public function update(string $id): ?Module
     {
         ($this->upgrader)($id)->upgrade();
@@ -111,6 +123,12 @@ abstract class SourceAbstract implements SourceInterface
         return $this->getDetail($id);
     }
 
+    /**
+     * Remove module or widget
+     *
+     * @param string $id
+     * @return void
+     */
     public function remove(string $id): void
     {
         ($this->remover)($id)->remove();
