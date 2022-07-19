@@ -36,17 +36,17 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "Centreon/Object/Acl/Group.php";
-require_once "Centreon/Object/Acl/Action.php";
-require_once "Centreon/Object/Acl/Menu.php";
-require_once "Centreon/Object/Acl/Resource.php";
-require_once "Centreon/Object/Contact/Contact.php";
-require_once "Centreon/Object/Contact/Group.php";
-require_once "Centreon/Object/Relation/Acl/Group/Resource.php";
-require_once "Centreon/Object/Relation/Acl/Group/Menu.php";
-require_once "Centreon/Object/Relation/Acl/Group/Action.php";
-require_once "Centreon/Object/Relation/Acl/Group/Contact/Contact.php";
-require_once "Centreon/Object/Relation/Acl/Group/Contact/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Menu.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Resource.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Contact/Contact.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Contact/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Resource.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Menu.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Contact/Contact.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Contact/Group.php";
 
 /**
  * Class for managing ACL groups
