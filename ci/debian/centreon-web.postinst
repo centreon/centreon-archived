@@ -54,4 +54,10 @@ if [ "$1" = "configure" ] ; then
   fi
 
 fi
+
+# rebuild symfony cache on upgrade
+if [ -n "$2" ]; then
+  su - www-data -s /bin/bash -c "/usr/share/centreon/bin/console cache:clear --no-warmup"
+fi
+
 exit 0
