@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -24,7 +25,6 @@ namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterface

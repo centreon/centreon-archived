@@ -27,7 +27,6 @@ use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FindPerformanceMetrics
 {
@@ -55,7 +54,8 @@ class FindPerformanceMetrics
             $request->endDate
         );
 
-        $presenter->present(new FindPerformanceMetricResponse($dataBin, $fileName));
+        $presenter->setDownloadFileName($fileName);
+        $presenter->present(new FindPerformanceMetricResponse($dataBin));
     }
 
     private function generateDownloadFileNameByIndex(int $index): string
@@ -70,32 +70,5 @@ class FindPerformanceMetrics
         }
 
         return sprintf('%s.csv', $index);
-    }
-
-    /**
-     * @param array<int,string> $metrics
-     * @param iterable<array<string,string>> $dataBin
-     */
-    public function show(array $metrics, iterable $dataBin, string $fileName): StreamedResponse
-    {
-        $response = new StreamedResponse();
-        $response->setCallback(function () use($dataBin, $metrics) {
-            $handle = fopen('php://output', 'r+');
-            if ($handle === false) {
-                throw new \RuntimeException('Unable to generate file');
-            }
-            $header = ['time', 'humantime', ...$metrics];
-            fputcsv($handle, $header, ';');
-
-            foreach ($dataBin as $data) {
-                fputcsv($handle, $data, ';');
-            }
-
-            fclose($handle);
-        });
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
-
-        return $response;
     }
 }

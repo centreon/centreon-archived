@@ -29,6 +29,8 @@ use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetr
 
 class DownloadPerformanceMetricsPresenter extends AbstractPresenter implements FindPerformanceMetricPresenterInterface
 {
+    private string $downloadFileName = '';
+
     /**
      * {@inheritDoc}
      * @param FindPerformanceMetricResponse $presentedData
@@ -36,5 +38,10 @@ class DownloadPerformanceMetricsPresenter extends AbstractPresenter implements F
     public function present(mixed $presentedData): void
     {
         parent::present($presentedData->performanceMetrics);
+    }
+
+    public function setDownloadFileName(string $fileName): void
+    {
+        $this->presenterFormatter->setDownloadFileName($fileName);
     }
 }

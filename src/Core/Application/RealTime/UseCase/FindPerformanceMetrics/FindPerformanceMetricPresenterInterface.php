@@ -27,4 +27,5 @@ use Core\Application\Common\UseCase\PresenterInterface;
 
 interface FindPerformanceMetricPresenterInterface extends PresenterInterface
 {
+    public function setDownloadFileName(string $fileName): void;
 }

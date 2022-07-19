@@ -27,7 +27,6 @@ use Core\Domain\RealTime\Model\PerformanceMetric;
 
 class FindPerformanceMetricResponse
 {
-    public ?string $filename = null;
     /**
      * @var iterable<mixed>
      */
@@ -36,10 +35,9 @@ class FindPerformanceMetricResponse
     /**
      * @param iterable<PerformanceMetric> $performanceMetrics
      */
-    public function __construct(iterable $performanceMetrics, string $fileName = null)
+    public function __construct(iterable $performanceMetrics)
     {
         $this->performanceMetrics = $this->performanceMetricToArray($performanceMetrics);
-        $this->filename = $fileName;
     }
 
     /**
@@ -49,7 +47,7 @@ class FindPerformanceMetricResponse
     private function performanceMetricToArray(iterable $performanceMetrics): iterable
     {
         foreach ($performanceMetrics as $performanceMetric) {
-            yield $this->createPerformanceMetricToArray($performanceMetric);
+            yield $this->formatPerformanceMetric($performanceMetric);
         }
     }
 
@@ -57,16 +55,17 @@ class FindPerformanceMetricResponse
      * @param PerformanceMetric $performanceMetric
      * @return array<string, mixed>
      */
-    private function createPerformanceMetricToArray(PerformanceMetric $performanceMetric): array
+    private function formatPerformanceMetric(PerformanceMetric $performanceMetric): array
     {
-        $tmp = [
-            'date' => $performanceMetric->getDateValue()->format(\DateTime::ISO8601)
+        $formattedData = [
+            'time' => $performanceMetric->getDateValue()->getTimestamp(),
+            'humantime' => $performanceMetric->getDateValue()->format('Y-m-d H:i:s')
         ];
 
         foreach ($performanceMetric->getMetricValues() as $metricValue) {
-            $tmp[$metricValue->getName()] = $metricValue->getValue();
+            $formattedData[$metricValue->getName()] = sprintf('%f', $metricValue->getValue());
         }
 
-        return $tmp;
+        return $formattedData;
     }
 }
