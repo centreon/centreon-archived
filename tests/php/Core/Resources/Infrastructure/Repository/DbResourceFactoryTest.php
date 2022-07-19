@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Infrastructure\Monitoring\Resource;
 
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Infrastructure\Monitoring\Resource\DbResourceFactory;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Core\Resources\Infrastructure\Repository\DbResourceFactory;
 
 beforeEach(function () {
     $this->record = [
@@ -40,6 +40,7 @@ beforeEach(function () {
         'parent_status' => '2',
         'parent_alias' => 'Database',
         'parent_status_ordered' => '2',
+        'parent_fqdn' => '127.0.0.1',
         'type' => '0',
         'status' => '0',
         'status_ordered' => '0',
