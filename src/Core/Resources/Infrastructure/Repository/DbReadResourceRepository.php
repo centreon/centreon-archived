@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Monitoring\Resource;
+namespace Core\Resources\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Tag\RealTime\Domain\Model\Tag;
@@ -33,13 +33,13 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
 use Core\Severity\RealTime\Domain\Model\Severity;
 
-class DbReadResourceRepository extends AbstractRepositoryDRB implements ResourceRepositoryInterface
+class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadResourceRepositoryInterface
 {
     use LoggerTrait;
 
@@ -98,19 +98,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
 
     /**
      * @param DatabaseConnection $db
-     */
-    public function __construct(DatabaseConnection $db)
-    {
-        $this->db = $db;
-    }
-
-    /**
-     * Initialized by the dependency injector.
-     *
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
      */
-    public function setSqlRequestTranslator(SqlRequestParametersTranslator $sqlRequestTranslator): void
+    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
+        $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
         $this->sqlRequestTranslator
             ->getRequestParameters()
@@ -121,7 +113,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     /**
      * @inheritDoc
      */
-    public function setContact(ContactInterface $contact): ResourceRepositoryInterface
+    public function setContact(ContactInterface $contact): ReadResourceRepositoryInterface
     {
         $this->contact = $contact;
         return $this;
@@ -130,7 +122,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
     /**
      * @inheritDoc
      */
-    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
+    public function filterByAccessGroups(?array $accessGroups): ReadResourceRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
         return $this;
@@ -163,6 +155,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements Resource
             parent_resource.status AS `parent_status`,
             parent_resource.alias AS `parent_alias`,
             parent_resource.status_ordered AS `parent_status_ordered`,
+            parent_resource.address AS `parent_fqdn`,
             severities.id AS `severity_id`,
             severities.level AS `severity_level`,
             severities.name AS `severity_name`,

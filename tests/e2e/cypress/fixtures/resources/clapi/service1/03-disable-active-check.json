@@ -1,5 +1,5 @@
 {
   "action": "SETPARAM",
   "object": "SERVICE",
-  "values": "test_host;service_test;active_checks_enabled;0"
+  "values": "test_host;service_test_ack;active_checks_enabled;0"
 }
