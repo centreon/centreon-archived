@@ -398,8 +398,7 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * @param array $parameters
-     * @throws CentreonClapiException
+     * {@inheritDoc}
      */
     public function setParam($parameters = []): void
     {
@@ -421,10 +420,7 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Enable object
-     *
-     * @param string $objectName
-     * @return void
+     * {@inheritDoc}
      */
     public function enable($objectName)
     {
@@ -436,10 +432,7 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Disable object
-     *
-     * @param string $objectName
-     * @return void
+     * {@inheritDoc}
      */
     public function disable($objectName)
     {

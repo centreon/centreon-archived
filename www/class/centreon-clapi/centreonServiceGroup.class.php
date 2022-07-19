@@ -444,8 +444,7 @@ class CentreonServiceGroup extends CentreonObject
     }
 
     /**
-     * @param array $parameters
-     * @throws CentreonClapiException
+     * {@inheritDoc}
      */
     public function setParam($parameters = []): void
     {
@@ -468,10 +467,7 @@ class CentreonServiceGroup extends CentreonObject
     }
 
     /**
-     * Enable object
-     *
-     * @param string $objectName
-     * @return void
+     * {@inheritDoc}
      */
     public function enable($objectName)
     {
@@ -483,10 +479,7 @@ class CentreonServiceGroup extends CentreonObject
     }
 
     /**
-     * Disable object
-     *
-     * @param string $objectName
-     * @return void
+     * {@inheritDoc}
      */
     public function disable($objectName)
     {

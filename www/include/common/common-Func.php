@@ -2741,7 +2741,7 @@ function setPollersToUpdated(array $pollerIds): void
 }
 
 /**
- * Undocumented function
+ * Set relevent pollers as updated
  *
  * @param string $resourceType
  * @param int $resourceId

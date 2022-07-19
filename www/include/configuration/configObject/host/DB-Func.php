@@ -270,15 +270,15 @@ function enableHostInDB($host_id = null, $host_arr = array())
     if ($host_id) {
         $host_arr = [$host_id => "1"];
     }
+    $updateStatement = $pearDB->prepare("UPDATE host SET host_activate = '1' WHERE host_id = :hostId");
+    $selectStatement = $pearDB->prepare("SELECT host_name FROM `host` WHERE host_id = :hostId");
     foreach (array_keys($host_arr) as $hostId) {
-        $stmt = $pearDB->prepare("UPDATE host SET host_activate = '1' WHERE host_id = :hostId");
-        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $updateStatement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $updateStatement->execute();
 
-        $stmt = $pearDB->prepare("SELECT host_name FROM `host` WHERE host_id = :hostId");
-        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $hostName = $stmt->fetchColumn();
+        $selectStatement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $selectStatement->execute();
+        $hostName = $selectStatement->fetchColumn();
 
         signalConfigurationChange('host', (int) $hostId);
         $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "enable");
@@ -295,15 +295,15 @@ function disableHostInDB($host_id = null, $host_arr = array())
     if ($host_id) {
         $host_arr = [$host_id => "1"];
     }
+    $updateStatement = $pearDB->prepare("UPDATE host SET host_activate = '0' WHERE host_id = :hostId");
+    $selectStatement = $pearDB->prepare("SELECT host_name FROM `host` WHERE host_id = :hostId");
     foreach (array_keys($host_arr) as $hostId) {
-        $stmt = $pearDB->prepare("UPDATE host SET host_activate = '0' WHERE host_id = :hostId");
-        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $updateStatement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $updateStatement->execute();
 
-        $stmt = $pearDB->prepare("SELECT host_name FROM `host` WHERE host_id = :hostId");
-        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $hostName = $stmt->fetchColumn();
+        $selectStatement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $selectStatement->execute();
+        $hostName = $selectStatement->fetchColumn();
 
         signalConfigurationChange('host', (int) $hostId, [], false);
         $centreon->CentreonLogAction->insertLog("host", $hostId, $hostName, "disable");

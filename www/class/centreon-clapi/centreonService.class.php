@@ -319,7 +319,6 @@ class CentreonService extends CentreonObject
         }
     }
 
-
     /**
      * @param $parameters
      * @return mixed

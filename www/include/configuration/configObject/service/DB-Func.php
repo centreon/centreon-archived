@@ -328,14 +328,21 @@ function enableServiceInDB($service_id = null, $service_arr = array())
     if ($service_id) {
         $service_arr = array($service_id => "1");
     }
+
+    $updateStatement = $pearDB->prepare("UPDATE service SET service_activate = '1' WHERE service_id = :serviceId");
+    $selectStatement = $pearDB->prepare(
+        "SELECT service_description FROM `service` WHERE service_id = :serviceId LIMIT 1"
+    );
     foreach (array_keys($service_arr) as $serviceId) {
-        $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '" . $serviceId . "'");
-        $query = "SELECT service_description FROM `service` WHERE service_id = '" . $serviceId . "' LIMIT 1";
-        $dbResult2 = $pearDB->query($query);
-        $row = $dbResult2->fetch();
+        $updateStatement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $updateStatement->execute();
+
+        $selectStatement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $selectStatement->execute();
+        $serviceDescription = $selectStatement->fetchColumn();
 
         signalConfigurationChange('service', (int) $serviceId);
-        $centreon->CentreonLogAction->insertLog("service", $serviceId, $row['service_description'], "enable");
+        $centreon->CentreonLogAction->insertLog("service", $serviceId, $serviceDescription, "enable");
     }
 }
 

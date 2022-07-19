@@ -90,15 +90,15 @@ function enableHostGroupInDB($hg_id = null, $hg_arr = array())
         $hg_arr = [$hg_id => "1"];
     }
 
+    $updateStatement = $pearDB->prepare("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = :hostgroupId");
+    $selectStatement = $pearDB->prepare("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = :hostgroupId LIMIT 1");
     foreach (array_keys($hg_arr) as $hostgroupId) {
-        $stmt = $pearDB->prepare("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = :hostgroupId");
-        $stmt->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $updateStatement->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
+        $updateStatement->execute();
 
-        $stmt = $pearDB->prepare("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = :hostgroupId LIMIT 1");
-        $stmt->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $hostgroupName = $stmt->fetchColumn();
+        $selectStatement->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
+        $selectStatement->execute();
+        $hostgroupName = $selectStatement->fetchColumn();
 
         signalConfigurationChange('hostgroup', $hostgroupId);
         $centreon->CentreonLogAction->insertLog("hostgroup", $hostgroupId, $hostgroupName, "enable");
@@ -116,15 +116,15 @@ function disableHostGroupInDB($hg_id = null, $hg_arr = array())
         $hg_arr = array($hg_id => "1");
     }
 
+    $updateStatement = $pearDB->prepare("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = :hostgroupId");
+    $selectStatement = $pearDB->prepare("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = :hostgroupId LIMIT 1");
     foreach (array_keys($hg_arr) as $hostgroupId) {
-        $stmt = $pearDB->prepare("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = :hostgroupId");
-        $stmt->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
-        $stmt->execute();
+        $updateStatement->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
+        $updateStatement->execute();
 
-        $stmt = $pearDB->prepare("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = :hostgroupId LIMIT 1");
-        $stmt->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $hostgroupName = $stmt->fetchColumn();
+        $selectStatement->bindValue(':hostgroupId', $hostgroupId, \PDO::PARAM_INT);
+        $selectStatement->execute();
+        $hostgroupName = $selectStatement->fetchColumn();
 
         signalConfigurationChange('hostgroup', $hostgroupId, [], false);
         $centreon->CentreonLogAction->insertLog("hostgroup", $hostgroupId, $hostgroupName, "disable");
