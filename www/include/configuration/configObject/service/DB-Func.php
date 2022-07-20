@@ -2644,6 +2644,6 @@ function testCg2($list)
  */
 function getPollersForConfigChangeFlagFromServiceId(int $serviceId): array
 {
-    $hostIds = getHostsForConfigChangeFlagFromServiceIds([$serviceId]);
-    return getPollersForConfigChangeFlagFromHostIds($hostIds);
+    $hostIds = findHostsForConfigChangeFlagFromServiceIds([$serviceId]);
+    return findPollersForConfigChangeFlagFromHostIds($hostIds);
 }

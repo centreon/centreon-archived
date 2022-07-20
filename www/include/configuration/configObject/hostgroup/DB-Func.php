@@ -555,6 +555,6 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
  */
 function getPollersForConfigChangeFlagFromHostgroupId(int $hostgroupId): array
 {
-    $hostIds = getHostsForConfigChangeFlagFromHostgroupIds([$hostgroupId]);
-    return getPollersForConfigChangeFlagFromHostIds($hostIds);
+    $hostIds = findHostsForConfigChangeFlagFromHostGroupIds([$hostgroupId]);
+    return findPollersForConfigChangeFlagFromHostIds($hostIds);
 }

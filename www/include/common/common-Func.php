@@ -2507,7 +2507,7 @@ function unvalidFormMessage()
  * @return int[]
  * @throws \Exception
  */
-function getHostsForConfigChangeFlagFromHostgroupIds(array $hostgroupIds, bool $shouldHostgroupBeEnabled = true): array
+function findHostsForConfigChangeFlagFromHostGroupIds(array $hostgroupIds, bool $shouldHostgroupBeEnabled = true): array
 {
     if (empty($hostgroupIds)) {
         return [];
@@ -2548,7 +2548,7 @@ function getHostsForConfigChangeFlagFromHostgroupIds(array $hostgroupIds, bool $
  * @return int[]
  * @throws \Exception
  */
-function getHostsForConfigChangeFlagFromServiceIds(array $serviceIds, bool $shoudlServiceBeEnabled = true): array
+function findHostsForConfigChangeFlagFromServiceIds(array $serviceIds, bool $shoudlServiceBeEnabled = true): array
 {
     if (empty($serviceIds)) {
         return [];
@@ -2589,7 +2589,7 @@ function getHostsForConfigChangeFlagFromServiceIds(array $serviceIds, bool $shou
  * @return int[]
  * @throws \Exception
  */
-function getServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemplateIds): array
+function findServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemplateIds): array
 {
     if (empty($serviceTemplateIds)) {
         return [];
@@ -2623,7 +2623,7 @@ function getServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemp
     }
     return array_merge(
         $serviceIds,
-        getServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds2)
+        findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds2)
     );
 }
 
@@ -2635,7 +2635,7 @@ function getServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemp
  * @return int[]
  * @throws \Exception
  */
-function getHostsForConfigChangeFlagFromServiceGroupId(
+function findHostsForConfigChangeFlagFromServiceGroupId(
     int $servicegroupId,
     bool $shouldServicegroupBeEnabled = true
 ): array {
@@ -2665,12 +2665,12 @@ function getHostsForConfigChangeFlagFromServiceGroupId(
         }
     }
 
-    $serviceIds = getServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds);
+    $serviceIds = findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds);
 
     return array_merge(
         $hostIds,
-        getHostsForConfigChangeFlagFromHostgroupIds($hostgroupIds),
-        getHostsForConfigChangeFlagFromServiceIds($serviceIds)
+        findHostsForConfigChangeFlagFromHostGroupIds($hostgroupIds),
+        findHostsForConfigChangeFlagFromServiceIds($serviceIds)
     );
 }
 
@@ -2682,7 +2682,7 @@ function getHostsForConfigChangeFlagFromServiceGroupId(
  * @return int[]
  * @throws \Exception
  */
-function getPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHostBeEnabled = true): array
+function findPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHostBeEnabled = true): array
 {
     if (empty($hostIds)) {
         return [];
@@ -2720,7 +2720,7 @@ function getPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHo
  * @param int[] $pollerIds
  * @throws \Exception
  */
-function setPollersToUpdated(array $pollerIds): void
+function definePollersToUpdated(array $pollerIds): void
 {
     if (empty($pollerIds)) {
         return;
@@ -2763,26 +2763,26 @@ function signalConfigurationChange(
         case 'hostgroup':
             $hostIds = array_merge(
                 $hostIds,
-                getHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
+                findHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
             );
             break;
         case 'service':
             $hostIds = array_merge(
                 $hostIds,
-                getHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
+                findHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
             );
             break;
         case 'servicegroup':
             $hostIds = array_merge(
                 $hostIds,
-                getHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
+                findHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
             );
             break;
     }
-    $pollerIds = getPollersForConfigChangeFlagFromHostIds(
+    $pollerIds = findPollersForConfigChangeFlagFromHostIds(
         $hostIds,
         $resourceType === 'host' ? $shouldResourceBeEnabled : true
     );
 
-    setPollersToUpdated(array_merge($pollerIds, $previousPollers));
+    definePollersToUpdated(array_merge($pollerIds, $previousPollers));
 }

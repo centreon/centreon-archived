@@ -356,7 +356,7 @@ function deleteHostInDB($hosts = array())
     global $pearDB, $centreon;
 
     foreach (array_keys($hosts) as $hostId) {
-        $previousPollerIds = getPollersForConfigChangeFlagFromHostIds([$hostId]);
+        $previousPollerIds = findPollersForConfigChangeFlagFromHostIds([$hostId]);
 
         removeRelationLastHostDependency((int) $hostId);
         $rq = "SELECT @nbr := (SELECT COUNT( * )
@@ -727,7 +727,7 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         $ret = $cfg;
     }
 
-    $previousPollerIds = getPollersForConfigChangeFlagFromHostIds([$host_id]);
+    $previousPollerIds = findPollersForConfigChangeFlagFromHostIds([$host_id]);
 
     /*
      *  Global function to use

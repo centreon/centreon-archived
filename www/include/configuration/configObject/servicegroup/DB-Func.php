@@ -585,6 +585,6 @@ function updateServiceGroupServices($sgId, $ret = [], $increment = false)
  */
 function getPollersForConfigChangeFlagFromServiceGroupId(int $servicegroupId): array
 {
-    $hostIds = getHostsForConfigChangeFlagFromServiceGroupId($servicegroupId);
-    return getPollersForConfigChangeFlagFromHostIds($hostIds);
+    $hostIds = findHostsForConfigChangeFlagFromServiceGroupId($servicegroupId);
+    return findPollersForConfigChangeFlagFromHostIds($hostIds);
 }
