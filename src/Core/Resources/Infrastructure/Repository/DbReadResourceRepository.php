@@ -26,6 +26,8 @@ use Centreon\Domain\Log\LoggerTrait;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
+use Core\Domain\RealTime\ResourceTypeInterface;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Repository\RepositoryException;
 use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -36,8 +38,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
-use Core\Severity\RealTime\Domain\Model\Severity;
 
 class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadResourceRepositoryInterface
 {
@@ -51,6 +51,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     private const RESOURCE_TYPE_SERVICE = 0,
                   RESOURCE_TYPE_HOST = 1,
                   RESOURCE_TYPE_METASERVICE = 2;
+
+    /**
+     * @var ResourceTypeInterface[]
+     */
+    private array $resourceTypes = [];
 
     /**
      * @var SqlRequestParametersTranslator
@@ -99,15 +104,27 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     /**
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     * @param \Traversable<ResourceTypeInterface> $resourceTypes
      */
-    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
-    {
+    public function __construct(
+        DatabaseConnection $db,
+        SqlRequestParametersTranslator $sqlRequestTranslator,
+        \Traversable $resourceTypes
+    ) {
         $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT)
             ->setConcordanceErrorMode(RequestParameters::CONCORDANCE_ERRMODE_SILENT);
+
+        if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
+            throw new \InvalidArgumentException(
+                _('You must at least add one resource provider')
+            );
+        }
+
+        $this->resourceTypes = iterator_to_array($resourceTypes);
     }
 
     /**
@@ -124,7 +141,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
      */
     public function filterByAccessGroups(?array $accessGroups): ReadResourceRepositoryInterface
     {
-        $this->accessGroups = $accessGroups;
+        $this->accessGroups = $accessGroups ?? [];
+
         return $this;
     }
 
@@ -303,7 +321,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         }
 
         while ($resourceRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->resources[] = DbResourceFactory::createFromRecord($resourceRecord);
+            $this->resources[] = DbResourceFactory::createFromRecord($resourceRecord, $this->resourceTypes);
         }
 
         $iconIds = $this->getIconIdsFromResources();
@@ -513,7 +531,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     {
         return array_filter(
             $resources,
-            fn(ResourceEntity $resource) => $resource->hasGraph(),
+            fn (ResourceEntity $resource) => $resource->hasGraph(),
         );
     }
 
@@ -535,15 +553,17 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
      */
     private function addResourceTypeSubRequest(ResourceFilter $filter): string
     {
+        /**
+         * @var int[] $resourceTypes
+         */
         $resourceTypes = [];
         $subRequest = '';
-        foreach ($filter->getTypes() as $resourceType) {
-            if ($resourceType === ResourceEntity::TYPE_HOST) {
-                $resourceTypes[] = self::RESOURCE_TYPE_HOST;
-            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-                $resourceTypes[] = self::RESOURCE_TYPE_SERVICE;
-            } elseif ($resourceType === ResourceEntity::TYPE_META) {
-                $resourceTypes[] = self::RESOURCE_TYPE_METASERVICE;
+        foreach ($filter->getTypes() as $filterType) {
+            foreach ($this->resourceTypes as $resourceType) {
+                if ($resourceType->isValidForTypeName($filterType)) {
+                    $resourceTypes[] = $resourceType->getId();
+                    break;
+                }
             }
         }
 

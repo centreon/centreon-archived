@@ -55,8 +55,8 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'uuid' => 'm' . $response->id,
-            'id' => $response->id,
+            'uuid' => 'm' . $response->metaId,
+            'id' => $response->metaId,
             'name' => $response->name,
             'type' => 'metaservice',
             'short_type' => 'm',
@@ -137,10 +137,26 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
         /**
          * Creating Hypermedias
          */
-        $presenterResponse['links'] = [
-            'uris' => $this->hypermediaCreator->createInternalUris($response),
-            'endpoints' => $this->hypermediaCreator->createEndpoints($response),
+        $parameters = [
+            'type' => $response->type,
+            'hostId' => $response->hostId,
+            'serviceId' => $response->serviceId,
+            'internalId' => $response->metaId,
+            'hasGraphData' => $response->hasGraphData
         ];
+
+        $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
+
+        $presenterResponse['links']['endpoints'] = [
+            'notification_policy' => $endpoints['notification_policy'],
+            'timeline' => $endpoints['timeline'],
+            'status_graph' => $endpoints['status_graph'],
+            'performance_graph' => $endpoints['performance_graph'],
+            'metrics' => $endpoints['metrics']
+        ];
+
+        $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
+
         $this->presenterFormatter->present($presenterResponse);
     }
 

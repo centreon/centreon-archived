@@ -29,13 +29,13 @@ use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPo
 class FindMetaServiceNotificationPolicyController extends AbstractController
 {
     /**
-     * @param int $metaServiceId
+     * @param int $metaId
      * @param FindMetaServiceNotificationPolicy $useCase
      * @param FindNotificationPolicyPresenterInterface $presenter
      * @return object
      */
     public function __invoke(
-        int $metaServiceId,
+        int $metaId,
         FindMetaServiceNotificationPolicy $useCase,
         FindNotificationPolicyPresenterInterface $presenter
     ): object {
@@ -45,7 +45,7 @@ class FindMetaServiceNotificationPolicyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $useCase($metaServiceId, $presenter);
+        $useCase($metaId, $presenter);
 
         return $presenter->show();
     }

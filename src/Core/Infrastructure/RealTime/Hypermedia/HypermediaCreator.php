@@ -53,14 +53,14 @@ class HypermediaCreator
      *  "performance_graph": "/centreon/api/v21.10/monitoring/hosts/14/services/26/metrics/performance"
      * ]
      *
-     * @param mixed $response
+     * @param array<string, mixed> $parameters
      * @return array<string, string|null>
      */
-    public function createEndpoints(mixed $response): array
+    public function createEndpoints(array $parameters): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createEndpoints($response);
+            if ($hypermediaProvider->isValidFor($parameters['type'])) {
+                return $hypermediaProvider->createEndpoints($parameters);
             }
         }
         return [];
@@ -76,14 +76,14 @@ class HypermediaCreator
      *   "reporting": "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=14&item=26"
      * ]
      *
-     * @param mixed $response
+     * @param array<string, mixed> $parameters
      * @return array<string, string|null>
      */
-    public function createInternalUris(mixed $response): array
+    public function createInternalUris(array $parameters): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createInternalUris($response);
+            if ($hypermediaProvider->isValidFor($parameters['type'])) {
+                return $hypermediaProvider->createInternalUris($parameters);
             }
         }
         return [];
@@ -108,7 +108,7 @@ class HypermediaCreator
     public function convertGroupsForPresenter(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
+            if ($hypermediaProvider->isValidFor($response->type)) {
                 return $hypermediaProvider->convertGroupsForPresenter($response->groups);
             }
         }
@@ -134,7 +134,7 @@ class HypermediaCreator
     public function convertCategoriesForPresenter(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
+            if ($hypermediaProvider->isValidFor($response->type)) {
                 return $hypermediaProvider->convertCategoriesForPresenter($response->categories);
             }
         }

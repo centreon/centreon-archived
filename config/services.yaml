@@ -35,6 +35,8 @@ services:
     _instanceof:
         Security\Domain\Authentication\Interfaces\ProviderInterface:
             tags: ['authentication.providers']
+        Core\Domain\RealTime\ResourceTypeInterface:
+            tags: ['monitoring.resource.type']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'
@@ -95,3 +97,13 @@ services:
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Core\Resources\Infrastructure\Repository\DbReadResourceRepository:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $sqlRequestTranslator: '@sqlRequestTranslator'
+
+    Centreon\Application\Controller\MonitoringResourceController:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $hyperMediaProviders: !tagged_iterator 'realtime.hypermedia'
