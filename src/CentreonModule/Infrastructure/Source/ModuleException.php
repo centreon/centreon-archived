@@ -28,7 +28,8 @@ class ModuleException extends \Exception
      * @param string[] $modules
      * @return self
      */
-    public static function modulesNeedToBeRemovedFirst(array $modules): self {
+    public static function modulesNeedToBeRemovedFirst(array $modules): self
+    {
         return new self(
             sprintf(_('Following modules need to be removed first: %s'), implode(', ', $modules)),
         );
@@ -38,7 +39,8 @@ class ModuleException extends \Exception
      * @param string $module
      * @return self
      */
-    public static function moduleIsMissing(string $module): self {
+    public static function moduleIsMissing(string $module): self
+    {
         return new self(
             sprintf(_('Module "%s" is missing'), $module),
         );
@@ -48,7 +50,8 @@ class ModuleException extends \Exception
      * @param string $module
      * @return self
      */
-    public static function cannotFindModuleDetails(string $module): self {
+    public static function cannotFindModuleDetails(string $module): self
+    {
         return new self(
             sprintf(_('An error occured while retrieving details of module "%s"'), $module),
         );
