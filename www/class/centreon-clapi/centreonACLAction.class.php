@@ -36,9 +36,9 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "Centreon/Object/Acl/Group.php";
-require_once "Centreon/Object/Acl/Action.php";
-require_once "Centreon/Object/Relation/Acl/Group/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Action.php";
 
 /**
  * Class for managing ACL Actions
