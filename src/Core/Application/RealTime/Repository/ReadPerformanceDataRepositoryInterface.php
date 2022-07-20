@@ -26,7 +26,7 @@ namespace Core\Application\RealTime\Repository;
 use DateTimeInterface;
 use Core\Domain\RealTime\Model\PerformanceMetric;
 
-interface ReadDataBinRepositoryInterface
+interface ReadPerformanceDataRepositoryInterface
 {
     /**
      * @param array<int, string> $metrics

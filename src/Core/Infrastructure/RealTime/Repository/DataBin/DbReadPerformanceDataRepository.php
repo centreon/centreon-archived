@@ -28,11 +28,11 @@ use DateTimeInterface;
 use Core\Domain\RealTime\Model\Metric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Domain\RealTime\Model\PerformanceMetric;
-use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadPerformanceDataRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
-class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataBinRepositoryInterface
+class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements ReadPerformanceDataRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db

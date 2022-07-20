@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
-use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadPerformanceDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 
@@ -32,7 +32,7 @@ class FindPerformanceMetrics
     public function __construct(
         private ReadIndexDataRepositoryInterface $indexDataRepository,
         private ReadMetricRepositoryInterface $metricRepository,
-        private ReadDataBinRepositoryInterface $dataBinRepository
+        private ReadPerformanceDataRepositoryInterface $dataBinRepository
     ) {
     }
 
