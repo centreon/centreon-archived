@@ -11,9 +11,6 @@ echo "################################################## PACKAGING WEB #########
 AUTHOR="Luiz Costa"
 AUTHOR_EMAIL="me@luizgustavo.pro.br"
 
-# Get COMMIT number
-COMMIT=$(cd centreon && git log -1 HEAD --pretty=format:%h)
-
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
@@ -21,6 +18,7 @@ MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
 cd centreon/
 
 # Replace basic macros.
+COMMIT=$(git log -1 HEAD --pretty=format:%h)
 find ./www/include/Administration/about -type f | xargs --delimiter='\n' sed -i -e "s/@COMMIT@/$COMMIT/g"
 
 # set locale
