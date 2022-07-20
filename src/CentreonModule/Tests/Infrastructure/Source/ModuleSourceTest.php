@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -50,6 +51,8 @@ use CentreonModule\Infrastructure\Source\ModuleException;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
+use CentreonLegacy\ServiceProvider;
+use CentreonLegacy\Core\Module\Installer;
 
 class ModuleSourceTest extends TestCase
 {
@@ -60,6 +63,11 @@ class ModuleSourceTest extends TestCase
      * @var ModuleSource|\PHPUnit\Framework\MockObject\MockObject
      */
     private $source;
+
+    /**
+     * @var Container
+     */
+    private Container $container;
 
     /**
      * @var ContainerWrap
@@ -126,19 +134,19 @@ class ModuleSourceTest extends TestCase
         ;
 
         // provide services
-        $container = new Container();
-        $container['finder'] = new Finder();
-        $container['configuration'] = $this->createMock(Configuration::class);
+        $this->container = new Container();
+        $this->container['finder'] = new Finder();
+        $this->container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
+        $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
-            $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
+            $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
 
-        $this->setUpSourceDependency($container);
+        $this->setUpSourceDependency($this->container);
 
-        $this->containerWrap = new ContainerWrap($container);
+        $this->containerWrap = new ContainerWrap($this->container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
             ->onlyMethods([
@@ -254,12 +262,65 @@ class ModuleSourceTest extends TestCase
         $this->assertFalse($result->isUpdated());
     }
 
-//    public function testGetModuleConf()
-//    {
-//        $moduleSource = new ModuleSource($this->containerWrap);
-//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' .
-//    }
+    public function testSortedDependencies(): void
+    {
+        $moduleName = 'test-module-dependencies';
+
+        $configurationFileContent =
+        <<<'PHP'
+            <?php
+                $module_conf = [
+                    'rname' => 'Curabitur congue porta neque',
+                    'name' => 'test-module-dependencies',
+                    'mod_release' => 'x.y.q',
+                    'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
+                    'is_removeable' => '1',
+                    'author' => 'Centreon',
+                    'stability' => 'alpha',
+                    'last_update' => '2001-01-01',
+                    'release_note' => 'http://localhost',
+                    'images' => 'images/image1.png',
+                    'dependencies' => [
+                        'centreon-license-manager'
+                    ],
+                ];
+        PHP;
+
+        $this->fs->get('/modules')->add($moduleName, new Directory([]));
+        $this->fs->get('/modules/' . $moduleName)
+            ->add(
+                ModuleSource::CONFIG_FILE,
+                $this->createModuleConfigurationFile($moduleName, ['centreon-license-manager'])
+            );
+
+            /*
+        $this->source
+            ->method('getModuleConf')
+            ->will($this->returnCallback(function () use ($moduleName) {
+                $result = [
+                    $moduleName => ModuleSourceTest::$moduleInfo,
+                ];
+
+                return $result;
+            }))
+        ;
+        */
+        $this->source = new ModuleSource($this->containerWrap);
+
+        $this->container->offsetUnset(ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER);
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (string $moduleId) {
+            var_dump($moduleId);
+            return $this->createMock(Installer::class)
+                ->expects($this->exactly(2))
+                ->method('install')
+                ->withConsecutive(
+                    [$this->equalTo('centreon-license-manager')],
+                    [$this->equalTo('test-module-dependencies')],
+                );
+        };
+
+        $this->source->install($moduleName);
+    }
 
     /**
      * @return string
@@ -282,5 +343,28 @@ class ModuleSourceTest extends TestCase
         }
 
         return $result;
+    }
+
+    private function createModuleConfigurationFile(string $moduleName, array $dependencies): File
+    {
+        $depenciesFlatten = var_export($dependencies, true);
+        return (new File(
+            <<<PHP
+                <?php
+                    \$module_conf = [
+                        'rname' => 'Curabitur congue porta neque',
+                        'name' => '$moduleName',
+                        'mod_release' => 'x.y.q',
+                        'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
+                        'is_removeable' => '1',
+                        'author' => 'Centreon',
+                        'stability' => 'alpha',
+                        'last_update' => '2001-01-01',
+                        'release_note' => 'http://localhost',
+                        'images' => 'images/image1.png',
+                        'dependencies' => $depenciesFlatten,
+                    ];
+            PHP
+        ));
     }
 }
