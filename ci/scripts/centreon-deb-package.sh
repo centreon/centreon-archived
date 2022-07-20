@@ -6,6 +6,10 @@ if [ -z "$VERSION" -o -z "$RELEASE" -o -z "$DISTRIB" ] ; then
   exit 1
 fi
 
+# Upgrade image before
+apt update
+apt upgrade -y
+
 echo "################################################## PACKAGING WEB ##################################################"
 
 AUTHOR="Luiz Costa"
