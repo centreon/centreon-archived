@@ -136,12 +136,9 @@ def checkoutCentreonBuild() {
 */
 stage('Deliver sources') {
   node {
+    cleanWs()
     dir('centreon-web') {
       checkout scm
-      if (!isStableBuild()) {
-        hasFrontendChanges = hasChanges(frontendFiles)
-        hasBackendChanges = hasChanges(backendFiles)
-      }
     }
 
     checkoutCentreonBuild()
@@ -170,17 +167,20 @@ stage('Deliver sources') {
       reportTitles: ''
     ])
 
+
     // get api feature files
     apiFeatureFiles = sh(
       script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
 
+
     // get tests E2E feature files
     e2eFeatureFiles = sh(
       script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
+
 
     //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(
@@ -491,10 +491,10 @@ try {
           checkout scm
           unstash "Debian11"
           sh '''for i in $(echo *.deb)
-                do
-                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04/
+                do 
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
                 done
-             '''
+             '''    
         }
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {

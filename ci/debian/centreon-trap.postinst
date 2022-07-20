@@ -17,12 +17,19 @@ EOF
     fi
 
     # Fix permissions
-    chmod 0755 \
+    chmod -v 0755 \
         /usr/share/centreon/bin/centreontrapd \
         /usr/share/centreon/bin/centreontrapdforward \
         /var/spool/centreontrapd
-    chown centreon:centreon \
-        /var/spool/centreontrapd
+    if [ "$(getent passwd centreon)" ]; then
+        chown -v centreon:centreon \
+            /var/spool/centreontrapd
+        if [ -d "/etc/snmp/centreon_traps" ]; then
+            chmod -v 0775 /etc/snmp/centreon_traps
+            chown -v centreon:centreon \
+                /etc/snmp/centreon_traps
+        fi
+    fi
 
     # Initial installation
     systemctl --no-reload preset centreontrapd.service || : &>/dev/null || :
