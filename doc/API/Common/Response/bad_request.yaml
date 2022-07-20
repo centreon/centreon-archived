@@ -1,0 +1,15 @@
+description: |
+  Indicates that the server cannot or will not process the request due to something that is perceived to be
+  a client error (e.g., malformed request syntax, invalid request message framing)
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+          example: 400
+        message:
+          type: string
+          example: "Property 'name' not found"

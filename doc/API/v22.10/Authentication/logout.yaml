@@ -1,0 +1,18 @@
+post:
+  tags:
+    - Authentication
+  summary: "Logout Session"
+  description: "Entry point to delete an existing session token."
+  security:
+    - Token: []
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            $ref: '../Logout/Schema/authentication_response.yaml'
+    '403':
+      $ref: './../Common/Response/forbidden.yaml'
+    '500':
+      $ref: './../Common/Response/internal_server_error.yaml'

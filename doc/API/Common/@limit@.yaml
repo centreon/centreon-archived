@@ -1,0 +1,9 @@
+in: query
+name: limit
+required: false
+description: "Number of items per pages"
+schema:
+  type: integer
+  minimum: 1
+  default: 10
+  example: 20

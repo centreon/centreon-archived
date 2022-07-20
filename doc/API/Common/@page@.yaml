@@ -1,0 +1,9 @@
+in: query
+name: page
+required: false
+description: "Number of the requested page"
+schema:
+  type: integer
+  minimum: 1
+  default: 1
+  example: 4

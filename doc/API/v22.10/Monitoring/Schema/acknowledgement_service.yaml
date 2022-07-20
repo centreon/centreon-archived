@@ -1,0 +1,11 @@
+nullable: true
+allOf:
+  - $ref: 'acknowledgement_host.yaml'
+  - type: object
+    nullable: true
+    properties:
+      service_id:
+        type: integer
+        format: int64
+        description: "ID of the service"
+        example: 5

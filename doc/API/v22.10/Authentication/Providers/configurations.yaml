@@ -1,0 +1,39 @@
+get:
+  tags:
+    - Authentication
+  summary: "Providers Configurations"
+  description: "Endpoint to list active existing providers configuration"
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "Id of configuration"
+                  example: 1
+                type:
+                  type: "string"
+                  description: "Type of provider"
+                  example: "local"
+                name:
+                  type: "string"
+                  description: "Name of provider"
+                  example: "local"
+                authentication_uri:
+                  type: "string"
+                  description: "Provider Uri used to proceed authentication"
+                  example: "/centreon/authentication/providers/configurations/local"
+                is_active:
+                  type: boolean
+                  description: "Provider active or not"
+                  example: true
+                is_forced:
+                  type: boolean
+                  description: "Provider forced or not"
+                  example: false

@@ -1,0 +1,13 @@
+description: "Forbidden"
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+          example: 403
+        message:
+          type: string
+          example: "You are not authorized to access this resource"

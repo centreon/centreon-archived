@@ -1,0 +1,6 @@
+name: alias
+in: path
+description: "Alias of the user"
+required: true
+schema:
+  type: string

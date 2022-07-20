@@ -1,0 +1,68 @@
+get:
+  tags:
+    - Acknowledgement
+  summary: "List all acknowledgements of a service"
+  parameters:
+    - $ref: '../../Common/@search@.yaml'
+    - $ref: '../../Common/@limit@.yaml'
+    - $ref: '../../Common/@page@.yaml'
+    - $ref: '../../Common/@sort_by@.yaml'
+    - $ref: '@host_id@.yaml'
+    - $ref: '@service_id@.yaml'
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "../Schema/acknowledgement_service.yaml"
+              meta:
+                $ref: '../../Common/Schema/meta.yaml'
+    '403':
+      $ref: '../../Common/Response/forbidden.yaml'
+    '500':
+      $ref: '../../Common/Response/internal_server_error.yaml'
+post:
+  tags:
+    - Acknowledgement
+  summary: "Add an acknowledgement on chosen service"
+  parameters:
+    - $ref: '@host_id@.yaml'
+    - $ref: '@service_id@.yaml'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../Schema/acknowledgement_service_add.yaml'
+  responses:
+    '204':
+      description: "Command Sent"
+    '400':
+      $ref: '../../Common/Response/bad_request.yaml'
+    '403':
+      $ref: '../../Common/Response/forbidden.yaml'
+    '500':
+      $ref: '../../Common/Response/internal_server_error.yaml'
+delete:
+  tags:
+    - Acknowledgement
+  summary: "Cancel an acknowledgement on a service"
+  parameters:
+    - $ref: '@host_id@.yaml'
+    - $ref: '@service_id@.yaml'
+  responses:
+    '204':
+      description: "Command Sent"
+    '400':
+      $ref: '../../Common/Response/bad_request.yaml'
+    '403':
+      $ref: '../../Common/Response/forbidden.yaml'
+    '500':
+      $ref: '../../Common/Response/internal_server_error.yaml'

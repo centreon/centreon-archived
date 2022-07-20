@@ -1,0 +1,26 @@
+post:
+  tags:
+    - Authentication
+  summary: "Login"
+  description: "Entry point to retrieve an authentication token."
+  security: []
+  requestBody:
+    description: "Authentication schema"
+    content:
+      application/json:
+        schema:
+          $ref: "./Login/Schema/authentication_request.yaml"
+    required: true
+  responses:
+    '200':
+      description: "OK"
+      content:
+        application/json:
+          schema:
+            $ref: './Login/Schema/authentication_response.yaml'
+    '400':
+      $ref: './Common/Response/bad_request.yaml'
+    '401':
+      $ref: './Common/Response/unauthorized.yaml'
+    '500':
+      $ref: './Common/Response/internal_server_error.yaml'

@@ -1,0 +1,8 @@
+in: path
+name: host_id
+description: "ID of the host"
+required: true
+schema:
+  type: integer
+  format: int64
+  example: 12

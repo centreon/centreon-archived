@@ -1,0 +1,60 @@
+type: object
+nullable: true
+properties:
+  id:
+    type: integer
+    format: int64
+    description: "ID of the acknowledgement"
+    example: 34
+  author_id:
+    type: integer
+    format: int64
+    description: "ID of the contact who requested an acknowledgement"
+    example: 3
+  author_name:
+    type: string
+    description: "Name of the contact who requested an acknowledgement"
+    example: "admin"
+  comment:
+    type: string
+    description: "Short description of the acknowledgement"
+    example: "Acknowledged by admin"
+  deletion_time:
+    type: string
+    format: date-time
+    nullable: true
+    description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
+  entry_time:
+    type: string
+    format: date-time
+    description: "Date of the request for acknowledgement (ISO8601)"
+  host_id:
+    type: integer
+    format: int64
+    description: "ID of the host"
+    example: 12
+  poller_id:
+    type: integer
+    format: int64
+    description: "ID of the poller"
+    example: 1
+  is_notify_contacts:
+    type: boolean
+    description: "Indicates whether notification is sent to the contacts linked to the host or service"
+    example: false
+  is_persistent_comment:
+    type: boolean
+    description: "Indicates whether acknowledgement is maintained in the case of a restart of the scheduler"
+    example: true
+  is_sticky:
+    type: boolean
+    description: "Indicates whether acknowledgement is maintained in the case of a change of status"
+    example: true
+  state:
+    type: integer
+    description: |
+      State type
+       * `1` - WARNING
+       * `2` - CRITICAL
+       * `3` - UNKNOWN
+    example: 1

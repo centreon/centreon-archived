@@ -60,9 +60,8 @@ tags:
   - name: Monitoring server
   - name: Proxy
   - name: Service
-  - name: Service group
   - name: Service category
-  - name: Host category
+  - name: Service group
   - name: Severity
   - name: Topology
 security:
@@ -70,177 +69,17 @@ security:
   - Cookie: []
 paths:
   /login:
-    post:
-      tags:
-        - Authentication
-      summary: "Login"
-      description: "Entry point to retrieve an authentication token."
-      security: []
-      requestBody:
-        description: "Authentication schema"
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
-        required: true
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginAuthenticationResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+    $ref: "./v22.10/login.yaml"
   /logout:
-    get:
-      tags:
-        - Authentication
-      summary: "Logout"
-      description: "Entry point to delete an existing authentication token."
-      security:
-        - Token: []
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogoutAuthenticationResponse'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+    $ref: "./v22.10/logout.yaml"
   /authentication/users/{alias}/password:
-    put:
-      tags:
-        - Authentication
-      summary: "Update user password"
-      parameters:
-      - name: alias
-        in: path
-        description: "Alias of the user"
-        required: true
-        schema:
-          type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                old_password:
-                  type: string
-                  description: "Old user password"
-                  example: "Centreon!2021"
-                new_password:
-                  type: "string"
-                  description: "New user password"
-                  example: "Centreon!2022"
-      responses:
-        '204':
-          description: Command Sent
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+    $ref: "./v22.10/Authentication/Users/@alias@_password.yaml"
   /authentication/providers/configurations:
-    get:
-      tags:
-        - Authentication
-      summary: "Providers Configurations"
-      description: "Endpoint to list active existing providers configuration"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      description: "Id of configuration"
-                      example: 1
-                    type:
-                      type: "string"
-                      description: "Type of provider"
-                      example: "local"
-                    name:
-                      type: "string"
-                      description: "Name of provider"
-                      example: "local"
-                    authentication_uri:
-                      type: "string"
-                      description: "Provider Uri used to proceed authentication"
-                      example: "/centreon/authentication/providers/configurations/local"
-                    is_active:
-                      type: boolean
-                      description: "Provider active or not"
-                      example: true
-                    is_forced:
-                      type: boolean
-                      description: "Provider forced or not"
-                      example: false
-  /authentication/providers/configurations/{provider_configuration_name}:
-    post:
-      tags:
-       - Authentication
-      parameters:
-        - $ref: '#/components/parameters/providerConfigurationName'
-      summary: "Authentication to provider"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                login:
-                  type: "string"
-                  example: "admin"
-                password:
-                  type: "string"
-                  example: "centreon"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                properties:
-                  redirect_uri:
-                    type: string
-                    example: "/centreon/main.php?p=50113&o=ldap"
-        '302':
-          description: "Found"
+    $ref: "./v22.10/Authentication/Providers/configurations.yaml"
+  /authentication/providers/configurations/{provider}:
+    $ref: "./v22.10/Authentication/Providers/configuration_@provider@.yaml"
   /authentication/logout:
-    post:
-      tags:
-        - Authentication
-      summary: "Logout Session"
-      description: "Entry point to delete an existing session token."
-      security:
-        - Token: []
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogoutAuthenticationResponse'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+    $ref: './v22.10/Authentication/logout.yaml'
   /configuration/hosts/templates:
     get:
       tags:
@@ -1999,74 +1838,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/acknowledgements:
-    get:
-      tags:
-        - Acknowledgement
-      summary: "List all acknowledgements of a service"
-      parameters:
-        - $ref: '#/components/parameters/Search'
-        - $ref: '#/components/parameters/Limit'
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/SortBy'
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Acknowledgement.Service'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    post:
-      tags:
-        - Acknowledgement
-      summary: "Add an acknowledgement on chosen service"
-      parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Acknowledgement.Service.Add'
-      responses:
-        '204':
-          description: "Command Sent"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    delete:
-      tags:
-        - Acknowledgement
-      summary: "Cancel an acknowledgement on a service"
-      parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
-      responses:
-        '204':
-          description: "Command Sent"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+    $ref: "./v22.10/Monitoring/Hosts/@host_id@_services_@service_id@_acknowledgements.yaml"
   /monitoring/metaservices/{meta_id}/acknowledgements:
     get:
       tags:
@@ -3988,102 +3760,13 @@ components:
       in: cookie
   parameters:
     Search:
-      in: query
-      name: search
-      required: false
-      schema:
-        type: string
-      description: >
-        Retrieve only data matching the defined search value.
-
-        Simple search can be done like the following example:
-        ```
-        search={"host.name":"Central"}
-        ```
-
-        Complex search can be done with aggregators and operators.
-
-        Available search aggregators are:
-          * `$or`
-          * `$and`
-
-        Available search operators are:
-          * `$eq` → equal
-          * `$neq` → not equal
-          * `$lt` → less than
-          * `$le` → less or equal than
-          * `$gt` → greater than
-          * `$ge` → greater or equal than
-          * `$lk` → like
-          * `$nk` → not like
-          * `$in` → in
-          * `$ni` → not in
-
-        Examples without nested aggregators:
-          ```
-          search={
-            "$or":[
-              {"host.name":{"$eq":"name_1"}},
-              {"host.name":{"$eq":"name_2"}}
-            ]
-          }
-          ```
-          ```
-          search={
-            "$and":[
-              {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-              {"host.name":{"$lk":"fr%"}}
-            ]
-          }
-          ```
-
-        Example with nested aggregators:
-          ```
-          search={
-            "$or":[
-              {
-                "$and":[
-                  {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-                  {"host.name":{"$lk":"fr%"}}
-                ]
-              },
-              {
-                "$and":[
-                  {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
-                  {"host.name":{"$lk":"us%"}}
-                ]
-              }
-            ]
-          }
-          ```
+      $ref: 'Common/@search@.yaml'
     Limit:
-      in: query
-      name: limit
-      required: false
-      description: "Number of items per pages"
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        example: 20
+      $ref: 'Common/@limit@.yaml'
     Page:
-      in: query
-      name: page
-      required: false
-      description: "Number of the requested page"
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-        example: 4
+      $ref: 'Common/@page@.yaml'
     SortBy:
-      in: query
-      name: sort_by
-      required: false
-      description: "Sort the resulted data by its properties"
-      schema:
-        type: object
-        example: '{"host.name":"ASC"}'
+      $ref: 'Common/@sort_by@.yaml'
     MetricStartDate:
       in: path
       name: start
@@ -4442,63 +4125,6 @@ components:
                 type: string
                 example: "Internal Server Error"
   schemas:
-    AuthenticationRequest:
-      type: object
-      properties:
-        security:
-          type: object
-          properties:
-            credentials:
-              type: object
-              properties:
-                login:
-                  type: string
-                  description: "Login"
-                  example: "admin"
-                password:
-                  type: string
-                  description: "Password"
-                  example: "centreon"
-    LoginAuthenticationResponse:
-      type: object
-      properties:
-        contact:
-          type: object
-          properties:
-            id:
-              type: integer
-              description: "Contact ID"
-              example: 3
-            name:
-              type: string
-              description: "Contact name"
-              example: "Admin"
-            alias:
-              type: string
-              description: "Contact alias"
-              example: "admin"
-            email:
-              type: string
-              format: email
-              description: "Contact email"
-              example: "admin@localhost"
-            is_admin:
-              type: boolean
-              description: "Indicates whether it is an admin user or not"
-              example: true
-        security:
-          type: object
-          properties:
-            token:
-              type: string
-              description: "Security authentication token"
-              example: "9ed937d3911d212eae59300ac6977352"
-    LogoutAuthenticationResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          example: "Successful logout"
     Meta:
       type: object
       properties:

@@ -1,0 +1,18 @@
+type: object
+properties:
+  comment:
+    type: string
+    description: "Short description of the acknowledgement"
+    example: "Acknowledged by admin"
+  is_notify_contacts:
+    type: boolean
+    description: "Indicates whether notification is sent to the contacts linked to the host or service"
+    example: false
+  is_persistent_comment:
+    type: boolean
+    description: "Indicates whether acknowledgement is maintained in the case of a restart of the scheduler"
+    example: true
+  is_sticky:
+    type: boolean
+    description: "Indicates whether acknowledgement is maintained in the case of a change of status"
+    example: true

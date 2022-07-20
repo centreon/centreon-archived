@@ -1,0 +1,16 @@
+type: object
+properties:
+  security:
+    type: object
+    properties:
+      credentials:
+        type: object
+        properties:
+          login:
+            type: string
+            description: "Login"
+            example: "admin"
+          password:
+            type: string
+            description: "Password"
+            example: "centreon"

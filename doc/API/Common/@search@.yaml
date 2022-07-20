@@ -1,0 +1,69 @@
+in: query
+name: search
+required: false
+schema:
+  type: string
+description: >
+  Retrieve only data matching the defined search value.
+
+  Simple search can be done like the following example:
+  ```
+  search={"host.name":"Central"}
+  ```
+
+  Complex search can be done with aggregators and operators.
+
+  Available search aggregators are:
+    * `$or`
+    * `$and`
+
+  Available search operators are:
+    * `$eq` → equal
+    * `$neq` → not equal
+    * `$lt` → less than
+    * `$le` → less or equal than
+    * `$gt` → greater than
+    * `$ge` → greater or equal than
+    * `$lk` → like
+    * `$nk` → not like
+    * `$in` → in
+    * `$ni` → not in
+    * `$rg` → regex
+
+  Examples without nested aggregators:
+    ```
+    search={
+      "$or":[
+        {"host.name":{"$eq":"name_1"}},
+        {"host.name":{"$eq":"name_2"}}
+      ]
+    }
+    ```
+    ```
+    search={
+      "$and":[
+        {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+        {"host.name":{"$lk":"fr%"}}
+      ]
+    }
+    ```
+
+  Example with nested aggregators:
+    ```
+    search={
+      "$or":[
+        {
+          "$and":[
+            {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+            {"host.name":{"$lk":"fr%"}}
+          ]
+        },
+        {
+          "$and":[
+            {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
+            {"host.name":{"$lk":"us%"}}
+          ]
+        }
+      ]
+    }
+    ```

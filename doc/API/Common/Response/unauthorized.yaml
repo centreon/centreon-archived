@@ -1,0 +1,12 @@
+description: "Unauthorized"
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+          example: 401
+        message:
+          type: string

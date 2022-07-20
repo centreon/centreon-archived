@@ -1,0 +1,6 @@
+in: path
+name: provider
+required: true
+schema:
+  type: string
+  example: "local"
