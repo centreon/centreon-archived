@@ -79,6 +79,9 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
         $statement->closeCursor();
     }
 
+    /**
+     * @param array<string, int|string>
+     */
     private function createPerformanceMetricFromDataBin(array $dataBin): PerformanceMetric
     {
         $time = (new \DateTimeImmutable())->setTimestamp((int) $dataBin['time']);

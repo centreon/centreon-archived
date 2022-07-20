@@ -78,8 +78,13 @@ class FindPerformanceMetricResponseTest extends TestCase
         ];
     }
 
-    private function createPerformanceMetric(string $date, float $rta, float $pl, float $rtmax, float $rtmin): PerformanceMetric
-    {
+    private function createPerformanceMetric(
+        string $date,
+        float $rta,
+        float $pl,
+        float $rtmax,
+        float $rtmin
+    ): PerformanceMetric {
         $metricValues = [];
         $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
         foreach ($metrics as $columnName => $columnValue) {
@@ -92,8 +97,13 @@ class FindPerformanceMetricResponseTest extends TestCase
     /**
      * @return array<string, int|string>
      */
-    private function generateExpectedResponseData(string $date, float $rta, float $pl, float $rtmax, float $rtmin): array
-    {
+    private function generateExpectedResponseData(
+        string $date,
+        float $rta,
+        float $pl,
+        float $rtmax,
+        float $rtmin
+    ): array {
         $dateTime = new DateTimeImmutable($date);
 
         return [

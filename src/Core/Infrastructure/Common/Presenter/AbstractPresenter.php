@@ -42,6 +42,9 @@ abstract class AbstractPresenter
         $this->responseHeaders = $responseHeaders;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;

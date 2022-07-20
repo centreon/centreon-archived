@@ -32,7 +32,7 @@ class FindPerformanceMetrics
     public function __construct(
         private ReadIndexDataRepositoryInterface $indexDataRepository,
         private ReadMetricRepositoryInterface $metricRepository,
-        private ReadPerformanceDataRepositoryInterface $dataBinRepository
+        private ReadPerformanceDataRepositoryInterface $performanceDataRepository
     ) {
     }
 
@@ -45,7 +45,7 @@ class FindPerformanceMetrics
 
         $fileName = $this->generateDownloadFileNameByIndex($index);
 
-        $performanceMetrics = $this->dataBinRepository->findDataByMetricsAndDates(
+        $performanceMetrics = $this->performanceDataRepository->findDataByMetricsAndDates(
             $metrics,
             $request->startDate,
             $request->endDate
