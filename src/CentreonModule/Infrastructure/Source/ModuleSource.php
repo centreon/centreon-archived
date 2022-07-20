@@ -67,7 +67,7 @@ class ModuleSource extends SourceAbstract
      *
      * Install module
      *
-     * @throws \Exception
+     * @throws ModuleException
      */
     public function install(string $id): ?Module
     {
@@ -80,6 +80,8 @@ class ModuleSource extends SourceAbstract
      * {@inheritDoc}
      *
      * Remove module
+     *
+     * @throws ModuleException
      */
     public function remove(string $id): void
     {
@@ -98,7 +100,7 @@ class ModuleSource extends SourceAbstract
      *
      * Update module
      *
-     * @throws \Exception
+     * @throws ModuleException
      */
     public function update(string $id): ?Module
     {
@@ -280,7 +282,7 @@ class ModuleSource extends SourceAbstract
      *
      * @param string $moduleId
      *
-     * @throws \Exception
+     * @throws ModuleException
      */
     private function installOrUpdateDependencies(string $moduleId): void
     {
@@ -306,7 +308,7 @@ class ModuleSource extends SourceAbstract
      * @param string[] $alreadyProcessed
      * @return string[]
      *
-     * @throws \Exception
+     * @throws ModuleException
      */
     private function getSortedDependencies(
         string $moduleId,
@@ -344,7 +346,7 @@ class ModuleSource extends SourceAbstract
      *
      * @param string $moduleId (example: centreon-license-manager)
      *
-     * @throws \Exception
+     * @throws ModuleException
      */
     private function validateRemovalRequirementsOrFail(string $moduleId): void
     {

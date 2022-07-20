@@ -25,7 +25,6 @@ use Psr\Container\ContainerInterface;
 use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Infrastructure\Source\SourceInterface;
-use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 abstract class SourceAbstract implements SourceInterface
 {
@@ -112,7 +111,6 @@ abstract class SourceAbstract implements SourceInterface
      * Remove module or widget
      *
      * @param string $id
-     * @return void
      */
     public function remove(string $id): void
     {
