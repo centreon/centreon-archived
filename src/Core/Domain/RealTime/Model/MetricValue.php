@@ -25,36 +25,17 @@ namespace Core\Domain\RealTime\Model;
 
 class MetricValue
 {
-    /**
-     * @param string $name
-     * @param float $value
-     * @param string|null $unitName
-     */
-    public function __construct(private string $name, private float $value, private ?string $unitName = null)
+    public function __construct(private string $name, private float $value)
     {
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return float
-     */
     public function getValue(): float
     {
         return $this->value;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUnitName(): ?string
-    {
-        return $this->unitName;
     }
 }

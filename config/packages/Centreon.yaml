@@ -148,11 +148,6 @@ services:
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
         class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
-    # Topology
-    Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface:
-        class: Core\Infrastructure\Platform\Api\FindInstallationStatus\FindInstallationStatusPresenter
-        arguments: ['@json_presenter']
-
     # Real time monitoring
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator

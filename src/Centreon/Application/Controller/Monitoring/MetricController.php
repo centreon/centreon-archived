@@ -31,7 +31,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This class is design to manage all API REST about metric requests

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -22,11 +23,11 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\DataBin;
 
+use PDO;
+use DateTimeInterface;
 use Core\Domain\RealTime\Model\Metric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Domain\RealTime\Model\PerformanceMetric;
-use \PDO;
-use \DateTimeInterface;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -61,28 +62,29 @@ class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataB
         }
 
         $query = sprintf(
-            'SELECT %s FROM `:dbstg`.data_bin
-            WHERE ctime >= :start AND ctime < :end GROUP BY time',
+            'SELECT %s FROM `:dbstg`.data_bin WHERE ctime >= :start AND ctime < :end GROUP BY time',
             join(',', $columns)
         );
 
-        $metrics = [];
         $statement = $this->db->prepare($this->translateDbName($query));
 
-        $statement->bindValue(':start', $startDate->getTimestamp(), \PDO::PARAM_INT);
-        $statement->bindValue(':end', $endDate->getTimestamp(), \PDO::PARAM_INT);
+        $statement->bindValue(':start', $startDate->getTimestamp(), PDO::PARAM_INT);
+        $statement->bindValue(':end', $endDate->getTimestamp(), PDO::PARAM_INT);
         $statement->execute();
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $dataBin) {
-            $performanceMetric = new PerformanceMetric(
-                (new \DateTimeImmutable())->setTimestamp((int) $dataBin['time']),
-                $this->createMetricValues($dataBin)
-            );
-
-            yield $performanceMetric;
+            yield $this->createPerformanceMetricFromDataBin($dataBin);
         }
 
         $statement->closeCursor();
+    }
+
+    private function createPerformanceMetricFromDataBin(array $dataBin): PerformanceMetric
+    {
+        $time = (new \DateTimeImmutable())->setTimestamp((int) $dataBin['time']);
+        $metricValues = $this->createMetricValues($dataBin);
+
+        return new PerformanceMetric($time, $metricValues);
     }
 
     /**
@@ -91,38 +93,12 @@ class DbReadDataBinRepository extends AbstractRepositoryDRB implements ReadDataB
      */
     private function createMetricValues(array $data): array
     {
-        $dateValue = (new \DateTimeImmutable())->setTimestamp((int) $data['time']);
         $metricValues = [];
         foreach ($data as $columnName => $columnValue) {
             if ($columnName !== 'time') {
-                $metricValues[] = new MetricValue(
-                    $columnName,
-                    (float) $columnValue
-                );
+                $metricValues[] = new MetricValue($columnName, (float) $columnValue);
             }
         }
         return $metricValues;
-    }
-
-    /**
-     * @param array<string, mixed> $dataBin
-     * @param Metric[] $metrics
-     * @return array<string, mixed>
-     */
-    private function formatDataBin(array $dataBin, array &$metrics): array
-    {
-        $formattedData = [
-            'time' => $dataBin['time'],
-            'humantime' => date('Y-m-d H:i:s', (int) $dataBin['time']),
-
-        ];
-
-        foreach ($dataBin as $columnName => $columnValue) {
-            if ($columnName !== 'time') {
-                $formattedData[$columnName] = sprintf('%f', $columnValue);
-            }
-        }
-
-        return $formattedData;
     }
 }

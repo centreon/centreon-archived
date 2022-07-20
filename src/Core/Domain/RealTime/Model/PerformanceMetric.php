@@ -23,15 +23,17 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
+use DateTimeInterface;
+
 class PerformanceMetric
 {
     /**
      *
-     * @param \DateTimeImmutable $dateValue
+     * @param DateTimeInterface $dateValue
      * @param MetricValue[] $metricValues
      */
     public function __construct(
-        private \DateTimeImmutable $dateValue,
+        private DateTimeInterface $dateValue,
         private array $metricValues = []
     ) {
     }
@@ -49,10 +51,7 @@ class PerformanceMetric
         return $this->metricValues;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getDateValue(): \DateTimeImmutable
+    public function getDateValue(): DateTimeInterface
     {
         return $this->dateValue;
     }

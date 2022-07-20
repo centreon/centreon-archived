@@ -23,15 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
-use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\RealTime\Repository\ReadDataBinRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 
 class FindPerformanceMetrics
 {
-    use LoggerTrait;
-
     public function __construct(
         private ReadIndexDataRepositoryInterface $indexDataRepository,
         private ReadMetricRepositoryInterface $metricRepository,
@@ -48,14 +45,14 @@ class FindPerformanceMetrics
 
         $fileName = $this->generateDownloadFileNameByIndex($index);
 
-        $dataBin = $this->dataBinRepository->findDataByMetricsAndDates(
+        $performanceMetrics = $this->dataBinRepository->findDataByMetricsAndDates(
             $metrics,
             $request->startDate,
             $request->endDate
         );
 
         $presenter->setDownloadFileName($fileName);
-        $presenter->present(new FindPerformanceMetricResponse($dataBin));
+        $presenter->present(new FindPerformanceMetricResponse($performanceMetrics));
     }
 
     private function generateDownloadFileNameByIndex(int $index): string

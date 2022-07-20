@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -57,9 +58,10 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
     {
         $query = 'SELECT host_name, service_description FROM `:dbstg`.index_data WHERE id = :index';
         $statement = $this->db->prepare($this->translateDbName($query));
-
         $statement->bindValue(':index', $index, \PDO::PARAM_INT);
+
         $statement->execute();
+
         return $statement->fetch();
     }
 }

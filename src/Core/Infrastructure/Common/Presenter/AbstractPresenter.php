@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Common\Presenter;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\BodyResponseInterface;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class AbstractPresenter
 {
@@ -34,6 +34,9 @@ abstract class AbstractPresenter
      */
     protected array $responseHeaders = [];
 
+    /**
+     * @param array<string, string>
+     */
     public function setResponseHeaders(array $responseHeaders): void
     {
         $this->responseHeaders = $responseHeaders;

@@ -29,8 +29,6 @@ use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetr
 
 class DownloadPerformanceMetricsPresenter extends AbstractPresenter implements FindPerformanceMetricPresenterInterface
 {
-    private string $downloadFileName = '';
-
     /**
      * {@inheritDoc}
      * @param FindPerformanceMetricResponse $presentedData

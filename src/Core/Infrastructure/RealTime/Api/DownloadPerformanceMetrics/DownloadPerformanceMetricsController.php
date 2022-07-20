@@ -23,19 +23,21 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetrics;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricRequest;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class DownloadPerformanceMetricsController extends AbstractController
 {
     private const START_DATE_PARAMETER_NAME = 'start_date';
     private const END_DATE_PARAMETER_NAME = 'end_date';
-    private \DateTimeInterface $startDate;
-    private \DateTimeInterface $endDate;
+    private DateTimeInterface $startDate;
+    private DateTimeInterface $endDate;
     private Request $request;
     private FindPerformanceMetricRequest $performanceMetricRequest;
 
@@ -55,12 +57,6 @@ class DownloadPerformanceMetricsController extends AbstractController
         return $presenter->show();
     }
 
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return void
-     * @throws \Exception
-     */
     private function createPerformanceMetricRequest(int $hostId, int $serviceId): void
     {
         $this->findStartDate();
@@ -74,30 +70,17 @@ class DownloadPerformanceMetricsController extends AbstractController
         );
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
     private function findStartDate(): void
     {
         $this->startDate = $this->findDateInRequest(self::START_DATE_PARAMETER_NAME);
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
     private function findEndDate(): void
     {
         $this->endDate = $this->findDateInRequest(self::END_DATE_PARAMETER_NAME);
     }
 
-    /**
-     * @param string $parameterName
-     * @return \DateTimeInterface
-     * @throws \Exception
-     */
-    private function findDateInRequest(string $parameterName): \DateTimeInterface
+    private function findDateInRequest(string $parameterName): DateTimeImmutable
     {
         $dateParameter = $this->request->query->get($parameterName);
 
@@ -106,6 +89,6 @@ class DownloadPerformanceMetricsController extends AbstractController
             throw new \InvalidArgumentException($errorMessage);
         }
 
-        return new \DateTimeImmutable((string) $dateParameter);
+        return new DateTimeImmutable((string) $dateParameter);
     }
 }

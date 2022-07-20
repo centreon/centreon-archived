@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -22,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
-use \DateTimeInterface;
+use DateTimeInterface;
 
 class FindPerformanceMetricRequest
 {

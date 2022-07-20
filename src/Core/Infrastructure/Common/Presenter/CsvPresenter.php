@@ -23,19 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Common\Presenter;
 
-use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterface
 {
-    use LoggerTrait;
-
     private mixed $data = null;
-
-    public function __construct()
-    {
-    }
 
     public function present(mixed $data): void
     {
