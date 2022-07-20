@@ -2778,6 +2778,9 @@ function signalConfigurationChange(
                 findHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
             );
             break;
+        default:
+            throw new \Exception("Unknown resource type:" . $resourceType);
+            break;
     }
     $pollerIds = findPollersForConfigChangeFlagFromHostIds(
         $hostIds,

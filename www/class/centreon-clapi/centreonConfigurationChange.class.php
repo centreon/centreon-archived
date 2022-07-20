@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 CENTREON
+ * Copyright 2005-2022 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -51,7 +51,8 @@ class CentreonConfigurationChange
      */
     public function __construct(
         private \CentreonDB $db
-    ) {}
+    ) {
+    }
 
     /**
      * Return ids of hosts linked to hostgroups
