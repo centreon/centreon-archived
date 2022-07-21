@@ -29,5 +29,5 @@ interface ReadIndexDataRepositoryInterface
 {
     public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
 
-    public function findHostNameAndServiceDescriptionByIndex(int $index): IndexData|bool;
+    public function findHostNameAndServiceDescriptionByIndex(int $index): ?IndexData;
 }

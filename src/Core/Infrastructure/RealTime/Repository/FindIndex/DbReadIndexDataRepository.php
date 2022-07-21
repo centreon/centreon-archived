@@ -56,7 +56,7 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         return (int) $row['id'];
     }
 
-    public function findHostNameAndServiceDescriptionByIndex(int $index): IndexData|bool
+    public function findHostNameAndServiceDescriptionByIndex(int $index): ?IndexData
     {
         $query = 'SELECT host_name as hostName, service_description as serviceDescription ';
         $query .= ' FROM `:dbstg`.index_data WHERE id = :index';
@@ -65,6 +65,6 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_CLASS, IndexData::class);
 
-        return $statement->fetch();
+        return $statement->fetch() ?: null;
     }
 }
