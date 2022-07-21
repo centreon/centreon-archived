@@ -15,7 +15,7 @@ module.exports = defineConfig({
     setupNodeEvents: (on, config) => {
       addMatchImageSnapshotPlugin(on, config);
     },
-    specPattern: './www/front_src/src/**/*.cypress.spec.{ts,tsx}',
+    specPattern: './www/front_src/src/**/*.cypress.spec.tsx',
     supportFile: './cypress/support/component.tsx',
   },
   video: true,
