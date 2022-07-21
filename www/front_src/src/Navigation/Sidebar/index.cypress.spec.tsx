@@ -2,8 +2,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { useAtom } from 'jotai';
 
-import { mount } from '../../../../../cypress/support';
-
 import { selectedNavigationItemsAtom } from './sideBarAtoms';
 
 import SideBar from './index';
@@ -11,7 +9,7 @@ import SideBar from './index';
 describe('Navigation menu', () => {
   beforeEach(() => {
     cy.fixture('menuData').then((data) => {
-      mount(
+      cy.mount(
         <Router>
           <SideBar navigationData={data.result} />
         </Router>,
