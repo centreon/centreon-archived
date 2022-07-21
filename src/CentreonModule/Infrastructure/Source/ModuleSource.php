@@ -332,10 +332,10 @@ class ModuleSource extends SourceAbstract
 
             $dependencyDetails = $this->getDetail($dependency);
 
-            $dependencies = array_merge(
-                $dependencies,
-                $this->getSortedDependencies($dependencyDetails->getId(), $alreadyProcessed)
-            );
+            $dependencies = array_unique([
+                ...$this->getSortedDependencies($dependencyDetails->getId(), $alreadyProcessed),
+                ...$dependencies,
+            ]);
         }
 
         return $dependencies;
