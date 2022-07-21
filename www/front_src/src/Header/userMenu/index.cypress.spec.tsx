@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 import React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -33,6 +34,7 @@ describe('User Menu', () => {
   });
 
   it('matches the current snapshot "user menu"', () => {
+    expect('nouha').to.equal('Jane');
     cy.get('[data-testid=AccountCircleIcon]')
       .as('userIcon')
       .should('be.visible');
