@@ -126,7 +126,7 @@ class ModuleSource extends SourceAbstract
      */
     public function getList(string $search = null, bool $installed = null, bool $updated = null): array
     {
-        $files = $this->finder
+        $files = ($this->finder::create())
             ->files()
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
@@ -161,7 +161,7 @@ class ModuleSource extends SourceAbstract
             return $result;
         }
 
-        $files = $this->finder
+        $files = ($this->finder::create())
             ->files()
             ->name(static::CONFIG_FILE)
             ->depth('== 0')
