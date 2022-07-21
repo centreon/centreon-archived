@@ -142,12 +142,8 @@ print "<b>&nbsp;&nbsp;" . _("Media Detection") . "</b>";
         }
     }
 
-    /**
-     * @param $picture
-     * @param $dirpath
-     * @param $dir_id
-     * @param CentreonDB $pearDB
-     * @return int|mixed
+    /*
+     * inserts $dir_id/$picture into DB if not registered yet
      */
     function checkPicture($picture, $dirpath, $dir_id, $pearDB)
     {
@@ -207,7 +203,7 @@ print "<b>&nbsp;&nbsp;" . _("Media Detection") . "</b>";
             $statement->execute();
             return $data['img_id'];
         } else {
-            $data = $DBRESULT->fetchRow();
+            $data = $statement->fetchRow(\PDO::FETCH_ASSOC);
             return 0;
         }
     }
