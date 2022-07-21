@@ -55,35 +55,35 @@ describe('Navigation menu', () => {
     cy.matchImageSnapshot();
   });
 
-  it('highlights the menu item when double clicked', () => {
-    cy.get('li').eq(1).as('element').trigger('mouseover');
-    cy.get('@element').trigger('dblclick');
-    cy.matchImageSnapshot();
-  });
+  // it('highlights the menu item when double clicked', () => {
+  //   cy.get('li').eq(1).as('element').trigger('mouseover');
+  //   cy.get('@element').trigger('dblclick');
+  //   cy.matchImageSnapshot();
+  // });
 
-  it('highlights the parent item when the item is clicked', () => {
-    cy.get("[alt='mini logo']").click();
-    cy.get('li').eq(2).trigger('mouseover');
-    cy.get('[data-testid=ExpandMoreIcon]').should('be.visible');
-    cy.get('[data-cy=collapse]').as('collapse').should('be.visible');
-    cy.get('@collapse')
-      .find('ul')
-      .first()
-      .as('first_element_collapse')
-      .trigger('mouseover');
-    cy.get('@first_element_collapse')
-      .find('[data-testid=ExpandMoreIcon]')
-      .should('be.visible');
-    cy.get('@first_element_collapse')
-      .find('[data-cy=collapse]')
-      .as('second_collapse')
-      .should('be.visible');
-    cy.get('@second_collapse')
-      .find('ul')
-      .first()
-      .trigger('mouseover')
-      .trigger('click');
+  // it('highlights the parent item when the item is clicked', () => {
+  //   cy.get("[alt='mini logo']").click();
+  //   cy.get('li').eq(2).trigger('mouseover');
+  //   cy.get('[data-testid=ExpandMoreIcon]').should('be.visible');
+  //   cy.get('[data-cy=collapse]').as('collapse').should('be.visible');
+  //   cy.get('@collapse')
+  //     .find('ul')
+  //     .first()
+  //     .as('first_element_collapse')
+  //     .trigger('mouseover');
+  //   cy.get('@first_element_collapse')
+  //     .find('[data-testid=ExpandMoreIcon]')
+  //     .should('be.visible');
+  //   cy.get('@first_element_collapse')
+  //     .find('[data-cy=collapse]')
+  //     .as('second_collapse')
+  //     .should('be.visible');
+  //   cy.get('@second_collapse')
+  //     .find('ul')
+  //     .first()
+  //     .trigger('mouseover')
+  //     .trigger('click');
 
-    cy.matchImageSnapshot();
-  });
+  //   cy.matchImageSnapshot();
+  // });
 });
