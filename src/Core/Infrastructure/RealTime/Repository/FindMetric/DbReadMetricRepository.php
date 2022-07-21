@@ -23,9 +23,11 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\FindMetric;
 
+use PDO;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Domain\RealTime\Model\Metric;
 
 class DbReadMetricRepository extends AbstractRepositoryDRB implements ReadMetricRepositoryInterface
 {
@@ -37,14 +39,18 @@ class DbReadMetricRepository extends AbstractRepositoryDRB implements ReadMetric
         $this->db = $db;
     }
 
+    /**
+     * @return array<Metric>
+     */
     public function findMetricsByIndexId(int $indexId): array
     {
-        $query = 'SELECT DISTINCT metric_id, metric_name FROM `:dbstg`.metrics, `:dbstg`.index_data ';
+        $query = 'SELECT DISTINCT metric_id as id, metric_name as name FROM `:dbstg`.metrics, `:dbstg`.index_data ';
         $query .= ' WHERE metrics.index_id = index_data.id AND id = :index_id ORDER BY metric_id';
         $statement = $this->db->prepare($this->translateDbName($query));
         $statement->bindValue(':index_id', $indexId, \PDO::PARAM_INT);
         $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, Metric::class);
 
-        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return $statement->fetchAll();
     }
 }

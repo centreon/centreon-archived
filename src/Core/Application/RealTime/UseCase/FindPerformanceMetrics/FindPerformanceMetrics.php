@@ -26,6 +26,7 @@ namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 use Core\Application\RealTime\Repository\ReadPerformanceDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
+use Core\Domain\RealTime\Model\IndexData;
 
 class FindPerformanceMetrics
 {
@@ -43,29 +44,32 @@ class FindPerformanceMetrics
         $index = $this->indexDataRepository->findIndexByHostIdAndServiceId($request->hostId, $request->serviceId);
         $metrics = $this->metricRepository->findMetricsByIndexId($index);
 
-        $fileName = $this->generateDownloadFileNameByIndex($index);
-
         $performanceMetrics = $this->performanceDataRepository->findDataByMetricsAndDates(
             $metrics,
             $request->startDate,
             $request->endDate
         );
 
+        $fileName = $this->generateDownloadFileNameByIndex($index);
         $presenter->setDownloadFileName($fileName);
         $presenter->present(new FindPerformanceMetricResponse($performanceMetrics));
     }
 
     private function generateDownloadFileNameByIndex(int $index): string
     {
-        $row = $this->indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
+        $indexData = $this->indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);
 
-        $hostName = $row['host_name'];
-        $serviceDescription = $row['service_description'];
-
-        if ($hostName !== '' && $serviceDescription !== '') {
-            return sprintf('%s_%s.csv', $hostName, $serviceDescription);
+        if (!$indexData instanceof IndexData) {
+            return (string) $index;
         }
 
-        return sprintf('%s.csv', $index);
+        $hostName = $indexData->getHostName();
+        $serviceDescription = $indexData->getServiceDescription();
+
+        if ($hostName !== '' && $serviceDescription !== '') {
+            return sprintf('%s_%s', $hostName, $serviceDescription);
+        }
+
+        return (string) $index;
     }
 }

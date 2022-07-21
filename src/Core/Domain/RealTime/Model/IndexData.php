@@ -21,13 +21,30 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\IndexData;
-
-interface ReadIndexDataRepositoryInterface
+class IndexData
 {
-    public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
+    private string $hostName;
+    private string $serviceDescription;
 
-    public function findHostNameAndServiceDescriptionByIndex(int $index): IndexData|bool;
+    public function setHostName(string $hostName): void
+    {
+        $this->hostName = $hostName;
+    }
+
+    public function getHostName(): string
+    {
+        return $this->hostName;
+    }
+
+    public function setServiceDescription(string $serviceDescription): void
+    {
+        $this->serviceDescription = $serviceDescription;
+    }
+
+    public function getServiceDescription(): string
+    {
+        return $this->serviceDescription;
+    }
 }

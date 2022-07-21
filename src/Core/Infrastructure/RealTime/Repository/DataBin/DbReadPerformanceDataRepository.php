@@ -45,11 +45,11 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
     /**
      * Retrieves raw data_bin with filters
      *
-     * @param  array<int, string> $metricsNames
+     * @param  array<Metric> $metrics
      * @return iterable<PerformanceMetric>
      */
     public function findDataByMetricsAndDates(
-        array $metricsNames,
+        array $metrics,
         DateTimeInterface $startDate,
         DateTimeInterface $endDate
     ): iterable {
@@ -57,8 +57,8 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 
         $columns = ['ctime AS time'];
-        foreach ($metricsNames as $metricId => $metricName) {
-            $columns[] = sprintf('AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s', $metricId, $metricName);
+        foreach ($metrics as $metric) {
+            $columns[] = sprintf('AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s', $metric->getId(), $metric->getName());
         }
 
         $query = sprintf(
@@ -80,7 +80,7 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
     }
 
     /**
-     * @param array<string, int|string>
+     * @param array<string, int|string> $dataBin
      */
     private function createPerformanceMetricFromDataBin(array $dataBin): PerformanceMetric
     {

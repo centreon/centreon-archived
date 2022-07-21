@@ -24,12 +24,13 @@ declare(strict_types=1);
 namespace Core\Application\RealTime\Repository;
 
 use DateTimeInterface;
+use Core\Domain\RealTime\Model\Metric;
 use Core\Domain\RealTime\Model\PerformanceMetric;
 
 interface ReadPerformanceDataRepositoryInterface
 {
     /**
-     * @param array<int, string> $metrics
+     * @param  array<Metric> $metrics
      * @param DateTimeInterface $startDate
      * @param DateTimeInterface $endDate
      * @return iterable<PerformanceMetric>

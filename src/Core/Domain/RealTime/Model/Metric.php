@@ -21,13 +21,30 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\IndexData;
-
-interface ReadIndexDataRepositoryInterface
+class Metric
 {
-    public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
+    private int $id;
+    private string $name;
 
-    public function findHostNameAndServiceDescriptionByIndex(int $index): IndexData|bool;
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

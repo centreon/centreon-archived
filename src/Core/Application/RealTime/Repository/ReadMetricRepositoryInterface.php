@@ -23,10 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Repository;
 
+use Core\Domain\RealTime\Model\Metric;
+
 interface ReadMetricRepositoryInterface
 {
     /**
-     * @return array<int,string>
+     * @return array<Metric>
      */
     public function findMetricsByIndexId(int $indexId): array;
 }
