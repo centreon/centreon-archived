@@ -33,17 +33,26 @@ describe('User Menu', () => {
     );
   });
 
-  it('matches the current snapshot "user menu"', () => {
-    expect('nouha').to.equal('Jane');
-    cy.get('[data-testid=AccountCircleIcon]')
-      .as('userIcon')
-      .should('be.visible');
+  it.only('matches the current snapshot "user menu"', () => {
+    // Cypress.on('fail', (e) => {
+    //   console.error(e);
+    // });
 
-    cy.get('[data-cy=clock]').as('clock').should('be.visible');
-    cy.get('@clock').contains('April 28,2022');
-    cy.get('@clock').contains('4:20 PM');
+    expect(5).to.equal(90);
 
-    cy.matchImageSnapshot();
+    // cy.on('fail', (e) => {
+    //   console.error(e);
+    // });
+
+    // cy.get('[data-testid=AccountCircleIcon]')
+    //   .as('userIcon')
+    //   .should('be.visible');
+
+    // cy.get('[data-cy=clock]').as('clock').should('be.visible');
+    // cy.get('@clock').contains('April 28,2022');
+    // cy.get('@clock').contains('4:20 PM');
+
+    // cy.matchImageSnapshot();
   });
 
   it('expands the popper when the user icon is clicked', () => {
