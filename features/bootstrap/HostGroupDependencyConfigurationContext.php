@@ -8,43 +8,9 @@ class HostGroupDependencyConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'hostGroupDependencyName',
-        'description' => 'hostGroupDependencyAlias',
-        'parent_relationship' => 0,
-        'execution_fails_on_none' => 1,
-        'execution_fails_on_ok' => 0,
-        'execution_fails_on_down' => 0,
-        'execution_fails_on_unreachable' => 0,
-        'execution_fails_on_pending' => 0,
-        'notification_fails_on_ok' => 1,
-        'notification_fails_on_down' => 1,
-        'notification_fails_on_unreachable' => 1,
-        'notification_fails_on_pending' => 1,
-        'notification_fails_on_none' => 0,
-        'host_groups' => 'Firewall',
-        'dependent_host_groups' => 'Windows-Servers',
-        'comment' => 'hostGroupDependencyComment'
-    );
+    protected $initialProperties = ['name' => 'hostGroupDependencyName', 'description' => 'hostGroupDependencyAlias', 'parent_relationship' => 0, 'execution_fails_on_none' => 1, 'execution_fails_on_ok' => 0, 'execution_fails_on_down' => 0, 'execution_fails_on_unreachable' => 0, 'execution_fails_on_pending' => 0, 'notification_fails_on_ok' => 1, 'notification_fails_on_down' => 1, 'notification_fails_on_unreachable' => 1, 'notification_fails_on_pending' => 1, 'notification_fails_on_none' => 0, 'host_groups' => 'Firewall', 'dependent_host_groups' => 'Windows-Servers', 'comment' => 'hostGroupDependencyComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'hostGroupDependencyNameChanged',
-        'description' => 'hostGroupDependencyDescriptionChanged',
-        'parent_relationship' => 1,
-        'execution_fails_on_ok' => 1,
-        'execution_fails_on_down' => 1,
-        'execution_fails_on_unreachable' => 1,
-        'execution_fails_on_pending' => 1,
-        'execution_fails_on_none' => 0,
-        'notification_fails_on_none' => 1,
-        'notification_fails_on_ok' => 0,
-        'notification_fails_on_down' => 0,
-        'notification_fails_on_unreachable' => 0,
-        'notification_fails_on_pending' => 0,
-        'host_groups' => 'Unix-Servers',
-        'dependent_host_groups' => 'Routers',
-        'comment' => 'hostGroupDependencyCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'hostGroupDependencyNameChanged', 'description' => 'hostGroupDependencyDescriptionChanged', 'parent_relationship' => 1, 'execution_fails_on_ok' => 1, 'execution_fails_on_down' => 1, 'execution_fails_on_unreachable' => 1, 'execution_fails_on_pending' => 1, 'execution_fails_on_none' => 0, 'notification_fails_on_none' => 1, 'notification_fails_on_ok' => 0, 'notification_fails_on_down' => 0, 'notification_fails_on_unreachable' => 0, 'notification_fails_on_pending' => 0, 'host_groups' => 'Unix-Servers', 'dependent_host_groups' => 'Routers', 'comment' => 'hostGroupDependencyCommentChanged'];
 
     /**
      * @Given a host group dependency is configured
@@ -72,7 +38,7 @@ class HostGroupDependencyConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -89,12 +55,12 @@ class HostGroupDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -118,7 +84,7 @@ class HostGroupDependencyConfigurationContext extends CentreonContext
      */
     public function theNewObjectHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -135,12 +101,12 @@ class HostGroupDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

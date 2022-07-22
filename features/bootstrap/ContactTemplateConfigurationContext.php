@@ -8,69 +8,9 @@ class ContactTemplateConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'alias' => 'contactTemplateAlias',
-        'name' => 'contactTemplateName',
-        'contact_template' => 'contact_template',
-        'notifications_enabled' => 1,
-        'host_notification_on_down' => 1,
-        'host_notification_on_unreachable' => 1,
-        'host_notification_on_recovery' => 1,
-        'host_notification_on_flapping' => 1,
-        'host_notification_on_downtime_scheduled' => 1,
-        'host_notification_on_none' => 0,
-        'host_notification_period' => '24x7',
-        'host_notification_command' => 'service-notify-by-email',
-        'service_notification_on_none' => 1,
-        'service_notification_on_warning' => 0,
-        'service_notification_on_unknown' => 0,
-        'service_notification_on_critical' => 0,
-        'service_notification_on_recovery' => 0,
-        'service_notification_on_flapping' => 0,
-        'service_notification_on_downtime_scheduled' => 0,
-        'service_notification_period' => 'none',
-        'service_notification_command' => 'host-notify-by-email',
-        'address1' => '1@localhost',
-        'address2' => '2@localhost',
-        'address3' => '3@localhost',
-        'address4' => '4@localhost',
-        'address5' => '5@localhost',
-        'address6' => '6@localhost',
-        'enabled' => 1,
-        'comments' => 'contactTemplateComments'
-    );
+    protected $initialProperties = ['alias' => 'contactTemplateAlias', 'name' => 'contactTemplateName', 'contact_template' => 'contact_template', 'notifications_enabled' => 1, 'host_notification_on_down' => 1, 'host_notification_on_unreachable' => 1, 'host_notification_on_recovery' => 1, 'host_notification_on_flapping' => 1, 'host_notification_on_downtime_scheduled' => 1, 'host_notification_on_none' => 0, 'host_notification_period' => '24x7', 'host_notification_command' => 'service-notify-by-email', 'service_notification_on_none' => 1, 'service_notification_on_warning' => 0, 'service_notification_on_unknown' => 0, 'service_notification_on_critical' => 0, 'service_notification_on_recovery' => 0, 'service_notification_on_flapping' => 0, 'service_notification_on_downtime_scheduled' => 0, 'service_notification_period' => 'none', 'service_notification_command' => 'host-notify-by-email', 'address1' => '1@localhost', 'address2' => '2@localhost', 'address3' => '3@localhost', 'address4' => '4@localhost', 'address5' => '5@localhost', 'address6' => '6@localhost', 'enabled' => 1, 'comments' => 'contactTemplateComments'];
 
-    protected $updatedProperties = array(
-        'alias' => 'contactTemplateAliasChanged',
-        'name' => 'contactTemplateNameChanged',
-        'contact_template' => 'contact_template',
-        'notifications_enabled' => 0,
-        'host_notification_on_none' => 1,
-        'host_notification_on_down' => 0,
-        'host_notification_on_unreachable' => 0,
-        'host_notification_on_recovery' => 0,
-        'host_notification_on_flapping' => 0,
-        'host_notification_on_downtime_scheduled' => 0,
-        'host_notification_period' => 'nonworkhours',
-        'host_notification_command' => 'service-notify-by-epager',
-        'service_notification_on_warning' => 1,
-        'service_notification_on_unknown' => 1,
-        'service_notification_on_critical' => 1,
-        'service_notification_on_recovery' => 1,
-        'service_notification_on_flapping' => 1,
-        'service_notification_on_none' => 0,
-        'service_notification_on_downtime_scheduled' => 1,
-        'service_notification_period' => 'workhours',
-        'service_notification_command' => 'service-notify-by-jabber',
-        'address1' => '7@localhost',
-        'address2' => '8@localhost',
-        'address3' => '9@localhost',
-        'address4' => '10@localhost',
-        'address5' => '11@localhost',
-        'address6' => '12@localhost',
-        'enabled' => 1,
-        'comments' => 'contactTemplateCommentsChanged'
-    );
+    protected $updatedProperties = ['alias' => 'contactTemplateAliasChanged', 'name' => 'contactTemplateNameChanged', 'contact_template' => 'contact_template', 'notifications_enabled' => 0, 'host_notification_on_none' => 1, 'host_notification_on_down' => 0, 'host_notification_on_unreachable' => 0, 'host_notification_on_recovery' => 0, 'host_notification_on_flapping' => 0, 'host_notification_on_downtime_scheduled' => 0, 'host_notification_period' => 'nonworkhours', 'host_notification_command' => 'service-notify-by-epager', 'service_notification_on_warning' => 1, 'service_notification_on_unknown' => 1, 'service_notification_on_critical' => 1, 'service_notification_on_recovery' => 1, 'service_notification_on_flapping' => 1, 'service_notification_on_none' => 0, 'service_notification_on_downtime_scheduled' => 1, 'service_notification_period' => 'workhours', 'service_notification_command' => 'service-notify-by-jabber', 'address1' => '7@localhost', 'address2' => '8@localhost', 'address3' => '9@localhost', 'address4' => '10@localhost', 'address5' => '11@localhost', 'address6' => '12@localhost', 'enabled' => 1, 'comments' => 'contactTemplateCommentsChanged'];
 
     /**
      * @Given a service template is configured
@@ -98,7 +38,7 @@ class ContactTemplateConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -115,12 +55,12 @@ class ContactTemplateConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -144,7 +84,7 @@ class ContactTemplateConfigurationContext extends CentreonContext
      */
     public function theNewServiceTemplateHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -164,12 +104,12 @@ class ContactTemplateConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

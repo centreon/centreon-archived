@@ -34,7 +34,7 @@ class FindMetaServiceMetricsResponse
     /**
      * @var array<int, array<string, mixed>>
      */
-    private $metaServiceMetrics = [];
+    private array $metaServiceMetrics = [];
 
     /**
      * @param MetaServiceMetric[] $metaServiceMetrics

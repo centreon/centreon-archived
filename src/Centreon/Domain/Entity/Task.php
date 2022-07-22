@@ -9,153 +9,104 @@ class Task implements EntityInterface
     /**
      * Task types
      */
-    public const TYPE_EXPORT = 'export';
-    public const TYPE_IMPORT = 'import';
-    public const TYPE_VERIFY = 'verify';
+    final public const TYPE_EXPORT = 'export';
+    final public const TYPE_IMPORT = 'import';
+    final public const TYPE_VERIFY = 'verify';
 
     /**
      * Task states
      */
-    public const STATE_PENDING = 'pending';
-    public const STATE_PROGRESS = 'inprogress';
-    public const STATE_COMPLETED = 'completed';
-    public const STATE_FAILED = 'failed';
+    final public const STATE_PENDING = 'pending';
+    final public const STATE_PROGRESS = 'inprogress';
+    final public const STATE_COMPLETED = 'completed';
+    final public const STATE_FAILED = 'failed';
 
     /**
      * Task type
-     * @var string
      */
-    private $type;
+    private ?string $type = null;
 
     /**
      * Autoincrement ID
-     * @var integer
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * Task status
-     * @var string
      */
-    private $status;
+    private ?string $status = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
+    private \DateTime $createdAt;
 
-    /**
-     * @var int
-     */
-    private $parent_id;
+    private ?int $parent_id = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $completedAt;
+    private ?\DateTime $completedAt = null;
 
     /**
      * Parameters to be serialized into DB that define task options
-     * @var string
      */
-    private $params;
+    private ?string $params = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     */
     public function setType(string $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return string
-     */
     public function getStatus(): string
     {
         return $this->status;
     }
 
-    /**
-     * @param string $status
-     */
     public function setStatus(string $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param \DateTime $createdAt
-     */
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getCompletedAt(): \DateTime
     {
         return $this->completedAt;
     }
 
-    /**
-     * @param \DateTime $completedAt
-     */
     public function setCompletedAt(\DateTime $completedAt): void
     {
         $this->completedAt = $completedAt;
     }
 
-    /**
-     * @return string
-     */
     public function getParams(): string
     {
         return $this->params;
     }
 
-    /**
-     * @param string $params
-     */
     public function setParams(string $params): void
     {
         $this->params = $params;
@@ -198,11 +149,9 @@ class Task implements EntityInterface
      */
     public function getStatuses()
     {
-        $ref = new ReflectionClass(__CLASS__);
+        $ref = new ReflectionClass(self::class);
         $constants = $ref->getConstants();
-        $statusConstants = $this->arrayFilterKey($constants, function ($key) {
-            return strpos($key, 'STATE_') === 0;
-        });
+        $statusConstants = $this->arrayFilterKey($constants, fn($key) => str_starts_with($key, 'STATE_'));
         $statuses = [];
         foreach ($statusConstants as $stKey => $stConstant) {
             $statuses[] = $ref->getConstant($stKey);
@@ -230,7 +179,7 @@ class Task implements EntityInterface
 
         $filteredKeys = array_filter(array_keys($input), $callback);
         if (empty($filteredKeys)) {
-            return array();
+            return [];
         }
 
         $input = array_intersect_key(array_flip($filteredKeys), $input);

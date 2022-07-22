@@ -29,51 +29,51 @@ namespace Centreon\Domain\Monitoring;
  */
 class ResourceFilter
 {
-    public const TYPE_SERVICE = 'service';
-    public const TYPE_HOST = 'host';
-    public const TYPE_META = 'metaservice';
+    final public const TYPE_SERVICE = 'service';
+    final public const TYPE_HOST = 'host';
+    final public const TYPE_META = 'metaservice';
 
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime
      */
-    public const STATE_UNHANDLED_PROBLEMS = 'unhandled_problems';
+    final public const STATE_UNHANDLED_PROBLEMS = 'unhandled_problems';
 
     /**
      * Non-ok status in hard state
      */
-    public const STATE_RESOURCES_PROBLEMS = 'resources_problems';
+    final public const STATE_RESOURCES_PROBLEMS = 'resources_problems';
 
     /**
      * Resources in downtime
      */
-    public const STATE_IN_DOWNTIME = 'in_downtime';
+    final public const STATE_IN_DOWNTIME = 'in_downtime';
 
     /**
      * Acknowledged resources
      */
-    public const STATE_ACKNOWLEDGED = 'acknowledged';
+    final public const STATE_ACKNOWLEDGED = 'acknowledged';
 
     /**
      * All status & resources
      */
-    public const STATE_ALL = 'all';
+    final public const STATE_ALL = 'all';
 
-    public const STATUS_OK = 'OK';
-    public const STATUS_UP = 'UP';
-    public const STATUS_WARNING = 'WARNING';
-    public const STATUS_DOWN = 'DOWN';
-    public const STATUS_CRITICAL = 'CRITICAL';
-    public const STATUS_UNREACHABLE = 'UNREACHABLE';
-    public const STATUS_UNKNOWN = 'UNKNOWN';
-    public const STATUS_PENDING = 'PENDING';
+    final public const STATUS_OK = 'OK';
+    final public const STATUS_UP = 'UP';
+    final public const STATUS_WARNING = 'WARNING';
+    final public const STATUS_DOWN = 'DOWN';
+    final public const STATUS_CRITICAL = 'CRITICAL';
+    final public const STATUS_UNREACHABLE = 'UNREACHABLE';
+    final public const STATUS_UNKNOWN = 'UNKNOWN';
+    final public const STATUS_PENDING = 'PENDING';
 
     /**
      * Available state types
      */
-    public const HARD_STATUS_TYPE = 'hard';
-    public const SOFT_STATUS_TYPE = 'soft';
+    final public const HARD_STATUS_TYPE = 'hard';
+    final public const SOFT_STATUS_TYPE = 'soft';
 
-    public const MAP_STATUS_SERVICE = [
+    final public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
         self::STATUS_WARNING => 1,
         self::STATUS_CRITICAL => 2,
@@ -81,14 +81,14 @@ class ResourceFilter
         self::STATUS_PENDING => 4,
     ];
 
-    public const MAP_STATUS_HOST = [
+    final public const MAP_STATUS_HOST = [
         self::STATUS_UP => 0,
         self::STATUS_DOWN => 1,
         self::STATUS_UNREACHABLE => 2,
         self::STATUS_PENDING => 4,
     ];
 
-    public const MAP_STATUS_TYPES = [
+    final public const MAP_STATUS_TYPES = [
         self::HARD_STATUS_TYPE => 1,
         self::SOFT_STATUS_TYPE => 0,
     ];
@@ -96,67 +96,64 @@ class ResourceFilter
     /**
      * @var string[]
      */
-    private $types = [];
+    private array $types = [];
 
     /**
      * @var string[]
      */
-    private $states = [];
+    private array $states = [];
 
     /**
      * @var string[]
      */
-    private $statuses = [];
+    private array $statuses = [];
 
     /**
      * @var string[]
      */
-    private $hostgroupNames = [];
+    private array $hostgroupNames = [];
 
     /**
      * @var string[]
      */
-    private $servicegroupNames = [];
+    private array $servicegroupNames = [];
 
     /**
      * @var string[]
      */
-    private $monitoringServerNames = [];
+    private array $monitoringServerNames = [];
 
     /**
      * @var string[]
      */
-    private $serviceCategoryNames = [];
+    private array $serviceCategoryNames = [];
 
     /**
      * @var string[]
      */
-    private $hostCategoryNames = [];
+    private array $hostCategoryNames = [];
 
     /**
      * @var int[]
      */
-    private $hostIds = [];
+    private array $hostIds = [];
 
     /**
      * @var int[]
      */
-    private $serviceIds = [];
+    private array $serviceIds = [];
 
     /**
      * @var int[]
      */
-    private $metaServiceIds = [];
+    private array $metaServiceIds = [];
 
-    /**
-     * @var boolean
-     */
-    private $onlyWithPerformanceData = false;
+    private bool $onlyWithPerformanceData = false;
 
     /**
      * @var string[]
      */
-    private $statusTypes = [];
+    private array $statusTypes = [];
 
     /**
      * Transform result by map
@@ -180,10 +177,6 @@ class ResourceFilter
         return $result;
     }
 
-    /**
-     * @param string $type
-     * @return bool
-     */
     public function hasType(string $type): bool
     {
         return in_array($type, $this->types);
@@ -199,7 +192,6 @@ class ResourceFilter
 
     /**
      * @param string[] $types
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setTypes(array $types): self
     {
@@ -208,10 +200,6 @@ class ResourceFilter
         return $this;
     }
 
-    /**
-     * @param string $state
-     * @return bool
-     */
     public function hasState(string $state): bool
     {
         return in_array($state, $this->states);
@@ -227,7 +215,6 @@ class ResourceFilter
 
     /**
      * @param string[] $states
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setStates(array $states): self
     {
@@ -236,10 +223,6 @@ class ResourceFilter
         return $this;
     }
 
-    /**
-     * @param string $status
-     * @return bool
-     */
     public function hasStatus(string $status): bool
     {
         return in_array($status, $this->statuses);
@@ -255,7 +238,6 @@ class ResourceFilter
 
     /**
      * @param string[] $statuses
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setStatuses(array $statuses): self
     {
@@ -274,7 +256,6 @@ class ResourceFilter
 
     /**
      * @param string[] $hostgroupNames
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setHostgroupNames(array $hostgroupNames): self
     {
@@ -293,7 +274,6 @@ class ResourceFilter
 
     /**
      * @param string[] $monitoringServerNames
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setMonitoringServerNames(array $monitoringServerNames): self
     {
@@ -312,7 +292,6 @@ class ResourceFilter
 
     /**
      * @param string[] $servicegroupNames
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setServicegroupNames(array $servicegroupNames): self
     {
@@ -331,7 +310,6 @@ class ResourceFilter
 
     /**
      * @param int[] $hostIds
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setHostIds(array $hostIds): self
     {
@@ -356,7 +334,6 @@ class ResourceFilter
 
     /**
      * @param int[] $serviceIds
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setServiceIds(array $serviceIds): self
     {
@@ -381,7 +358,6 @@ class ResourceFilter
 
     /**
      * @param int[] $metaServiceIds
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
     public function setMetaServiceIds(array $metaServiceIds): self
     {
@@ -396,19 +372,12 @@ class ResourceFilter
         return $this;
     }
 
-    /**
-     * @param boolean $onlyWithPerformanceData
-     * @return \Centreon\Domain\Monitoring\ResourceFilter
-     */
     public function setOnlyWithPerformanceData(bool $onlyWithPerformanceData): self
     {
         $this->onlyWithPerformanceData = $onlyWithPerformanceData;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function getOnlyWithPerformanceData(): bool
     {
         return $this->onlyWithPerformanceData;
@@ -424,7 +393,6 @@ class ResourceFilter
 
     /**
      * @param string[] $statusTypes
-     * @return self
      */
     public function setStatusTypes(array $statusTypes): self
     {
@@ -434,7 +402,6 @@ class ResourceFilter
 
     /**
      * @param string[] $serviceCategoryNames
-     * @return self
      */
     public function setServiceCategoryNames(array $serviceCategoryNames): self
     {
@@ -452,7 +419,6 @@ class ResourceFilter
 
     /**
      * @param string[] $hostCategoryNames
-     * @return self
      */
     public function setHostCategoryNames(array $hostCategoryNames): self
     {

@@ -31,10 +31,8 @@ class ExportService
 {
     /**
      * Path to store exported remote server files
-     *
-     * @var string
      */
-    private $pathExportedData;
+    private readonly string $pathExportedData;
 
     /**
      * @var \CentreonRemote\Infrastructure\Service\ExporterService
@@ -81,7 +79,6 @@ class ExportService
     /**
      * Export all that is registered in exporter
      *
-     * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      *
      * @throws \Exception
      * @todo separate work of exporters
@@ -109,13 +106,12 @@ class ExportService
     /**
      * Import
      *
-     * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      *
      * @throws \Exception
      */
     public function import(ExportCommitment $commitment = null): void
     {
-        $commitment = $commitment ?? new ExportCommitment(null, null, null, null, $this->pathExportedData);
+        $commitment ??= new ExportCommitment(null, null, null, null, $this->pathExportedData);
 
         // check is export directory
         $exportPath = $commitment->getPath();

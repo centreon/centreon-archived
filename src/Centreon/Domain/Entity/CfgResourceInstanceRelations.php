@@ -5,17 +5,13 @@ class CfgResourceInstanceRelations
 {
     /**
      * Relation with cfg_resource.id
-     *
-     * @var int
      */
-    private $resourceId;
+    private ?int $resourceId = null;
 
     /**
      * Relation with nagios_server.id
-     *
-     * @var int
      */
-    private $instanceId;
+    private ?int $instanceId = null;
 
     public function setResourceId(int $resourceId): void
     {

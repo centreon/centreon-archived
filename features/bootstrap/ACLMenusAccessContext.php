@@ -10,49 +10,15 @@ class ACLMenusAccessContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = array(
-        'acl_name' => 'aclMenu',
-        'acl_alias' => 'aclMenuAlias',
-        'acl_groups' => array(
-            'aclGroup1',
-            'aclGroup2'
-        ),
-        'menu_home' => 1,
-        'menu_monitoring' => 1,
-        'menu_reporting' => 1,
-        'menu_configuration' => 1,
-        'menu_administration' => 1,
-        'comments' => 'aclMenuComment'
-    );
+    private array $initialProperties = ['acl_name' => 'aclMenu', 'acl_alias' => 'aclMenuAlias', 'acl_groups' => ['aclGroup1', 'aclGroup2'], 'menu_home' => 1, 'menu_monitoring' => 1, 'menu_reporting' => 1, 'menu_configuration' => 1, 'menu_administration' => 1, 'comments' => 'aclMenuComment'];
 
-    private $updatedProperties = array(
-        'acl_name' => 'aclMenu_1',
-        'acl_alias' => 'aclMenuAlias',
-        'acl_groups' => array(
-            'aclGroup1',
-            'aclGroup2'
-        ),
-        'menu_home' => 1,
-        'menu_monitoring' => 1,
-        'menu_configuration' => 1,
-        'menu_administration' => 1,
-        'comments' => 'aclMenuComment'
-    );
+    private array $updatedProperties = ['acl_name' => 'aclMenu_1', 'acl_alias' => 'aclMenuAlias', 'acl_groups' => ['aclGroup1', 'aclGroup2'], 'menu_home' => 1, 'menu_monitoring' => 1, 'menu_configuration' => 1, 'menu_administration' => 1, 'comments' => 'aclMenuComment'];
 
-    private $aclGroup1 = array(
-        'group_name' => 'aclGroup1',
-        'group_alias' => 'aclGroup1'
-    );
+    private array $aclGroup1 = ['group_name' => 'aclGroup1', 'group_alias' => 'aclGroup1'];
 
-    private $aclGroup2 = array(
-        'group_name' => 'aclGroup2',
-        'group_alias' => 'aclGroup2'
-    );
+    private array $aclGroup2 = ['group_name' => 'aclGroup2', 'group_alias' => 'aclGroup2'];
 
-    private $aclGroup3 = array(
-        'group_name' => 'aclGroup3',
-        'group_alias' => 'aclGroup3'
-    );
+    private array $aclGroup3 = ['group_name' => 'aclGroup3', 'group_alias' => 'aclGroup3'];
 
     /**
      * @Given three ACL access groups have been created
@@ -85,7 +51,7 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function theMenuAccessIsSavedWithItsProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -102,12 +68,12 @@ class ACLMenusAccessContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -118,7 +84,7 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function onlyChosenLinkedAccessGroupsDisplayTheNewMenuAccessInAuthorizedInformationTab()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -137,15 +103,15 @@ class ACLMenusAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup3['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['menu']) != 0) {
+                    if ((is_countable($object['menu']) ? count($object['menu']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup3['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some acl_group are not being correctly updated",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some acl_groups are not being correctly updated : " . implode(',', $this->tableau));
         }
@@ -168,9 +134,7 @@ class ACLMenusAccessContext extends CentreonContext
     {
         $this->currentPage = new ACLMenuConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
-        $this->currentPage->setProperties(array(
-            'acl_groups' => $this->aclGroup1['group_name']
-        ));
+        $this->currentPage->setProperties(['acl_groups' => $this->aclGroup1['group_name']]);
         $this->currentPage->save();
     }
 
@@ -179,7 +143,7 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function linkBetweenAccessGroupAndMenuAccessMustBeBroken()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -198,15 +162,15 @@ class ACLMenusAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['menu']) != 0) {
+                    if ((is_countable($object['menu']) ? count($object['menu']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some objects are not being updated",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some objects are not being updated : " . implode(',', $this->tableau));
         }
@@ -240,7 +204,7 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function aNewMenuAccessIsCreatedWithIdenticalPropertiesExceptTheName()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -254,7 +218,7 @@ class ACLMenusAccessContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    if (count($object['acl_groups']) != 2 || $object['acl_groups'][0] != $this->aclGroup1['group_name']
+                    if ((is_countable($object['acl_groups']) ? count($object['acl_groups']) : 0) != 2 || $object['acl_groups'][0] != $this->aclGroup1['group_name']
                         || $object['acl_groups'][1] != $this->aclGroup2['group_name']
                     ) {
                         $this->tableau[] = $this->updatedProperties['acl_name'];
@@ -270,17 +234,17 @@ class ACLMenusAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['menu']) != 2 || $object['menu'][0] != $this->initialProperties['acl_name']
+                    if ((is_countable($object['menu']) ? count($object['menu']) : 0) != 2 || $object['menu'][0] != $this->initialProperties['acl_name']
                         || $object['menu'][1] != $this->updatedProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some objects are not being updated",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some objects are not being updated : " . implode(',', $this->tableau));
         }
@@ -368,28 +332,28 @@ class ACLMenusAccessContext extends CentreonContext
      */
     public function theLinkWithAccessGroupIsBroken()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['menu']) != 0) {
+                    if ((is_countable($object['menu']) ? count($object['menu']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['menu']) != 0) {
+                    if ((is_countable($object['menu']) ? count($object['menu']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some links to the ACL Menu are not being deleted.",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some links to the ACL Menu are not being deleted. : " . implode(',', $this->tableau));
         }

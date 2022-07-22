@@ -50,12 +50,6 @@ class Widget
     
     /**
      *
-     * @var string
-     */
-    protected $widgetName;
-    
-    /**
-     *
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
@@ -67,12 +61,6 @@ class Widget
     protected $widgetConfiguration;
     
     /**
-     *
-     * @var Pimple\Container
-     */
-    protected $services;
-    
-    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
@@ -81,14 +69,12 @@ class Widget
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
     public function __construct(
-        ContainerInterface $services,
+        protected ContainerInterface $services,
+        protected $widgetName,
         Information $informationObj = null,
-        $widgetName,
         Utils $utils = null
     ) {
-        $this->services = $services;
         $this->informationObj = $informationObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION);
-        $this->widgetName = $widgetName;
         $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
         $this->widgetConfiguration = $this->informationObj->getConfiguration($this->widgetName);
     }

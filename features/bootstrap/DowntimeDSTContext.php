@@ -19,14 +19,7 @@ class DowntimeDSTContext extends CentreonContext
     {
         $this->page = new RecurrentDowntimeConfigurationPage($this);
 
-        $this->page->setProperties(array(
-            'name' => 'test',
-            'alias' => $this->service,
-            'days' => array(7, 1, 2, 3, 4, 5, 6),
-            'start' => $this->downtimeProperties['start_time'],
-            'end' => $this->downtimeProperties['end_time'],
-            'svc_relation' => $this->host . ' - ' . $this->service
-        ));
+        $this->page->setProperties(['name' => 'test', 'alias' => $this->service, 'days' => [7, 1, 2, 3, 4, 5, 6], 'start' => $this->downtimeProperties['start_time'], 'end' => $this->downtimeProperties['end_time'], 'svc_relation' => $this->host . ' - ' . $this->service]);
 
         $this->page->save();
     }
@@ -35,15 +28,7 @@ class DowntimeDSTContext extends CentreonContext
     {
         $this->page = new DowntimeConfigurationPage($this);
 
-        $this->page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->host . ' - ' . $this->service,
-            'comment' => 'Acceptance test',
-            'start_day' => $this->downtimeProperties['start_day'],
-            'start_time' => $this->downtimeProperties['start_time'],
-            'end_day' => $this->downtimeProperties['end_day'],
-            'end_time' => $this->downtimeProperties['end_time'],
-        ));
+        $this->page->setProperties(['type' => DowntimeConfigurationPage::TYPE_SERVICE, 'service' => $this->host . ' - ' . $this->service, 'comment' => 'Acceptance test', 'start_day' => $this->downtimeProperties['start_day'], 'start_time' => $this->downtimeProperties['start_time'], 'end_day' => $this->downtimeProperties['end_day'], 'end_time' => $this->downtimeProperties['end_time']]);
 
         $this->page->save();
     }
@@ -54,23 +39,7 @@ class DowntimeDSTContext extends CentreonContext
     public function aPassiveServiceIsMonitored()
     {
         $page = new ServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'hosts' => $this->host,
-            'description' => $this->service,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'notifications_enabled' => 1,
-            'notify_on_recovery' => 1,
-            'notify_on_critical' => 1,
-            'recovery_notification_delay' => 1,
-            'cs' => 'admin_admin'
-        ));
+        $page->setProperties(['hosts' => $this->host, 'description' => $this->service, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'notifications_enabled' => 1, 'notify_on_recovery' => 1, 'notify_on_critical' => 1, 'recovery_notification_delay' => 1, 'cs' => 'admin_admin']);
         $page->save();
 
         $this->reloadAllPollers();
@@ -107,16 +76,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeStartingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '03/30/2025',
             'start_time' => '02:30',
             'end_day' => '03/30/2025',
             'end_time' => '03:30',
             'expected_start' => '2025-03-30 03:00',
             'expected_end' => '2025-03-30 03:30',
-            'expected_duration' => '1800', // 30m
-            'faketime' => '2025-03-30 01:56:00'
-        );
+            'expected_duration' => '1800',
+            // 30m
+            'faketime' => '2025-03-30 01:56:00',
+        ];
     }
 
     /**
@@ -125,16 +95,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeEndingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '03/30/2025',
             'start_time' => '01:30',
             'end_day' => '03/30/2025',
             'end_time' => '02:30',
             'expected_start' => '2025-03-30 01:30',
             'expected_end' => '2025-03-30 03:00',
-            'expected_duration' => '1800', // 30m
-            'faketime' => '2025-03-30 01:26:00'
-        );
+            'expected_duration' => '1800',
+            // 30m
+            'faketime' => '2025-03-30 01:26:00',
+        ];
     }
 
     /**
@@ -143,16 +114,7 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeStartingAndEndingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
-        $this->downtimeProperties = array(
-            'start_day' => '03/30/2025',
-            'start_time' => '02:03',
-            'end_day' => '03/30/2025',
-            'end_time' => '02:33',
-            'expected_start' => '',
-            'expected_end' => '',
-            'expected_duration' => '0',
-            'faketime' => '2025-03-30 01:58:00'
-        );
+        $this->downtimeProperties = ['start_day' => '03/30/2025', 'start_time' => '02:03', 'end_day' => '03/30/2025', 'end_time' => '02:33', 'expected_start' => '', 'expected_end' => '', 'expected_duration' => '0', 'faketime' => '2025-03-30 01:58:00'];
     }
 
     /**
@@ -161,16 +123,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeDuringAllDayOnSummerChangingDate()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '03/30/2025',
             'start_time' => '00:00',
             'end_day' => '03/30/2025',
             'end_time' => '24:00',
             'expected_start' => '2025-03-30 00:00',
             'expected_end' => '2025-03-31 00:00',
-            'expected_duration' => '82800', // 23h
-            'faketime' => '2025-03-29 23:56:00'
-        );
+            'expected_duration' => '82800',
+            // 23h
+            'faketime' => '2025-03-29 23:56:00',
+        ];
     }
 
     /**
@@ -188,16 +151,17 @@ class DowntimeDSTContext extends CentreonContext
      */
     public function aDowntimeOfNextDayOfSummerChangingDate()
     {
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '03/31/2025',
             'start_time' => '00:00',
             'end_day' => '03/31/2025',
             'end_time' => '24:00',
             'expected_start' => '2025-03-31 00:00',
             'expected_end' => '2025-04-01 00:00',
-            'expected_duration' => '86400', // 24h
-            'faketime' => '2025-03-30 23:58:00'
-        );
+            'expected_duration' => '86400',
+            // 24h
+            'faketime' => '2025-03-30 23:58:00',
+        ];
     }
 
     /**
@@ -206,16 +170,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeStartingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '10/26/2025',
             'start_time' => '02:03',
             'end_day' => '10/26/2025',
             'end_time' => '03:33',
             'expected_start' => '2025-10-26 02:03',
             'expected_end' => '2025-10-26 03:33',
-            'expected_duration' => '9000', // 2h30
-            'faketime' => '2025-10-26 01:58:00'
-        );
+            'expected_duration' => '9000',
+            // 2h30
+            'faketime' => '2025-10-26 01:58:00',
+        ];
     }
 
     /**
@@ -224,16 +189,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeEndingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '10/26/2025',
             'start_time' => '01:00',
             'end_day' => '10/26/2025',
             'end_time' => '02:30',
             'expected_start' => '2025-10-26 01:00',
             'expected_end' => '2025-10-26 02:30',
-            'expected_duration' => '9000', // 2h30
-            'faketime' => '2025-10-26 00:58:00'
-        );
+            'expected_duration' => '9000',
+            // 2h30
+            'faketime' => '2025-10-26 00:58:00',
+        ];
     }
 
     /**
@@ -242,16 +208,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeStartingAndEndingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '10/26/2025',
             'start_time' => '02:03',
             'end_day' => '10/26/2025',
             'end_time' => '02:33',
             'expected_start' => '2025-10-26 02:03',
             'expected_end' => '2025-10-26 02:33',
-            'expected_duration' => '5400', // 1h30
-            'faketime' => '2025-10-26 01:58:00'
-        );
+            'expected_duration' => '5400',
+            // 1h30
+            'faketime' => '2025-10-26 01:58:00',
+        ];
     }
 
     /**
@@ -260,16 +227,17 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeDuringAllDayOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '10/26/2025',
             'start_time' => '00:00',
             'end_day' => '10/26/2025',
             'end_time' => '24:00',
             'expected_start' => '2025-10-26 00:00',
             'expected_end' => '2025-10-27 00:00',
-            'expected_duration' => '90000', // 25h
-            'faketime' => '2025-10-25 23:58:00'
-        );
+            'expected_duration' => '90000',
+            // 25h
+            'faketime' => '2025-10-25 23:58:00',
+        ];
     }
 
     /**
@@ -287,16 +255,17 @@ class DowntimeDSTContext extends CentreonContext
      */
     public function aDowntimeOfNextDayOfWinterChangingDate()
     {
-        $this->downtimeProperties = array(
+        $this->downtimeProperties = [
             'start_day' => '10/27/2025',
             'start_time' => '00:00',
             'end_day' => '10/27/2025',
             'end_time' => '24:00',
             'expected_start' => '2025-10-27 00:00',
             'expected_end' => '2025-10-28 00:00',
-            'expected_duration' => '86400', // 24h
-            'faketime' => '2025-10-26 23:58:00'
-        );
+            'expected_duration' => '86400',
+            // 24h
+            'faketime' => '2025-10-26 23:58:00',
+        ];
     }
 
     /**

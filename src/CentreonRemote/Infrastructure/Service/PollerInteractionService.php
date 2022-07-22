@@ -25,9 +25,6 @@ use Pimple\Container;
 
 class PollerInteractionService
 {
-    /** @var Container */
-    private $di;
-
     /** @var \CentreonDB */
     private $db;
 
@@ -37,11 +34,9 @@ class PollerInteractionService
     private $centreon;
 
 
-    public function __construct(Container $di)
+    public function __construct(private readonly Container $di)
     {
         global $centreon;
-
-        $this->di = $di;
         $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->getAdapter('configuration_db')
             ->getCentreonDBInstance();
@@ -86,7 +81,7 @@ class PollerInteractionService
                 $configGenerateObject->reset();
                 $configGenerateObject->configPollerFromId($pollerID, $username);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception('There was an error generating the configuration for a poller.');
         }
     }
@@ -133,7 +128,7 @@ class PollerInteractionService
                     throw new \Exception(_('Could not write into centcore.cmd. Please check file permissions.'));
                 }
 
-                if (count($listBrokerFile) > 0) {
+                if ((is_countable($listBrokerFile) ? count($listBrokerFile) : 0) > 0) {
                     passthru("echo 'SENDCBCFG:" . $host['id'] . "' >> $centCorePipe", $return);
 
                     if ($return) {

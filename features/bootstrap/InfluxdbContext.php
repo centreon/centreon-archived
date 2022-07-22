@@ -10,8 +10,8 @@ use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
  */
 class InfluxdbContext extends CentreonContext
 {
-    private $hostName = 'Centreon-Server';
-    private $serviceName = 'InfluxdbTestService';
+    private string $hostName = 'Centreon-Server';
+    private string $serviceName = 'InfluxdbTestService';
 
     /**
      * @Given I am logged in a Centreon server with InfluxDB
@@ -33,13 +33,13 @@ class InfluxdbContext extends CentreonContext
         $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
         $this->assertFind('css', 'a#add_output')->click();
         sleep(5);
-        $this->assertFind('named', array('id', 'output[3][name]'))->setValue('TestInfluxdb');
-        $this->assertFind('named', array('id', 'output[3][db_host]'))->setValue('influxdb');
+        $this->assertFind('named', ['id', 'output[3][name]'])->setValue('TestInfluxdb');
+        $this->assertFind('named', ['id', 'output[3][db_host]'])->setValue('influxdb');
         $this->assertFind('css', 'input[name="output[3][db_port]"]')->setValue('8086');
-        $this->assertFind('named', array('id', 'output[3][db_user]'))->setValue('root');
-        $this->assertFind('named', array('id', 'output[3][db_name]'))->setValue('metrics');
-        $this->assertFind('named', array('id', 'output[3][metrics_timeseries]'))->setValue('metric.$HOST$.$SERVICE$');
-        $this->assertFind('named', array('id', 'output[3][status_timeseries]'))->setValue('status.$HOST$.$SERVICE$');
+        $this->assertFind('named', ['id', 'output[3][db_user]'])->setValue('root');
+        $this->assertFind('named', ['id', 'output[3][db_name]'])->setValue('metrics');
+        $this->assertFind('named', ['id', 'output[3][metrics_timeseries]'])->setValue('metric.$HOST$.$SERVICE$');
+        $this->assertFind('named', ['id', 'output[3][status_timeseries]'])->setValue('status.$HOST$.$SERVICE$');
 
         // Metrics columns
         $this->assertFind(
@@ -57,7 +57,7 @@ class InfluxdbContext extends CentreonContext
             '#metrics_column___3_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('metric_id');
-        $this->assertFind('named', array('id', 'metrics_column___3_add'))->click();
+        $this->assertFind('named', ['id', 'metrics_column___3_add'])->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -69,7 +69,7 @@ class InfluxdbContext extends CentreonContext
             '#metrics_column___3_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('time');
-        $this->assertFind('named', array('id', 'metrics_column___3_add'))->click();
+        $this->assertFind('named', ['id', 'metrics_column___3_add'])->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -98,7 +98,7 @@ class InfluxdbContext extends CentreonContext
             '#status_column___3_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('index_id');
-        $this->assertFind('named', array('id', 'status_column___3_add'))->click();
+        $this->assertFind('named', ['id', 'status_column___3_add'])->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -110,7 +110,7 @@ class InfluxdbContext extends CentreonContext
             '#status_column___3_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('time');
-        $this->assertFind('named', array('id', 'status_column___3_add'))->click();
+        $this->assertFind('named', ['id', 'status_column___3_add'])->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -137,7 +137,7 @@ class InfluxdbContext extends CentreonContext
                     false
                 );
                 if ($retval['exit_code'] === 0) {
-                    $stats = json_decode($retval['output'], true);
+                    $stats = json_decode((string) $retval['output'], true, 512, JSON_THROW_ON_ERROR);
                     return $stats['endpoint TestInfluxdb']['state'] == 'connected';
                 }
                 return false;
@@ -153,15 +153,7 @@ class InfluxdbContext extends CentreonContext
     {
         // Create service.
         $serviceConfig = new ServiceConfigurationPage($this);
-        $serviceProperties = array(
-            'description' => $this->serviceName,
-            'hosts' => $this->hostName,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'active_checks_enabled' => "0",
-            'passive_checks_enabled' => "1"
-        );
+        $serviceProperties = ['description' => $this->serviceName, 'hosts' => $this->hostName, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'active_checks_enabled' => "0", 'passive_checks_enabled' => "1"];
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
 
@@ -194,7 +186,7 @@ class InfluxdbContext extends CentreonContext
             function ($context) use ($self) {
                 $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
                 $properties = $page->getProperties();
-                if (!count($properties['perfdata'])) {
+                if (!(is_countable($properties['perfdata']) ? count($properties['perfdata']) : 0)) {
                     return false;
                 }
                 return true;
@@ -212,7 +204,7 @@ class InfluxdbContext extends CentreonContext
         $this->spin(
             function ($context) use ($self) {
                 $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
-                return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
+                return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', (string) $return['output']);
             },
             "Cannot get metrics from InfluxDB."
         );

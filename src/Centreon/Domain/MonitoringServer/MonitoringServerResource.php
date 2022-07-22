@@ -32,112 +32,77 @@ class MonitoringServerResource
     /**
      * @var int Resource id
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string Resource name
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var string Resource comment
      */
-    private $comment;
+    private ?string $comment = null;
 
     /**
      * @var string Resource path
      */
-    private $path;
+    private ?string $path = null;
 
     /**
      * @var bool Indicates whether this resource is activate or not
      */
-    private $isActivate;
+    private ?bool $isActivate = null;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return MonitoringServerResource
-     */
     public function setId(int $id): MonitoringServerResource
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return MonitoringServerResource
-     */
     public function setName(string $name): MonitoringServerResource
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getComment(): string
     {
         return $this->comment;
     }
 
-    /**
-     * @param string $comment
-     * @return MonitoringServerResource
-     */
     public function setComment(string $comment): MonitoringServerResource
     {
         $this->comment = $comment;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @param string $path
-     * @return MonitoringServerResource
-     */
     public function setPath(string $path): MonitoringServerResource
     {
         $this->path = $path;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isActivate(): bool
     {
         return $this->isActivate;
     }
 
-    /**
-     * @param bool $isActivate
-     * @return MonitoringServerResource
-     */
     public function setIsActivate(bool $isActivate): MonitoringServerResource
     {
         $this->isActivate = $isActivate;

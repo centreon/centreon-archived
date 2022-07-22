@@ -178,21 +178,21 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $request = $this->query();
 
         $search = isset($request['search']) && $request['search'] ? $request['search'] : null;
-        $installed = isset($request['installed']) ? $request['installed'] : null;
-        $updated = isset($request['updated']) ? $request['updated'] : null;
+        $installed = $request['installed'] ?? null;
+        $updated = $request['updated'] ?? null;
         $typeList = isset($request['types']) ? (array) $request['types'] : null;
 
-        if ($installed && strtolower($installed) === 'true') {
+        if ($installed && strtolower((string) $installed) === 'true') {
             $installed = true;
-        } elseif ($installed && strtolower($installed) === 'false') {
+        } elseif ($installed && strtolower((string) $installed) === 'false') {
             $installed = false;
         } elseif ($installed) {
             $installed = null;
         }
 
-        if ($updated && strtolower($updated) === 'true') {
+        if ($updated && strtolower((string) $updated) === 'true') {
             $updated = true;
-        } elseif ($updated && strtolower($updated) === 'false') {
+        } elseif ($updated && strtolower((string) $updated) === 'false') {
             $updated = false;
         } elseif ($updated) {
             $updated = null;
@@ -281,7 +281,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $request = $this->query();
 
         $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
-        $type = isset($request['type']) ? $request['type'] : null;
+        $type = $request['type'] ?? null;
 
         $detail = $this->getDi()[ServiceProvider::CENTREON_MODULE]
             ->getDetail($id, $type);
@@ -369,7 +369,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $request = $this->query();
 
         $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
-        $type = isset($request['type']) ? $request['type'] : '';
+        $type = $request['type'] ?? '';
 
         $status = false;
         $result = null;
@@ -462,7 +462,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $request = $this->query();
 
         $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
-        $type = isset($request['type']) ? $request['type'] : '';
+        $type = $request['type'] ?? '';
 
         $status = false;
         $result = null;
@@ -555,7 +555,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $request = $this->query();
 
         $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
-        $type = isset($request['type']) ? $request['type'] : '';
+        $type = $request['type'] ?? '';
 
         $status = false;
         $result = null;
@@ -576,8 +576,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
 
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {

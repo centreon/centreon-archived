@@ -3,27 +3,15 @@ namespace Centreon\Domain\Entity;
 
 class ViewImg
 {
-    const TABLE = 'view_img';
+    final const TABLE = 'view_img';
 
-    /**
-     * @var int
-     */
-    private $imgId;
+    private ?int $imgId = null;
 
-    /**
-     * @var string
-     */
-    private $imgName;
+    private ?string $imgName = null;
 
-    /**
-     * @var string
-     */
-    private $imgPath;
+    private ?string $imgPath = null;
 
-    /**
-     * @var string
-     */
-    private $imgComment;
+    private ?string $imgComment = null;
 
     public function setImgId(int $imgId): void
     {

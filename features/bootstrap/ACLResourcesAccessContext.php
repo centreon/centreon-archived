@@ -16,131 +16,33 @@ class ACLResourcesAccessContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'acl_name' => 'aclResourceName',
-        'acl_alias' => 'aclResourceAlias',
-        'acl_groups' => array(
-            'aclGroupName1',
-            'aclGroupName2'
-        ),
-        'enabled' => 1,
-        'comments' => 'aclResourceComment',
-        'all_hosts' => 0,
-        'hosts' => 'hostName1',
-        'all_hostgroups' => 0,
-        'host_groups' => 'hostGroupName',
-        'excluded_hosts' => 'hostName2',
-        'all_servicegroups' => 0,
-        'service_groups' => 'serviceGroupName',
-        'meta_services' => 'metaServiceName',
-        'pollers' => 'Central',
-        'host_category' => 'hostCategoryName',
-        'service_category' => 'serviceCategoryName'
-    );
+    protected $initialProperties = ['acl_name' => 'aclResourceName', 'acl_alias' => 'aclResourceAlias', 'acl_groups' => ['aclGroupName1', 'aclGroupName2'], 'enabled' => 1, 'comments' => 'aclResourceComment', 'all_hosts' => 0, 'hosts' => 'hostName1', 'all_hostgroups' => 0, 'host_groups' => 'hostGroupName', 'excluded_hosts' => 'hostName2', 'all_servicegroups' => 0, 'service_groups' => 'serviceGroupName', 'meta_services' => 'metaServiceName', 'pollers' => 'Central', 'host_category' => 'hostCategoryName', 'service_category' => 'serviceCategoryName'];
 
-    protected $duplicatedProperties = array(
-        'acl_name' => 'aclResourceName_1',
-        'acl_alias' => 'aclResourceAlias',
-        'acl_groups' => array(
-            'aclGroupName1',
-            'aclGroupName2'
-        ),
-        'enabled' => 1,
-        'comments' => 'aclResourceComment',
-        'all_hosts' => 0,
-        'hosts' => 'hostName1',
-        'all_hostgroups' => 0,
-        'host_groups' => 'hostGroupName',
-        'excluded_hosts' => 'hostName2',
-        'all_servicegroups' => 0,
-        'service_groups' => 'serviceGroupName',
-        'meta_services' => 'metaServiceName',
-        'pollers' => 'Central',
-        'host_category' => 'hostCategoryName',
-        'service_category' => 'serviceCategoryName'
-    );
+    protected $duplicatedProperties = ['acl_name' => 'aclResourceName_1', 'acl_alias' => 'aclResourceAlias', 'acl_groups' => ['aclGroupName1', 'aclGroupName2'], 'enabled' => 1, 'comments' => 'aclResourceComment', 'all_hosts' => 0, 'hosts' => 'hostName1', 'all_hostgroups' => 0, 'host_groups' => 'hostGroupName', 'excluded_hosts' => 'hostName2', 'all_servicegroups' => 0, 'service_groups' => 'serviceGroupName', 'meta_services' => 'metaServiceName', 'pollers' => 'Central', 'host_category' => 'hostCategoryName', 'service_category' => 'serviceCategoryName'];
 
-    protected $updatedProperties = array(
-        'acl_name' => 'aclResourceNameChanged',
-        'acl_alias' => 'aclResourceAliasChanged',
-        'acl_groups' => array(
-            'aclGroupName3',
-            'aclGroupName2'
-        ),
-        'enabled' => 0,
-        'comments' => 'aclResourceCommentChanged',
-        'all_hosts' => 0,
-        'hosts' => 'hostName1',
-        'all_hostgroups' => 0,
-        'host_groups' => 'hostGroupName',
-        'excluded_hosts' => 'hostName2',
-        'all_servicegroups' => 0,
-        'service_groups' => 'serviceGroupName',
-        'meta_services' => 'metaServiceName',
-        'pollers' => 'Central',
-        'host_category' => 'hostCategoryName',
-        'service_category' => 'serviceCategoryName'
-    );
+    protected $updatedProperties = ['acl_name' => 'aclResourceNameChanged', 'acl_alias' => 'aclResourceAliasChanged', 'acl_groups' => ['aclGroupName3', 'aclGroupName2'], 'enabled' => 0, 'comments' => 'aclResourceCommentChanged', 'all_hosts' => 0, 'hosts' => 'hostName1', 'all_hostgroups' => 0, 'host_groups' => 'hostGroupName', 'excluded_hosts' => 'hostName2', 'all_servicegroups' => 0, 'service_groups' => 'serviceGroupName', 'meta_services' => 'metaServiceName', 'pollers' => 'Central', 'host_category' => 'hostCategoryName', 'service_category' => 'serviceCategoryName'];
 
-    protected $host1 = array(
-        'name' => 'hostName1',
-        'alias' => 'hostAlias1',
-        'address' => 'host1@localhost'
-    );
+    protected $host1 = ['name' => 'hostName1', 'alias' => 'hostAlias1', 'address' => 'host1@localhost'];
 
-    protected $host2 = array(
-        'name' => 'hostName2',
-        'alias' => 'hostAlias2',
-        'address' => 'host2@localhost'
-    );
+    protected $host2 = ['name' => 'hostName2', 'alias' => 'hostAlias2', 'address' => 'host2@localhost'];
 
-    protected $hostGroup = array(
-        'name' => 'hostGroupName',
-        'alias' => 'hostGroupAlias'
-    );
+    protected $hostGroup = ['name' => 'hostGroupName', 'alias' => 'hostGroupAlias'];
 
-    protected $hostCategory = array(
-        'name' => 'hostCategoryName',
-        'alias' => 'hostCategoryAlias'
-    );
+    protected $hostCategory = ['name' => 'hostCategoryName', 'alias' => 'hostCategoryAlias'];
 
-    protected $serviceGroup = array(
-        'name' => 'serviceGroupName',
-        'description' => 'serviceGroupDescription'
-    );
+    protected $serviceGroup = ['name' => 'serviceGroupName', 'description' => 'serviceGroupDescription'];
 
-    protected $serviceCategory = array(
-        'name' => 'serviceCategoryName',
-        'description' => 'serviceCategoryDescription'
-    );
+    protected $serviceCategory = ['name' => 'serviceCategoryName', 'description' => 'serviceCategoryDescription'];
 
-    protected $metaService = array(
-        'name' => 'metaServiceName',
-        'max_check_attempts' => '5'
-    );
+    protected $metaService = ['name' => 'metaServiceName', 'max_check_attempts' => '5'];
 
-    protected $aclGroup1 = array(
-        'group_name' => 'aclGroupName1',
-        'group_alias' => 'aclGroupAlias1'
-    );
+    protected $aclGroup1 = ['group_name' => 'aclGroupName1', 'group_alias' => 'aclGroupAlias1'];
 
-    protected $aclGroup2 = array(
-        'group_name' => 'aclGroupName2',
-        'group_alias' => 'aclGroupAlias2'
-    );
+    protected $aclGroup2 = ['group_name' => 'aclGroupName2', 'group_alias' => 'aclGroupAlias2'];
 
-    protected $aclGroup3 = array(
-        'group_name' => 'aclGroupName3',
-        'group_alias' => 'aclGroupAlias3'
-    );
+    protected $aclGroup3 = ['group_name' => 'aclGroupName3', 'group_alias' => 'aclGroupAlias3'];
 
-    protected $linkedAclResource = array(
-        'acl_name' => 'aclResourceName',
-        'acl_groups' => array(
-            'aclGroupName1',
-            'aclGroupName2'
-        )
-    );
+    protected $linkedAclResource = ['acl_name' => 'aclResourceName', 'acl_groups' => ['aclGroupName1', 'aclGroupName2']];
 
     /**
      * @Given three ACL access groups including non admin users exist
@@ -194,7 +96,7 @@ class ACLResourcesAccessContext extends CentreonContext
      */
     public function theResourcesAccessIsSavedWithItsProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -208,19 +110,19 @@ class ACLResourcesAccessContext extends CentreonContext
                             }
                         }
                         if ($key == 'acl_groups') {
-                            if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
+                            if ((is_countable($object[$key]) ? count($object[$key]) : 0) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
                                 && $object[$key][1] != $this->aclGroup2['group_name']
                             ) {
                                 $this->tableau[] = $key;
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -231,7 +133,7 @@ class ACLResourcesAccessContext extends CentreonContext
      */
     public function onlyChosenLinkedAccessGroupsDisplayTheNewResourcesAccessInAuthorizedInformationTab()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -250,15 +152,15 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup3['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 0) {
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup3['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -281,11 +183,7 @@ class ACLResourcesAccessContext extends CentreonContext
     {
         $this->currentPage = new ACLResourceConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->linkedAclResource['acl_name']);
-        $this->currentPage->setProperties(array(
-            'acl_groups' => array(
-                'aclGroupName1'
-            )
-        ));
+        $this->currentPage->setProperties(['acl_groups' => ['aclGroupName1']]);
         $this->currentPage->save();
     }
 
@@ -294,14 +192,14 @@ class ACLResourcesAccessContext extends CentreonContext
      */
     public function linkBetweenAccessGroupAndResourcesAccessMustBeBroken()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLResourceConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->linkedAclResource['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['acl_groups']) != 1 ||
+                    if ((is_countable($object['acl_groups']) ? count($object['acl_groups']) : 0) != 1 ||
                         $object['acl_groups'][0] != $this->aclGroup1['group_name']
                     ) {
                         $this->tableau[] = $this->linkedAclResource['acl_name'];
@@ -315,21 +213,21 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 0) {
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup2['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup3['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 0) {
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup3['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -384,7 +282,7 @@ class ACLResourcesAccessContext extends CentreonContext
      */
     public function aNewResourcesAccessRecordIsCreatedWithIdenticalPropertiesExceptTheName()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -398,7 +296,7 @@ class ACLResourcesAccessContext extends CentreonContext
                             }
                         }
                         if ($key == 'acl_groups') {
-                            if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
+                            if ((is_countable($object[$key]) ? count($object[$key]) : 0) != 0 && $object[$key][0] != $this->aclGroup1['group_name']
                                 && $object[$key][1] != $this->aclGroup2['group_name']
                             ) {
                                 $this->tableau[] = $key;
@@ -408,7 +306,7 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) == 2
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
                         && $object['resources'][1] != $this->duplicatedProperties['acl_name']
                     ) {
@@ -417,7 +315,7 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) == 2
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
                         && $object['resources'][1] != $this->duplicatedProperties['acl_name']
                     ) {
@@ -426,15 +324,15 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup3['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 0) {
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) != 0) {
                         $this->tableau[] = $this->aclGroup3['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -486,7 +384,7 @@ class ACLResourcesAccessContext extends CentreonContext
      */
     public function theModificationsAreSaved()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -500,7 +398,7 @@ class ACLResourcesAccessContext extends CentreonContext
                             }
                         }
                         if ($key == 'acl_groups') {
-                            if (count($object[$key]) != 0 && $object[$key][0] != $this->aclGroup2['group_name']
+                            if ((is_countable($object[$key]) ? count($object[$key]) : 0) != 0 && $object[$key][0] != $this->aclGroup2['group_name']
                                 && $object[$key][1] != $this->aclGroup3['group_name']
                             ) {
                                 $this->tableau[] = $key;
@@ -516,7 +414,7 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup2['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) == 2
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) == 2
                         && $object['resources'][0] != $this->initialProperties['acl_name']
                         && $object['resources'][1] != $this->updatedProperties['acl_name']
                     ) {
@@ -525,17 +423,17 @@ class ACLResourcesAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->aclGroup1['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['resources']) != 1
+                    if ((is_countable($object['resources']) ? count($object['resources']) : 0) != 1
                         && $object['resources'][0] != $this->initialProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->aclGroup1['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

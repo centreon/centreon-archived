@@ -9,62 +9,15 @@ class HostGroupConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host1 = array(
-        'name' => 'host1Name',
-        'alias' => 'host1Alias',
-        'address' => 'host1@localhost'
-    );
+    protected $host1 = ['name' => 'host1Name', 'alias' => 'host1Alias', 'address' => 'host1@localhost'];
 
-    protected $host2 = array(
-        'name' => 'host2Name',
-        'alias' => 'host2Alias',
-        'address' => 'host2@localhost'
-    );
+    protected $host2 = ['name' => 'host2Name', 'alias' => 'host2Alias', 'address' => 'host2@localhost'];
 
-    protected $initialProperties = array(
-        'name' => 'hostGroupName',
-        'alias' => 'hostGroupAlias',
-        'hosts' => 'host2Name',
-        'notes' => 'hostGroupNotes',
-        'notes_url' => 'hostGroupNotesUrl',
-        'action_url' => 'hostGroupActionUrl',
-        'icon' => '',
-        'map_icon' => '       centreon (png)',
-        'geo_coordinates' => '2.3522219,48.856614',
-        'rrd_retention' => 80,
-        'comments' => 'hostGroupComments',
-        'enabled' => 1
-    );
+    protected $initialProperties = ['name' => 'hostGroupName', 'alias' => 'hostGroupAlias', 'hosts' => 'host2Name', 'notes' => 'hostGroupNotes', 'notes_url' => 'hostGroupNotesUrl', 'action_url' => 'hostGroupActionUrl', 'icon' => '', 'map_icon' => '       centreon (png)', 'geo_coordinates' => '2.3522219,48.856614', 'rrd_retention' => 80, 'comments' => 'hostGroupComments', 'enabled' => 1];
 
-    protected $duplicatedProperties = array(
-        'name' => 'hostGroupName_1',
-        'alias' => 'hostGroupAlias',
-        'hosts' => 'host2Name',
-        'notes' => 'hostGroupNotes',
-        'notes_url' => 'hostGroupNotesUrl',
-        'action_url' => 'hostGroupActionUrl',
-        'icon' => '',
-        'map_icon' => '       centreon (png)',
-        'geo_coordinates' => '2.3522219,48.856614',
-        'rrd_retention' => 80,
-        'comments' => 'hostGroupComments',
-        'enabled' => 1
-    );
+    protected $duplicatedProperties = ['name' => 'hostGroupName_1', 'alias' => 'hostGroupAlias', 'hosts' => 'host2Name', 'notes' => 'hostGroupNotes', 'notes_url' => 'hostGroupNotesUrl', 'action_url' => 'hostGroupActionUrl', 'icon' => '', 'map_icon' => '       centreon (png)', 'geo_coordinates' => '2.3522219,48.856614', 'rrd_retention' => 80, 'comments' => 'hostGroupComments', 'enabled' => 1];
 
-    protected $updatedProperties = array(
-        'name' => 'hostGroupNameChanged',
-        'alias' => 'hostGroupAliasChanged',
-        'hosts' => 'host1Name',
-        'notes' => 'hostGroupNotesChanged',
-        'notes_url' => 'hostGroupNotesUrlchanged',
-        'action_url' => 'hostGroupActionUrlChanged',
-        'icon' => '       centreon (png)',
-        'map_icon' => '',
-        'geo_coordinates' => '2.3522219,48.856614',
-        'rrd_retention' => 45,
-        'comments' => 'hostGroupCommentsChanged',
-        'enabled' => 0
-    );
+    protected $updatedProperties = ['name' => 'hostGroupNameChanged', 'alias' => 'hostGroupAliasChanged', 'hosts' => 'host1Name', 'notes' => 'hostGroupNotesChanged', 'notes_url' => 'hostGroupNotesUrlchanged', 'action_url' => 'hostGroupActionUrlChanged', 'icon' => '       centreon (png)', 'map_icon' => '', 'geo_coordinates' => '2.3522219,48.856614', 'rrd_retention' => 45, 'comments' => 'hostGroupCommentsChanged', 'enabled' => 0];
 
     /**
      * @Given an host group is configured
@@ -98,7 +51,7 @@ class HostGroupConfigurationContext extends CentreonContext
      */
     public function itsPropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -110,12 +63,12 @@ class HostGroupConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -139,7 +92,7 @@ class HostGroupConfigurationContext extends CentreonContext
      */
     public function aNewHostIsCreatedWithIdenticalProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -151,12 +104,12 @@ class HostGroupConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

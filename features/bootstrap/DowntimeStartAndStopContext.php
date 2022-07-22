@@ -36,23 +36,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function aPassiveServiceIsMonitored()
     {
         $page = new ServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'hosts' => $this->host,
-            'description' => $this->service,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'notifications_enabled' => 1,
-            'notify_on_recovery' => 1,
-            'notify_on_critical' => 1,
-            'recovery_notification_delay' => 1,
-            'cs' => 'admin_admin'
-        ));
+        $page->setProperties(['hosts' => $this->host, 'description' => $this->service, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'notifications_enabled' => 1, 'notify_on_recovery' => 1, 'notify_on_critical' => 1, 'recovery_notification_delay' => 1, 'cs' => 'admin_admin']);
         $page->save();
 
         $this->restartAllPollers();
@@ -66,13 +50,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         $page = new DowntimeConfigurationPage($this);
         $this->downtimeEndTime = (new \DateTime('+2 minutes', new \DateTimezone('Europe/Paris')))->format('H:i');
-        $page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->host . ' - ' . $this->service,
-            'comment' => 'Acceptance test',
-            'start_time' => $this->downtimeStartTime,
-            'end_time' => $this->downtimeEndTime
-        ));
+        $page->setProperties(['type' => DowntimeConfigurationPage::TYPE_SERVICE, 'service' => $this->host . ' - ' . $this->service, 'comment' => 'Acceptance test', 'start_time' => $this->downtimeStartTime, 'end_time' => $this->downtimeEndTime]);
         $page->save();
     }
 
@@ -85,15 +63,7 @@ class DowntimeStartAndStopContext extends CentreonContext
 
         $page = new DowntimeConfigurationPage($this);
         $this->downtimeEndTime = (new \DateTime('+2 minutes', new \DateTimezone('Europe/Paris')))->format('H:i');
-        $page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->host . ' - ' . $this->service,
-            'comment' => 'Acceptance test',
-            'fixed' => false,
-            'duration' => $this->downtimeDuration,
-            'start_time' => $this->downtimeStartTime,
-            'end_time' => $this->downtimeEndTime
-        ));
+        $page->setProperties(['type' => DowntimeConfigurationPage::TYPE_SERVICE, 'service' => $this->host . ' - ' . $this->service, 'comment' => 'Acceptance test', 'fixed' => false, 'duration' => $this->downtimeDuration, 'start_time' => $this->downtimeStartTime, 'end_time' => $this->downtimeEndTime]);
         $page->save();
     }
 
@@ -236,9 +206,7 @@ class DowntimeStartAndStopContext extends CentreonContext
 
         //user
         $user = new CurrentUserConfigurationPage($this);
-        $user->setProperties(array(
-            'location' => $this->timezoneUser
-        ));
+        $user->setProperties(['location' => $this->timezoneUser]);
         $user->save();
         $this->iAmLoggedOut();
         $this->iAmLoggedIn();
@@ -246,11 +214,7 @@ class DowntimeStartAndStopContext extends CentreonContext
 
         //downtime
         $this->page = new DowntimeConfigurationPage($this);
-        $this->page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => $this->host . ' - ' . $this->service,
-            'comment' => 'service comment'
-        ));
+        $this->page->setProperties(['type' => DowntimeConfigurationPage::TYPE_SERVICE, 'service' => $this->host . ' - ' . $this->service, 'comment' => 'service comment']);
         $props = $this->page->getProperties();
 
         //convert local start hour in timestamp utc
@@ -281,9 +245,7 @@ class DowntimeStartAndStopContext extends CentreonContext
 
         $hostListingPage = new HostConfigurationListingPage($this);
         $hostPage = $hostListingPage->inspect($this->host);
-        $hostPage->setProperties(array(
-            'location' => $this->timezone
-        ));
+        $hostPage->setProperties(['location' => $this->timezone]);
         $hostPage->save();
         $this->reloadAllPollers();
 
@@ -315,14 +277,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->page = new RecurrentDowntimeConfigurationPage($this);
 
         //set downtime properties
-        $this->page->setProperties(array(
-            'name' => 'test',
-            'alias' => $this->service,
-            'days' => array(7, 1, 2, 3, 4, 5, 6),
-            'start' => $startHour,
-            'end' => $endHour,
-            'svc_relation' => $this->host . ' - ' . $this->service
-        ));
+        $this->page->setProperties(['name' => 'test', 'alias' => $this->service, 'days' => [7, 1, 2, 3, 4, 5, 6], 'start' => $startHour, 'end' => $endHour, 'svc_relation' => $this->host . ' - ' . $this->service]);
 
         $this->page->save();
     }
@@ -349,13 +304,13 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function theDowntimeUseTheTimezone()
     {
-        $dataDowntime = array();
+        $dataDowntime = [];
         $this->spin(
             function ($context) use (&$dataDowntime) {
                 $listPage = new DowntimeConfigurationListingPage($context);
                 $listPage->displayDowntimeCycle();
                 $dataDowntime = $listPage->getEntries();
-                if (count($dataDowntime)) {
+                if (is_countable($dataDowntime) ? count($dataDowntime) : 0) {
                     return true;
                 }
             }

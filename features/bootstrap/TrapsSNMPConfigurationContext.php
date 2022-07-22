@@ -14,88 +14,11 @@ class TrapsSNMPConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'atrapName',
-        'oid' => '1.2.3',
-        'vendor' => 'Cisco',
-        'output' => 'trapOutputMessage'
-    );
+    protected $initialProperties = ['name' => 'atrapName', 'oid' => '1.2.3', 'vendor' => 'Cisco', 'output' => 'trapOutputMessage'];
 
-    protected $updatedProperties = array(
-        'name' => 'atrapNameChanged',
-        'oid' => '.1.2.3.4',
-        'vendor' => 'HP',
-        'output' => 'trapOutputMessagechanged',
-        'status' => 'Critical',
-        'severity' => 'serviceCategoryName (3)',
-        'mode' => 1,
-        'behavior' => 'If match, disable submit',
-        'rule' => array(
-            array(
-                'string' => '@trapRule@',
-                'regexp' => '/ruleRegexp/',
-                'status' => 'Critical',
-                'severity' => 'serviceCategoryName (3)'
-            )
-        ),
-        'submit' => 0,
-        'reschedule' => 1,
-        'execute_command' => 1,
-        'special_command' => 'trapCommand',
-        'comments' => 'trapComments',
-        'services' => 'hostName - serviceName',
-        'service_templates' => 'serviceTemplateName',
-        'routing' => 1,
-        'routing_definition' => 'trapRouteDefinition',
-        'filter_services' => 'trapFilterServices',
-        'preexec' => array('trapPreexec'),
-        'insert_information' => 1,
-        'timeout' => '66',
-        'execution_interval' => '44',
-        'execution_type' => 2,
-        'execution_method' => 0,
-        'check_downtime' => 2,
-        'output_transform' => 'trapOutputTransform',
-        'custom_code' => 'trapCustomCode'
-    );
+    protected $updatedProperties = ['name' => 'atrapNameChanged', 'oid' => '.1.2.3.4', 'vendor' => 'HP', 'output' => 'trapOutputMessagechanged', 'status' => 'Critical', 'severity' => 'serviceCategoryName (3)', 'mode' => 1, 'behavior' => 'If match, disable submit', 'rule' => [['string' => '@trapRule@', 'regexp' => '/ruleRegexp/', 'status' => 'Critical', 'severity' => 'serviceCategoryName (3)']], 'submit' => 0, 'reschedule' => 1, 'execute_command' => 1, 'special_command' => 'trapCommand', 'comments' => 'trapComments', 'services' => 'hostName - serviceName', 'service_templates' => 'serviceTemplateName', 'routing' => 1, 'routing_definition' => 'trapRouteDefinition', 'filter_services' => 'trapFilterServices', 'preexec' => ['trapPreexec'], 'insert_information' => 1, 'timeout' => '66', 'execution_interval' => '44', 'execution_type' => 2, 'execution_method' => 0, 'check_downtime' => 2, 'output_transform' => 'trapOutputTransform', 'custom_code' => 'trapCustomCode'];
 
-    protected $duplicatedProperties = array(
-        'name' => 'atrapNameChanged_1',
-        'oid' => '.1.2.3.4',
-        'vendor' => 'HP',
-        'output' => 'trapOutputMessagechanged',
-        'status' => 'Critical',
-        'severity' => 'serviceCategoryName (3)',
-        'mode' => 1,
-        'behavior' => 'If match, disable submit',
-        'rule' => array(
-            array(
-                'string' => '@trapRule@',
-                'regexp' => '/ruleRegexp/',
-                'status' => 'Critical',
-                'severity' => 'serviceCategoryName (3)'
-            )
-        ),
-        'submit' => 0,
-        'reschedule' => 1,
-        'execute_command' => 1,
-        'special_command' => 'trapCommand',
-        'comments' => 'trapComments',
-        'services' => 'hostName - serviceName',
-        'service_templates' => 'serviceTemplateName',
-        'routing' => 1,
-        'routing_definition' => 'trapRouteDefinition',
-        'filter_services' => 'trapFilterServices',
-        'preexec' => array('trapPreexec'),
-        'insert_information' => 1,
-        'timeout' => '66',
-        'execution_interval' => '44',
-        'execution_type' => 2,
-        'execution_method' => 0,
-        'check_downtime' => 2,
-        'output_transform' => 'trapOutputTransform',
-        'custom_code' => 'trapCustomCode'
-    );
+    protected $duplicatedProperties = ['name' => 'atrapNameChanged_1', 'oid' => '.1.2.3.4', 'vendor' => 'HP', 'output' => 'trapOutputMessagechanged', 'status' => 'Critical', 'severity' => 'serviceCategoryName (3)', 'mode' => 1, 'behavior' => 'If match, disable submit', 'rule' => [['string' => '@trapRule@', 'regexp' => '/ruleRegexp/', 'status' => 'Critical', 'severity' => 'serviceCategoryName (3)']], 'submit' => 0, 'reschedule' => 1, 'execute_command' => 1, 'special_command' => 'trapCommand', 'comments' => 'trapComments', 'services' => 'hostName - serviceName', 'service_templates' => 'serviceTemplateName', 'routing' => 1, 'routing_definition' => 'trapRouteDefinition', 'filter_services' => 'trapFilterServices', 'preexec' => ['trapPreexec'], 'insert_information' => 1, 'timeout' => '66', 'execution_interval' => '44', 'execution_type' => 2, 'execution_method' => 0, 'check_downtime' => 2, 'output_transform' => 'trapOutputTransform', 'custom_code' => 'trapCustomCode'];
 
     /**
      * @When I add a new SNMP trap definition with an advanced matching rule
@@ -103,39 +26,19 @@ class TrapsSNMPConfigurationContext extends CentreonContext
     public function iAddANewSNMPTrapDefinitionWithAnAdvancedMatchingRule()
     {
         $this->currentPage = new HostConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'hostName',
-            'alias' => 'hostName',
-            'address' => 'host@localhost'
-        ));
+        $this->currentPage->setProperties(['name' => 'hostName', 'alias' => 'hostName', 'address' => 'host@localhost']);
         $this->currentPage->save();
         $this->currentPage = new CommandConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'command_name' => 'commandName',
-            'command_line' => 'commandLine'
-        ));
+        $this->currentPage->setProperties(['command_name' => 'commandName', 'command_line' => 'commandLine']);
         $this->currentPage->save();
         $this->currentPage = new ServiceConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => 'serviceName',
-            'hosts' => 'hostName',
-            'check_command' => 'commandName'
-        ));
+        $this->currentPage->setProperties(['description' => 'serviceName', 'hosts' => 'hostName', 'check_command' => 'commandName']);
         $this->currentPage->save();
         $this->currentPage = new ServiceTemplateConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => $this->updatedProperties['service_templates'],
-            'alias' => $this->updatedProperties['service_templates']
-        ));
+        $this->currentPage->setProperties(['description' => $this->updatedProperties['service_templates'], 'alias' => $this->updatedProperties['service_templates']]);
         $this->currentPage->save();
         $this->currentPage = new ServiceCategoryConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'serviceCategoryName',
-            'description' => 'severityDescription',
-            'severity' => 1,
-            'level' => '3',
-            'icon' => '       centreon (png)'
-        ));
+        $this->currentPage->setProperties(['name' => 'serviceCategoryName', 'description' => 'severityDescription', 'severity' => 1, 'level' => '3', 'icon' => '       centreon (png)']);
         $this->currentPage->save();
         $this->currentPage = new SnmpTrapsConfigurationPage($this);
         $this->currentPage->setProperties($this->updatedProperties);
@@ -147,7 +50,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function theTrapDefinitionIsSavedWithItsPropertiesEspeciallyTheContentOfRegexpField()
     {
-        $this->tableau = array();
+        $this->tableau = [];
 
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
@@ -161,7 +64,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                     }
                     $i = 0;
-                    $countObject = count($object['rule']);
+                    $countObject = is_countable($object['rule']) ? count($object['rule']) : 0;
                     foreach ($this->updatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
@@ -177,12 +80,12 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                         ++$i;
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -197,39 +100,19 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
         $this->currentPage = new HostConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'hostName',
-            'alias' => 'hostName',
-            'address' => 'host@localhost'
-        ));
+        $this->currentPage->setProperties(['name' => 'hostName', 'alias' => 'hostName', 'address' => 'host@localhost']);
         $this->currentPage->save();
         $this->currentPage = new CommandConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'command_name' => 'commandName',
-            'command_line' => 'commandLine'
-        ));
+        $this->currentPage->setProperties(['command_name' => 'commandName', 'command_line' => 'commandLine']);
         $this->currentPage->save();
         $this->currentPage = new ServiceConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => 'serviceName',
-            'hosts' => 'hostName',
-            'check_command' => 'commandName'
-        ));
+        $this->currentPage->setProperties(['description' => 'serviceName', 'hosts' => 'hostName', 'check_command' => 'commandName']);
         $this->currentPage->save();
         $this->currentPage = new ServiceTemplateConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => $this->updatedProperties['service_templates'],
-            'alias' => $this->updatedProperties['service_templates']
-        ));
+        $this->currentPage->setProperties(['description' => $this->updatedProperties['service_templates'], 'alias' => $this->updatedProperties['service_templates']]);
         $this->currentPage->save();
         $this->currentPage = new ServiceCategoryConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'serviceCategoryName',
-            'description' => 'severityDescription',
-            'severity' => 1,
-            'level' => '3',
-            'icon' => '       centreon (png)'
-        ));
+        $this->currentPage->setProperties(['name' => 'serviceCategoryName', 'description' => 'severityDescription', 'severity' => 1, 'level' => '3', 'icon' => '       centreon (png)']);
         $this->currentPage->save();
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
@@ -242,7 +125,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function allChangesAreSaved()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -255,7 +138,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                     }
                     $i = 0;
-                    $countObject = count($object['rule']);
+                    $countObject = is_countable($object['rule']) ? count($object['rule']) : 0;
                     foreach ($this->updatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
@@ -271,12 +154,12 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                         ++$i;
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -288,39 +171,19 @@ class TrapsSNMPConfigurationContext extends CentreonContext
     public function iHaveDuplicatedOneExistingSNMPTrapDefinition()
     {
         $this->currentPage = new HostConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'hostName',
-            'alias' => 'hostName',
-            'address' => 'host@localhost'
-        ));
+        $this->currentPage->setProperties(['name' => 'hostName', 'alias' => 'hostName', 'address' => 'host@localhost']);
         $this->currentPage->save();
         $this->currentPage = new CommandConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'command_name' => 'commandName',
-            'command_line' => 'commandLine'
-        ));
+        $this->currentPage->setProperties(['command_name' => 'commandName', 'command_line' => 'commandLine']);
         $this->currentPage->save();
         $this->currentPage = new ServiceConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => 'serviceName',
-            'hosts' => 'hostName',
-            'check_command' => 'commandName'
-        ));
+        $this->currentPage->setProperties(['description' => 'serviceName', 'hosts' => 'hostName', 'check_command' => 'commandName']);
         $this->currentPage->save();
         $this->currentPage = new ServiceTemplateConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'description' => $this->updatedProperties['service_templates'],
-            'alias' => $this->updatedProperties['service_templates']
-        ));
+        $this->currentPage->setProperties(['description' => $this->updatedProperties['service_templates'], 'alias' => $this->updatedProperties['service_templates']]);
         $this->currentPage->save();
         $this->currentPage = new ServiceCategoryConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'serviceCategoryName',
-            'description' => 'severityDescription',
-            'severity' => 1,
-            'level' => '3',
-            'icon' => '       centreon (png)'
-        ));
+        $this->currentPage->setProperties(['name' => 'serviceCategoryName', 'description' => 'severityDescription', 'severity' => 1, 'level' => '3', 'icon' => '       centreon (png)']);
         $this->currentPage->save();
         $this->currentPage = new SnmpTrapsConfigurationPage($this);
         $this->currentPage->setProperties($this->updatedProperties);
@@ -339,7 +202,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function allSNMPTrapPropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
 
         try {
             $this->spin(
@@ -353,7 +216,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                     }
                     $i = 0;
-                    $countObject = count($object['rule']);
+                    $countObject = is_countable($object['rule']) ? count($object['rule']) : 0;
                     foreach ($this->duplicatedProperties['rule'] as $value) {
                         if ($i >= $countObject || $value['string'] != $object['rule'][$i]['string']) {
                             $this->tableau[] = 'rule_string';
@@ -369,12 +232,12 @@ class TrapsSNMPConfigurationContext extends CentreonContext
                         }
                         ++$i;
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

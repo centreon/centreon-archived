@@ -18,10 +18,7 @@ class LdapManualImportContext extends CentreonContext
     {
         $this->page = new LdapConfigurationListingPage($this);
         $this->page = $this->page->inspect('OpenLDAP');
-        $this->page->setProperties(array(
-            'enable_authentication' => 1,
-            'auto_import' => 0,
-        ));
+        $this->page->setProperties(['enable_authentication' => 1, 'auto_import' => 0]);
         $this->page = $this->page->save();
         $this->page = $this->page->inspect('OpenLDAP');
         if ($this->page->getProperty('auto_import') != 0) {
@@ -36,13 +33,7 @@ class LdapManualImportContext extends CentreonContext
     {
         $this->page = new LdapUserImportPage($this);
         $this->page->setProperties(
-            array(
-                'servers' => array(
-                    'OpenLDAP' => array(
-                        'checked' => true
-                    )
-                )
-            )
+            ['servers' => ['OpenLDAP' => ['checked' => true]]]
         );
     }
 
@@ -60,12 +51,10 @@ class LdapManualImportContext extends CentreonContext
     public function iImportTheUser()
     {
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[id^="contact_alias"][value="centréon-ldap4"]'
-                );
-            },
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                'input[id^="contact_alias"][value="centréon-ldap4"]'
+            ),
             'user to import not found.',
             10
         );

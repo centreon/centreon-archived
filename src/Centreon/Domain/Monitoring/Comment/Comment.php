@@ -25,14 +25,9 @@ namespace Centreon\Domain\Monitoring\Comment;
 class Comment
 {
     /**
-     * @var int Resource ID
-     */
-    public $resourceId;
-
-    /**
      * @var int|null Parent Resource ID
      */
-    private $parentResourceId;
+    private ?int $parentResourceId = null;
 
     /**
      * @var string added comment
@@ -46,42 +41,30 @@ class Comment
      */
     public $date;
 
-    public function __construct(int $resourceId, string $comment)
+    public function __construct(/**
+     * @var int Resource ID
+     */
+    public int $resourceId, string $comment)
     {
-        $this->resourceId = $resourceId;
         $this->setComment($comment);
     }
 
-    /**
-     * @return int
-     */
     public function getResourceId(): int
     {
         return $this->resourceId;
     }
 
-    /**
-     * @param int $resourceId
-     * @return Comment
-     */
     public function setResourceId(int $resourceId): Comment
     {
         $this->resourceId = $resourceId;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getParentResourceId(): ?int
     {
         return $this->parentResourceId;
     }
 
-    /**
-     * @param int|null $parentResourceId
-     * @return Comment
-     */
     public function setParentResourceId(?int $parentResourceId): Comment
     {
         $this->parentResourceId = $parentResourceId;
@@ -90,8 +73,6 @@ class Comment
 
     /**
      * Get added comment
-     *
-     * @return string
      */
     public function getComment(): string
     {
@@ -102,7 +83,6 @@ class Comment
      * Set added comment
      *
      * @param string $comment added comment
-     * @return Comment
      */
     public function setComment(string $comment): Comment
     {
@@ -117,8 +97,6 @@ class Comment
 
     /**
      * Get date of the comment
-     *
-     * @return \DateTime|null
      */
     public function getDate(): ?\DateTime
     {

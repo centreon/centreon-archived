@@ -55,20 +55,11 @@ class ModuleSourceTest extends TestCase
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
-    /**
-     * @var ModuleSource|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $source;
+    private \CentreonModule\Infrastructure\Source\ModuleSource|\PHPUnit\Framework\MockObject\MockObject $source;
 
-    /**
-     * @var ContainerWrap
-     */
-    private $containerWrap;
+    private ContainerWrap $containerWrap;
 
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private \Vfs\FileSystem $fs;
 
     /**
      * @var string
@@ -89,7 +80,7 @@ class ModuleSourceTest extends TestCase
         'mod_release' => 'x.y.q',
         'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
         'is_removeable' => '1',
-        'author' => 'Centreon',
+        'author' => \Centreon::class,
         'stability' => 'alpha',
         'last_update' => '2001-01-01',
         'release_note' => 'http://localhost',
@@ -254,24 +245,11 @@ class ModuleSourceTest extends TestCase
         $this->assertFalse($result->isUpdated());
     }
 
-//    public function testGetModuleConf()
-//    {
-//        $moduleSource = new ModuleSource($this->containerWrap);
-//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' .
-//    }
-
-    /**
-     * @return string
-     */
-    public static function getConfFilePath(): string
+public static function getConfFilePath(): string
     {
         return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
     }
 
-    /**
-     * @return string
-     */
     public static function buildConfContent(): string
     {
         $result = '<?php';

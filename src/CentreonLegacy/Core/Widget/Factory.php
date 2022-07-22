@@ -44,18 +44,11 @@ class Factory
 {
     /**
      *
-     * @var \Pimple\Container
-     */
-    protected $dependencyInjector;
-
-    /**
-     *
      * @param \Pimple\Container $dependencyInjector
      * @param mixed $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, $utils = null)
+    public function __construct(protected \Pimple\Container $dependencyInjector, $utils = null)
     {
-        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**

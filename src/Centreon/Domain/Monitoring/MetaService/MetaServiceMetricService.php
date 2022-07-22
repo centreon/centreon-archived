@@ -37,32 +37,12 @@ use Centreon\Domain\Monitoring\MetaService\Interfaces\MetaServiceMetric\MetaServ
 class MetaServiceMetricService implements MetaServiceMetricServiceInterface
 {
     /**
-     * @var MetaServiceConfigurationServiceInterface
-     */
-    private $metaServiceConfigurationService;
-    /**
-     * @var MetaServiceMetricRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var ContactInterface
-     */
-    private $contact;
-
-    /**
      * @param MetaServiceMetricRepositoryInterface $repository
      * @param MetaServiceConfigurationServiceInterface $metaServiceConfigurationService
      * @param ContactInterface $contact
      */
-    public function __construct(
-        MetaServiceMetricRepositoryInterface $repository,
-        MetaServiceConfigurationServiceInterface $metaServiceConfigurationService,
-        ContactInterface $contact
-    ) {
-        $this->contact = $contact;
-        $this->repository = $repository;
-        $this->metaServiceConfigurationService = $metaServiceConfigurationService;
+    public function __construct(private readonly MetaServiceMetricRepositoryInterface $repository, private readonly MetaServiceConfigurationServiceInterface $metaServiceConfigurationService, private readonly ContactInterface $contact)
+    {
     }
 
     /**

@@ -8,19 +8,9 @@ class BrokerConfigurationContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = array(
-        'name' => 'brokerConfigName',
-        'filename' => 'brokerFilename',
-        'cache_directory' => '/var/lib/centreon-broker/'
-    );
+    private array $initialProperties = ['name' => 'brokerConfigName', 'filename' => 'brokerFilename', 'cache_directory' => '/var/lib/centreon-broker/'];
 
-    private $luaProperties = array(
-        'name' => 'lua_script',
-        'path' => '/tmp/lua.lua',
-        'metricType' => 'Number',
-        'metricName' => 'integer',
-        'metricValue' => 42
-    );
+    private array $luaProperties = ['name' => 'lua_script', 'path' => '/tmp/lua.lua', 'metricType' => 'Number', 'metricName' => 'integer', 'metricValue' => 42];
 
 
     /**
@@ -38,9 +28,7 @@ class BrokerConfigurationContext extends CentreonContext
         $this->currentPage;
 
         $this->spin(
-            function ($context) use ($page) {
-                return $context->getSession()->getPage()->has('css', 'tr.list_one td input.v_required');
-            }
+            fn($context) => $context->getSession()->getPage()->has('css', 'tr.list_one td input.v_required')
         );
 
         $this->assertFind('css', 'tr.list_one td input.v_required')->setValue($this->luaProperties['name']);

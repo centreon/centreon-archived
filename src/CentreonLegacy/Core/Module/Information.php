@@ -48,11 +48,6 @@ class Information
     protected $licenseObj;
     
     /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $services;
-    
-    /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
@@ -79,11 +74,10 @@ class Information
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
     public function __construct(
-        ContainerInterface $services,
+        protected ContainerInterface $services,
         License $licenseObj = null,
         Utils $utils = null
     ) {
-        $this->services = $services;
         $this->licenseObj = $licenseObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE);
         $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
@@ -138,7 +132,7 @@ class Information
 
         $modules = $result->fetchAll();
 
-        $installedModules = array();
+        $installedModules = [];
         foreach ($modules as $module) {
             $installedModules[$module['name']] = $module;
         }
@@ -171,7 +165,7 @@ class Information
      */
     private function getAvailableList()
     {
-        $list = array();
+        $list = [];
 
         $modulesPath = $this->getModulePath();
         $modules = $this->services->get('finder')->directories()->depth('== 0')->in($modulesPath);
@@ -207,7 +201,7 @@ class Information
         $installedModules = $this->getInstalledList();
         $availableModules = $this->getAvailableList();
 
-        $modules = array();
+        $modules = [];
 
         foreach ($availableModules as $name => $properties) {
             $modules[$name] = $properties;
@@ -284,9 +278,7 @@ class Information
     {
         $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
 
-        return array_filter($list, function ($widget) {
-            return $widget['upgradeable'];
-        });
+        return array_filter($list, fn($widget) => $widget['upgradeable']);
     }
 
     public function hasModulesForInstallation()
@@ -298,8 +290,6 @@ class Information
     {
         $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
 
-        return array_filter($list, function ($widget) {
-            return !$widget['is_installed'];
-        });
+        return array_filter($list, fn($widget) => !$widget['is_installed']);
     }
 }

@@ -29,12 +29,10 @@ class PaginationSelect2Context extends CentreonContext
 
         /* Wait page loaded */
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="change"]'
-                );
-            }
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                'input[name="change"]'
+            )
         );
     }
 
@@ -56,12 +54,10 @@ class PaginationSelect2Context extends CentreonContext
     public function waitForGeneralOptionsPage()
     {
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="submitC"]'
-                );
-            }
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                'input[name="submitC"]'
+            )
         );
     }
 }

@@ -79,11 +79,11 @@ class ServerWizardIdentity
             if ($curl->error) {
                 return false;
             }
-        } catch (\ErrorException $e) {
+        } catch (\ErrorException) {
             return false;
         }
 
-        $data = json_decode($curl->response, true);
+        $data = json_decode($curl->response, true, 512, JSON_THROW_ON_ERROR);
 
         return array_key_exists('enabled', $data) && $data['enabled'];
     }

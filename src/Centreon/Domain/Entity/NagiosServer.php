@@ -27,163 +27,91 @@ use PDO;
 
 class NagiosServer implements Mapping\MetadataInterface
 {
-    public const SERIALIZER_GROUP_REMOTE_LIST = 'nagios-server-remote-list';
-    public const SERIALIZER_GROUP_LIST = 'nagios-server-list';
+    final public const SERIALIZER_GROUP_REMOTE_LIST = 'nagios-server-remote-list';
+    final public const SERIALIZER_GROUP_LIST = 'nagios-server-list';
 
     /**
      * @Serializer\Groups({
      *     NagiosServer::SERIALIZER_GROUP_REMOTE_LIST,
      *     NagiosServer::SERIALIZER_GROUP_LIST
      * })
-     * @var int
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Serializer\Groups({
      *     NagiosServer::SERIALIZER_GROUP_REMOTE_LIST,
      *     NagiosServer::SERIALIZER_GROUP_LIST
      * })
-     * @var string
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
-     * @var string
      */
-    private $localhost;
+    private ?string $localhost = null;
 
     /**
      * @Serializer\SerializedName("default")
      * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
-     * @var int
      */
-    private $isDefault;
+    private ?int $isDefault = null;
 
-    /**
-     * @var int
-     */
-    private $lastRestart;
+    private ?int $lastRestart = null;
 
     /**
      * @Serializer\SerializedName("ip")
      * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_REMOTE_LIST})
-     * @var string
      */
-    private $nsIpAddress;
+    private ?string $nsIpAddress = null;
 
     /**
      * @Serializer\SerializedName("activate")
      * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
-     * @var string
      */
-    private $nsActivate;
+    private ?string $nsActivate = null;
 
-    /**
-     * @var string
-     */
-    private $engineStartCommand;
+    private ?string $engineStartCommand = null;
 
-    /**
-     * @var string
-     */
-    private $engineStopCommand;
+    private ?string $engineStopCommand = null;
 
-    /**
-     * @var string
-     */
-    private $engineRestartCommand;
+    private ?string $engineRestartCommand = null;
 
-    /**
-     * @var string
-     */
-    private $engineReloadCommand;
+    private ?string $engineReloadCommand = null;
 
-    /**
-     * @var string
-     */
-    private $nagiosBin;
+    private ?string $nagiosBin = null;
 
-    /**
-     * @var string
-     */
-    private $nagiostatsBin;
+    private ?string $nagiostatsBin = null;
 
-    /**
-     * @var string
-     */
-    private $nagiosPerfdata;
+    private ?string $nagiosPerfdata = null;
 
-    /**
-     * @var string
-     */
-    private $brokerReloadCommand;
+    private ?string $brokerReloadCommand = null;
 
-    /**
-     * @var string
-     */
-    private $centreonbrokerCfgPath;
+    private ?string $centreonbrokerCfgPath = null;
 
-    /**
-     * @var string
-     */
-    private $centreonbrokerModulePath;
+    private ?string $centreonbrokerModulePath = null;
 
-    /**
-     * @var string
-     */
-    private $centreonconnectorPath;
+    private ?string $centreonconnectorPath = null;
 
-    /**
-     * @var int
-     */
-    private $gorgoneCommunicationType;
+    private ?int $gorgoneCommunicationType = null;
 
-    /**
-     * @var int
-     */
-    private $sshPort;
+    private ?int $sshPort = null;
 
-    /**
-     * @var int
-     */
-    private $gorgonePort;
+    private ?int $gorgonePort = null;
 
-    /**
-     * @var string
-     */
-    private $initScriptCentreontrapd;
+    private ?string $initScriptCentreontrapd = null;
 
-    /**
-     * @var string
-     */
-    private $snmpTrapdPathConf;
+    private ?string $snmpTrapdPathConf = null;
 
-    /**
-     * @var string
-     */
-    private $engineName;
+    private ?string $engineName = null;
 
-    /**
-     * @var string
-     */
-    private $engineVersion;
+    private ?string $engineVersion = null;
 
-    /**
-     * @var string
-     */
-    private $centreonbrokerLogsPath;
+    private ?string $centreonbrokerLogsPath = null;
 
-    /**
-     * @var int
-     */
-    private $remoteId;
+    private ?int $remoteId = null;
 
-    /**
-     * @var string
-     */
-    private $remoteServerUseAsProxy;
+    private ?string $remoteServerUseAsProxy = null;
 
     /**
      * {@inheritdoc}
@@ -221,477 +149,281 @@ class NagiosServer implements Mapping\MetadataInterface
             ->add('remoteServerUseAsProxy', 'remote_server_use_as_proxy');
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string|int $id
-     * @return void
-     */
-    public function setId($id = null): void
+    public function setId(string|int $id = null): void
     {
         $this->id = (int)$id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLocalhost(): ?string
     {
         return $this->localhost;
     }
 
-    /**
-     * @return int|null
-     */
     public function getIsDefault(): ?int
     {
         return $this->isDefault;
     }
 
-    /**
-     * @return int|null
-     */
     public function getLastRestart(): ?int
     {
         return $this->lastRestart;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNsIpAddress(): ?string
     {
         return $this->nsIpAddress;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNsActivate(): ?string
     {
         return $this->nsActivate;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineStartCommand(): ?string
     {
         return $this->engineStartCommand;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineStopCommand(): ?string
     {
         return $this->engineStopCommand;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineRestartCommand(): ?string
     {
         return $this->engineRestartCommand;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineReloadCommand(): ?string
     {
         return $this->engineReloadCommand;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNagiosBin(): ?string
     {
         return $this->nagiosBin;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNagiostatsBin(): ?string
     {
         return $this->nagiostatsBin;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNagiosPerfdata(): ?string
     {
         return $this->nagiosPerfdata;
     }
 
-    /**
-     * @return string|null
-     */
     public function getBrokerReloadCommand(): ?string
     {
         return $this->brokerReloadCommand;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCentreonbrokerCfgPath(): ?string
     {
         return $this->centreonbrokerCfgPath;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCentreonbrokerModulePath(): ?string
     {
         return $this->centreonbrokerModulePath;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCentreonconnectorPath(): ?string
     {
         return $this->centreonconnectorPath;
     }
 
-    /**
-     * @return integer|null
-     */
     public function getSshPort(): ?int
     {
         return $this->sshPort;
     }
 
-    /**
-     * @return int|null
-     */
     public function getGorgoneCommunicationType(): ?int
     {
         return $this->gorgoneCommunicationType;
     }
 
-    /**
-     * @return int|null
-     */
     public function getGorgonePort(): ?int
     {
         return $this->gorgonePort;
     }
 
-    /**
-     * @return string|null
-     */
     public function getInitScriptCentreontrapd(): ?string
     {
         return $this->initScriptCentreontrapd;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSnmpTrapdPathConf(): ?string
     {
         return $this->snmpTrapdPathConf;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineName(): ?string
     {
         return $this->engineName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEngineVersion(): ?string
     {
         return $this->engineVersion;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCentreonbrokerLogsPath(): ?string
     {
         return $this->centreonbrokerLogsPath;
     }
 
-    /**
-     * @return int|null
-     */
     public function getRemoteId(): ?int
     {
         return $this->remoteId;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRemoteServerUseAsProxy(): ?string
     {
         return $this->remoteServerUseAsProxy;
     }
 
-    /**
-     * @param string $localhost
-     * @return void
-     */
     public function setLocalhost(string $localhost = null): void
     {
         $this->localhost = $localhost;
     }
 
-    /**
-     * @param string|int $isDefault
-     * @return void
-     */
-    public function setIsDefault($isDefault = null): void
+    public function setIsDefault(string|int $isDefault = null): void
     {
         $this->isDefault = (int)$isDefault;
     }
 
-    /**
-     * @param string|int $lastRestart
-     * @return void
-     */
-    public function setLastRestart($lastRestart = null): void
+    public function setLastRestart(string|int $lastRestart = null): void
     {
         $this->lastRestart = (int)$lastRestart;
     }
 
-    /**
-     * @param string $nsIpAddress
-     * @return void
-     */
     public function setNsIpAddress(string $nsIpAddress = null): void
     {
         $this->nsIpAddress = $nsIpAddress;
     }
 
-    /**
-     * @param string $nsActivate
-     * @return void
-     */
     public function setNsActivate(string $nsActivate = null): void
     {
         $this->nsActivate = $nsActivate;
     }
 
-    /**
-     * @param string $engineStartCommand
-     * @return void
-     */
     public function setEngineStartCommand(string $engineStartCommand = null): void
     {
         $this->engineStartCommand = $engineStartCommand;
     }
 
-    /**
-     * @param string $engineStopCommand
-     * @return void
-     */
     public function setEngineStopCommand(string $engineStopCommand = null): void
     {
         $this->engineStopCommand = $engineStopCommand;
     }
 
-    /**
-     * @param string $engineRestartCommand
-     * @return void
-     */
     public function setEngineRestartCommand(string $engineRestartCommand = null): void
     {
         $this->engineRestartCommand = $engineRestartCommand;
     }
 
-    /**
-     * @param string $engineReloadCommand
-     * @return void
-     */
     public function setEngineReloadCommand(string $engineReloadCommand = null): void
     {
         $this->engineReloadCommand = $engineReloadCommand;
     }
 
-    /**
-     * @param string $nagiosBin
-     * @return void
-     */
     public function setNagiosBin(string $nagiosBin = null): void
     {
         $this->nagiosBin = $nagiosBin;
     }
 
-    /**
-     * @param string $nagiostatsBin
-     * @return void
-     */
     public function setNagiostatsBin(string $nagiostatsBin = null): void
     {
         $this->nagiostatsBin = $nagiostatsBin;
     }
 
-    /**
-     * @param string $nagiosPerfdata
-     * @return void
-     */
     public function setNagiosPerfdata(string $nagiosPerfdata = null): void
     {
         $this->nagiosPerfdata = $nagiosPerfdata;
     }
 
-    /**
-     * @param string $brokerReloadCommand
-     * @return void
-     */
     public function setBrokerReloadCommand(string $brokerReloadCommand = null): void
     {
         $this->brokerReloadCommand = $brokerReloadCommand;
     }
 
-    /**
-     * @param string $centreonbrokerCfgPath
-     * @return void
-     */
     public function setCentreonbrokerCfgPath(string $centreonbrokerCfgPath = null): void
     {
         $this->centreonbrokerCfgPath = $centreonbrokerCfgPath;
     }
 
-    /**
-     * @param string $centreonbrokerModulePath
-     * @return void
-     */
     public function setCentreonbrokerModulePath(string $centreonbrokerModulePath = null): void
     {
         $this->centreonbrokerModulePath = $centreonbrokerModulePath;
     }
 
-    /**
-     * @param string $centreonconnectorPath
-     * @return void
-     */
     public function setCentreonconnectorPath(string $centreonconnectorPath = null): void
     {
         $this->centreonconnectorPath = $centreonconnectorPath;
     }
 
-    /**
-     * @param string|int $sshPort
-     * @return void
-     */
-    public function setSshPort($sshPort = null): void
+    public function setSshPort(string|int $sshPort = null): void
     {
         $this->sshPort = (int)$sshPort;
     } 
 
-    /**
-     * @param string|int $gorgoneCommunicationType
-     * @return void
-     */
-    public function setGorgoneCommunicationType($gorgoneCommunicationType = null): void
+    public function setGorgoneCommunicationType(string|int $gorgoneCommunicationType = null): void
     {
         $this->gorgoneCommunicationType = (int)$gorgoneCommunicationType;
     }
 
-    /**
-     * @param string|int $gorgonePort
-     * @return void
-     */
-    public function setGorgonePort($gorgonePort = null): void
+    public function setGorgonePort(string|int $gorgonePort = null): void
     {
         $this->gorgonePort = (int)$gorgonePort;
     }
 
-    /**
-     * @param string $initScriptCentreontrapd
-     * @return void
-     */
     public function setInitScriptCentreontrapd(string $initScriptCentreontrapd = null): void
     {
         $this->initScriptCentreontrapd = $initScriptCentreontrapd;
     }
 
-    /**
-     * @param string $snmpTrapdPathConf
-     * @return void
-     */
     public function setSnmpTrapdPathConf(string $snmpTrapdPathConf = null): void
     {
         $this->snmpTrapdPathConf = $snmpTrapdPathConf;
     }
 
-    /**
-     * @param string $engineName
-     * @return void
-     */
     public function setEngineName(string $engineName = null): void
     {
         $this->engineName = $engineName;
     }
 
-    /**
-     * @param string $engineVersion
-     * @return void
-     */
     public function setEngineVersion(string $engineVersion = null): void
     {
         $this->engineVersion = $engineVersion;
     }
 
-    /**
-     * @param string $centreonbrokerLogsPath
-     * @return void
-     */
     public function setCentreonbrokerLogsPath(string $centreonbrokerLogsPath = null): void
     {
         $this->centreonbrokerLogsPath = $centreonbrokerLogsPath;
     }
 
-    /**
-     * @param string|int $remoteId
-     * @return void
-     */
-    public function setRemoteId($remoteId = null): void
+    public function setRemoteId(string|int $remoteId = null): void
     {
         $this->remoteId = (int)$remoteId;
     }
 
-    /**
-     * @param string $remoteServerUseAsProxy
-     * @return void
-     */
     public function setRemoteServerUseAsProxy(string $remoteServerUseAsProxy = null): void
     {
         $this->remoteServerUseAsProxy = $remoteServerUseAsProxy;

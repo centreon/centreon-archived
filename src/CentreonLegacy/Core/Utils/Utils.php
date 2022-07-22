@@ -40,18 +40,12 @@ use Psr\Container\ContainerInterface;
 class Utils
 {
     /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $services;
-
-    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct(ContainerInterface $services)
+    public function __construct(protected ContainerInterface $services)
     {
-        $this->services = $services;
     }
 
     /**
@@ -63,14 +57,14 @@ class Utils
      */
     public function requireConfiguration($configurationFile, $type = 'install')
     {
-        $configuration = array();
+        $configuration = [];
 
         if ($type == 'install') {
-            $module_conf = array();
+            $module_conf = [];
             require $configurationFile;
             $configuration = $module_conf;
         } elseif ($type == 'upgrade') {
-            $upgrade_conf = array();
+            $upgrade_conf = [];
             require $configurationFile;
             $configuration = $upgrade_conf;
         }
@@ -84,7 +78,7 @@ class Utils
      * @param array $customMacros
      * @throws \Exception
      */
-    public function executeSqlFile($fileName, $customMacros = array(), $monitoring = false)
+    public function executeSqlFile($fileName, $customMacros = [], $monitoring = false)
     {
         $dbName = 'configuration_db';
         if ($monitoring) {
@@ -136,12 +130,9 @@ class Utils
      * @param array $customMacros
      * @return string
      */
-    public function replaceMacros($content, $customMacros = array())
+    public function replaceMacros($content, $customMacros = [])
     {
-        $macros = array(
-            'DB_CENTREON' => $this->services->get('configuration')->get('db'),
-            'DB_CENTSTORAGE' => $this->services->get('configuration')->get('dbcstg')
-        );
+        $macros = ['DB_CENTREON' => $this->services->get('configuration')->get('db'), 'DB_CENTSTORAGE' => $this->services->get('configuration')->get('dbcstg')];
 
         if (count($customMacros)) {
             $macros = array_merge($macros, $customMacros);
@@ -166,9 +157,9 @@ class Utils
      * @param array $skippedKeys
      * @return string
      */
-    public function objectIntoArray($arrObjData, $skippedKeys = array())
+    public function objectIntoArray($arrObjData, $skippedKeys = [])
     {
-        $arrData = array();
+        $arrData = [];
 
         if (is_object($arrObjData)) {
             $arrObjData = get_object_vars($arrObjData);
@@ -193,9 +184,8 @@ class Utils
 
     /**
      * @param $endPath
-     * @return bool|string
      */
-    public function buildPath($endPath)
+    public function buildPath($endPath): bool|string
     {
         return realpath(__DIR__ . '/../../../../www/' . $endPath);
     }
@@ -203,7 +193,6 @@ class Utils
     /**
      * @param $password
      * @param string $algo
-     * @return string
      */
     public function encodePass($password, $algo = 'md5'): string
     {
@@ -212,10 +201,10 @@ class Utils
          * before they can be encrypted as bcrypt.
          */
         if ($algo === 'md5') {
-            return 'md5__' . md5($password);
+            return 'md5__' . md5((string) $password);
         }
 
-        return password_hash($password, PASSWORD_BCRYPT);
+        return password_hash((string) $password, PASSWORD_BCRYPT);
     }
 
     /**
@@ -224,7 +213,7 @@ class Utils
      */
     public function detectPassPattern($pattern)
     {
-        $patternData = explode('__', $pattern);
+        $patternData = explode('__', (string) $pattern);
         if (isset($patternData[1])) {
             return $patternData[0];
         } else {

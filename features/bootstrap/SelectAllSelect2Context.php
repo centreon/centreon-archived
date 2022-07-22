@@ -19,12 +19,10 @@ class SelectAllSelect2Context extends CentreonContext
 
         /* Wait page loaded */
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="submitC"]'
-                );
-            }
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                'input[name="submitC"]'
+            )
         );
 
         /* Add search to select2 */
@@ -37,10 +35,9 @@ class SelectAllSelect2Context extends CentreonContext
         }
         $choice->press();
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()
-                        ->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            }
+            fn($context) => (is_countable($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) ? count($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) : 0) >= 4
         );
     }
 
@@ -73,9 +70,7 @@ class SelectAllSelect2Context extends CentreonContext
         $selectAll->press();
 
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            }
+            fn($context) => $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper')
         );
     }
 
@@ -88,10 +83,9 @@ class SelectAllSelect2Context extends CentreonContext
         $confirmButton->click();
 
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()
-                        ->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
-            }
+            fn($context) => (is_countable($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) ? count($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) : 0) == 0
         );
     }
 
@@ -104,9 +98,7 @@ class SelectAllSelect2Context extends CentreonContext
         $cancelButton->click();
 
         $this->spin(
-            function ($context) {
-                return !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible();
-            }
+            fn($context) => !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible()
         );
     }
 
@@ -119,9 +111,7 @@ class SelectAllSelect2Context extends CentreonContext
         $exitButton->click();
 
         $this->spin(
-            function ($context) {
-                return !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible();
-            }
+            fn($context) => !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible()
         );
     }
 
@@ -134,8 +124,8 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != $this->expectedElements) {
-            throw new \Exception('All elements are not selected (got ' . count($values) . ', expected ' .
+        if ((is_countable($values) ? count($values) : 0) != $this->expectedElements) {
+            throw new \Exception('All elements are not selected (got ' . (is_countable($values) ? count($values) : 0) . ', expected ' .
                 $this->expectedElements . ').');
         }
     }
@@ -149,8 +139,8 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != $this->expectedElements) {
-            throw new \Exception('All filtered elements are not selected (got ' . count($values) .
+        if ((is_countable($values) ? count($values) : 0) != $this->expectedElements) {
+            throw new \Exception('All filtered elements are not selected (got ' . (is_countable($values) ? count($values) : 0) .
                 ', expected ' . $this->expectedElements . ').');
         }
     }
@@ -164,8 +154,8 @@ class SelectAllSelect2Context extends CentreonContext
         $inputField = $this->assertFind('css', 'select#command_id');
 
         $values = $inputField->getValue();
-        if (count($values) != 0) {
-            throw new \Exception(count($values) . ' elements have been selected');
+        if ((is_countable($values) ? count($values) : 0) != 0) {
+            throw new \Exception((is_countable($values) ? count($values) : 0) . ' elements have been selected');
         }
     }
 }

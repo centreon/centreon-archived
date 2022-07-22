@@ -29,37 +29,18 @@ final class ExportCommitment
     /**
      * @var int[]
      */
-    private $pollers;
+    private readonly ?array $pollers;
 
-    /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportParserInterface
-     */
-    private $parser;
+    private readonly \CentreonRemote\Infrastructure\Export\ExportParserInterface $parser;
 
     /**
      * @var array<mixed>
      */
-    private $exporters;
+    private readonly array $exporters;
 
-    /**
-     * @var array<mixed>
-     */
-    private $meta;
+    private int $filePermission = 0775;
 
-    /**
-     * @var int
-     */
-    private $filePermission = 0775;
-
-    /**
-     * @var int
-     */
-    private $remote;
+    private readonly ?int $remote;
 
     /**
      * Construct
@@ -74,9 +55,9 @@ final class ExportCommitment
     public function __construct(
         int $remote = null,
         array $pollers = null,
-        array $meta = null,
+        private readonly array $meta = null,
         ExportParserInterface $parser = null,
-        string $path = null,
+        private readonly string $path = null,
         array $exporters = null
     ) {
         if ($remote && $pollers && !in_array($remote, $pollers)) {
@@ -85,8 +66,6 @@ final class ExportCommitment
 
         $this->remote = $remote;
         $this->pollers = $pollers;
-        $this->meta = $meta;
-        $this->path = $path;
         $this->exporters = $exporters ?? [];
 
         if ($this->path === null) {

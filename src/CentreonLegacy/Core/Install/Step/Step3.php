@@ -58,12 +58,12 @@ class Step3 extends AbstractStep
         $file = __DIR__ . '/../../../../../www/install/var/engines/centreon-engine';
         $lines = explode("\n", file_get_contents($file));
 
-        $parameters = array();
+        $parameters = [];
         foreach ($lines as $line) {
             if (!$line || $line[0] == '#') {
                 continue;
             }
-            list($key, $label, $required, $paramType, $default) = explode(';', $line);
+            [$key, $label, $required, $paramType, $default] = explode(';', $line);
             $val = $default;
             $configurationKey = strtolower(str_replace(' ', '_', $key));
             if (isset($engineConfiguration[$configurationKey])) {
@@ -71,13 +71,7 @@ class Step3 extends AbstractStep
             } elseif (isset($configuration[$configurationKey])) {
                 $val = $configuration[$configurationKey];
             }
-            $parameters[$configurationKey] = array(
-                'name' => $configurationKey,
-                'type' => $paramType,
-                'label' => $label,
-                'required' => $required,
-                'value' => $val
-            );
+            $parameters[$configurationKey] = ['name' => $configurationKey, 'type' => $paramType, 'label' => $label, 'required' => $required, 'value' => $val];
         }
 
         return $parameters;
@@ -86,6 +80,6 @@ class Step3 extends AbstractStep
     public function setEngineConfiguration($parameters)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/engine.json";
-        file_put_contents($configurationFile, json_encode($parameters));
+        file_put_contents($configurationFile, json_encode($parameters, JSON_THROW_ON_ERROR));
     }
 }

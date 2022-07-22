@@ -45,33 +45,15 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Configuration
 {
-    const CENTREON_PATH = 'centreon_path';
-
-    /**
-     * @var array the global configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var string the centreon path
-     */
-    protected $centreonPath;
-
-    /**
-     * @var Finder
-     */
-    protected $finder;
+    final const CENTREON_PATH = 'centreon_path';
 
     /**
      *
      * @param array $configuration the global configuration (mainly database)
      * @param string $centreonPath the centreon directory path
      */
-    public function __construct(array $configuration, string $centreonPath, Finder $finder)
+    public function __construct(protected array $configuration, protected string $centreonPath, protected Finder $finder)
     {
-        $this->configuration = $configuration;
-        $this->centreonPath = $centreonPath;
-        $this->finder = $finder;
     }
 
     /**
@@ -112,7 +94,6 @@ class Configuration
     /**
      * Locate all yml files in src/ModuleFolder/config/ and parse them to array
      * @var string $moduleFolder
-     * @return array
      */
     public function getModuleConfig(string $moduleFolder) : array
     {

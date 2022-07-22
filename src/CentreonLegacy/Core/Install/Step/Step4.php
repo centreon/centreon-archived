@@ -57,24 +57,18 @@ class Step4 extends AbstractStep
         $file = __DIR__ . '/../../../../../www/install/var/brokers/centreon-broker';
         $lines = explode("\n", file_get_contents($file));
 
-        $parameters = array();
+        $parameters = [];
         foreach ($lines as $line) {
             if (!$line || $line[0] == '#') {
                 continue;
             }
-            list($key, $label, $required, $paramType, $default) = explode(';', $line);
+            [$key, $label, $required, $paramType, $default] = explode(';', $line);
             $val = $default;
             $configurationKey = strtolower(str_replace(' ', '_', $key));
             if (isset($configuration[$configurationKey])) {
                 $val = $configuration[$configurationKey];
             }
-            $parameters[$configurationKey] = array(
-                'name' => $configurationKey,
-                'type' => $paramType,
-                'label' => $label,
-                'required' => $required,
-                'value' => $val
-            );
+            $parameters[$configurationKey] = ['name' => $configurationKey, 'type' => $paramType, 'label' => $label, 'required' => $required, 'value' => $val];
         }
 
         return $parameters;
@@ -83,6 +77,6 @@ class Step4 extends AbstractStep
     public function setBrokerConfiguration($parameters)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/broker.json";
-        file_put_contents($configurationFile, json_encode($parameters));
+        file_put_contents($configurationFile, json_encode($parameters, JSON_THROW_ON_ERROR));
     }
 }

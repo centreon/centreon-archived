@@ -55,15 +55,9 @@ class WidgetSourceTest extends TestCase
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private \Vfs\FileSystem $fs;
 
-    /**
-     * @var WidgetSource
-     */
-    private $source;
+    private \CentreonModule\Infrastructure\Source\WidgetSource $source;
 
     /**
      * @var string
@@ -75,7 +69,7 @@ class WidgetSourceTest extends TestCase
      */
     public static $widgetInfo = [
         'title' => 'Curabitur congue porta neque',
-        'author' => 'Centreon',
+        'author' => \Centreon::class,
         'email' => 'centreon@mail.loc',
         'website' => 'localhost',
         'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',

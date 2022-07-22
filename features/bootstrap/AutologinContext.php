@@ -44,9 +44,7 @@ class AutologinContext extends CentreonContext
         self::$lastUri = 'p=20202';
         $this->switchToIframe();
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', 'a[href="main.php?p=20202"]');
-            }
+            fn($context) => $context->getSession()->getPage()->has('css', 'a[href="main.php?p=20202"]')
         );
     }
 
@@ -59,9 +57,7 @@ class AutologinContext extends CentreonContext
         self::$lastUri = 'p=60101';
         $this->switchToIframe();
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', 'a[href="main.php?p=60101"]');
-            }
+            fn($context) => $context->getSession()->getPage()->has('css', 'a[href="main.php?p=60101"]')
         );
     }
 }

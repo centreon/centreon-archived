@@ -24,13 +24,7 @@ class DowntimeServiceContext extends CentreonContext
     public function iHaveAMetaServices()
     {
         $metaservicePage = new MetaServiceConfigurationPage($this);
-        $metaservicePage->setProperties(array(
-            'name' => $this->metaName,
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1
-        ));
+        $metaservicePage->setProperties(['name' => $this->metaName, 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1]);
         $metaservicePage->save();
 
         $this->reloadAllPollers();
@@ -42,11 +36,7 @@ class DowntimeServiceContext extends CentreonContext
     public function iPlaceADowntime()
     {
         $page = new DowntimeConfigurationPage($this);
-        $page->setProperties(array(
-            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
-            'service' => 'Meta - ' . $this->metaName,
-            'comment' => __METHOD__
-        ));
+        $page->setProperties(['type' => DowntimeConfigurationPage::TYPE_SERVICE, 'service' => 'Meta - ' . $this->metaName, 'comment' => __METHOD__]);
         $page->save();
     }
 
@@ -56,9 +46,7 @@ class DowntimeServiceContext extends CentreonContext
     public function iPlaceAComment()
     {
         $page = new CommentConfigurationPage($this, '_Module_Meta', 'meta_1');
-        $page->setProperties(array(
-            'comment' => 'Acceptance test downtime comment.'
-        ));
+        $page->setProperties(['comment' => 'Acceptance test downtime comment.']);
         $page->save();
     }
 
@@ -70,7 +58,7 @@ class DowntimeServiceContext extends CentreonContext
         $this->spin(
             function ($context) {
                 $page = new DowntimeConfigurationListingPage($this);
-                return count($page->getEntries()) > 0;
+                return (is_countable($page->getEntries()) ? count($page->getEntries()) : 0) > 0;
             }
         );
         $page = new DowntimeConfigurationListingPage($this);

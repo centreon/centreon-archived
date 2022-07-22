@@ -39,7 +39,7 @@ class IconUrlNormalizer implements NormalizerInterface
      */
     public function normalize($icon, $format = null, array $context = [])
     {
-        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
+        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', (string) $_SERVER['REQUEST_URI'], $matches)) {
             $icon->setUrl($matches[1] . self::IMG_DIR . '/' . $icon->getUrl());
         }
 

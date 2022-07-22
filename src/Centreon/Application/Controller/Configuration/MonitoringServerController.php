@@ -50,23 +50,15 @@ class MonitoringServerController extends AbstractController
     use LoggerTrait;
 
     /**
-     * @var MonitoringServerServiceInterface
-     */
-    private $monitoringServerService;
-
-    /**
      * @param MonitoringServerServiceInterface $monitoringServerService
      */
-    public function __construct(MonitoringServerServiceInterface $monitoringServerService)
+    public function __construct(private readonly MonitoringServerServiceInterface $monitoringServerService)
     {
-        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
      * Entry point to find a monitoring server
      *
-     * @param RequestParametersInterface $requestParameters
-     * @return View
      * @throws \Exception
      */
     public function findServers(RequestParametersInterface $requestParameters): View
@@ -84,9 +76,6 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * @param GenerateConfiguration $generateConfiguration
-     * @param int $monitoringServerId
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -102,8 +91,6 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * @param GenerateAllConfigurations $generateAllConfigurations
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -119,9 +106,6 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * @param ReloadConfiguration $reloadConfiguration
-     * @param int $monitoringServerId
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -137,8 +121,6 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * @param ReloadAllConfigurations $reloadAllConfigurations
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -156,10 +138,6 @@ class MonitoringServerController extends AbstractController
     /**
      * Generate and reload the configuration of a monitoring server.
      *
-     * @param GenerateConfiguration $generateConfiguration
-     * @param ReloadConfiguration $reloadConfiguration
-     * @param int $monitoringServerId
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -181,9 +159,6 @@ class MonitoringServerController extends AbstractController
     /**
      * Generate and reload all monitoring servers configurations.
      *
-     * @param GenerateAllConfigurations $generateAllConfigurations
-     * @param ReloadAllConfigurations $reloadAllConfigurations
-     * @return View
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */
@@ -202,7 +177,6 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * @param callable $callable
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
      */

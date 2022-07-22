@@ -35,8 +35,6 @@ interface MetaServiceMetricRepositoryInterface
     /**
      * Find Meta Service Metrics for a non-admin user.
      *
-     * @param integer $metaId
-     * @param ContactInterface $contact
      * @return MetaServiceMetric[]|null
      */
     public function findByMetaIdAndContact(int $metaId, ContactInterface $contact): ?array;
@@ -44,9 +42,6 @@ interface MetaServiceMetricRepositoryInterface
     /**
      * Find Meta Service Metrics for a non-admin user using SQL regexp service search and metric.
      *
-     * @param string $metricName
-     * @param string $regexpString
-     * @param ContactInterface $contact
      * @return MetaServiceMetric[]|null
      */
     public function findByContactAndSqlRegexp(
@@ -58,15 +53,12 @@ interface MetaServiceMetricRepositoryInterface
     /**
      * Find Meta Service Metrics for an admin user.
      *
-     * @param integer $metaId
      * @return MetaServiceMetric[]|null
      */
     public function findByMetaId(int $metaId): ?array;
 
     /**
      * Find Meta Service Metrics for an admin user using SQL regexp service search and metric.
-     * @param string $metricName
-     * @param string $regexpString
      * @return MetaServiceMetric[]|null
      */
     public function findBySqlRegexp(string $metricName, string $regexpString): ?array;

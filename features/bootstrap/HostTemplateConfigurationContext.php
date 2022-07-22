@@ -20,12 +20,7 @@ class HostTemplateConfigurationContext extends CentreonContext
 
 
         $this->page = new HostConfigurationPage($this);
-        $this->page->setProperties(array(
-            'name' => $this->hostName,
-            'alias' => $this->hostName,
-            'address' => 'localhost',
-            'templates' => array('generic-host')
-        ));
+        $this->page->setProperties(['name' => $this->hostName, 'alias' => $this->hostName, 'address' => 'localhost', 'templates' => ['generic-host']]);
         $this->page->save();
     }
 
@@ -35,11 +30,7 @@ class HostTemplateConfigurationContext extends CentreonContext
     public function anHostTemplateInheritingFromAnHostTemplate()
     {
         $this->page = new HostTemplateConfigurationPage($this);
-        $this->page->setProperties(array(
-            'name' => $this->hostName,
-            'alias' => $this->hostName,
-            'templates' => array('generic-host')
-        ));
+        $this->page->setProperties(['name' => $this->hostName, 'alias' => $this->hostName, 'templates' => ['generic-host']]);
         $this->page->save();
     }
 
@@ -74,7 +65,7 @@ class HostTemplateConfigurationContext extends CentreonContext
         $this->spin(
             function ($context) {
                 $windows = $context->getSession()->getWindowNames();
-                return count($windows) > 1;
+                return (is_countable($windows) ? count($windows) : 0) > 1;
             },
             'Host template configuration window is not opened.',
             10

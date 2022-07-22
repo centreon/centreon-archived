@@ -36,8 +36,6 @@ class EscalationWebservice extends Webservice\WebServiceAbstract implements
 
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -150,7 +148,7 @@ class EscalationWebservice extends Webservice\WebServiceAbstract implements
             $filters['search'] = $request['search'];
         }
         if (isset($request['searchByIds']) && $request['searchByIds']) {
-            $filters['ids'] = explode(',', $request['searchByIds']);
+            $filters['ids'] = explode(',', (string) $request['searchByIds']);
         }
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);

@@ -16,10 +16,7 @@ class AutologinOptionsContext extends CentreonContext
     public function oneAutologinKeyHasBeenGenerated()
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'default' => 'Configuration > Hosts',
-            'autologin_key' => 'autolog'
-        ));
+        $this->currentPage->setProperties(['default' => 'Configuration > Hosts', 'autologin_key' => 'autolog']);
         $this->currentPage->save();
     }
 
@@ -29,9 +26,7 @@ class AutologinOptionsContext extends CentreonContext
     public function theAutologinOptionIsEnabled()
     {
         $this->currentPage = new ParametersCentreonUIPage($this);
-        $this->currentPage->setProperties(array(
-            'enable autologin' => true
-        ));
+        $this->currentPage->setProperties(['enable autologin' => true]);
         $this->currentPage->save();
     }
 

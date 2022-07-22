@@ -9,55 +9,11 @@ class ServiceDependencyConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host = array(
-        'name' => 'hostName',
-        'alias' => 'hostAlias',
-        'address' => 'host@localhost'
-    );
+    protected $host = ['name' => 'hostName', 'alias' => 'hostAlias', 'address' => 'host@localhost'];
 
-    protected $initialProperties = array(
-        'name' => 'serviceDependencyName',
-        'description' => 'serviceDependencyDescription',
-        'parent_relationship' => 0,
-        'execution_fails_on_none' => 1,
-        'execution_fails_on_ok' => 0,
-        'execution_fails_on_warning' => 0,
-        'execution_fails_on_unknown' => 0,
-        'execution_fails_on_critical' => 0,
-        'execution_fails_on_pending' => 0,
-        'notification_fails_on_ok' => 1,
-        'notification_fails_on_warning' => 1,
-        'notification_fails_on_unknown' => 1,
-        'notification_fails_on_critical' => 1,
-        'notification_fails_on_pending' => 1,
-        'notification_fails_on_none' => 0,
-        'services' => 'Centreon-Server - Load',
-        'dependent_services' => 'Centreon-Server - Memory',
-        'dependent_hosts' => 'Centreon-Server',
-        'comment' => 'serviceDependingComment'
-    );
+    protected $initialProperties = ['name' => 'serviceDependencyName', 'description' => 'serviceDependencyDescription', 'parent_relationship' => 0, 'execution_fails_on_none' => 1, 'execution_fails_on_ok' => 0, 'execution_fails_on_warning' => 0, 'execution_fails_on_unknown' => 0, 'execution_fails_on_critical' => 0, 'execution_fails_on_pending' => 0, 'notification_fails_on_ok' => 1, 'notification_fails_on_warning' => 1, 'notification_fails_on_unknown' => 1, 'notification_fails_on_critical' => 1, 'notification_fails_on_pending' => 1, 'notification_fails_on_none' => 0, 'services' => 'Centreon-Server - Load', 'dependent_services' => 'Centreon-Server - Memory', 'dependent_hosts' => 'Centreon-Server', 'comment' => 'serviceDependingComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'serviceDependentNameChanged',
-        'description' => 'serviceDependentDescriptionChanged',
-        'parent_relationship' => 1,
-        'execution_fails_on_ok' => 1,
-        'execution_fails_on_warning' => 1,
-        'execution_fails_on_unknown' => 1,
-        'execution_fails_on_critical' => 1,
-        'execution_fails_on_pending' => 1,
-        'execution_fails_on_none' => 0,
-        'notification_fails_on_none' => 1,
-        'notification_fails_on_ok' => 0,
-        'notification_fails_on_warning' => 0,
-        'notification_fails_on_unknown' => 0,
-        'notification_fails_on_critical' => 0,
-        'notification_fails_on_pending' => 0,
-        'services' => 'Centreon-Server - Ping',
-        'dependent_services' => 'Centreon-Server - Disk-/home',
-        'dependent_hosts' => 'hostName',
-        'comment' => 'serviceDependingCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'serviceDependentNameChanged', 'description' => 'serviceDependentDescriptionChanged', 'parent_relationship' => 1, 'execution_fails_on_ok' => 1, 'execution_fails_on_warning' => 1, 'execution_fails_on_unknown' => 1, 'execution_fails_on_critical' => 1, 'execution_fails_on_pending' => 1, 'execution_fails_on_none' => 0, 'notification_fails_on_none' => 1, 'notification_fails_on_ok' => 0, 'notification_fails_on_warning' => 0, 'notification_fails_on_unknown' => 0, 'notification_fails_on_critical' => 0, 'notification_fails_on_pending' => 0, 'services' => 'Centreon-Server - Ping', 'dependent_services' => 'Centreon-Server - Disk-/home', 'dependent_hosts' => 'hostName', 'comment' => 'serviceDependingCommentChanged'];
 
     /**
      * @Given a service dependency is configured
@@ -88,7 +44,7 @@ class ServiceDependencyConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -105,12 +61,12 @@ class ServiceDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -134,7 +90,7 @@ class ServiceDependencyConfigurationContext extends CentreonContext
      */
     public function theNewObjectHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -151,12 +107,12 @@ class ServiceDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

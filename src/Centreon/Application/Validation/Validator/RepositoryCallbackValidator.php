@@ -83,7 +83,7 @@ class RepositoryCallbackValidator extends CallbackValidator implements CentreonV
         if (!method_exists($constraint->repository, $method)) {
             throw new ConstraintDefinitionException(sprintf(
                 '%s targeted by Callback constraint is not a valid callable in the repository',
-                json_encode($method)
+                json_encode($method, JSON_THROW_ON_ERROR)
             ));
         } elseif (null !== $object && !$repo->$method($object)) {
             $this->context->buildViolation($constraint->message)

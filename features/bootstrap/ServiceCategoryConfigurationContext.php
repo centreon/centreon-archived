@@ -8,31 +8,11 @@ class ServiceCategoryConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'serviceCategoryName',
-        'description' => 'serviceCategoryDescription',
-        'template' => 'generic-service',
-        'severity' => 0,
-        'status' => 1
-    );
+    protected $initialProperties = ['name' => 'serviceCategoryName', 'description' => 'serviceCategoryDescription', 'template' => 'generic-service', 'severity' => 0, 'status' => 1];
 
-    protected $duplicatedProperties = array(
-        'name' => 'serviceCategoryName_1',
-        'description' => 'serviceCategoryDescription',
-        'template' => 'generic-service',
-        'severity' => 0,
-        'status' => 1
-    );
+    protected $duplicatedProperties = ['name' => 'serviceCategoryName_1', 'description' => 'serviceCategoryDescription', 'template' => 'generic-service', 'severity' => 0, 'status' => 1];
 
-    protected $updatedProperties = array(
-        'name' => 'serviceCategoryNameChanged',
-        'description' => 'serviceCategoryDescriptionChanged',
-        'template' => 'Ping-WAN',
-        'severity' => 1,
-        'level' => '3',
-        'icon' => '       centreon (png)',
-        'status' => 0
-    );
+    protected $updatedProperties = ['name' => 'serviceCategoryNameChanged', 'description' => 'serviceCategoryDescriptionChanged', 'template' => 'Ping-WAN', 'severity' => 1, 'level' => '3', 'icon' => '       centreon (png)', 'status' => 0];
 
     /**
      * @Given a service category is configured
@@ -60,7 +40,7 @@ class ServiceCategoryConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -77,12 +57,12 @@ class ServiceCategoryConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -106,7 +86,7 @@ class ServiceCategoryConfigurationContext extends CentreonContext
      */
     public function theNewServiceCategoryHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -123,12 +103,12 @@ class ServiceCategoryConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

@@ -8,86 +8,11 @@ class TimePeriodConfigurationContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = array(
-        'name' => 'timePeriodName',
-        'alias' => 'timePeriodAlias',
-        'sunday' => '14:00-16:00',
-        'monday' => '07:00-12:00,13:00-18:00',
-        'tuesday' => '07:00-18:00',
-        'wednesday' => '07:00-12:00,13:00-17:00',
-        'thursday' => '07:00-18:00',
-        'friday' => '07:00-18:00',
-        'saturday' => '10:00-16:00',
-        'templates' => 'none',
-        'exceptions' => array(
-            array(
-                'day' => 'december 25',
-                'timeRange' => '00:00-22:59,23:00-24:00'
-            ),
-            array(
-                'day' => 'january 1',
-                'timeRange' => '00:00-24:00'
-            ),
-            array(
-                'day' => 'july 14',
-                'timeRange' => '00:00-24:00'
-            ),
-            array(
-                'day' => 'may 25',
-                'timeRange' => '00:00-24:00'
-            )
-        )
-    );
+    private array $initialProperties = ['name' => 'timePeriodName', 'alias' => 'timePeriodAlias', 'sunday' => '14:00-16:00', 'monday' => '07:00-12:00,13:00-18:00', 'tuesday' => '07:00-18:00', 'wednesday' => '07:00-12:00,13:00-17:00', 'thursday' => '07:00-18:00', 'friday' => '07:00-18:00', 'saturday' => '10:00-16:00', 'templates' => 'none', 'exceptions' => [['day' => 'december 25', 'timeRange' => '00:00-22:59,23:00-24:00'], ['day' => 'january 1', 'timeRange' => '00:00-24:00'], ['day' => 'july 14', 'timeRange' => '00:00-24:00'], ['day' => 'may 25', 'timeRange' => '00:00-24:00']]];
 
-    private $duplicatedProperties = array(
-        'name' => 'timePeriodName_1',
-        'alias' => 'timePeriodAlias',
-        'sunday' => '14:00-16:00',
-        'monday' => '07:00-12:00,13:00-18:00',
-        'tuesday' => '07:00-18:00',
-        'wednesday' => '07:00-12:00,13:00-17:00',
-        'thursday' => '07:00-18:00',
-        'friday' => '07:00-18:00',
-        'saturday' => '10:00-16:00',
-        'templates' => 'none',
-        'exceptions' => array(
-            array(
-                'day' => 'december 25',
-                'timeRange' => '00:00-22:59,23:00-24:00'
-            ),
-            array(
-                'day' => 'january 1',
-                'timeRange' => '00:00-24:00'
-            ),
-            array(
-                'day' => 'july 14',
-                'timeRange' => '00:00-24:00'
-            ),
-            array(
-                'day' => 'may 25',
-                'timeRange' => '00:00-24:00'
-            )
-        )
-    );
+    private array $duplicatedProperties = ['name' => 'timePeriodName_1', 'alias' => 'timePeriodAlias', 'sunday' => '14:00-16:00', 'monday' => '07:00-12:00,13:00-18:00', 'tuesday' => '07:00-18:00', 'wednesday' => '07:00-12:00,13:00-17:00', 'thursday' => '07:00-18:00', 'friday' => '07:00-18:00', 'saturday' => '10:00-16:00', 'templates' => 'none', 'exceptions' => [['day' => 'december 25', 'timeRange' => '00:00-22:59,23:00-24:00'], ['day' => 'january 1', 'timeRange' => '00:00-24:00'], ['day' => 'july 14', 'timeRange' => '00:00-24:00'], ['day' => 'may 25', 'timeRange' => '00:00-24:00']]];
 
-    private $AugustHolidays = array(
-        'name' => 'timePeriodName',
-        'alias' => 'timePeriodAlias',
-        'sunday' => '14:00-16:00',
-        'monday' => '07:00-12:00,13:00-18:00',
-        'tuesday' => '07:00-18:00',
-        'wednesday' => '07:00-12:00,13:00-17:00',
-        'thursday' => '07:00-18:00',
-        'friday' => '07:00-18:00',
-        'saturday' => '10:00-16:00',
-        'templates' => 'none',
-        'exceptions' => array(
-            array(
-                'day' => 'august 1 - 31',
-                'timeRange' => '00:00-24:00'
-            )
-        )
-    );
+    private array $AugustHolidays = ['name' => 'timePeriodName', 'alias' => 'timePeriodAlias', 'sunday' => '14:00-16:00', 'monday' => '07:00-12:00,13:00-18:00', 'tuesday' => '07:00-18:00', 'wednesday' => '07:00-12:00,13:00-17:00', 'thursday' => '07:00-18:00', 'friday' => '07:00-18:00', 'saturday' => '10:00-16:00', 'templates' => 'none', 'exceptions' => [['day' => 'august 1 - 31', 'timeRange' => '00:00-24:00']]];
 
     /**
      * @When I create a time period with separated holidays dates excluded
@@ -104,7 +29,7 @@ class TimePeriodConfigurationContext extends CentreonContext
      */
     public function allPropertiesOfMyTimePeriodAreSaved()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -129,12 +54,12 @@ class TimePeriodConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -155,7 +80,7 @@ class TimePeriodConfigurationContext extends CentreonContext
      */
     public function allPropertiesOfMyTimePeriodAreSavedWithTheExclusions()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -180,12 +105,12 @@ class TimePeriodConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -219,7 +144,7 @@ class TimePeriodConfigurationContext extends CentreonContext
      */
     public function aNewTimePeriodIsCreatedWithIdenticalPropertiesExceptTheName()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -244,12 +169,12 @@ class TimePeriodConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

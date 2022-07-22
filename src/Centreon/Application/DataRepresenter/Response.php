@@ -45,25 +45,13 @@ use JsonSerializable;
 class Response implements JsonSerializable
 {
     /**
-     * @var bool
-     */
-    private $status;
-
-    /**
-     * @var mixed
-     */
-    private $result;
-
-    /**
      * Construct
      *
      * @param mixed $result
      * @param bool $status
      */
-    public function __construct($result, bool $status = true)
+    public function __construct(private $result, private readonly bool $status = true)
     {
-        $this->status = $status;
-        $this->result = $result;
     }
 
     /**

@@ -31,69 +31,33 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class TaskService
 {
-    /**
-     * @var KeyGeneratorInterface
-     */
-    private $gen;
+    private ?\CentreonRestHttp $centreonRestHttp = null;
 
-    /**
-     * @var CentreonDBManagerService
-     */
-    private $dbManager;
-
-    /**
-     * @var CentcoreCommandService
-     */
-    private $cmdService;
-
-    /**
-     * @var \CentreonRestHttp
-     */
-    private $centreonRestHttp;
-
-    /**
-     * @return CentcoreCommandService
-     */
     public function getCmdService(): CentcoreCommandService
     {
         return $this->cmdService;
     }
 
-    /**
-     * @param CentcoreCommandService $cmdService
-     */
     public function setCmdService(CentcoreCommandService $cmdService): void
     {
         $this->cmdService = $cmdService;
     }
 
-    /**
-     * @return KeyGeneratorInterface
-     */
     public function getGen(): KeyGeneratorInterface
     {
         return $this->gen;
     }
 
-    /**
-     * @return CentreonDBManagerService
-     */
     public function getDbManager(): CentreonDBManagerService
     {
         return $this->dbManager;
     }
 
-    /**
-     * @param \CentreonRestHttp $centreonRestHttp
-     */
     public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
     {
         $this->centreonRestHttp = $centreonRestHttp;
     }
 
-    /**
-     * @return \CentreonRestHttp
-     */
     public function getCentreonRestHttp(): \CentreonRestHttp
     {
         return $this->centreonRestHttp;
@@ -101,26 +65,17 @@ class TaskService
 
     /**
      * TaskService constructor
-     * @param KeyGeneratorInterface $generator
+     * @param KeyGeneratorInterface $gen
      * @param CentreonDBManagerService $dbManager
      */
-    public function __construct(
-        KeyGeneratorInterface $generator,
-        CentreonDBManagerService $dbManager,
-        CentcoreCommandService $cmdService
-    ) {
-        $this->gen = $generator;
-        $this->dbManager = $dbManager;
-        $this->cmdService = $cmdService;
+    public function __construct(private readonly KeyGeneratorInterface $gen, private readonly CentreonDBManagerService $dbManager, private CentcoreCommandService $cmdService)
+    {
     }
 
     /**
      * Adds a new task
      *
-     * @param string $type
      * @param array<string, array<string,mixed>> $params
-     * @param int $parentId
-     * @return int|bool
      */
     public function addTask(string $type, array $params, int $parentId = null): int|bool
     {
@@ -148,7 +103,6 @@ class TaskService
 
     /**
      * Get Existing Task status
-     * @param string $taskId
      * @return null
      */
     public function getStatus(string $taskId)
@@ -175,8 +129,6 @@ class TaskService
 
     /**
      * Update task status
-     * @param string $taskId
-     * @param string $status
      * @return mixed
      * @throws NotFoundException
      * @throws \Exception

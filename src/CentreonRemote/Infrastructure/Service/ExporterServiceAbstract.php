@@ -30,11 +30,6 @@ use CentreonRemote\Infrastructure\Export\ExportManifest;
 abstract class ExporterServiceAbstract implements ExporterServiceInterface
 {
     /**
-     * @var Container $dependencyInjector
-     */
-    protected $dependencyInjector;
-
-    /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
      */
     protected $db;
@@ -62,42 +57,29 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Construct
      *
-     * @param Container $services
+     * @param Container $dependencyInjector
      */
-    public function __construct(Container $services)
+    public function __construct(protected Container $dependencyInjector)
     {
-        $this->dependencyInjector = $services;
-        $this->db = $services['centreon.db-manager'];
-        $this->config = $services['centreon.config'];
+        $this->db = $dependencyInjector['centreon.db-manager'];
+        $this->config = $dependencyInjector['centreon.config'];
     }
 
-    /**
-     * @param ExporterCacheService $cache
-     */
     public function setCache(ExporterCacheService $cache): void
     {
         $this->cache = $cache;
     }
 
-    /**
-     * @param ExportCommitment $commitment
-     */
     public function setCommitment(ExportCommitment $commitment): void
     {
         $this->commitment = $commitment;
     }
 
-    /**
-     * @param ExportManifest $manifest
-     */
     public function setManifest(ExportManifest $manifest): void
     {
         $this->manifest = $manifest;
     }
 
-    /**
-     * @return string
-     */
     public static function getName(): string
     {
         return static::NAME;
@@ -106,9 +88,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Create path for export
      *
-     * @param string $exportPath
      *
-     * @return string
      */
     public function createPath(string $exportPath = null): string
     {
@@ -126,13 +106,11 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Get path of export
      *
-     * @param string $exportPath
      *
-     * @return string
      */
     public function getPath(string $exportPath = null): string
     {
-        $exportPath = $exportPath ?? $this->commitment->getPath() . '/' . $this->getName();
+        $exportPath ??= $this->commitment->getPath() . '/' . static::getName();
 
         return $exportPath;
     }
@@ -140,9 +118,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Get exported file
      *
-     * @param string $filename
      *
-     * @return string
      */
     public function getFile(string $filename): string
     {

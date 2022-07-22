@@ -33,7 +33,6 @@ interface MetaServiceMetricServiceInterface
     /**
      * Find all meta service metrics (for non admin user).
      *
-     * @param integer $metaId
      * @return MetaServiceMetric[]|null
      * @throws MetaServiceMetricException
      */
@@ -42,7 +41,6 @@ interface MetaServiceMetricServiceInterface
     /**
      * Find all meta service metrics (for admin user).
      *
-     * @param integer $metaId
      * @return MetaServiceMetric[]|null
      * @throws MetaServiceMetricException
      */

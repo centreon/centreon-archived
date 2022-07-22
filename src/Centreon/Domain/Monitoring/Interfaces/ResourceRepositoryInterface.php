@@ -31,22 +31,16 @@ interface ResourceRepositoryInterface
     /**
      * Find all resources.
      *
-     * @param ResourceFilter $filter
      * @return \Centreon\Domain\Monitoring\Resource[]
      */
     public function findResources(ResourceFilter $filter): array;
 
-    /**
-     * @param ContactInterface $contact
-     * @return ResourceRepositoryInterface
-     */
     public function setContact(ContactInterface $contact): self;
 
     /**
      * Sets the access groups that will be used to filter services and the host.
      *
      * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
-     * @return ResourceRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface;
 

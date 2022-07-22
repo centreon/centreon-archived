@@ -9,39 +9,13 @@ class ServiceGroupConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $hostGroupService1 = array(
-        'description' => 'hostGroupServiceDescription1',
-        'hosts' => 'Windows-Servers',
-        'check_command' => 'check_http'
-    );
+    protected $hostGroupService1 = ['description' => 'hostGroupServiceDescription1', 'hosts' => 'Windows-Servers', 'check_command' => 'check_http'];
 
-    protected $hostGroupService2 = array(
-        'description' => 'hostGroupServiceDescription2',
-        'hosts' => 'Firewall',
-        'check_command' => 'check_https'
-    );
+    protected $hostGroupService2 = ['description' => 'hostGroupServiceDescription2', 'hosts' => 'Firewall', 'check_command' => 'check_https'];
 
-    protected $initialProperties = array(
-        'name' => 'serviceGroupName',
-        'description' => 'serviceGroupDescription',
-        'hosts' => 'Centreon-Server - Memory',
-        'host_groups' => 'Windows-Servers - hostGroupServiceDescription1',
-        'service_templates' => 'generic-host - Ping-LAN',
-        'geo_coordinates' => '2.3522219,48.856614',
-        'enabled' => 1,
-        'comments' => 'serviceGroupComments'
-    );
+    protected $initialProperties = ['name' => 'serviceGroupName', 'description' => 'serviceGroupDescription', 'hosts' => 'Centreon-Server - Memory', 'host_groups' => 'Windows-Servers - hostGroupServiceDescription1', 'service_templates' => 'generic-host - Ping-LAN', 'geo_coordinates' => '2.3522219,48.856614', 'enabled' => 1, 'comments' => 'serviceGroupComments'];
 
-    protected $updatedProperties = array(
-        'name' => 'serviceGroupNameChanged',
-        'description' => 'serviceGroupDescriptionChanged',
-        'hosts' => 'Centreon-Server - Load',
-        'host_groups' => 'Firewall - hostGroupServiceDescription2',
-        'service_templates' => 'Servers-Linux - SNMP-Linux-Swap',
-        'geo_coordinates' => '2.3522219,48.856614',
-        'enabled' => 1,
-        'comments' => 'serviceGroupCommentsChanged'
-    );
+    protected $updatedProperties = ['name' => 'serviceGroupNameChanged', 'description' => 'serviceGroupDescriptionChanged', 'hosts' => 'Centreon-Server - Load', 'host_groups' => 'Firewall - hostGroupServiceDescription2', 'service_templates' => 'Servers-Linux - SNMP-Linux-Swap', 'geo_coordinates' => '2.3522219,48.856614', 'enabled' => 1, 'comments' => 'serviceGroupCommentsChanged'];
 
     /**
      * @Given a service group is configured
@@ -75,7 +49,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -87,12 +61,12 @@ class ServiceGroupConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -116,7 +90,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
      */
     public function theNewServiceGroupHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -128,12 +102,12 @@ class ServiceGroupConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

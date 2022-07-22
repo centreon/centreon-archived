@@ -16,38 +16,11 @@ class DowntimeRecurrentContext extends CentreonContext
     protected $startDate;
     protected $endDate;
 
-    protected $host = array(
-        'name' => 'host',
-        'alias' => 'host',
-        'address' => 'host2@localhost',
-        'check_command' => 'check_centreon_dummy',
-        'location' => 'Europe/Paris'
-    );
+    protected $host = ['name' => 'host', 'alias' => 'host', 'address' => 'host2@localhost', 'check_command' => 'check_centreon_dummy', 'location' => 'Europe/Paris'];
 
-    protected $hostGroup = array(
-        'name' => 'hostGroupName',
-        'alias' => 'hostGroupAlias',
-        'hosts' => 'host',
-        'enabled' => 1
-    );
+    protected $hostGroup = ['name' => 'hostGroupName', 'alias' => 'hostGroupAlias', 'hosts' => 'host', 'enabled' => 1];
 
-    protected $service = array(
-        'hosts' => 'host',
-        'description' => 'service',
-        'templates' => 'generic-service',
-        'check_command' => 'check_centreon_dummy',
-        'check_period' => '24x7',
-        'max_check_attempts' => 1,
-        'normal_check_interval' => 1,
-        'retry_check_interval' => 1,
-        'active_checks_enabled' => 1,
-        'passive_checks_enabled' => 0,
-        'notifications_enabled' => 1,
-        'notify_on_recovery' => 1,
-        'notify_on_critical' => 1,
-        'recovery_notification_delay' => 1,
-        'cs' => 'admin_admin'
-    );
+    protected $service = ['hosts' => 'host', 'description' => 'service', 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 1, 'passive_checks_enabled' => 0, 'notifications_enabled' => 1, 'notify_on_recovery' => 1, 'notify_on_critical' => 1, 'recovery_notification_delay' => 1, 'cs' => 'admin_admin'];
 
     /**
      * @Given a hostGroup is configured
@@ -82,14 +55,7 @@ class DowntimeRecurrentContext extends CentreonContext
         }
 
         $this->currentPage = new RecurrentDowntimeConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => 'test_DT',
-            'alias' => 'recurrent_DT',
-            'days' => array(7, 1, 2, 3, 4, 5, 6),
-            'start' => $this->startDate->format('H:i'),
-            'end' => $endDateTest,
-            'hostgroup_relation' => $this->hostGroup['name']
-        ));
+        $this->currentPage->setProperties(['name' => 'test_DT', 'alias' => 'recurrent_DT', 'days' => [7, 1, 2, 3, 4, 5, 6], 'start' => $this->startDate->format('H:i'), 'end' => $endDateTest, 'hostgroup_relation' => $this->hostGroup['name']]);
         $this->currentPage->save();
     }
 

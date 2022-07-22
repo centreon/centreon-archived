@@ -52,12 +52,12 @@ class Centreon_Object_Service_Extended extends Centreon_Object
      * @param array $params
      * @return int
      */
-    public function insert($params = array())
+    public function insert($params = [])
     {
         $sql = "INSERT INTO $this->table ";
         $sqlFields = "";
         $sqlValues = "";
-        $sqlParams = array();
+        $sqlParams = [];
         foreach ($params as $key => $value) {
             if ($sqlFields != "") {
                 $sqlFields .= ",";
@@ -87,9 +87,9 @@ class Centreon_Object_Service_Extended extends Centreon_Object
     public function getParameters($objectId, $parameterNames)
     {
         $params = parent::getParameters($objectId, $parameterNames);
-        $params_image = array("esi_icon_image");
+        $params_image = ["esi_icon_image"];
         if (!is_array($params)) {
-            return array();
+            return [];
         }
         foreach ($params_image as $image) {
             if (array_key_exists($image, $params)) {
@@ -98,7 +98,7 @@ class Centreon_Object_Service_Extended extends Centreon_Object
                         LEFT JOIN view_img_dir_relation vidr ON vi.img_id = vidr.img_img_id
                         LEFT JOIN view_img_dir vid ON vid.dir_id = vidr.dir_dir_parent_id
                         WHERE img_id = ?";
-                $res = $this->getResult($sql, array($params[$image]), "fetch");
+                $res = $this->getResult($sql, [$params[$image]], "fetch");
                 if (is_array($res)) {
                     $params[$image] = $res["dir_name"]."/".$res["img_path"];
                 }

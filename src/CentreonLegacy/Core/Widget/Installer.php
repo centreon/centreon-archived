@@ -106,7 +106,7 @@ class Installer extends Widget
             }
             $order = 1;
             if (isset($preferences['@attributes'])) {
-                $preferences = array($preferences['@attributes']);
+                $preferences = [$preferences['@attributes']];
             }
 
             foreach ($preferences as $preference) {
@@ -114,8 +114,8 @@ class Installer extends Widget
                 if (!isset($types[$attr['type']])) {
                     throw new \Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
                 }
-                $attr['requirePermission'] = isset($attr['requirePermission']) ? $attr['requirePermission'] : 0;
-                $attr['defaultValue'] = isset($attr['defaultValue']) ? $attr['defaultValue'] : '';
+                $attr['requirePermission'] ??= 0;
+                $attr['defaultValue'] ??= '';
                 $attr['header'] = (isset($attr['header']) && $attr['header'] != "") ? $attr['header'] : null;
                 $attr['order'] = $order;
                 $attr['type'] = $types[$attr['type']];

@@ -32,31 +32,31 @@ use Centreon\Domain\Common\Assertion\Assertion;
  */
 class MetaServiceMetric
 {
-    public const MAX_METRIC_NAME_LENGTH = 255,
+    final public const MAX_METRIC_NAME_LENGTH = 255,
                  MIN_METRIC_NAME_LENGTH = 1,
                  MAX_METRIC_UNIT_NAME_LENGTH = 32;
     /**
      * @var int ID of the Metric
      */
-    private $id;
+    private ?int $id = null;
     /**
      * @var string Name of the Metric
      */
-    private $name;
+    private string $name;
     /**
      * @var string Name of the Metric Unit
      */
-    private $unit;
+    private ?string $unit = null;
 
     /**
      * @var float Current value of the Metric in RealTime
      */
-    private $value;
+    private ?float $value = null;
 
     /**
      * @var ResourceEntity Resource on which Metric is attached
      */
-    private $resource;
+    private ?ResourceEntity $resource = null;
 
     /**
      * Contructor of MetaServiceMetric entity
@@ -68,35 +68,23 @@ class MetaServiceMetric
         $this->setName($name);
     }
 
-    /**
-     * @return integer
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param integer $id
-     * @return MetaServiceMetric
-     */
     public function setId(int $id): MetaServiceMetric
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
-     * @return MetaServiceMetric
      * @throws \Assert\AssertionFailedException
      */
     public function setName(string $name): MetaServiceMetric
@@ -107,17 +95,12 @@ class MetaServiceMetric
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUnit(): ?string
     {
         return $this->unit;
     }
 
     /**
-     * @param string|null $unit
-     * @return MetaServiceMetric
      * @throws \Assert\AssertionFailedException
      */
     public function setUnit(?string $unit): MetaServiceMetric
@@ -129,36 +112,22 @@ class MetaServiceMetric
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getValue(): float
     {
         return $this->value;
     }
 
-    /**
-     * @param float|null $value
-     * @return MetaServiceMetric
-     */
     public function setValue(?float $value): MetaServiceMetric
     {
         $this->value = $value;
         return $this;
     }
 
-    /**
-     * @return ResourceEntity|null
-     */
     public function getResource(): ?ResourceEntity
     {
         return $this->resource;
     }
 
-    /**
-     * @param ResourceEntity|null $resource
-     * @return MetaServiceMetric
-     */
     public function setResource(?ResourceEntity $resource): MetaServiceMetric
     {
         $this->resource = $resource;

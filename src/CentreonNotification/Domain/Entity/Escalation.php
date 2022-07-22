@@ -32,7 +32,7 @@ use PDO;
  */
 class Escalation implements Mapping\MetadataInterface
 {
-    public const SERIALIZER_GROUP_LIST = 'escalation-list';
+    final public const SERIALIZER_GROUP_LIST = 'escalation-list';
 
     /**
      * Use class metadata instead calling of this constant
@@ -41,19 +41,19 @@ class Escalation implements Mapping\MetadataInterface
      * $this->repository->getClassMetadata()->getTableName()
      * </example>
      */
-    public const TABLE = 'escalation';
+    final public const TABLE = 'escalation';
 
     /**
      * @Serializer\Groups({Escalation::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Serializer\Groups({Escalation::SERIALIZER_GROUP_LIST})
      * @var string escalation name
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * {@inheritdoc}
@@ -65,35 +65,21 @@ class Escalation implements Mapping\MetadataInterface
             ->add('name', 'esc_name', PDO::PARAM_STR);
     }
 
-    /**
-     * @param int $id
-     * @return void
-     */
     public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;

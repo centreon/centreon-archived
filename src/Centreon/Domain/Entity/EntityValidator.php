@@ -39,20 +39,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EntityValidator
 {
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
+    private readonly \Symfony\Component\Validator\Validator\ValidatorInterface $validator;
 
-    /**
-     * @var bool
-     */
-    private $allowExtraFields;
+    private ?bool $allowExtraFields = null;
 
-    /**
-     * @var bool
-     */
-    private $allowMissingFields;
+    private ?bool $allowMissingFields = null;
 
     /**
      * EntityValidator constructor.
@@ -69,9 +60,7 @@ class EntityValidator
         } elseif (is_dir($validationFilePath)) {
             $finder = (new Finder())
                 ->in($validationFilePath)
-                ->filter(function (\SplFileInfo $file) {
-                    return $file->getExtension() == 'yaml';
-                })
+                ->filter(fn(\SplFileInfo $file) => $file->getExtension() == 'yaml')
                 ->files();
             if ($finder->hasResults()) {
                 $paths = [];
@@ -94,7 +83,6 @@ class EntityValidator
      * Indicates whether validation rules exist for the name of the given entity.
      *
      * @param string $entityName Entity name
-     * @return bool
      */
     public function hasValidatorFor(string $entityName): bool
     {
@@ -111,7 +99,6 @@ class EntityValidator
      * @param array $groups Rule groups
      * @param bool $allowExtraFields If TRUE, errors will show on not expected fields (by default)
      * @param bool $allowMissingFields If FALSE, errors will show on missing fields (by default)
-     * @return ConstraintViolationListInterface
      */
     public function validateEntity(
         string $entityName,
@@ -145,16 +132,12 @@ class EntityValidator
      * @param $object
      * @param Constraint|Constraint[] $constraints
      * @param string|GroupSequence|(string|GroupSequence)[]|null $groups
-     * @return ConstraintViolationListInterface
      */
-    public function validate($object, $constraints = null, $groups = null): ConstraintViolationListInterface
+    public function validate($object, \Symfony\Component\Validator\Constraint|array $constraints = null, $groups = null): ConstraintViolationListInterface
     {
         return $this->validator->validate($object, $constraints, $groups);
     }
 
-    /**
-     * @return ValidatorInterface
-     */
     public function getValidator(): ValidatorInterface
     {
         return $this->validator;
@@ -165,7 +148,6 @@ class EntityValidator
      *
      * @param string $entityName Entity name for which we want to get constraints
      * @param array $groups NRule groups
-     * @param bool $firstCall
      * @return Collection Returns a constraints collection object
      */
     private function getConstraints(string $entityName, array $groups, bool $firstCall = false): Composite
@@ -225,10 +207,6 @@ class EntityValidator
         }
     }
 
-    /**
-     * @param ConstraintViolationListInterface $violations
-     * @return ConstraintViolationListInterface
-     */
     private function removeDuplicatedViolation(
         ConstraintViolationListInterface $violations
     ): ConstraintViolationListInterface {
@@ -255,7 +233,6 @@ class EntityValidator
      * Find the 'Type' constraint from the constraints list.
      *
      * @param Constraint[] $constraints Constraints list for which we want to find the 'Type' constraint
-     * @return string|null
      */
     private function findTypeConstraint(array $constraints): ?string
     {
@@ -270,7 +247,6 @@ class EntityValidator
     /**
      * Formats errors to be more readable.
      *
-     * @param ConstraintViolationListInterface $violations
      * @param bool $showPropertiesInSnakeCase Set TRUE to convert the properties name into snake case
      * @return string List of error messages
      */
@@ -307,7 +283,6 @@ class EntityValidator
      * Convert a string from camel case to snake case.
      *
      * @param string $stringToConvert String to convert
-     * @return string
      */
     private static function convertCamelCaseToSnakeCase(string $stringToConvert): string
     {

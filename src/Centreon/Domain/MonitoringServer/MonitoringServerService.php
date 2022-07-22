@@ -34,17 +34,11 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
 class MonitoringServerService implements MonitoringServerServiceInterface
 {
     /**
-     * @var MonitoringServerRepositoryInterface
-     */
-    private $monitoringServerRepository;
-
-    /**
      * PollerService constructor.
-     * @param MonitoringServerRepositoryInterface $pollerRepository
+     * @param MonitoringServerRepositoryInterface $monitoringServerRepository
      */
-    public function __construct(MonitoringServerRepositoryInterface $pollerRepository)
+    public function __construct(private readonly MonitoringServerRepositoryInterface $monitoringServerRepository)
     {
-        $this->monitoringServerRepository = $pollerRepository;
     }
 
     /**

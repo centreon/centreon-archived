@@ -17,12 +17,7 @@ class LdapConfigurationContext extends CentreonContext
     public function iAddANewLdapConfiguration()
     {
         $this->page = new LdapConfigurationPage($this);
-        $this->page->setProperties(array(
-            'configuration_name' => $this->configuration_name,
-            'description' => 'an ldap configuration test',
-            'enable_authentication' => 1,
-            'template' => 'Posix'
-        ));
+        $this->page->setProperties(['configuration_name' => $this->configuration_name, 'description' => 'an ldap configuration test', 'enable_authentication' => 1, 'template' => 'Posix']);
     }
 
 
@@ -43,7 +38,7 @@ class LdapConfigurationContext extends CentreonContext
         $this->page->save();
         $this->page = new LdapConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->configuration_name);
-        $this->page->setProperties(array('configuration_name' => $this->newConfigurationName));
+        $this->page->setProperties(['configuration_name' => $this->newConfigurationName]);
         $this->page->save();
     }
 

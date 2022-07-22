@@ -29,32 +29,19 @@ abstract class AbstractCommand
     /**
      * @var string Token of the command assigned by the Gorgone server.
      */
-    private $token;
-
-    /**
-     * @var int Poller id
-     */
-    private $monitoringInstanceId;
-
-    /**
-     * @var string|null Body of the request that will be send in case of request of type POST, PUT or PATCH
-     */
-    private $bodyRequest;
+    private ?string $token = null;
 
     /**
      * We create a command for a specific poller.
      *
-     * @param int $monitoringServer Id of the monitoring server for which this command is intended
+     * @param int $monitoringInstanceId Id of the monitoring server for which this command is intended
      * @param string|null $bodyRequest Body of the request
      */
-    public function __construct(int $monitoringServer, string $bodyRequest = null)
+    public function __construct(private readonly int $monitoringInstanceId, private readonly ?string $bodyRequest = null)
     {
-        $this->monitoringInstanceId = $monitoringServer;
-        $this->bodyRequest = $bodyRequest;
     }
 
     /**
-     * @return int
      * @see CommandInterface::getMonitoringInstanceId()
      */
     public function getMonitoringInstanceId(): int
@@ -63,7 +50,6 @@ abstract class AbstractCommand
     }
 
     /**
-     * @return string
      * @see CommandInterface::getToken()
      */
     public function getToken(): string
@@ -72,7 +58,6 @@ abstract class AbstractCommand
     }
 
     /**
-     * @param string $token
      * @see CommandInterface::setToken()
      */
     public function setToken(string $token): void

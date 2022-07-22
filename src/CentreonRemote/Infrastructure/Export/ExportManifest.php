@@ -30,34 +30,22 @@ use Exception;
  */
 class ExportManifest
 {
-    public const EXPORT_FILE = 'manifest.json';
-    public const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
-    public const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
-    public const ERR_CODE_INCOMPATIBLE_VERSIONS = 1005;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * @var string
-     */
-    private $version;
+    final public const EXPORT_FILE = 'manifest.json';
+    final public const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
+    final public const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
+    final public const ERR_CODE_INCOMPATIBLE_VERSIONS = 1005;
 
     /**
      * @var array<mixed>
      */
-    private $data;
+    private ?array $data = null;
 
     /**
      * @param ExportCommitment $commitment
      * @param string|null $version
      */
-    public function __construct(ExportCommitment $commitment, string $version = null)
+    public function __construct(private readonly ExportCommitment $commitment, private readonly string $version = null)
     {
-        $this->commitment = $commitment;
-        $this->version = $version;
     }
 
     /**
@@ -131,19 +119,16 @@ class ExportManifest
      * Dump data in file
      *
      * @param array<string,mixed> $exportManifest
-     * @return void
      */
     public function dump(array $exportManifest): void
     {
-        $data = array_merge($exportManifest, ["version" => $this->version]);
+        $data = [...$exportManifest, ...["version" => $this->version]];
 
         $this->commitment->getParser()->dump($data, $this->getFile());
     }
 
     /**
      * Get file path
-     *
-     * @return string
      */
     public function getFile(): string
     {

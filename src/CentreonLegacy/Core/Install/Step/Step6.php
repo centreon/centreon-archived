@@ -54,12 +54,12 @@ class Step6 extends AbstractStep
     public function setDatabaseConfiguration($parameters)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/database.json";
-        file_put_contents($configurationFile, json_encode($parameters));
+        file_put_contents($configurationFile, json_encode($parameters, JSON_THROW_ON_ERROR));
     }
 
     public function setVersion($version)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/version.json";
-        file_put_contents($configurationFile, json_encode($version));
+        file_put_contents($configurationFile, json_encode($version, JSON_THROW_ON_ERROR));
     }
 }

@@ -24,18 +24,7 @@ class BrokerContext extends CentreonContext
     public function aConfiguredPassiveService()
     {
         $this->page = new ServiceConfigurationPage($this);
-        $this->page->setProperties(array(
-            'hosts' => 'Centreon-Server',
-            'description' => 'AcceptanceTestService',
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        ));
+        $this->page->setProperties(['hosts' => 'Centreon-Server', 'description' => 'AcceptanceTestService', 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1]);
         $this->page->save();
     }
 
@@ -45,9 +34,7 @@ class BrokerContext extends CentreonContext
     public function IUpdateBrokerConfigurationFileName()
     {
         $this->page->setProperties(
-            array(
-                'filename' => 'new-name.json'
-            )
+            ['filename' => 'new-name.json']
         );
         $this->page->save();
     }
@@ -67,7 +54,7 @@ class BrokerContext extends CentreonContext
     public function theNewConfigurationIsApplied()
     {
         $return = $this->container->execute('cat /etc/centreon-broker/watchdog.json', 'web');
-        if (!preg_match('/\/etc\/centreon-broker\/\/?new-name\.json/', $return['output'])) {
+        if (!preg_match('/\/etc\/centreon-broker\/\/?new-name\.json/', (string) $return['output'])) {
             throw new \Exception('new-name.json is not declared in watchdog.json');
         }
     }

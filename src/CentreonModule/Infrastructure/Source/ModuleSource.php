@@ -44,11 +44,11 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class ModuleSource extends SourceAbstract
 {
-    public const TYPE = 'module';
-    public const PATH = 'www/modules/';
-    public const PATH_WEB = 'modules/';
-    public const CONFIG_FILE = 'conf.php';
-    public const LICENSE_FILE = 'license/merethis_lic.zl';
+    final public const TYPE = 'module';
+    final public const PATH = 'www/modules/';
+    final public const PATH_WEB = 'modules/';
+    final public const CONFIG_FILE = 'conf.php';
+    final public const LICENSE_FILE = 'license/merethis_lic.zl';
 
     /**
      * @var array<string,mixed>
@@ -78,9 +78,6 @@ class ModuleSource extends SourceAbstract
         ;
     }
 
-    /**
-     * @param string $id
-     */
     public function remove(string $id): void
     {
         $recordId = $this->db
@@ -91,9 +88,6 @@ class ModuleSource extends SourceAbstract
         ($this->remover)($id, $recordId)->remove();
     }
 
-    /**
-     * @param string $id
-     */
     public function update(string $id): ?Module
     {
         $recordId = $this->db
@@ -138,10 +132,6 @@ class ModuleSource extends SourceAbstract
         return $result;
     }
 
-    /**
-     * @param string $id
-     * @return Module|null
-     */
     public function getDetail(string $id): ?Module
     {
         $result = null;
@@ -166,10 +156,6 @@ class ModuleSource extends SourceAbstract
         return $result;
     }
 
-    /**
-     * @param string $configFile
-     * @return Module
-     */
     public function createEntityFromConfig(string $configFile): Module
     {
         $module_conf = [];
@@ -229,7 +215,6 @@ class ModuleSource extends SourceAbstract
 
     /**
      * @codeCoverageIgnore
-     * @param string $configFile
      * @return array<mixed>
      */
     protected function getModuleConf(string $configFile): array

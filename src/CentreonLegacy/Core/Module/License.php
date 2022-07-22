@@ -45,18 +45,12 @@ class License extends Module
 {
 
     /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $services;
-
-    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface
      */
-    public function __construct(ContainerInterface $services)
+    public function __construct(protected ContainerInterface $services)
     {
-        $this->services = $services;
     }
 
     /**
@@ -67,11 +61,11 @@ class License extends Module
      */
     private function parseLicenseFile($licenseFile)
     {
-        $info = array();
+        $info = [];
 
         $lines = preg_split('/\n/', file_get_contents($licenseFile));
         foreach ($lines as $line) {
-            if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
+            if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', (string) $line, $match)) {
                 $info[$match[1]] = $match[2];
             }
         }
@@ -91,7 +85,7 @@ class License extends Module
 
         try {
             $healthcheck->check($module);
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
         }
 
         if ($expiration = $healthcheck->getLicenseExpiration()) {

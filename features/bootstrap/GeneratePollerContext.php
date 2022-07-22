@@ -44,7 +44,7 @@ class GeneratePollerContext extends CentreonContext
      */
     public function iSelectAnotherPoller()
     {
-        $this->pollers_page->setProperties(array('pollers' => 'Central_1'));
+        $this->pollers_page->setProperties(['pollers' => 'Central_1']);
     }
 
     /**
@@ -86,13 +86,13 @@ class GeneratePollerContext extends CentreonContext
      */
     public function thePollersAreAlreadySelected()
     {
-        $selectedPollers = array();
+        $selectedPollers = [];
         $printedPollers = $this->getSession()->getPage()->findAll('css', '.select2-content');
         foreach ($printedPollers as $printedPoller) {
             array_push($selectedPollers, $printedPoller->getText());
         }
         sort($selectedPollers);
-        if ($selectedPollers != array('Central', 'Central_1')) {
+        if ($selectedPollers != ['Central', 'Central_1']) {
             throw new \Exception('Wrong selected pollers');
         }
     }
@@ -104,10 +104,9 @@ class GeneratePollerContext extends CentreonContext
     {
         // Wait configuration is generated.
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()
-                        ->findAll('css', 'div#consoleDetails font[color="green"]')) === 6;
-            }
+            fn($context) => (is_countable($context->getSession()->getPage()
+                    ->findAll('css', 'div#consoleDetails font[color="green"]')) ? count($context->getSession()->getPage()
+                    ->findAll('css', 'div#consoleDetails font[color="green"]')) : 0) === 6
         );
     }
 
@@ -118,12 +117,10 @@ class GeneratePollerContext extends CentreonContext
     {
         /* Wait error message is displayed */
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    '#noSelectedPoller[style*="display: inline"]'
-                );
-            }
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                '#noSelectedPoller[style*="display: inline"]'
+            )
         );
     }
 }

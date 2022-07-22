@@ -30,25 +30,11 @@ use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 final class HostGroupService extends AbstractCentreonService implements HostGroupServiceInterface
 {
     /**
-     * @var HostGroupRepositoryInterface
-     */
-    private $hostGroupRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
      * @param HostGroupRepositoryInterface $hostGroupRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
-    public function __construct(
-        HostGroupRepositoryInterface $hostGroupRepository,
-        ReadAccessGroupRepositoryInterface $accessGroupRepository
-    ) {
-        $this->hostGroupRepository = $hostGroupRepository;
-        $this->accessGroupRepository = $accessGroupRepository;
+    public function __construct(private readonly HostGroupRepositoryInterface $hostGroupRepository, private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository)
+    {
     }
 
     /**

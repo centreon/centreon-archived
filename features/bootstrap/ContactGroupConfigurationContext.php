@@ -9,28 +9,11 @@ class ContactGroupConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'contactGroupName',
-        'alias' => 'contactGroupAlias',
-        'contacts' => 'Guest',
-        'acl' => 'ALL',
-        'status' => 1,
-        'comments' => 'contactGroupComment'
-    );
+    protected $initialProperties = ['name' => 'contactGroupName', 'alias' => 'contactGroupAlias', 'contacts' => 'Guest', 'acl' => 'ALL', 'status' => 1, 'comments' => 'contactGroupComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'contactGroupNameChanged',
-        'alias' => 'contactGroupAliasChanged',
-        'contacts' => 'User',
-        'acl' => 'aclGroupName',
-        'status' => 1,
-        'comments' => 'contactGroupCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'contactGroupNameChanged', 'alias' => 'contactGroupAliasChanged', 'contacts' => 'User', 'acl' => 'aclGroupName', 'status' => 1, 'comments' => 'contactGroupCommentChanged'];
 
-    protected $aclGroup = array(
-        'group_name' => 'aclGroupName',
-        'group_alias' => 'aclGroupAlias'
-    );
+    protected $aclGroup = ['group_name' => 'aclGroupName', 'group_alias' => 'aclGroupAlias'];
 
     /**
      * @Given a contact group is configured
@@ -61,7 +44,7 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theContactGroupPropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -73,12 +56,12 @@ class ContactGroupConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
     }
@@ -101,7 +84,7 @@ class ContactGroupConfigurationContext extends CentreonContext
      */
     public function theNewContactGroupHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -118,12 +101,12 @@ class ContactGroupConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

@@ -44,12 +44,10 @@ use CentreonModule\Infrastructure\Service;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
-    const CENTREON_MODULE = 'centreon.module';
+    final const CENTREON_MODULE = 'centreon.module';
 
     /**
      * Register services
-     *
-     * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {

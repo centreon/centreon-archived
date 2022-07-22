@@ -48,8 +48,6 @@ class CentreonI18n extends Webservice\WebServiceAbstract implements
 {
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -59,7 +57,6 @@ class CentreonI18n extends Webservice\WebServiceAbstract implements
     /**
      * Return a table containing all the translations.
      *
-     * @return array
      * @throws \Exception
      */
     public function getTranslation(): array
@@ -68,7 +65,7 @@ class CentreonI18n extends Webservice\WebServiceAbstract implements
             $translation = $this->services
                 ->get(ServiceProvider::CENTREON_I18N_SERVICE)
                 ->getTranslation();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception("Translation files does not exists");
         }
 
@@ -77,8 +74,6 @@ class CentreonI18n extends Webservice\WebServiceAbstract implements
 
     /**
      * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
      */
     public function setDi(Container $di)
     {

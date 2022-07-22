@@ -8,95 +8,9 @@ class ContactConfigurationContext extends CentreonContext
 {
     private $currentPage;
 
-    private $initialProperties = array(
-        'name' => 'contactName',
-        'alias' => 'contactAlias',
-        'email' => 'contact@localhost',
-        'pager' => 'contactPager',
-        'contact_template' => 'contact_template',
-        'contact_groups' => 'Supervisors',
-        'notifications_enabled' => 1,
-        'host_notify_on_down' => 0,
-        'host_notify_on_unreachable' => 0,
-        'host_notify_on_recovery' => 0,
-        'host_notify_on_flapping' => 0,
-        'host_notify_on_downtime_scheduled' => 0,
-        'host_notify_on_none' => 1,
-        'host_notification_period' => '24x7',
-        'host_notification_command' => 'service-notify-by-email',
-        'service_notify_on_none' => 0,
-        'service_notify_on_warning' => 1,
-        'service_notify_on_unknown' => 1,
-        'service_notify_on_critical' => 1,
-        'service_notify_on_recovery' => 1,
-        'service_notify_on_flapping' => 1,
-        'service_notify_on_downtime_scheduled' => 1,
-        'service_notification_period' => 'none',
-        'service_notification_command' => 'host-notify-by-email',
-        'access' => 0,
-        'password' => 'Contact!pwd1',
-        'password2' => 'Contact!pwd1',
-        'language' => 'en_US',
-        'location' => 'America/Guadeloupe',
-        'autologin_key' => 'contactAutologinKey',
-        'authentication_source' => 'Centreon',
-        'admin' => 1,
-        'reach_API' => 1,
-        'acl_groups' => 'ALL',
-        'address1' => '1@localhost',
-        'address2' => '2@localhost',
-        'address3' => '3@localhost',
-        'address4' => '4@localhost',
-        'address5' => '5@localhost',
-        'address6' => '6@localhost',
-        'enabled' => 1,
-        'comments' => 'contactComments'
-    );
+    private array $initialProperties = ['name' => 'contactName', 'alias' => 'contactAlias', 'email' => 'contact@localhost', 'pager' => 'contactPager', 'contact_template' => 'contact_template', 'contact_groups' => 'Supervisors', 'notifications_enabled' => 1, 'host_notify_on_down' => 0, 'host_notify_on_unreachable' => 0, 'host_notify_on_recovery' => 0, 'host_notify_on_flapping' => 0, 'host_notify_on_downtime_scheduled' => 0, 'host_notify_on_none' => 1, 'host_notification_period' => '24x7', 'host_notification_command' => 'service-notify-by-email', 'service_notify_on_none' => 0, 'service_notify_on_warning' => 1, 'service_notify_on_unknown' => 1, 'service_notify_on_critical' => 1, 'service_notify_on_recovery' => 1, 'service_notify_on_flapping' => 1, 'service_notify_on_downtime_scheduled' => 1, 'service_notification_period' => 'none', 'service_notification_command' => 'host-notify-by-email', 'access' => 0, 'password' => 'Contact!pwd1', 'password2' => 'Contact!pwd1', 'language' => 'en_US', 'location' => 'America/Guadeloupe', 'autologin_key' => 'contactAutologinKey', 'authentication_source' => \Centreon::class, 'admin' => 1, 'reach_API' => 1, 'acl_groups' => 'ALL', 'address1' => '1@localhost', 'address2' => '2@localhost', 'address3' => '3@localhost', 'address4' => '4@localhost', 'address5' => '5@localhost', 'address6' => '6@localhost', 'enabled' => 1, 'comments' => 'contactComments'];
 
-    private $updatedProperties = array(
-        'name' => 'modifiedName',
-        'alias' => 'modifiedAlias',
-        'email' => 'modified@localhost',
-        'pager' => 'modifiedContactPager',
-        'contact_template' => 'contact_template',
-        'contact_groups' => 'Guest',
-        'notifications_enabled' => 0,
-        'host_notify_on_none' => 0,
-        'host_notify_on_down' => 1,
-        'host_notify_on_unreachable' => 1,
-        'host_notify_on_recovery' => 1,
-        'host_notify_on_flapping' => 1,
-        'host_notify_on_downtime_scheduled' => 1,
-        'host_notification_period' => 'nonworkhours',
-        'host_notification_command' => 'service-notify-by-epager',
-        'service_notify_on_warning' => 0,
-        'service_notify_on_unknown' => 0,
-        'service_notify_on_critical' => 0,
-        'service_notify_on_recovery' => 0,
-        'service_notify_on_flapping' => 0,
-        'service_notify_on_downtime_scheduled' => 0,
-        'service_notify_on_none' => 1,
-        'service_notification_period' => 'workhours',
-        'service_notification_command' => 'service-notify-by-jabber',
-        'access' => 1,
-        'password' => '',
-        'password2' => '',
-        'language' => 'Detection by browser',
-        'location' => 'Europe/Paris',
-        'autologin_key' => 'modifiedContactAutologinKey',
-        'authentication_source' => 'Centreon',
-        'admin' => 0,
-        'reach_API' => 0,
-        'acl_groups' => '',
-        'address1' => '7@localhost',
-        'address2' => '8@localhost',
-        'address3' => '9@localhost',
-        'address4' => '10@localhost',
-        'address5' => '11@localhost',
-        'address6' => '12@localhost',
-        'enabled' => 1,
-        'comments' => 'modifiedContactComments'
-    );
+    private array $updatedProperties = ['name' => 'modifiedName', 'alias' => 'modifiedAlias', 'email' => 'modified@localhost', 'pager' => 'modifiedContactPager', 'contact_template' => 'contact_template', 'contact_groups' => 'Guest', 'notifications_enabled' => 0, 'host_notify_on_none' => 0, 'host_notify_on_down' => 1, 'host_notify_on_unreachable' => 1, 'host_notify_on_recovery' => 1, 'host_notify_on_flapping' => 1, 'host_notify_on_downtime_scheduled' => 1, 'host_notification_period' => 'nonworkhours', 'host_notification_command' => 'service-notify-by-epager', 'service_notify_on_warning' => 0, 'service_notify_on_unknown' => 0, 'service_notify_on_critical' => 0, 'service_notify_on_recovery' => 0, 'service_notify_on_flapping' => 0, 'service_notify_on_downtime_scheduled' => 0, 'service_notify_on_none' => 1, 'service_notification_period' => 'workhours', 'service_notification_command' => 'service-notify-by-jabber', 'access' => 1, 'password' => '', 'password2' => '', 'language' => 'Detection by browser', 'location' => 'Europe/Paris', 'autologin_key' => 'modifiedContactAutologinKey', 'authentication_source' => \Centreon::class, 'admin' => 0, 'reach_API' => 0, 'acl_groups' => '', 'address1' => '7@localhost', 'address2' => '8@localhost', 'address3' => '9@localhost', 'address4' => '10@localhost', 'address5' => '11@localhost', 'address6' => '12@localhost', 'enabled' => 1, 'comments' => 'modifiedContactComments'];
 
     /**
      * @Given a contact is configured
@@ -124,7 +38,7 @@ class ContactConfigurationContext extends CentreonContext
      */
     public function theContactPropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -138,12 +52,12 @@ class ContactConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -167,7 +81,7 @@ class ContactConfigurationContext extends CentreonContext
      */
     public function theNewContactHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -189,12 +103,12 @@ class ContactConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

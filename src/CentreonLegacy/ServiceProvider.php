@@ -48,26 +48,24 @@ use Symfony\Component\Finder\Finder;
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
-    const CONFIGURATION = 'configuration';
-    const CENTREON_REST_HTTP = 'centreon.rest.http';
-    const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
-    const CENTREON_LEGACY_MODULE_HEALTHCHECK = 'centreon.legacy.module.healthcheck';
-    const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
-    const CENTREON_LEGACY_MODULE_INSTALLER = 'centreon.legacy.module.installer';
-    const CENTREON_LEGACY_MODULE_UPGRADER = 'centreon.legacy.module.upgrader';
-    const CENTREON_LEGACY_MODULE_REMOVER = 'centreon.legacy.module.remover';
-    const CENTREON_LEGACY_MODULE_LICENSE = 'centreon.legacy.module.license';
-    const CENTREON_LEGACY_LICENSE = 'centreon.legacy.license';
-    const CENTREON_LEGACY_WIDGET_INFORMATION = 'centreon.legacy.widget.information';
-    const CENTREON_LEGACY_WIDGET_INSTALLER = 'centreon.legacy.widget.installer';
-    const CENTREON_LEGACY_WIDGET_UPGRADER = 'centreon.legacy.widget.upgrader';
-    const CENTREON_LEGACY_WIDGET_REMOVER = 'centreon.legacy.widget.remover';
-    const SYMFONY_FINDER = 'sf.finder';
+    final const CONFIGURATION = 'configuration';
+    final const CENTREON_REST_HTTP = 'centreon.rest.http';
+    final const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
+    final const CENTREON_LEGACY_MODULE_HEALTHCHECK = 'centreon.legacy.module.healthcheck';
+    final const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
+    final const CENTREON_LEGACY_MODULE_INSTALLER = 'centreon.legacy.module.installer';
+    final const CENTREON_LEGACY_MODULE_UPGRADER = 'centreon.legacy.module.upgrader';
+    final const CENTREON_LEGACY_MODULE_REMOVER = 'centreon.legacy.module.remover';
+    final const CENTREON_LEGACY_MODULE_LICENSE = 'centreon.legacy.module.license';
+    final const CENTREON_LEGACY_LICENSE = 'centreon.legacy.license';
+    final const CENTREON_LEGACY_WIDGET_INFORMATION = 'centreon.legacy.widget.information';
+    final const CENTREON_LEGACY_WIDGET_INSTALLER = 'centreon.legacy.widget.installer';
+    final const CENTREON_LEGACY_WIDGET_UPGRADER = 'centreon.legacy.widget.upgrader';
+    final const CENTREON_LEGACY_WIDGET_REMOVER = 'centreon.legacy.widget.remover';
+    final const SYMFONY_FINDER = 'sf.finder';
 
     /**
      * Register CentreonLegacy services
-     *
-     * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
@@ -84,9 +82,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple[static::SYMFONY_FINDER] = function (Container $container) : Finder {
-            return new Finder();
-        };
+        $pimple[static::SYMFONY_FINDER] = fn(Container $container): Finder => new Finder();
 
         $this->registerConfiguration($pimple);
         $this->registerRestHttp($pimple);
@@ -106,16 +102,11 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
     }
 
-    /**
-     * @param Container $pimple
-     */
     protected function registerRestHttp(Container $pimple)
     {
-        $pimple[static::CENTREON_REST_HTTP] = function (Container $container) {
-            return function ($contentType = 'application/json', $logFile = null) {
-                // @codeCoverageIgnoreStart
-                return new \CentreonRestHttp($contentType, $logFile); // @codeCoverageIgnoreEnd
-            };
+        $pimple[static::CENTREON_REST_HTTP] = fn(Container $container) => function ($contentType = 'application/json', $logFile = null) {
+            // @codeCoverageIgnoreStart
+            return new \CentreonRestHttp($contentType, $logFile); // @codeCoverageIgnoreEnd
         };
     }
 
@@ -156,9 +147,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($moduleName) use ($locator): Module\Installer {
-                return new Module\Installer($locator, null, $moduleName);
-            };
+            $service = fn($moduleName): Module\Installer => new Module\Installer($locator, $moduleName, null);
 
             return $service;
         });
@@ -173,9 +162,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($moduleName, $moduleId) use ($locator): Module\Upgrader {
-                return new Module\Upgrader($locator, null, $moduleName, null, $moduleId);
-            };
+            $service = fn($moduleName, $moduleId): Module\Upgrader => new Module\Upgrader($locator, $moduleName, null, null, $moduleId);
 
             return $service;
         });
@@ -189,9 +176,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($moduleName, $moduleId) use ($locator): Module\Remover {
-                return new Module\Remover($locator, null, $moduleName, null, $moduleId);
-            };
+            $service = fn($moduleName, $moduleId): Module\Remover => new Module\Remover($locator, $moduleName, null, null, $moduleId);
 
             return $service;
         });
@@ -208,9 +193,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
 
         // alias to centreon.legacy.module.license service
-        $pimple[static::CENTREON_LEGACY_LICENSE] = function (Container $container): License {
-            return $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE];
-        };
+        $pimple[static::CENTREON_LEGACY_LICENSE] = fn(Container $container): License => $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE];
     }
 
     protected function registerWidget(Container $pimple)
@@ -237,9 +220,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($widgetDirectory) use ($locator): Widget\Installer {
-                return new Widget\Installer($locator, null, $widgetDirectory, null);
-            };
+            $service = fn($widgetDirectory): Widget\Installer => new Widget\Installer($locator, $widgetDirectory, null, null);
 
             return $service;
         });
@@ -252,9 +233,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($widgetDirectory) use ($locator): Widget\Upgrader {
-                return new Widget\Upgrader($locator, null, $widgetDirectory, null);
-            };
+            $service = fn($widgetDirectory): Widget\Upgrader => new Widget\Upgrader($locator, $widgetDirectory, null, null);
 
             return $service;
         });
@@ -267,9 +246,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function ($widgetDirectory) use ($locator): Widget\Remover {
-                return new Widget\Remover($locator, null, $widgetDirectory, null);
-            };
+            $service = fn($widgetDirectory): Widget\Remover => new Widget\Remover($locator, $widgetDirectory, null, null);
 
             return $service;
         });

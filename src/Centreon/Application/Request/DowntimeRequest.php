@@ -26,28 +26,18 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 class DowntimeRequest
 {
-    /**
-     * @var Downtime
-     */
-    private $downtime;
+    private ?\Centreon\Domain\Downtime\Downtime $downtime = null;
 
     /**
      * @var ResourceEntity[]
      */
-    private $resources = [];
+    private array $resources = [];
 
-    /**
-     * @return Downtime
-     */
     public function getDowntime(): Downtime
     {
         return $this->downtime;
     }
 
-    /**
-     * @param Downtime $downtime
-     * @return DowntimeRequest
-     */
     public function setDowntime(Downtime $downtime): DowntimeRequest
     {
         $this->downtime = $downtime;
@@ -64,7 +54,6 @@ class DowntimeRequest
 
     /**
      * @param ResourceEntity[] $resources
-     * @return DowntimeRequest
      */
     public function setResources(array $resources): DowntimeRequest
     {

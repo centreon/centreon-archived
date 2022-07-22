@@ -20,34 +20,13 @@ class ServiceSubmitResultContext extends CentreonContext
     {
         // Create host.
         $hostConfig = new HostConfigurationPage($this);
-        $hostProperties = array(
-            'name' => $this->hostname,
-            'alias' => $this->hostname,
-            'address' => 'localhost',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        );
+        $hostProperties = ['name' => $this->hostname, 'alias' => $this->hostname, 'address' => 'localhost', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1];
         $hostConfig->setProperties($hostProperties);
         $hostConfig->save();
 
         // Create service.
         $serviceConfig = new ServiceConfigurationPage($this);
-        $serviceProperties = array(
-            'description' => $this->hostservice,
-            'hosts' => $this->hostname,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'is_volatile' => 0,
-            'passive_checks_enabled' => 1
-        );
+        $serviceProperties = ['description' => $this->hostservice, 'hosts' => $this->hostname, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'is_volatile' => 0, 'passive_checks_enabled' => 1];
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
 
@@ -83,7 +62,7 @@ class ServiceSubmitResultContext extends CentreonContext
                 "The result submitted is not set as wanted",
                 15
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new Exception('The result submitted is not set as wanted');
         }
     }

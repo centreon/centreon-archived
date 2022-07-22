@@ -44,46 +44,18 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     use CommandLineTrait;
 
     /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
-     * @var ServiceConfigurationServiceInterface
-     */
-    private $serviceConfiguration;
-    /**
-     * @var HostConfigurationServiceInterface
-     */
-    private $hostConfiguration;
-
-    /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
-     * @param ServiceConfigurationServiceInterface $serviceConfigurationService
-     * @param HostConfigurationServiceInterface $hostConfigurationService
+     * @param ServiceConfigurationServiceInterface $serviceConfiguration
+     * @param HostConfigurationServiceInterface $hostConfiguration
      */
-    public function __construct(
-        MonitoringRepositoryInterface $monitoringRepository,
-        ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        ServiceConfigurationServiceInterface $serviceConfigurationService,
-        HostConfigurationServiceInterface $hostConfigurationService,
-    ) {
-        $this->monitoringRepository = $monitoringRepository;
-        $this->accessGroupRepository = $accessGroupRepository;
-        $this->serviceConfiguration = $serviceConfigurationService;
-        $this->hostConfiguration = $hostConfigurationService;
+    public function __construct(private readonly MonitoringRepositoryInterface $monitoringRepository, private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository, private readonly ServiceConfigurationServiceInterface $serviceConfiguration, private readonly HostConfigurationServiceInterface $hostConfiguration)
+    {
     }
 
     /**
      * {@inheritDoc}
      * @param Contact $contact
-     * @return self
      */
     public function filterByContact($contact): self
     {
@@ -327,7 +299,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             return $service->getCommandLine();
         } catch (MonitoringServiceException $ex) {
             throw $ex;
-        } catch (\Throwable $ex) {
+        } catch (\Throwable) {
             throw new MonitoringServiceException('Error when getting the command line');
         }
     }

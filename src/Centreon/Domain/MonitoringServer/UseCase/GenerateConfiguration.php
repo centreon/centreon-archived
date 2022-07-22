@@ -39,29 +39,14 @@ class GenerateConfiguration
     use LoggerTrait;
 
     /**
-     * @var MonitoringServerRepositoryInterface
-     */
-    private $monitoringServerRepository;
-
-    /**
-     * @var MonitoringServerConfigurationRepositoryInterface
-     */
-    private $configurationRepository;
-
-    /**
      * @param MonitoringServerRepositoryInterface $monitoringServerRepository
      * @param MonitoringServerConfigurationRepositoryInterface $configurationRepository
      */
-    public function __construct(
-        MonitoringServerRepositoryInterface $monitoringServerRepository,
-        MonitoringServerConfigurationRepositoryInterface $configurationRepository
-    ) {
-        $this->monitoringServerRepository = $monitoringServerRepository;
-        $this->configurationRepository = $configurationRepository;
+    public function __construct(private readonly MonitoringServerRepositoryInterface $monitoringServerRepository, private readonly MonitoringServerConfigurationRepositoryInterface $configurationRepository)
+    {
     }
 
     /**
-     * @param int $monitoringServerId
      * @throws EntityNotFoundException
      * @throws ConfigurationMonitoringServerException
      * @throws TimeoutException

@@ -26,8 +26,8 @@ namespace Centreon\Domain\Entity;
  */
 class ImageDir
 {
-    public const TABLE = 'view_img_dir';
-    public const JOIN_TABLE = 'view_img_dir_relation';
+    final public const TABLE = 'view_img_dir';
+    final public const JOIN_TABLE = 'view_img_dir_relation';
 
     /**
      * @var int
@@ -49,25 +49,16 @@ class ImageDir
      */
     public $dir_comment;
 
-    /**
-     * @return int
-     */
     public function getDirId(): int
     {
         return $this->dir_id;
     }
 
-    /**
-     * @param int $dirId
-     */
     public function setDirId(int $dirId): void
     {
         $this->dir_id = $dirId;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDirName(): ?string
     {
         return $this->dir_name;
@@ -81,9 +72,6 @@ class ImageDir
         $this->dir_name = $dirName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDirAlias(): ?string
     {
         return $this->dir_alias;
@@ -97,9 +85,6 @@ class ImageDir
         $this->dir_alias = $dirAlias;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDirComment(): ?string
     {
         return $this->dir_comment;

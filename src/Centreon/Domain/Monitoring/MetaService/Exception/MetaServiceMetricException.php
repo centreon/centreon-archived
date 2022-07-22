@@ -29,10 +29,6 @@ namespace Centreon\Domain\Monitoring\MetaService\Exception;
  */
 class MetaServiceMetricException extends \Exception
 {
-    /**
-     * @param \Throwable $ex
-     * @return MetaServiceMetricException
-     */
     public static function findMetaServiceMetricsException(\Throwable $ex, int $metaId): self
     {
         return new self(
@@ -44,17 +40,12 @@ class MetaServiceMetricException extends \Exception
 
     /**
      * Used when no meta service found
-     * @return self
      */
     public static function findMetaServiceException(int $metaId): self
     {
         return new self(sprintf(_('Meta service with ID %d not found'), $metaId));
     }
 
-    /**
-     * @param integer $metaId
-     * @return self
-     */
     public static function unknownMetaMetricSelectionMode(int $metaId): self
     {
         return new self(sprintf(_('Unkown meta metrics selection mode provided for %d'), $metaId));

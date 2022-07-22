@@ -38,39 +38,17 @@ use Centreon\Domain\Service\AbstractCentreonService;
 class MetricService extends AbstractCentreonService implements MetricServiceInterface
 {
     /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-
-    /**
-     * @var MetricRepositoryInterface
-     */
-    private $metricRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param MetricRepositoryInterface $metricRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
-    public function __construct(
-        MonitoringRepositoryInterface $monitoringRepository,
-        MetricRepositoryInterface $metricRepository,
-        ReadAccessGroupRepositoryInterface $accessGroupRepository
-    ) {
-        $this->monitoringRepository = $monitoringRepository;
-        $this->metricRepository = $metricRepository;
-        $this->accessGroupRepository = $accessGroupRepository;
+    public function __construct(private readonly MonitoringRepositoryInterface $monitoringRepository, private readonly MetricRepositoryInterface $metricRepository, private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository)
+    {
     }
 
     /**
      * {@inheritDoc}
      * @param Contact $contact
-     * @return self
      */
     public function filterByContact($contact): self
     {

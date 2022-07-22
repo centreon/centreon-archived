@@ -31,39 +31,25 @@ class NotifyMasterService
     /**
      * fail constants
      */
-    const CANT_RESOLVE_HOST = 'Could not resolve the host';
-    const CANT_CONNECT = 'Could not connect';
-    const TIMEOUT = 'Timeout';
-    const UNKNOWN_ERROR = 'Unknown Error';
-    const NO_APP_KEY = 'No Application Key found';
+    final const CANT_RESOLVE_HOST = 'Could not resolve the host';
+    final const CANT_CONNECT = 'Could not connect';
+    final const TIMEOUT = 'Timeout';
+    final const UNKNOWN_ERROR = 'Unknown Error';
+    final const NO_APP_KEY = 'No Application Key found';
 
     /**
      * statuses
      */
-    const SUCCESS = 'success';
-    const FAIL = 'fail';
+    final const SUCCESS = 'success';
+    final const FAIL = 'fail';
 
-    /**
-     * @var CentreonDBManagerService
-     */
-    private $dbManager;
+    private ?\Curl\Curl $curl = null;
 
-    /**
-     * @var Curl
-     */
-    private $curl;
-
-    /**
-     * @return void
-     */
     public function setCurl(Curl $curl): void
     {
         $this->curl = $curl;
     }
 
-    /**
-     * @return Curl
-     */
     public function getCurl(): Curl
     {
         return $this->curl;
@@ -74,9 +60,8 @@ class NotifyMasterService
      *
      * @param CentreonDBManagerService $dbManager
      */
-    public function __construct(CentreonDBManagerService $dbManager)
+    public function __construct(private readonly CentreonDBManagerService $dbManager)
     {
-        $this->dbManager = $dbManager;
     }
 
     /**
@@ -142,7 +127,7 @@ class NotifyMasterService
                     'details' => $details
                 ];
             }
-        } catch (\ErrorException $e) {
+        } catch (\ErrorException) {
             return [
                 'status' => self::FAIL,
                 'details' => self::UNKNOWN_ERROR

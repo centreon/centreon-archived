@@ -32,15 +32,9 @@ use Vfs\Node\File;
  */
 class ExportParserJsonTest extends TestCase
 {
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private \Vfs\FileSystem $fs;
 
-    /**
-     * @var ExportParserJson
-     */
-    private $parser;
+    private \CentreonRemote\Infrastructure\Export\ExportParserJson $parser;
 
     public function setUp(): void
     {

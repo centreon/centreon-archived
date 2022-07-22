@@ -44,10 +44,7 @@ use CentreonModule\Application\Webservice\CentreonModulesWebservice;
 
 class CentreonModulesWebserviceTest extends TestCase
 {
-    /**
-     * @var CentreonModulesWebservice|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $webservice;
+    private \CentreonModule\Application\Webservice\CentreonModulesWebservice|\PHPUnit\Framework\MockObject\MockObject $webservice;
 
     /**
      * @var array<string,mixed>
@@ -101,13 +98,11 @@ class CentreonModulesWebserviceTest extends TestCase
 
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
             ->method('getList')
-            ->will($this->returnCallback(function () {
-                return [
-                    'centreon-bam-server' => [
-                        'is_installed' => false,
-                    ],
-                ];
-            }));
+            ->will($this->returnCallback(fn() => [
+                'centreon-bam-server' => [
+                    'is_installed' => false,
+                ],
+            ]));
 
         $this->webservice->setDi($container);
 
@@ -131,13 +126,11 @@ class CentreonModulesWebserviceTest extends TestCase
             ->getMock();
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
             ->method('getList')
-            ->will($this->returnCallback(function () {
-                return [
-                    'centreon-bam-server' => [
-                        'is_installed' => true,
-                    ],
-                ];
-            }));
+            ->will($this->returnCallback(fn() => [
+                'centreon-bam-server' => [
+                    'is_installed' => true,
+                ],
+            ]));
 
         $this->webservice->setDi($container);
 

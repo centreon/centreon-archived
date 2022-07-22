@@ -30,43 +30,23 @@ namespace Centreon\Domain\Monitoring;
 class ResourceGroup
 {
     /**
-     * Id of the resource group
-     *
-     * @var int
-     */
-    private $id;
-
-    /**
-     * Name of the resource group
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
      * Redirection URI to group configuration
-     *
-     * @var string|null
      */
-    private $configurationUri;
+    private ?string $configurationUri = null;
 
     /**
      * Contructor for ResourceGroup entity
      *
-     * @param integer $resourceGroupId
-     * @param string $resourceGroupName
+     * @param integer $id
+     * @param string $name
      */
-    public function __construct(int $resourceGroupId, string $resourceGroupName)
+    public function __construct(private int $id, private string $name)
     {
-        $this->id = $resourceGroupId;
-        $this->name = $resourceGroupName;
     }
 
 
     /**
      * Get resource group id.
-     *
-     * @return integer
      */
     public function getId(): int
     {
@@ -75,8 +55,6 @@ class ResourceGroup
 
     /**
      * Get the resource group name.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -85,9 +63,6 @@ class ResourceGroup
 
     /**
      * Set the resource group id.
-     *
-     * @param integer $resourceGroupId
-     * @return ResourceGroup
      */
     public function setId(int $resourceGroupId): self
     {
@@ -98,9 +73,6 @@ class ResourceGroup
 
     /**
      * Set the resource group name.
-     *
-     * @param string $resourceGroupName
-     * @return ResourceGroup
      */
     public function setName(string $resourceGroupName): self
     {
@@ -109,18 +81,11 @@ class ResourceGroup
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getConfigurationUri(): ?string
     {
         return $this->configurationUri;
     }
 
-    /**
-     * @param string|null $configurationUri
-     * @return self
-     */
     public function setConfigurationUri(?string $configurationUri): self
     {
         $this->configurationUri = $configurationUri;

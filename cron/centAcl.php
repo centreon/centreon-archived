@@ -335,7 +335,7 @@ try {
      *  if no : go away.
      *  if yes : let's go to build cache and update database
      */
-    $tabGroups = array();
+    $tabGroups = [];
     $dbResult1 = $pearDB->query(
         "SELECT DISTINCT acl_groups.acl_group_id
         FROM acl_res_group_relations, `acl_groups`, `acl_resources`
@@ -363,7 +363,7 @@ try {
         );
         while ($row = $res->fetch()) {
             if (!isset($hostTemplateCache[$row['host_tpl_id']])) {
-                $hostTemplateCache[$row['host_tpl_id']] = array();
+                $hostTemplateCache[$row['host_tpl_id']] = [];
             }
             $hostTemplateCache[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
         }
@@ -380,13 +380,13 @@ try {
         /**
          * Cache for host poller relation
          */
-        $hostPollerCache = array();
+        $hostPollerCache = [];
         $res = $pearDB->query(
             "SELECT nagios_server_id, host_host_id FROM ns_host_relation"
         );
         while ($row = $res->fetch()) {
             if (!isset($hostPollerCache[$row['nagios_server_id']])) {
-                $hostPollerCache[$row['nagios_server_id']] = array();
+                $hostPollerCache[$row['nagios_server_id']] = [];
             }
             $hostPollerCache[$row['nagios_server_id']][$row['host_host_id']] = $row['host_host_id'];
         }
@@ -457,14 +457,14 @@ try {
         while ($sr = $dbResult->fetch()) {
             if (isset($sr["host_host_id"]) && $sr["host_host_id"]) {
                 if (!isset($hsRelation[$sr["host_host_id"]])) {
-                    $hsRelation[$sr["host_host_id"]] = array();
+                    $hsRelation[$sr["host_host_id"]] = [];
                 }
                 $hsRelation[$sr["host_host_id"]][$sr["service_service_id"]] = 1;
             } else {
                 if (isset($hostHGRelation[$sr["hostgroup_hg_id"]])) {
                     foreach ($hostHGRelation[$sr["hostgroup_hg_id"]] as $hostId) {
                         if (!isset($hsRelation[$hostId])) {
-                            $hsRelation[$hostId] = array();
+                            $hsRelation[$hostId] = [];
                         }
                         $hsRelation[$hostId][$sr["service_service_id"]] = 1;
                     }
@@ -530,10 +530,10 @@ try {
             FROM hostgroup, acl_resources_hg_relations
             WHERE acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id"
         );
-        $hgResCache = array();
+        $hgResCache = [];
         while ($row = $res->fetch()) {
             if (!isset($hgResCache[$row['acl_res_id']])) {
-                $hgResCache[$row['acl_res_id']] = array();
+                $hgResCache[$row['acl_res_id']] = [];
             }
             $hgResCache[$row['acl_res_id']][] = $row['hg_id'];
         }
@@ -546,12 +546,12 @@ try {
          * Begin to build ACL
          */
         $cpt = 0;
-        $resourceCache = array();
+        $resourceCache = [];
         foreach ($tabGroups as $aclGroupId) {
             /*
              * Delete old data for this group
              */
-            $deleteHandler->execute(array($aclGroupId));
+            $deleteHandler->execute([$aclGroupId]);
 
             /**
              * Select
@@ -571,7 +571,7 @@ try {
 
             while ($res2 = $dbResult2->fetch()) {
                 if (!isset($resourceCache[$res2["acl_res_id"]])) {
-                    $resourceCache[$res2["acl_res_id"]] = array();
+                    $resourceCache[$res2["acl_res_id"]] = [];
 
                     $host = [];
                     /*
@@ -672,7 +672,7 @@ try {
                     foreach (array_keys($host) as $hostId) {
                         $tab = getAuthorizedServicesHost($hostId, $res2["acl_res_id"], $authorizedCategories);
                         if (!isset($resourceCache[$res2["acl_res_id"]][$hostId])) {
-                            $resourceCache[$res2["acl_res_id"]][$hostId] = array();
+                            $resourceCache[$res2["acl_res_id"]][$hostId] = [];
                         }
                         foreach (array_keys($tab) as $serviceId) {
                             $resourceCache[$res2["acl_res_id"]][$hostId][$serviceId] = 1;

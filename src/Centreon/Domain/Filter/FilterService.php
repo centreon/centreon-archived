@@ -37,41 +37,19 @@ use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterf
 class FilterService extends AbstractCentreonService implements FilterServiceInterface
 {
     /**
-     * @var HostGroupServiceInterface
-     */
-    private $hostGroupService;
-
-    /**
-     * @var ServiceGroupServiceInterface
-     */
-    private $serviceGroupService;
-
-    /**
-     * @var FilterRepositoryInterface
-     */
-    private $filterRepository;
-
-    /**
      * FilterService constructor.
      *
      * @param HostGroupServiceInterface $hostGroupService
      * @param ServiceGroupServiceInterface $serviceGroupService
      * @param FilterRepositoryInterface $filterRepository
      */
-    public function __construct(
-        HostGroupServiceInterface $hostGroupService,
-        ServiceGroupServiceInterface $serviceGroupService,
-        FilterRepositoryInterface $filterRepository
-    ) {
-        $this->hostGroupService = $hostGroupService;
-        $this->serviceGroupService = $serviceGroupService;
-        $this->filterRepository = $filterRepository;
+    public function __construct(private readonly HostGroupServiceInterface $hostGroupService, private readonly ServiceGroupServiceInterface $serviceGroupService, private readonly FilterRepositoryInterface $filterRepository)
+    {
     }
 
     /**
      * {@inheritDoc}
      * @param Contact|null $contact
-     * @return FilterServiceInterface
      */
     public function filterByContact($contact): FilterServiceInterface
     {
@@ -148,12 +126,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                             ->filterByContact($this->contact)
                             ->findHostGroupsByNames($hostGroupNames);
                         $criteria->setValue(array_map(
-                            function ($hostGroup) {
-                                return [
-                                    'id' => $hostGroup->getId(),
-                                    'name' => $hostGroup->getName(),
-                                ];
-                            },
+                            fn($hostGroup) => [
+                                'id' => $hostGroup->getId(),
+                                'name' => $hostGroup->getName(),
+                            ],
                             $hostGroups
                         ));
                         break;
@@ -163,12 +139,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                             ->filterByContact($this->contact)
                             ->findServiceGroupsByNames($serviceGroupNames);
                         $criteria->setValue(array_map(
-                            function ($serviceGroup) {
-                                return [
-                                    'id' => $serviceGroup->getId(),
-                                    'name' => $serviceGroup->getName(),
-                                ];
-                            },
+                            fn($serviceGroup) => [
+                                'id' => $serviceGroup->getId(),
+                                'name' => $serviceGroup->getName(),
+                            ],
                             $serviceGroups
                         ));
                         break;

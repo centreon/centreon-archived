@@ -12,435 +12,35 @@ class ACLActionsAccessContext extends CentreonContext
 {
     private $currentPage;
 
-    private $adminUser = array(
-        'alias' => 'adminUserAlias',
-        'name' => 'adminUserName',
-        'email' => 'admin@localhost',
-        'admin' => 1
-    );
+    private array $adminUser = ['alias' => 'adminUserAlias', 'name' => 'adminUserName', 'email' => 'admin@localhost', 'admin' => 1];
 
-    private $adminContactGroup = array(
-        'name' => 'adminContactGroupName',
-        'alias' => 'adminContactGroupAlias',
-        'contacts' => 'adminUserName'
-    );
+    private array $adminContactGroup = ['name' => 'adminContactGroupName', 'alias' => 'adminContactGroupAlias', 'contacts' => 'adminUserName'];
 
-    private $nonAdminUser = array(
-        'alias' => 'nonAdminUserAlias',
-        'name' => 'nonAdminUserName',
-        'email' => 'nonAdmin@localhost',
-        'admin' => 0
-    );
+    private array $nonAdminUser = ['alias' => 'nonAdminUserAlias', 'name' => 'nonAdminUserName', 'email' => 'nonAdmin@localhost', 'admin' => 0];
 
-    private $adminAclGroup = array(
-        'group_name' => 'adminAclGroupName',
-        'group_alias' => 'adminAclGroupAlias',
-        'contactgroups' => array(
-            'adminContactGroupName'
-        )
-    );
+    private array $adminAclGroup = ['group_name' => 'adminAclGroupName', 'group_alias' => 'adminAclGroupAlias', 'contactgroups' => ['adminContactGroupName']];
 
-    private $nonAdminAclGroup = array(
-        'group_name' => 'nonAdminAclGroupName',
-        'group_alias' => 'nonAdminAclGroupAlias',
-        'contacts' => array(
-            'nonAdminUserName'
-        )
-    );
+    private array $nonAdminAclGroup = ['group_name' => 'nonAdminAclGroupName', 'group_alias' => 'nonAdminAclGroupAlias', 'contacts' => ['nonAdminUserName']];
 
-    private $initialProperties = array(
-        'acl_name' => 'aclActionName',
-        'acl_alias' => 'aclActionAlias',
-        'acl_groups' => array(
-            'adminAclGroupName',
-            'nonAdminAclGroupName'
-        ),
-        'action_top_counter_overview' => 1,
-        'action_top_counter_poller' => 1,
-        'action_poller_listing' => 1,
-        'action_generate_configuration' => 1,
-        'action_generate_trap' => 0,
-        'action_engine' => 0,
-        'action_shutdown' => 1,
-        'action_restart' => 0,
-        'action_notifications' => 0,
-        'action_global_service_checks' => 1,
-        'action_global_service_passive_checks' => 1,
-        'action_global_host_checks' => 0,
-        'action_global_host_passive_checks' => 0,
-        'action_event_handler' => 0,
-        'action_flap_detection' => 1,
-        'action_global_service_obsess' => 1,
-        'action_global_host_obsess' => 0,
-        'action_perf_data' => 0,
-        'action_service' => 0,
-        'action_service_notifications' => 0,
-        'action_service_acknowledgement' => 0,
-        'action_service_disacknowledgement' => 1,
-        'action_service_schedule_check' => 1,
-        'action_service_schedule_forced_check' => 0,
-        'action_service_schedule_downtime' => 0,
-        'action_service_comment' => 0,
-        'action_service_event_handler' => 0,
-        'action_service_flap_detection' => 1,
-        'action_service_submit_result' => 0,
-        'action_service_display_command' => 0,
-        'action_host' => 0,
-        'action_host_notifications' => 1,
-        'action_host_acknowledgement' => 1,
-        'action_host_disacknowledgement' => 0,
-        'action_host_schedule_check' => 0,
-        'action_host_schedule_forced_check' => 1,
-        'action_host_schedule_downtime' => 1,
-        'action_host_comment' => 1,
-        'action_host_event_handler' => 1,
-        'action_host_flap_detection' => 0,
-        'action_host_checks_for_services' => 1,
-        'action_host_notifications_for_services' => 0,
-        'action_name_submit_result' => 1,
-        'enabled' => 1
-    );
+    private array $initialProperties = ['acl_name' => 'aclActionName', 'acl_alias' => 'aclActionAlias', 'acl_groups' => ['adminAclGroupName', 'nonAdminAclGroupName'], 'action_top_counter_overview' => 1, 'action_top_counter_poller' => 1, 'action_poller_listing' => 1, 'action_generate_configuration' => 1, 'action_generate_trap' => 0, 'action_engine' => 0, 'action_shutdown' => 1, 'action_restart' => 0, 'action_notifications' => 0, 'action_global_service_checks' => 1, 'action_global_service_passive_checks' => 1, 'action_global_host_checks' => 0, 'action_global_host_passive_checks' => 0, 'action_event_handler' => 0, 'action_flap_detection' => 1, 'action_global_service_obsess' => 1, 'action_global_host_obsess' => 0, 'action_perf_data' => 0, 'action_service' => 0, 'action_service_notifications' => 0, 'action_service_acknowledgement' => 0, 'action_service_disacknowledgement' => 1, 'action_service_schedule_check' => 1, 'action_service_schedule_forced_check' => 0, 'action_service_schedule_downtime' => 0, 'action_service_comment' => 0, 'action_service_event_handler' => 0, 'action_service_flap_detection' => 1, 'action_service_submit_result' => 0, 'action_service_display_command' => 0, 'action_host' => 0, 'action_host_notifications' => 1, 'action_host_acknowledgement' => 1, 'action_host_disacknowledgement' => 0, 'action_host_schedule_check' => 0, 'action_host_schedule_forced_check' => 1, 'action_host_schedule_downtime' => 1, 'action_host_comment' => 1, 'action_host_event_handler' => 1, 'action_host_flap_detection' => 0, 'action_host_checks_for_services' => 1, 'action_host_notifications_for_services' => 0, 'action_name_submit_result' => 1, 'enabled' => 1];
 
-    private $duplicatedProperties = array(
-        'acl_name' => 'aclActionName_1',
-        'acl_alias' => 'aclActionAlias',
-        'acl_groups' => array(
-            'adminAclGroupName',
-            'nonAdminAclGroupName'
-        ),
-        'action_top_counter_overview' => 1,
-        'action_top_counter_poller' => 1,
-        'action_poller_listing' => 1,
-        'action_generate_configuration' => 1,
-        'action_generate_trap' => 0,
-        'action_engine' => 0,
-        'action_shutdown' => 1,
-        'action_restart' => 0,
-        'action_notifications' => 0,
-        'action_global_service_checks' => 1,
-        'action_global_service_passive_checks' => 1,
-        'action_global_host_checks' => 0,
-        'action_global_host_passive_checks' => 0,
-        'action_event_handler' => 0,
-        'action_flap_detection' => 1,
-        'action_global_service_obsess' => 1,
-        'action_global_host_obsess' => 0,
-        'action_perf_data' => 0,
-        'action_service' => 0,
-        'action_service_notifications' => 0,
-        'action_service_acknowledgement' => 0,
-        'action_service_disacknowledgement' => 1,
-        'action_service_schedule_check' => 1,
-        'action_service_schedule_forced_check' => 0,
-        'action_service_schedule_downtime' => 0,
-        'action_service_comment' => 0,
-        'action_service_event_handler' => 0,
-        'action_service_flap_detection' => 1,
-        'action_service_submit_result' => 0,
-        'action_service_display_command' => 0,
-        'action_host' => 0,
-        'action_host_notifications' => 1,
-        'action_host_acknowledgement' => 1,
-        'action_host_disacknowledgement' => 0,
-        'action_host_schedule_check' => 0,
-        'action_host_schedule_forced_check' => 1,
-        'action_host_schedule_downtime' => 1,
-        'action_host_comment' => 1,
-        'action_host_event_handler' => 1,
-        'action_host_flap_detection' => 0,
-        'action_host_checks_for_services' => 1,
-        'action_host_notifications_for_services' => 0,
-        'action_name_submit_result' => 1,
-        'enabled' => 1
-    );
+    private array $duplicatedProperties = ['acl_name' => 'aclActionName_1', 'acl_alias' => 'aclActionAlias', 'acl_groups' => ['adminAclGroupName', 'nonAdminAclGroupName'], 'action_top_counter_overview' => 1, 'action_top_counter_poller' => 1, 'action_poller_listing' => 1, 'action_generate_configuration' => 1, 'action_generate_trap' => 0, 'action_engine' => 0, 'action_shutdown' => 1, 'action_restart' => 0, 'action_notifications' => 0, 'action_global_service_checks' => 1, 'action_global_service_passive_checks' => 1, 'action_global_host_checks' => 0, 'action_global_host_passive_checks' => 0, 'action_event_handler' => 0, 'action_flap_detection' => 1, 'action_global_service_obsess' => 1, 'action_global_host_obsess' => 0, 'action_perf_data' => 0, 'action_service' => 0, 'action_service_notifications' => 0, 'action_service_acknowledgement' => 0, 'action_service_disacknowledgement' => 1, 'action_service_schedule_check' => 1, 'action_service_schedule_forced_check' => 0, 'action_service_schedule_downtime' => 0, 'action_service_comment' => 0, 'action_service_event_handler' => 0, 'action_service_flap_detection' => 1, 'action_service_submit_result' => 0, 'action_service_display_command' => 0, 'action_host' => 0, 'action_host_notifications' => 1, 'action_host_acknowledgement' => 1, 'action_host_disacknowledgement' => 0, 'action_host_schedule_check' => 0, 'action_host_schedule_forced_check' => 1, 'action_host_schedule_downtime' => 1, 'action_host_comment' => 1, 'action_host_event_handler' => 1, 'action_host_flap_detection' => 0, 'action_host_checks_for_services' => 1, 'action_host_notifications_for_services' => 0, 'action_name_submit_result' => 1, 'enabled' => 1];
 
-    private $updatedProperties = array(
-        'acl_name' => 'aclActionNameChanged',
-        'acl_alias' => 'aclActionAliasChanged',
-        'acl_groups' => array(
-            'nonAdminAclGroupName'
-        ),
-        'action_top_counter_overview' => 0,
-        'action_top_counter_poller' => 1,
-        'action_poller_listing' => 1,
-        'action_generate_configuration' => 0,
-        'action_generate_trap' => 1,
-        'action_engine' => 0,
-        'action_shutdown' => 1,
-        'action_restart' => 1,
-        'action_notifications' => 0,
-        'action_global_service_checks' => 1,
-        'action_global_service_passive_checks' => 0,
-        'action_global_host_checks' => 1,
-        'action_global_host_passive_checks' => 1,
-        'action_event_handler' => 0,
-        'action_flap_detection' => 1,
-        'action_global_service_obsess' => 0,
-        'action_global_host_obsess' => 1,
-        'action_perf_data' => 1,
-        'action_service' => 0,
-        'action_service_notifications' => 1,
-        'action_service_acknowledgement' => 0,
-        'action_service_disacknowledgement' => 1,
-        'action_service_schedule_check' => 0,
-        'action_service_schedule_forced_check' => 1,
-        'action_service_schedule_downtime' => 0,
-        'action_service_comment' => 1,
-        'action_service_event_handler' => 0,
-        'action_service_flap_detection' => 1,
-        'action_service_submit_result' => 0,
-        'action_service_display_command' => 0,
-        'action_host' => 0,
-        'action_host_notifications' => 1,
-        'action_host_acknowledgement' => 0,
-        'action_host_disacknowledgement' => 0,
-        'action_host_schedule_check' => 1,
-        'action_host_schedule_forced_check' => 1,
-        'action_host_schedule_downtime' => 1,
-        'action_host_comment' => 0,
-        'action_host_event_handler' => 1,
-        'action_host_flap_detection' => 1,
-        'action_host_checks_for_services' => 1,
-        'action_host_notifications_for_services' => 0,
-        'action_name_submit_result' => 0,
-        'enabled' => 0
-    );
+    private array $updatedProperties = ['acl_name' => 'aclActionNameChanged', 'acl_alias' => 'aclActionAliasChanged', 'acl_groups' => ['nonAdminAclGroupName'], 'action_top_counter_overview' => 0, 'action_top_counter_poller' => 1, 'action_poller_listing' => 1, 'action_generate_configuration' => 0, 'action_generate_trap' => 1, 'action_engine' => 0, 'action_shutdown' => 1, 'action_restart' => 1, 'action_notifications' => 0, 'action_global_service_checks' => 1, 'action_global_service_passive_checks' => 0, 'action_global_host_checks' => 1, 'action_global_host_passive_checks' => 1, 'action_event_handler' => 0, 'action_flap_detection' => 1, 'action_global_service_obsess' => 0, 'action_global_host_obsess' => 1, 'action_perf_data' => 1, 'action_service' => 0, 'action_service_notifications' => 1, 'action_service_acknowledgement' => 0, 'action_service_disacknowledgement' => 1, 'action_service_schedule_check' => 0, 'action_service_schedule_forced_check' => 1, 'action_service_schedule_downtime' => 0, 'action_service_comment' => 1, 'action_service_event_handler' => 0, 'action_service_flap_detection' => 1, 'action_service_submit_result' => 0, 'action_service_display_command' => 0, 'action_host' => 0, 'action_host_notifications' => 1, 'action_host_acknowledgement' => 0, 'action_host_disacknowledgement' => 0, 'action_host_schedule_check' => 1, 'action_host_schedule_forced_check' => 1, 'action_host_schedule_downtime' => 1, 'action_host_comment' => 0, 'action_host_event_handler' => 1, 'action_host_flap_detection' => 1, 'action_host_checks_for_services' => 1, 'action_host_notifications_for_services' => 0, 'action_name_submit_result' => 0, 'enabled' => 0];
 
-    private $allSelected = array(
-        'acl_name' => 'aclActionName',
-        'acl_alias' => 'aclActionAlias',
-        'acl_groups' => array(
-            'adminAclGroupName',
-            'nonAdminAclGroupName'
-        ),
-        'action_top_counter_overview' => 1,
-        'action_top_counter_poller' => 1,
-        'action_poller_listing' => 1,
-        'action_generate_configuration' => 1,
-        'action_generate_trap' => 1,
-        'action_engine' => 0,
-        'action_shutdown' => 1,
-        'action_restart' => 1,
-        'action_notifications' => 1,
-        'action_global_service_checks' => 1,
-        'action_global_service_passive_checks' => 1,
-        'action_global_host_checks' => 1,
-        'action_global_host_passive_checks' => 1,
-        'action_event_handler' => 1,
-        'action_flap_detection' => 1,
-        'action_global_service_obsess' => 1,
-        'action_global_host_obsess' => 1,
-        'action_perf_data' => 1,
-        'action_service' => 0,
-        'action_service_notifications' => 1,
-        'action_service_acknowledgement' => 1,
-        'action_service_disacknowledgement' => 1,
-        'action_service_schedule_check' => 1,
-        'action_service_schedule_forced_check' => 1,
-        'action_service_schedule_downtime' => 1,
-        'action_service_comment' => 1,
-        'action_service_event_handler' => 1,
-        'action_service_flap_detection' => 1,
-        'action_service_submit_result' => 1,
-        'action_service_display_command' => 1,
-        'action_host' => 0,
-        'action_host_notifications' => 1,
-        'action_host_acknowledgement' => 1,
-        'action_host_disacknowledgement' => 1,
-        'action_host_schedule_check' => 1,
-        'action_host_schedule_forced_check' => 1,
-        'action_host_schedule_downtime' => 1,
-        'action_host_comment' => 1,
-        'action_host_event_handler' => 1,
-        'action_host_flap_detection' => 1,
-        'action_host_checks_for_services' => 1,
-        'action_host_notifications_for_services' => 1,
-        'action_name_submit_result' => 1,
-        'enabled' => 1
-    );
+    private array $allSelected = ['acl_name' => 'aclActionName', 'acl_alias' => 'aclActionAlias', 'acl_groups' => ['adminAclGroupName', 'nonAdminAclGroupName'], 'action_top_counter_overview' => 1, 'action_top_counter_poller' => 1, 'action_poller_listing' => 1, 'action_generate_configuration' => 1, 'action_generate_trap' => 1, 'action_engine' => 0, 'action_shutdown' => 1, 'action_restart' => 1, 'action_notifications' => 1, 'action_global_service_checks' => 1, 'action_global_service_passive_checks' => 1, 'action_global_host_checks' => 1, 'action_global_host_passive_checks' => 1, 'action_event_handler' => 1, 'action_flap_detection' => 1, 'action_global_service_obsess' => 1, 'action_global_host_obsess' => 1, 'action_perf_data' => 1, 'action_service' => 0, 'action_service_notifications' => 1, 'action_service_acknowledgement' => 1, 'action_service_disacknowledgement' => 1, 'action_service_schedule_check' => 1, 'action_service_schedule_forced_check' => 1, 'action_service_schedule_downtime' => 1, 'action_service_comment' => 1, 'action_service_event_handler' => 1, 'action_service_flap_detection' => 1, 'action_service_submit_result' => 1, 'action_service_display_command' => 1, 'action_host' => 0, 'action_host_notifications' => 1, 'action_host_acknowledgement' => 1, 'action_host_disacknowledgement' => 1, 'action_host_schedule_check' => 1, 'action_host_schedule_forced_check' => 1, 'action_host_schedule_downtime' => 1, 'action_host_comment' => 1, 'action_host_event_handler' => 1, 'action_host_flap_detection' => 1, 'action_host_checks_for_services' => 1, 'action_host_notifications_for_services' => 1, 'action_name_submit_result' => 1, 'enabled' => 1];
 
-    private $selectActionEngine = array(
-        'acl_name' => 'testActionEngineName',
-        'acl_alias' => 'testActionEngineAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_engine' => 1
-    );
+    private array $selectActionEngine = ['acl_name' => 'testActionEngineName', 'acl_alias' => 'testActionEngineAlia', 'acl_groups' => ['adminAclGroupName'], 'action_engine' => 1];
 
-    private $checkActionEngine = array(
-        'acl_name' => 'testActionEngineName',
-        'acl_alias' => 'testActionEngineAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_top_counter_overview' => 0,
-        'action_top_counter_poller' => 0,
-        'action_poller_listing' => 0,
-        'action_generate_configuration' => 0,
-        'action_generate_trap' => 0,
-        'action_engine' => 0,
-        'action_shutdown' => 1,
-        'action_restart' => 1,
-        'action_notifications' => 1,
-        'action_global_service_checks' => 1,
-        'action_global_service_passive_checks' => 1,
-        'action_global_host_checks' => 1,
-        'action_global_host_passive_checks' => 1,
-        'action_event_handler' => 1,
-        'action_flap_detection' => 1,
-        'action_global_service_obsess' => 1,
-        'action_global_host_obsess' => 1,
-        'action_perf_data' => 1,
-        'action_service' => 0,
-        'action_service_notifications' => 0,
-        'action_service_acknowledgement' => 0,
-        'action_service_disacknowledgement' => 0,
-        'action_service_schedule_check' => 0,
-        'action_service_schedule_forced_check' => 0,
-        'action_service_schedule_downtime' => 0,
-        'action_service_comment' => 0,
-        'action_service_event_handler' => 0,
-        'action_service_flap_detection' => 0,
-        'action_service_submit_result' => 0,
-        'action_service_display_command' => 0,
-        'action_host' => 0,
-        'action_host_notifications' => 0,
-        'action_host_acknowledgement' => 0,
-        'action_host_disacknowledgement' => 0,
-        'action_host_schedule_check' => 0,
-        'action_host_schedule_forced_check' => 0,
-        'action_host_schedule_downtime' => 0,
-        'action_host_comment' => 0,
-        'action_host_event_handler' => 0,
-        'action_host_flap_detection' => 0,
-        'action_host_checks_for_services' => 0,
-        'action_host_notifications_for_services' => 0,
-        'action_name_submit_result' => 0,
-        'enabled' => 1
-    );
+    private array $checkActionEngine = ['acl_name' => 'testActionEngineName', 'acl_alias' => 'testActionEngineAlia', 'acl_groups' => ['adminAclGroupName'], 'action_top_counter_overview' => 0, 'action_top_counter_poller' => 0, 'action_poller_listing' => 0, 'action_generate_configuration' => 0, 'action_generate_trap' => 0, 'action_engine' => 0, 'action_shutdown' => 1, 'action_restart' => 1, 'action_notifications' => 1, 'action_global_service_checks' => 1, 'action_global_service_passive_checks' => 1, 'action_global_host_checks' => 1, 'action_global_host_passive_checks' => 1, 'action_event_handler' => 1, 'action_flap_detection' => 1, 'action_global_service_obsess' => 1, 'action_global_host_obsess' => 1, 'action_perf_data' => 1, 'action_service' => 0, 'action_service_notifications' => 0, 'action_service_acknowledgement' => 0, 'action_service_disacknowledgement' => 0, 'action_service_schedule_check' => 0, 'action_service_schedule_forced_check' => 0, 'action_service_schedule_downtime' => 0, 'action_service_comment' => 0, 'action_service_event_handler' => 0, 'action_service_flap_detection' => 0, 'action_service_submit_result' => 0, 'action_service_display_command' => 0, 'action_host' => 0, 'action_host_notifications' => 0, 'action_host_acknowledgement' => 0, 'action_host_disacknowledgement' => 0, 'action_host_schedule_check' => 0, 'action_host_schedule_forced_check' => 0, 'action_host_schedule_downtime' => 0, 'action_host_comment' => 0, 'action_host_event_handler' => 0, 'action_host_flap_detection' => 0, 'action_host_checks_for_services' => 0, 'action_host_notifications_for_services' => 0, 'action_name_submit_result' => 0, 'enabled' => 1];
 
-    private $selectActionService = array(
-        'acl_name' => 'testActionServiceName',
-        'acl_alias' => 'testActionServiceAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_service' => 1
-    );
+    private array $selectActionService = ['acl_name' => 'testActionServiceName', 'acl_alias' => 'testActionServiceAlia', 'acl_groups' => ['adminAclGroupName'], 'action_service' => 1];
 
-    private $checkActionService = array(
-        'acl_name' => 'testActionServiceName',
-        'acl_alias' => 'testActionServiceAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_top_counter_overview' => 0,
-        'action_top_counter_poller' => 0,
-        'action_poller_listing' => 0,
-        'action_generate_configuration' => 0,
-        'action_generate_trap' => 0,
-        'action_engine' => 0,
-        'action_shutdown' => 0,
-        'action_restart' => 0,
-        'action_notifications' => 0,
-        'action_global_service_checks' => 0,
-        'action_global_service_passive_checks' => 0,
-        'action_global_host_checks' => 0,
-        'action_global_host_passive_checks' => 0,
-        'action_event_handler' => 0,
-        'action_flap_detection' => 0,
-        'action_global_service_obsess' => 0,
-        'action_global_host_obsess' => 0,
-        'action_perf_data' => 0,
-        'action_service' => 0,
-        'action_service_notifications' => 1,
-        'action_service_acknowledgement' => 1,
-        'action_service_disacknowledgement' => 1,
-        'action_service_schedule_check' => 1,
-        'action_service_schedule_forced_check' => 1,
-        'action_service_schedule_downtime' => 1,
-        'action_service_comment' => 1,
-        'action_service_event_handler' => 1,
-        'action_service_flap_detection' => 1,
-        'action_service_submit_result' => 1,
-        'action_service_display_command' => 1,
-        'action_host' => 0,
-        'action_host_notifications' => 0,
-        'action_host_acknowledgement' => 0,
-        'action_host_disacknowledgement' => 0,
-        'action_host_schedule_check' => 0,
-        'action_host_schedule_forced_check' => 0,
-        'action_host_schedule_downtime' => 0,
-        'action_host_comment' => 0,
-        'action_host_event_handler' => 0,
-        'action_host_flap_detection' => 0,
-        'action_host_checks_for_services' => 0,
-        'action_host_notifications_for_services' => 0,
-        'action_name_submit_result' => 0,
-        'enabled' => 1
-    );
+    private array $checkActionService = ['acl_name' => 'testActionServiceName', 'acl_alias' => 'testActionServiceAlia', 'acl_groups' => ['adminAclGroupName'], 'action_top_counter_overview' => 0, 'action_top_counter_poller' => 0, 'action_poller_listing' => 0, 'action_generate_configuration' => 0, 'action_generate_trap' => 0, 'action_engine' => 0, 'action_shutdown' => 0, 'action_restart' => 0, 'action_notifications' => 0, 'action_global_service_checks' => 0, 'action_global_service_passive_checks' => 0, 'action_global_host_checks' => 0, 'action_global_host_passive_checks' => 0, 'action_event_handler' => 0, 'action_flap_detection' => 0, 'action_global_service_obsess' => 0, 'action_global_host_obsess' => 0, 'action_perf_data' => 0, 'action_service' => 0, 'action_service_notifications' => 1, 'action_service_acknowledgement' => 1, 'action_service_disacknowledgement' => 1, 'action_service_schedule_check' => 1, 'action_service_schedule_forced_check' => 1, 'action_service_schedule_downtime' => 1, 'action_service_comment' => 1, 'action_service_event_handler' => 1, 'action_service_flap_detection' => 1, 'action_service_submit_result' => 1, 'action_service_display_command' => 1, 'action_host' => 0, 'action_host_notifications' => 0, 'action_host_acknowledgement' => 0, 'action_host_disacknowledgement' => 0, 'action_host_schedule_check' => 0, 'action_host_schedule_forced_check' => 0, 'action_host_schedule_downtime' => 0, 'action_host_comment' => 0, 'action_host_event_handler' => 0, 'action_host_flap_detection' => 0, 'action_host_checks_for_services' => 0, 'action_host_notifications_for_services' => 0, 'action_name_submit_result' => 0, 'enabled' => 1];
 
-    private $selectActionHost = array(
-        'acl_name' => 'testActionHostName',
-        'acl_alias' => 'testActionHostAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_host' => 1
-    );
+    private array $selectActionHost = ['acl_name' => 'testActionHostName', 'acl_alias' => 'testActionHostAlia', 'acl_groups' => ['adminAclGroupName'], 'action_host' => 1];
 
-    private $checkActionHost = array(
-        'acl_name' => 'testActionHostName',
-        'acl_alias' => 'testActionHostAlia',
-        'acl_groups' => array(
-            'adminAclGroupName'
-        ),
-        'action_top_counter_overview' => 0,
-        'action_top_counter_poller' => 0,
-        'action_poller_listing' => 0,
-        'action_generate_configuration' => 0,
-        'action_generate_trap' => 0,
-        'action_engine' => 0,
-        'action_shutdown' => 0,
-        'action_restart' => 0,
-        'action_notifications' => 0,
-        'action_global_service_checks' => 0,
-        'action_global_service_passive_checks' => 0,
-        'action_global_host_checks' => 0,
-        'action_global_host_passive_checks' => 0,
-        'action_event_handler' => 0,
-        'action_flap_detection' => 0,
-        'action_global_service_obsess' => 0,
-        'action_global_host_obsess' => 0,
-        'action_perf_data' => 0,
-        'action_service' => 0,
-        'action_service_notifications' => 0,
-        'action_service_acknowledgement' => 0,
-        'action_service_disacknowledgement' => 0,
-        'action_service_schedule_check' => 0,
-        'action_service_schedule_forced_check' => 0,
-        'action_service_schedule_downtime' => 0,
-        'action_service_comment' => 0,
-        'action_service_event_handler' => 0,
-        'action_service_flap_detection' => 0,
-        'action_service_submit_result' => 0,
-        'action_service_display_command' => 0,
-        'action_host' => 0,
-        'action_host_notifications' => 1,
-        'action_host_acknowledgement' => 1,
-        'action_host_disacknowledgement' => 1,
-        'action_host_schedule_check' => 1,
-        'action_host_schedule_forced_check' => 1,
-        'action_host_schedule_downtime' => 1,
-        'action_host_comment' => 1,
-        'action_host_event_handler' => 1,
-        'action_host_flap_detection' => 1,
-        'action_host_checks_for_services' => 1,
-        'action_host_notifications_for_services' => 1,
-        'action_name_submit_result' => 1,
-        'enabled' => 1
-    );
+    private array $checkActionHost = ['acl_name' => 'testActionHostName', 'acl_alias' => 'testActionHostAlia', 'acl_groups' => ['adminAclGroupName'], 'action_top_counter_overview' => 0, 'action_top_counter_poller' => 0, 'action_poller_listing' => 0, 'action_generate_configuration' => 0, 'action_generate_trap' => 0, 'action_engine' => 0, 'action_shutdown' => 0, 'action_restart' => 0, 'action_notifications' => 0, 'action_global_service_checks' => 0, 'action_global_service_passive_checks' => 0, 'action_global_host_checks' => 0, 'action_global_host_passive_checks' => 0, 'action_event_handler' => 0, 'action_flap_detection' => 0, 'action_global_service_obsess' => 0, 'action_global_host_obsess' => 0, 'action_perf_data' => 0, 'action_service' => 0, 'action_service_notifications' => 0, 'action_service_acknowledgement' => 0, 'action_service_disacknowledgement' => 0, 'action_service_schedule_check' => 0, 'action_service_schedule_forced_check' => 0, 'action_service_schedule_downtime' => 0, 'action_service_comment' => 0, 'action_service_event_handler' => 0, 'action_service_flap_detection' => 0, 'action_service_submit_result' => 0, 'action_service_display_command' => 0, 'action_host' => 0, 'action_host_notifications' => 1, 'action_host_acknowledgement' => 1, 'action_host_disacknowledgement' => 1, 'action_host_schedule_check' => 1, 'action_host_schedule_forced_check' => 1, 'action_host_schedule_downtime' => 1, 'action_host_comment' => 1, 'action_host_event_handler' => 1, 'action_host_flap_detection' => 1, 'action_host_checks_for_services' => 1, 'action_host_notifications_for_services' => 1, 'action_name_submit_result' => 1, 'enabled' => 1];
 
     /**
      * @Given one ACL access group including a non admin user exists
@@ -486,7 +86,7 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function theActionAccessRecordIsSavedWithItsProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -503,12 +103,12 @@ class ACLActionsAccessContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -519,14 +119,14 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function allLinkedAccessGroupDisplayTheNewActionsAccessInAuthorizedInformationTab()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->adminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) == 1 &&
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) == 1 &&
                         $object['actions'][0] != $this->initialProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->adminAclGroup['group_name'];
@@ -534,17 +134,17 @@ class ACLActionsAccessContext extends CentreonContext
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) == 1 &&
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) == 1 &&
                         $object['actions'][0] != $this->initialProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -565,7 +165,7 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function allRadioButtonsHaveToBeChecked()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -582,12 +182,12 @@ class ACLActionsAccessContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -614,7 +214,7 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function allButtonsRadioOfTheAuthorizedActionsLotAreChecked()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -657,12 +257,12 @@ class ACLActionsAccessContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -685,11 +285,7 @@ class ACLActionsAccessContext extends CentreonContext
     {
         $this->currentPage = new ACLActionConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
-        $this->currentPage->setProperties(array(
-            'acl_groups' => array(
-                'nonAdminAclGroupName'
-            )
-        ));
+        $this->currentPage->setProperties(['acl_groups' => ['nonAdminAclGroupName']]);
         $this->currentPage->save();
     }
 
@@ -698,36 +294,36 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function linkBetweenAccessGroupAndActionAccessMustBeBroken()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLActionConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['acl_groups'] != array('nonAdminAclGroupName')) {
+                    if ($object['acl_groups'] != ['nonAdminAclGroupName']) {
                         $this->tableau[] = 'acl_groups';
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->adminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 0) {
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 0) {
                         $this->tableau[] = $this->adminAclGroup['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 1 &&
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 1 &&
                         $object['actions'][0] != $this->initialProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -751,7 +347,7 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function aNewActionAccessRecordIsCreatedWithIdenticalPropertiesExceptTheName()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -768,12 +364,12 @@ class ACLActionsAccessContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -795,36 +391,36 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function theModificationsAreSaved()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLActionConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['acl_name']);
                     $object = $this->currentPage->getProperties();
-                    if ($object['acl_groups'] != array('nonAdminAclGroupName')) {
+                    if ($object['acl_groups'] != ['nonAdminAclGroupName']) {
                         $this->tableau[] = 'acl_groups';
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->adminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 0) {
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 0) {
                         $this->tableau[] = $this->adminAclGroup['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 1 &&
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 1 &&
                         $object['actions'][0] != $this->initialProperties['acl_name']
                     ) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -868,28 +464,28 @@ class ACLActionsAccessContext extends CentreonContext
      */
     public function theLinksWithTheAclGroupsAreBroken()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->adminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 0) {
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 0) {
                         $this->tableau[] = $this->adminAclGroup['group_name'];
                     }
                     $this->currentPage = new ACLGroupConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->nonAdminAclGroup['group_name']);
                     $object = $this->currentPage->getProperties();
-                    if (count($object['actions']) != 0) {
+                    if ((is_countable($object['actions']) ? count($object['actions']) : 0) != 0) {
                         $this->tableau[] = $this->nonAdminAclGroup['group_name'];
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

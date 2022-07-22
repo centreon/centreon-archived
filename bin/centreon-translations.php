@@ -34,13 +34,13 @@
  *
  */
 
-if (strlen($argv[1]) !== 2) {
+if (strlen((string) $argv[1]) !== 2) {
     exit(
         sprintf("The length of the language code must be 2\n")
     );
 }
 
-$languageCode = strtolower($argv[1]);
+$languageCode = strtolower((string) $argv[1]);
 
 if ($argc === 3 || $argc === 4) {
     if (!file_exists($argv[2])) {
@@ -60,7 +60,7 @@ if ($argc === 3 || $argc === 4) {
 define('TOKEN_LENGTH', 6);
 
 if ($argc === 3) {
-    $translationFileInfos = pathinfo($argv[1]);
+    $translationFileInfos = pathinfo((string) $argv[1]);
     $destinationFile = $translationFileInfos['dirname'] . '/'
         . $translationFileInfos['filename'] . '.json';
     createTranslationFile($languageCode, $argv[2], $destinationFile);
@@ -72,7 +72,7 @@ if ($argc === 4) {
             exit("Destination file already exists, impossible to delete it\n");
         }
     }
-    $destinationFileInfos = pathinfo($argv[3]);
+    $destinationFileInfos = pathinfo((string) $argv[3]);
     $destinationDirectory = $destinationFileInfos['dirname'];
     if (!is_dir($destinationDirectory)) {
         if (false === mkdir($destinationDirectory, 0775, true)) {
@@ -97,6 +97,7 @@ function createTranslationFile(
     string $destinationFile
 ): void {
 
+    $final = [];
     $translations = [];
     $englishTranslation = [];
     $isDefaultTranslation = $languageCode === 'en';

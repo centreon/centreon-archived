@@ -41,30 +41,26 @@ use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
-    const CENTREON_NOTIFYMASTER = 'centreon.notifymaster';
-    const CENTREON_TASKSERVICE = 'centreon.taskservice';
-    const CENTREON_REMOTE_POLLER_INTERACTION_SERVICE = 'centreon_remote.poller_interaction_service';
-    const CENTREON_REMOTE_INFORMATIONS_SERVICE = 'centreon_remote.informations_service';
-    const CENTREON_REMOTE_REMOTE_CONNECTION_SERVICE = 'centreon_remote.remote_connection_service';
-    const CENTREON_REMOTE_POLLER_CONNECTION_SERVICE = 'centreon_remote.poller_connection_service';
-    const CENTREON_REMOTE_POLLER_CONFIG_SERVICE = 'centreon_remote.poller_config_service';
-    const CENTREON_REMOTE_POLLER_CONFIG_BRIDGE = 'centreon_remote.poller_config_bridge';
-    const CENTREON_REMOTE_EXPORT = 'centreon_remote.export';
-    const CENTREON_REMOTE_EXPORTER_CACHE = 'centreon_remote.exporter.cache';
-    const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
+    final const CENTREON_NOTIFYMASTER = 'centreon.notifymaster';
+    final const CENTREON_TASKSERVICE = 'centreon.taskservice';
+    final const CENTREON_REMOTE_POLLER_INTERACTION_SERVICE = 'centreon_remote.poller_interaction_service';
+    final const CENTREON_REMOTE_INFORMATIONS_SERVICE = 'centreon_remote.informations_service';
+    final const CENTREON_REMOTE_REMOTE_CONNECTION_SERVICE = 'centreon_remote.remote_connection_service';
+    final const CENTREON_REMOTE_POLLER_CONNECTION_SERVICE = 'centreon_remote.poller_connection_service';
+    final const CENTREON_REMOTE_POLLER_CONFIG_SERVICE = 'centreon_remote.poller_config_service';
+    final const CENTREON_REMOTE_POLLER_CONFIG_BRIDGE = 'centreon_remote.poller_config_bridge';
+    final const CENTREON_REMOTE_EXPORT = 'centreon_remote.export';
+    final const CENTREON_REMOTE_EXPORTER_CACHE = 'centreon_remote.exporter.cache';
+    final const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
 
     /**
      * Register Centreon Remote services
-     *
-     * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
         $pimple->extend(
             \Centreon\ServiceProvider::YML_CONFIG,
-            function (array $cc, Container $pimple) {
-                return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
-            }
+            fn(array $cc, Container $pimple) => $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__)
         );
 
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]

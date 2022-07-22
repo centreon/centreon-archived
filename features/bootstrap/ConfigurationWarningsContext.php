@@ -12,17 +12,7 @@ class ConfigurationWarningsContext extends CentreonContext
     public function aServiceWithNotificationsEnabled()
     {
         $page = new ServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'hosts' => 'Centreon-Server',
-            'description' => 'AcceptanceTestService',
-            'check_command' => 'check_centreon_dummy',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'notifications_enabled' => 1
-        ));
+        $page->setProperties(['hosts' => 'Centreon-Server', 'description' => 'AcceptanceTestService', 'check_command' => 'check_centreon_dummy', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'notifications_enabled' => 1]);
         $page->save();
     }
 
@@ -40,11 +30,7 @@ class ConfigurationWarningsContext extends CentreonContext
     public function theConfigurationIsExported()
     {
         $page = new PollerConfigurationExportPage($this);
-        $page->setProperties(array(
-            'pollers' => 'all',
-            'generate_files' => 1,
-            'run_debug' => 1
-        ));
+        $page->setProperties(['pollers' => 'all', 'generate_files' => 1, 'run_debug' => 1]);
         $page->export();
     }
 

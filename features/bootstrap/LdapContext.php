@@ -63,53 +63,27 @@ class LdapContext extends CentreonContext
      */
     public function configureAclForLdapContacts()
     {
-        $aclGroupProperties = array(
-            'group_name' => 'ldap',
-            'group_alias' => 'ldap',
-            'contactgroups' => array(
-                'linux (LDAP : OpenLDAP)',
-                'windows (LDAP : OpenLDAP)',
-                'networking (LDAP : OpenLDAP)'
-            )
-        );
+        $aclGroupProperties = ['group_name' => 'ldap', 'group_alias' => 'ldap', 'contactgroups' => ['linux (LDAP : OpenLDAP)', 'windows (LDAP : OpenLDAP)', 'networking (LDAP : OpenLDAP)']];
 
         $this->page = new ACLGroupConfigurationPage($this);
         $this->page->setProperties($aclGroupProperties);
         $this->page->save();
 
-        $aclMenuProperties = array(
-            'acl_name' => 'ldap',
-            'acl_alias' => 'ldap',
-            'acl_groups' => array(
-                'ldap'
-            )
-        );
+        $aclMenuProperties = ['acl_name' => 'ldap', 'acl_alias' => 'ldap', 'acl_groups' => ['ldap']];
 
         $this->page = new ACLMenuConfigurationPage($this);
         $this->page->setProperties($aclMenuProperties);
         $this->page->selectAll();
         $this->page->save();
 
-        $aclResourceProperties = array(
-            'acl_name' => 'ldap',
-            'acl_alias' => 'ldap',
-            'acl_groups' => array(
-                'ldap'
-            )
-        );
+        $aclResourceProperties = ['acl_name' => 'ldap', 'acl_alias' => 'ldap', 'acl_groups' => ['ldap']];
 
         $this->page = new ACLResourceConfigurationPage($this);
         $this->page->setProperties($aclResourceProperties);
         $this->page->selectAll();
         $this->page->save();
 
-        $aclActionProperties = array(
-            'acl_name' => 'ldap',
-            'acl_alias' => 'ldap',
-            'acl_groups' => array(
-                'ldap'
-            )
-        );
+        $aclActionProperties = ['acl_name' => 'ldap', 'acl_alias' => 'ldap', 'acl_groups' => ['ldap']];
         $this->page = new ACLActionConfigurationPage($this);
         $this->page->setProperties($aclActionProperties);
         $this->page->selectAll();

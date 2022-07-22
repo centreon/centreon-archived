@@ -26,19 +26,16 @@ interface EventObjectInterface
 {
     /**
      * Make sure every implementation has a timestamp
-     * @return \DateTime|null
      */
     public function getTimestamp(): ?\DateTime;
 
     /**
      * Make sure every implementation has a type
-     * @return string
      */
     public function getEventType(): string;
 
     /**
      * Make sure every implementation has id
-     * @return string
      */
     public function getEventId(): string;
 }

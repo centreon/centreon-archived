@@ -11,81 +11,19 @@ class EscalationConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host = array(
-        'name' => 'hostName',
-        'alias' => 'hostAlias',
-        'address' => 'host@localhost'
-    );
+    protected $host = ['name' => 'hostName', 'alias' => 'hostAlias', 'address' => 'host@localhost'];
 
-    protected $metaService1 = array(
-        'name' => 'metaService1Name',
-        'max_check_attempts' => 3
-    );
+    protected $metaService1 = ['name' => 'metaService1Name', 'max_check_attempts' => 3];
 
-    protected $metaService2 = array(
-        'name' => 'metaService2Name',
-        'max_check_attempts' => 4
-    );
+    protected $metaService2 = ['name' => 'metaService2Name', 'max_check_attempts' => 4];
 
-    protected $serviceGroup1 = array(
-        'name' => 'serviceGroup1Name',
-        'description' => 'serviceGroup1Description'
-    );
+    protected $serviceGroup1 = ['name' => 'serviceGroup1Name', 'description' => 'serviceGroup1Description'];
 
-    protected $serviceGroup2 = array(
-        'name' => 'serviceGroup2Name',
-        'description' => 'serviceGroup2Description'
-    );
+    protected $serviceGroup2 = ['name' => 'serviceGroup2Name', 'description' => 'serviceGroup2Description'];
 
-    protected $initialProperties = array(
-        'name' => 'escalationName',
-        'alias' => 'escalationAlias',
-        'first_notification' => 5,
-        'last_notification' => 15,
-        'notification_interval' => 8,
-        'escalation_period' => '24x7',
-        'host_notify_on_down' => 1,
-        'host_notify_on_unreachable' => 0,
-        'host_notify_on_recovery' => 1,
-        'service_notify_on_warning' => 0,
-        'service_notify_on_unknown' => 1,
-        'service_notify_on_critical' => 0,
-        'service_notify_on_recovery' => 1,
-        'contactgroups' => 'Supervisors',
-        'comment' => 'escalationComment',
-        'host_inheritance_to_services' => 1,
-        'hosts' => 'Centreon-Server',
-        'services' => 'Centreon-Server - Load',
-        'hostgroup_inheritance_to_services' => 0,
-        'hostgroups' => 'Linux-Servers',
-        'servicegroups' => 'serviceGroup1Name',
-        'metaservices' => 'metaService1Name'
-    );
+    protected $initialProperties = ['name' => 'escalationName', 'alias' => 'escalationAlias', 'first_notification' => 5, 'last_notification' => 15, 'notification_interval' => 8, 'escalation_period' => '24x7', 'host_notify_on_down' => 1, 'host_notify_on_unreachable' => 0, 'host_notify_on_recovery' => 1, 'service_notify_on_warning' => 0, 'service_notify_on_unknown' => 1, 'service_notify_on_critical' => 0, 'service_notify_on_recovery' => 1, 'contactgroups' => 'Supervisors', 'comment' => 'escalationComment', 'host_inheritance_to_services' => 1, 'hosts' => 'Centreon-Server', 'services' => 'Centreon-Server - Load', 'hostgroup_inheritance_to_services' => 0, 'hostgroups' => 'Linux-Servers', 'servicegroups' => 'serviceGroup1Name', 'metaservices' => 'metaService1Name'];
 
-    protected $updatedProperties = array(
-        'name' => 'escalationNameChanged',
-        'alias' => 'escalationAliasChanged',
-        'first_notification' => 12,
-        'last_notification' => 27,
-        'notification_interval' => 14,
-        'escalation_period' => 'workhours',
-        'host_notify_on_down' => 0,
-        'host_notify_on_unreachable' => 1,
-        'host_notify_on_recovery' => 0,
-        'service_notify_on_warning' => 1,
-        'service_notify_on_unknown' => 0,
-        'service_notify_on_critical' => 1,
-        'service_notify_on_recovery' => 0,
-        'contactgroups' => 'Guest',
-        'comment' => 'escalationCommentChanged',
-        'host_inheritance_to_services' => 0,
-        'hosts' => 'hostName',
-        'services' => 'Centreon-Server - Memory',
-        'hostgroup_inheritance_to_services' => 1,
-        'hostgroups' => 'Networks',
-        'servicegroups' => 'serviceGroup2Name',
-        'metaservices' => 'metaService2Name'
-    );
+    protected $updatedProperties = ['name' => 'escalationNameChanged', 'alias' => 'escalationAliasChanged', 'first_notification' => 12, 'last_notification' => 27, 'notification_interval' => 14, 'escalation_period' => 'workhours', 'host_notify_on_down' => 0, 'host_notify_on_unreachable' => 1, 'host_notify_on_recovery' => 0, 'service_notify_on_warning' => 1, 'service_notify_on_unknown' => 0, 'service_notify_on_critical' => 1, 'service_notify_on_recovery' => 0, 'contactgroups' => 'Guest', 'comment' => 'escalationCommentChanged', 'host_inheritance_to_services' => 0, 'hosts' => 'hostName', 'services' => 'Centreon-Server - Memory', 'hostgroup_inheritance_to_services' => 1, 'hostgroups' => 'Networks', 'servicegroups' => 'serviceGroup2Name', 'metaservices' => 'metaService2Name'];
 
     /**
      * @Given an escalation is configured
@@ -128,7 +66,7 @@ class EscalationConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -145,12 +83,12 @@ class EscalationConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -174,7 +112,7 @@ class EscalationConfigurationContext extends CentreonContext
      */
     public function theNewEscalationHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -191,12 +129,12 @@ class EscalationConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

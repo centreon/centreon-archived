@@ -124,22 +124,15 @@ if ($isRemote === false) {
         if ($shouldSendStatistics || $hasValidLicenses) {
             try {
                 $additional = $oStatistics->getAdditionalData();
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 $logger->error('Cannot get stats from modules');
             }
         }
 
         // Construct the object gathering datas
-        $data = array(
-            'timestamp' => "$timestamp",
-            'UUID' => $uuid,
-            'versions' => $versions,
-            'infos' => $infos,
-            'timezone' => $timezone,
-            'additional' => $additional
-        );
+        $data = ['timestamp' => "$timestamp", 'UUID' => $uuid, 'versions' => $versions, 'infos' => $infos, 'timezone' => $timezone, 'additional' => $additional];
 
-        $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
+        $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, [], true);
         logger(
             sprintf(
                 'Response from [%s] : %s,body : %s',

@@ -26,22 +26,19 @@ class PollerServer
     /**
      * @var int $id the poller id
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string $name the poller name
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var string $ip the poller ip address
      */
-    private $ip;
+    private ?string $ip = null;
 
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
@@ -75,9 +72,6 @@ class PollerServer
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getIp(): string
     {
         return $this->ip;

@@ -23,7 +23,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iCheckRestartMonitoringEngine()
     {
-        $this->export_page->setProperties(array('restart_engine' => true));
+        $this->export_page->setProperties(['restart_engine' => true]);
     }
 
     /**
@@ -31,9 +31,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iSelectTheMethodRestart()
     {
-        $this->export_page->setProperties(array(
-            'restart_method' => PollerConfigurationExportPage::METHOD_RESTART
-        ));
+        $this->export_page->setProperties(['restart_method' => PollerConfigurationExportPage::METHOD_RESTART]);
     }
 
     /**
@@ -41,9 +39,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iSelectTheMethodReload()
     {
-        $this->export_page->setProperties(array(
-            'restart_method' => PollerConfigurationExportPage::METHOD_RELOAD
-        ));
+        $this->export_page->setProperties(['restart_method' => PollerConfigurationExportPage::METHOD_RELOAD]);
     }
 
     /**
@@ -60,11 +56,9 @@ class RestartCentreonEngineContext extends CentreonContext
     public function centreonEngineIsRestarted()
     {
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
-                        ->getText() == '100%';
-            }
+            fn($context) => $context->getSession()->getPage()->has('named', ['id', 'progressPct'])
+                && $context->getSession()->getPage()->find('named', ['id', 'progressPct'])
+                    ->getText() == '100%'
         );
     }
 
@@ -74,11 +68,9 @@ class RestartCentreonEngineContext extends CentreonContext
     public function centreonEngineIsReloaded()
     {
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
-                        ->getText() == '100%';
-            }
+            fn($context) => $context->getSession()->getPage()->has('named', ['id', 'progressPct'])
+                && $context->getSession()->getPage()->find('named', ['id', 'progressPct'])
+                    ->getText() == '100%'
         );
     }
 }

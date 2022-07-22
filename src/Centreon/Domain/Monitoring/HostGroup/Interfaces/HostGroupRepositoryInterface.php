@@ -43,17 +43,12 @@ interface HostGroupRepositoryInterface
      */
     public function findHostGroupsByNames(array $hostGroupNames): array;
 
-    /**
-     * @param ContactInterface $contact
-     * @return HostGroupRepositoryInterface
-     */
     public function setContact(ContactInterface $contact): HostGroupRepositoryInterface;
 
     /**
      * Sets the access groups that will be used to filter.
      *
      * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
-     * @return HostGroupRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): HostGroupRepositoryInterface;
 }

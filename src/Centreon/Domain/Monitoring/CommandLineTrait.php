@@ -31,11 +31,7 @@ trait CommandLineTrait
      * Build command line by comparing monitoring & configuration commands
      * and by replacing macros in configuration command
      *
-     * @param string $configurationCommand
-     * @param string $monitoringCommand
      * @param MacroInterface[] $macros
-     * @param string $replacementValue
-     * @return string
      */
     private function buildCommandLineFromConfiguration(
         string $configurationCommand,
@@ -61,7 +57,7 @@ trait CommandLineTrait
         $foundMacroNames = $this->extractMacroNamesFromCommandLine($configurationCommand);
 
         $macroPattern = $this->generateCommandMacroPattern($configurationCommand);
-        $macroLazyPattern = str_replace('(.*)', '(.*?)', $macroPattern);
+        $macroLazyPattern = str_replace('(.*)', '(.*?)', (string) $macroPattern);
 
         if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
             // lazy and greedy regex should return the same result
@@ -96,7 +92,6 @@ trait CommandLineTrait
      * Extra macro names from configuration command line
      * example : ['$HOSTADDRESS$', '$_SERVICEPASSWORD$']
      *
-     * @param string $commandLine
      * @return string[] The list of macro names
      */
     private function extractMacroNamesFromCommandLine(string $commandLine): array
@@ -120,8 +115,6 @@ trait CommandLineTrait
      *   - monitoring : /usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 hiddenPassword
      *   ==> matched values : [/usr/lib64/nagios/plugins/check_icmp, hiddenPassword]
      *
-     * @param string $configurationCommand
-     * @return string
      * @throws MonitoringServiceException
      */
     private function generateCommandMacroPattern(string $configurationCommand): string

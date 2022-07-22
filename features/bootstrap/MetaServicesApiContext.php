@@ -21,13 +21,7 @@ class MetaServicesApiContext extends CentreonContext
     public function iHaveAMetaServices()
     {
         $metaservicePage = new MetaServiceConfigurationPage($this);
-        $metaservicePage->setProperties(array(
-            'name' => $this->metaName,
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1
-        ));
+        $metaservicePage->setProperties(['name' => $this->metaName, 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1]);
         $metaservicePage->save();
         $this->restartAllPollers();
     }
@@ -70,13 +64,13 @@ class MetaServicesApiContext extends CentreonContext
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode($this->jsonreturn);
+        $json = json_decode((string) $this->jsonreturn, null, 512, JSON_THROW_ON_ERROR);
 
-        $i = count($json->items) - 1;
+        $i = (is_countable($json->items) ? count($json->items) : 0) - 1;
         while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
             if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr((string) $json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;
@@ -95,13 +89,13 @@ class MetaServicesApiContext extends CentreonContext
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode($this->jsonreturn);
+        $json = json_decode((string) $this->jsonreturn, null, 512, JSON_THROW_ON_ERROR);
 
-        $i = count($json->items) - 1;
+        $i = (is_countable($json->items) ? count($json->items) : 0) - 1;
         while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
             if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr((string) $json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;
@@ -120,13 +114,13 @@ class MetaServicesApiContext extends CentreonContext
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode($this->jsonreturn);
+        $json = json_decode((string) $this->jsonreturn, null, 512, JSON_THROW_ON_ERROR);
 
-        $i = count($json->items) - 1;
+        $i = (is_countable($json->items) ? count($json->items) : 0) - 1;
         while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
             if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr((string) $json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;

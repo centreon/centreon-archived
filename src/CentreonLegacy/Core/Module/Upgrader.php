@@ -51,14 +51,14 @@ class Upgrader extends Module
         // Entry name should be a version.
         $upgradesPath = $this->getModulePath($this->moduleName) . '/upgrade/';
         $upgrades = $this->services->get('finder')->directories()->depth('== 0')->in($upgradesPath);
-        $orderedUpgrades = array();
+        $orderedUpgrades = [];
         foreach ($upgrades as $upgrade) {
             $orderedUpgrades[] = $upgrade->getBasename();
         }
         usort($orderedUpgrades, 'version_compare');
         foreach ($orderedUpgrades as $upgradeName) {
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches)) {
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', (string) $upgradeName, $matches)) {
                 continue;
             }
 

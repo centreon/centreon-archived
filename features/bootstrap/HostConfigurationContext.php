@@ -11,245 +11,27 @@ class HostConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host2 = array(
-        'name' => 'hostName2',
-        'alias' => 'hostAlias2',
-        'address' => 'host2@localhost'
-    );
+    protected $host2 = ['name' => 'hostName2', 'alias' => 'hostAlias2', 'address' => 'host2@localhost'];
 
-    protected $host3 = array(
-        'name' => 'hostName3',
-        'alias' => 'hostAlias3',
-        'address' => 'host3@localhost'
-    );
+    protected $host3 = ['name' => 'hostName3', 'alias' => 'hostAlias3', 'address' => 'host3@localhost'];
 
-    protected $hostGroup1 = array(
-        'name' => 'hostGroupName1',
-        'alias' => 'hostGroupAlias1'
-    );
+    protected $hostGroup1 = ['name' => 'hostGroupName1', 'alias' => 'hostGroupAlias1'];
 
-    protected $hostGroup2 = array(
-        'name' => 'hostGroupName2',
-        'alias' => 'hostGroupAlias2'
-    );
+    protected $hostGroup2 = ['name' => 'hostGroupName2', 'alias' => 'hostGroupAlias2'];
 
-    protected $hostCategory1 = array(
-        'name' => 'hostCategoryName1',
-        'alias' => 'hostCategoryAlias1',
-        'severity' => 1,
-        'severity_level' => 2,
-        'severity_icon' => '       centreon (png)'
-    );
+    protected $hostCategory1 = ['name' => 'hostCategoryName1', 'alias' => 'hostCategoryAlias1', 'severity' => 1, 'severity_level' => 2, 'severity_icon' => '       centreon (png)'];
 
-    protected $hostCategory2 = array(
-        'name' => 'hostCategoryName2',
-        'alias' => 'hostCategoryAlias2'
-    );
+    protected $hostCategory2 = ['name' => 'hostCategoryName2', 'alias' => 'hostCategoryAlias2'];
 
-    protected $hostCategory3 = array(
-        'name' => 'hostCategoryName3',
-        'alias' => 'hostCategoryAlias3'
-    );
+    protected $hostCategory3 = ['name' => 'hostCategoryName3', 'alias' => 'hostCategoryAlias3'];
 
-    protected $hostTemplate = array(
-        'name' => 'hostTemplateName',
-        'alias' => 'hostTemplateAlias'
-    );
+    protected $hostTemplate = ['name' => 'hostTemplateName', 'alias' => 'hostTemplateAlias'];
 
-    protected $initialProperties = array(
-        'name' => 'hostName',
-        'alias' => 'hostAlias',
-        'address' => 'host@localhost',
-        'snmp_community' => 'hostSnmpCommunity',
-        'snmp_version' => '1',
-        'location' => 'America/Caracas',
-        'templates' => array(
-            'generic-host'
-        ),
-        'check_command' => 'check_http',
-        'command_arguments' => 'hostCommandArgument',
-        'check_period' => 'workhours',
-        'max_check_attempts' => 34,
-        'normal_check_interval' => 5,
-        'retry_check_interval' => 10,
-        'active_checks_enabled' => 2,
-        'passive_checks_enabled' => 0,
-        'notifications_enabled' => 1,
-        'contacts' => 'Guest',
-        'contact_groups' => 'Supervisors',
-        'notify_on_none' => 0,
-        'notify_on_down' => 1,
-        'notify_on_unreachable' => 0,
-        'notify_on_recovery' => 1,
-        'notify_on_flapping' => 0,
-        'notify_on_downtime_scheduled' => 1,
-        'notification_interval' => 17,
-        'notification_period' => 'none',
-        'first_notification_delay' => 4,
-        'recovery_notification_delay' => 3,
-        'parent_host_groups' => 'hostGroupName1',
-        'parent_host_categories' => 'hostCategoryName2',
-        'parent_hosts' => 'Centreon-Server',
-        'child_hosts' => 'hostName2',
-        'obsess_over_host' => 2,
-        'acknowledgement_timeout' => 2,
-        'check_freshness' => 1,
-        'freshness_threshold' => 34,
-        'flap_detection_enabled' => 1,
-        'low_flap_threshold' => 67,
-        'high_flap_threshold' => 85,
-        'retain_status_information' => 2,
-        'retain_non_status_information' => 0,
-        'stalking_option_on_up' => 1,
-        'stalking_option_on_down' => 0,
-        'stalking_option_on_unreachable' => 1,
-        'event_handler_enabled' => 2,
-        'event_handler' => 'check_https',
-        'event_handler_arguments' => 'event_handler_arguments',
-        'url' => 'hostMassiveChangeUrl',
-        'notes' => 'hostMassiveChangeNotes',
-        'action_url' => 'hostMassiveChangeActionUrl',
-        'icon' => '       centreon (png)',
-        'alt_icon' => 'hostMassiveChangeIcon',
-        'status_map_image' => '',
-        'geo_coordinates' => '2.3522219,48.856614',
-        '2d_coords' => '15,84',
-        '3d_coords' => '15,84,76',
-        'severity_level' => 'hostCategoryName1 (2)',
-        'enabled' => 1,
-        'comments' => 'hostMassiveChangeComments'
-    );
+    protected $initialProperties = ['name' => 'hostName', 'alias' => 'hostAlias', 'address' => 'host@localhost', 'snmp_community' => 'hostSnmpCommunity', 'snmp_version' => '1', 'location' => 'America/Caracas', 'templates' => ['generic-host'], 'check_command' => 'check_http', 'command_arguments' => 'hostCommandArgument', 'check_period' => 'workhours', 'max_check_attempts' => 34, 'normal_check_interval' => 5, 'retry_check_interval' => 10, 'active_checks_enabled' => 2, 'passive_checks_enabled' => 0, 'notifications_enabled' => 1, 'contacts' => 'Guest', 'contact_groups' => 'Supervisors', 'notify_on_none' => 0, 'notify_on_down' => 1, 'notify_on_unreachable' => 0, 'notify_on_recovery' => 1, 'notify_on_flapping' => 0, 'notify_on_downtime_scheduled' => 1, 'notification_interval' => 17, 'notification_period' => 'none', 'first_notification_delay' => 4, 'recovery_notification_delay' => 3, 'parent_host_groups' => 'hostGroupName1', 'parent_host_categories' => 'hostCategoryName2', 'parent_hosts' => 'Centreon-Server', 'child_hosts' => 'hostName2', 'obsess_over_host' => 2, 'acknowledgement_timeout' => 2, 'check_freshness' => 1, 'freshness_threshold' => 34, 'flap_detection_enabled' => 1, 'low_flap_threshold' => 67, 'high_flap_threshold' => 85, 'retain_status_information' => 2, 'retain_non_status_information' => 0, 'stalking_option_on_up' => 1, 'stalking_option_on_down' => 0, 'stalking_option_on_unreachable' => 1, 'event_handler_enabled' => 2, 'event_handler' => 'check_https', 'event_handler_arguments' => 'event_handler_arguments', 'url' => 'hostMassiveChangeUrl', 'notes' => 'hostMassiveChangeNotes', 'action_url' => 'hostMassiveChangeActionUrl', 'icon' => '       centreon (png)', 'alt_icon' => 'hostMassiveChangeIcon', 'status_map_image' => '', 'geo_coordinates' => '2.3522219,48.856614', '2d_coords' => '15,84', '3d_coords' => '15,84,76', 'severity_level' => 'hostCategoryName1 (2)', 'enabled' => 1, 'comments' => 'hostMassiveChangeComments'];
 
-    protected $duplicatedProperties = array(
-        'name' => 'hostName_1',
-        'alias' => 'hostAlias',
-        'address' => 'host@localhost',
-        'snmp_community' => 'hostSnmpCommunity',
-        'snmp_version' => '1',
-        'location' => 'America/Caracas',
-        'templates' => array(
-            'generic-host'
-        ),
-        'check_command' => 'check_http',
-        'command_arguments' => 'hostCommandArgument',
-        'check_period' => 'workhours',
-        'max_check_attempts' => 34,
-        'normal_check_interval' => 5,
-        'retry_check_interval' => 10,
-        'active_checks_enabled' => 2,
-        'passive_checks_enabled' => 0,
-        'notifications_enabled' => 1,
-        'contacts' => 'Guest',
-        'contact_groups' => 'Supervisors',
-        'notify_on_none' => 0,
-        'notify_on_down' => 1,
-        'notify_on_unreachable' => 0,
-        'notify_on_recovery' => 1,
-        'notify_on_flapping' => 0,
-        'notify_on_downtime_scheduled' => 1,
-        'notification_interval' => 17,
-        'notification_period' => 'none',
-        'first_notification_delay' => 4,
-        'recovery_notification_delay' => 3,
-        'parent_host_groups' => 'hostGroupName1',
-        'parent_host_categories' => 'hostCategoryName2',
-        'parent_hosts' => 'Centreon-Server',
-        'child_hosts' => 'hostName2',
-        'obsess_over_host' => 2,
-        'acknowledgement_timeout' => 2,
-        'check_freshness' => 1,
-        'freshness_threshold' => 34,
-        'flap_detection_enabled' => 1,
-        'low_flap_threshold' => 67,
-        'high_flap_threshold' => 85,
-        'retain_status_information' => 2,
-        'retain_non_status_information' => 0,
-        'stalking_option_on_up' => 1,
-        'stalking_option_on_down' => 0,
-        'stalking_option_on_unreachable' => 1,
-        'event_handler_enabled' => 2,
-        'event_handler' => 'check_https',
-        'event_handler_arguments' => 'event_handler_arguments',
-        'url' => 'hostMassiveChangeUrl',
-        'notes' => 'hostMassiveChangeNotes',
-        'action_url' => 'hostMassiveChangeActionUrl',
-        'icon' => '       centreon (png)',
-        'alt_icon' => 'hostMassiveChangeIcon',
-        'status_map_image' => '',
-        'geo_coordinates' => '2.3522219,48.856614',
-        '2d_coords' => '15,84',
-        '3d_coords' => '15,84,76',
-        'severity_level' => 'hostCategoryName1 (2)',
-        'enabled' => 1,
-        'comments' => 'hostMassiveChangeComments'
-    );
+    protected $duplicatedProperties = ['name' => 'hostName_1', 'alias' => 'hostAlias', 'address' => 'host@localhost', 'snmp_community' => 'hostSnmpCommunity', 'snmp_version' => '1', 'location' => 'America/Caracas', 'templates' => ['generic-host'], 'check_command' => 'check_http', 'command_arguments' => 'hostCommandArgument', 'check_period' => 'workhours', 'max_check_attempts' => 34, 'normal_check_interval' => 5, 'retry_check_interval' => 10, 'active_checks_enabled' => 2, 'passive_checks_enabled' => 0, 'notifications_enabled' => 1, 'contacts' => 'Guest', 'contact_groups' => 'Supervisors', 'notify_on_none' => 0, 'notify_on_down' => 1, 'notify_on_unreachable' => 0, 'notify_on_recovery' => 1, 'notify_on_flapping' => 0, 'notify_on_downtime_scheduled' => 1, 'notification_interval' => 17, 'notification_period' => 'none', 'first_notification_delay' => 4, 'recovery_notification_delay' => 3, 'parent_host_groups' => 'hostGroupName1', 'parent_host_categories' => 'hostCategoryName2', 'parent_hosts' => 'Centreon-Server', 'child_hosts' => 'hostName2', 'obsess_over_host' => 2, 'acknowledgement_timeout' => 2, 'check_freshness' => 1, 'freshness_threshold' => 34, 'flap_detection_enabled' => 1, 'low_flap_threshold' => 67, 'high_flap_threshold' => 85, 'retain_status_information' => 2, 'retain_non_status_information' => 0, 'stalking_option_on_up' => 1, 'stalking_option_on_down' => 0, 'stalking_option_on_unreachable' => 1, 'event_handler_enabled' => 2, 'event_handler' => 'check_https', 'event_handler_arguments' => 'event_handler_arguments', 'url' => 'hostMassiveChangeUrl', 'notes' => 'hostMassiveChangeNotes', 'action_url' => 'hostMassiveChangeActionUrl', 'icon' => '       centreon (png)', 'alt_icon' => 'hostMassiveChangeIcon', 'status_map_image' => '', 'geo_coordinates' => '2.3522219,48.856614', '2d_coords' => '15,84', '3d_coords' => '15,84,76', 'severity_level' => 'hostCategoryName1 (2)', 'enabled' => 1, 'comments' => 'hostMassiveChangeComments'];
 
-    protected $updatedProperties = array(
-        'name' => 'hostNameChanged',
-        'alias' => 'hostAliasChanged',
-        'address' => 'hostChanged@localhost',
-        'snmp_community' => 'hostSnmpCommunitychanged',
-        'snmp_version' => '3',
-        'macros' => array(
-            'HOSTMACROCHANGED' => 5
-        ),
-        'location' => 'Europe/Paris',
-        'templates' => array(
-            'hostTemplateName'
-        ),
-        'check_command' => 'check_https',
-        'command_arguments' => 'hostCommandArgumentChanged',
-        'check_period' => 'none',
-        'max_check_attempts' => 43,
-        'normal_check_interval' => 4,
-        'retry_check_interval' => 25,
-        'active_checks_enabled' => 0,
-        'passive_checks_enabled' => 1,
-        'notifications_enabled' => 0,
-        'contacts' => 'User',
-        'contact_groups' => 'Guest',
-        'notify_on_none' => 0,
-        'notify_on_down' => 0,
-        'notify_on_unreachable' => 1,
-        'notify_on_recovery' => 0,
-        'notify_on_flapping' => 1,
-        'notify_on_downtime_scheduled' => 0,
-        'notification_interval' => 34,
-        'notification_period' => 'workhours',
-        'first_notification_delay' => 7,
-        'recovery_notification_delay' => 4,
-        'parent_host_groups' => 'hostGroupName2',
-        'parent_host_categories' => 'hostCategoryName3',
-        'parent_hosts' => 'hostName3',
-        'child_hosts' => 'Centreon-Server',
-        'obsess_over_host' => 1,
-        'acknowledgement_timeout' => 0,
-        'check_freshness' => 2,
-        'freshness_threshold' => 65,
-        'flap_detection_enabled' => 0,
-        'low_flap_threshold' => 38,
-        'high_flap_threshold' => 51,
-        'retain_status_information' => 1,
-        'retain_non_status_information' => 1,
-        'stalking_option_on_up' => 0,
-        'stalking_option_on_down' => 1,
-        'stalking_option_on_unreachable' => 0,
-        'event_handler_enabled' => 1,
-        'event_handler' => 'check_http',
-        'event_handler_arguments' => 'eventHandlerArgumentsChanged',
-        'url' => 'hostMassiveChangeUrlChanged',
-        'notes' => 'hostMassiveChangeNotesChanged',
-        'action_url' => 'hostMassiveChangeActionUrlChanged',
-        'icon' => '',
-        'alt_icon' => 'hostMassiveChangeIconChanged',
-        'status_map_image' => '       centreon (png)',
-        'geo_coordinates' => '2.3522219,48.856614',
-        '2d_coords' => '2,3',
-        '3d_coords' => '42,24,66',
-        'severity_level' => '',
-        'enabled' => 1,
-        'comments' => 'hostMassiveChangeCommentsChanged'
-    );
+    protected $updatedProperties = ['name' => 'hostNameChanged', 'alias' => 'hostAliasChanged', 'address' => 'hostChanged@localhost', 'snmp_community' => 'hostSnmpCommunitychanged', 'snmp_version' => '3', 'macros' => ['HOSTMACROCHANGED' => 5], 'location' => 'Europe/Paris', 'templates' => ['hostTemplateName'], 'check_command' => 'check_https', 'command_arguments' => 'hostCommandArgumentChanged', 'check_period' => 'none', 'max_check_attempts' => 43, 'normal_check_interval' => 4, 'retry_check_interval' => 25, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'notifications_enabled' => 0, 'contacts' => 'User', 'contact_groups' => 'Guest', 'notify_on_none' => 0, 'notify_on_down' => 0, 'notify_on_unreachable' => 1, 'notify_on_recovery' => 0, 'notify_on_flapping' => 1, 'notify_on_downtime_scheduled' => 0, 'notification_interval' => 34, 'notification_period' => 'workhours', 'first_notification_delay' => 7, 'recovery_notification_delay' => 4, 'parent_host_groups' => 'hostGroupName2', 'parent_host_categories' => 'hostCategoryName3', 'parent_hosts' => 'hostName3', 'child_hosts' => 'Centreon-Server', 'obsess_over_host' => 1, 'acknowledgement_timeout' => 0, 'check_freshness' => 2, 'freshness_threshold' => 65, 'flap_detection_enabled' => 0, 'low_flap_threshold' => 38, 'high_flap_threshold' => 51, 'retain_status_information' => 1, 'retain_non_status_information' => 1, 'stalking_option_on_up' => 0, 'stalking_option_on_down' => 1, 'stalking_option_on_unreachable' => 0, 'event_handler_enabled' => 1, 'event_handler' => 'check_http', 'event_handler_arguments' => 'eventHandlerArgumentsChanged', 'url' => 'hostMassiveChangeUrlChanged', 'notes' => 'hostMassiveChangeNotesChanged', 'action_url' => 'hostMassiveChangeActionUrlChanged', 'icon' => '', 'alt_icon' => 'hostMassiveChangeIconChanged', 'status_map_image' => '       centreon (png)', 'geo_coordinates' => '2.3522219,48.856614', '2d_coords' => '2,3', '3d_coords' => '42,24,66', 'severity_level' => '', 'enabled' => 1, 'comments' => 'hostMassiveChangeCommentsChanged'];
 
     /**
      * @Given an host is configured
@@ -301,7 +83,7 @@ class HostConfigurationContext extends CentreonContext
      */
     public function itsPropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -313,12 +95,12 @@ class HostConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -342,7 +124,7 @@ class HostConfigurationContext extends CentreonContext
      */
     public function aNewHostIsCreatedWithIdenticalProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -354,12 +136,12 @@ class HostConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

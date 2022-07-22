@@ -30,54 +30,39 @@ use Symfony\Component\Serializer\Annotation as Serializer;
  */
 class Command
 {
-    public const SERIALIZER_GROUP_LIST = 'command-list';
-    public const TABLE = 'command';
-    public const TYPE_NOTIFICATION = 1;
-    public const TYPE_CHECK = 2;
-    public const TYPE_MISC = 3;
-    public const TYPE_DISCOVERY = 4;
+    final public const SERIALIZER_GROUP_LIST = 'command-list';
+    final public const TABLE = 'command';
+    final public const TYPE_NOTIFICATION = 1;
+    final public const TYPE_CHECK = 2;
+    final public const TYPE_MISC = 3;
+    final public const TYPE_DISCOVERY = 4;
 
     /**
      * @Serializer\Groups({Command::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Serializer\Groups({Command::SERIALIZER_GROUP_LIST})
-     * @var string
      */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @param int $id
-     * @return void
-     */
     public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
@@ -85,23 +70,15 @@ class Command
 
     /**
      * Convert type from string to integer
-     *
-     * @param string $name
-     * @return int|null
      */
     public static function getTypeIdFromName(string $name = null): ?int
     {
-        switch ($name) {
-            case 'notification':
-                return static::TYPE_NOTIFICATION;
-            case 'check':
-                return static::TYPE_CHECK;
-            case 'misc':
-                return static::TYPE_MISC;
-            case 'discovery':
-                return static::TYPE_DISCOVERY;
-        }
-
-        return null;
+        return match ($name) {
+            'notification' => static::TYPE_NOTIFICATION,
+            'check' => static::TYPE_CHECK,
+            'misc' => static::TYPE_MISC,
+            'discovery' => static::TYPE_DISCOVERY,
+            default => null,
+        };
     }
 }

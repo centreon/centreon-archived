@@ -28,17 +28,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function aHostConfiguredWithAckExpiration()
     {
         $hostPage = new HostConfigurationPage($this);
-        $hostPage->setProperties(array(
-            'name' => $this->hostName,
-            'alias' => $this->hostName,
-            'address' => 'localhost',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'acknowledgement_timeout' => 1
-        ));
+        $hostPage->setProperties(['name' => $this->hostName, 'alias' => $this->hostName, 'address' => 'localhost', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'acknowledgement_timeout' => 1]);
         $hostPage->save();
         $this->restartAllPollers();
     }
@@ -49,19 +39,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function aServiceConfiguredWithAckExpiration()
     {
         $servicePage = new ServiceConfigurationPage($this);
-        $servicePage->setProperties(array(
-            'hosts' => $this->serviceHostName,
-            'description' => $this->serviceName,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1,
-            'acknowledgement_timeout' => 1
-        ));
+        $servicePage->setProperties(['hosts' => $this->serviceHostName, 'description' => $this->serviceName, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1, 'acknowledgement_timeout' => 1]);
         $servicePage->save();
         $this->restartAllPollers();
     }
@@ -74,10 +52,8 @@ class AcknowledgementTimeoutContext extends CentreonContext
         $this->submitHostResult($this->hostName, 'DOWN');
         $hostName = $this->hostName;
         $this->spin(
-            function ($ctx) use ($hostName) {
-                return ((new MonitoringHostsPage($ctx))->getStatus($hostName)
-                    == "DOWN");
-            }
+            fn($ctx) => (new MonitoringHostsPage($ctx))->getStatus($hostName)
+                == "DOWN"
         );
     }
 
@@ -94,7 +70,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
                 try {
                     (new MonitoringServicesPage($ctx))->getStatus($hostName, $serviceName);
                     $found = true;
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $found = false;
                 }
                 return $found;
@@ -129,9 +105,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
         );
         $hostName = $this->hostName;
         $this->spin(
-            function ($ctx) use ($hostName) {
-                return ((new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName));
-            }
+            fn($ctx) => (new MonitoringHostsPage($ctx))->isHostAcknowledged($hostName)
         );
     }
 
@@ -156,9 +130,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
             $url
         );
         $this->spin(
-            function ($ctx) use ($hostName, $serviceName) {
-                return ((new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName));
-            }
+            fn($ctx) => (new MonitoringServicesPage($ctx))->isServiceAcknowledged($hostName, $serviceName)
         );
     }
 
@@ -177,11 +149,9 @@ class AcknowledgementTimeoutContext extends CentreonContext
     {
         $hostName = $this->hostName;
         $this->spin(
-            function ($ctx) use ($hostName) {
-                return !(new MonitoringHostsPage($ctx))->isHostAcknowledged(
-                    $hostName
-                );
-            }
+            fn($ctx) => !(new MonitoringHostsPage($ctx))->isHostAcknowledged(
+                $hostName
+            )
         );
     }
 
@@ -193,12 +163,10 @@ class AcknowledgementTimeoutContext extends CentreonContext
         $hostName = $this->serviceHostName;
         $serviceName = $this->serviceName;
         $this->spin(
-            function ($ctx) use ($hostName, $serviceName) {
-                return !(new MonitoringServicesPage($ctx))->isServiceAcknowledged(
-                    $hostName,
-                    $serviceName
-                );
-            }
+            fn($ctx) => !(new MonitoringServicesPage($ctx))->isServiceAcknowledged(
+                $hostName,
+                $serviceName
+            )
         );
     }
 }

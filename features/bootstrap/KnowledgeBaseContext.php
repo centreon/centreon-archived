@@ -34,11 +34,7 @@ class KnowledgeBaseContext extends CentreonContext
         $containerId = $this->container->getContainerId('mediawiki', false);
         $page = new KBParametersPage($this);
         $page->setProperties(
-            array(
-                'kb_wiki_url' => 'http://' . $containerId,
-                'kb_wiki_account' => 'WikiSysop',
-                'kb_wiki_password' => 'centreon'
-            )
+            ['kb_wiki_url' => 'http://' . $containerId, 'kb_wiki_account' => 'WikiSysop', 'kb_wiki_password' => 'centreon']
         );
         $page->save();
     }
@@ -49,16 +45,7 @@ class KnowledgeBaseContext extends CentreonContext
     public function aHostConfigured()
     {
         $hostPage = new HostConfigurationPage($this);
-        $hostPage->setProperties(array(
-            'name' => $this->hostName,
-            'alias' => $this->hostName,
-            'address' => 'localhost',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        ));
+        $hostPage->setProperties(['name' => $this->hostName, 'alias' => $this->hostName, 'address' => 'localhost', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1]);
         $hostPage->save();
         $this->restartAllPollers();
     }
@@ -69,18 +56,7 @@ class KnowledgeBaseContext extends CentreonContext
     public function aServiceConfigured()
     {
         $servicePage = new ServiceConfigurationPage($this);
-        $servicePage->setProperties(array(
-            'hosts' => $this->serviceHostName,
-            'description' => $this->serviceName,
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        ));
+        $servicePage->setProperties(['hosts' => $this->serviceHostName, 'description' => $this->serviceName, 'templates' => 'generic-service', 'check_command' => 'check_centreon_dummy', 'check_period' => '24x7', 'max_check_attempts' => 1, 'normal_check_interval' => 1, 'retry_check_interval' => 1, 'active_checks_enabled' => 0, 'passive_checks_enabled' => 1]);
         $servicePage->save();
         $this->restartAllPollers();
     }
@@ -108,7 +84,7 @@ class KnowledgeBaseContext extends CentreonContext
         $this->spin(
             function ($context) {
                 $windowNames = $context->getSession()->getWindowNames();
-                return count($windowNames) > 1;
+                return (is_countable($windowNames) ? count($windowNames) : 0) > 1;
             },
             'Wiki procedure window is not opened.',
             10
@@ -143,12 +119,12 @@ class KnowledgeBaseContext extends CentreonContext
     {
         // Create wiki page.
         $page = new KBServiceListingPage($this);
-        $page->createWikiPage(array('host' => $this->serviceHostName, 'service' => $this->serviceName));
+        $page->createWikiPage(['host' => $this->serviceHostName, 'service' => $this->serviceName]);
 
         $this->spin(
             function ($context) {
                 $windowNames = $context->getSession()->getWindowNames();
-                return count($windowNames) > 1;
+                return (is_countable($windowNames) ? count($windowNames) : 0) > 1;
             },
             'Wiki procedure window is not opened.',
             10

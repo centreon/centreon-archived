@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../www/class/centreon-knowledge/wikiApi.class.php");
+require_once realpath(__DIR__ . "/../www/class/centreon-knowledge/wikiApi.class.php");
 
 try {
     $wikiApi = new WikiApi();

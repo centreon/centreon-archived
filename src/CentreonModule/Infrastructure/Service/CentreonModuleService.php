@@ -95,11 +95,6 @@ class CentreonModuleService
         return $result;
     }
 
-    /**
-     * @param string $id
-     * @param string $type
-     * @return Module|null
-     */
     public function getDetail(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -111,11 +106,6 @@ class CentreonModuleService
         return $result;
     }
 
-    /**
-     * @param string $id
-     * @param string $type
-     * @return Module|null
-     */
     public function install(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -127,11 +117,6 @@ class CentreonModuleService
         return $result;
     }
 
-    /**
-     * @param string $id
-     * @param string $type
-     * @return Module|null
-     */
     public function update(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -143,11 +128,6 @@ class CentreonModuleService
         return $result;
     }
 
-    /**
-     * @param string $id
-     * @param string $type
-     * @return bool|null
-     */
     public function remove(string $id, string $type): ?bool
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -161,8 +141,6 @@ class CentreonModuleService
 
     /**
      * Init list of sources
-     *
-     * @param ContainerInterface $services
      */
     protected function initSources(ContainerInterface $services): void
     {
@@ -187,23 +165,13 @@ class CentreonModuleService
         usort($list, function ($a, $b) {
             $aVal = $a->getName();
             $bVal = $b->getName();
-
-            if ($aVal === $bVal) {
-                return 0;
-            }
-
-            return ($aVal < $bVal) ? -1 : 1;
+            return $aVal <=> $bVal;
         });
         usort($list, function ($a, $b) {
             $sortByName = function ($a, $b) {
                 $aVal = $a->isInstalled();
                 $bVal = $b->isInstalled();
-
-                if ($aVal === $bVal) {
-                    return 0;
-                }
-
-                return ($aVal < $bVal) ? -1 : 1;
+                return $aVal <=> $bVal;
             };
 
             $aVal = $a->isInstalled() && !$a->isUpdated();

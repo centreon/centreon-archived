@@ -36,7 +36,7 @@ class Centreon_Object_DependencyServicegroupParent extends Centreon_Object
               FROM dependency_servicegroupParent_relation 
               WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_servicegroupParent_relation 
                                          WHERE servicegroup_sg_id = ?)';
-        $result = $this->getResult($query, array($servicegroupId), "fetch");
+        $result = $this->getResult($query, [$servicegroupId], "fetch");
 
         //is last parent
         if ($result['nb_dependency'] == 1) {

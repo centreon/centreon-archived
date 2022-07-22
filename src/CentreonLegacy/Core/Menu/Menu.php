@@ -38,10 +38,6 @@ namespace CentreonLegacy\Core\Menu;
 class Menu
 {
     /**
-     * @var CentreonDB The configuration database connection
-     */
-    protected $db;
-    /**
      * @var string The query filter for ACL
      */
     protected $acl = null;
@@ -56,9 +52,8 @@ class Menu
      * @param CentreonDB $db The configuration database connection
      * @param CentreonUser $user The current user
      */
-    public function __construct($db, $user = null)
+    public function __construct(protected $db, $user = null)
     {
-        $this->db = $db;
         if (!is_null($user)) {
             $this->currentPage = $user->getCurrentPage();
             if (!$user->access->admin) {
@@ -129,7 +124,7 @@ class Menu
         $menu = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $active = false;
-            if (preg_match('/^(\d)$/', $row['topology_page'], $matches)) { // level 1
+            if (preg_match('/^(\d)$/', (string) $row['topology_page'], $matches)) { // level 1
                 if (!is_null($currentLevelOne) && $currentLevelOne == $row['topology_page']) {
                     $active = true;
                 }
@@ -143,7 +138,7 @@ class Menu
                     'options'  => $row['topology_url_opt'],
                     'is_react' => $row['is_react']
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
+            } elseif (preg_match('/^(\d)(\d\d)$/', (string) $row['topology_page'], $matches)) { // level 2
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
                     $active = true;
                 }
@@ -160,7 +155,7 @@ class Menu
                     'options'  => $row['topology_url_opt'],
                     'is_react' => $row['is_react']
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 3
+            } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', (string) $row['topology_page'], $matches)) { // level 3
                 if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
                     $active = true;
                 }
@@ -212,7 +207,7 @@ class Menu
             . 'ORDER BY topology_group, topology_order';
         $result = $this->db->query($query);
 
-        $groups = array();
+        $groups = [];
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
             $groups[$row['topology_parent']][$row['topology_group']] = _($row['topology_name']);
         }
@@ -230,26 +225,14 @@ class Menu
      */
     public function getColor($pageId)
     {
-        switch ($pageId) {
-            case '1':
-                $color = '#2B9E93';
-                break;
-            case '2':
-                $color = '#85B446';
-                break;
-            case '3':
-                $color = '#E4932C';
-                break;
-            case '5':
-                $color = '#17387B';
-                break;
-            case '6':
-                $color = '#319ED5';
-                break;
-            default:
-                $color = '#319ED5';
-                break;
-        }
+        $color = match ($pageId) {
+            '1' => '#2B9E93',
+            '2' => '#85B446',
+            '3' => '#E4932C',
+            '5' => '#17387B',
+            '6' => '#319ED5',
+            default => '#319ED5',
+        };
 
         return $color;
     }

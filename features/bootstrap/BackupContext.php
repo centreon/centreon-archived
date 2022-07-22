@@ -11,20 +11,12 @@ class BackupContext extends CentreonContext
     public function theNextBackupIsConfiguredToBe($backupType)
     {
         // Set backup type.
-        $allDays = array(
-            BackupConfigurationPage::DAY_MONDAY,
-            BackupConfigurationPage::DAY_TUESDAY,
-            BackupConfigurationPage::DAY_WEDNESDAY,
-            BackupConfigurationPage::DAY_THURSDAY,
-            BackupConfigurationPage::DAY_FRIDAY,
-            BackupConfigurationPage::DAY_SATURDAY,
-            BackupConfigurationPage::DAY_SUNDAY
-        );
+        $allDays = [BackupConfigurationPage::DAY_MONDAY, BackupConfigurationPage::DAY_TUESDAY, BackupConfigurationPage::DAY_WEDNESDAY, BackupConfigurationPage::DAY_THURSDAY, BackupConfigurationPage::DAY_FRIDAY, BackupConfigurationPage::DAY_SATURDAY, BackupConfigurationPage::DAY_SUNDAY];
         if ($backupType == 'full') {
             $fullBackupDays = $allDays;
-            $partialBackupDays = array();
+            $partialBackupDays = [];
         } elseif ($backupType == 'partial') {
-            $fullBackupDays = array();
+            $fullBackupDays = [];
             $partialBackupDays = $allDays;
         } else {
             throw new \Exception('Invalid backup type ' . $backupType);
@@ -32,14 +24,7 @@ class BackupContext extends CentreonContext
 
         // Configure backup in Centreon Web.
         $page = new BackupConfigurationPage($this);
-        $page->setProperties(array(
-            'enabled' => true,
-            'backup_centreon_db' => true,
-            'backup_centreon_storage_db' => true,
-            'backup_type' => BackupConfigurationPage::BACKUP_TYPE_LVM,
-            'full_backup_days' => $fullBackupDays,
-            'partial_backup_days' => $partialBackupDays
-        ));
+        $page->setProperties(['enabled' => true, 'backup_centreon_db' => true, 'backup_centreon_storage_db' => true, 'backup_type' => BackupConfigurationPage::BACKUP_TYPE_LVM, 'full_backup_days' => $fullBackupDays, 'partial_backup_days' => $partialBackupDays]);
         $page->save();
     }
 
@@ -52,7 +37,7 @@ class BackupContext extends CentreonContext
         // night. We will check that it is scheduled but for testing
         // purposes we will launch it directly instead.
         $cron = $this->container->execute('cat /etc/cron.d/centreon', 'web', true);
-        if (!preg_match('/centreon-backup.pl/m', $cron['output'])) {
+        if (!preg_match('/centreon-backup.pl/m', (string) $cron['output'])) {
             throw new \Exception('centreon-backup is not scheduled');
         }
         $this->container->execute('/usr/share/centreon/cron/centreon-backup.pl', 'web');

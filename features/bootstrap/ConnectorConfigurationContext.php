@@ -8,29 +8,11 @@ class ConnectorConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'connectorName',
-        'description' => 'connectorDescription',
-        'command_line' => 'connectorCommandLine',
-        'command' => 'service-notify-by-email',
-        'enabled' => 1
-    );
+    protected $initialProperties = ['name' => 'connectorName', 'description' => 'connectorDescription', 'command_line' => 'connectorCommandLine', 'command' => 'service-notify-by-email', 'enabled' => 1];
 
-    protected $duplicatedProperties = array(
-        'name' => 'connectorName_1',
-        'description' => 'connectorDescription',
-        'command_line' => 'connectorCommandLine',
-        'command' => '',
-        'enabled' => 1
-    );
+    protected $duplicatedProperties = ['name' => 'connectorName_1', 'description' => 'connectorDescription', 'command_line' => 'connectorCommandLine', 'command' => '', 'enabled' => 1];
 
-    protected $updatedProperties = array(
-        'name' => 'connectorNameChanged',
-        'description' => 'connectorDescriptionChanged',
-        'command_line' => 'connectorCommandLineChanged',
-        'command' => 'service-notify-by-epager',
-        'enabled' => 1
-    );
+    protected $updatedProperties = ['name' => 'connectorNameChanged', 'description' => 'connectorDescriptionChanged', 'command_line' => 'connectorCommandLineChanged', 'command' => 'service-notify-by-epager', 'enabled' => 1];
 
     /**
      * @Given a connector is configured
@@ -58,7 +40,7 @@ class ConnectorConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -75,12 +57,12 @@ class ConnectorConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -104,7 +86,7 @@ class ConnectorConfigurationContext extends CentreonContext
      */
     public function theNewConnectorHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -121,12 +103,12 @@ class ConnectorConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

@@ -93,9 +93,7 @@ class ExportManifestTest extends TestCase
             ->getMock();
         $this->manifest
             ->method('getFile')
-            ->will($this->returnCallback(function () {
-                return __FILE__;
-            }));
+            ->will($this->returnCallback(fn() => __FILE__));
     }
 
     /**

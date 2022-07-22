@@ -32,53 +32,39 @@ class FilterCriteria
     /**
      * @var string|null Name of the criteria
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var string|null Type of the criteria
      */
-    private $type;
+    private ?string $type = null;
 
     /**
      * @var string|array<mixed>|boolean|null Value of the criteria
      */
-    private $value;
+    private string|array|bool|null $value = null;
 
     /**
      * @var string|null Object type used in the criteria
      */
-    private $objectType;
+    private ?string $objectType = null;
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return FilterCriteria
-     */
     public function setName(?string $name): FilterCriteria
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @param string|null $type
-     * @return FilterCriteria
-     */
     public function setType(?string $type): FilterCriteria
     {
         $this->type = $type;
@@ -95,7 +81,6 @@ class FilterCriteria
 
     /**
      * @param string|array<mixed>|boolean|null $value
-     * @return FilterCriteria
      */
     public function setValue($value): FilterCriteria
     {
@@ -103,18 +88,11 @@ class FilterCriteria
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getObjectType(): ?string
     {
         return $this->objectType;
     }
 
-    /**
-     * @param string|null $objectType
-     * @return FilterCriteria
-     */
     public function setObjectType(?string $objectType): FilterCriteria
     {
         $this->objectType = $objectType;

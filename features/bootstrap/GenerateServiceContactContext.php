@@ -24,7 +24,7 @@ class GenerateServiceContactContext extends CentreonContext
      */
     public function IAmOnNotificationsTab()
     {
-        $linkNotifications = $this->getSession()->getPage()->findAll('named', array('link', 'Notifications'));
+        $linkNotifications = $this->getSession()->getPage()->findAll('named', ['link', 'Notifications']);
         foreach ($linkNotifications as $link) {
             if ($link->getAttribute('href') == "#") {
                 $tabExist = true;
@@ -43,7 +43,7 @@ class GenerateServiceContactContext extends CentreonContext
     public function iSelectTheRadioButton()
     {
         $name = 'service_use_only_contacts_from_host[service_use_only_contacts_from_host]';
-        $radioButtons = $this->getSession()->getPage()->findAll('named', array('radio', $name));
+        $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $name]);
         foreach ($radioButtons as $radio) {
             if ($radio->getAttribute('value') == 1) {
                 $this->currentPage->checkRadio($radio);
@@ -60,7 +60,7 @@ class GenerateServiceContactContext extends CentreonContext
     public function aCheckboxInhertAreDisabled()
     {
         $sName = "service_inherit_contacts_from_host[service_inherit_contacts_from_host]";
-        $radioButtons = $this->getSession()->getPage()->findAll('named', array('radio', $sName));
+        $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $sName]);
         foreach ($radioButtons as $radio) {
             if (!$radio->getAttribute('disabled')) {
                 throw new \Exception("The case Inherit contacts are disabled");

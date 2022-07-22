@@ -127,9 +127,6 @@ class Centreon_Object_Instance extends Centreon_Object
 
     /**
      * Find existing platform by id.
-     *
-     * @param integer $id
-     * @return PlatformInterface|null
      */
     private function findPlatformTopology(int $id): ?PlatformInterface
     {
@@ -144,9 +141,6 @@ class Centreon_Object_Instance extends Centreon_Object
 
     /**
      * Find existing platform by address.
-     *
-     * @param string $address
-     * @return PlatformInterface|null
      */
     private function findPlatformTopologyByAddress(string $address): ?PlatformInterface
     {
@@ -161,8 +155,6 @@ class Centreon_Object_Instance extends Centreon_Object
 
     /**
      * Update a platform topology.
-     *
-     * @param PlatformInterface $platformTopology
      */
     private function updatePlatformTopology(PlatformInterface $platformTopology): void
     {
@@ -199,8 +191,6 @@ class Centreon_Object_Instance extends Centreon_Object
 
     /**
      * Find the Central Id in platform_topology.
-     *
-     * @return integer|null
      */
     private function findCentralPlatformTopologyId(): ?int
     {

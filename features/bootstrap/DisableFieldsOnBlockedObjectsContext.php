@@ -12,12 +12,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
     public function aBlockedObjectTemplate()
     {
         $newHostTemplate = new HostTemplateConfigurationPage($this);
-        $newHostTemplate->setProperties(array(
-            'name' => 'myHostTemplate',
-            'alias' => 'myAlias',
-            'address' => '127.0.0.1',
-            'macros' => array('macro1' => '001')
-        ));
+        $newHostTemplate->setProperties(['name' => 'myHostTemplate', 'alias' => 'myAlias', 'address' => '127.0.0.1', 'macros' => ['macro1' => '001']]);
 
         $newHostTemplate->save();
         $hostTemplate = new HostTemplateConfigurationListingPage($this, false);

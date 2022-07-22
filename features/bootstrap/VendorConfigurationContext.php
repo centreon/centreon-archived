@@ -8,17 +8,9 @@ class VendorConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'name' => 'vendorName',
-        'alias' => 'vendorAlias',
-        'description' => 'vendorDescription'
-    );
+    protected $initialProperties = ['name' => 'vendorName', 'alias' => 'vendorAlias', 'description' => 'vendorDescription'];
 
-    protected $updatedProperties = array(
-        'name' => 'vendorNameChanged',
-        'alias' => 'vendorAliasChanged',
-        'description' => 'vendorDescriptionChanged'
-    );
+    protected $updatedProperties = ['name' => 'vendorNameChanged', 'alias' => 'vendorAliasChanged', 'description' => 'vendorDescriptionChanged'];
 
     /**
      * @Given a vendor is configured
@@ -46,7 +38,7 @@ class VendorConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -63,12 +55,12 @@ class VendorConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -92,7 +84,7 @@ class VendorConfigurationContext extends CentreonContext
      */
     public function theNewVendorHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -109,12 +101,12 @@ class VendorConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

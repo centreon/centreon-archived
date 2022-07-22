@@ -43,26 +43,14 @@ class UpdateAction implements JsonSerializable
 {
 
     /**
-     * @var \CentreonModule\Infrastructure\Entity\Module
-     */
-    private $entity;
-
-    /**
-     * @var string
-     */
-    private $message;
-
-    /**
      * Construct
      *
      * @param \CentreonModule\Infrastructure\Entity\Module $entity
      * @param Module|null $entity
      * @param string $message
      */
-    public function __construct(Module $entity = null, string $message = null)
+    public function __construct(private readonly Module $entity = null, private readonly string $message = null)
     {
-        $this->entity = $entity;
-        $this->message = $message;
     }
 
     /**

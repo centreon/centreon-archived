@@ -34,7 +34,7 @@ class FindRealTimeMonitoringServersResponse
     /**
      * @var array<int, array<string, mixed>>
      */
-    private $realTimeMonitoringServers = [];
+    private array $realTimeMonitoringServers = [];
 
     /**
      * @param RealTimeMonitoringServer[] $realTimeMonitoringServers

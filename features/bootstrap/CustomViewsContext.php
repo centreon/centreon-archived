@@ -36,25 +36,13 @@ class CustomViewsContext extends CentreonContext
         $this->iAmLoggedIn();
         //create user
         $page = new ContactConfigurationPage($this);
-        $page->setProperties(array(
-            'alias' => $this->user,
-            'name' => $this->user,
-            'email' => 'user1@localhost',
-            'password' => 'Centreon!2021',
-            'password2' => 'Centreon!2021',
-            'admin' => '1'
-        ));
+        $page->setProperties(['alias' => $this->user, 'name' => $this->user, 'email' => 'user1@localhost', 'password' => 'Centreon!2021', 'password2' => 'Centreon!2021', 'admin' => '1']);
         $page->save();
         $page = new ContactConfigurationListingPage($this, false);
 
         //create contact group
         $page = new ContactGroupsConfigurationPage($this);
-        $page->setProperties(array(
-            'name' => $this->cgname,
-            'alias' => $this->cgname,
-            'contacts' => $this->user,
-            'comments' => 'cg test'
-        ));
+        $page->setProperties(['name' => $this->cgname, 'alias' => $this->cgname, 'contacts' => $this->user, 'comments' => 'cg test']);
         $page->save();
         $page = new ContactGroupConfigurationListingPage($this, false);
     }
@@ -166,10 +154,8 @@ class CustomViewsContext extends CentreonContext
         $page->editView($this->newCustomViewName, 1);
 
         $this->spin(
-            function ($context) use ($page) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
-                        ->getText() == $this->newCustomViewName;
-            },
+            fn($context) => $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
+                    ->getText() == $this->newCustomViewName,
             'View not updated by user'
         );
     }
@@ -188,10 +174,8 @@ class CustomViewsContext extends CentreonContext
         $page->editView($this->newCustomViewName, 1);
 
         $this->spin(
-            function ($context) use ($page) {
-                return $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
-                        ->getText() == $this->newCustomViewName;
-            },
+            fn($context) => $this->assertFind('css', 'ul.tabs_header li.ui-state-default a')
+                    ->getText() == $this->newCustomViewName,
             'View not updated by owner'
         );
     }
@@ -241,9 +225,7 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
 
         $this->spin(
-            function ($context) use ($page) {
-                return !$page->isCurrentViewEditable();
-            },
+            fn($context) => !$page->isCurrentViewEditable(),
             'Current view is modifiyable',
             30
         );
@@ -258,9 +240,7 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
 
         $this->spin(
-            function ($context) use ($page) {
-                return $page->isCurrentViewEditable();
-            },
+            fn($context) => $page->isCurrentViewEditable(),
             'Current view is not modifiable',
             30
         );
@@ -272,9 +252,7 @@ class CustomViewsContext extends CentreonContext
     public function theViewIsStillVisible()
     {
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 1;
-            },
+            fn($context) => (is_countable($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) ? count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) : 0) == 1,
             'The view is not visible.'
         );
     }
@@ -285,9 +263,7 @@ class CustomViewsContext extends CentreonContext
     public function theViewIsNotVisibleAnymore()
     {
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
-            },
+            fn($context) => (is_countable($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) ? count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) : 0) == 0,
             'The view is visible.'
         );
     }
@@ -300,9 +276,7 @@ class CustomViewsContext extends CentreonContext
         $this->changeUser($this->user);
 
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) == 0;
-            },
+            fn($context) => (is_countable($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) ? count($context->getSession()->getPage()->findAll('css', '#tabs .tabs_header li')) : 0) == 0,
             'The view is visible for the user.'
         );
     }
@@ -334,9 +308,7 @@ class CustomViewsContext extends CentreonContext
         $page->showEditBar(true);
 
         $this->spin(
-            function ($context) {
-                return ($this->assertFind('css', 'li.ui-state-default a'));
-            }
+            fn($context) => $this->assertFind('css', 'li.ui-state-default a')
         );
 
         if ($this->assertFind('css', 'ul.tabs_header li.ui-state-default a')->getText() != $this->newCustomViewName) {

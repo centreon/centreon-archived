@@ -55,12 +55,12 @@ class Centreon_Object_Service_Template extends Centreon_Object
      * @param array $paramValues
      * @return array
      */
-    public function getIdByParameter($paramName, $paramValues = array())
+    public function getIdByParameter($paramName, $paramValues = [])
     {
         $sql = "SELECT $this->primaryKey FROM $this->table WHERE ";
         $condition = "";
         if (!is_array($paramValues)) {
-            $paramValues = array($paramValues);
+            $paramValues = [$paramValues];
         }
         foreach ($paramValues as $val) {
             if ($condition != "") {
@@ -72,12 +72,12 @@ class Centreon_Object_Service_Template extends Centreon_Object
             $sql .= $condition;
             $sql .= " AND ".$this->table.".service_register = '0' ";
             $rows = $this->getResult($sql, $paramValues, "fetchAll");
-            $tab = array();
+            $tab = [];
             foreach ($rows as $val) {
                 $tab[] = $val[$this->primaryKey];
             }
             return $tab;
         }
-        return array();
+        return [];
     }
 }

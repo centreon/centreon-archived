@@ -44,33 +44,8 @@ use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
  */
 class CommentService extends AbstractCentreonService implements CommentServiceInterface
 {
-    public const VALIDATION_GROUPS_HOST_ADD_COMMENT = ['add_host_comment'];
-    public const VALIDATION_GROUPS_SERVICE_ADD_COMMENT = ['add_service_comment'];
-
-    /**
-     * @var EngineServiceInterface Used to send external commands to engine.
-     */
-    private $engineService;
-
-    /**
-     * @var EntityValidator
-     */
-    private $validator;
-
-    /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
-     * @var MonitoringServiceInterface
-     */
-    private $monitoringService;
+    final public const VALIDATION_GROUPS_HOST_ADD_COMMENT = ['add_host_comment'];
+    final public const VALIDATION_GROUPS_SERVICE_ADD_COMMENT = ['add_service_comment'];
 
     /**
      * CommentService constructor.
@@ -81,24 +56,13 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      * @param MonitoringServiceInterface $monitoringService
      * @param EntityValidator $validator
      */
-    public function __construct(
-        ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        MonitoringRepositoryInterface $monitoringRepository,
-        EngineServiceInterface $engineService,
-        MonitoringServiceInterface $monitoringService,
-        EntityValidator $validator
-    ) {
-        $this->accessGroupRepository = $accessGroupRepository;
-        $this->monitoringRepository = $monitoringRepository;
-        $this->engineService = $engineService;
-        $this->monitoringService = $monitoringService;
-        $this->validator = $validator;
+    public function __construct(private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository, private readonly MonitoringRepositoryInterface $monitoringRepository, private readonly EngineServiceInterface $engineService, private readonly MonitoringServiceInterface $monitoringService, private readonly EntityValidator $validator)
+    {
     }
 
     /**
      * {@inheritDoc}
      * @param Contact $contact
-     * @return CommentServiceInterface
      */
     public function filterByContact($contact): CommentServiceInterface
     {

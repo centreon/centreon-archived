@@ -26,14 +26,13 @@ use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
 
 class PollerDefaultsOverwriteService
 {
-    /** @var int|null */
-    private $pollerID = null;
+    private ?int $pollerID = null;
 
     /** @var int[] */
-    private $brokerConfigIDs = [];
+    private array $brokerConfigIDs = [];
 
     /** @var int[] */
-    private $nagiosConfigIDs = [];
+    private array $nagiosConfigIDs = [];
 
     /**
      * @param int|null $pollerID
@@ -53,9 +52,7 @@ class PollerDefaultsOverwriteService
     private function findPollerAndSetResourceData(array $data, $columnName, $resourceName): array
     {
         // Remove remote poller resources in the array by the column name and pollerID
-        $data = array_filter($data, function ($pollerData) use ($columnName) {
-            return $pollerData[$columnName] != $this->pollerID;
-        });
+        $data = array_filter($data, fn($pollerData) => $pollerData[$columnName] != $this->pollerID);
 
         // Get default data for the specified resource
         $defaultData = $resourceName::getConfiguration();
@@ -82,7 +79,7 @@ class PollerDefaultsOverwriteService
         return $this->findPollerAndSetResourceData(
             $data,
             'id',
-            'CentreonRemote\Domain\Resources\DefaultConfig\NagiosServer'
+            \CentreonRemote\Domain\Resources\DefaultConfig\NagiosServer::class
         );
     }
 
@@ -94,15 +91,13 @@ class PollerDefaultsOverwriteService
      */
     public function getCfgNagios(array $data): array
     {
-        $configsOfRemote = array_filter($data, function ($pollerData) {
-            return $pollerData['nagios_server_id'] == $this->pollerID;
-        });
+        $configsOfRemote = array_filter($data, fn($pollerData) => $pollerData['nagios_server_id'] == $this->pollerID);
         $this->nagiosConfigIDs = array_column($configsOfRemote, 'nagios_id');
 
         return $this->findPollerAndSetResourceData(
             $data,
             'nagios_server_id',
-            'CentreonRemote\Domain\Resources\DefaultConfig\CfgNagios'
+            \CentreonRemote\Domain\Resources\DefaultConfig\CfgNagios::class
         );
     }
 
@@ -115,9 +110,7 @@ class PollerDefaultsOverwriteService
     public function getCfgNagiosBroker(array $data): array
     {
         // Remove nagios config info which is related to the broker module of the remote poller
-        $data = array_filter($data, function ($pollerData) {
-            return !in_array($pollerData['cfg_nagios_id'], $this->nagiosConfigIDs);
-        });
+        $data = array_filter($data, fn($pollerData) => !in_array($pollerData['cfg_nagios_id'], $this->nagiosConfigIDs));
 
         $defaultData = CfgNagiosBrokerModule::getConfiguration();
 
@@ -132,15 +125,13 @@ class PollerDefaultsOverwriteService
      */
     public function getCfgCentreonBroker(array $data): array
     {
-        $configsOfRemote = array_filter($data, function ($pollerData) {
-            return $pollerData['ns_nagios_server'] == $this->pollerID;
-        });
+        $configsOfRemote = array_filter($data, fn($pollerData) => $pollerData['ns_nagios_server'] == $this->pollerID);
         $this->brokerConfigIDs = array_column($configsOfRemote, 'config_id');
 
         return $this->findPollerAndSetResourceData(
             $data,
             'ns_nagios_server',
-            'CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBroker'
+            \CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBroker::class
         );
     }
 
@@ -153,9 +144,7 @@ class PollerDefaultsOverwriteService
     public function getCfgCentreonBrokerInfo(array $data): array
     {
         // Remove broker config info which is related to the broker module of the remote poller
-        $data = array_filter($data, function ($pollerData) {
-            return !in_array($pollerData['config_id'], $this->brokerConfigIDs);
-        });
+        $data = array_filter($data, fn($pollerData) => !in_array($pollerData['config_id'], $this->brokerConfigIDs));
 
         $defaultData = CfgCentreonBrokerInfo::getConfiguration();
 
@@ -184,7 +173,7 @@ class PollerDefaultsOverwriteService
         return $this->findPollerAndSetResourceData(
             $data,
             '_instance_id',
-            'CentreonRemote\Domain\Resources\DefaultConfig\CfgResource'
+            \CentreonRemote\Domain\Resources\DefaultConfig\CfgResource::class
         );
     }
 }

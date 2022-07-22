@@ -38,32 +38,17 @@ class FindRealTimeMonitoringServers
     use LoggerTrait;
 
     /**
-     * @var ContactInterface
-     */
-    private $contact;
-
-    /**
-     * @var RealTimeMonitoringServerRepositoryRDB
-     */
-    private $realTimeMonitoringServerRepository;
-
-    /**
      * FindRealTimeMonitoringServers constructor.
      *
      * @param ContactInterface $contact
      */
-    public function __construct(
-        RealTimeMonitoringServerRepositoryRDB $realTimeMonitoringServerRepository,
-        ContactInterface $contact
-    ) {
-        $this->contact = $contact;
-        $this->realTimeMonitoringServerRepository = $realTimeMonitoringServerRepository;
+    public function __construct(private readonly RealTimeMonitoringServerRepositoryRDB $realTimeMonitoringServerRepository, private readonly ContactInterface $contact)
+    {
     }
 
     /**
      * Execute the use case for which this class was designed.
      *
-     * @return FindRealTimeMonitoringServersResponse
      * @throws RealTimeMonitoringServerException
      */
     public function execute(): FindRealTimeMonitoringServersResponse
@@ -86,9 +71,7 @@ class FindRealTimeMonitoringServers
                 ->findAllowedMonitoringServers($this->contact);
             if (!empty($allowedMonitoringServers)) {
                 $allowedMonitoringServerIds = array_map(
-                    function ($allowedMonitoringServer) {
-                        return $allowedMonitoringServer->getId();
-                    },
+                    fn($allowedMonitoringServer) => $allowedMonitoringServer->getId(),
                     $allowedMonitoringServers
                 );
                 $this->info(

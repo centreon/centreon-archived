@@ -26,28 +26,18 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 class AckRequest
 {
-    /**
-     * @var Acknowledgement
-     */
-    private $acknowledgement;
+    private ?\Centreon\Domain\Acknowledgement\Acknowledgement $acknowledgement = null;
 
     /**
      * @var ResourceEntity[]
      */
-    private $resources = [];
+    private array $resources = [];
 
-    /**
-     * @return Acknowledgement
-     */
     public function getAcknowledgement(): Acknowledgement
     {
         return $this->acknowledgement;
     }
 
-    /**
-     * @param Acknowledgement $acknowledgement
-     * @return AckRequest
-     */
     public function setAcknowledgement(Acknowledgement $acknowledgement): AckRequest
     {
         $this->acknowledgement = $acknowledgement;
@@ -64,7 +54,6 @@ class AckRequest
 
     /**
      * @param ResourceEntity[] $resources
-     * @return AckRequest
      */
     public function setResources(array $resources): AckRequest
     {

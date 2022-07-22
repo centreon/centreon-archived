@@ -28,31 +28,13 @@ class AclAccessGroupsContext extends CentreonContext
     public function oneContactGroupExistsIncludingTwoNonAdminContacts()
     {
         $this->page = new ContactConfigurationPage($this);
-        $this->page->setProperties(array(
-            'alias' => $this->firstContactAlias,
-            'name' => $this->firstContactName,
-            'email' => 'test@centreon.com',
-            'password' => 'firstContactPassword!1',
-            'password2' => 'firstContactPassword!1',
-            'admin' => 0
-        ));
+        $this->page->setProperties(['alias' => $this->firstContactAlias, 'name' => $this->firstContactName, 'email' => 'test@centreon.com', 'password' => 'firstContactPassword!1', 'password2' => 'firstContactPassword!1', 'admin' => 0]);
         $this->page->save();
         $this->page = new ContactConfigurationPage($this);
-        $this->page->setProperties(array(
-            'alias' => $this->secondContactAlias,
-            'name' => $this->secondContactName,
-            'email' => 'test2@centreon.com',
-            'password' => 'secondContactPassword!2',
-            'password2' => 'secondContactPassword!2',
-            'admin' => 0
-        ));
+        $this->page->setProperties(['alias' => $this->secondContactAlias, 'name' => $this->secondContactName, 'email' => 'test2@centreon.com', 'password' => 'secondContactPassword!2', 'password2' => 'secondContactPassword!2', 'admin' => 0]);
         $this->page->save();
         $this->page = new ContactGroupsConfigurationPage($this);
-        $this->page->setProperties(array(
-            'name' => $this->contactGroupName,
-            'alias' => $this->contactGroupAlias,
-            'contacts' => array($this->firstContactName, $this->secondContactName)
-        ));
+        $this->page->setProperties(['name' => $this->contactGroupName, 'alias' => $this->contactGroupAlias, 'contacts' => [$this->firstContactName, $this->secondContactName]]);
         $this->page->save();
     }
 
@@ -62,11 +44,7 @@ class AclAccessGroupsContext extends CentreonContext
     public function theAccessGroupIsSavedWithItsProperties()
     {
         $this->page = new ACLGroupConfigurationPage($this);
-        $this->page->setProperties(array(
-            'group_name' => $this->accessContactName,
-            'group_alias' => $this->accessContactAlias,
-            'contacts' => array($this->firstContactName, $this->secondContactName)
-        ));
+        $this->page->setProperties(['group_name' => $this->accessContactName, 'group_alias' => $this->accessContactAlias, 'contacts' => [$this->firstContactName, $this->secondContactName]]);
         $this->page->save();
     }
 
@@ -109,18 +87,10 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->oneContactGroupExistsIncludingTwoNonAdminContacts();
         $this->page = new ACLGroupConfigurationPage($this);
-        $this->page->setProperties(array(
-            'group_name' => 'accessGroupLinkedContactName',
-            'group_alias' => 'accessGroupLinkedContactAlias',
-            'contacts' => array($this->firstContactName, $this->secondContactName)
-        ));
+        $this->page->setProperties(['group_name' => 'accessGroupLinkedContactName', 'group_alias' => 'accessGroupLinkedContactAlias', 'contacts' => [$this->firstContactName, $this->secondContactName]]);
         $this->page->save();
         $this->page = new ACLGroupConfigurationPage($this);
-        $this->page->setProperties(array(
-            'group_name' => $this->accessGroupsName,
-            'group_alias' => $this->accessGroupsAlias,
-            'contactgroups' => $this->contactGroupName
-        ));
+        $this->page->setProperties(['group_name' => $this->accessGroupsName, 'group_alias' => $this->accessGroupsAlias, 'contactgroups' => $this->contactGroupName]);
         $this->page->save();
     }
 
@@ -158,10 +128,7 @@ class AclAccessGroupsContext extends CentreonContext
     public function iModifyItsProperties()
     {
         $this->page = $this->page->inspect($this->accessGroupsName);
-        $this->page->setProperties(array(
-            'group_name' => 'newGroupName',
-            'group_alias' => 'newGroupAlias'
-        ));
+        $this->page->setProperties(['group_name' => 'newGroupName', 'group_alias' => 'newGroupAlias']);
         $this->page->save();
     }
 
@@ -236,7 +203,7 @@ class AclAccessGroupsContext extends CentreonContext
     public function iDisableIt()
     {
         $this->page = $this->page->inspect($this->accessGroupsName);
-        $this->page->setProperties(array('status' => 0));
+        $this->page->setProperties(['status' => 0]);
         $this->page->save();
     }
 

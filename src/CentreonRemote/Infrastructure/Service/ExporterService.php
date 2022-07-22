@@ -30,10 +30,6 @@ class ExporterService implements ContainerInterface
 {
     use ServiceContainerTrait;
 
-    /**
-     * @param string $object
-     * @param callable $factory
-     */
     public function add(string $object, callable $factory): void
     {
         $interface = ExporterServiceInterface::class;
@@ -44,7 +40,7 @@ class ExporterService implements ContainerInterface
             throw new NotFoundException(sprintf('Object %s must implement %s', $object, $interface));
         }
 
-        $name = strtolower($object::getName());
+        $name = strtolower((string) $object::getName());
         $this->objects[$name] = [
             'name' => $name,
             'classname' => $object,
@@ -56,7 +52,6 @@ class ExporterService implements ContainerInterface
 
     /**
      * @param string $id
-     * @return bool
      */
     public function has($id): bool
     {
@@ -83,7 +78,6 @@ class ExporterService implements ContainerInterface
 
     /**
      * @param string $id
-     * @return int|null
      */
     private function getKey($id): ?int
     {
@@ -98,8 +92,6 @@ class ExporterService implements ContainerInterface
 
     private function sort(): void
     {
-        usort($this->objects, function ($a, $b) {
-            return $a['classname']::order() - $b['classname']::order();
-        });
+        usort($this->objects, fn($a, $b) => $a['classname']::order() - $b['classname']::order());
     }
 }

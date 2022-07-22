@@ -82,7 +82,6 @@ class Healthcheck
      * Check module requirements and health
      *
      * @param string $module
-     * @return bool|null
      * @throws Exception\HealthcheckNotFoundException
      * @throws Exception\HealthcheckCriticalException
      * @throws Exception\HealthcheckWarningException
@@ -159,7 +158,6 @@ class Healthcheck
      * Made the check method compatible with moduleDependenciesValidator
      *
      * @param string $module
-     * @return array|null
      */
     public function checkPrepareResponse($module): ?array
     {
@@ -181,9 +179,9 @@ class Healthcheck
             ];
 
             if ($this->getMessages()) {
-                $result = array_merge($result, [
+                $result = [...$result, ...[
                     'message' => $this->getMessages(),
-                ]);
+                ]];
             }
         } catch (Exception\HealthcheckWarningException $ex) {
             $result = [
@@ -191,9 +189,9 @@ class Healthcheck
             ];
 
             if ($this->getMessages()) {
-                $result = array_merge($result, [
+                $result = [...$result, ...[
                     'message' => $this->getMessages(),
-                ]);
+                ]];
             }
         } catch (Exception\HealthcheckNotFoundException $ex) {
             $result = [

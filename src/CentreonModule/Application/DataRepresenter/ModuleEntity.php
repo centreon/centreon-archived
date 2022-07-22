@@ -43,18 +43,12 @@ class ModuleEntity implements JsonSerializable
 {
 
     /**
-     * @var \CentreonModule\Infrastructure\Entity\Module
-     */
-    private $entity;
-
-    /**
      * Construct
      *
      * @param \CentreonModule\Infrastructure\Entity\Module|null $entity
      */
-    public function __construct(?Module $entity)
+    public function __construct(private readonly ?Module $entity)
     {
-        $this->entity = $entity;
     }
 
     /**

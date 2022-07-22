@@ -30,69 +30,46 @@ use Symfony\Component\Serializer\Annotation as Serializer;
  */
 class ContactGroup
 {
-    public const SERIALIZER_GROUP_LIST = 'contact-group-list';
-    public const TABLE = 'contactgroup';
-    public const ENTITY_IDENTIFICATOR_COLUMN = 'cg_id';
+    final public const SERIALIZER_GROUP_LIST = 'contact-group-list';
+    final public const TABLE = 'contactgroup';
+    final public const ENTITY_IDENTIFICATOR_COLUMN = 'cg_id';
 
     /**
      * @Serializer\SerializedName("id")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var int|null
      */
-    private $cg_id;
+    private ?int $cg_id = null;
 
     /**
      * @Serializer\SerializedName("name")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var string|null
      */
-    private $cg_name;
+    private ?string $cg_name = null;
 
-    /**
-     * @var string|null
-     */
-    private $cg_alias;
+    private ?string $cg_alias = null;
 
-    /**
-     * @var string|null
-     */
-    private $cg_comment;
+    private ?string $cg_comment = null;
 
-    /**
-     * @var string|null
-     */
-    private $cg_type;
+    private ?string $cg_type = null;
 
-    /**
-     * @var string|null
-     */
-    private $cg_ldap_dn;
+    private ?string $cg_ldap_dn = null;
 
-    /**
-     * @var int|null
-     */
-    private $ar_id;
+    private ?int $ar_id = null;
 
     /**
      * @Serializer\SerializedName("activate")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var string|null
      */
-    private $cg_activate;
+    private ?string $cg_activate = null;
 
     /**
      * Alias of getCgId
-     *
-     * @return int|null
      */
     public function getId(): ?int
     {
         return $this->getCgId();
     }
 
-    /**
-     * @return int|null
-     */
     public function getCgId(): ?int
     {
         return $this->cg_id;
@@ -106,9 +83,6 @@ class ContactGroup
         $this->cg_id = $cgId;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCgName(): ?string
     {
         return $this->cg_name;
@@ -122,9 +96,6 @@ class ContactGroup
         $this->cg_name = $cgName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCgAlias(): ?string
     {
         return $this->cg_alias;
@@ -138,9 +109,6 @@ class ContactGroup
         $this->cg_alias = $cgAlias;
     }
 
-    /**
-     * @return int
-     */
     public function getCgActivate(): int
     {
         return (int)$this->cg_activate;
@@ -170,9 +138,6 @@ class ContactGroup
         $this->cg_comment = $cgComment;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCgType(): ?string
     {
         return $this->cg_type;
@@ -186,9 +151,6 @@ class ContactGroup
         $this->cg_type = $cgType;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCgLdapDn(): ?string
     {
         return $this->cg_ldap_dn;
@@ -202,9 +164,6 @@ class ContactGroup
         $this->cg_ldap_dn = $cgLdapDn;
     }
 
-    /**
-     * @return int|null
-     */
     public function getArId(): ?int
     {
         return $this->ar_id;

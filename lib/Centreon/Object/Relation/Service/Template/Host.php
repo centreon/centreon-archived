@@ -59,7 +59,7 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
     public function insert($fkey, $skey = null)
     {
         $sql = "INSERT INTO $this->relationTable ($this->secondKey, $this->firstKey) VALUES (?, ?)";
-        $this->db->query($sql, array($fkey, $skey));
+        $this->db->query($sql, [$fkey, $skey]);
     }
 
     /**
@@ -73,11 +73,11 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
     public function getTargetIdFromSourceId($sourceKey, $targetKey, $sourceId)
     {
         if (!is_array($sourceId)) {
-            $sourceId = array($sourceId);
+            $sourceId = [$sourceId];
         }
         $sql = "SELECT $targetKey FROM $this->relationTable WHERE $sourceKey = ? ";
         $result = $this->getResult($sql, $sourceId);
-        $tab = array();
+        $tab = [];
         foreach ($result as $rez) {
             $tab[] = $rez[$targetKey];
         }
@@ -96,7 +96,7 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
      * @param string $filterType
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
+    public function getMergedParameters($firstTableParams = [], $secondTableParams = [], $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = [], $filterType = "OR")
     {
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
@@ -119,11 +119,11 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
         		FROM ".$this->firstObject->getTableName()." h,".$this->relationTable."
         		JOIN ".$this->secondObject->getTableName(). " h2 ON ".$this->relationTable.".".$this->firstKey." = h2.".$this->secondObject->getPrimaryKey() ."
         		WHERE h.".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
-        $filterTab = array();
+        $filterTab = [];
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 $sql .= " $filterType $key LIKE ? ";
-                $value = trim($rawvalue);
+                $value = trim((string) $rawvalue);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
                 $filterTab[] = $value;
@@ -151,13 +151,13 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
     {
         if (isset($fkey) && isset($skey)) {
             $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ? AND $this->secondKey = ?";
-            $args = array($skey, $fkey);
+            $args = [$skey, $fkey];
         } elseif (isset($skey)) {
             $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ?";
-            $args = array($skey);
+            $args = [$skey];
         } else {
             $sql = "DELETE FROM $this->relationTable WHERE $this->secondKey = ?";
-            $args = array($fkey);
+            $args = [$fkey];
         }
         $this->db->query($sql, $args);
     }

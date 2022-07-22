@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraint;
 
 class UniqueEntity extends Constraint
 {
-    public const NOT_UNIQUE_ERROR = '23bd9dbf-6b9b-41cd-a99e-4844bcf3077c';
+    final public const NOT_UNIQUE_ERROR = '23bd9dbf-6b9b-41cd-a99e-4844bcf3077c';
 
     /**
      * @var mixed

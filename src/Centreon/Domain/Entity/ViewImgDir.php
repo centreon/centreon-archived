@@ -3,27 +3,15 @@ namespace Centreon\Domain\Entity;
 
 class ViewImgDir
 {
-    const TABLE = 'view_img_dir';
+    final const TABLE = 'view_img_dir';
 
-    /**
-     * @var int
-     */
-    private $dirId;
+    private ?int $dirId = null;
 
-    /**
-     * @var string
-     */
-    private $dirName;
+    private ?string $dirName = null;
 
-    /**
-     * @var string
-     */
-    private $dirAlias;
+    private ?string $dirAlias = null;
 
-    /**
-     * @var string
-     */
-    private $dirComment;
+    private ?string $dirComment = null;
 
     public function setDirId(int $dirId): void
     {

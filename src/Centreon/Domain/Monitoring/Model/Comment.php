@@ -24,316 +24,181 @@ namespace Centreon\Domain\Monitoring\Model;
 
 class Comment
 {
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $entryTime;
+    private ?\DateTime $entryTime = null;
 
-    /**
-     * @var int|null
-     */
-    private $hostId;
+    private ?int $hostId = null;
 
-    /**
-     * @var int|null
-     */
-    private $serviceId;
+    private ?int $serviceId = null;
 
-    /**
-     * @var string|null
-     */
-    private $author;
+    private ?string $author = null;
 
-    /**
-     * @var string|null
-     */
-    private $data;
+    private ?string $data = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $deletionTime;
+    private ?\DateTime $deletionTime = null;
 
-    /**
-     * @var int|null
-     */
-    private $entryType;
+    private ?int $entryType = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $expireTime;
+    private ?\DateTime $expireTime = null;
 
-    /**
-     * @var int|null
-     */
-    private $expires;
+    private ?int $expires = null;
 
-    /**
-     * @var int|null
-     */
-    private $instanceId;
+    private ?int $instanceId = null;
 
-    /**
-     * @var int|null
-     */
-    private $internalId;
+    private ?int $internalId = null;
 
-    /**
-     * @var int|null
-     */
-    private $persistent;
+    private ?int $persistent = null;
 
-    /**
-     * @var int|null
-     */
-    private $source;
+    private ?int $source = null;
 
-    /**
-     * @var int|null
-     */
-    private $type;
+    private ?int $type = null;
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getEntryTime(): ?\DateTime
     {
         return $this->entryTime;
     }
 
-    /**
-     * @param \DateTime|null $entryTime
-     */
     public function setEntryTime(?\DateTime $entryTime): void
     {
         $this->entryTime = $entryTime;
     }
 
-    /**
-     * @return int|null
-     */
     public function getHostId(): ?int
     {
         return $this->hostId;
     }
 
-    /**
-     * @param int|null $hostId
-     */
     public function setHostId(?int $hostId): void
     {
         $this->hostId = $hostId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getServiceId(): ?int
     {
         return $this->serviceId;
     }
 
-    /**
-     * @param int|null $serviceId
-     */
     public function setServiceId(?int $serviceId): void
     {
         $this->serviceId = $serviceId;
     }
 
-    /**
-     * @return null|string
-     */
     public function getAuthor(): ?string
     {
         return $this->author;
     }
 
-    /**
-     * @param null|string $author
-     */
     public function setAuthor(?string $author): void
     {
         $this->author = $author;
     }
 
-    /**
-     * @return null|string
-     */
     public function getData(): ?string
     {
         return $this->data;
     }
 
-    /**
-     * @param null|string $data
-     */
     public function setData(?string $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getDeletionTime(): ?\DateTime
     {
         return $this->deletionTime;
     }
 
-    /**
-     * @param \DateTime|null $deletionTime
-     */
     public function setDeletionTime(?\DateTime $deletionTime): void
     {
         $this->deletionTime = $deletionTime;
     }
 
-    /**
-     * @return int|null
-     */
     public function getEntryType(): ?int
     {
         return $this->entryType;
     }
 
-    /**
-     * @param int|null $entryType
-     */
     public function setEntryType(?int $entryType): void
     {
         $this->entryType = $entryType;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getExpireTime(): ?\DateTime
     {
         return $this->expireTime;
     }
 
-    /**
-     * @param \DateTime|null $expireTime
-     */
     public function setExpireTime(?\DateTime $expireTime): void
     {
         $this->expireTime = $expireTime;
     }
 
-    /**
-     * @return int|null
-     */
     public function getExpires(): ?int
     {
         return $this->expires;
     }
 
-    /**
-     * @param int|null $expires
-     */
     public function setExpires(?int $expires): void
     {
         $this->expires = $expires;
     }
 
-    /**
-     * @return int|null
-     */
     public function getInstanceId(): ?int
     {
         return $this->instanceId;
     }
 
-    /**
-     * @param int|null $instanceId
-     */
     public function setInstanceId(?int $instanceId): void
     {
         $this->instanceId = $instanceId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getInternalId(): ?int
     {
         return $this->internalId;
     }
 
-    /**
-     * @param int|null $internalId
-     */
     public function setInternalId(?int $internalId): void
     {
         $this->internalId = $internalId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getPersistent(): ?int
     {
         return $this->persistent;
     }
 
-    /**
-     * @param int|null $persistent
-     */
     public function setPersistent(?int $persistent): void
     {
         $this->persistent = $persistent;
     }
 
-    /**
-     * @return int|null
-     */
     public function getSource(): ?int
     {
         return $this->source;
     }
 
-    /**
-     * @param int|null $source
-     */
     public function setSource(?int $source): void
     {
         $this->source = $source;
     }
 
-    /**
-     * @return int|null
-     */
     public function getType(): ?int
     {
         return $this->type;
     }
 
-    /**
-     * @param int|null $type
-     */
     public function setType(?int $type): void
     {
         $this->type = $type;

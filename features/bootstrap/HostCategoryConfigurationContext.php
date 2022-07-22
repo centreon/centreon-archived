@@ -10,59 +10,19 @@ class HostCategoryConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host1 = array(
-        'name' => 'host1Name',
-        'alias' => 'host1Alias',
-        'address' => 'host1@localhost'
-    );
+    protected $host1 = ['name' => 'host1Name', 'alias' => 'host1Alias', 'address' => 'host1@localhost'];
 
-    protected $host2 = array(
-        'name' => 'host2Name',
-        'alias' => 'host2Alias',
-        'address' => 'host2@localhost'
-    );
+    protected $host2 = ['name' => 'host2Name', 'alias' => 'host2Alias', 'address' => 'host2@localhost'];
 
-    protected $hostTemplate1 = array(
-        'name' => 'hostTemplate1Name',
-        'alias' => 'hostTemplate2Alias'
-    );
+    protected $hostTemplate1 = ['name' => 'hostTemplate1Name', 'alias' => 'hostTemplate2Alias'];
 
-    protected $hostTemplate2 = array(
-        'name' => 'hostTemplate2Name',
-        'alias' => 'hostTemplate2Alias'
-    );
+    protected $hostTemplate2 = ['name' => 'hostTemplate2Name', 'alias' => 'hostTemplate2Alias'];
 
-    protected $initialProperties = array(
-        'name' => 'hostCategoryName',
-        'alias' => 'hostCategoryAlias',
-        'hosts' => 'host1Name',
-        'host_templates' => 'hostTemplate1Name',
-        'severity' => 0,
-        'enabled' => 1,
-        'comments' => 'hostCategoryComment'
-    );
+    protected $initialProperties = ['name' => 'hostCategoryName', 'alias' => 'hostCategoryAlias', 'hosts' => 'host1Name', 'host_templates' => 'hostTemplate1Name', 'severity' => 0, 'enabled' => 1, 'comments' => 'hostCategoryComment'];
 
-    protected $duplicatedProperties = array(
-        'name' => 'hostCategoryName_1',
-        'alias' => 'hostCategoryAlias',
-        'hosts' => 'host1Name',
-        'host_templates' => 'hostTemplate1Name',
-        'severity' => 0,
-        'enabled' => 1,
-        'comments' => 'hostCategoryComment'
-    );
+    protected $duplicatedProperties = ['name' => 'hostCategoryName_1', 'alias' => 'hostCategoryAlias', 'hosts' => 'host1Name', 'host_templates' => 'hostTemplate1Name', 'severity' => 0, 'enabled' => 1, 'comments' => 'hostCategoryComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'hostCategoryNameChanged',
-        'alias' => 'hostCategoryAliasChanged',
-        'hosts' => 'host2Name',
-        'host_templates' => 'hostTemplate2Name',
-        'severity' => 1,
-        'severity_level' => 3,
-        'severity_icon' => '       centreon (png)',
-        'enabled' => 0,
-        'comments' => 'hostCategoryCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'hostCategoryNameChanged', 'alias' => 'hostCategoryAliasChanged', 'hosts' => 'host2Name', 'host_templates' => 'hostTemplate2Name', 'severity' => 1, 'severity_level' => 3, 'severity_icon' => '       centreon (png)', 'enabled' => 0, 'comments' => 'hostCategoryCommentChanged'];
 
     /**
      * @Given a host category is configured
@@ -102,7 +62,7 @@ class HostCategoryConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -114,12 +74,12 @@ class HostCategoryConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -143,7 +103,7 @@ class HostCategoryConfigurationContext extends CentreonContext
      */
     public function theNewHostCategoryHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -155,12 +115,12 @@ class HostCategoryConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

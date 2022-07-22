@@ -30,35 +30,19 @@ namespace Centreon\Domain\Monitoring;
 class Icon
 {
     // Groups for serializing
-    public const SERIALIZER_GROUP_MAIN = 'icon_main';
+    final public const SERIALIZER_GROUP_MAIN = 'icon_main';
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string|null
-     */
-    private $url;
+    private ?string $url = null;
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     * @return self
-     */
     public function setId(?int $id): self
     {
         $this->id = $id;
@@ -66,18 +50,11 @@ class Icon
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return \Centreon\Domain\Monitoring\Icon
-     */
     public function setName(?string $name): self
     {
         $this->name = $name;
@@ -85,18 +62,11 @@ class Icon
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string|null $url
-     * @return \Centreon\Domain\Monitoring\Icon
-     */
     public function setUrl(?string $url): self
     {
         $this->url = $url;

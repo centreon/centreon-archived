@@ -67,7 +67,7 @@ class Step1 extends AbstractStep
             throw new \Exception('Configuration file "install.conf.php" does not exist.');
         }
 
-        $conf_centreon =  array();
+        $conf_centreon =  [];
         require $configurationFile;
 
         $tmpDir = __DIR__ . '/../../../../../www/install/tmp';

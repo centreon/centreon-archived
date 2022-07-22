@@ -34,22 +34,17 @@ class ActionLog
     /**
      * @var \DateTime Creation time of the response
      */
-    private $creationTime;
+    private ?\DateTime $creationTime = null;
 
     /**
      * @var \DateTime Event time of the response
      */
-    private $eventTime;
+    private ?\DateTime $eventTime = null;
 
     /**
      * @var int Id of the action log
      */
-    private $id;
-
-    /**
-     * @var string Token of the response
-     */
-    private $token;
+    private ?int $id = null;
 
     /**
      * @var int Status code of the response
@@ -57,18 +52,17 @@ class ActionLog
      * @see ResponseInterface::STATUS_ERROR for code when there is an error
      * @see ResponseInterface::STATUS_OK for code when the last action log has been received and its statut is OK
      */
-    private $code;
+    private ?int $code = null;
 
     /**
      * @var string Response data
      */
-    private $data;
+    private ?string $data = null;
 
     /**
      * Factory to create a action log based on the Gorgone response.
      *
      * @param array<string, string> $details Details used to create an action log
-     * @return ActionLog
      * @throws \Exception
      */
     public static function create(array $details): ActionLog
@@ -88,13 +82,11 @@ class ActionLog
      * @param string $token
      * @see ActionLog::$token
      */
-    public function __construct(string $token)
+    public function __construct(private readonly string $token)
     {
-        $this->token = $token;
     }
 
     /**
-     * @return \DateTime
      * @see ActionLog::$creationTime
      */
     public function getCreationTime(): \DateTime
@@ -103,8 +95,6 @@ class ActionLog
     }
 
     /**
-     * @param \DateTime $creationTime
-     * @return ActionLog
      * @see ActionLog::$creationTime
      */
     public function setCreationTime(\DateTime $creationTime): ActionLog
@@ -114,7 +104,6 @@ class ActionLog
     }
 
     /**
-     * @return \DateTime
      * @see ActionLog::$eventTime
      */
     public function getEventTime(): \DateTime
@@ -123,8 +112,6 @@ class ActionLog
     }
 
     /**
-     * @param \DateTime $eventTime
-     * @return ActionLog
      * @see ActionLog::$eventTime
      */
     public function setEventTime(\DateTime $eventTime): ActionLog
@@ -133,18 +120,11 @@ class ActionLog
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return ActionLog
-     */
     public function setId(int $id): ActionLog
     {
         $this->id = $id;
@@ -152,7 +132,6 @@ class ActionLog
     }
 
     /**
-     * @return string
      * @see ActionLog::$token
      */
     public function getToken(): string
@@ -161,7 +140,6 @@ class ActionLog
     }
 
     /**
-     * @return int
      * @see ActionLog::$code
      */
     public function getCode(): int
@@ -169,10 +147,6 @@ class ActionLog
         return $this->code;
     }
 
-    /**
-     * @param int $code
-     * @return ActionLog
-     */
     public function setCode(int $code): ActionLog
     {
         $this->code = $code;
@@ -180,7 +154,6 @@ class ActionLog
     }
 
     /**
-     * @return string
      * @see ActionLog::$data
      */
     public function getData(): string
@@ -189,8 +162,6 @@ class ActionLog
     }
 
     /**
-     * @param string $data
-     * @return ActionLog
      * @see ActionLog::$data
      */
     public function setData(string $data): ActionLog

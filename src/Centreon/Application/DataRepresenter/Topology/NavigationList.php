@@ -42,25 +42,17 @@ use JsonSerializable;
 class NavigationList implements JsonSerializable
 {
     /**
-     * @var array
-     */
-    private $entities;
-
-    /**
-     * Configurations from navigation.yml
-     *
-     * @var array<mixed>
-     */
-    private $navConfig;
-
-    /**
      * @param array<mixed> $entities
      * @param array<mixed> $navConfig
      */
-    public function __construct(array $entities, array $navConfig = [])
+    public function __construct(
+        private readonly array $entities,
+        /**
+         * Configurations from navigation.yml
+         */
+        private readonly array $navConfig = []
+    )
     {
-        $this->navConfig = $navConfig;
-        $this->entities = $entities;
     }
 
     /**
@@ -143,7 +135,7 @@ class NavigationList implements JsonSerializable
         $naviList = [];
 
         foreach ($entities as $entity) {
-            if (preg_match('/^(\d)$/', $entity->getTopologyPage(), $matches)) {
+            if (preg_match('/^(\d)$/', (string) $entity->getTopologyPage(), $matches)) {
                 $naviList[$entity->getTopologyId()] = [
                     'page' => $entity->getTopologyPage(),
                     'label' => $entity->getTopologyName(),
@@ -157,7 +149,7 @@ class NavigationList implements JsonSerializable
                     'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (
-                preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                preg_match('/^(\d)(\d\d)$/', (string) $entity->getTopologyPage(), $matches)
                 && !empty($naviList[$matches[1]])
             ) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
@@ -170,7 +162,7 @@ class NavigationList implements JsonSerializable
                     'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (
-                preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                preg_match('/^(\d)(\d\d)(\d\d)$/', (string) $entity->getTopologyPage(), $matches)
                 && !empty($naviList[$matches[1]]['children'][$matches[1] . $matches[2]])
             ) { // level 3
                 $levelTwo = $matches[1] . $matches[2];

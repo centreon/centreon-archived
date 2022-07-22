@@ -60,7 +60,7 @@ class ClapiContext extends CentreonContext
     protected $parameter;
     protected $file;
 
-    public function exportClapi($file = null, $selectList = array(), $filter = null)
+    public function exportClapi($file = null, $selectList = [], $filter = null)
     {
         $cmd = 'centreon -u admin -p Centreon!2021 -e';
         if (!empty($selectList)) {
@@ -157,7 +157,7 @@ class ClapiContext extends CentreonContext
         $exportFileLines = file(sys_get_temp_dir() . DIRECTORY_SEPARATOR . self::CONFIGURATION_EXPORT_FILENAME);
         array_pop($exportFileLines);
         foreach ($exportFileLines as $key => $line) {
-            $clapiCommand = explode(';', $line);
+            $clapiCommand = explode(';', (string) $line);
             if (count($clapiCommand) < 3) {
                 throw new \Exception('Wrong export line format, too few arguments : line ' . $key . ' : ' . $line);
             }
@@ -174,10 +174,10 @@ class ClapiContext extends CentreonContext
         array_pop($exportFileLines);
         $clapiActions = [];
         foreach ($exportFileLines as $line) {
-            $clapiCommand = explode(';', $line);
+            $clapiCommand = explode(';', (string) $line);
             $clapiActions[] = $clapiCommand[0];
         }
-        $clapiActions = array_merge(array_unique($clapiActions));
+        $clapiActions = [...array_unique($clapiActions)];
         if (self::CLAPI_ACTIONS_ORDER !== $clapiActions) {
             throw new \Exception(
                 'Clapi actions order is not the same as the one in the file : ' . implode(', ', $clapiActions)
@@ -208,12 +208,12 @@ class ClapiContext extends CentreonContext
         array_pop($exportFileLines);
         $clapiAddedActions = [];
         foreach ($exportFileLines as $line) {
-            if (strpos($line, 'ADD;') !== false) {
-                $clapiCommand = explode(';', $line);
+            if (str_contains((string) $line, 'ADD;')) {
+                $clapiCommand = explode(';', (string) $line);
                 $clapiAddedActions[] = $clapiCommand[0];
             }
         }
-        $clapiAddedActions = array_merge(array_unique($clapiAddedActions));
+        $clapiAddedActions = [...array_unique($clapiAddedActions)];
 
         if ($clapiAddedActions !== self::CLAPI_ADD_OBJECTS) {
             throw new \Exception(

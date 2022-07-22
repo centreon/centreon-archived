@@ -62,7 +62,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * Find a host based on his ID.
      *
      * @param int $hostId Id of the host to be found
-     * @return Host|null
      * @throws \Exception
      */
     public function findOneHost(int $hostId): ?Host;
@@ -72,7 +71,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param int $hostId Host ID for which the service belongs
      * @param int $serviceId Service ID to find
-     * @return Service|null
      * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
@@ -81,7 +79,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * Find a service based on its description
      *
      * @param string $description description of the service
-     * @return Service|null
      * @throws \Exception
      */
     public function findOneServiceByDescription(string $description): ?Service;
@@ -107,7 +104,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     /**
      * Find all services belonging to the host.
      *
-     * @param int $hostId
      * @throws \Exception
      * @return Service[]
      */
@@ -117,7 +113,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * Indicates whether a host exists.
      *
      * @param int $hostId Host id to find
-     * @return bool
      * @throws \Exception
      */
     public function isHostExists(int $hostId): bool;
@@ -127,7 +122,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param int $hostId Host id to find
      * @param int $serviceId Service id to find
-     * @return bool
      * @throws \Exception
      */
     public function isServiceExists(int $hostId, int $serviceId): bool;
@@ -135,8 +129,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     /**
      * Find all service groups by host and service ids.
      *
-     * @param int $hostId
-     * @param int $serviceId
      * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;

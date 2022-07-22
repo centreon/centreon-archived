@@ -43,18 +43,12 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class ValidatorErrorList implements JsonSerializable
 {
     /**
-     * @var ConstraintViolationList
-     */
-    private $errors;
-
-    /**
      * Construct
      *
      * @param ConstraintViolationList $errors
      */
-    public function __construct(ConstraintViolationList $errors)
+    public function __construct(private readonly ConstraintViolationList $errors)
     {
-        $this->errors = $errors;
     }
 
     /**

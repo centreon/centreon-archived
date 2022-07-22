@@ -142,7 +142,6 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
      *
      * Get a list of ACL groups
      *
-     * @return DataRepresenter\Response
      * @throws \RestBadRequestException
      */
     public function getList(): DataRepresenter\Response
@@ -162,7 +161,7 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
         }
 
         if (isset($request['searchByIds']) && $request['searchByIds']) {
-            $filters['ids'] = explode(',', $request['searchByIds']);
+            $filters['ids'] = explode(',', (string) $request['searchByIds']);
         }
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);

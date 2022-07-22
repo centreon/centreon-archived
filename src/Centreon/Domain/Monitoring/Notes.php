@@ -29,20 +29,12 @@ namespace Centreon\Domain\Monitoring;
  */
 class Notes
 {
-    /**
-     * @var string|null
-     */
-    private $label;
+    private ?string $label = null;
 
-    /**
-     * @var string|null
-     */
-    private $url;
+    private ?string $url = null;
 
     /**
      * Get label
-     *
-     * @return string|null
      */
     public function getLabel(): ?string
     {
@@ -51,9 +43,6 @@ class Notes
 
     /**
      * Set notes
-     *
-     * @param string|null $label
-     * @return self
      */
     public function setLabel(?string $label): self
     {
@@ -63,8 +52,6 @@ class Notes
 
     /**
      * Get url
-     *
-     * @return string|null
      */
     public function getUrl(): ?string
     {
@@ -73,9 +60,6 @@ class Notes
 
     /**
      * Set url
-     *
-     * @param string|null $url
-     * @return self
      */
     public function setUrl(?string $url): self
     {

@@ -39,48 +39,30 @@ namespace Centreon\Domain\Entity;
 class Listener
 {
     /**
-     * @var int
-     */
-    private $event;
-
-    /**
      * @var callable
      */
     private $action;
 
-    public function __construct(int $event, callable $action)
+    public function __construct(private int $event, callable $action)
     {
-        $this->event = $event;
         $this->action = $action;
     }
 
-    /**
-     * @return int
-     */
     public function getEvent(): int
     {
         return $this->event;
     }
 
-    /**
-     * @param int $event
-     */
     public function setEvent(int $event): void
     {
         $this->event = $event;
     }
 
-    /**
-     * @return callable
-     */
     public function getAction(): callable
     {
         return $this->action;
     }
 
-    /**
-     * @param callable $action
-     */
     public function setAction(callable $action): void
     {
         $this->action = $action;

@@ -31,14 +31,12 @@ class CheckRequest
      *
      * @var ResourceEntity[]
      */
-    private $resources = [];
+    private array $resources = [];
 
     /**
      * check
-     *
-     * @var Check
      */
-    private $check;
+    private ?\Centreon\Domain\Check\Check $check = null;
 
     /**
      * Get resources
@@ -54,8 +52,6 @@ class CheckRequest
      * Set resources
      *
      * @param ResourceEntity[]  $resources  resources
-     *
-     * @return self
      */
     public function setResources(array $resources): CheckRequest
     {
@@ -66,8 +62,6 @@ class CheckRequest
 
     /**
      * Get check
-     *
-     * @return Check
      */
     public function getCheck(): Check
     {
@@ -78,8 +72,6 @@ class CheckRequest
      * Set check
      *
      * @param Check $check check
-     *
-     * @return self
      */
     public function setCheck(Check $check): CheckRequest
     {

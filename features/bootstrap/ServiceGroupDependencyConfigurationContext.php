@@ -9,83 +9,21 @@ class ServiceGroupDependencyConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $serviceGroup1 = array(
-        'name' => 'serviceGroup1Name',
-        'description' => 'serviceGroup1Description'
-    );
+    protected $serviceGroup1 = ['name' => 'serviceGroup1Name', 'description' => 'serviceGroup1Description'];
 
-    protected $serviceGroup2 = array(
-        'name' => 'serviceGroup2Name',
-        'description' => 'serviceGroup2Description'
-    );
+    protected $serviceGroup2 = ['name' => 'serviceGroup2Name', 'description' => 'serviceGroup2Description'];
 
-    protected $serviceGroup3 = array(
-        'name' => 'serviceGroup3Name',
-        'description' => 'serviceGroup3Description'
-    );
+    protected $serviceGroup3 = ['name' => 'serviceGroup3Name', 'description' => 'serviceGroup3Description'];
 
-    protected $serviceGroup4 = array(
-        'name' => 'serviceGroup4Name',
-        'description' => 'serviceGroup4Description'
-    );
+    protected $serviceGroup4 = ['name' => 'serviceGroup4Name', 'description' => 'serviceGroup4Description'];
 
-    protected $serviceGroup5 = array(
-        'name' => 'serviceGroup5Name',
-        'description' => 'serviceGroup5Description'
-    );
+    protected $serviceGroup5 = ['name' => 'serviceGroup5Name', 'description' => 'serviceGroup5Description'];
 
-    protected $serviceGroup6 = array(
-        'name' => 'serviceGroup6Name',
-        'description' => 'serviceGroup6Description'
-    );
+    protected $serviceGroup6 = ['name' => 'serviceGroup6Name', 'description' => 'serviceGroup6Description'];
 
-    protected $initialProperties = array(
-        'name' => 'serviceGroupDependencyName',
-        'description' => 'serviceGroupDependencyDescription',
-        'parent_relationship' => 0,
-        'execution_fails_on_none' => 1,
-        'execution_fails_on_ok' => 0,
-        'execution_fails_on_warning' => 0,
-        'execution_fails_on_unknown' => 0,
-        'execution_fails_on_critical' => 0,
-        'execution_fails_on_pending' => 0,
-        'notification_fails_on_ok' => 1,
-        'notification_fails_on_warning' => 1,
-        'notification_fails_on_unknown' => 1,
-        'notification_fails_on_critical' => 1,
-        'notification_fails_on_pending' => 1,
-        'notification_fails_on_none' => 0,
-        'service_groups' => 'serviceGroup1Name',
-        'dependent_service_groups' => 'serviceGroup2Name',
-        'comment' => 'serviceGroupDependencyComment'
-    );
+    protected $initialProperties = ['name' => 'serviceGroupDependencyName', 'description' => 'serviceGroupDependencyDescription', 'parent_relationship' => 0, 'execution_fails_on_none' => 1, 'execution_fails_on_ok' => 0, 'execution_fails_on_warning' => 0, 'execution_fails_on_unknown' => 0, 'execution_fails_on_critical' => 0, 'execution_fails_on_pending' => 0, 'notification_fails_on_ok' => 1, 'notification_fails_on_warning' => 1, 'notification_fails_on_unknown' => 1, 'notification_fails_on_critical' => 1, 'notification_fails_on_pending' => 1, 'notification_fails_on_none' => 0, 'service_groups' => 'serviceGroup1Name', 'dependent_service_groups' => 'serviceGroup2Name', 'comment' => 'serviceGroupDependencyComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'serviceGroupDependencyNameChanged',
-        'description' => 'serviceGroupDependencyDescriptionChanged',
-        'parent_relationship' => 1,
-        'execution_fails_on_ok' => 1,
-        'execution_fails_on_warning' => 1,
-        'execution_fails_on_unknown' => 1,
-        'execution_fails_on_critical' => 1,
-        'execution_fails_on_pending' => 1,
-        'execution_fails_on_none' => 0,
-        'notification_fails_on_none' => 1,
-        'notification_fails_on_ok' => 0,
-        'notification_fails_on_warning' => 0,
-        'notification_fails_on_unknown' => 0,
-        'notification_fails_on_critical' => 0,
-        'notification_fails_on_pending' => 0,
-        'service_groups' => array(
-            'serviceGroup3Name',
-            'serviceGroup4Name'
-        ),
-        'dependent_service_groups' => array(
-            'serviceGroup5Name',
-            'serviceGroup6Name'
-        ),
-        'comment' => 'serviceGroupDependencyCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'serviceGroupDependencyNameChanged', 'description' => 'serviceGroupDependencyDescriptionChanged', 'parent_relationship' => 1, 'execution_fails_on_ok' => 1, 'execution_fails_on_warning' => 1, 'execution_fails_on_unknown' => 1, 'execution_fails_on_critical' => 1, 'execution_fails_on_pending' => 1, 'execution_fails_on_none' => 0, 'notification_fails_on_none' => 1, 'notification_fails_on_ok' => 0, 'notification_fails_on_warning' => 0, 'notification_fails_on_unknown' => 0, 'notification_fails_on_critical' => 0, 'notification_fails_on_pending' => 0, 'service_groups' => ['serviceGroup3Name', 'serviceGroup4Name'], 'dependent_service_groups' => ['serviceGroup5Name', 'serviceGroup6Name'], 'comment' => 'serviceGroupDependencyCommentChanged'];
 
     /**
      * @Given a service group dependency
@@ -131,7 +69,7 @@ class ServiceGroupDependencyConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -148,12 +86,12 @@ class ServiceGroupDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -177,7 +115,7 @@ class ServiceGroupDependencyConfigurationContext extends CentreonContext
      */
     public function theNewObjectHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -194,12 +132,12 @@ class ServiceGroupDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

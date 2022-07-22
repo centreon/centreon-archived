@@ -20,14 +20,7 @@ class SpecialCharactersInContactContext extends CentreonContext
     public function oneNonAdminContactHasBeenCreated()
     {
         $this->page = new ContactConfigurationPage($this);
-        $this->page->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminAlias,
-            'email' => $this->nonAdminEmail,
-            'password' => $this->nonAdminPassword,
-            'password2' => $this->nonAdminPassword,
-            'admin' => 0
-        ));
+        $this->page->setProperties(['name' => $this->nonAdminName, 'alias' => $this->nonAdminAlias, 'email' => $this->nonAdminEmail, 'password' => $this->nonAdminPassword, 'password2' => $this->nonAdminPassword, 'admin' => 0]);
         $this->page->save();
     }
 
@@ -38,7 +31,7 @@ class SpecialCharactersInContactContext extends CentreonContext
     {
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->nonAdminAlias);
-        $this->page->setProperties(array('alias' => $this->accentedAndSpeacialCharsAlias));
+        $this->page->setProperties(['alias' => $this->accentedAndSpeacialCharsAlias]);
         $this->page->save();
     }
 

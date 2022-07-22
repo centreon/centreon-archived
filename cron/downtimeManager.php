@@ -36,28 +36,19 @@
 
 define('_DELAY_', '600'); /* Default 10 minutes */
 
-require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../config/centreon.config.php");
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDowntime.Broker.class.php';
 
 $unix_time = time();
 
-$ext_cmd_add['host'] = array(
-    '[%u] SCHEDULE_HOST_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]',
-    '[%u] SCHEDULE_HOST_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]'
-);
+$ext_cmd_add['host'] = ['[%u] SCHEDULE_HOST_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]', '[%u] SCHEDULE_HOST_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]'];
 
-$ext_cmd_del['host'] = array(
-    '[%u] DEL_HOST_DOWNTIME;%u'
-);
+$ext_cmd_del['host'] = ['[%u] DEL_HOST_DOWNTIME;%u'];
 
-$ext_cmd_add['svc'] = array(
-    '[%u] SCHEDULE_SVC_DOWNTIME;%s;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]'
-);
+$ext_cmd_add['svc'] = ['[%u] SCHEDULE_SVC_DOWNTIME;%s;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]'];
 
-$ext_cmd_del['svc'] = array(
-    '[%u] DEL_SVC_DOWNTIME;%u'
-);
+$ext_cmd_del['svc'] = ['[%u] DEL_SVC_DOWNTIME;%u'];
 
 /* Connector to centreon DB */
 $pearDB = new CentreonDB();

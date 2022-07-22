@@ -38,8 +38,8 @@ namespace Centreon\Domain\Entity;
 
 class Topology
 {
-    const ENTITY_IDENTIFICATOR_COLUMN = 'topology_id';
-    const TABLE = 'topology';
+    final const ENTITY_IDENTIFICATOR_COLUMN = 'topology_id';
+    final const TABLE = 'topology';
 
     /**
      * @var int
@@ -140,9 +140,6 @@ class Topology
         return $this->topology_id;
     }
 
-    /**
-     * @param int $topology_id
-     */
     public function setTopologyId(int $topology_id): void
     {
         $this->topology_id = $topology_id;
@@ -301,25 +298,16 @@ class Topology
         return $this->topology_show;
     }
 
-    /**
-     * @param string $topology_show
-     */
     public function setTopologyShow(string $topology_show): void
     {
         $this->topology_show = $topology_show;
     }
 
-    /**
-     * @return string
-     */
     public function getIsDeprecated(): bool
     {
         return $this->is_deprecated;
     }
 
-    /**
-     * @param string $isDeprecated
-     */
     public function setIsDeprecated(string $isDeprecated): void
     {
         if (in_array($this->is_deprecated, ['0', '1'])) {
@@ -368,9 +356,6 @@ class Topology
         return $this->readonly;
     }
 
-    /**
-     * @param string $readonly
-     */
     public function setReadonly(string $readonly): void
     {
         $this->readonly = $readonly;
@@ -384,9 +369,6 @@ class Topology
         return $this->is_react;
     }
 
-    /**
-     * @param string $is_react
-     */
     public function setIsReact(string $is_react): void
     {
         $this->is_react = $is_react;

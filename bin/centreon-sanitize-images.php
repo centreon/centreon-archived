@@ -88,7 +88,7 @@ $getInvalidImages = function (array $files): array {
     ];
     $invalidImages = [];
     foreach ($files as $file) {
-        $fileExploded = explode(".", $file);
+        $fileExploded = explode(".", (string) $file);
         $fileExtension = end($fileExploded);
         if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
             throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
@@ -122,7 +122,7 @@ $getInvalidImages = function (array $files): array {
 $getSvgImages = function (array $files): array {
     $svgFiles = [];
     foreach ($files as $file) {
-        $fileExploded = explode(".", $file);
+        $fileExploded = explode(".", (string) $file);
         $fileExtension = end($fileExploded);
         $mimeType = mime_content_type($file);
         if (($mimeType && preg_match('/(^image\/svg\+xml$)/', $mimeType)) && $fileExtension === "svg") {

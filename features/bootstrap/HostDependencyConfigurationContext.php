@@ -9,63 +9,15 @@ class HostDependencyConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $host1 = array(
-        'name' => 'host1Name',
-        'alias' => 'host1Alias',
-        'address' => 'host1@localhost'
-    );
+    protected $host1 = ['name' => 'host1Name', 'alias' => 'host1Alias', 'address' => 'host1@localhost'];
 
-    protected $host2 = array(
-        'name' => 'host2Name',
-        'alias' => 'host2Alias',
-        'address' => 'host2@localhost'
-    );
+    protected $host2 = ['name' => 'host2Name', 'alias' => 'host2Alias', 'address' => 'host2@localhost'];
 
-    protected $host3 = array(
-        'name' => 'host3Name',
-        'alias' => 'host3Alias',
-        'address' => 'host3@localhost'
-    );
+    protected $host3 = ['name' => 'host3Name', 'alias' => 'host3Alias', 'address' => 'host3@localhost'];
 
-    protected $initialProperties = array(
-        'name' => 'hostDependencyName',
-        'description' => 'hostDependencyDescription',
-        'parent_relationship' => 0,
-        'execution_fails_on_none' => 1,
-        'execution_fails_on_up' => 0,
-        'execution_fails_on_down' => 0,
-        'execution_fails_on_unreachable' => 0,
-        'execution_fails_on_pending' => 0,
-        'notification_fails_on_ok' => 1,
-        'notification_fails_on_down' => 1,
-        'notification_fails_on_unreachable' => 1,
-        'notification_fails_on_pending' => 1,
-        'notification_fails_on_none' => 0,
-        'hosts' => 'Centreon-Server',
-        'dependent_hosts' => 'host1Name',
-        'dependent_services' => 'Centreon-Server - Memory',
-        'comment' => 'hostDependencyComment'
-    );
+    protected $initialProperties = ['name' => 'hostDependencyName', 'description' => 'hostDependencyDescription', 'parent_relationship' => 0, 'execution_fails_on_none' => 1, 'execution_fails_on_up' => 0, 'execution_fails_on_down' => 0, 'execution_fails_on_unreachable' => 0, 'execution_fails_on_pending' => 0, 'notification_fails_on_ok' => 1, 'notification_fails_on_down' => 1, 'notification_fails_on_unreachable' => 1, 'notification_fails_on_pending' => 1, 'notification_fails_on_none' => 0, 'hosts' => 'Centreon-Server', 'dependent_hosts' => 'host1Name', 'dependent_services' => 'Centreon-Server - Memory', 'comment' => 'hostDependencyComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'hostDependencyNameChanged',
-        'description' => 'hostDependencyDescriptionChanged',
-        'parent_relationship' => 1,
-        'execution_fails_on_up' => 1,
-        'execution_fails_on_down' => 1,
-        'execution_fails_on_unreachable' => 1,
-        'execution_fails_on_pending' => 1,
-        'execution_fails_on_none' => 0,
-        'notification_fails_on_none' => 1,
-        'notification_fails_on_ok' => 0,
-        'notification_fails_on_down' => 0,
-        'notification_fails_on_unreachable' => 0,
-        'notification_fails_on_pending' => 0,
-        'hosts' => 'host2Name',
-        'dependent_hosts' => 'host3Name',
-        'dependent_services' => 'Centreon-Server - Load',
-        'comment' => 'hostDependencyCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'hostDependencyNameChanged', 'description' => 'hostDependencyDescriptionChanged', 'parent_relationship' => 1, 'execution_fails_on_up' => 1, 'execution_fails_on_down' => 1, 'execution_fails_on_unreachable' => 1, 'execution_fails_on_pending' => 1, 'execution_fails_on_none' => 0, 'notification_fails_on_none' => 1, 'notification_fails_on_ok' => 0, 'notification_fails_on_down' => 0, 'notification_fails_on_unreachable' => 0, 'notification_fails_on_pending' => 0, 'hosts' => 'host2Name', 'dependent_hosts' => 'host3Name', 'dependent_services' => 'Centreon-Server - Load', 'comment' => 'hostDependencyCommentChanged'];
 
     /**
      * @Given a host dependency is configured
@@ -102,7 +54,7 @@ class HostDependencyConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -119,12 +71,12 @@ class HostDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -148,7 +100,7 @@ class HostDependencyConfigurationContext extends CentreonContext
      */
     public function theNewHostDependencyHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -165,12 +117,12 @@ class HostDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

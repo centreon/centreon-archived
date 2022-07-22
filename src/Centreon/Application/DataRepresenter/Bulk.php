@@ -43,30 +43,9 @@ use Centreon\Application\DataRepresenter\Entity;
 
 class Bulk implements JsonSerializable
 {
-    /**
-     * @var array
-     */
-    private $lists;
+    private readonly string $listingClass;
 
-    /**
-     * @var int
-     */
-    private $offset;
-
-    /**
-     * @var int
-     */
-    private $limit;
-
-    /**
-     * @var string
-     */
-    private $listingClass;
-
-    /**
-     * @var string
-     */
-    private $entityClass;
+    private readonly string $entityClass;
 
     /**
      * Construct
@@ -76,15 +55,12 @@ class Bulk implements JsonSerializable
      * @param string $entityClass
      */
     public function __construct(
-        array $lists,
-        int $offset = null,
-        int $limit = null,
+        private readonly array $lists,
+        private readonly int $offset = null,
+        private readonly int $limit = null,
         string $listingClass = null,
         string $entityClass = null
     ) {
-        $this->lists = $lists;
-        $this->offset = $offset;
-        $this->limit = $limit;
         $this->listingClass = $listingClass ?? Listing::class;
         $this->entityClass = $entityClass ?? Entity::class;
     }

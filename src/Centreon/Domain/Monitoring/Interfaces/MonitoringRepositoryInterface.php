@@ -37,7 +37,6 @@ interface MonitoringRepositoryInterface
      * Sets the access groups that will be used to filter services and the host.
      *
      * @param AccessGroup[]|null $accessGroups
-     * @return self
      */
     public function filterByAccessGroups(?array $accessGroups): self;
 
@@ -79,7 +78,6 @@ interface MonitoringRepositoryInterface
      * Find one host based on its id and according to ACL.
      *
      * @param int $hostId Id of the host to be found
-     * @return Host|null
      * @throws \Exception
      */
     public function findOneHost(int $hostId): ?Host;
@@ -105,7 +103,6 @@ interface MonitoringRepositoryInterface
      *
      * @param int $hostId Host id of the service
      * @param int $serviceId Service Id
-     * @return Service|null
      * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
@@ -113,8 +110,6 @@ interface MonitoringRepositoryInterface
     /**
      * Find one service based on its id and according to ACL.
      *
-     * @param string $serviceDescription
-     * @return Service|null
      * @throws \Exception
      */
     public function findOneServiceByDescription(string $serviceDescription): ?Service;
@@ -189,10 +184,6 @@ interface MonitoringRepositoryInterface
      */
     public function findServicesByHosts(array $hostIds): array;
 
-    /**
-     * @param ContactInterface $contact
-     * @return MonitoringRepositoryInterface
-     */
     public function setContact(ContactInterface $contact): self;
 
     /**
@@ -203,24 +194,18 @@ interface MonitoringRepositoryInterface
     public function findServicesByServiceGroups(array $serviceGroupIds): array;
 
     /**
-     * @param int $hostId
-     * @param int $serviceId
      * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 
     /**
      * Find downtimes for host or service
-     * @param int $hostId
-     * @param int $serviceId
      * @return Downtime[]
      */
     public function findDowntimes(int $hostId, int $serviceId): array;
 
     /**
      * Find acknowledgements for host or service
-     * @param int $hostId
-     * @param int $serviceId
      * @return Acknowledgement[]
      */
     public function findAcknowledgements(int $hostId, int $serviceId): array;

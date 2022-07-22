@@ -51,7 +51,7 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
         $hgId = $key['hostId'];
         $serviceId = $key['serviceId'];
         $sql = "INSERT INTO $this->relationTable ($this->firstKey, hostgroup_hg_id, $this->secondKey) VALUES (?, ?, ?)";
-        $this->db->query($sql, array($fkey, $hgId, $serviceId));
+        $this->db->query($sql, [$fkey, $hgId, $serviceId]);
     }
 
     /**
@@ -66,13 +66,13 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
     {
         if (isset($fkey) && isset($hgId) && isset($serviceId)) {
             $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ? AND hostgroup_hg_id = ? AND $this->secondKey = ?";
-            $args = array($fkey, $hgId, $serviceId);
+            $args = [$fkey, $hgId, $serviceId];
         } elseif (isset($hgId) && isset($serviceId)) {
             $sql = "DELETE FROM $this->relationTable WHERE hostgroup_hg_id = ? AND $this->secondKey = ?";
-            $args = array($hgId, $serviceId);
+            $args = [$hgId, $serviceId];
         } else {
             $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ?";
-            $args = array($fkey);
+            $args = [$fkey];
         }
         $this->db->query($sql, $args);
     }
@@ -87,8 +87,8 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
     public function getServicegroupIdFromHostIdServiceId($hgId, $serviceId)
     {
         $sql = "SELECT $this->firstKey FROM $this->relationTable WHERE hostgroup_hg_id = ? AND $this->secondKey = ?";
-        $result = $this->getResult($sql, array($hgId, $serviceId));
-        $tab = array();
+        $result = $this->getResult($sql, [$hgId, $serviceId]);
+        $tab = [];
         foreach ($result as $rez) {
             $tab[] = $rez[$this->firstKey];
         }
@@ -104,8 +104,8 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
     public function getHostGroupIdServiceIdFromServicegroupId($servicegroupId)
     {
         $sql = "SELECT hostgroup_hg_id, $this->secondKey FROM $this->relationTable WHERE $this->firstKey = ?";
-        $result = $this->getResult($sql, array($servicegroupId));
-        $tab = array();
+        $result = $this->getResult($sql, [$servicegroupId]);
+        $tab = [];
         $i = 0;
         foreach ($result as $rez) {
             $tab[$i]['hostgroup_id'] = $rez['hostgroup_hg_id'];
@@ -122,7 +122,7 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
      * @param array $arg
      * @throws Exception
      */
-    public function __call($name, $arg = array())
+    public function __call($name, $arg = [])
     {
         throw new Exception('Unknown method');
     }

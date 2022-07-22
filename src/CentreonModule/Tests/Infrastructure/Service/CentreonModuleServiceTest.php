@@ -54,10 +54,7 @@ class CentreonModuleServiceTest extends TestCase
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
-    /**
-     * @var CentreonModuleService|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $service;
+    private \CentreonModule\Infrastructure\Service\CentreonModuleService|\PHPUnit\Framework\MockObject\MockObject $service;
 
     protected function setUp(): void
     {
@@ -91,9 +88,7 @@ class CentreonModuleServiceTest extends TestCase
 
             $sources[$type]
                 ->method('getList')
-                ->will($this->returnCallback(function () use ($type) {
-                    return [$type];
-                }))
+                ->will($this->returnCallback(fn() => [$type]))
             ;
             $sources[$type]
                 ->method('getDetail')

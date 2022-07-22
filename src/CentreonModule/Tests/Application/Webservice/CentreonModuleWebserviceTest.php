@@ -51,11 +51,11 @@ class CentreonModuleWebserviceTest extends TestCase
     use Traits\WebServiceAuthorizeRestApiTrait;
     use Traits\WebServiceExecuteTestTrait;
 
-    public const METHOD_GET_LIST = 'getList';
-    public const METHOD_GET_DETAILS = 'getDetails';
-    public const METHOD_POST_INSTALL = 'postInstall';
-    public const METHOD_POST_UPDATE = 'postUpdate';
-    public const METHOD_DELETE_REMOVE = 'deleteRemove';
+    final public const METHOD_GET_LIST = 'getList';
+    final public const METHOD_GET_DETAILS = 'getDetails';
+    final public const METHOD_POST_INSTALL = 'postInstall';
+    final public const METHOD_POST_UPDATE = 'postUpdate';
+    final public const METHOD_DELETE_REMOVE = 'deleteRemove';
 
     /**
      * @var CentreonModuleWebservice|\PHPUnit\Framework\MockObject\MockObject
@@ -73,7 +73,7 @@ class CentreonModuleWebserviceTest extends TestCase
                     $funcArgs = func_get_args();
 
                     // prepare filters
-                    $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
+                    $funcArgs[0] ??= '-';
                     $funcArgs[1] = $funcArgs[1] === true ? '1' : ($funcArgs[1] !== false ? '-' : '0');
                     $funcArgs[2] = $funcArgs[2] === true ? '1' : ($funcArgs[2] !== false ? '-' : '0');
                     $funcArgs[3] = $funcArgs[3] ? implode('|', $funcArgs[3]) : '-';
@@ -99,8 +99,8 @@ class CentreonModuleWebserviceTest extends TestCase
                     $funcArgs = func_get_args();
 
                     // prepare filters
-                    $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
-                    $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
+                    $funcArgs[0] ??= '-';
+                    $funcArgs[1] ??= '-';
 
                 if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
                     return null;

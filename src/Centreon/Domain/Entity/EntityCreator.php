@@ -33,11 +33,6 @@ use Utility\StringConverter;
 class EntityCreator
 {
     /**
-     * @var string Class name to create
-     */
-    private $className;
-
-    /**
      * @var array<string, EntityDescriptor[]>
      */
     private static $entityDescriptors;
@@ -47,10 +42,7 @@ class EntityCreator
      */
     private static $publicMethods;
 
-    /**
-     * @var Contact
-     */
-    private static $contact;
+    private static ?\Centreon\Domain\Contact\Contact $contact = null;
 
     /**
      * Create a new object entity based on the given values.
@@ -83,9 +75,8 @@ class EntityCreator
      *
      * @param string $className
      */
-    public function __construct(string $className)
+    public function __construct(private string $className)
     {
-        $this->className = $className;
     }
 
     /**
@@ -116,7 +107,7 @@ class EntityCreator
             // If a prefix is defined, we keep only $data for which the keys start
             // with the prefix
             $data = array_filter($data, function ($column) use ($prefix) {
-                if (substr($column, 0, strlen($prefix)) === $prefix) {
+                if (str_starts_with($column, $prefix)) {
                     return true;
                 }
                 return false;
@@ -164,7 +155,7 @@ class EntityCreator
                         }
                     }
 
-                    call_user_func_array(array($objectToSet, $setterMethod), [$value]);
+                    call_user_func_array([$objectToSet, $setterMethod], [$value]);
                 } else {
                     throw new \Exception(
                         sprintf(
@@ -212,7 +203,7 @@ class EntityCreator
                 return (string) $value;
             case 'bool':
                 return (bool) $value;
-            case 'DateTime':
+            case \DateTime::class:
                 if (is_numeric($value)) {
                     $value = (new \DateTime())->setTimestamp((int) $value);
                     if (self::$contact !== null) {

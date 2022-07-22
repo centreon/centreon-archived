@@ -54,6 +54,6 @@ class Step5 extends AbstractStep
     public function setAdminConfiguration($parameters)
     {
         $configurationFile = __DIR__ . "/../../../../../www/install/tmp/admin.json";
-        file_put_contents($configurationFile, json_encode($parameters));
+        file_put_contents($configurationFile, json_encode($parameters, JSON_THROW_ON_ERROR));
     }
 }

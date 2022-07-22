@@ -17,12 +17,10 @@ class SaveSearchSelect2Context extends CentreonContext
 
         /* Wait page loaded */
         $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has(
-                    'css',
-                    'input[name="submitC"]'
-                );
-            }
+            fn($context) => $context->getSession()->getPage()->has(
+                'css',
+                'input[name="submitC"]'
+            )
         );
 
         /* Add search to select2 */
@@ -35,10 +33,9 @@ class SaveSearchSelect2Context extends CentreonContext
         }
         $choice->press();
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()
-                        ->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            }
+            fn($context) => (is_countable($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) ? count($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) : 0) >= 4
         );
 
         $this->getSession()->executeScript(
@@ -80,10 +77,9 @@ class SaveSearchSelect2Context extends CentreonContext
         }
         $choice->press();
         $this->spin(
-            function ($context) {
-                return count($context->getSession()->getPage()
-                        ->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
-            }
+            fn($context) => (is_countable($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) ? count($context->getSession()->getPage()
+                    ->findAll('css', '.select2-container--open li.select2-results__option')) : 0) == 4
         );
     }
 

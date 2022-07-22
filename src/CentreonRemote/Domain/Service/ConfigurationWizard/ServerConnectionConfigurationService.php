@@ -30,9 +30,6 @@ use CentreonRemote\Domain\Resources\RemoteConfig\BamBrokerCfgInfo;
 
 abstract class ServerConnectionConfigurationService
 {
-    /** @var CentreonDBAdapter */
-    protected $dbAdapter;
-
     /** @var string|null */
     protected $serverIp;
 
@@ -60,9 +57,8 @@ abstract class ServerConnectionConfigurationService
     /** @var int|null */
     protected $brokerID = null;
 
-    public function __construct(CentreonDBAdapter $dbAdapter)
+    public function __construct(protected CentreonDBAdapter $dbAdapter)
     {
-        $this->dbAdapter = $dbAdapter;
     }
 
     abstract protected function insertConfigCentreonBroker(int $serverID): void;
@@ -175,7 +171,7 @@ abstract class ServerConnectionConfigurationService
         $this->getDbAdapter()->query($sql);
         $results = $this->getDbAdapter()->results();
 
-        if (count($results) < 2) {
+        if ((is_countable($results) ? count($results) : 0) < 2) {
             throw new \Exception('Resources records from `cfg_resource` could not be fetched.');
         }
 
@@ -239,7 +235,7 @@ abstract class ServerConnectionConfigurationService
     {
         try {
             $result = $this->getDbAdapter()->insert($table, $data);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->getDbAdapter()->rollBack();
             throw new \Exception("Error inserting remote configuration. Rolling back. Table name: {$table}.");
         }

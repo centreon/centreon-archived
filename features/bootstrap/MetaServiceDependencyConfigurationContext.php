@@ -9,83 +9,21 @@ class MetaServiceDependencyConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $metaService1 = array(
-        'name' => 'metaService1Name',
-        'max_check_attempts' => 12
-    );
+    protected $metaService1 = ['name' => 'metaService1Name', 'max_check_attempts' => 12];
 
-    protected $metaService2 = array(
-        'name' => 'metaService2Name',
-        'max_check_attempts' => 3
-    );
+    protected $metaService2 = ['name' => 'metaService2Name', 'max_check_attempts' => 3];
 
-    protected $metaService3 = array(
-        'name' => 'metaService3Name',
-        'max_check_attempts' => 40
-    );
+    protected $metaService3 = ['name' => 'metaService3Name', 'max_check_attempts' => 40];
 
-    protected $metaService4 = array(
-        'name' => 'metaService4Name',
-        'max_check_attempts' => 9
-    );
+    protected $metaService4 = ['name' => 'metaService4Name', 'max_check_attempts' => 9];
 
-    protected $metaService5 = array(
-        'name' => 'metaService5Name',
-        'max_check_attempts' => 21
-    );
+    protected $metaService5 = ['name' => 'metaService5Name', 'max_check_attempts' => 21];
 
-    protected $metaService6 = array(
-        'name' => 'metaService6Name',
-        'max_check_attempts' => 4
-    );
+    protected $metaService6 = ['name' => 'metaService6Name', 'max_check_attempts' => 4];
 
-    protected $initialProperties = array(
-        'name' => 'metaServiceDependencyName',
-        'description' => 'metaServiceDependencyDescription',
-        'parent_relationship' => 0,
-        'execution_fails_on_ok' => 1,
-        'execution_fails_on_warning' => 1,
-        'execution_fails_on_unknown' => 1,
-        'execution_fails_on_critical' => 1,
-        'execution_fails_on_pending' => 1,
-        'execution_fails_on_none' => 0,
-        'notification_fails_on_none' => 1,
-        'notification_fails_on_ok' => 0,
-        'notification_fails_on_warning' => 0,
-        'notification_fails_on_unknown' => 0,
-        'notification_fails_on_critical' => 0,
-        'notification_fails_on_pending' => 0,
-        'meta_services' => array(
-            'metaService1Name',
-            'metaService2Name'
-        ),
-        'dependent_meta_services' => 'metaService3Name',
-        'comment' => 'metaServiceDependencyComment'
-    );
+    protected $initialProperties = ['name' => 'metaServiceDependencyName', 'description' => 'metaServiceDependencyDescription', 'parent_relationship' => 0, 'execution_fails_on_ok' => 1, 'execution_fails_on_warning' => 1, 'execution_fails_on_unknown' => 1, 'execution_fails_on_critical' => 1, 'execution_fails_on_pending' => 1, 'execution_fails_on_none' => 0, 'notification_fails_on_none' => 1, 'notification_fails_on_ok' => 0, 'notification_fails_on_warning' => 0, 'notification_fails_on_unknown' => 0, 'notification_fails_on_critical' => 0, 'notification_fails_on_pending' => 0, 'meta_services' => ['metaService1Name', 'metaService2Name'], 'dependent_meta_services' => 'metaService3Name', 'comment' => 'metaServiceDependencyComment'];
 
-    protected $updatedProperties = array(
-        'name' => 'metaServiceDependencyNameChanged',
-        'description' => 'metaServiceDependencyDescriptionChanged',
-        'parent_relationship' => 1,
-        'execution_fails_on_pending' => 0,
-        'execution_fails_on_none' => 1,
-        'execution_fails_on_ok' => 0,
-        'execution_fails_on_warning' => 0,
-        'execution_fails_on_unknown' => 0,
-        'execution_fails_on_critical' => 0,
-        'notification_fails_on_ok' => 1,
-        'notification_fails_on_warning' => 1,
-        'notification_fails_on_unknown' => 1,
-        'notification_fails_on_critical' => 1,
-        'notification_fails_on_pending' => 1,
-        'notification_fails_on_none' => 0,
-        'meta_services' => 'metaService4Name',
-        'dependent_meta_services' => array(
-            'metaService5Name',
-            'metaService6Name'
-        ),
-        'comment' => 'metaServiceDependencyCommentChanged'
-    );
+    protected $updatedProperties = ['name' => 'metaServiceDependencyNameChanged', 'description' => 'metaServiceDependencyDescriptionChanged', 'parent_relationship' => 1, 'execution_fails_on_pending' => 0, 'execution_fails_on_none' => 1, 'execution_fails_on_ok' => 0, 'execution_fails_on_warning' => 0, 'execution_fails_on_unknown' => 0, 'execution_fails_on_critical' => 0, 'notification_fails_on_ok' => 1, 'notification_fails_on_warning' => 1, 'notification_fails_on_unknown' => 1, 'notification_fails_on_critical' => 1, 'notification_fails_on_pending' => 1, 'notification_fails_on_none' => 0, 'meta_services' => 'metaService4Name', 'dependent_meta_services' => ['metaService5Name', 'metaService6Name'], 'comment' => 'metaServiceDependencyCommentChanged'];
 
     /**
      * @Given a meta service dependency
@@ -131,7 +69,7 @@ class MetaServiceDependencyConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -148,12 +86,12 @@ class MetaServiceDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -177,7 +115,7 @@ class MetaServiceDependencyConfigurationContext extends CentreonContext
      */
     public function theNewObjectHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -194,12 +132,12 @@ class MetaServiceDependencyConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }

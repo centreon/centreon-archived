@@ -26,7 +26,6 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 class ExportParserJson implements ExportParserInterface
 {
     /**
-     * @param string $filename
      * @param callable|null $macros
      * @return array<mixed>
      */
@@ -43,14 +42,13 @@ class ExportParserJson implements ExportParserInterface
         }
 
         // true to return array
-        $value = json_decode($content, true);
+        $value = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
         return $value;
     }
 
     /**
      * @param string[] $input
-     * @param string $filename
      */
     public function dump(array $input, string $filename): void
     {
@@ -58,7 +56,7 @@ class ExportParserJson implements ExportParserInterface
             return;
         }
 
-        $json = json_encode($input);
+        $json = json_encode($input, JSON_THROW_ON_ERROR);
 
         file_put_contents($filename, $json);
     }

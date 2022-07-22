@@ -27,7 +27,6 @@ use Symfony\Component\Yaml\Yaml;
 class ExportParserYaml implements ExportParserInterface
 {
     /**
-     * @param string $filename
      * @param callable|null $macros
      * @return array<mixed>
      */
@@ -50,7 +49,6 @@ class ExportParserYaml implements ExportParserInterface
 
     /**
      * @param string[] $input
-     * @param string $filename
      */
     public function dump(array $input, string $filename): void
     {

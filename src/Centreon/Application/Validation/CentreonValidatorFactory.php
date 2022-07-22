@@ -46,11 +46,6 @@ use Pimple\Container;
 class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
 {
     /**
-     * @var \Pimple\Container
-     */
-    protected $container;
-
-    /**
      * @var array
      */
     protected $validators = [];
@@ -60,9 +55,8 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
      *
      * @param \Pimple\Container $container
      */
-    public function __construct(Container $container)
+    public function __construct(protected Container $container)
     {
-        $this->container = $container;
     }
 
     /**

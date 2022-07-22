@@ -38,25 +38,11 @@ class ReloadAllConfigurations
     use LoggerTrait;
 
     /**
-     * @var MonitoringServerConfigurationRepositoryInterface
-     */
-    private $configurationRepository;
-
-     /**
-     * @var MonitoringServerRepositoryInterface
-     */
-    private $monitoringServerRepository;
-
-    /**
      * @param MonitoringServerRepositoryInterface $monitoringServerRepository
      * @param MonitoringServerConfigurationRepositoryInterface $configurationRepository
      */
-    public function __construct(
-        MonitoringServerRepositoryInterface $monitoringServerRepository,
-        MonitoringServerConfigurationRepositoryInterface $configurationRepository
-    ) {
-        $this->monitoringServerRepository = $monitoringServerRepository;
-        $this->configurationRepository = $configurationRepository;
+    public function __construct(private readonly MonitoringServerRepositoryInterface $monitoringServerRepository, private readonly MonitoringServerConfigurationRepositoryInterface $configurationRepository)
+    {
     }
 
     /**

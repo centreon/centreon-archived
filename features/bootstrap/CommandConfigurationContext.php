@@ -8,29 +8,9 @@ class CommandConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $initialProperties = array(
-        'command_name' => 'aCommandName',
-        'command_type' => 3,
-        'command_line' => 'commandLine',
-        'enabled_shell' => 1,
-        'argument_example' => 'commandArgumentExample',
-        'connectors' => 'Perl Connector',
-        'graph_template' => 'Storage',
-        'enabled' => 1,
-        'comment' => 'commandComment'
-    );
+    protected $initialProperties = ['command_name' => 'aCommandName', 'command_type' => 3, 'command_line' => 'commandLine', 'enabled_shell' => 1, 'argument_example' => 'commandArgumentExample', 'connectors' => 'Perl Connector', 'graph_template' => 'Storage', 'enabled' => 1, 'comment' => 'commandComment'];
 
-    protected $updatedProperties = array(
-        'command_name' => 'aCommandNameChanged',
-        'command_type' => 4,
-        'command_line' => 'commandLineChanged',
-        'enabled_shell' => 0,
-        'argument_example' => 'commandArgumentExampleChanged',
-        'connectors' => 'SSH Connector',
-        'graph_template' => 'Memory',
-        'enabled' => 1,
-        'comment' => 'commandCommentChanged'
-    );
+    protected $updatedProperties = ['command_name' => 'aCommandNameChanged', 'command_type' => 4, 'command_line' => 'commandLineChanged', 'enabled_shell' => 0, 'argument_example' => 'commandArgumentExampleChanged', 'connectors' => 'SSH Connector', 'graph_template' => 'Memory', 'enabled' => 1, 'comment' => 'commandCommentChanged'];
 
     /**
      * @Given a command is configured
@@ -58,7 +38,7 @@ class CommandConfigurationContext extends CentreonContext
      */
     public function thePropertiesAreUpdated()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -75,12 +55,12 @@ class CommandConfigurationContext extends CentreonContext
                             }
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -104,7 +84,7 @@ class CommandConfigurationContext extends CentreonContext
      */
     public function theNewCommandHasTheSameProperties()
     {
-        $this->tableau = array();
+        $this->tableau = [];
         try {
             $this->spin(
                 function ($context) {
@@ -124,12 +104,12 @@ class CommandConfigurationContext extends CentreonContext
                             $this->tableau[] = $key;
                         }
                     }
-                    return count($this->tableau) == 0;
+                    return (is_countable($this->tableau) ? count($this->tableau) : 0) == 0;
                 },
                 "Some properties are not being updated : ",
                 5
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
@@ -175,9 +155,7 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['command_name']);
-        $this->currentPage->setProperties(array(
-            'command_type' => 2
-        ));
+        $this->currentPage->setProperties(['command_type' => 2]);
         $this->currentPage->save();
     }
 
@@ -203,9 +181,7 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['command_name']);
-        $this->currentPage->setProperties(array(
-            'command_type' => 1
-        ));
+        $this->currentPage->setProperties(['command_type' => 1]);
         $this->currentPage->save();
     }
 
@@ -225,9 +201,7 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['command_name']);
-        $this->currentPage->setProperties(array(
-            'command_type' => 3
-        ));
+        $this->currentPage->setProperties(['command_type' => 3]);
         $this->currentPage->save();
     }
 
@@ -247,9 +221,7 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['command_name']);
-        $this->currentPage->setProperties(array(
-            'command_type' => 4
-        ));
+        $this->currentPage->setProperties(['command_type' => 4]);
         $this->currentPage->save();
     }
 

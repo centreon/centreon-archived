@@ -25,10 +25,7 @@ class CommandArgumentsContext extends CentreonContext
     public function aServiceBeingConfigured()
     {
         $this->currentPage = new ServiceConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'hosts' => $this->serviceHostName,
-            'description' => $this->serviceName
-        ));
+        $this->currentPage->setProperties(['hosts' => $this->serviceHostName, 'description' => $this->serviceName]);
     }
 
     /**
@@ -36,9 +33,7 @@ class CommandArgumentsContext extends CentreonContext
      */
     public function iSelectACheckCommand()
     {
-        $this->currentPage->setProperties(array(
-            'check_command' => 'check_centreon_dummy'
-        ));
+        $this->currentPage->setProperties(['check_command' => 'check_centreon_dummy']);
         sleep(2);
     }
 
@@ -72,8 +67,6 @@ class CommandArgumentsContext extends CentreonContext
     public function aHostBeingConfigured()
     {
         $this->currentPage = new HostConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->hostName
-        ));
+        $this->currentPage->setProperties(['name' => $this->hostName]);
     }
 }

@@ -75,7 +75,7 @@ class Centreon_Object_Contact extends \Centreon_Object
             }
             $sqlFields .= $key;
             $sqlValues .= "?";
-            $sqlParams[] = trim($value);
+            $sqlParams[] = trim((string) $value);
         }
         if ($sqlFields && $sqlValues) {
             $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
@@ -99,7 +99,7 @@ class Centreon_Object_Contact extends \Centreon_Object
         $offset = 0,
         $order = null,
         $sort = "ASC",
-        $filters = array(),
+        $filters = [],
         $filterType = "OR"
     ) {
         if ($filterType != "OR" && $filterType != "AND") {
@@ -117,7 +117,7 @@ class Centreon_Object_Contact extends \Centreon_Object
             $params = $parameterNames;
         }
         $sql = "SELECT $params FROM $this->table";
-        $filterTab = array();
+        $filterTab = [];
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (!count($filterTab)) {
@@ -130,7 +130,7 @@ class Centreon_Object_Contact extends \Centreon_Object
                     $filterTab = array_merge($filterTab, $rawvalue);
                 } else {
                     $sql .= ' LIKE ? ';
-                    $value = trim($rawvalue);
+                    $value = trim((string) $rawvalue);
                     $value = str_replace("\\", "\\\\", $value);
                     $value = str_replace("_", "\_", $value);
                     $value = str_replace(" ", "\ ", $value);
@@ -166,12 +166,12 @@ class Centreon_Object_Contact extends \Centreon_Object
     /**
      * @inheritDoc
      */
-    public function update($contactId, $params = array())
+    public function update($contactId, $params = [])
     {
         $sql = "UPDATE $this->table SET ";
         $sqlUpdate = "";
-        $sqlParams = array();
-        $not_null_attributes = array();
+        $sqlParams = [];
+        $not_null_attributes = [];
 
         // Store password value and remove it from the array to not inserting it in contact table.
         if (isset($params['contact_passwd'])) {
@@ -187,7 +187,7 @@ class Centreon_Object_Contact extends \Centreon_Object
             $statement->execute();
             if (
                 ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-                && password_verify($params['contact_autologin_key'], $result['password'])
+                && password_verify((string) $params['contact_autologin_key'], (string) $result['password'])
             ) {
                 throw new \Exception(_('Your autologin key must be different than your current password'));
             }
@@ -195,7 +195,7 @@ class Centreon_Object_Contact extends \Centreon_Object
 
         if (array_search("", $params)) {
             $sql_attr = "SHOW FIELDS FROM $this->table";
-            $res = $this->getResult($sql_attr, array(), "fetchAll");
+            $res = $this->getResult($sql_attr, [], "fetchAll");
             foreach ($res as $tab) {
                 if ($tab['Null'] == 'NO') {
                     $not_null_attributes[$tab['Field']] = true;
@@ -215,7 +215,7 @@ class Centreon_Object_Contact extends \Centreon_Object
                 $value = null;
             }
             if (!is_null($value)) {
-                $value = str_replace("<br/>", "\n", $value);
+                $value = str_replace("<br/>", "\n", (string) $value);
             }
             $sqlParams[] = $value;
         }

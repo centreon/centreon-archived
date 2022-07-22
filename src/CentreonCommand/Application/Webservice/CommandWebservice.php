@@ -158,7 +158,7 @@ class CommandWebservice extends Webservice\WebServiceAbstract implements
         }
 
         if (isset($request['searchByIds']) && $request['searchByIds']) {
-            $filters['ids'] = explode(',', $request['searchByIds']);
+            $filters['ids'] = explode(',', (string) $request['searchByIds']);
         }
 
         if (isset($request['type']) && $request['type']) {

@@ -49,8 +49,6 @@ class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements
 
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -82,10 +80,8 @@ class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements
      *     description="JSON with the external react components (pages, hooks)"
      *   )
      * )
-     *
      * Get list with remote components
      *
-     * @return array
      * @example [
      *            ['pages' => [
      *              '/my/module/route' => [
@@ -115,8 +111,6 @@ class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements
 
     /**
      * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
      */
     public function setDi(Container $di)
     {

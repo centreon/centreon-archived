@@ -100,7 +100,7 @@ class RestApiContext extends CentreonContext
         if (!($this->retval == 0)) {
             copy(
                 $this->logfile,
-                $this->composeFiles['log_directory'] . '/' . basename($this->logfile) . '.txt'
+                $this->composeFiles['log_directory'] . '/' . basename((string) $this->logfile) . '.txt'
             );
             unlink($this->logfile);
             throw new \Exception(

@@ -45,7 +45,7 @@ class Step2 extends AbstractStep
 
         $libs = $this->getPhpLib();
         $validate = true;
-        if (count($libs['unloaded'])) {
+        if (is_countable($libs['unloaded']) ? count($libs['unloaded']) : 0) {
             $validate = false;
         }
 
@@ -58,10 +58,7 @@ class Step2 extends AbstractStep
 
     private function getPhpLib()
     {
-        $libs = array(
-            'loaded' => array(),
-            'unloaded' => array()
-        );
+        $libs = ['loaded' => [], 'unloaded' => []];
 
         $requiredLib = explode(
             "\n",
@@ -72,7 +69,7 @@ class Step2 extends AbstractStep
                 continue;
             }
 
-            list($name, $lib) = explode(":", $line);
+            [$name, $lib] = explode(":", $line);
 
             if (extension_loaded($lib)) {
                 $libs['loaded'][$name] = $lib . '.so';
@@ -82,7 +79,7 @@ class Step2 extends AbstractStep
         }
 
         if (!ini_get('date.timezone')) {
-            $libs['unloaded']['Timezone'] = _("Set the default timezone in php.ini file");
+            $libs['unloaded'][\Timezone::class] = _("Set the default timezone in php.ini file");
         }
 
         return $libs;

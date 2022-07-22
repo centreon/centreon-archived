@@ -39,17 +39,10 @@ class Information
 {
     /**
      *
-     * @var \Pimple\Container
-     */
-    protected $dependencyInjector;
-
-    /**
-     *
      * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct(protected \Pimple\Container $dependencyInjector)
     {
-        $this->dependencyInjector = $dependencyInjector;
     }
 
     public function getStep()
@@ -58,7 +51,7 @@ class Information
 
         $stepFile = __DIR__ . '/../../../../www/install/tmp/step.json';
         if ($this->dependencyInjector['filesystem']->exists($stepFile)) {
-            $content = json_decode(file_get_contents($stepFile), true);
+            $content = json_decode(file_get_contents($stepFile), true, 512, JSON_THROW_ON_ERROR);
             if (isset($content['step'])) {
                 $step = $content['step'];
             }
@@ -75,9 +68,7 @@ class Information
         }
 
         $stepFile = $stepDir . '/step.json';
-        file_put_contents($stepFile, json_encode(array(
-            'step' => $step
-        )));
+        file_put_contents($stepFile, json_encode(['step' => $step], JSON_THROW_ON_ERROR));
     }
 
     public function getStepContent()

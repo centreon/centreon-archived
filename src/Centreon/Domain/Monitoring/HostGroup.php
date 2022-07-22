@@ -32,23 +32,17 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 class HostGroup implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
-    public const SERIALIZER_GROUP_MAIN = 'hg_main';
-    public const SERIALIZER_GROUP_WITH_HOST = 'hg_with_host';
+    final public const SERIALIZER_GROUP_MAIN = 'hg_main';
+    final public const SERIALIZER_GROUP_WITH_HOST = 'hg_with_host';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var Host[]
      */
-    private $hosts = [];
+    private array $hosts = [];
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name = null;
 
     /**
      * {@inheritdoc}
@@ -60,46 +54,28 @@ class HostGroup implements EntityDescriptorMetadataInterface
         ];
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return HostGroup
-     */
     public function setId(int $id): HostGroup
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return HostGroup
-     */
     public function setName(?string $name): HostGroup
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @param Host $host
-     * @return HostGroup
-     */
     public function addHost(Host $host): HostGroup
     {
         $this->hosts[] = $host;
@@ -118,7 +94,6 @@ class HostGroup implements EntityDescriptorMetadataInterface
      * Indicates if a host exists in this host group.
      *
      * @param int $hostId Host id to find
-     * @return bool
      */
     public function isHostExists(int $hostId): bool
     {
@@ -132,7 +107,6 @@ class HostGroup implements EntityDescriptorMetadataInterface
 
     /**
      * @param Host[] $hosts
-     * @return HostGroup
      */
     public function setHosts(array $hosts): HostGroup
     {

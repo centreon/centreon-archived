@@ -43,10 +43,7 @@ use CentreonModule\Application\DataRepresenter\ModuleEntity;
 
 class UpdateActionTest extends TestCase
 {
-    /**
-     * @var Module
-     */
-    private $entity;
+    private \CentreonModule\Infrastructure\Entity\Module $entity;
 
     public function setUp(): void
     {

@@ -42,11 +42,6 @@ use CentreonLegacy\ServiceProvider;
 class Information
 {
     /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $services;
-    
-    /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
@@ -72,9 +67,8 @@ class Information
      * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
-    public function __construct(ContainerInterface $services, Utils $utils = null)
+    public function __construct(protected ContainerInterface $services, Utils $utils = null)
     {
-        $this->services = $services;
         $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
 
@@ -94,7 +88,7 @@ class Information
         $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
         $conf['directory'] = $widgetDirectory;
-        $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
+        $conf['autoRefresh'] ??= 0;
 
         return $conf;
     }
@@ -105,7 +99,7 @@ class Information
      */
     public function getTypes()
     {
-        $types = array();
+        $types = [];
 
         $query = 'SELECT ft_typename, field_type_id ' .
             'FROM widget_parameters_field_type ';
@@ -113,10 +107,7 @@ class Information
         $result = $this->services->get('configuration_db')->query($query);
 
         while ($row = $result->fetchRow()) {
-            $types[$row['ft_typename']] = array(
-                'id' => $row['field_type_id'],
-                'name' => $row['ft_typename']
-            );
+            $types[$row['ft_typename']] = ['id' => $row['field_type_id'], 'name' => $row['ft_typename']];
         }
 
         return $types;
@@ -169,7 +160,7 @@ class Information
         $sth->bindParam(':id', $widgetId, \PDO::PARAM_INT);
         $sth->execute();
 
-        $parameters = array();
+        $parameters = [];
         while ($row = $sth->fetch()) {
             $parameters[$row['parameter_code_name']] = $row;
         }
@@ -215,10 +206,10 @@ class Information
 
         $widgets = $result->fetchAll();
 
-        $installedWidgets = array();
+        $installedWidgets = [];
         foreach ($widgets as $widget) {
             // we use lowercase to avoid problems if directory name have some letters in uppercase
-            $installedWidgets[strtolower($widget['directory'])] = $widget;
+            $installedWidgets[strtolower((string) $widget['directory'])] = $widget;
         }
 
         return $installedWidgets;
@@ -231,14 +222,14 @@ class Information
      */
     public function getAvailableList($search = '')
     {
-        $widgetsConf = array();
+        $widgetsConf = [];
 
         $widgetsPath = $this->getWidgetPath();
         $widgets = $this->services->get('finder')->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
             $widgetDirectory = $widget->getBasename();
-            if (!empty($search) && !stristr($widgetDirectory, $search)) {
+            if (!empty($search) && !stristr((string) $widgetDirectory, $search)) {
                 continue;
             }
 
@@ -248,7 +239,7 @@ class Information
             }
 
             // we use lowercase to avoid problems if directory name have some letters in uppercase
-            $widgetsConf[strtolower($widgetDirectory)] = $this->getConfiguration($widgetDirectory);
+            $widgetsConf[strtolower((string) $widgetDirectory)] = $this->getConfiguration($widgetDirectory);
         }
 
         return $widgetsConf;
@@ -263,7 +254,7 @@ class Information
         $installedWidgets = $this->getInstalledList();
         $availableWidgets = $this->getAvailableList();
 
-        $widgets = array();
+        $widgets = [];
 
         foreach ($availableWidgets as $name => $properties) {
             $widgets[$name] = $properties;
@@ -354,9 +345,7 @@ class Information
     {
         $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
 
-        return array_filter($list, function ($widget) {
-            return $widget['upgradeable'];
-        });
+        return array_filter($list, fn($widget) => $widget['upgradeable']);
     }
 
     public function hasWidgetsForInstallation()
@@ -368,8 +357,6 @@ class Information
     {
         $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
 
-        return array_filter($list, function ($widget) {
-            return !$widget['is_installed'];
-        });
+        return array_filter($list, fn($widget) => !$widget['is_installed']);
     }
 }

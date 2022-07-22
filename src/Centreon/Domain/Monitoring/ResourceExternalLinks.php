@@ -31,28 +31,15 @@ use Centreon\Domain\Monitoring\Notes;
  */
 class ResourceExternalLinks
 {
-    /**
-     * @var string|null
-     */
-    private $actionUrl;
+    private ?string $actionUrl = null;
 
-    /**
-     * @var Notes|null
-     */
-    private $notes;
+    private ?\Centreon\Domain\Monitoring\Notes $notes = null;
 
-    /**
-     * @return string|null
-     */
     public function getActionUrl(): ?string
     {
         return $this->actionUrl;
     }
 
-    /**
-     * @param string|null $actionUrl
-     * @return self
-     */
     public function setActionUrl(?string $actionUrl): self
     {
         $this->actionUrl = $actionUrl;
@@ -60,18 +47,11 @@ class ResourceExternalLinks
         return $this;
     }
 
-    /**
-     * @return Notes|null
-     */
     public function getNotes(): ?Notes
     {
         return $this->notes;
     }
 
-    /**
-     * @param Notes|null $notes
-     * @return self
-     */
     public function setNotes(?Notes $notes): self
     {
         $this->notes = $notes;

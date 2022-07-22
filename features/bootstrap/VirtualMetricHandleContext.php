@@ -22,11 +22,8 @@ class VirtualMetricHandleContext extends CentreonContext
         $this->page = new MetricsConfigurationListingPage($this);
         $this->assertFind('css', 'a[class="btc bt_success"]')->click();
         $this->page = new MetricsConfigurationPage($this);
-        $this->page->setProperties(array(
-            'name' => $this->vmName,
-            'linked-host_services' => $this->host . ' - ' . $this->hostService
-        ));
-        $this->page->setProperties(array('function' => $this->functionRPN));
+        $this->page->setProperties(['name' => $this->vmName, 'linked-host_services' => $this->host . ' - ' . $this->hostService]);
+        $this->page->setProperties(['function' => $this->functionRPN]);
         $this->page->save();
     }
 

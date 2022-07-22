@@ -63,7 +63,6 @@ class ModulesInformationsRepository extends ServiceEntityRepository
     /**
      * Get id by name
      * @param string $name
-     * @return int|null
      */
     public function findIdByName($name): ?int
     {

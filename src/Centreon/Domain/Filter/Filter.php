@@ -32,99 +32,71 @@ class Filter
     /**
      * @var int|null Unique id of the filter
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null Name of the filter
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var int|null User id
      */
-    private $userId;
+    private ?int $userId = null;
 
     /**
      * @var string|null Page name
      */
-    private $pageName;
+    private ?string $pageName = null;
 
     /**
      * @var FilterCriteria[] Criterias
      */
-    private $criterias = [];
+    private array $criterias = [];
 
     /**
      * @var int|null Order
      */
-    private $order;
+    private ?int $order = null;
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     * @return Filter
-     */
     public function setId(?int $id): Filter
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return Filter
-     */
     public function setName(?string $name): Filter
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /**
-     * @param int|null $userId
-     * @return Filter
-     */
     public function setUserId(?int $userId): Filter
     {
         $this->userId = $userId;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPageName(): ?string
     {
         return $this->pageName;
     }
 
-    /**
-     * @param string|null $pageName
-     * @return Filter
-     */
     public function setPageName(?string $pageName): Filter
     {
         $this->pageName = $pageName;
@@ -141,7 +113,6 @@ class Filter
 
     /**
      * @param FilterCriteria[] $criterias
-     * @return Filter
      */
     public function setCriterias(array $criterias): Filter
     {
@@ -149,18 +120,11 @@ class Filter
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getOrder(): ?int
     {
         return $this->order;
     }
 
-    /**
-     * @param int|null $order
-     * @return Filter
-     */
     public function setOrder(?int $order): Filter
     {
         $this->order = $order;

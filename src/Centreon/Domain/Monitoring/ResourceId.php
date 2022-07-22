@@ -30,30 +30,17 @@ namespace Centreon\Domain\Monitoring;
 class ResourceId
 {
     // Groups for serializing
-    public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
+    final public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var int|null
-     */
-    private $parentId;
+    private ?int $parentId = null;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return ResourceId
-     */
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -61,18 +48,11 @@ class ResourceId
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getParentId(): ?int
     {
         return $this->parentId;
     }
 
-    /**
-     * @param int|null $parentId
-     * @return ResourceId
-     */
     public function setParentId(?int $parentId): self
     {
         $this->parentId = $parentId;

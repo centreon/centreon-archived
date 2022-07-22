@@ -61,67 +61,45 @@ trait SourceDependencyTrait
 
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE]->method('getLicenseExpiration')->willReturn(null);
 
-        $container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (Container $container) {
-            return function ($moduleName) {
-                return $this->getMockBuilder(Module\Installer::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
-            };
+        $container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = fn(Container $container) => fn($moduleName) => $this->getMockBuilder(Module\Installer::class)
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        $container[ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER] = fn(Container $container) => fn($moduleName, $moduleId) => $this->getMockBuilder(Module\Upgrader::class)
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        $container[ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER] = fn(Container $container) => function ($moduleName, $moduleId) {
+            $service = $this->getMockBuilder(Module\Remover::class)
+                ->disableOriginalConstructor()
+                ->onlyMethods([
+                    'remove',
+                ])
+                ->getMock();
+
+            // mock remove to dump moduleName and moduleId
+            $service
+                ->method('remove')
+                ->will($this->returnCallback(function () use ($moduleName, $moduleId) {
+                    if ($moduleName !== ModuleSourceTest::$moduleName) {
+                        throw new \Exception($moduleName, (int) $moduleId);
+                    }
+                }))
+            ;
+
+            return $service;
         };
 
-        $container[ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER] = function (Container $container) {
-            return function ($moduleName, $moduleId) {
-                return $this->getMockBuilder(Module\Upgrader::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
-            };
-        };
+        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER] = fn(Container $container) => fn($widgetDirectory) => $this->getMockBuilder(Widget\Installer::class)
+                ->disableOriginalConstructor()
+                ->getMock();
 
-        $container[ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER] = function (Container $container) {
-            return function ($moduleName, $moduleId) {
-                $service = $this->getMockBuilder(Module\Remover::class)
-                    ->disableOriginalConstructor()
-                    ->onlyMethods([
-                        'remove',
-                    ])
-                    ->getMock();
+        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER] = fn(Container $container) => fn($widgetDirectory) => $this->getMockBuilder(Widget\Upgrader::class)
+                ->disableOriginalConstructor()
+                ->getMock();
 
-                // mock remove to dump moduleName and moduleId
-                $service
-                    ->method('remove')
-                    ->will($this->returnCallback(function () use ($moduleName, $moduleId) {
-                        if ($moduleName !== ModuleSourceTest::$moduleName) {
-                            throw new \Exception($moduleName, (int) $moduleId);
-                        }
-                    }))
-                ;
-
-                return $service;
-            };
-        };
-
-        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER] = function (Container $container) {
-            return function ($widgetDirectory) {
-                return $this->getMockBuilder(Widget\Installer::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
-            };
-        };
-
-        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER] = function (Container $container) {
-            return function ($widgetDirectory) {
-                return $this->getMockBuilder(Widget\Upgrader::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
-            };
-        };
-
-        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER] = function (Container $container) {
-            return function ($widgetDirectory) {
-                return $this->getMockBuilder(Widget\Remover::class)
-                        ->disableOriginalConstructor()
-                        ->getMock();
-            };
-        };
+        $container[ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER] = fn(Container $container) => fn($widgetDirectory) => $this->getMockBuilder(Widget\Remover::class)
+                ->disableOriginalConstructor()
+                ->getMock();
     }
 }

@@ -31,8 +31,6 @@ class ExporterCacheService
     /**
      * Get info if exists and if not add it using callback function
      *
-     * @param string $key
-     * @param callable $data
      * @return mixed
      */
     public function getIf(string $key, callable $data)
@@ -49,7 +47,6 @@ class ExporterCacheService
     /**
      * Setter
      *
-     * @param string $key
      * @param mixed $data
      */
     public function set(string $key, $data): void
@@ -60,7 +57,6 @@ class ExporterCacheService
     /**
      * Merge
      *
-     * @param string $key
      * @param mixed $data
      */
     public function merge(string $key, $data): void
@@ -72,10 +68,6 @@ class ExporterCacheService
         }
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
     public function has(string $key): bool
     {
         $result = $this->data === null ? false : array_key_exists($key, $this->data);
@@ -86,7 +78,6 @@ class ExporterCacheService
     /**
      * Getter
      *
-     * @param string $key
      * @return mixed
      */
     public function get(string $key)

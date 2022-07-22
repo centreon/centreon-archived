@@ -27,33 +27,13 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function iHaveAccessToAllMenus()
     {
         $this->currentPage = new ContactConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'name' => $this->nonAdminName,
-            'alias' => $this->nonAdminName,
-            'email' => "contact@localhost",
-            'password' => $this->nonAdminPwd,
-            'password2' => $this->nonAdminPwd,
-            'admin' => 0
-        ));
+        $this->currentPage->setProperties(['name' => $this->nonAdminName, 'alias' => $this->nonAdminName, 'email' => "contact@localhost", 'password' => $this->nonAdminPwd, 'password2' => $this->nonAdminPwd, 'admin' => 0]);
         $this->currentPage->save();
         $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'group_name' => 'myACLGroupName',
-            'group_alias' => 'myACLGroupAlias',
-            'contacts' => $this->nonAdminName
-        ));
+        $this->currentPage->setProperties(['group_name' => 'myACLGroupName', 'group_alias' => 'myACLGroupAlias', 'contacts' => $this->nonAdminName]);
         $this->currentPage->save();
         $this->currentPage = new ACLMenuConfigurationPage($this);
-        $this->currentPage->setProperties(array(
-            'acl_name' => 'myACLMenuName',
-            'acl_alias' => 'myACLMenuAlias',
-            'acl_groups' => 'myACLGroupName',
-            'menu_home' => 1,
-            'menu_monitoring' => 1,
-            'menu_reporting' => 1,
-            'menu_configuration' => 1,
-            'menu_administration' => 1
-        ));
+        $this->currentPage->setProperties(['acl_name' => 'myACLMenuName', 'acl_alias' => 'myACLMenuAlias', 'acl_groups' => 'myACLGroupName', 'menu_home' => 1, 'menu_monitoring' => 1, 'menu_reporting' => 1, 'menu_configuration' => 1, 'menu_administration' => 1]);
         $this->currentPage->save();
     }
 

@@ -43,18 +43,12 @@ use ReflectionClass;
 class Entity implements JsonSerializable
 {
     /**
-     * @var mixed
-     */
-    private $entity;
-
-    /**
      * Construct
      *
      * @param mixed $entity
      */
-    public function __construct($entity)
+    public function __construct(private $entity)
     {
-        $this->entity = $entity;
     }
 
     /**
@@ -68,13 +62,12 @@ class Entity implements JsonSerializable
     }
 
     /**
-     * @param object $object
      * @return array<mixed>
      * @throws \ReflectionException
      */
     public static function dismount(object $object): array
     {
-        $reflectionClass = new ReflectionClass(get_class($object));
+        $reflectionClass = new ReflectionClass($object::class);
         $array = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
