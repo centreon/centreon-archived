@@ -77,6 +77,7 @@ ehthumbs_vista.db
 lighthouse/report
 lighthouse/build
 manifest.json
+cypress/results
 
 !config/packages/serializer/Centreon/
 config/packages/serializer/Centreon*
