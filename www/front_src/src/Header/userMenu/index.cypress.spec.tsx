@@ -33,7 +33,7 @@ describe('User Menu', () => {
     );
   });
 
-  it.only('matches the current snapshot "user menu"', () => {
+  it('matches the current snapshot "user menu"', () => {
     cy.get('[data-testid=AccountCircleIcon]')
       .as('userIcon')
       .should('be.visible');
