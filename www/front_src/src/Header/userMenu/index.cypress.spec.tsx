@@ -34,47 +34,36 @@ describe('User Menu', () => {
   });
 
   it.only('matches the current snapshot "user menu"', () => {
-    // Cypress.on('fail', (e) => {
-    //   console.error(e);
-    // });
+    cy.get('[data-testid=AccountCircleIcon]')
+      .as('userIcon')
+      .should('be.visible');
 
-    expect(5).to.equal(90);
-    expect('nouha').to.equal('Jane');
+    cy.get('[data-cy=clock]').as('clock').should('be.visible');
+    cy.get('@clock').contains('April 28,2022');
+    cy.get('@clock').contains('4:20 PM');
 
-    // cy.on('fail', (e) => {
-    //   console.error(e);
-    // });
-
-    // cy.get('[data-testid=AccountCircleIcon]')
-    //   .as('userIcon')
-    //   .should('be.visible');
-
-    // cy.get('[data-cy=clock]').as('clock').should('be.visible');
-    // cy.get('@clock').contains('April 28,2022');
-    // cy.get('@clock').contains('4:20 PM');
-
-    // cy.matchImageSnapshot();
+    cy.matchImageSnapshot();
   });
 
   it('expands the popper when the user icon is clicked', () => {
-    expect('nouha').to.equal('lola');
+    cy.get('[data-testid=AccountCircleIcon]').as('userIcon');
+    cy.get('@userIcon').click();
+    cy.get('[data-cy=popper]').as('popper').should('be.visible');
+    cy.get('@popper').contains('admin');
+    cy.get('@popper').contains('Dark');
+    cy.get('@popper').contains('Light');
+    cy.get('@popper').contains('Logout');
 
-    // cy.get('[data-testid=AccountCircleIcon]').as('userIcon');
-    // cy.get('@userIcon').click();
-    // cy.get('[data-cy=popper]').as('popper').should('be.visible');
-    // cy.get('@popper').contains('admin');
-    // cy.get('@popper').contains('Dark');
-    // cy.get('@popper').contains('Light');
-    // cy.get('@popper').contains('Logout');
-    // cy.matchImageSnapshot();
+    cy.matchImageSnapshot();
   });
 
-  // it('changes style when switch is clicked', () => {
-  //   cy.get('[data-testid=AccountCircleIcon]').click();
-  //   cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
-  //   cy.get('@switchMode').click();
-  //   cy.matchImageSnapshot();
-  //   cy.get('@switchMode').click();
-  //   cy.matchImageSnapshot();
-  // });
+  it('changes style when switch is clicked', () => {
+    cy.get('[data-testid=AccountCircleIcon]').click();
+    cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
+    cy.get('@switchMode').click();
+    cy.matchImageSnapshot();
+    cy.get('@switchMode').click();
+
+    cy.matchImageSnapshot();
+  });
 });
