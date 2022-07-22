@@ -10,7 +10,6 @@
   },
   "include": [
     "./www/front_src/src",
-    "./cypress.d.ts"
   ],
-  "exclude":["./cypress.config.ts"]
+  "exclude":["./www/front_src/src/**/*.spec.tsx"]
 }
