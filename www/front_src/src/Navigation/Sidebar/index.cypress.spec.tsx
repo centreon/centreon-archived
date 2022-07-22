@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 import React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -58,7 +59,7 @@ describe('Navigation menu', () => {
   });
 
   it('highlights the menu item when double clicked', () => {
-    cy.get('li').eq(1).as('element').trigger('mouseover');
+    cy.get('li').eq(0).as('element').trigger('mouseover');
     cy.get('@element').trigger('dblclick');
     cy.matchImageSnapshot();
   });
