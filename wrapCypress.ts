@@ -1,12 +1,12 @@
 const cypress = require('cypress');
 
 cypress.cli.parseRunArguments(process.argv.slice(2)).then((res) => {
-  cypress
+  return cypress
     .run(res)
     .then((testRes) => {
-      return process.exit(testRes.totalFailed);
+      process.exit(testRes.totalFailed);
     })
     .catch((err) => {
-      return process.exit(1);
+      process.exit(1);
     });
 });
