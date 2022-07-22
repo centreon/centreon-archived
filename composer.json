@@ -6,7 +6,7 @@
     "config": {
         "secure-http": false,
         "platform": {
-            "php": "8.0"
+            "php": "8.1"
         },
         "allow-plugins": {
             "pestphp/pest-plugin": false,
