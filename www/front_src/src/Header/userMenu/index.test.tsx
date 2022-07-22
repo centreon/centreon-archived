@@ -109,7 +109,7 @@ describe('User Menu', () => {
     userEvent.click(screen.getByLabelText(labelProfile));
 
     await waitFor(() => {
-      expect(screen.getByText('admi')).toBeInTheDocument();
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     await waitFor(() => {
