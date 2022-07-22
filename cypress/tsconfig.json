@@ -5,7 +5,7 @@
         "lib": ["es5", "dom"],
         "types": ["cypress", "@testing-library/cypress"],
       },
-    "include": ["../www/front_src/src/**/*.cypress.spec.tsx"],
+    "include": ["../cypress.config.ts","../cypress.d.ts"],
      "exclude": []
 }
 

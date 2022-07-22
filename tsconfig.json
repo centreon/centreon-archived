@@ -6,10 +6,11 @@
       "./types",
       "./node_modules/@types"
     ],
-    "module": "esnext"
+    "module": "esnext",
   },
   "include": [
-    "./www/front_src/src"
+    "./www/front_src/src",
+    "./cypress.d.ts"
   ],
-  "exclude": ["./www/front_src/src/**/*.cypress.spec.tsx"]
+  "exclude":["./cypress.config.ts"]
 }
