@@ -17,7 +17,7 @@ if [ "$1" = "configure" ] ; then
     chmod -R 0775 \
       /usr/share/centreon/www \
       /usr/share/centreon/GPL_LIB/SmartyCache
-    chmod -R 0664 \
+    chmod 0664 \
       /usr/share/centreon/www/.env \
       /usr/share/centreon/www/.env.local.php
   fi
