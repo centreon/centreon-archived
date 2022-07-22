@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
+use Core\Domain\RealTime\Model\IndexData;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Domain\RealTime\Model\PerformanceMetric;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
@@ -35,28 +35,45 @@ use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetr
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface;
 
-class FindPerformanceMetricsTest extends TestCase
-{
-    private const HOST_ID = 1;
-    private const SERVICE_ID = 2;
-    private const INDEX_ID = 15;
+beforeEach(function () {
+    $this->hostId = 1;
+    $this->serviceId = 2;
+    $this->indexId = 15;
+});
 
-    /**
-     * @test
-     * @dataProvider downloadFileNameDataProvider
-     */
-    public function downloadFileNameGenerationIsProperlyGenerated(
-        string $hostName,
-        string $serviceDescription,
-        string $expectedFileName
-    ): void {
-        $indexDataRepository = $this->mockIndexDataRepository($hostName, $serviceDescription);
+it(
+    'download file name is properly generated',
+    function (string $hostName, string $serviceDescription, string $expectedFileName) {
+        $indexData = new IndexData();
+        $indexData->setHostName($hostName);
+        $indexData->setServiceDescription($serviceDescription);
+
+        $indexDataRepository = $this->createMock(ReadIndexDataRepositoryInterface::class);
+        $indexDataRepository
+            ->expects($this->once())
+            ->method('findIndexByHostIdAndServiceId')
+            ->with(
+                $this->equalTo($this->hostId),
+                $this->equalTo($this->serviceId),
+            )
+            ->willReturn($this->indexId);
+
+        $indexDataRepository
+            ->expects($this->once())
+            ->method('findHostNameAndServiceDescriptionByIndex')
+            ->willReturn($indexData);
+
         $metricRepository = $this->createMock(ReadMetricRepositoryInterface::class);
         $performanceDataRepository = $this->createMock(ReadPerformanceDataRepositoryInterface::class);
-        $presenter = $this->mockPresenterWithDownloadFileName($expectedFileName);
+        $presenter = $this->createMock(FindPerformanceMetricPresenterInterface::class);
+        $presenter
+            ->expects($this->once())
+            ->method('setDownloadFileName')
+            ->with($this->equalTo($expectedFileName));
+
         $performanceMetricRequest = new FindPerformanceMetricRequest(
-            self::HOST_ID,
-            self::SERVICE_ID,
+            $this->hostId,
+            $this->serviceId,
             new DateTimeImmutable('2022-01-01'),
             new DateTimeImmutable('2023-01-01')
         );
@@ -65,47 +82,47 @@ class FindPerformanceMetricsTest extends TestCase
 
         $sut($performanceMetricRequest, $presenter);
     }
+)->with([
+    ['Centreon-Server', 'Ping', 'Centreon-Server_Ping'],
+    ['',                'Ping', '15'],
+    ['Centreon-Server', '',     '15'],
+    ['',                '',     '15'],
+]);
 
-    /**
-     * @return iterable<String[]>
-     */
-    public function downloadFileNameDataProvider(): iterable
-    {
-        yield 'host name and service description exists' => [
-            'Centreon-Server', 'Ping', 'Centreon-Server_Ping.csv'
-        ];
+it(
+    'validate presenter response',
+    function (iterable $performanceData, FindPerformanceMetricResponse $expectedResponse) {
+        $indexDataRepository = $this->createMock(ReadIndexDataRepositoryInterface::class);
+        $indexDataRepository
+            ->expects($this->once())
+            ->method('findIndexByHostIdAndServiceId')
+            ->with(
+                $this->equalTo($this->hostId),
+                $this->equalTo($this->serviceId),
+            )
+            ->willReturn($this->indexId);
+        $indexDataRepository
+            ->expects($this->once())
+            ->method('findHostNameAndServiceDescriptionByIndex')
+            ->willReturn(null);
 
-        yield 'host name does not exists' => [
-            '', 'Ping', sprintf('%s.csv', self::INDEX_ID)
-        ];
-
-        yield 'service description does not exists' => [
-            'Centreon-Server', '', sprintf('%s.csv', self::INDEX_ID)
-        ];
-
-        yield 'host name and service description does not exist' => [
-            '', '', sprintf('%s.csv', self::INDEX_ID)
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider presenterResponseDataProvider
-     * @param iterable<array<mixed>> $performanceData
-     * @return void
-     */
-    public function validatePresenterResponse(
-        iterable $performanceData,
-        FindPerformanceMetricResponse $expectedResponse
-    ): void {
-        $indexDataRepository = $this->mockIndexDataRepository('', '');
         $metricRepository = $this->createMock(ReadMetricRepositoryInterface::class);
-        $performanceDataRepository = $this->mockPerformanceDataRepository($performanceData);
+        $performanceDataRepository = $this->createMock(ReadPerformanceDataRepositoryInterface::class);
+        $performanceDataRepository
+            ->expects($this->once())
+            ->method('findDataByMetricsAndDates')
+            ->willReturn($performanceData);
 
-        $presenter = $this->mockPresenterWithPresent($expectedResponse);
+        $presenter = $this->createMock(FindPerformanceMetricPresenterInterface::class);
+        $presenter
+            ->expects($this->once())
+            ->method('present')
+            ->with($this->equalTo($expectedResponse));
+
+
         $performanceMetricRequest = new FindPerformanceMetricRequest(
-            self::HOST_ID,
-            self::SERVICE_ID,
+            $this->hostId,
+            $this->serviceId,
             new DateTimeImmutable('2022-02-01'),
             new DateTimeImmutable('2023-01-01')
         );
@@ -114,105 +131,30 @@ class FindPerformanceMetricsTest extends TestCase
 
         $sut($performanceMetricRequest, $presenter);
     }
-
-    /**
-     * @return iterable<array<mixed>>
-     */
-    public function presenterResponseDataProvider(): iterable
-    {
-        yield 'one record' => [
-            [['rta' => 0.01]],
-            new FindPerformanceMetricResponse(
-                [
-                    new PerformanceMetric(
-                        new DateTimeImmutable(),
-                        [new MetricValue('rta', 0.001)]
-                    )
-                ]
-            )
-        ];
-
-        yield 'multiple records' => [
-            [['rta' => 0.01], ['pl' => 0.02]],
-            new FindPerformanceMetricResponse(
-                [
-                    new PerformanceMetric(
-                        new DateTimeImmutable(),
-                        [
-                            new MetricValue('rta', 0.001),
-                            new MetricValue('pl', 0.002),
-                        ]
-                    ),
-                ]
-            )
-        ];
-    }
-
-    private function mockIndexDataRepository(
-        string $hostName,
-        string $serviceDescription
-    ): ReadIndexDataRepositoryInterface {
-        $mock = $this->createMock(ReadIndexDataRepositoryInterface::class);
-
-        $mock
-            ->expects($this->once())
-            ->method('findIndexByHostIdAndServiceId')
-            ->with(
-                $this->equalTo(self::HOST_ID),
-                $this->equalTo(self::SERVICE_ID),
-            )
-            ->willReturn(self::INDEX_ID)
-        ;
-
-        $mock
-            ->expects($this->once())
-            ->method('findHostNameAndServiceDescriptionByIndex')
-            ->willReturn([
-                'host_name' => $hostName,
-                'service_description' => $serviceDescription
-            ]);
-
-        return $mock;
-    }
-
-    private function mockPresenterWithDownloadFileName(
-        string $expectedDownloadFileName
-    ): FindPerformanceMetricPresenterInterface {
-        $mock = $this->createMock(FindPerformanceMetricPresenterInterface::class);
-
-        $mock
-            ->expects($this->once())
-            ->method('setDownloadFileName')
-            ->with($this->equalTo($expectedDownloadFileName));
-
-        return $mock;
-    }
-
-    private function mockPresenterWithPresent(
-        FindPerformanceMetricResponse $expectedPresentValue
-    ): FindPerformanceMetricPresenterInterface {
-        $mock = $this->createMock(FindPerformanceMetricPresenterInterface::class);
-
-        $mock
-            ->expects($this->once())
-            ->method('present')
-            ->with($this->equalTo($expectedPresentValue));
-
-        return $mock;
-    }
-
-    /**
-     * @param iterable<array<mixed>> $performanceData
-     */
-    private function mockPerformanceDataRepository(iterable $performanceData): ReadPerformanceDataRepositoryInterface
-    {
-        $mock = $this->createMock(ReadPerformanceDataRepositoryInterface::class);
-
-        $mock
-            ->expects($this->once())
-            ->method('findDataByMetricsAndDates')
-            ->willReturn($performanceData);
-
-        return $mock;
-    }
-}
+)->with([
+    [
+        [['rta' => 0.01]],
+        new FindPerformanceMetricResponse(
+            [
+                new PerformanceMetric(
+                    new DateTimeImmutable(),
+                    [new MetricValue('rta', 0.001)]
+                )
+            ]
+        )
+    ],
+    [
+        [['rta' => 0.01], ['pl' => 0.02]],
+        new FindPerformanceMetricResponse(
+            [
+                new PerformanceMetric(
+                    new DateTimeImmutable(),
+                    [
+                        new MetricValue('rta', 0.001),
+                        new MetricValue('pl', 0.002),
+                    ]
+                ),
+            ]
+        )
+    ]
+]);

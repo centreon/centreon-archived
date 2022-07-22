@@ -24,23 +24,13 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use Core\Domain\RealTime\Model\PerformanceMetric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 
-class FindPerformanceMetricResponseTest extends TestCase
-{
-    /**
-     * @test
-     * @dataProvider performanceMetricsDataProvider
-     * @param        iterable<PerformanceMetric> $performanceMetrics
-     * @param        String[]                    $expectedResponseData
-     */
-    public function responseContainsProperlyFormattedPerformanceMetrics(
-        iterable $performanceMetrics,
-        array $expectedResponseData
-    ): void {
+it(
+    'response contains properly formatted performanceMetrics',
+    function (iterable $performanceMetrics, array $expectedResponseData) {
         $response = new FindPerformanceMetricResponse($performanceMetrics);
 
         $this->assertTrue(property_exists($response, 'performanceMetrics'));
@@ -49,70 +39,54 @@ class FindPerformanceMetricResponseTest extends TestCase
         $actualResponseData = array(...$response->performanceMetrics);
         $this->assertSame($expectedResponseData, $actualResponseData);
     }
+)->with([
+    [
+        [], []
+    ],
+    [
+        [
+            createPerformanceMetric('2022-01-01', 0.039, 0, 0.108, 0.0049)
+        ],
+        [
+            generateExpectedResponseData('2022-01-01', 0.039, 0, 0.108, 0.0049)
+        ]
+    ],
+    [
+        [
+            createPerformanceMetric('2022-01-01', 0.039, 0, 0.108, 0.0049),
+            createPerformanceMetric('2022-01-01 11:00:05', 0.04, 0.1, 0.10, 0.006)
+        ],
+        [
+            generateExpectedResponseData('2022-01-01', 0.039, 0, 0.108, 0.0049),
+            generateExpectedResponseData('2022-01-01 11:00:05', 0.04, 0.1, 0.10, 0.006)
+        ]
+    ]
+]);
 
-    /**
-     * @return iterable<array<mixed>>
-     */
-    public function performanceMetricsDataProvider(): iterable
-    {
-        yield 'no record' => [[], []];
-
-        yield 'one record' => [
-                    [
-                        $this->createPerformanceMetric('2022-01-01', 0.039, 0, 0.108, 0.0049)
-                    ],
-                    [
-                        $this->generateExpectedResponseData('2022-01-01', 0.039, 0, 0.108, 0.0049)
-                    ]
-              ];
-
-        yield 'multiple records' => [
-            [
-                $this->createPerformanceMetric('2022-01-01', 0.039, 0, 0.108, 0.0049),
-                $this->createPerformanceMetric('2022-01-01 11:00:05', 0.04, 0.1, 0.10, 0.006)
-            ],
-            [
-                $this->generateExpectedResponseData('2022-01-01', 0.039, 0, 0.108, 0.0049),
-                $this->generateExpectedResponseData('2022-01-01 11:00:05', 0.04, 0.1, 0.10, 0.006)
-            ]
-        ];
+function createPerformanceMetric(string $date, float $rta, float $pl, float $rtmax, float $rtmin): PerformanceMetric
+{
+    $metricValues = [];
+    $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
+    foreach ($metrics as $columnName => $columnValue) {
+        $metricValues[] = new MetricValue($columnName, $columnValue);
     }
 
-    private function createPerformanceMetric(
-        string $date,
-        float $rta,
-        float $pl,
-        float $rtmax,
-        float $rtmin
-    ): PerformanceMetric {
-        $metricValues = [];
-        $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
-        foreach ($metrics as $columnName => $columnValue) {
-            $metricValues[] = new MetricValue($columnName, $columnValue);
-        }
+    return new PerformanceMetric(new DateTimeImmutable($date), $metricValues);
+}
 
-        return new PerformanceMetric(new DateTimeImmutable($date), $metricValues);
-    }
+/**
+ * @return array<string, int|string>
+ */
+function generateExpectedResponseData(string $date, float $rta, float $pl, float $rtmax, float $rtmin): array
+{
+    $dateTime = new DateTimeImmutable($date);
 
-    /**
-     * @return array<string, int|string>
-     */
-    private function generateExpectedResponseData(
-        string $date,
-        float $rta,
-        float $pl,
-        float $rtmax,
-        float $rtmin
-    ): array {
-        $dateTime = new DateTimeImmutable($date);
-
-        return [
-            'time' => $dateTime->getTimestamp(),
-            'humantime' => $dateTime->format('Y-m-d H:i:s'),
-            'rta' => sprintf('%f', $rta),
-            'pl' => sprintf('%f', $pl),
-            'rtmax' => sprintf('%f', $rtmax),
-            'rtmin' => sprintf('%f', $rtmin),
-        ];
-    }
+    return [
+        'time' => $dateTime->getTimestamp(),
+        'humantime' => $dateTime->format('Y-m-d H:i:s'),
+        'rta' => sprintf('%f', $rta),
+        'pl' => sprintf('%f', $pl),
+        'rtmax' => sprintf('%f', $rtmax),
+        'rtmin' => sprintf('%f', $rtmin),
+    ];
 }
