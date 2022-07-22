@@ -33,7 +33,7 @@ describe('User Menu', () => {
     );
   });
 
-  it('matches the current snapshot "user menu"', () => {
+  it.only('matches the current snapshot "user menu"', () => {
     // Cypress.on('fail', (e) => {
     //   console.error(e);
     // });
