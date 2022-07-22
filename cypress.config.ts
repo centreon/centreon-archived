@@ -20,6 +20,7 @@ module.exports = defineConfig({
   },
   reporter: 'junit',
   reporterOptions: {
+    jenkinsMode: true,
     mochaFile: 'results/my-testoo.xml',
     toConsole: true,
   },
