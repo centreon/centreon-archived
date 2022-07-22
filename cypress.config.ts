@@ -18,12 +18,6 @@ module.exports = defineConfig({
     specPattern: './www/front_src/src/**/*.cypress.spec.tsx',
     supportFile: './cypress/support/component.tsx',
   },
-  reporter: 'junit',
-  reporterOptions: {
-    jenkinsMode: true,
-    mochaFile: 'results/my-testoo.xml',
-    toConsole: true,
-  },
   video: true,
   videosFolder: 'cypress/results/videos',
 });
