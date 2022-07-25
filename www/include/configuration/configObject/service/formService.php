@@ -90,7 +90,7 @@ $macroPasswords = [];
 
 if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     $statement = $pearDB->prepare(
-        'SELECT * 
+        'SELECT *
         FROM service
         LEFT JOIN extended_service_information esi
             ON esi.service_service_id = service_id
@@ -126,7 +126,7 @@ if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
      * Set criticality
      */
     $statement = $pearDB->prepare(
-        'SELECT sc.sc_id 
+        'SELECT sc.sc_id
         FROM service_categories sc
         INNER JOIN service_categories_relation scr
             ON scr.sc_id = sc.sc_id
@@ -1017,6 +1017,10 @@ if (is_array($select)) {
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
+$form->applyFilter('esi_notes', 'limitNotesLength');
+$form->applyFilter('esi_notes_url', 'limitUrlLength');
+$form->applyFilter('esi_action_url', 'limitUrlLength');
+
 $from_list_menu = false;
 if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->addRule('service_description', _("Compulsory Name"), 'required');
@@ -1085,6 +1089,11 @@ $tpl->assign(
     'alert_check_interval',
     _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, "
         . "if needed, pair this configuration with the use of timeperiods")
+);
+
+$tpl->assign(
+    'alert_max_length_exceeded',
+    _("Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving")
 );
 
 // Just watch a host information

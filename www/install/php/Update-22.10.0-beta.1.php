@@ -30,11 +30,8 @@ $errorMessage = '';
 try {
     $pearDB->beginTransaction();
 
-    $errorMessage = "Unable to add default ldap connection timeout";
-    $pearDB->query(
-        "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
-        (SELECT ar_id, 'ldap_connection_timeout', '' FROM auth_ressource)"
-    );
+    $errorMessage = "Unable to delete 'oreon_web_path' option from database";
+    $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path'");
 
     $pearDB->commit();
 } catch (\Exception $e) {
@@ -50,5 +47,5 @@ try {
         " - Trace : " . $e->getTraceAsString()
     );
 
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int) $e->getCode(), $e);
 }

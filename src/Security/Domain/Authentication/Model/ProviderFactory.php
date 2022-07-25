@@ -24,7 +24,7 @@ namespace Security\Domain\Authentication\Model;
 
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration as OpenIdConfiguration;
 use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;

@@ -25,14 +25,15 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\Authentication\SSOAuthenticationException;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 interface OpenIdProviderInterface extends ProviderInterface
 {
     /**
-     * @return OpenIdConfiguration
+     * @return Configuration
      */
-    public function getConfiguration(): OpenIdConfiguration;
+    public function getConfiguration(): Configuration;
 
     /**
      * @return ProviderToken
@@ -45,9 +46,10 @@ interface OpenIdProviderInterface extends ProviderInterface
     public function getProviderRefreshToken(): ?ProviderToken;
 
     /**
-     * @return ContactInterface|null
+     * Create user with informations from identity provider
+     * @throws \Throwable
      */
-    public function createUser(): ?ContactInterface;
+    public function createUser(): void;
 
      /**
      * Authenticate the user using OpenId Provider.
@@ -55,4 +57,18 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @param string|null $authorizationCode
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void;
+
+    /**
+     * Get User information gathered from IdP
+     *
+     * @return array<string,mixed>
+     */
+    public function getUserInformation(): array;
+
+    /**
+     * Get information store in id_token JWT Payload
+     *
+     * @return array<string,mixed>
+     */
+    public function getIdTokenPayload(): array;
 }

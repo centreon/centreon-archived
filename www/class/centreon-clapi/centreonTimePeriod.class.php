@@ -36,10 +36,10 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "Centreon/Object/Timeperiod/Timeperiod.php";
-require_once "Centreon/Object/Timeperiod/Exception.php";
-require_once "Centreon/Object/Relation/Timeperiod/Exclude.php";
-require_once "Centreon/Object/Relation/Timeperiod/Include.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Timeperiod/Timeperiod.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Timeperiod/Exception.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Timeperiod/Exclude.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Timeperiod/Include.php";
 
 class CentreonTimePeriod extends CentreonObject
 {

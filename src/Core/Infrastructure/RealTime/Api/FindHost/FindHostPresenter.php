@@ -23,17 +23,19 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\FindHost;
 
 use CentreonDuration;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
 class FindHostPresenter extends AbstractPresenter implements FindHostPresenterInterface
 {
     use PresenterTrait;
+    use HttpUrlTrait;
 
     /**
      * @var ResponseStatusInterface|null
@@ -77,11 +79,20 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
             'passive_checks' => $response->hasPassiveChecks,
             'execution_time' => $response->executionTime,
             'active_checks' => $response->hasActiveChecks,
-            'severity_level' => $response->severityLevel,
             'parent' => null,
             'icon' => $response->icon,
-            'groups' => $this->hypermediaCreator->createInternalGroupsUri($response)
+            'groups' => $this->hypermediaCreator->convertGroupsForPresenter($response),
+            'categories' => $this->hypermediaCreator->convertCategoriesForPresenter($response),
+            'severity' => $response->severity,
         ];
+
+        if ($presenterResponse['severity'] !== null) {
+            /**
+             * normalize the URL to the severity icon
+             */
+            $presenterResponse['severity']['icon']['url'] = $this->getBaseUri()
+                . '/img/media/' . $response->severity['icon']['url'];
+        }
 
         $acknowledgement = null;
 
@@ -152,6 +163,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
             'uris' => $this->hypermediaCreator->createInternalUris($response),
             'endpoints' => $this->hypermediaCreator->createEndpoints($response),
         ];
+
         $this->presenterFormatter->present($presenterResponse);
     }
 

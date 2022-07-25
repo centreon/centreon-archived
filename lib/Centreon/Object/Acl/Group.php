@@ -33,7 +33,7 @@
  *
  */
 
-require_once "Centreon/Object/Object.php";
+require_once __DIR__ . "/../Object.php";
 
 /**
  * Used for interacting with Acl Groups

@@ -23,7 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\AuthorizationRule;
 
 class FindOpenIdConfigurationResponse
 {
@@ -125,12 +127,22 @@ class FindOpenIdConfigurationResponse
     /**
      * @var string|null
      */
-    public ?string $userAliasBindAttribute = null;
+    public ?string $userNameBindAttribute = null;
 
     /**
      * @var string|null
      */
-    public ?string $userNameBindAttribute = null;
+    public ?string $claimName = null;
+
+    /**
+     * @var array{id: int, name: string}|null
+     */
+    public ?array $contactGroup = null;
+
+    /**
+     * @var array<array{claim_value: string, access_group:array{id: int, name: string}}>
+     */
+    public array $authorizationRules = [];
 
     /**
      * @param ContactTemplate $contactTemplate
@@ -142,5 +154,34 @@ class FindOpenIdConfigurationResponse
             "id" => $contactTemplate->getId(),
             "name" => $contactTemplate->getName(),
         ];
+    }
+
+    /**
+     * @param ContactGroup $contactGroup
+     * @return array{id: int, name: string}
+     */
+    public static function contactGroupToArray(ContactGroup $contactGroup): array
+    {
+        return [
+            "id" => $contactGroup->getId(),
+            "name" => $contactGroup->getName()
+        ];
+    }
+
+    /**
+     * @param AuthorizationRule[] $authorizationRules
+     * @return array<array{claim_value: string, access_group:array{id: int, name: string}}>
+     */
+    public static function authorizationRulesToArray(array $authorizationRules): array
+    {
+        return array_map(function (AuthorizationRule $authorizationRule) {
+            return [
+                'claim_value' => $authorizationRule->getClaimValue(),
+                'access_group' => [
+                    "id" => $authorizationRule->getAccessGroup()->getId(),
+                    "name" => $authorizationRule->getAccessGroup()->getName()
+                ]
+            ];
+        }, $authorizationRules);
     }
 }

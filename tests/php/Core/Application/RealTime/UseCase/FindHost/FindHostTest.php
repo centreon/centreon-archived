@@ -22,374 +22,333 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindHost;
 
-use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Contact\Contact;
-use Core\Domain\RealTime\Model\Host;
+use Core\Domain\RealTime\Model\Icon;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Core\Infrastructure\RealTime\Api\FindHost\FindHostPresenter;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
-use Tests\Core\Application\RealTime\UseCase\FindHost\FindHostPresenterStub;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
-/**
- * @package Tests\Core\Application\RealTime\UseCase\FindHost
- */
-class FindHostTest extends TestCase
-{
-    /**
-     * @var ReadHostRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $repository;
+beforeEach(function () {
+    $this->repository = $this->createMock(ReadHostRepositoryInterface::class);
+    $this->hostgroupRepository = $this->createMock(ReadHostgroupRepositoryInterface::class);
+    $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
+    $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
+    $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
+    $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
+    $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+    $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
+    $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $this->severityRepository = $this->createMock(ReadSeverityRepositoryInterface::class);
 
-    /**
-     * @var ReadHostgroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $hostgroupRepository;
+    $this->acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
+    $this->host = HostTest::createHostModel();
+    $this->contact = $this->createMock(ContactInterface::class);
 
-    /**
-     * @var ReadAccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $accessGroupRepository;
+    $this->hostgroup = new Hostgroup(10, 'ALL');
+    $this->category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
+    $this->downtime = (new Downtime(1, 1, 10))
+        ->setCancelled(false);
 
-    /**
-     * @var ReadDowntimeRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $downtimeRepository;
+    $icon = (new Icon())->setId(1)->setName('centreon')->setUrl('ppm/centreon.png');
+    $this->severity = new Severity(1, 'severityName', 10, Severity::HOST_SEVERITY_TYPE_ID, $icon);
+});
 
-    /**
-     * @var ReadAcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $acknowledgementRepository;
+it('FindHost not found response as admin', function () {
+    $findHost = new FindHost(
+        $this->repository,
+        $this->hostgroupRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository,
+        $this->monitoringService,
+        $this->tagRepository,
+        $this->severityRepository
+    );
 
-    /**
-     * @var HypermediaCreator&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $hypermediaCreator;
+    $this->contact
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(true);
 
-    /**
-     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $presenterFormatter;
+    $this->repository
+        ->expects($this->once())
+        ->method('findHostById')
+        ->willReturn(null);
 
-    /**
-     * @var MonitoringServiceInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $monitoringService;
+    $presenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findHost(1, $presenter);
 
-    protected function setUp(): void
-    {
-        $this->repository = $this->createMock(ReadHostRepositoryInterface::class);
-        $this->hostgroupRepository = $this->createMock(ReadHostgroupRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
-        $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
-        $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
-        $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
-        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
-        $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
-    }
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Host not found'
+    );
+});
 
-    /**
-     * test Host not found as admin user
-     */
-    public function testNotFoundAsAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true);
+it('should present a not found response as non admin', function () {
+    $findHost = new FindHost(
+        $this->repository,
+        $this->hostgroupRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository,
+        $this->monitoringService,
+        $this->tagRepository,
+        $this->severityRepository
+    );
 
-        $findHost = new FindHost(
-            $this->repository,
-            $this->hostgroupRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository,
-            $this->monitoringService
-        );
+    $this->contact
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(false);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findHostById')
-            ->willReturn(null);
+    $this->accessGroupRepository
+        ->expects($this->once())
+        ->method('findByContact')
+        ->willReturn([]);
 
-        $findHostPresenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $this->repository
+        ->expects($this->once())
+        ->method('findHostByIdAndAccessGroupIds')
+        ->willReturn(null);
 
-        $findHost(1, $findHostPresenter);
+    $presenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findHost(1, $presenter);
 
-        $this->assertEquals($findHostPresenter->getResponseStatus(), new NotFoundResponse('Host'));
-    }
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'Host not found'
+    );
+});
 
-    /**
-     * test Host not found as non admin user
-     */
-    public function testNotFoundAsNonAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(2)
-            ->setName('user')
-            ->setAdmin(false);
+it('should find the host as admin', function () {
+    $findHost = new FindHost(
+        $this->repository,
+        $this->hostgroupRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository,
+        $this->monitoringService,
+        $this->tagRepository,
+        $this->severityRepository
+    );
 
-        $findHost = new FindHost(
-            $this->repository,
-            $this->hostgroupRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository,
-            $this->monitoringService
-        );
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
 
-        $this->accessGroupRepository
-            ->expects($this->once())
-            ->method('findByContact')
-            ->willReturn([]);
+    $this->repository
+        ->expects($this->once())
+        ->method('findHostById')
+        ->willReturn($this->host);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findHostByIdAndAccessGroupIds')
-            ->willReturn(null);
+    $this->downtimeRepository
+        ->expects($this->once())
+        ->method('findOnGoingDowntimesByHostId')
+        ->willReturn([$this->downtime]);
 
-        $findHostPresenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $this->acknowledgementRepository
+        ->expects($this->once())
+        ->method('findOnGoingAcknowledgementByHostId')
+        ->willReturn($this->acknowledgement);
 
-        $findHost(1, $findHostPresenter);
+    $this->hostgroupRepository
+        ->expects($this->once())
+        ->method('findAllByHostId')
+        ->willReturn([$this->hostgroup]);
 
-        $this->assertEquals($findHostPresenter->getResponseStatus(), new NotFoundResponse('Host'));
-    }
+    $this->tagRepository
+        ->expects($this->once())
+        ->method('findAllByResourceAndTypeId')
+        ->willReturn([$this->category]);
 
-    /**
-     * test Host found as admin user
-     */
-    public function testFindHostAsAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true);
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
 
-        $findHost = new FindHost(
-            $this->repository,
-            $this->hostgroupRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository,
-            $this->monitoringService
-        );
+    $presenter = new FindHostPresenterStub();
 
-        /**
-         * @var Host
-         */
-        $host = HostTest::createHostModel();
+    $findHost(1, $presenter);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findHostById')
-            ->willReturn($host);
-
-        $downtimes[] = (new Downtime(1, 1, 10))
-            ->setCancelled(false);
-
-        $acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('yesterday'));
-
-        $hostgroups[] = new Hostgroup(10, 'ALL');
-
-        /**
-         * Ajouter les downtimes + ack
-         */
-        $this->downtimeRepository
-            ->expects($this->once())
-            ->method('findOnGoingDowntimesByHostId')
-            ->willReturn($downtimes);
-
-        $this->acknowledgementRepository
-            ->expects($this->once())
-            ->method('findOnGoingAcknowledgementByHostId')
-            ->willReturn($acknowledgement);
-
-        $this->hostgroupRepository
-            ->expects($this->once())
-            ->method('findAllByHostId')
-            ->willReturn($hostgroups);
-
-        $findHostPresenter = new FindHostPresenterStub();
-
-        $findHost(1, $findHostPresenter);
-
-        $this->assertEquals($findHostPresenter->response->name, $host->getName());
-        $this->assertEquals($findHostPresenter->response->id, $host->getId());
-        $this->assertEquals($findHostPresenter->response->address, $host->getAddress());
-        $this->assertEquals($findHostPresenter->response->monitoringServerName, $host->getMonitoringServerName());
-        $this->assertEquals($findHostPresenter->response->timezone, $host->getTimezone());
-        $this->assertEquals($findHostPresenter->response->alias, $host->getAlias());
-        $this->assertEquals($findHostPresenter->response->isFlapping, $host->isFlapping());
-        $this->assertEquals($findHostPresenter->response->isAcknowledged, $host->isAcknowledged());
-        $this->assertEquals($findHostPresenter->response->isInDowntime, $host->isInDowntime());
-        $this->assertEquals($findHostPresenter->response->output, $host->getOutput());
-        $this->assertEquals($findHostPresenter->response->commandLine, $host->getCommandLine());
-        $this->assertEquals($findHostPresenter->response->performanceData, $host->getPerformanceData());
-        $this->assertEquals($findHostPresenter->response->notificationNumber, $host->getNotificationNumber());
-        $this->assertEquals($findHostPresenter->response->latency, $host->getLatency());
-        $this->assertEquals($findHostPresenter->response->executionTime, $host->getExecutionTime());
-        $this->assertEquals($findHostPresenter->response->statusChangePercentage, $host->getStatusChangePercentage());
-        $this->assertEquals($findHostPresenter->response->hasActiveChecks, $host->hasActiveChecks());
-        $this->assertEquals($findHostPresenter->response->hasPassiveChecks, $host->hasPassiveChecks());
-        $this->assertEquals($findHostPresenter->response->severityLevel, $host->getSeverityLevel());
-        $this->assertEquals($findHostPresenter->response->checkAttempts, $host->getCheckAttempts());
-        $this->assertEquals($findHostPresenter->response->maxCheckAttempts, $host->getMaxCheckAttempts());
-        $this->assertEquals($findHostPresenter->response->lastTimeUp, $host->getLastTimeUp());
-        $this->assertEquals($findHostPresenter->response->lastCheck, $host->getLastCheck());
-        $this->assertEquals($findHostPresenter->response->nextCheck, $host->getNextCheck());
-        $this->assertEquals($findHostPresenter->response->lastNotification, $host->getLastNotification());
-        $this->assertEquals($findHostPresenter->response->lastStatusChange, $host->getLastStatusChange());
-        $this->assertEquals($findHostPresenter->response->status['code'], $host->getStatus()->getCode());
-        $this->assertEquals($findHostPresenter->response->status['name'], $host->getStatus()->getName());
-        $this->assertEquals($findHostPresenter->response->status['type'], $host->getStatus()->getType());
-        $this->assertEquals($findHostPresenter->response->status['severity_code'], $host->getStatus()->getOrder());
-        $this->assertEquals($findHostPresenter->response->hostgroups[0]['id'], $host->getHostgroups()[0]->getId());
-        $this->assertEquals($findHostPresenter->response->hostgroups[0]['name'], $host->getHostgroups()[0]->getName());
-        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()?->getName());
-        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()?->getUrl());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['id'], $downtimes[0]->getId());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['service_id'], $downtimes[0]->getServiceId());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['host_id'], $downtimes[0]->getHostId());
-        $this->assertEquals($findHostPresenter->response->acknowledgement['id'], $acknowledgement->getId());
-        $this->assertEquals(
-            $findHostPresenter->response->acknowledgement['service_id'],
-            $acknowledgement->getServiceId()
-        );
-        $this->assertEquals($findHostPresenter->response->acknowledgement['host_id'], $acknowledgement->getHostId());
-    }
+    expect($presenter->response->name)->toBe($this->host->getName());
+    expect($presenter->response->id)->toBe($this->host->getId());
+    expect($presenter->response->address)->toBe($this->host->getAddress());
+    expect($presenter->response->monitoringServerName)->toBe($this->host->getMonitoringServerName());
+    expect($presenter->response->timezone)->toBe($this->host->getTimezone());
+    expect($presenter->response->alias)->toBe($this->host->getAlias());
+    expect($presenter->response->isFlapping)->toBe($this->host->isFlapping());
+    expect($presenter->response->isAcknowledged)->toBe($this->host->isAcknowledged());
+    expect($presenter->response->isInDowntime)->toBe($this->host->isInDowntime());
+    expect($presenter->response->output)->toBe($this->host->getOutput());
+    expect($presenter->response->commandLine)->toBe($this->host->getCommandLine());
+    expect($presenter->response->performanceData)->toBe($this->host->getPerformanceData());
+    expect($presenter->response->notificationNumber)->toBe($this->host->getNotificationNumber());
+    expect($presenter->response->latency)->toBe($this->host->getLatency());
+    expect($presenter->response->executionTime)->toBe($this->host->getExecutionTime());
+    expect($presenter->response->statusChangePercentage)->toBe($this->host->getStatusChangePercentage());
+    expect($presenter->response->hasActiveChecks)->toBe($this->host->hasActiveChecks());
+    expect($presenter->response->hasPassiveChecks)->toBe($this->host->hasPassiveChecks());
+    expect($presenter->response->checkAttempts)->toBe($this->host->getCheckAttempts());
+    expect($presenter->response->maxCheckAttempts)->toBe($this->host->getMaxCheckAttempts());
+    expect($presenter->response->lastTimeUp)->toBe($this->host->getLastTimeUp());
+    expect($presenter->response->lastCheck)->toBe($this->host->getLastCheck());
+    expect($presenter->response->nextCheck)->toBe($this->host->getNextCheck());
+    expect($presenter->response->lastNotification)->toBe($this->host->getLastNotification());
+    expect($presenter->response->lastStatusChange)->toBe($this->host->getLastStatusChange());
+    expect($presenter->response->status['code'])->toBe($this->host->getStatus()->getCode());
+    expect($presenter->response->status['name'])->toBe($this->host->getStatus()->getName());
+    expect($presenter->response->status['type'])->toBe($this->host->getStatus()->getType());
+    expect($presenter->response->status['severity_code'])->toBe($this->host->getStatus()->getOrder());
+    expect($presenter->response->groups[0]['id'])->toBe($this->host->getGroups()[0]->getId());
+    expect($presenter->response->groups[0]['name'])->toBe($this->host->getGroups()[0]->getName());
+    expect($presenter->response->icon['name'])->toBe($this->host->getIcon()?->getName());
+    expect($presenter->response->icon['url'])->toBe($this->host->getIcon()?->getUrl());
+    expect($presenter->response->downtimes[0]['id'])->toBe($this->downtime->getId());
+    expect($presenter->response->downtimes[0]['service_id'])->toBe($this->downtime->getServiceId());
+    expect($presenter->response->downtimes[0]['host_id'])->toBe($this->downtime->getHostId());
+    expect($presenter->response->acknowledgement['id'])->toBe($this->acknowledgement->getId());
+    expect($presenter->response->acknowledgement['service_id'])->toBe($this->acknowledgement->getServiceId());
+    expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
+    expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
+    expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
 
     /**
-     * test Host found as non admin user
+     * @var array<string, mixed> $severity
      */
-    public function testFindHostAsNonAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(2)
-            ->setName('user')
-            ->setAdmin(false);
+    $severity = $presenter->response->severity;
+    expect($severity['id'])->toBe($this->severity->getId());
+    expect($severity['name'])->toBe($this->severity->getName());
+    expect($severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($severity['level'])->toBe($this->severity->getLevel());
+    expect($severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+    expect($severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+    expect($severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
+});
 
-        $findHost = new FindHost(
-            $this->repository,
-            $this->hostgroupRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository,
-            $this->monitoringService
-        );
+it('should find the host as non admin', function () {
+    $findHost = new FindHost(
+        $this->repository,
+        $this->hostgroupRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository,
+        $this->monitoringService,
+        $this->tagRepository,
+        $this->severityRepository
+    );
 
-        /**
-         * @var Host
-         */
-        $host = HostTest::createHostModel();
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findHostByIdAndAccessGroupIds')
-            ->willReturn($host);
+    $this->repository
+        ->expects($this->once())
+        ->method('findHostByIdAndAccessGroupIds')
+        ->willReturn($this->host);
 
-        $downtimes[] = (new Downtime(1, 1, 10))
-            ->setCancelled(false);
+    $this->downtimeRepository
+        ->expects($this->once())
+        ->method('findOnGoingDowntimesByHostId')
+        ->willReturn([$this->downtime]);
 
-        $acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
+    $this->acknowledgementRepository
+        ->expects($this->once())
+        ->method('findOnGoingAcknowledgementByHostId')
+        ->willReturn($this->acknowledgement);
 
-        $hostgroups[] = new Hostgroup(10, 'ALL');
+    $this->hostgroupRepository
+        ->expects($this->once())
+        ->method('findAllByHostIdAndAccessGroupIds')
+        ->willReturn([$this->hostgroup]);
 
-        /**
-         * Ajouter les downtimes + ack
-         */
-        $this->downtimeRepository
-            ->expects($this->once())
-            ->method('findOnGoingDowntimesByHostId')
-            ->willReturn($downtimes);
+    $this->tagRepository
+        ->expects($this->once())
+        ->method('findAllByResourceAndTypeId')
+        ->willReturn([$this->category]);
 
-        $this->acknowledgementRepository
-            ->expects($this->once())
-            ->method('findOnGoingAcknowledgementByHostId')
-            ->willReturn($acknowledgement);
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
 
-        $this->hostgroupRepository
-            ->expects($this->once())
-            ->method('findAllByHostIdAndAccessGroupIds')
-            ->willReturn($hostgroups);
+    $presenter = new FindHostPresenterStub();
 
-        $findHostPresenter = new FindHostPresenterStub();
+    $findHost(1, $presenter);
 
-        $findHost(1, $findHostPresenter);
+    expect($presenter->response->name)->toBe($this->host->getName());
+    expect($presenter->response->id)->toBe($this->host->getId());
+    expect($presenter->response->address)->toBe($this->host->getAddress());
+    expect($presenter->response->monitoringServerName)->toBe($this->host->getMonitoringServerName());
+    expect($presenter->response->timezone)->toBe($this->host->getTimezone());
+    expect($presenter->response->alias)->toBe($this->host->getAlias());
+    expect($presenter->response->isFlapping)->toBe($this->host->isFlapping());
+    expect($presenter->response->isAcknowledged)->toBe($this->host->isAcknowledged());
+    expect($presenter->response->isInDowntime)->toBe($this->host->isInDowntime());
+    expect($presenter->response->output)->toBe($this->host->getOutput());
+    expect($presenter->response->commandLine)->toBe($this->host->getCommandLine());
+    expect($presenter->response->performanceData)->toBe($this->host->getPerformanceData());
+    expect($presenter->response->notificationNumber)->toBe($this->host->getNotificationNumber());
+    expect($presenter->response->latency)->toBe($this->host->getLatency());
+    expect($presenter->response->executionTime)->toBe($this->host->getExecutionTime());
+    expect($presenter->response->statusChangePercentage)->toBe($this->host->getStatusChangePercentage());
+    expect($presenter->response->hasActiveChecks)->toBe($this->host->hasActiveChecks());
+    expect($presenter->response->hasPassiveChecks)->toBe($this->host->hasPassiveChecks());
+    expect($presenter->response->checkAttempts)->toBe($this->host->getCheckAttempts());
+    expect($presenter->response->maxCheckAttempts)->toBe($this->host->getMaxCheckAttempts());
+    expect($presenter->response->lastTimeUp)->toBe($this->host->getLastTimeUp());
+    expect($presenter->response->lastCheck)->toBe($this->host->getLastCheck());
+    expect($presenter->response->nextCheck)->toBe($this->host->getNextCheck());
+    expect($presenter->response->lastNotification)->toBe($this->host->getLastNotification());
+    expect($presenter->response->lastStatusChange)->toBe($this->host->getLastStatusChange());
+    expect($presenter->response->status['code'])->toBe($this->host->getStatus()->getCode());
+    expect($presenter->response->status['name'])->toBe($this->host->getStatus()->getName());
+    expect($presenter->response->status['type'])->toBe($this->host->getStatus()->getType());
+    expect($presenter->response->status['severity_code'])->toBe($this->host->getStatus()->getOrder());
+    expect($presenter->response->groups[0]['id'])->toBe($this->host->getGroups()[0]->getId());
+    expect($presenter->response->groups[0]['name'])->toBe($this->host->getGroups()[0]->getName());
+    expect($presenter->response->icon['name'])->toBe($this->host->getIcon()?->getName());
+    expect($presenter->response->icon['url'])->toBe($this->host->getIcon()?->getUrl());
+    expect($presenter->response->downtimes[0]['id'])->toBe($this->downtime->getId());
+    expect($presenter->response->downtimes[0]['service_id'])->toBe($this->downtime->getServiceId());
+    expect($presenter->response->downtimes[0]['host_id'])->toBe($this->downtime->getHostId());
+    expect($presenter->response->acknowledgement['id'])->toBe($this->acknowledgement->getId());
+    expect($presenter->response->acknowledgement['service_id'])->toBe($this->acknowledgement->getServiceId());
+    expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
+    expect($presenter->response->acknowledgement['entry_time'])->toBe($this->acknowledgement->getEntryTime());
+    expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
+    expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
 
-        $this->assertEquals($findHostPresenter->response->name, $host->getName());
-        $this->assertEquals($findHostPresenter->response->id, $host->getId());
-        $this->assertEquals($findHostPresenter->response->address, $host->getAddress());
-        $this->assertEquals($findHostPresenter->response->monitoringServerName, $host->getMonitoringServerName());
-        $this->assertEquals($findHostPresenter->response->timezone, $host->getTimezone());
-        $this->assertEquals($findHostPresenter->response->alias, $host->getAlias());
-        $this->assertEquals($findHostPresenter->response->isFlapping, $host->isFlapping());
-        $this->assertEquals($findHostPresenter->response->isAcknowledged, $host->isAcknowledged());
-        $this->assertEquals($findHostPresenter->response->isInDowntime, $host->isInDowntime());
-        $this->assertEquals($findHostPresenter->response->output, $host->getOutput());
-        $this->assertEquals($findHostPresenter->response->commandLine, $host->getCommandLine());
-        $this->assertEquals($findHostPresenter->response->performanceData, $host->getPerformanceData());
-        $this->assertEquals($findHostPresenter->response->notificationNumber, $host->getNotificationNumber());
-        $this->assertEquals($findHostPresenter->response->latency, $host->getLatency());
-        $this->assertEquals($findHostPresenter->response->executionTime, $host->getExecutionTime());
-        $this->assertEquals($findHostPresenter->response->statusChangePercentage, $host->getStatusChangePercentage());
-        $this->assertEquals($findHostPresenter->response->hasActiveChecks, $host->hasActiveChecks());
-        $this->assertEquals($findHostPresenter->response->hasPassiveChecks, $host->hasPassiveChecks());
-        $this->assertEquals($findHostPresenter->response->severityLevel, $host->getSeverityLevel());
-        $this->assertEquals($findHostPresenter->response->checkAttempts, $host->getCheckAttempts());
-        $this->assertEquals($findHostPresenter->response->maxCheckAttempts, $host->getMaxCheckAttempts());
-        $this->assertEquals($findHostPresenter->response->lastTimeUp, $host->getLastTimeUp());
-        $this->assertEquals($findHostPresenter->response->lastCheck, $host->getLastCheck());
-        $this->assertEquals($findHostPresenter->response->nextCheck, $host->getNextCheck());
-        $this->assertEquals($findHostPresenter->response->lastNotification, $host->getLastNotification());
-        $this->assertEquals($findHostPresenter->response->lastStatusChange, $host->getLastStatusChange());
-        $this->assertEquals($findHostPresenter->response->status['code'], $host->getStatus()->getCode());
-        $this->assertEquals($findHostPresenter->response->status['name'], $host->getStatus()->getName());
-        $this->assertEquals($findHostPresenter->response->status['type'], $host->getStatus()->getType());
-        $this->assertEquals($findHostPresenter->response->status['severity_code'], $host->getStatus()->getOrder());
-        $this->assertEquals($findHostPresenter->response->hostgroups[0]['id'], $host->getHostgroups()[0]->getId());
-        $this->assertEquals($findHostPresenter->response->hostgroups[0]['name'], $host->getHostgroups()[0]->getName());
-        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()?->getName());
-        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()?->getUrl());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['id'], $downtimes[0]->getId());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['service_id'], $downtimes[0]->getServiceId());
-        $this->assertEquals($findHostPresenter->response->downtimes[0]['host_id'], $downtimes[0]->getHostId());
-        $this->assertEquals($findHostPresenter->response->acknowledgement['id'], $acknowledgement->getId());
-        $this->assertEquals(
-            $findHostPresenter->response->acknowledgement['service_id'],
-            $acknowledgement->getServiceId()
-        );
-        $this->assertEquals($findHostPresenter->response->acknowledgement['host_id'], $acknowledgement->getHostId());
-        $this->assertEquals(
-            $findHostPresenter->response->acknowledgement['entry_time'],
-            $acknowledgement->getEntryTime()
-        );
-    }
-}
+    /**
+     * @var array<string, mixed> $severity
+     */
+    $severity = $presenter->response->severity;
+    expect($severity['id'])->toBe($this->severity->getId());
+    expect($severity['name'])->toBe($this->severity->getName());
+    expect($severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($severity['level'])->toBe($this->severity->getLevel());
+    expect($severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+    expect($severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+    expect($severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
+});

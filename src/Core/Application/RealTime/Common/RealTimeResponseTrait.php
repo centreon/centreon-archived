@@ -24,22 +24,42 @@ namespace Core\Application\RealTime\Common;
 
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Status;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 trait RealTimeResponseTrait
 {
     /**
+     * Convert array of HostCategory models into an array made of scalars
+     *
+     * @param Tag[] $tags
+     * @return array<int, array<string, int|string>>
+     */
+    private function tagsToArray(array $tags): array
+    {
+        return array_map(
+            fn (Tag $tag) => [
+                'id' => $tag->getId(),
+                'name' => $tag->getName(),
+            ],
+            $tags
+        );
+    }
+
+    /**
      * Converts an Icon model into an array
      *
      * @param Icon|null $icon
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     public function iconToArray(?Icon $icon): array
     {
         return is_null($icon)
             ? []
             : [
+                'id' => $icon->getId(),
                 'name' => $icon->getName(),
                 'url' => $icon->getUrl()
             ];
@@ -119,6 +139,23 @@ trait RealTimeResponseTrait
             'code' => $status->getCode(),
             'severity_code' => $status->getOrder(),
             'type' => $status->getType()
+        ];
+    }
+
+    /**
+     * Converts Severity model into an array for DTO
+     *
+     * @param Severity $severity
+     * @return array<string, mixed>
+     */
+    private function severityToArray(Severity $severity): array
+    {
+        return [
+            'id' => $severity->getId(),
+            'name' => $severity->getName(),
+            'level' => $severity->getLevel(),
+            'type' => $severity->getTypeAsString(),
+            'icon' => $this->iconToArray($severity->getIcon())
         ];
     }
 }

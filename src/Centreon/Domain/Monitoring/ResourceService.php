@@ -30,9 +30,9 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -42,33 +42,15 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
     /**
-     * @var ResourceRepositoryInterface
-     */
-    private $resourceRepository;
-
-    /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
      * @param MonitoringRepositoryInterface $monitoringRepository ,
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
-     * @param ResourceRepositoryInterface $resourceRepository
+     * @param ReadResourceRepositoryInterface $resourceRepository
      */
     public function __construct(
-        MonitoringRepositoryInterface $monitoringRepository,
-        ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        ResourceRepositoryInterface $resourceRepository
+        private MonitoringRepositoryInterface $monitoringRepository,
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadResourceRepositoryInterface $resourceRepository
     ) {
-        $this->monitoringRepository = $monitoringRepository;
-        $this->accessGroupRepository = $accessGroupRepository;
-        $this->resourceRepository = $resourceRepository;
     }
 
     /**

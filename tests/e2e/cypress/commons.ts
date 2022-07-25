@@ -36,7 +36,7 @@ let servicesFoundStepCount = 0;
 const checkThatFixtureServicesExistInDatabase = (): void => {
   cy.log('Checking services in database');
 
-  const query = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
+  const query = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test_ack%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
   const command = `docker exec -i ${Cypress.env(
     'dockerName',
   )} mysql -ucentreon -pcentreon centreon_storage <<< "${query}"`;
@@ -167,7 +167,7 @@ const insertFixture = (file: string): Cypress.Chainable => {
   return cy.fixture(file).then(executeActionViaClapi);
 };
 
-const logout = () =>
+const logout = (): Cypress.Chainable =>
   cy.request({
     body: {},
     method: 'POST',

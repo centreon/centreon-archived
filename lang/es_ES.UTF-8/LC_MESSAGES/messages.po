@@ -4857,10 +4857,6 @@ msgstr "Información sobre Centreon"
 msgid "Directory"
 msgstr "repertorio"
 
-#: centreon-web/www/include/Administration/parameters/general/form.php:78
-msgid "Centreon Web Directory"
-msgstr "Directorio web de Centreon"
-
 #: centreon-web/www/include/Administration/parameters/general/form.php:80
 msgid "Sessions Expiration Time"
 msgstr "Plazo de la sesión"
@@ -15020,16 +15016,10 @@ msgstr ""
 # msgid "Enable auto import"
 # msgstr ""
 
-# msgid "Email attribute to bind"
+# msgid "Email attribute"
 # msgstr ""
 
-# msgid "Alias attribute to bind"
-# msgstr ""
-
-# msgid "Fullname attribute to bind"
-# msgstr ""
-
-# msgid "Auto import"
+# msgid "Fullname attribute"
 # msgstr ""
 
 # msgid "You are not authorized to access the configuration"
@@ -15119,11 +15109,77 @@ msgstr ""
 # msgid "Do not use configured proxy to connect to this server"
 # msgstr ""
 
+# msgid "At least one authorization relation is required"
+# msgstr ""
+
+# msgid "Authorization value"
+# msgstr ""
+
+# msgid "Access group"
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group"
+# msgstr ""
+
+# msgid "Delete the relation"
+# msgstr ""
+
+# msgid "Authorization key"
+# msgstr ""
+
+# msgid "Authorizations"
+# msgstr ""
+
 #  msgid "Error while searching for the host template %d"
 #  msgstr ""
+
+# msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+# msgstr ""
+
+# msgid "Contact group: Define a contact group for the imported user."
+# msgstr ""
+
+# msgid "Authorization key: The key"
+# msgstr ""
+
+# msgid "key is defined by default. You can define another one."
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+# msgstr ""
+
+# msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+# msgstr ""
+
+# msgid "and an access group:"
+# msgstr ""
 
 # msgid "License end date:"
 # msgstr ""
 
 # msgid "License expired"
 # msgstr ""
+
+# msgid "Parent alias
+# msgstr ""
+
+msgid "An error occured while retrieving service categories"
+msgstr "Se ha producido un error al recuperar los categorías de servicios"
+
+msgid "An error occured while retrieving host categories"
+msgstr "Se ha producido un error al recuperar los categorías de hosts"
+
+#  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+#  msgstr ""
+
+msgid "Service severity"
+msgstr "Criticidad del servicio"
+
+msgid "Service severity level"
+msgstr "Nivel de criticidad del servicio"
+
+msgid "Host severity"
+msgstr "Criticidad del host"
+
+msgid "Host severity level"
+msgstr "Nivel de criticidad del host"

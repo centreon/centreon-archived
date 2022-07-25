@@ -91,4 +91,14 @@ class DatabaseConnection extends \PDO
     {
         $this->storageDbName = $storageDbName;
     }
+
+    /**
+     * switch connection to another database
+     *
+     * @param string $dbName
+     */
+    public function switchToDb(string $dbName): void
+    {
+        $this->query('use ' . $dbName);
+    }
 }

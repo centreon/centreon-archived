@@ -124,6 +124,16 @@ class ResourceFilter
     private $monitoringServerNames = [];
 
     /**
+     * @var string[]
+     */
+    private $serviceCategoryNames = [];
+
+    /**
+     * @var string[]
+     */
+    private $hostCategoryNames = [];
+
+    /**
      * @var int[]
      */
     private $hostIds = [];
@@ -147,6 +157,26 @@ class ResourceFilter
      * @var string[]
      */
     private $statusTypes = [];
+
+    /**
+     * @var string[]
+     */
+    private array $serviceSeverityNames = [];
+
+    /**
+     * @var string[]
+     */
+    private array $hostSeverityNames = [];
+
+    /**
+     * @var int[]
+     */
+    private array $serviceSeverityLevels = [];
+
+    /**
+     * @var int[]
+     */
+    private array $hostSeverityLevels = [];
 
     /**
      * Transform result by map
@@ -420,5 +450,119 @@ class ResourceFilter
     {
         $this->statusTypes = $statusTypes;
         return $this;
+    }
+
+    /**
+     * @param string[] $serviceCategoryNames
+     * @return self
+     */
+    public function setServiceCategoryNames(array $serviceCategoryNames): self
+    {
+        $this->serviceCategoryNames = $serviceCategoryNames;
+
+        return $this;
+    }
+
+    /**
+     * @param string[] $serviceSeverityNames
+     * @return self
+     */
+    public function setServiceSeverityNames(array $serviceSeverityNames): self
+    {
+        $this->serviceSeverityNames = $serviceSeverityNames;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getServiceCategoryNames(): array
+    {
+        return $this->serviceCategoryNames;
+    }
+
+    /**
+     * @param string[] $hostCategoryNames
+     * @return self
+     */
+    public function setHostCategoryNames(array $hostCategoryNames): self
+    {
+        $this->hostCategoryNames = $hostCategoryNames;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getServiceSeverityNames(): array
+    {
+        return $this->serviceSeverityNames;
+    }
+
+    /**
+     * @param string[] $hostSeverityNames
+     * @return self
+     */
+    public function setHostSeverityNames(array $hostSeverityNames): self
+    {
+        $this->hostSeverityNames = $hostSeverityNames;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getHostCategoryNames(): array
+    {
+        return $this->hostCategoryNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getHostSeverityNames(): array
+    {
+        return $this->hostSeverityNames;
+    }
+
+    /**
+     * @param int[] $serviceSeverityLevels
+     * @return self
+     */
+    public function setServiceSeverityLevels(array $serviceSeverityLevels): self
+    {
+        $this->serviceSeverityLevels = $serviceSeverityLevels;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getServiceSeverityLevels(): array
+    {
+        return $this->serviceSeverityLevels;
+    }
+
+    /**
+     * @param int[] $hostSeverityLevels
+     * @return self
+     */
+    public function setHostSeverityLevels(array $hostSeverityLevels): self
+    {
+        $this->hostSeverityLevels = $hostSeverityLevels;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getHostSeverityLevels(): array
+    {
+        return $this->hostSeverityLevels;
     }
 }

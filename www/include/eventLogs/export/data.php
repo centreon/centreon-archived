@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -46,10 +47,12 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 // Connect MySQL DB
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
+$pearDBO->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 
 // Security check
 CentreonSession::start(1);
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+$sessionId = session_id();
+if (!CentreonSession::checkSession((string) $sessionId, $pearDB)) {
     print "Bad Session";
     exit();
 }
@@ -64,110 +67,90 @@ bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-// save of the XML flow in $flow
-$csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
-ob_start();
-require_once _CENTREON_PATH_ . "www/include/eventLogs/xml/data.php";
-$flow = ob_get_contents();
-ob_end_clean();
+$sid = $sessionId === false ? '-1' : $sessionId;
+$contact_id = check_session($sid, $pearDB); //@phpstan-ignore-line
 
-// Send Headers
-header("Content-Type: application/csv-tab-delimited-table");
-header("Content-disposition: filename=EventLogs.csv");
-header("Cache-Control: cache, must-revalidate");
-header("Pragma: public");
+$is_admin = isUserAdmin($sid);//@phpstan-ignore-line
+$access = new CentreonACL($contact_id, $is_admin);
+$lca = [
+    "LcaHost" => $access->getHostsServices($pearDBO, true),
+    "LcaHostGroup" => $access->getHostGroups(),
+    "LcaSG" => $access->getServiceGroups()
+];
 
-// Read flow
-$xml = new SimpleXMLElement($flow);
-if ($engine == "false") {
-    echo _("Begin date") . "; "
-        . _("End date") . ";\n";
-    echo date(_('Y/m/d (H:i:s)'), intval($xml->infos->start)) . ";"
-        . date(_('Y/m/d (H:i:s)'), intval($xml->infos->end)) . "\n";
-    echo "\n";
+require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Request.php');
+$requestHandler = new Centreon\Legacy\EventLogs\Export\Request();
+$requestHandler->setIsAdmin($is_admin);
+$requestHandler->setLca($lca);
 
-    echo _("Type") . ";"
-        . _("Notification") . ";"
-        . _("Alert") . ";"
-        . _("error") . "\n";
-    echo ";"
-        . $xml->infos->notification . ";"
-        . $xml->infos->alert . ";"
-        . $xml->infos->error . "\n";
-    echo "\n";
+require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'QueryGenerator.php');
+$queryGenerator = new Centreon\Legacy\EventLogs\Export\QueryGenerator($pearDBO);
+$queryGenerator->setIsAdmin($is_admin);
+$queryGenerator->setEngine($requestHandler->getEngine());
+$queryGenerator->setOpenid($requestHandler->getOpenid());
+$queryGenerator->setOutput($requestHandler->getOutput());
+$queryGenerator->setAccess($access);
+$queryGenerator->setStart($requestHandler->getStart());
+$queryGenerator->setEnd($requestHandler->getEnd());
+$queryGenerator->setUp($requestHandler->getUp());
+$queryGenerator->setDown($requestHandler->getDown());
+$queryGenerator->setUnreachable($requestHandler->getUnreachable());
+$queryGenerator->setOk($requestHandler->getOk());
+$queryGenerator->setWarning($requestHandler->getWarning());
+$queryGenerator->setCritical($requestHandler->getCritical());
+$queryGenerator->setUnreachable($requestHandler->getUnreachable());
+$queryGenerator->setNotification($requestHandler->getNotification());
+$queryGenerator->setAlert($requestHandler->getAlert());
+$queryGenerator->setError($requestHandler->getError());
+$queryGenerator->setOh($requestHandler->getOh());
+$queryGenerator->setHostMsgStatusSet($requestHandler->getHostMsgStatusSet());
+$queryGenerator->setSvcMsgStatusSet($requestHandler->getSvcMsgStatusSet());
+$queryGenerator->setTabHostIds($requestHandler->getTabHostIds());
+$queryGenerator->setSearchHost($requestHandler->getSearchHost());
+$queryGenerator->setTabSvc($requestHandler->getTabSvc());
+$queryGenerator->setSearchService($requestHandler->getSearchService());
+$queryGenerator->setExport($requestHandler->getExport());
+$stmt = $queryGenerator->getStatement();
+unset($queryGenerator);
 
-    echo _("Host") . ";"
-        . _("Up") . ";"
-        . _("Down") . ";"
-        . _("Unreachable") . "\n";
-    echo ";"
-        . $xml->infos->up . ";"
-        . $xml->infos->down . ";"
-        . $xml->infos->unreachable . "\n";
-    echo "\n";
+$stmt->execute();
 
-    echo _("Service") . ";"
-        . _("Ok") . ";"
-        . _("Warning") . ";"
-        . _("Critical") . ";"
-        . _("Unknown") . "\n";
-    echo ";"
-        . $xml->infos->ok . ";"
-        . $xml->infos->warning . ";"
-        . $xml->infos->critical . ";"
-        . $xml->infos->unknown . "\n";
-    echo "\n";
-
-    echo _("Day") . ";" .
-        _("Time") . ";" .
-        _("Host") . ";" .
-        _("Address") . ";" .
-        _("Service") . ";" .
-        _("Status") . ";" .
-        _("Type") . ";" .
-        _("Retry") . ";" .
-        _("Output") . ";" .
-        _("Contact") . ";" .
-        _("Cmd") . "\n";
-    foreach ($xml->line as $line) {
-        echo date(_('Y/m/d'), (int)$line->date) . ";" .
-            date(_('H:i:s'), (int)$line->time) . ";" .
-            $line->host_name . ";" .
-            $line->address . ";" .
-            $line->service_description . ";" .
-            $line->status . ";" .
-            $line->type . ";" .
-            $line->retry . ";" .
-            $line->output . ";" .
-            $line->contact . ";" .
-            $line->contact_cmd . "\n";
-    }
-} else {
-    echo _("Begin date") . "; "
-        . _("End date") . ";\n";
-    echo date(_('Y/m/d (H:i:s)'), (int)$xml->infos->start) . ";"
-        . date(_('Y/m/d (H:i:s)'), (int)$xml->infos->end) . "\n";
-    echo "\n";
-
-    echo _("Type") . ";"
-        . _("Notification") . ";"
-        . _("Alert") . ";"
-        . _("error") . "\n";
-    echo ";"
-        . $xml->infos->notification . ";"
-        . $xml->infos->alert . ";"
-        . $xml->infos->error . "\n";
-    echo "\n";
-
-    echo _("Day") . ";"
-        . _("Time") . ";"
-        . _("Poller") . ";"
-        . _("Output") . "; " . "\n";
-    foreach ($xml->line as $line) {
-        echo "\"" .
-            date(_('Y/m/d'), (int)$line->date) . "\";\"" .
-            date(_('H:i:s'), (int)$line->time) . "\";\"" .
-            $line->poller . "\";\"" .
-            $line->output . "\";" . "\n";
-    }
+$HostCache = [];
+$dbResult = $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
+if (! $dbResult instanceof PDOStatement) {
+    throw new \RuntimeException('An error occurred. Hosts could not be found');
 }
+
+while ($h = $dbResult->fetch()) {
+    $HostCache[$h["host_name"]] = $h["host_address"];
+}
+$dbResult->closeCursor();
+
+require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Formatter.php');
+$formatter = new Centreon\Legacy\EventLogs\Export\Formatter();
+$formatter->setHosts($HostCache);
+$formatter->setStart($requestHandler->getStart());
+$formatter->setEnd($requestHandler->getEnd());
+$formatter->setNotification($requestHandler->getNotification());
+$formatter->setAlert($requestHandler->getAlert());
+$formatter->setError($requestHandler->getError());
+$formatter->setUp($requestHandler->getUp());
+$formatter->setDown($requestHandler->getDown());
+$formatter->setUnreachable($requestHandler->getUnreachable());
+$formatter->setOk($requestHandler->getOk());
+$formatter->setWarning($requestHandler->getWarning());
+$formatter->setCritical($requestHandler->getCritical());
+$formatter->setUnknown($requestHandler->getUnknown());
+$formattedLogs = $formatter->formatLogs($stmt);
+$logHeads = $formatter->getLogHeads();
+$metaData = $formatter->formatMetaData();
+unset($formatter);
+
+require_once realpath(__DIR__ . DIRECTORY_SEPARATOR . 'Presenter.php');
+$presenter = new Centreon\Legacy\EventLogs\Export\Presenter();
+$presenter->setMetaData($metaData);
+$presenter->setHeads($logHeads);
+$presenter->setLogs($formattedLogs);
+$presenter->render();
+$stmt->closeCursor();
+unset($presenter, $stmt);
