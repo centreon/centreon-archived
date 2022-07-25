@@ -26,6 +26,7 @@ describe('Navigation menu', () => {
   });
 
   it('matches the current snapshot "initial menu"', () => {
+    expect(true).to.be.false;
     cy.get("[alt='mini logo']").should('be.visible');
     cy.get('li').each(($li) => {
       cy.wrap($li).get('svg').should('be.visible');
