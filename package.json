@@ -12,7 +12,7 @@
     "test:watch": "npm test -- --watch",
     "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
     "test:coverage": "jest --coverage",
-    "cypress:cli": "node wrapCypress.ts cypress  run --component",
+    "cypress:cli": "cypress run --component --browser=chrome",
     "cypress:ui": "cypress open --component --browser=chrome"
   },
   "devDependencies": {
