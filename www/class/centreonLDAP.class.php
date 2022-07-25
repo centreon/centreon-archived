@@ -95,12 +95,6 @@ class CentreonLDAP
             $this->debugImport = false;
         }
 
-        $connectionTimeout = null;
-        $dbConnectionTimeout = $this->getLdapHostParameters($arId, 'ldap_connection_timeout');
-        if (!empty($dbConnectionTimeout['ari_value'])) {
-            $connectionTimeout = $dbConnectionTimeout['ari_value'];
-        }
-
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
         if (!empty($tempSearchTimeout['ari_value'])) {
@@ -126,7 +120,6 @@ class CentreonLDAP
                 $ldap = [
                     'host' => $entry['target'],
                     'id' => $arId,
-                    'connection_timeout' => $connectionTimeout,
                     'search_timeout' => $searchTimeout,
                     'info' => $this->getInfoUseDnsConnect(),
                 ];
@@ -144,7 +137,6 @@ class CentreonLDAP
                 $ldap = [
                     'host' => $row['host_address'],
                     'id' => $arId,
-                    'connection_timeout' => $connectionTimeout,
                     'search_timeout' => $searchTimeout,
                     'info' => $this->getInfoUseDnsConnect(),
                 ];
@@ -206,9 +198,6 @@ class CentreonLDAP
             $this->debug('LDAP Connect : trying url : ' . $url);
             $this->setErrorHandler();
             $this->ds = ldap_connect($url);
-            if (!empty($ldap['connection_timeout'])) {
-                ldap_set_option($this->ds, LDAP_OPT_NETWORK_TIMEOUT, $ldap['connection_timeout']);
-            }
             ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
             $protocol_version = 3;
             if (isset($ldap['info']['protocol_version'])) {
