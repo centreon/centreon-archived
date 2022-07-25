@@ -1,36 +1,21 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give Centreon
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 
@@ -48,7 +33,6 @@ class ModuleSource extends SourceAbstract
     public const PATH = 'www/modules/';
     public const PATH_WEB = 'modules/';
     public const CONFIG_FILE = 'conf.php';
-    public const LICENSE_FILE = 'license/merethis_lic.zl';
 
     /**
      * @var array<string,mixed>
@@ -79,10 +63,30 @@ class ModuleSource extends SourceAbstract
     }
 
     /**
-     * @param string $id
+     * {@inheritDoc}
+     *
+     * Install module
+     *
+     * @throws ModuleException
+     */
+    public function install(string $id): ?Module
+    {
+        $this->installOrUpdateDependencies($id);
+
+        return parent::install($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Remove module
+     *
+     * @throws ModuleException
      */
     public function remove(string $id): void
     {
+        $this->validateRemovalRequirementsOrFail($id);
+
         $recordId = $this->db
             ->getRepository(ModulesInformationsRepository::class)
             ->findIdByName($id)
@@ -92,10 +96,16 @@ class ModuleSource extends SourceAbstract
     }
 
     /**
-     * @param string $id
+     * {@inheritDoc}
+     *
+     * Update module
+     *
+     * @throws ModuleException
      */
     public function update(string $id): ?Module
     {
+        $this->installOrUpdateDependencies($id);
+
         $recordId = $this->db
             ->getRepository(ModulesInformationsRepository::class)
             ->findIdByName($id)
@@ -116,7 +126,7 @@ class ModuleSource extends SourceAbstract
      */
     public function getList(string $search = null, bool $installed = null, bool $updated = null): array
     {
-        $files = $this->finder
+        $files = ($this->finder::create())
             ->files()
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
@@ -151,7 +161,7 @@ class ModuleSource extends SourceAbstract
             return $result;
         }
 
-        $files = $this->finder
+        $files = ($this->finder::create())
             ->files()
             ->name(static::CONFIG_FILE)
             ->depth('== 0')
@@ -211,6 +221,10 @@ class ModuleSource extends SourceAbstract
             }
         }
 
+        if (array_key_exists('dependencies', $info) && is_array($info['dependencies'])) {
+            $entity->setDependencies($info['dependencies']);
+        }
+
         // load information about installed modules/widgets
         if ($this->info === null) {
             $this->initInfo();
@@ -261,5 +275,92 @@ class ModuleSource extends SourceAbstract
         }
 
         return $license;
+    }
+
+    /**
+     * Install or update module dependencies when needed
+     *
+     * @param string $moduleId
+     *
+     * @throws ModuleException
+     */
+    private function installOrUpdateDependencies(string $moduleId): void
+    {
+        $sortedDependencies = $this->getSortedDependencies($moduleId);
+        foreach ($sortedDependencies as $dependency) {
+            $dependencyDetails = $this->getDetail($dependency);
+            if ($dependencyDetails === null) {
+                throw ModuleException::cannotFindModuleDetails($dependency);
+            }
+
+            if (! $dependencyDetails->isInstalled()) {
+                $this->install($dependency);
+            } elseif (! $dependencyDetails->isUpdated()) {
+                $this->update($dependency);
+            }
+        }
+    }
+
+    /**
+     * Sort module dependencies
+     *
+     * @param string $moduleId (example: centreon-license-manager)
+     * @param string[] $alreadyProcessed
+     * @return string[]
+     *
+     * @throws ModuleException
+     */
+    private function getSortedDependencies(
+        string $moduleId,
+        array $alreadyProcessed = []
+    ) {
+        $dependencies = [];
+
+        if (in_array($moduleId, $alreadyProcessed)) {
+            return $dependencies;
+        }
+
+        $alreadyProcessed[] = $moduleId;
+
+        $moduleDetails = $this->getDetail($moduleId);
+        if ($moduleDetails === null) {
+            throw ModuleException::moduleIsMissing($moduleId);
+        }
+
+        foreach ($moduleDetails->getDependencies() as $dependency) {
+            $dependencies[] = $dependency;
+
+            $dependencyDetails = $this->getDetail($dependency);
+
+            $dependencies = array_unique([
+                ...$this->getSortedDependencies($dependencyDetails->getId(), $alreadyProcessed),
+                ...$dependencies,
+            ]);
+        }
+
+        return $dependencies;
+    }
+
+    /**
+     * Validate requirements before remove (dependencies)
+     *
+     * @param string $moduleId (example: centreon-license-manager)
+     *
+     * @throws ModuleException
+     */
+    private function validateRemovalRequirementsOrFail(string $moduleId): void
+    {
+        $dependenciesToRemove = [];
+
+        $modules = $this->getList();
+        foreach ($modules as $module) {
+            if ($module->isInstalled() && in_array($moduleId, $module->getDependencies())) {
+                $dependenciesToRemove[] = $module->getName();
+            }
+        }
+
+        if (! empty($dependenciesToRemove)) {
+            throw ModuleException::modulesNeedToBeRemovedFirst($dependenciesToRemove);
+        }
     }
 }

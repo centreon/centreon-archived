@@ -1088,14 +1088,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND srv.enabled = \'1\'
             INNER JOIN `:dbstg`.instances i
               ON i.instance_id = h.instance_id
-            LEFT JOIN :dbstg.hosts_hostgroups hhg
+            LEFT JOIN `:dbstg`.hosts_hostgroups hhg
               ON hhg.host_id = h.host_id
-            LEFT JOIN :dbstg.hostgroups hg
+            LEFT JOIN `:dbstg`.hostgroups hg
               ON hg.hostgroup_id = hhg.hostgroup_id
-            LEFT JOIN :dbstg.services_servicegroups ssg
+            LEFT JOIN `:dbstg`.services_servicegroups ssg
               ON ssg.service_id = srv.service_id
               AND ssg.host_id = h.host_id
-            LEFT JOIN :dbstg.customvariables cv
+            LEFT JOIN `:dbstg`.customvariables cv
               ON (cv.service_id = srv.service_id
               AND cv.host_id = srv.host_id AND cv.name = \'CRITICALITY_LEVEL\')';
 
@@ -1453,8 +1453,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT DISTINCT 
               srv.service_id, srv.display_name, srv.description, srv.host_id, srv.state
-            FROM :dbstg.services srv
-            INNER JOIN :dbstg.hosts h
+            FROM `:dbstg`.services srv
+            INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
@@ -1516,8 +1516,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 srv.description,
                 srv.host_id,
                 srv.state
-            FROM :dbstg.services srv
-            INNER JOIN :dbstg.hosts h
+            FROM `:dbstg`.services srv
+            INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
@@ -1573,7 +1573,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 srv.host_id,
                 srv.state
             FROM `:dbstg`.`services` srv
-            INNER JOIN :dbstg.`hosts` h
+            INNER JOIN `:dbstg`.`hosts` h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\'

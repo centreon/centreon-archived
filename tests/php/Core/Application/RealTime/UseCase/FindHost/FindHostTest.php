@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindHost;
 
+use Core\Domain\RealTime\Model\Icon;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
@@ -40,6 +42,7 @@ use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadHostRepositoryInterface::class);
@@ -51,6 +54,7 @@ beforeEach(function () {
     $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
     $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
     $this->tagRepository = $this->createMock(ReadTagRepositoryInterface::class);
+    $this->severityRepository = $this->createMock(ReadSeverityRepositoryInterface::class);
 
     $this->acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
     $this->host = HostTest::createHostModel();
@@ -60,6 +64,9 @@ beforeEach(function () {
     $this->category = new Tag(1, 'host-category-name', Tag::HOST_CATEGORY_TYPE_ID);
     $this->downtime = (new Downtime(1, 1, 10))
         ->setCancelled(false);
+
+    $icon = (new Icon())->setId(1)->setName('centreon')->setUrl('ppm/centreon.png');
+    $this->severity = new Severity(1, 'severityName', 10, Severity::HOST_SEVERITY_TYPE_ID, $icon);
 });
 
 it('FindHost not found response as admin', function () {
@@ -71,7 +78,8 @@ it('FindHost not found response as admin', function () {
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
-        $this->tagRepository
+        $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -102,7 +110,8 @@ it('should present a not found response as non admin', function () {
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
-        $this->tagRepository
+        $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -138,7 +147,8 @@ it('should find the host as admin', function () {
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
-        $this->tagRepository
+        $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -171,6 +181,11 @@ it('should find the host as admin', function () {
         ->method('findAllByResourceAndTypeId')
         ->willReturn([$this->category]);
 
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
+
     $presenter = new FindHostPresenterStub();
 
     $findHost(1, $presenter);
@@ -193,7 +208,6 @@ it('should find the host as admin', function () {
     expect($presenter->response->statusChangePercentage)->toBe($this->host->getStatusChangePercentage());
     expect($presenter->response->hasActiveChecks)->toBe($this->host->hasActiveChecks());
     expect($presenter->response->hasPassiveChecks)->toBe($this->host->hasPassiveChecks());
-    expect($presenter->response->severityLevel)->toBe($this->host->getSeverityLevel());
     expect($presenter->response->checkAttempts)->toBe($this->host->getCheckAttempts());
     expect($presenter->response->maxCheckAttempts)->toBe($this->host->getMaxCheckAttempts());
     expect($presenter->response->lastTimeUp)->toBe($this->host->getLastTimeUp());
@@ -217,6 +231,18 @@ it('should find the host as admin', function () {
     expect($presenter->response->acknowledgement['host_id'])->toBe($this->acknowledgement->getHostId());
     expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
     expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
+
+    /**
+     * @var array<string, mixed> $severity
+     */
+    $severity = $presenter->response->severity;
+    expect($severity['id'])->toBe($this->severity->getId());
+    expect($severity['name'])->toBe($this->severity->getName());
+    expect($severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($severity['level'])->toBe($this->severity->getLevel());
+    expect($severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+    expect($severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+    expect($severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
 });
 
 it('should find the host as non admin', function () {
@@ -228,7 +254,8 @@ it('should find the host as non admin', function () {
         $this->downtimeRepository,
         $this->acknowledgementRepository,
         $this->monitoringService,
-        $this->tagRepository
+        $this->tagRepository,
+        $this->severityRepository
     );
 
     $this->contact
@@ -261,6 +288,11 @@ it('should find the host as non admin', function () {
         ->method('findAllByResourceAndTypeId')
         ->willReturn([$this->category]);
 
+    $this->severityRepository
+        ->expects($this->once())
+        ->method('findByResourceAndTypeId')
+        ->willReturn($this->severity);
+
     $presenter = new FindHostPresenterStub();
 
     $findHost(1, $presenter);
@@ -283,7 +315,6 @@ it('should find the host as non admin', function () {
     expect($presenter->response->statusChangePercentage)->toBe($this->host->getStatusChangePercentage());
     expect($presenter->response->hasActiveChecks)->toBe($this->host->hasActiveChecks());
     expect($presenter->response->hasPassiveChecks)->toBe($this->host->hasPassiveChecks());
-    expect($presenter->response->severityLevel)->toBe($this->host->getSeverityLevel());
     expect($presenter->response->checkAttempts)->toBe($this->host->getCheckAttempts());
     expect($presenter->response->maxCheckAttempts)->toBe($this->host->getMaxCheckAttempts());
     expect($presenter->response->lastTimeUp)->toBe($this->host->getLastTimeUp());
@@ -308,4 +339,16 @@ it('should find the host as non admin', function () {
     expect($presenter->response->acknowledgement['entry_time'])->toBe($this->acknowledgement->getEntryTime());
     expect($presenter->response->categories[0]['id'])->toBe($this->category->getId());
     expect($presenter->response->categories[0]['name'])->toBe($this->category->getName());
+
+    /**
+     * @var array<string, mixed> $severity
+     */
+    $severity = $presenter->response->severity;
+    expect($severity['id'])->toBe($this->severity->getId());
+    expect($severity['name'])->toBe($this->severity->getName());
+    expect($severity['type'])->toBe($this->severity->getTypeAsString());
+    expect($severity['level'])->toBe($this->severity->getLevel());
+    expect($severity['icon']['id'])->toBe($this->severity->getIcon()->getId());
+    expect($severity['icon']['name'])->toBe($this->severity->getIcon()->getName());
+    expect($severity['icon']['url'])->toBe($this->severity->getIcon()->getUrl());
 });

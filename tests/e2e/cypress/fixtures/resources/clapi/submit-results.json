@@ -3,7 +3,7 @@
       {
         "updatetime": "",
         "host": "test_host",
-        "service": "service_test",
+        "service": "service_test_ack",
         "status": "2",
         "output": "submit_status_2",
         "perfdata": ""

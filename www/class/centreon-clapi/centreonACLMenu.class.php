@@ -36,9 +36,9 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "Centreon/Object/Acl/Group.php";
-require_once "Centreon/Object/Acl/Menu.php";
-require_once "Centreon/Object/Relation/Acl/Group/Menu.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Menu.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Menu.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . '/www/class/centreonTopology.class.php';
 

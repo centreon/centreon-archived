@@ -422,7 +422,7 @@ class MysqlTable
     public function exists()
     {
         try {
-            $DBRESULT = $this->db->query("use " . $this->schema);
+            $DBRESULT = $this->db->query("use `" . $this->schema . "`");
         } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "

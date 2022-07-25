@@ -9,6 +9,8 @@ import { SortOrder } from '../models';
 interface EndpointParams {
   hostCategories?: Array<string>;
   hostGroups?: Array<string>;
+  hostSeverities?: Array<string>;
+  hostSeverityLevels?: Array<number>;
   limit?: number;
   monitoringServers?: Array<string>;
   page?: number;
@@ -16,6 +18,8 @@ interface EndpointParams {
   search?: string;
   serviceCategories?: Array<string>;
   serviceGroups?: Array<string>;
+  serviceSeverities?: Array<string>;
+  serviceSeverityLevels?: Array<number>;
   sort?;
   states?: Array<string>;
   statusTypes?: Array<string>;
@@ -41,8 +45,12 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroups = [],
   hostCategories = [],
+  hostSeverities = [],
+  hostSeverityLevels = [],
   serviceCategories = [],
   serviceGroups = [],
+  serviceSeverities = [],
+  serviceSeverityLevels = [],
   monitoringServers = [],
   search,
   statusTypes = defaultStateTypes,
@@ -50,6 +58,8 @@ const getListingEndpoint = ({
   buildResourcesEndpoint({
     hostCategories,
     hostGroups,
+    hostSeverities,
+    hostSeverityLevels,
     limit,
     monitoringServers,
     page,
@@ -64,6 +74,8 @@ const getListingEndpoint = ({
       : undefined,
     serviceCategories,
     serviceGroups,
+    serviceSeverities,
+    serviceSeverityLevels,
     sort,
     states,
     statusTypes,
