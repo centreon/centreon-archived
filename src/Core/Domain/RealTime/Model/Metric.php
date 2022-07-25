@@ -25,24 +25,21 @@ namespace Core\Domain\RealTime\Model;
 
 class Metric
 {
-    private int $id;
-    private string $name;
-
-    public function setId(int $id): void
+    public function __construct(private int $id, private string $name)
     {
-        $this->id = $id;
     }
 
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;

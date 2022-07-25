@@ -27,6 +27,12 @@ use DateTimeInterface;
 
 class FindPerformanceMetricRequest
 {
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @param DateTimeInterface $startDate
+     * @param DateTimeInterface $endDate
+     */
     public function __construct(
         public int $hostId,
         public int $serviceId,

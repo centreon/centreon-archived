@@ -27,7 +27,17 @@ use Core\Domain\RealTime\Model\IndexData;
 
 interface ReadIndexDataRepositoryInterface
 {
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @throw \Throwable
+     * @return int
+     */
     public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int;
 
+    /**
+     * @param int $index
+     * @return IndexData|null
+     */
     public function findHostNameAndServiceDescriptionByIndex(int $index): ?IndexData;
 }

@@ -39,6 +39,9 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         $this->db = $db;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findIndexByHostIdAndServiceId(int $hostId, int $serviceId): int
     {
         $query = 'SELECT id FROM `:dbstg`.index_data WHERE host_id = :hostId AND service_id = :serviceId';
@@ -56,6 +59,9 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         return (int) $row['id'];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findHostNameAndServiceDescriptionByIndex(int $index): ?IndexData
     {
         $query = 'SELECT host_name as hostName, service_description as serviceDescription ';
@@ -63,8 +69,13 @@ class DbReadIndexDataRepository extends AbstractRepositoryDRB implements ReadInd
         $statement = $this->db->prepare($this->translateDbName($query));
         $statement->bindValue(':index', $index, PDO::PARAM_INT);
         $statement->execute();
-        $statement->setFetchMode(PDO::FETCH_CLASS, IndexData::class);
 
-        return $statement->fetch() ?: null;
+        $record = $statement->fetch();
+
+        if (!is_array($record)) {
+            return null;
+        }
+
+        return new IndexData($record['hostName'], $record['serviceDescription']);
     }
 }

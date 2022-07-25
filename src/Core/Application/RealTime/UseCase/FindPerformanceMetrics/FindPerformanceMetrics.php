@@ -30,6 +30,11 @@ use Core\Domain\RealTime\Model\IndexData;
 
 class FindPerformanceMetrics
 {
+    /**
+     * @param ReadIndexDataRepositoryInterface $indexDataRepository
+     * @param ReadMetricRepositoryInterface $metricRepository
+     * @param ReadPerformanceDataRepositoryInterface $performanceDataRepository
+     */
     public function __construct(
         private ReadIndexDataRepositoryInterface $indexDataRepository,
         private ReadMetricRepositoryInterface $metricRepository,
@@ -37,6 +42,11 @@ class FindPerformanceMetrics
     ) {
     }
 
+    /**
+     * @param FindPerformanceMetricRequest $request
+     * @param FindPerformanceMetricPresenterInterface $presenter
+     * @return void
+     */
     public function __invoke(
         FindPerformanceMetricRequest $request,
         FindPerformanceMetricPresenterInterface $presenter
@@ -55,6 +65,10 @@ class FindPerformanceMetrics
         $presenter->present(new FindPerformanceMetricResponse($performanceMetrics));
     }
 
+    /**
+     * @param int $index
+     * @return string
+     */
     private function generateDownloadFileNameByIndex(int $index): string
     {
         $indexData = $this->indexDataRepository->findHostNameAndServiceDescriptionByIndex($index);

@@ -21,31 +21,9 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\RealTime\Model;
+namespace Core\Infrastructure\Common\Presenter;
 
-class MetricValue
+interface DownloadInterface
 {
-    /**
-     * @param string $name
-     * @param float $value
-     */
-    public function __construct(private string $name, private float $value)
-    {
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return float
-     */
-    public function getValue(): float
-    {
-        return $this->value;
-    }
+    public function setDownloadFileName(string $fileName): void;
 }

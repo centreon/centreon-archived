@@ -44,9 +44,7 @@ beforeEach(function () {
 it(
     'download file name is properly generated',
     function (string $hostName, string $serviceDescription, string $expectedFileName) {
-        $indexData = new IndexData();
-        $indexData->setHostName($hostName);
-        $indexData->setServiceDescription($serviceDescription);
+        $indexData = new IndexData($hostName, $serviceDescription);
 
         $indexDataRepository = $this->createMock(ReadIndexDataRepositoryInterface::class);
         $indexDataRepository

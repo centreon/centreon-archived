@@ -28,6 +28,7 @@ use Core\Domain\RealTime\Model\Metric;
 interface ReadMetricRepositoryInterface
 {
     /**
+     * @param int $indexId
      * @return array<Metric>
      */
     public function findMetricsByIndexId(int $indexId): array;

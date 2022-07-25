@@ -25,24 +25,21 @@ namespace Core\Domain\RealTime\Model;
 
 class IndexData
 {
-    private string $hostName;
-    private string $serviceDescription;
-
-    public function setHostName(string $hostName): void
+    public function __construct(private string $hostName, private string $serviceDescription)
     {
-        $this->hostName = $hostName;
     }
 
+    /**
+     * @return string
+     */
     public function getHostName(): string
     {
         return $this->hostName;
     }
 
-    public function setServiceDescription(string $serviceDescription): void
-    {
-        $this->serviceDescription = $serviceDescription;
-    }
-
+    /**
+     * @return string
+     */
     public function getServiceDescription(): string
     {
         return $this->serviceDescription;

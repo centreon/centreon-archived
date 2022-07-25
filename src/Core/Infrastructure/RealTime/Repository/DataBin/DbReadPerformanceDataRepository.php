@@ -57,8 +57,9 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 
         $columns = ['ctime AS time'];
+        $pattern = 'AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s';
         foreach ($metrics as $metric) {
-            $columns[] = sprintf('AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s', $metric->getId(), $metric->getName());
+            $columns[] = sprintf($pattern, $metric->getId(), $metric->getName());
         }
 
         $query = sprintf(

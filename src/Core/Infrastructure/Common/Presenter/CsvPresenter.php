@@ -30,11 +30,17 @@ class CsvPresenter extends AbstractPresenter implements PresenterFormatterInterf
 {
     private mixed $data = null;
 
+    /**
+     * @inheritDoc
+     */
     public function present(mixed $data): void
     {
         $this->data = $data;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function show(): Response
     {
         $response = new StreamedResponse(null, Response::HTTP_OK, $this->responseHeaders);

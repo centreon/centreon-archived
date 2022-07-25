@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
 use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Infrastructure\Common\Presenter\DownloadInterface;
 
-interface FindPerformanceMetricPresenterInterface extends PresenterInterface
+interface FindPerformanceMetricPresenterInterface extends PresenterInterface, DownloadInterface
 {
-    public function setDownloadFileName(string $fileName): void;
 }

@@ -28,6 +28,34 @@ use Core\Domain\RealTime\Model\PerformanceMetric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 
+function createPerformanceMetric(string $date, float $rta, float $pl, float $rtmax, float $rtmin): PerformanceMetric
+{
+    $metricValues = [];
+    $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
+    foreach ($metrics as $columnName => $columnValue) {
+        $metricValues[] = new MetricValue($columnName, $columnValue);
+    }
+
+    return new PerformanceMetric(new DateTimeImmutable($date), $metricValues);
+}
+
+/**
+ * @return array<string, int|string>
+ */
+function generateExpectedResponseData(string $date, float $rta, float $pl, float $rtmax, float $rtmin): array
+{
+    $dateTime = new DateTimeImmutable($date);
+
+    return [
+        'time' => $dateTime->getTimestamp(),
+        'humantime' => $dateTime->format('Y-m-d H:i:s'),
+        'rta' => sprintf('%f', $rta),
+        'pl' => sprintf('%f', $pl),
+        'rtmax' => sprintf('%f', $rtmax),
+        'rtmin' => sprintf('%f', $rtmin),
+    ];
+}
+
 it(
     'response contains properly formatted performanceMetrics',
     function (iterable $performanceMetrics, array $expectedResponseData) {
@@ -62,31 +90,3 @@ it(
         ]
     ]
 ]);
-
-function createPerformanceMetric(string $date, float $rta, float $pl, float $rtmax, float $rtmin): PerformanceMetric
-{
-    $metricValues = [];
-    $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
-    foreach ($metrics as $columnName => $columnValue) {
-        $metricValues[] = new MetricValue($columnName, $columnValue);
-    }
-
-    return new PerformanceMetric(new DateTimeImmutable($date), $metricValues);
-}
-
-/**
- * @return array<string, int|string>
- */
-function generateExpectedResponseData(string $date, float $rta, float $pl, float $rtmax, float $rtmin): array
-{
-    $dateTime = new DateTimeImmutable($date);
-
-    return [
-        'time' => $dateTime->getTimestamp(),
-        'humantime' => $dateTime->format('Y-m-d H:i:s'),
-        'rta' => sprintf('%f', $rta),
-        'pl' => sprintf('%f', $pl),
-        'rtmax' => sprintf('%f', $rtmax),
-        'rtmin' => sprintf('%f', $rtmin),
-    ];
-}

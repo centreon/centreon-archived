@@ -57,6 +57,13 @@ class DownloadPerformanceMetricsController extends AbstractController
         return $presenter->show();
     }
 
+    /**
+     * Creates a performance metric request depending request parameters
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return void
+     */
     private function createPerformanceMetricRequest(int $hostId, int $serviceId): void
     {
         $this->findStartDate();
@@ -70,16 +77,35 @@ class DownloadPerformanceMetricsController extends AbstractController
         );
     }
 
+    /**
+     * Populates startDate attribute with start_date parameter value from http request
+     *
+     * @throws \Exception
+     * @return void
+     */
     private function findStartDate(): void
     {
         $this->startDate = $this->findDateInRequest(self::START_DATE_PARAMETER_NAME);
     }
 
+    /**
+     * Populates endDate attribute with end_date parameter value from http request
+     *
+     * @throws \Exception
+     * @return void
+     */
     private function findEndDate(): void
     {
         $this->endDate = $this->findDateInRequest(self::END_DATE_PARAMETER_NAME);
     }
 
+    /**
+     * Retrieves date attribute from http request parameter identified by $parameterName
+     *
+     * @param string $parameterName
+     * @throws \Exception
+     * @return DateTimeImmutable
+     */
     private function findDateInRequest(string $parameterName): DateTimeImmutable
     {
         $dateParameter = $this->request->query->get($parameterName);

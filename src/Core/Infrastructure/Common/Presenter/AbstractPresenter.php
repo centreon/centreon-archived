@@ -35,7 +35,7 @@ abstract class AbstractPresenter
     protected array $responseHeaders = [];
 
     /**
-     * @param array<string, string>
+     * @param array<string, string> $responseHeaders
      */
     public function setResponseHeaders(array $responseHeaders): void
     {
@@ -74,6 +74,12 @@ abstract class AbstractPresenter
         return $content;
     }
 
+    /**
+     * Generates json response with error message and http code
+     * @param mixed $data
+     * @param int $code
+     * @return JsonResponse
+     */
     protected function generateJsonErrorResponse(mixed $data, int $code): JsonResponse
     {
         $errorData = $this->formatErrorContent($data, $code);
@@ -81,6 +87,11 @@ abstract class AbstractPresenter
         return $this->generateJsonResponse($errorData, $code);
     }
 
+    /**
+     * @param mixed $data
+     * @param int $code
+     * @return JsonResponse
+     */
     protected function generateJsonResponse(mixed $data, int $code): JsonResponse
     {
         if (is_a($data, \Generator::class)) {

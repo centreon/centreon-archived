@@ -49,8 +49,17 @@ class DbReadMetricRepository extends AbstractRepositoryDRB implements ReadMetric
         $statement = $this->db->prepare($this->translateDbName($query));
         $statement->bindValue(':index_id', $indexId, \PDO::PARAM_INT);
         $statement->execute();
-        $statement->setFetchMode(PDO::FETCH_CLASS, Metric::class);
 
-        return $statement->fetchAll();
+        $records = $statement->fetchAll();
+        if (!is_array($records) || count($records) === 0) {
+            return [];
+        }
+
+        $metrics = [];
+        foreach ($records as $record) {
+            $metrics[] = new Metric((int) $record['id'], $record['name']);
+        }
+
+        return $metrics;
     }
 }

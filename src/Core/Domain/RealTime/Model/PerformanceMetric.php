@@ -38,6 +38,10 @@ class PerformanceMetric
     ) {
     }
 
+    /**
+     * @param MetricValue $metricValue
+     * @return void
+     */
     public function addMetricValue(MetricValue $metricValue): void
     {
         $this->metricValues[] = $metricValue;
@@ -51,6 +55,9 @@ class PerformanceMetric
         return $this->metricValues;
     }
 
+    /**
+     * @return DateTimeInterface
+     */
     public function getDateValue(): DateTimeInterface
     {
         return $this->dateValue;
