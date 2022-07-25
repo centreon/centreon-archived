@@ -121,10 +121,7 @@ class CentreonAuthLDAP
             }
         }
 
-        /*
-         * LDAP BIND
-         */
-        if (empty($this->contactInfos['contact_ldap_dn']) || trim($this->contactInfos['contact_ldap_dn']) == '') {
+        if (empty(trim($this->contactInfos['contact_ldap_dn']))) {
             return CentreonAuth::PASSWORD_CANNOT_BE_VERIFIED;
         }
 
