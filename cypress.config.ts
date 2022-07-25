@@ -21,7 +21,6 @@ module.exports = defineConfig({
   reporter: 'junit',
   reporterOptions: {
     mochaFile: 'cypress/results/cypress-fe.xml',
-    toConsole: true,
   },
   video: true,
   videosFolder: 'cypress/results/videos',
