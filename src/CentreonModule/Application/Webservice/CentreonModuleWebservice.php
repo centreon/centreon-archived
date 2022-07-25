@@ -42,6 +42,7 @@ use Centreon\Application\DataRepresenter\Response;
 use CentreonModule\Application\DataRepresenter\ModuleEntity;
 use CentreonModule\Application\DataRepresenter\ModuleDetailEntity;
 use CentreonModule\Application\DataRepresenter\UpdateAction;
+use CentreonModule\Infrastructure\Service\CentreonModuleService;
 use CentreonModule\ServiceProvider;
 
 /**
@@ -375,9 +376,13 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
         $result = null;
         $entity = null;
 
+        /**
+         * @var CentreonModuleService
+         */
+        $moduleService = $this->getDi()[ServiceProvider::CENTREON_MODULE];
+
         try {
-            $entity = $this->getDi()[ServiceProvider::CENTREON_MODULE]
-                ->install($id, $type);
+            $entity = $moduleService->install($id, $type);
         } catch (\Exception $e) {
             $result = new UpdateAction(null, $e->getMessage());
         }
