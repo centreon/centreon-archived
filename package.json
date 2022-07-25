@@ -13,7 +13,7 @@
     "build:watch": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
     "test:coverage": "jest --coverage",
     "cypress:cli": "node wrapCypress.ts cypress  run --component",
-    "cypress:ui": "npx cypress open --component"
+    "cypress:ui": "cypress open --component --browser=chrome"
   },
   "devDependencies": {
     "@cypress/react": "^5.12.5",
