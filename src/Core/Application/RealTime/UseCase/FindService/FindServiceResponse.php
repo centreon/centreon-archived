@@ -228,7 +228,6 @@ class FindServiceResponse
     /**
      * Converts a Host entity into an array
      *
-     * @param Host $host
      * @return array<string, mixed>
      */
     private function hostToArray(Host $host): array

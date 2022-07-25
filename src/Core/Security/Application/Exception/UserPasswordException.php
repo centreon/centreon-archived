@@ -27,8 +27,6 @@ class UserPasswordException extends \Exception
 {
     /**
      * Exception thrown when a password doesn't match the security policy.
-     *
-     * @return self
      */
     public static function passwordDoesnotMatchSecurityPolicy(): self
     {

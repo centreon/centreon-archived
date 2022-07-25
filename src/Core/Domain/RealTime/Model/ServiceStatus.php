@@ -26,17 +26,17 @@ use Core\Domain\RealTime\Model\Status;
 
 class ServiceStatus extends Status
 {
-    public const STATUS_NAME_OK = 'OK',
+    final public const STATUS_NAME_OK = 'OK',
                  STATUS_NAME_WARNING = 'WARNING',
                  STATUS_NAME_CRITICAL = 'CRITICAL',
                  STATUS_NAME_UNKNOWN = 'UNKNOWN';
 
-    public const STATUS_CODE_OK = 0,
+    final public const STATUS_CODE_OK = 0,
                  STATUS_CODE_WARNING = 1,
                  STATUS_CODE_CRITICAL = 2,
                  STATUS_CODE_UNKNOWN = 3;
 
-    public const STATUS_ORDER_OK = parent::STATUS_ORDER_OK,
+    final public const STATUS_ORDER_OK = parent::STATUS_ORDER_OK,
                  STATUS_ORDER_WARNING = parent::STATUS_ORDER_MEDIUM,
                  STATUS_ORDER_CRITICAL = parent::STATUS_ORDER_HIGH,
                  STATUS_ORDER_UNKNOWN = parent::STATUS_ORDER_LOW;

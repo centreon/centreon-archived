@@ -33,10 +33,10 @@ class PollerConfigurationRequestBridge
     private $dbAdapter;
 
     /** @var PollerServer[] */
-    private $pollers = [];
+    private array $pollers = [];
 
     /** @var PollerServer[] */
-    private $additionalRemotes = [];
+    private array $additionalRemotes = [];
 
 
     public function __construct(Container $di)
@@ -146,7 +146,6 @@ class PollerConfigurationRequestBridge
      * Get poller information from poller id
      *
      * @param int $pollerId the poller id to get
-     * @return null|PollerServer
      */
     public function getPollerFromId(int $pollerId): ?PollerServer
     {
@@ -155,7 +154,7 @@ class PollerConfigurationRequestBridge
         $this->dbAdapter->query($query, [$pollerId]);
         $results = $this->dbAdapter->results();
 
-        if (count($results)) {
+        if (is_countable($results) ? count($results) : 0) {
             $remoteData = reset($results);
             $remoteServer = new PollerServer;
             $remoteServer->setId($remoteData->id);

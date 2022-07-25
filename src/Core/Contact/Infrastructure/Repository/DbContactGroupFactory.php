@@ -30,7 +30,6 @@ class DbContactGroupFactory
 {
     /**
      * @param array<string,string> $record
-     * @return ContactGroup
      * @throws AssertionException
      */
     public static function createFromRecord(array $record): ContactGroup

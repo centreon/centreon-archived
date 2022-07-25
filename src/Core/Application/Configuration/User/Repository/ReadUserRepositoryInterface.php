@@ -46,8 +46,6 @@ interface ReadUserRepositoryInterface
     /**
      * Find user by its id
      *
-     * @param int $userId
-     * @return User|null
      * @throws AssertionFailedException
      */
     public function findById(int $userId): ?User;

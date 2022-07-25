@@ -37,7 +37,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     /**
      * @var ProviderPresenterInterface[]
      */
-    private $providerPresenters;
+    private readonly array $providerPresenters;
 
     /**
      * @param \Traversable<ProviderPresenterInterface> $presenters

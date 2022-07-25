@@ -34,7 +34,7 @@ class FindContactTemplates
     /**
      * @param ReadContactTemplateRepositoryInterface $repository
      */
-    public function __construct(private ReadContactTemplateRepositoryInterface $repository)
+    public function __construct(private readonly ReadContactTemplateRepositoryInterface $repository)
     {
     }
 

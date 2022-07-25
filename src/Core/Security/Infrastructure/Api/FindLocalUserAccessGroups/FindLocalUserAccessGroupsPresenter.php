@@ -36,14 +36,11 @@ class FindLocalUserAccessGroupsPresenter extends AbstractPresenter implements
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private RequestParametersInterface $requestParameters,
+        private readonly RequestParametersInterface $requestParameters,
         protected PresenterFormatterInterface $presenterFormatter,
     ) {
     }
 
-    /**
-     * @param mixed $presentedData
-     */
     public function present(mixed $presentedData): void
     {
         parent::present([

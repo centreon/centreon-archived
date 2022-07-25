@@ -61,15 +61,15 @@ class LoginSession
      * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
-        private string $redirectDefaultPage,
-        private AuthenticationServiceInterface $authenticationService,
-        private ProviderServiceInterface $providerService,
-        private ContactServiceInterface $contactService,
-        private RequestStack $requestStack,
-        private MenuServiceInterface $menuService,
-        private AuthenticationRepositoryInterface $authenticationRepository,
-        private SessionRepositoryInterface $sessionRepository,
-        private DataStorageEngineInterface $dataStorageEngine,
+        private readonly string $redirectDefaultPage,
+        private readonly AuthenticationServiceInterface $authenticationService,
+        private readonly ProviderServiceInterface $providerService,
+        private readonly ContactServiceInterface $contactService,
+        private readonly RequestStack $requestStack,
+        private readonly MenuServiceInterface $menuService,
+        private readonly AuthenticationRepositoryInterface $authenticationRepository,
+        private readonly SessionRepositoryInterface $sessionRepository,
+        private readonly DataStorageEngineInterface $dataStorageEngine,
     ) {
     }
 
@@ -156,10 +156,6 @@ class LoginSession
         $presenter->present($this->createResponse($redirectionUri));
     }
 
-    /**
-     * @param string $redirectionUri
-     * @return LoginSessionResponse
-     */
     private function createResponse(string $redirectionUri): LoginSessionResponse
     {
         $response = new LoginSessionResponse();
@@ -171,7 +167,6 @@ class LoginSession
     /**
      * Check if user is allowed to authenticate or throw an Exception.
      *
-     * @param string $userName
      * @throws LegacyAuthenticationException
      */
     private function authorizeUserToAuthenticateOrFail(string $userName): void
@@ -204,8 +199,6 @@ class LoginSession
     /**
      * Find a provider or throw an Exception.
      *
-     * @param string $providerConfigurationName
-     * @return ProviderInterface
      * @throws ProviderException
      */
     private function findProviderOrFail(string $providerConfigurationName): ProviderInterface
@@ -235,7 +228,6 @@ class LoginSession
      * Authenticate the user or throw an Exception.
      *
      * @param LocalProviderInterface $authenticationProvider
-     * @param LoginSessionRequest $request
      * @throws LegacyAuthenticationException
      */
     private function authenticateOrFail(ProviderInterface $authenticationProvider, LoginSessionRequest $request): void
@@ -258,7 +250,6 @@ class LoginSession
      * Retrieve user from provider or throw an Exception.
      *
      * @param LocalProviderInterface $authenticationProvider
-     * @return ContactInterface
      * @throws LegacyAuthenticationException
      */
     private function getUserFromProviderOrFail(ProviderInterface $authenticationProvider): ContactInterface
@@ -280,7 +271,6 @@ class LoginSession
      * Create the user in Centreon or throw an Exception.
      *
      * @param LocalProviderInterface $authenticationProvider
-     * @param ContactInterface $providerUser
      * @throws LegacyAuthenticationException
      */
     private function createUserOrFail(ProviderInterface $authenticationProvider, ContactInterface $providerUser): void
@@ -299,7 +289,6 @@ class LoginSession
     /**
      * Start the Centreon session.
      *
-     * @param Centreon $legacySession
      * @throws LegacyAuthenticationException
      */
     private function startLegacySession(Centreon $legacySession): void
@@ -315,10 +304,6 @@ class LoginSession
 
     /**
      * Get the redirection uri where user will be redirect once logged.
-     *
-     * @param LoginSessionRequest $request
-     * @param ContactInterface $providerUser
-     * @return string
      */
     private function getRedirectionUri(
         LoginSessionRequest $request,
@@ -341,9 +326,6 @@ class LoginSession
 
     /**
      * build the redirection uri based on isReact page property.
-     *
-     * @param Page $defaultPage
-     * @return string
      */
     private function buildDefaultRedirectionUri(Page $defaultPage): string
     {
@@ -362,9 +344,6 @@ class LoginSession
 
     /**
      * Get a Page from referer page number.
-     *
-     * @param LoginSessionRequest $request
-     * @return Page|null
      */
     private function getRedirectionPageFromReferer(LoginSessionRequest $request): ?Page
     {
@@ -374,7 +353,7 @@ class LoginSession
             parse_str($request->refererQueryParameters, $queryParameters);
             if (array_key_exists('redirect', $queryParameters)) {
                 $redirectionPageParameters = [];
-                parse_str($queryParameters['redirect'], $redirectionPageParameters);
+                parse_str((string) $queryParameters['redirect'], $redirectionPageParameters);
                 if (array_key_exists('p', $redirectionPageParameters)) {
                     $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber(
                         (int) $redirectionPageParameters['p']
@@ -392,13 +371,6 @@ class LoginSession
 
     /**
      * create Authentication tokens.
-     *
-     * @param string $sessionToken
-     * @param string $providerConfigurationName
-     * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
-     * @param string|null $clientIp
      */
     private function createAuthenticationTokens(
         string $sessionToken,

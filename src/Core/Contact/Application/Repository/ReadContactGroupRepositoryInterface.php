@@ -38,7 +38,6 @@ interface ReadContactGroupRepositoryInterface
     /**
      * Get all contact groups of a contact.
      *
-     * @param integer $userId
      * @return array<ContactGroup>
      * @throws \Throwable
      */
@@ -47,8 +46,6 @@ interface ReadContactGroupRepositoryInterface
     /**
      * Get a Contact Group
      *
-     * @param int $contactGroupId
-     * @return ContactGroup|null
      * @throws \Throwable
      */
     public function find(int $contactGroupId): ?ContactGroup;

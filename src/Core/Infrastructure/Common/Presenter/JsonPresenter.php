@@ -75,9 +75,6 @@ class JsonPresenter implements PresenterFormatterInterface
         $this->data = $data;
     }
 
-    /**
-     * @return JsonResponse
-     */
     public function show(): JsonResponse
     {
         switch (true) {
@@ -147,8 +144,6 @@ class JsonPresenter implements PresenterFormatterInterface
     /**
      * Format content on error
      *
-     * @param mixed $data
-     * @param integer $code
      * @return mixed[]|null
      */
     private function formatErrorContent(mixed $data, int $code): ?array

@@ -30,12 +30,12 @@ class LoginOpenIdSessionResponse
      *
      * @var string|null
      */
-    public ?string $error;
+    public ?string $error = null;
 
     /**
      * Undocumented variable
      *
      * @var string|null
      */
-    public ?string $redirectUri;
+    public ?string $redirectUri = null;
 }

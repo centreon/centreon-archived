@@ -15,20 +15,18 @@ use ReflectionClass;
 class CentreonRemoteServer implements CentreonClapiServiceInterface
 {
 
-    /**
-     * @var Container
-     * todo: extract only services we need to avoid using whole container
-     */
-    private $di;
-
-    public function __construct(Container $di)
+    public function __construct(
+        /**
+         * todo: extract only services we need to avoid using whole container
+         */
+        private readonly Container $di
+    )
     {
-        $this->di = $di;
     }
 
     public static function getName() : string
     {
-        return (new \ReflectionClass(__CLASS__))->getShortName();
+        return (new \ReflectionClass(self::class))->getShortName();
     }
 
     /**
@@ -47,11 +45,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
     {
         /* Set default value */
         $noCheckCertificate = false;
-        $data = array(
-            'remoteHttpMethod' => 'http',
-            'remoteHttpPort' => null,
-            'remoteNoCheckCertificate' => false,
-        );
+        $data = ['remoteHttpMethod' => 'http', 'remoteHttpPort' => null, 'remoteNoCheckCertificate' => false];
         $urlString = $noProxy = '';
 
         /* Check CLAPI */
@@ -70,7 +64,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         }
 
         /* Extract host from URI */
-        $hostList = array();
+        $hostList = [];
         $pattern_extract_host = '/^[htps:\/]*([a-z0-9.-]+)[:0-9]*$/';
         $urlList = explode(',', $urlString);
         foreach ($urlList as $url) {

@@ -27,8 +27,5 @@ use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 
 interface WriteWebSSOConfigurationRepositoryInterface
 {
-    /**
-     * @param WebSSOConfiguration $configuration
-     */
     public function updateConfiguration(WebSSOConfiguration $configuration): void;
 }

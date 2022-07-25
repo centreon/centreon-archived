@@ -30,15 +30,9 @@ use CentreonRemote\Domain\Resources\RemoteConfig\InputFlowOnePeerRetention;
 
 class PollerConnectionConfigurationService extends ServerConnectionConfigurationService
 {
-    /**
-     * @var CfgCentreonBrokerInterface
-     */
-    private $brokerRepository;
+    private ?\Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface $brokerRepository = null;
 
-    /**
-     * @var BrokerConfigurationService
-     */
-    private $brokerConfigurationService;
+    private ?\Centreon\Domain\Service\BrokerConfigurationService $brokerConfigurationService = null;
 
     /**
      * Set broker repository to manage general broker configuration

@@ -25,296 +25,174 @@ namespace Core\Domain\RealTime\Model;
 class Acknowledgement
 {
     // Types
-    public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
-    public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
+    final public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
+    final public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
 
     public function __construct(
-        private int $id,
-        private int $hostId,
-        private int $serviceId,
-        private \DateTime $entryTime
+        private readonly int $id,
+        private readonly int $hostId,
+        private readonly int $serviceId,
+        private readonly \DateTime $entryTime
     ) {
     }
 
-    /**
-     * @var int|null
-     */
-    private $instanceId;
+    private ?int $instanceId = null;
 
-    /**
-     * @var int|null
-     */
-    private $authorId;
+    private ?int $authorId = null;
 
-    /**
-     * @var string|null
-     */
-    private $authorName;
+    private ?string $authorName = null;
 
-    /**
-     * @var string|null
-     */
-    private $comment;
+    private ?string $comment = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $deletionTime;
+    private ?\DateTime $deletionTime = null;
 
-    /**
-     * @var bool
-     */
-    private $isNotifyContacts = true;
+    private bool $isNotifyContacts = true;
 
-    /**
-     * @var bool
-     */
-    private $isPersistentComment = true;
+    private bool $isPersistentComment = true;
 
-    /**
-     * @var bool
-     */
-    private $isSticky = true;
+    private bool $isSticky = true;
 
-    /**
-     * @var int|null
-     */
-    private $state;
+    private ?int $state = null;
 
-    /**
-     * @var int|null
-     */
-    private $type;
+    private ?int $type = null;
 
-    /**
-     * @var bool
-     */
-    private $withServices = false;
+    private bool $withServices = false;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getInstanceId(): ?int
     {
         return $this->instanceId;
     }
 
-    /**
-     * @param int $instanceId
-     * @return self
-     */
     public function setInstanceId(int $instanceId): self
     {
         $this->instanceId = $instanceId;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getHostId(): int
     {
         return $this->hostId;
     }
 
-    /**
-     * @return int
-     */
     public function getServiceId(): int
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAuthorId(): ?int
     {
         return $this->authorId;
     }
 
-    /**
-     * @param int|null $authorId
-     * @return self
-     */
     public function setAuthorId(?int $authorId): self
     {
         $this->authorId = $authorId;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAuthorName(): ?string
     {
         return $this->authorName;
     }
 
-    /**
-     * @param string|null $authorName
-     * @return self
-     */
     public function setAuthorName(?string $authorName): self
     {
         $this->authorName = $authorName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    /**
-     * @param string|null $comment
-     * @return self
-     */
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getDeletionTime(): ?\DateTime
     {
         return $this->deletionTime;
     }
 
-    /**
-     * @param \DateTime|null $deletionTime
-     * @return self
-     */
     public function setDeletionTime(?\DateTime $deletionTime): self
     {
         $this->deletionTime = $deletionTime;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getEntryTime(): \DateTime
     {
         return $this->entryTime;
     }
 
-    /**
-     * @return bool
-     */
     public function isNotifyContacts(): bool
     {
         return $this->isNotifyContacts;
     }
 
-    /**
-     * @param bool $isNotifyContacts
-     * @return self
-     */
     public function setNotifyContacts(bool $isNotifyContacts): self
     {
         $this->isNotifyContacts = $isNotifyContacts;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isPersistentComment(): bool
     {
         return $this->isPersistentComment;
     }
 
-    /**
-     * @param bool $isPersistentComment
-     * @return self
-     */
     public function setPersistentComment(bool $isPersistentComment): self
     {
         $this->isPersistentComment = $isPersistentComment;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isSticky(): bool
     {
         return $this->isSticky;
     }
 
-    /**
-     * @param bool $isSticky
-     * @return self
-     */
     public function setSticky(bool $isSticky): self
     {
         $this->isSticky = $isSticky;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getState(): ?int
     {
         return $this->state;
     }
 
-    /**
-     * @param int|null $state
-     * @return self
-     */
     public function setState(?int $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getType(): ?int
     {
         return $this->type;
     }
 
-    /**
-     * @param int|null $type
-     * @return self
-     */
     public function setType(?int $type): self
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isWithServices(): bool
     {
         return $this->withServices;
     }
 
-    /**
-     * @param bool $withServices
-     * @return self
-     */
     public function setWithServices(bool $withServices): self
     {
         $this->withServices = $withServices;

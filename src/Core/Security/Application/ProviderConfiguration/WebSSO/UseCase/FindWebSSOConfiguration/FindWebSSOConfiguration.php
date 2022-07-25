@@ -35,7 +35,7 @@ class FindWebSSOConfiguration
     /**
      * @param ReadWebSSOConfigurationRepositoryInterface $repository
      */
-    public function __construct(private ReadWebSSOConfigurationRepositoryInterface $repository)
+    public function __construct(private readonly ReadWebSSOConfigurationRepositoryInterface $repository)
     {
     }
 
@@ -59,10 +59,6 @@ class FindWebSSOConfiguration
         $presenter->present($this->createResponse($configuration));
     }
 
-    /**
-     * @param WebSSOConfiguration $configuration
-     * @return FindWebSSOConfigurationResponse
-     */
     private function createResponse(WebSSOConfiguration $configuration): FindWebSSOConfigurationResponse
     {
         $response = new FindWebSSOConfigurationResponse();

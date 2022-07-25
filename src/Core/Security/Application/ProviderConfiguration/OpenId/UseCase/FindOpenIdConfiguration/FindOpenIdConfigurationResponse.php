@@ -145,7 +145,6 @@ class FindOpenIdConfigurationResponse
     public array $authorizationRules = [];
 
     /**
-     * @param ContactTemplate $contactTemplate
      * @return array<string,int|string>
      */
     public static function contactTemplateToArray(ContactTemplate $contactTemplate): array
@@ -157,7 +156,6 @@ class FindOpenIdConfigurationResponse
     }
 
     /**
-     * @param ContactGroup $contactGroup
      * @return array{id: int, name: string}
      */
     public static function contactGroupToArray(ContactGroup $contactGroup): array
@@ -174,14 +172,12 @@ class FindOpenIdConfigurationResponse
      */
     public static function authorizationRulesToArray(array $authorizationRules): array
     {
-        return array_map(function (AuthorizationRule $authorizationRule) {
-            return [
-                'claim_value' => $authorizationRule->getClaimValue(),
-                'access_group' => [
-                    "id" => $authorizationRule->getAccessGroup()->getId(),
-                    "name" => $authorizationRule->getAccessGroup()->getName()
-                ]
-            ];
-        }, $authorizationRules);
+        return array_map(fn(AuthorizationRule $authorizationRule) => [
+            'claim_value' => $authorizationRule->getClaimValue(),
+            'access_group' => [
+                "id" => $authorizationRule->getAccessGroup()->getId(),
+                "name" => $authorizationRule->getAccessGroup()->getName()
+            ]
+        ], $authorizationRules);
     }
 }

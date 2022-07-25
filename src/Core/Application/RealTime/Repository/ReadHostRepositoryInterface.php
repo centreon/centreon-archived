@@ -29,28 +29,20 @@ interface ReadHostRepositoryInterface
 {
     /**
      * Find Host without ACL
-     *
-     * @param int $hostId
-     * @return Host|null
      */
     public function findHostById(int $hostId): ?Host;
 
     /**
      * Find Host regarding user ACL
      *
-     * @param int $hostId
      * @param int[] $accessGroupIds
-     * @return Host|null
      */
     public function findHostByIdAndAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
 
     /**
      * Check if user is allowed to get host information
      *
-     * @param int $hostId
-
      * @param int[] $accessGroupIds
-     * @return bool
      */
     public function isAllowedToFindHostByAccessGroupIds(int $hostId, array $accessGroupIds): bool;
 }

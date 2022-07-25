@@ -28,7 +28,6 @@ class DbServicegroupFactory
 {
     /**
      * @param array<string, mixed> $data
-     * @return Servicegroup
      */
     public static function createFromRecord(array $data): Servicegroup
     {

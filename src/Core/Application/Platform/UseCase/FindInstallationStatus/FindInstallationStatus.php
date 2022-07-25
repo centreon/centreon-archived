@@ -35,7 +35,7 @@ class FindInstallationStatus
     /**
      * @param ReadPlatformRepositoryInterface $repository
      */
-    public function __construct(private ReadPlatformRepositoryInterface $repository)
+    public function __construct(private readonly ReadPlatformRepositoryInterface $repository)
     {
     }
 
@@ -63,11 +63,6 @@ class FindInstallationStatus
         ));
     }
 
-    /**
-     * @param bool $isCentreonWebInstalled
-     * @param bool $isCentreonWebUpgradeAvailable
-     * @return FindInstallationStatusResponse
-     */
     private function createResponse(
         bool $isCentreonWebInstalled,
         bool $isCentreonWebUpgradeAvailable

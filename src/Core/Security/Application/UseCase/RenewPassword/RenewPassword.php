@@ -42,9 +42,9 @@ class RenewPassword
      * @param ReadConfigurationRepositoryInterface $readConfigurationRepository
      */
     public function __construct(
-        private ReadUserRepositoryInterface $readRepository,
-        private WriteUserRepositoryInterface $writeRepository,
-        private ReadConfigurationRepositoryInterface $readConfigurationRepository
+        private readonly ReadUserRepositoryInterface $readRepository,
+        private readonly WriteUserRepositoryInterface $writeRepository,
+        private readonly ReadConfigurationRepositoryInterface $readConfigurationRepository
     ) {
     }
 

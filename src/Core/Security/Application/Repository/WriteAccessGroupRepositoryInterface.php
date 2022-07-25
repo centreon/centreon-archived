@@ -30,15 +30,12 @@ interface WriteAccessGroupRepositoryInterface
 {
     /**
      * Delete all access groups for a given user
-     *
-     * @param ContactInterface $user
      */
     public function deleteAccessGroupsForUser(ContactInterface $user): void;
 
     /**
      * Insert access groups for a given user
      *
-     * @param ContactInterface $user
      * @param AccessGroup[] $accessGroups
      */
     public function insertAccessGroupsForUser(ContactInterface $user, array $accessGroups): void;

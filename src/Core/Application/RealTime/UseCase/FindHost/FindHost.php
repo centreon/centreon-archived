@@ -56,14 +56,14 @@ class FindHost
      * @param ReadTagRepositoryInterface $tagRepository
      */
     public function __construct(
-        private ReadHostRepositoryInterface $repository,
-        private ReadHostgroupRepositoryInterface $hostgroupRepository,
-        private ContactInterface $contact,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private ReadDowntimeRepositoryInterface $downtimeRepository,
-        private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
-        private MonitoringServiceInterface $monitoringService,
-        private ReadTagRepositoryInterface $tagRepository,
+        private readonly ReadHostRepositoryInterface $repository,
+        private readonly ReadHostgroupRepositoryInterface $hostgroupRepository,
+        private readonly ContactInterface $contact,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly ReadDowntimeRepositoryInterface $downtimeRepository,
+        private readonly ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
+        private readonly MonitoringServiceInterface $monitoringService,
+        private readonly ReadTagRepositoryInterface $tagRepository,
     ) {
     }
 
@@ -127,10 +127,6 @@ class FindHost
 
     /**
      * Handle Host not found. This method will log the error and set the ResponseStatus
-     *
-     * @param int $hostId
-     * @param FindHostPresenterInterface $presenter
-     * @return void
      */
     private function handleHostNotFound(int $hostId, FindHostPresenterInterface $presenter): void
     {
@@ -141,14 +137,11 @@ class FindHost
                 'userId' => $this->contact->getId()
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('Host'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Host::class));
     }
 
     /**
-     * @param Host $host
      * @param Downtime[] $downtimes
-     * @param Acknowledgement|null $acknowledgement
-     * @return FindHostResponse
      */
     private function createResponse(Host $host, array $downtimes, ?Acknowledgement $acknowledgement): FindHostResponse
     {
@@ -193,9 +186,6 @@ class FindHost
 
     /**
      * Offuscate passwords in the commandline
-     *
-     * @param Host $host
-     * @return string|null
      */
     private function obfuscatePasswordInHostCommandLine(Host $host): ?string
     {

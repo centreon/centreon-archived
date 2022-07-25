@@ -28,7 +28,6 @@ class DbNotifiedContactGroupFactory
 {
     /**
      * @param array<string,mixed> $contactGroup
-     * @return NotifiedContactGroup
      */
     public static function createFromRecord(array $contactGroup): NotifiedContactGroup
     {

@@ -56,13 +56,9 @@ class UpdateWebSSOConfigurationController extends AbstractController
         return $presenter->show();
     }
 
-    /**
-     * @param Request $request
-     * @return UpdateWebSSOConfigurationRequest
-     */
     private function createUpdateWebSSOConfigurationRequest(Request $request): UpdateWebSSOConfigurationRequest
     {
-        $requestData = json_decode((string) $request->getContent(), true);
+        $requestData = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $updateWebSSOConfigurationRequest = new UpdateWebSSOConfigurationRequest();
         $updateWebSSOConfigurationRequest->isActive = $requestData['is_active'];
         $updateWebSSOConfigurationRequest->isForced = $requestData['is_forced'];

@@ -39,31 +39,18 @@ use CentreonRemote\Domain\Resources\RemoteConfig\InputFlowOnePeerRetention;
 
 class LinkedPollerConfigurationService
 {
-    /** @var \CentreonDB */
-    private $db;
+    private readonly \CentreonDB $db;
 
     /** @var bool */
     protected $onePeerRetention = false;
 
-    /**
-     * @var CfgCentreonBrokerInterface
-     */
-    private $brokerRepository;
+    private ?\Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface $brokerRepository = null;
 
-    /**
-     * @var BrokerConfigurationService
-     */
-    private $brokerConfigurationService;
+    private ?\Centreon\Domain\Service\BrokerConfigurationService $brokerConfigurationService = null;
 
-    /**
-     * @var TaskService
-     */
-    private $taskService;
+    private ?\CentreonRemote\Domain\Service\TaskService $taskService = null;
 
-    /**
-     * @var PollerInteractionService
-     */
-    private $pollerInteractionService;
+    private ?\CentreonRemote\Infrastructure\Service\PollerInteractionService $pollerInteractionService = null;
 
     public function __construct(CentreonDBAdapter $dbAdapter)
     {
@@ -124,13 +111,10 @@ class LinkedPollerConfigurationService
      * Link a set of pollers to a parent poller by creating broker input/output
      *
      * @param PollerServer[] $pollers
-     * @param PollerServer   $remote
      */
     public function linkPollersToParentPoller(array $pollers, PollerServer $remote): void
     {
-        $pollerIds = array_map(function ($poller) {
-            return $poller->getId();
-        }, $pollers);
+        $pollerIds = array_map(fn($poller) => $poller->getId(), $pollers);
 
         // Before linking the pollers to the new remote, we have to tell the old remote they are no longer linked to it
         $this->triggerExportForOldRemotes($pollerIds);
@@ -153,14 +137,11 @@ class LinkedPollerConfigurationService
     /**
      * Link a poller to additional Remote Servers
      *
-     * @param PollerServer   $poller
      * @param PollerServer[] $remotes
      */
     public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes): void
     {
-        $pollerIds = array_map(function ($poller) {
-            return $poller->getId();
-        }, $remotes);
+        $pollerIds = array_map(fn($poller) => $poller->getId(), $remotes);
 
         foreach ($remotes as $remote) {
             // If one peer retention is enabled, add input on remote server to get data from poller
@@ -180,7 +161,6 @@ class LinkedPollerConfigurationService
      * Add broker input configuration on remote server to get data from poller
      *
      * @param int $remoteId
-     * @param PollerServer $poller
      */
     private function setBrokerInputOfRemoteServer($remoteId, PollerServer $poller): void
     {
@@ -195,7 +175,6 @@ class LinkedPollerConfigurationService
     /**
      * Add relation between poller and Remote Servers
      *
-     * @param PollerServer   $poller
      * @param PollerServer[] $remotes
      */
     private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes): void
@@ -212,7 +191,7 @@ class LinkedPollerConfigurationService
                 $statement->execute();
             }
             $this->db->commit();
-        } catch (\PDOException $Exception) {
+        } catch (\PDOException) {
             $this->db->rollBack();
         }
     }
@@ -221,7 +200,6 @@ class LinkedPollerConfigurationService
      * Update host field of broker output on poller to link it the the remote server
      *
      * @param int          $pollerId
-     * @param PollerServer $remote
      * @param Boolean      $additional
      */
     private function setBrokerOutputOfPoller($pollerId, PollerServer $remote, $additional = false): void
@@ -270,7 +248,7 @@ class LinkedPollerConfigurationService
                     $statement->execute();
                 }
                 $this->db->commit();
-            } catch (\PDOException $Exception) {
+            } catch (\PDOException) {
                 $this->db->rollBack();
             }
         } else { // update host field of poller module output to link it the remote server
@@ -313,7 +291,6 @@ class LinkedPollerConfigurationService
      * Link poller with remote server in database
      *
      * @param int $pollerId
-     * @param PollerServer $remote
      */
     private function setPollerRelationToRemote($pollerId, PollerServer $remote): void
     {
@@ -330,7 +307,6 @@ class LinkedPollerConfigurationService
      * Export to existing remote servers
      *
      * @param int[] $pollerIDs the poller ids to export
-     * @return void
      */
     private function triggerExportForOldRemotes(array $pollerIDs): void
     {

@@ -41,10 +41,7 @@ class TimeperiodRepositoryTest extends TestCase
      */
     protected $datasets = [];
 
-    /**
-     * @var CentreonDB
-     */
-    private $db;
+    private \Centreon\Test\Mock\CentreonDB $db;
 
     /**
      * {@inheritdoc}

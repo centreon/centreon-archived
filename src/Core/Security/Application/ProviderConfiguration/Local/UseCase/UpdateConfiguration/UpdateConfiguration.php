@@ -41,8 +41,8 @@ class UpdateConfiguration
      * @param ReadUserRepositoryInterface $readUserRepository
      */
     public function __construct(
-        private WriteConfigurationRepositoryInterface $writeConfigurationRepository,
-        private ReadUserRepositoryInterface $readUserRepository,
+        private readonly WriteConfigurationRepositoryInterface $writeConfigurationRepository,
+        private readonly ReadUserRepositoryInterface $readUserRepository,
     ) {
     }
 

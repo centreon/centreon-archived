@@ -25,7 +25,7 @@ namespace Core\Domain\Configuration\User\Model;
 
 class User extends NewUser
 {
-    public const MIN_ALIAS_LENGTH = 1,
+    final public const MIN_ALIAS_LENGTH = 1,
                  MAX_ALIAS_LENGTH = 255,
                  MIN_NAME_LENGTH = 1,
                  MAX_NAME_LENGTH = 255,
@@ -46,7 +46,7 @@ class User extends NewUser
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
-        private int $id,
+        private readonly int $id,
         protected string $alias,
         protected string $name,
         protected string $email,
@@ -57,9 +57,6 @@ class User extends NewUser
         $this->setTheme($theme);
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;

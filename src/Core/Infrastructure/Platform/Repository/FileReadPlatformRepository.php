@@ -27,7 +27,7 @@ use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 
 class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
 {
-    public function __construct(private string $etcDir, private string $installDir)
+    public function __construct(private readonly string $etcDir, private readonly string $installDir)
     {
     }
 

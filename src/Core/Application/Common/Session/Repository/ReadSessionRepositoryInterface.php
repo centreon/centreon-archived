@@ -28,9 +28,7 @@ interface ReadSessionRepositoryInterface
     /**
      * Find the session id using the user id.
      *
-     * @param int $userId
      * @return string[]
-     *
      * @throws \Throwable
      */
     public function findSessionIdsByUserId(int $userId): array;
@@ -38,9 +36,6 @@ interface ReadSessionRepositoryInterface
     /**
      * Get a value from session using a key.
      *
-     * @param string $sessionId
-     * @param string $key
-     * @return mixed
      *
      * @throws \Throwable
      */

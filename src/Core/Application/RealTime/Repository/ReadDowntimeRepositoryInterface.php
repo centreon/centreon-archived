@@ -28,14 +28,11 @@ use Core\Domain\RealTime\Model\Downtime;
 interface ReadDowntimeRepositoryInterface
 {
     /**
-     * @param int $hostId
      * @return Downtime[]
      */
     public function findOnGoingDowntimesByHostId(int $hostId): array;
 
     /**
-     * @param int $hostId
-     * @param int $serviceId
      * @return Downtime[]
      */
     public function findOnGoingDowntimesByHostIdAndServiceId(int $hostId, int $serviceId): array;

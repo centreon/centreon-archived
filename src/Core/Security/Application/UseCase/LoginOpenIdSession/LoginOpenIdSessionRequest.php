@@ -28,7 +28,7 @@ class LoginOpenIdSessionRequest
     /**
      * @var string|null
      */
-    public ?string $authorizationCode;
+    public ?string $authorizationCode = null;
 
     /**
      * @var string

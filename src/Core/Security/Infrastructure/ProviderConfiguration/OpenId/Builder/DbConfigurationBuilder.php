@@ -36,7 +36,6 @@ class DbConfigurationBuilder
      *
      * @param array<string, mixed> $record
      * @param array<string, mixed> $customConfiguration
-     * @return Configuration
      * @throws OpenIdConfigurationException|AssertionException
      */
     public static function create(array $record, array $customConfiguration): Configuration
@@ -97,9 +96,6 @@ class DbConfigurationBuilder
     /**
      * Validate mandatory parameters for auto import
      *
-     * @param ContactTemplate|null $contactTemplate
-     * @param string|null $emailBindAttribute
-     * @param string|null $userNameBindAttribute
      * @throws OpenIdConfigurationException
      */
     private static function validateParametersForAutoImport(

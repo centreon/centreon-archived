@@ -28,7 +28,6 @@ class DbUserFactory
 {
     /**
      * @param array<string, string> $user
-     * @return User
      * @throws \Assert\AssertionFailedException
      */
     public static function createFromRecord(array $user): User

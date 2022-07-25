@@ -29,7 +29,6 @@ class DbContactTemplateFactory
 {
     /**
      * @param array<string,string> $record
-     * @return ContactTemplate
      */
     public static function createFromRecord(array $record): ContactTemplate
     {

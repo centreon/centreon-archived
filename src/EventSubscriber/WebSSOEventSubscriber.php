@@ -62,16 +62,16 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param Security $security
      */
     public function __construct(
-        private Container $dependencyInjector,
-        private ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository,
-        private ContactRepositoryInterface $contactRepository,
-        private SessionInterface $session,
-        private AuthenticationServiceInterface $authenticationService,
-        private SessionRepositoryInterface $sessionRepository,
-        private DataStorageEngineInterface $dataStorageEngine,
-        private OptionServiceInterface $optionService,
-        private AuthenticationRepositoryInterface $authenticationRepository,
-        private Security $security,
+        private readonly Container $dependencyInjector,
+        private readonly ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository,
+        private readonly ContactRepositoryInterface $contactRepository,
+        private readonly SessionInterface $session,
+        private readonly AuthenticationServiceInterface $authenticationService,
+        private readonly SessionRepositoryInterface $sessionRepository,
+        private readonly DataStorageEngineInterface $dataStorageEngine,
+        private readonly OptionServiceInterface $optionService,
+        private readonly AuthenticationRepositoryInterface $authenticationRepository,
+        private readonly Security $security,
     ) {
     }
 
@@ -98,7 +98,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * login User with Web SSO
      *
-     * @param RequestEvent $event
      * @throws SSOAuthenticationException
      * @throws NotFoundException
      * @throws \InvalidArgumentException
@@ -133,8 +132,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * Extract username using configured regexp for login matching
      *
-     * @param WebSSOConfiguration $webSSOConfiguration
-     * @return string
      * @throws SSOAuthenticationException
      */
     private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
@@ -157,8 +154,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param string $ipAddress
-     * @param WebSSOConfiguration $webSSOConfiguration
      * @throws SSOAuthenticationException
      */
     private function validateIpIsAllowToConnect(string $ipAddress, WebSSOConfiguration $webSSOConfiguration): void
@@ -180,7 +175,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * Find Web SSO Configuration or throw an exception
      *
-     * @return WebSSOConfiguration
      * @throws NotFoundException
      */
     private function findWebSSOConfigurationOrFail(): WebSSOConfiguration
@@ -197,7 +191,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * Validate that login attribute is defined in server environment variables
      *
-     * @param WebSSOConfiguration $webSSOConfiguration
      * @throws \InvalidArgumentException
      */
     private function validateLoginAttributeOrFail(WebSSOConfiguration $webSSOConfiguration): void
@@ -214,8 +207,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * Find User or throw an exception
      *
-     * @param string $alias
-     * @return Contact
      * @throws NotFoundException
      */
     private function findUserByAliasOrFail(string $alias): Contact
@@ -233,9 +224,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
 
     /**
      * Create the session
-     *
-     * @param Contact $user
-     * @param Request $request
      */
     private function createSession(Contact $user, Request $request): void
     {
@@ -265,11 +253,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
 
     /**
      * Create token if not exist
-     *
-     * @param string $sessionId
-     * @param integer $webSSOConfigurationId
-     * @param Contact $user
-     * @param string $clientIp
      */
     private function createTokenIfNotExist(
         string $sessionId,
@@ -303,11 +286,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * create Authentication tokens
      *
-     * @param string $sessionToken
-     * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
-     * @param string|null $clientIp
      * @throws AuthenticationException
      */
     private function createAuthenticationTokens(

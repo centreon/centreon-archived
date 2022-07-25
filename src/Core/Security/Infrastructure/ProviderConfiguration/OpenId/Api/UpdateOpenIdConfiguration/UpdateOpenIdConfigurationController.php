@@ -52,13 +52,9 @@ class UpdateOpenIdConfigurationController extends AbstractController
         return $presenter->show();
     }
 
-    /**
-     * @param Request $request
-     * @return UpdateOpenIdConfigurationRequest
-     */
     private function createUpdateOpenIdConfigurationRequest(Request $request): UpdateOpenIdConfigurationRequest
     {
-        $requestData  = json_decode((string) $request->getContent(), true);
+        $requestData  = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $updateOpenIdConfigurationRequest = new UpdateOpenIdConfigurationRequest();
         $updateOpenIdConfigurationRequest->isActive = $requestData['is_active'];
         $updateOpenIdConfigurationRequest->isForced = $requestData['is_forced'];

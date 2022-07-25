@@ -46,25 +46,13 @@ class ExportServiceTest extends TestCase
 {
     use TestCaseExtensionTrait;
 
-    /**
-     * @var boolean
-     */
-    private $aclReload = false;
+    private bool $aclReload = false;
 
-    /**
-     * @var Container
-     */
-    private $container;
+    private \Pimple\Container $container;
 
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private \Vfs\FileSystem $fs;
 
-    /**
-     * @var ExportService
-     */
-    private $export;
+    private \CentreonRemote\Infrastructure\Service\ExportService $export;
 
 
     /**
@@ -83,17 +71,13 @@ class ExportServiceTest extends TestCase
             ->getMock();
 
         $this->container['centreon_remote.exporter']->method('get')
-            ->will($this->returnCallback(function () {
-                return [
-                    'name' => ConfigurationExporter::getName(),
-                    'classname' => ConfigurationExporter::class,
-                    'factory' => function () {
-                        return $this->getMockBuilder(ConfigurationExporter::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
-                    },
-                ];
-            }));
+            ->will($this->returnCallback(fn() => [
+                'name' => ConfigurationExporter::getName(),
+                'classname' => ConfigurationExporter::class,
+                'factory' => fn() => $this->getMockBuilder(ConfigurationExporter::class)
+                    ->disableOriginalConstructor()
+                    ->getMock(),
+            ]));
 
         // Cache
         $this->container['centreon_remote.exporter.cache'] = $this->getMockBuilder(ExporterCacheService::class)
@@ -237,8 +221,6 @@ class ExportServiceTest extends TestCase
 
     /**
      * Init mock of DB manager and data sets
-     *
-     * @return void
      */
     protected function initDbDataSet(): void
     {

@@ -25,10 +25,6 @@ namespace Core\Infrastructure\Common\Repository;
 
 class RepositoryException extends \Exception
 {
-    /**
-     * @param string $method
-     * @return self
-     */
     public static function notImplemented(string $method): self
     {
         return new self($method . ' not implemented');

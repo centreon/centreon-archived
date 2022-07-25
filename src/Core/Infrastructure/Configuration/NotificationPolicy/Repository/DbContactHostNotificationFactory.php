@@ -29,7 +29,6 @@ class DbContactHostNotificationFactory
 {
     /**
      * @param array<string,mixed> $notification
-     * @return HostNotification
      */
     public static function createFromRecord(array $notification): HostNotification
     {
@@ -42,7 +41,7 @@ class DbContactHostNotificationFactory
         $hostNotification = new HostNotification($timePeriod);
 
         $events = $notification['contact_host_notification_options'] !== null
-            ? explode(',', $notification['contact_host_notification_options'])
+            ? explode(',', (string) $notification['contact_host_notification_options'])
             : [];
 
         foreach ($events as $event) {
@@ -58,9 +57,6 @@ class DbContactHostNotificationFactory
 
     /**
      * Convert single char referencing Host event into a string
-     *
-     * @param string $event
-     * @return string|null
      */
     private static function normalizeHostEvent(string $event): ?string
     {

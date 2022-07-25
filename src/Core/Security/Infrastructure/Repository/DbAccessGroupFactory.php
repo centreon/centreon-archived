@@ -29,7 +29,6 @@ class DbAccessGroupFactory
 {
     /**
      * @param array<string, string> $record
-     * @return AccessGroup
      */
     public static function createFromRecord(array $record): AccessGroup
     {

@@ -44,7 +44,7 @@ class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServ
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private HypermediaCreator $hypermediaCreator,
+        private readonly HypermediaCreator $hypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
     }

@@ -41,11 +41,7 @@ class ConfigurationBuilder
     /**
      * Create OpenId Configuration from Request DTO
      *
-     * @param UpdateOpenIdConfigurationRequest $request
-     * @param ContactTemplate|null $contactTemplate
-     * @param ContactGroup|null $contactGroup
      * @param AuthorizationRule[] $authorizationRules
-     * @return Configuration
      * @throws OpenIdConfigurationException|AssertionException
      */
     public static function create(
@@ -102,9 +98,6 @@ class ConfigurationBuilder
     /**
      * Validate mandatory parameters for auto import
      *
-     * @param ContactTemplate|null $contactTemplate
-     * @param string|null $emailBindAttribute
-     * @param string|null $userNameBindAttribute
      * @throws OpenIdConfigurationException
      */
     private static function validateParametersForAutoImport(

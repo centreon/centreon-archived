@@ -105,7 +105,6 @@ class FindNotificationPolicyResponse
     }
 
     /**
-     * @param TimePeriod|null $timePeriod
      * @return array<string, mixed>
      */
     private function timePeriodToArray(?TimePeriod $timePeriod): array

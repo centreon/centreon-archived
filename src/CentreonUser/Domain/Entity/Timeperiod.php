@@ -32,28 +32,26 @@ use PDO;
  */
 class Timeperiod implements Mapping\MetadataInterface
 {
-    public const SERIALIZER_GROUP_LIST = 'timeperiod-list';
+    final public const SERIALIZER_GROUP_LIST = 'timeperiod-list';
 
-    public const TABLE = 'timeperiod';
-    public const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
+    final public const TABLE = 'timeperiod';
+    final public const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
 
     /**
      * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
-     * @var string
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
-     * @var string
      */
-    private $alias;
+    private ?string $alias = null;
 
     /**
      * {@inheritdoc}
@@ -66,52 +64,31 @@ class Timeperiod implements Mapping\MetadataInterface
             ->add('alias', 'tp_alias', PDO::PARAM_STR);
     }
 
-    /**
-     * @param int $id
-     * @return void
-     */
     public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $alias
-     * @return void
-     */
     public function setAlias(string $alias = null): void
     {
         $this->alias = $alias;
     }
 
-    /**
-     * @return string|null
-     */
     public function getAlias(): ?string
     {
         return $this->alias;

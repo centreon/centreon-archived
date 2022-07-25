@@ -28,13 +28,11 @@ use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 interface ReadHostNotificationRepositoryInterface
 {
     /**
-     * @param int $hostId
      * @return NotifiedContact[]
      */
     public function findNotifiedContactsById(int $hostId): array;
 
     /**
-     * @param int $hostId
      * @return NotifiedContactGroup[]
      */
     public function findNotifiedContactGroupsById(int $hostId): array;

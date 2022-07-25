@@ -30,7 +30,6 @@ interface ReadOpenIdConfigurationRepositoryInterface
     /**
      * Find the OpenId Configuration
      *
-     * @return Configuration|null
      * @throws \Throwable
      */
     public function findConfiguration(): ?Configuration;

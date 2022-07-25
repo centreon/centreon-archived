@@ -35,7 +35,7 @@ class FindUsers
     /**
      * @param ReadUserRepositoryInterface $usersRepository
      */
-    public function __construct(private ReadUserRepositoryInterface $usersRepository)
+    public function __construct(private readonly ReadUserRepositoryInterface $usersRepository)
     {
     }
 
@@ -61,7 +61,6 @@ class FindUsers
 
     /**
      * @param User[] $users
-     * @return FindUsersResponse
      */
     public function createResponse(array $users): FindUsersResponse
     {

@@ -28,7 +28,6 @@ class DbServiceStatusFactory
 {
     /**
      * @param array<string, mixed> $data
-     * @return ServiceStatus
      */
     public static function createFromRecord(array $data): ServiceStatus
     {

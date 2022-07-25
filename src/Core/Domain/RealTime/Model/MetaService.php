@@ -27,112 +27,49 @@ use Centreon\Domain\Common\Assertion\Assertion;
 
 class MetaService
 {
-    public const MAX_NAME_LENGTH = 255;
+    final public const MAX_NAME_LENGTH = 255;
 
-    /**
-     * @var boolean
-     */
-    private $isInDowntime = false;
+    private bool $isInDowntime = false;
 
-    /**
-     * @var boolean
-     */
-    private $isAcknowledged = false;
+    private bool $isAcknowledged = false;
 
-    /**
-     * @var bool
-     */
-    private $isNotificationEnabled = false;
+    private bool $isNotificationEnabled = false;
 
-    /**
-     * @var int|null
-     */
-    private $notificationNumber;
+    private ?int $notificationNumber = null;
 
-    /**
-     * @var string|null
-     */
-    private $commandLine;
+    private ?string $commandLine = null;
 
-    /**
-     * @var string|null
-     */
-    private $performanceData;
+    private ?string $performanceData = null;
 
-    /**
-     * @var string|null
-     */
-    private $output;
+    private ?string $output = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastStatusChange;
+    private ?\DateTime $lastStatusChange = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastNotification;
+    private ?\DateTime $lastNotification = null;
 
-    /**
-     * @var float|null
-     */
-    private $latency;
+    private ?float $latency = null;
 
-    /**
-     * @var float|null
-     */
-    private $executionTime;
+    private ?float $executionTime = null;
 
-    /**
-     * @var float|null
-     */
-    private $statusChangePercentage;
+    private ?float $statusChangePercentage = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $nextCheck;
+    private ?\DateTime $nextCheck = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastCheck;
+    private ?\DateTime $lastCheck = null;
 
-    /**
-     * @var bool
-     */
-    private $activeChecks = true;
+    private bool $activeChecks = true;
 
-    /**
-     * @var bool
-     */
-    private $passiveChecks = false;
+    private bool $passiveChecks = false;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastTimeOk;
+    private ?\DateTime $lastTimeOk = null;
 
-    /**
-     * @var int|null
-     */
-    private $maxCheckAttempts;
+    private ?int $maxCheckAttempts = null;
 
-    /**
-     * @var int|null
-     */
-    private $checkAttempts;
+    private ?int $checkAttempts = null;
 
-    /**
-     * @var boolean
-     */
-    private $isFlapping = false;
+    private bool $isFlapping = false;
 
-    /**
-     * @var boolean
-     */
-    private $hasGraphData = false;
+    private bool $hasGraphData = false;
 
     /**
      * @param int $id
@@ -143,161 +80,103 @@ class MetaService
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
-        private int $id,
-        private int $hostId,
-        private int $serviceId,
-        private string $name,
-        private string $monitoringServerName,
-        private ServiceStatus $status
+        private readonly int $id,
+        private readonly int $hostId,
+        private readonly int $serviceId,
+        private readonly string $name,
+        private readonly string $monitoringServerName,
+        private readonly ServiceStatus $status
     ) {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'MetaService::name');
         Assertion::notEmpty($name, 'MetaService::name');
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return ServiceStatus
-     */
     public function getStatus(): ServiceStatus
     {
         return $this->status;
     }
 
-    /**
-     * @return boolean
-     */
     public function isFlapping(): bool
     {
         return $this->isFlapping;
     }
 
-    /**
-     * @param boolean $isFlapping
-     * @return self
-     */
     public function setIsFlapping(bool $isFlapping): self
     {
         $this->isFlapping = $isFlapping;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isAcknowledged(): bool
     {
         return $this->isAcknowledged;
     }
 
-    /**
-     * @param boolean $isAcknowledged
-     * @return self
-     */
     public function setIsAcknowledged(bool $isAcknowledged): self
     {
         $this->isAcknowledged = $isAcknowledged;
         return $this;
     }
 
-    /**
-     * @param boolean $isInDowntime
-     * @return self
-     */
     public function setIsInDowntime(bool $isInDowntime): self
     {
         $this->isInDowntime = $isInDowntime;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isInDowntime(): bool
     {
         return $this->isInDowntime;
     }
 
-    /**
-     * @return string|null
-     */
     public function getOutput(): ?string
     {
         return $this->output;
     }
 
-    /**
-     * @param string|null $output
-     * @return self
-     */
     public function setOutput(?string $output): self
     {
         $this->output = $output;
         return $this;
     }
 
-    /**
-     * @param string|null $performanceData
-     * @return self
-     */
     public function setPerformanceData(?string $performanceData): self
     {
         $this->performanceData = $performanceData;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPerformanceData(): ?string
     {
         return $this->performanceData;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCommandLine(): ?string
     {
         return $this->commandLine;
     }
 
-    /**
-     * @param string|null $commandLine
-     * @return self
-     */
     public function setCommandLine(?string $commandLine): self
     {
         $this->commandLine = $commandLine;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isNotificationEnabled(): bool
     {
         return $this->isNotificationEnabled;
     }
 
-    /**
-     * @param bool $isNotificationEnabled
-     * @return self
-     */
     public function setNotificationEnabled(bool $isNotificationEnabled): self
     {
         $this->isNotificationEnabled = $isNotificationEnabled;
@@ -305,276 +184,169 @@ class MetaService
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getNotificationNumber(): ?int
     {
         return $this->notificationNumber;
     }
 
-    /**
-     * @param int|null $notificationNumber
-     * @return self
-     */
     public function setNotificationNumber(?int $notificationNumber): self
     {
         $this->notificationNumber = $notificationNumber;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getLastStatusChange(): ?\DateTime
     {
         return $this->lastStatusChange;
     }
 
-    /**
-     * @param \DateTime|null $lastStatusChange
-     * @return self
-     */
     public function setLastStatusChange(?\DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getLastNotification(): ?\DateTime
     {
         return $this->lastNotification;
     }
 
-    /**
-     * @param \DateTime|null $lastNotification
-     * @return self
-     */
     public function setLastNotification(?\DateTime $lastNotification): self
     {
         $this->lastNotification = $lastNotification;
         return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getLatency(): ?float
     {
         return $this->latency;
     }
 
-    /**
-     * @param float|null $latency
-     * @return self
-     */
     public function setLatency(?float $latency): self
     {
         $this->latency = $latency;
         return $this;
     }
 
-    /**
-     * @param float|null $executionTime
-     * @return self
-     */
     public function setExecutionTime(?float $executionTime): self
     {
         $this->executionTime = $executionTime;
         return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getExecutionTime(): ?float
     {
         return $this->executionTime;
     }
 
-    /**
-     * @param float|null $statusChangePercentage
-     * @return self
-     */
     public function setStatusChangePercentage(?float $statusChangePercentage): self
     {
         $this->statusChangePercentage = $statusChangePercentage;
         return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getStatusChangePercentage(): ?float
     {
         return $this->statusChangePercentage;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getNextCheck(): ?\DateTime
     {
         return $this->nextCheck;
     }
 
-    /**
-     * @param \DateTime|null $nextCheck
-     * @return self
-     */
     public function setNextCheck(?\DateTime $nextCheck): self
     {
         $this->nextCheck = $nextCheck;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getLastCheck(): ?\DateTime
     {
         return $this->lastCheck;
     }
 
-    /**
-     * @param \DateTime|null $lastCheck
-     * @return self
-     */
     public function setLastCheck(?\DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
         return $this;
     }
 
-    /**
-     * @param boolean $activeChecks
-     * @return self
-     */
     public function setActiveChecks(bool $activeChecks): self
     {
         $this->activeChecks = $activeChecks;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function hasActiveChecks(): bool
     {
         return $this->activeChecks;
     }
 
-    /**
-     * @param boolean $passiveChecks
-     * @return self
-     */
     public function setPassiveChecks(bool $passiveChecks): self
     {
         $this->passiveChecks = $passiveChecks;
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function hasPassiveChecks(): bool
     {
         return $this->passiveChecks;
     }
 
-    /**
-     * @param \DateTime|null $lastTimeOk
-     * @return self
-     */
     public function setLastTimeOk(?\DateTime $lastTimeOk): self
     {
         $this->lastTimeOk = $lastTimeOk;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getLastTimeOk(): ?\DateTime
     {
         return $this->lastTimeOk;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMaxCheckAttempts(): ?int
     {
         return $this->maxCheckAttempts;
     }
 
-    /**
-     * @param int|null $maxCheckAttempts
-     * @return self
-     */
     public function setMaxCheckAttempts(?int $maxCheckAttempts): self
     {
         $this->maxCheckAttempts = $maxCheckAttempts;
         return $this;
     }
 
-    /**
-     * @param int|null $checkAttempts
-     * @return self
-     */
     public function setCheckAttempts(?int $checkAttempts): self
     {
         $this->checkAttempts = $checkAttempts;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCheckAttempts(): ?int
     {
         return $this->checkAttempts;
     }
 
-    /**
-     * @return int
-     */
     public function getHostId(): int
     {
         return $this->hostId;
     }
 
-    /**
-     * @return int
-     */
     public function getServiceId(): int
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return string
-     */
     public function getMonitoringServerName(): string
     {
         return $this->monitoringServerName;
     }
 
-    /**
-     * @return boolean
-     */
     public function hasGraphData(): bool
     {
         return $this->hasGraphData;
     }
 
-    /**
-     * @param boolean $hasGraphData
-     * @return self
-     */
     public function setHasGraphData(bool $hasGraphData): self
     {
         $this->hasGraphData = $hasGraphData;

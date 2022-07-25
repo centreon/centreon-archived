@@ -69,9 +69,6 @@ class DbReadServicegroupRepository extends AbstractRepositoryDRB implements Read
     }
 
     /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @param string|null $aclRequest
      * @return Servicegroup[]
      */
     private function findServicegroups(int $hostId, int $serviceId, ?string $aclRequest = null): array

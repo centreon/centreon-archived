@@ -60,7 +60,7 @@ class DbReadSessionRepository extends AbstractRepositoryDRB implements ReadSessi
     /**
      * @inheritDoc
      */
-    public function getValueFromSession(string $sessionId, string $key): mixed
+    public function getValueFromSession(string $sessionId, string $key): never
     {
         throw RepositoryException::notImplemented(__METHOD__);
     }

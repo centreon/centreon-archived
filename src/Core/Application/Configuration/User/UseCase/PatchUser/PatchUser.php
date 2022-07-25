@@ -45,10 +45,10 @@ final class PatchUser
      * @param WriteSessionRepositoryInterface $writeSessionRepository
      */
     public function __construct(
-        private ReadUserRepositoryInterface $readUserRepository,
-        private WriteUserRepositoryInterface $writeUserRepository,
-        private ReadSessionRepositoryInterface $readSessionRepository,
-        private WriteSessionRepositoryInterface $writeSessionRepository
+        private readonly ReadUserRepositoryInterface $readUserRepository,
+        private readonly WriteUserRepositoryInterface $writeUserRepository,
+        private readonly ReadSessionRepositoryInterface $readSessionRepository,
+        private readonly WriteSessionRepositoryInterface $writeSessionRepository
     ) {
     }
 
@@ -108,8 +108,6 @@ final class PatchUser
     /**
      * Update all user sessions.
      *
-     * @param PatchUserRequest $request
-     * @return void
      * @throws \Throwable
      */
     private function updateUserSessions(PatchUserRequest $request): void
@@ -135,9 +133,6 @@ final class PatchUser
 
     /**
      * Handle user not found.
-     *
-     * @param int $userId
-     * @param PresenterInterface $presenter
      */
     private function userNotFound(int $userId, PresenterInterface $presenter): void
     {
@@ -148,20 +143,12 @@ final class PatchUser
         $presenter->setResponseStatus(new NotFoundResponse('User'));
     }
 
-    /**
-     * @param string $errorMessage
-     * @param PresenterInterface $presenter
-     */
     private function unexpectedError(string $errorMessage, PresenterInterface $presenter): void
     {
         $this->error($errorMessage);
         $presenter->setResponseStatus(new ErrorResponse($errorMessage));
     }
 
-    /**
-     * @param string $theme
-     * @param PresenterInterface $presenter
-     */
     private function themeNotFound(string $theme, PresenterInterface $presenter): void
     {
         $this->error('Requested theme not found', ['theme' => $theme]);

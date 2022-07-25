@@ -32,7 +32,6 @@ class DbWebSSOConfigurationFactory
      * @param array<string,mixed> $customConfiguration
      * @param array<string,mixed> $configuration
      * @throws AssertionException
-     * @return WebSSOConfiguration
      */
     public static function createFromRecord(array $customConfiguration, array $configuration): WebSSOConfiguration
     {

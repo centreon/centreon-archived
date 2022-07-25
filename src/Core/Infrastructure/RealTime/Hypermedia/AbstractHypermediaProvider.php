@@ -30,9 +30,7 @@ abstract class AbstractHypermediaProvider
     /**
      * Checks if contact has access to pages defined in roles
      *
-     * @param ContactInterface $contact
      * @param string[] $topologyRoles
-     * @return boolean
      */
     protected function canContactAccessPages(ContactInterface $contact, array $topologyRoles): bool
     {
@@ -42,9 +40,7 @@ abstract class AbstractHypermediaProvider
     /**
      * Checks if contact has topology roles submited
      *
-     * @param ContactInterface $contact
      * @param string[] $topologyRoles
-     * @return boolean
      */
     protected function hasTopologyAccess(ContactInterface $contact, array $topologyRoles): bool
     {

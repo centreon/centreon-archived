@@ -31,7 +31,7 @@ class LocalProviderPresenter implements ProviderPresenterInterface
     /**
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(private UrlGeneratorInterface $router)
+    public function __construct(private readonly UrlGeneratorInterface $router)
     {
     }
 

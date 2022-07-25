@@ -33,7 +33,6 @@ class ContactRepository extends ServiceEntityRepository
      * Check list of IDs
      *
      * @param int[] $ids
-     * @return bool
      */
     public function checkListOfIds(array $ids): bool
     {

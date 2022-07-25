@@ -29,8 +29,6 @@ interface ReadWebSSOConfigurationRepositoryInterface
 {
     /**
      * Find WebSSO Configuration.
-     *
-     * @return WebSSOConfiguration|null
      */
     public function findConfiguration(): ?WebSSOConfiguration;
 }

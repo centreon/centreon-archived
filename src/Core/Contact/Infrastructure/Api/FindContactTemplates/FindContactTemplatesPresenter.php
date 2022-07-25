@@ -37,15 +37,11 @@ class FindContactTemplatesPresenter extends AbstractPresenter implements FindCon
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private RequestParametersInterface $requestParameters,
+        private readonly RequestParametersInterface $requestParameters,
         protected PresenterFormatterInterface $presenterFormatter,
     ) {
     }
 
-    /**
-     * @param mixed $presentedData
-     * @return void
-     */
     public function present(mixed $presentedData): void
     {
         parent::present([

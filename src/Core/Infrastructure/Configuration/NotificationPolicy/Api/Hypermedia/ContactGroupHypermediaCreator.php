@@ -36,15 +36,12 @@ class ContactGroupHypermediaCreator
      * @param ContactInterface $contact
      */
     public function __construct(
-        private ContactInterface $contact
+        private readonly ContactInterface $contact
     ) {
     }
 
     /**
      * Create the configuration URI to the contact group regarding ACL
-     *
-     * @param int $contactGroupId
-     * @return string|null
      */
     public function createContactGroupConfigurationUri(int $contactGroupId): ?string
     {

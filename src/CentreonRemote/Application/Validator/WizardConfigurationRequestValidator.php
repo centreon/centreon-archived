@@ -32,7 +32,6 @@ class WizardConfigurationRequestValidator
     /**
      * validate arguments sent from poller/remote server wizard
      *
-     * @return void
      * @throws \RestBadRequestException
      */
     public static function validate(): void
@@ -43,7 +42,6 @@ class WizardConfigurationRequestValidator
     /**
      * validate post arguments
      *
-     * @return void
      * @throws \RestBadRequestException
      */
     public function validateServerPostData(): void
@@ -61,7 +59,6 @@ class WizardConfigurationRequestValidator
     /**
      * validate general form fields which are in poller wizard and remote server wizard
      *
-     * @return void
      * @throws \RestBadRequestException
      */
     private function validateServerGeneralFields(): void
@@ -90,7 +87,6 @@ class WizardConfigurationRequestValidator
     /**
      * validate form fields which are specific to remote server wizard
      *
-     * @return void
      * @throws \RestBadRequestException
      */
     private function validateRemoteSpecificFields(): void

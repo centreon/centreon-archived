@@ -29,8 +29,6 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -94,7 +92,6 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
      *
      * Add remote Centreon instance in waiting list
      *
-     * @return string
      * @throws \RestBadRequestException
      * @throws \RestConflictException
      */
@@ -162,7 +159,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);
         try {
             $insert->execute();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \RestBadRequestException('There was an error while saving the data.');
         }
 

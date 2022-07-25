@@ -25,19 +25,11 @@ namespace Core\Application\Configuration\User\Exception;
 
 class UserException extends \Exception
 {
-    /**
-     * @param \Throwable $ex
-     * @return self
-     */
     public static function errorOnUpdatingUser(\Throwable $ex): self
     {
         return new self(sprintf(_('Error on updating an user'), $ex->getMessage()), 0, $ex);
     }
 
-    /**
-     * @param \Throwable $ex
-     * @return self
-     */
     public static function errorInReadingUserThemes(\Throwable $ex): self
     {
         return new self(
@@ -47,10 +39,6 @@ class UserException extends \Exception
         );
     }
 
-    /**
-     * @param \Throwable $ex
-     * @return self
-     */
     public static function errorWhileSearchingForUser(\Throwable $ex): self
     {
         return new self(
@@ -60,10 +48,6 @@ class UserException extends \Exception
         );
     }
 
-    /**
-     * @param \Throwable $ex
-     * @return self
-     */
     public static function errorWhenUpdatingUserTheme(\Throwable $ex): self
     {
         return new self(

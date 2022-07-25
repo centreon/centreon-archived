@@ -43,10 +43,10 @@ class LoginSessionRequest
     /**
      * @var string|null
      */
-    public ?string $refererQueryParameters;
+    public ?string $refererQueryParameters = null;
 
     /**
      * @var string|null
      */
-    public ?string $clientIp;
+    public ?string $clientIp = null;
 }

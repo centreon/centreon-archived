@@ -56,11 +56,11 @@ class UpdateOpenIdConfiguration
      * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
-        private WriteOpenIdConfigurationRepositoryInterface $repository,
-        private ReadContactTemplateRepositoryInterface $contactTemplateRepository,
-        private ReadContactGroupRepositoryInterface $contactGroupRepository,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private DataStorageEngineInterface $dataStorageEngine
+        private readonly WriteOpenIdConfigurationRepositoryInterface $repository,
+        private readonly ReadContactTemplateRepositoryInterface $contactTemplateRepository,
+        private readonly ReadContactGroupRepositoryInterface $contactGroupRepository,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly DataStorageEngineInterface $dataStorageEngine
     ) {
     }
 
@@ -106,7 +106,6 @@ class UpdateOpenIdConfiguration
      * Get Contact template or throw an Exception
      *
      * @param array{id: int, name: string}|null $contactTemplateFromRequest
-     * @return ContactTemplate|null
      * @throws \Throwable|OpenIdConfigurationException
      */
     private function getContactTemplateOrFail(?array $contactTemplateFromRequest): ?ContactTemplate
@@ -126,8 +125,6 @@ class UpdateOpenIdConfiguration
     /**
      * Get Contact Group or throw an Exception
      *
-     * @param integer $contactGroupId
-     * @return ContactGroup
      * @throws \Throwable|OpenIdConfigurationException
      */
     private function getContactGroupOrFail(int $contactGroupId): ContactGroup
@@ -196,7 +193,6 @@ class UpdateOpenIdConfiguration
      *
      * @param int $accessGroupIdFromRequest Access group id sent in the request
      * @param AccessGroup[] $foundAccessGroups Access groups found in data storage
-     * @return AccessGroup|null
      */
     private function findAccessGroupFromFoundAccessGroups(
         int $accessGroupIdFromRequest,
@@ -229,7 +225,6 @@ class UpdateOpenIdConfiguration
     /**
      * Update OpenId Configuration
      *
-     * @param Configuration $configuration
      * @throws \Throwable
      */
     private function updateConfiguration(Configuration $configuration): void

@@ -37,7 +37,7 @@ class UpdateWebSSOConfiguration
     /**
      * @param WriteWebSSOConfigurationRepositoryInterface $repository
      */
-    public function __construct(private WriteWebSSOConfigurationRepositoryInterface $repository)
+    public function __construct(private readonly WriteWebSSOConfigurationRepositoryInterface $repository)
     {
     }
 

@@ -54,14 +54,14 @@ class FindServiceNotificationPolicy
      * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
      */
     public function __construct(
-        private ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository,
-        private HostConfigurationRepositoryInterface $hostRepository,
-        private ServiceConfigurationRepositoryInterface $serviceRepository,
-        private EngineConfigurationServiceInterface $engineService,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private ContactInterface $contact,
-        private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
-        private ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository,
+        private readonly ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository,
+        private readonly HostConfigurationRepositoryInterface $hostRepository,
+        private readonly ServiceConfigurationRepositoryInterface $serviceRepository,
+        private readonly EngineConfigurationServiceInterface $engineService,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly ContactInterface $contact,
+        private readonly ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
+        private readonly ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository,
     ) {
     }
 
@@ -116,9 +116,6 @@ class FindServiceNotificationPolicy
 
     /**
      * Find host by id
-     *
-     * @param int $hostId
-     * @return Host|null
      */
     private function findHost(int $hostId): ?Host
     {
@@ -145,10 +142,6 @@ class FindServiceNotificationPolicy
 
     /**
      * Find service by id
-     *
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Service|null
      */
     private function findService(int $hostId, int $serviceId): ?Service
     {
@@ -179,10 +172,6 @@ class FindServiceNotificationPolicy
         return $service;
     }
 
-    /**
-     * @param int $hostId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleHostNotFound(
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter,
@@ -194,14 +183,9 @@ class FindServiceNotificationPolicy
                 'userId' => $this->contact->getId(),
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('Host'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Host::class));
     }
 
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleServiceNotFound(
         int $hostId,
         int $serviceId,
@@ -216,13 +200,9 @@ class FindServiceNotificationPolicy
             ]
         );
 
-        $presenter->setResponseStatus(new NotFoundResponse('Service'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Service::class));
     }
 
-    /**
-     * @param int $hostId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleEngineHostConfigurationNotFound(
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter,
@@ -241,9 +221,6 @@ class FindServiceNotificationPolicy
     /**
      * If engine configuration related to the host has notification disabled,
      * it overrides host notification status
-     *
-     * @param EngineConfiguration $engineConfiguration
-     * @param RealtimeService $realtimeService
      */
     private function overrideServiceNotificationByEngineConfiguration(
         EngineConfiguration $engineConfiguration,
@@ -260,8 +237,6 @@ class FindServiceNotificationPolicy
     /**
      * @param NotifiedContact[] $notifiedContacts
      * @param NotifiedContactGroup[] $notifiedContactGroups
-     * @param bool $isNotificationEnabled
-     * @return FindNotificationPolicyResponse
      */
     public function createResponse(
         array $notifiedContacts,

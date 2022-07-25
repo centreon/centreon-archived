@@ -30,8 +30,6 @@ class CentreonAclWebservice extends CentreonWebServiceAbstract
 {
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {

@@ -26,9 +26,6 @@ trait PresenterTrait
 {
     /**
      * Convert a DateTime into a string format ISO 8601
-     *
-     * @param \DateTime|null $date
-     * @return string|null
      */
     public function formatDateToIso8601(?\DateTime $date): ?string
     {

@@ -57,7 +57,7 @@ class DbWriteWebSSOConfigurationRepository extends AbstractRepositoryDRB impleme
         );
         $statement->bindValue(
             ':customConfiguration',
-            json_encode($this->buildCustomConfigurationFromWebSSOConfiguration($configuration)),
+            json_encode($this->buildCustomConfigurationFromWebSSOConfiguration($configuration), JSON_THROW_ON_ERROR),
             \PDO::PARAM_STR
         );
         $statement->bindValue(':isActive', $configuration->isActive() ? '1' : '0', \PDO::PARAM_STR);
@@ -66,7 +66,6 @@ class DbWriteWebSSOConfigurationRepository extends AbstractRepositoryDRB impleme
     }
 
     /**
-     * @param WebSSOConfiguration $configuration
      * @return array<string,mixed>
      */
     private function buildCustomConfigurationFromWebSSOConfiguration(WebSSOConfiguration $configuration): array

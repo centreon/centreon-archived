@@ -30,6 +30,6 @@ namespace CentreonUser\Domain\Entity;
 class Contact
 {
 
-    public const TABLE = 'contact';
-    public const ENTITY_IDENTIFICATOR_COLUMN = 'contact_id';
+    final public const TABLE = 'contact';
+    final public const ENTITY_IDENTIFICATOR_COLUMN = 'contact_id';
 }

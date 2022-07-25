@@ -34,23 +34,17 @@ class ContactGroup
      * @throws AssertionException
      */
     public function __construct(
-        private int $id,
-        private string $name
+        private readonly int $id,
+        private readonly string $name
     ) {
         Assertion::notEmpty($name, 'ContactGroup::name');
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;

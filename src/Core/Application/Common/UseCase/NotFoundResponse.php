@@ -28,7 +28,7 @@ class NotFoundResponse implements ResponseStatusInterface
     /**
      * @param string $objectNotFound
      */
-    public function __construct(private string $objectNotFound)
+    public function __construct(private readonly string $objectNotFound)
     {
     }
 

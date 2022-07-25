@@ -110,7 +110,6 @@ abstract class ServerConnectionConfigurationService
 
     /**
      * @throws \Exception
-     * @return int
      */
     public function insert(): int
     {
@@ -144,7 +143,6 @@ abstract class ServerConnectionConfigurationService
 
     /**
      * @param int $serverID
-     * @return int
      */
     protected function insertConfigNagios($serverID): int
     {
@@ -229,7 +227,6 @@ abstract class ServerConnectionConfigurationService
      * @param string $table
      * @param array<string,mixed> $data
      * @throws \Exception
-     * @return int
      */
     protected function insertWithAdapter($table, array $data): int
     {

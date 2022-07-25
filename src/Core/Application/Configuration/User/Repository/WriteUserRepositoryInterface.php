@@ -30,15 +30,12 @@ interface WriteUserRepositoryInterface
 {
     /**
      * Update a user.
-     *
-     * @param User $user
      */
     public function update(User $user): void;
 
     /**
      * Create a user
      *
-     * @param NewUser $user
      * @throws \Throwable
      */
     public function create(NewUser $user): void;

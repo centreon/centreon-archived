@@ -27,9 +27,6 @@ use Core\Application\Configuration\User\UseCase\PatchUser\PatchUserPresenterInte
 
 class PatchUserPresenter extends AbstractPresenter implements PatchUserPresenterInterface
 {
-    /**
-     * @param mixed $data
-     */
     public function present(mixed $data): void
     {
         parent::present($data);

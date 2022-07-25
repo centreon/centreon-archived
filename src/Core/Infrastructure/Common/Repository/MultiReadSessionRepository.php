@@ -32,8 +32,8 @@ class MultiReadSessionRepository implements ReadSessionRepositoryInterface
      * @param DbReadSessionRepository $dbReadSessionRepository
      */
     public function __construct(
-        private SystemReadSessionRepository $systemRepository,
-        private DbReadSessionRepository $dbReadSessionRepository
+        private readonly SystemReadSessionRepository $systemRepository,
+        private readonly DbReadSessionRepository $dbReadSessionRepository
     ) {
     }
 

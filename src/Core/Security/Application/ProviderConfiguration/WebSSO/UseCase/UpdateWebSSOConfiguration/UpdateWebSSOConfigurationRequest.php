@@ -48,15 +48,15 @@ class UpdateWebSSOConfigurationRequest
     /**
      * @var string|null
      */
-    public ?string $loginHeaderAttribute;
+    public ?string $loginHeaderAttribute = null;
 
     /**
      * @var string|null
      */
-    public ?string $patternMatchingLogin;
+    public ?string $patternMatchingLogin = null;
 
     /**
      * @var string|null
      */
-    public ?string $patternReplaceLogin;
+    public ?string $patternReplaceLogin = null;
 }

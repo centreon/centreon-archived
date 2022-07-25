@@ -44,17 +44,17 @@ class OpenIdProviderResponse implements ProviderResponseInterface
     /**
      * @var string|null
      */
-    public ?string $baseUrl;
+    public ?string $baseUrl = null;
 
     /**
      * @var string|null
      */
-    public ?string $authorizationEndpoint;
+    public ?string $authorizationEndpoint = null;
 
     /**
      * @var string|null
      */
-    public ?string $clientId;
+    public ?string $clientId = null;
 
     /**
      * @var string[]|null

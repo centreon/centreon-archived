@@ -30,16 +30,11 @@ interface WriteContactGroupRepositoryInterface
 {
     /**
      * Delete all contact groups for a given user
-     *
-     * @param ContactInterface $user
      */
     public function deleteContactGroupsForUser(ContactInterface $user): void;
 
     /**
      * Insert a contact group for a given user
-     *
-     * @param ContactInterface $user
-     * @param ContactGroup $contactGroup
      */
     public function insertContactGroupForUser(ContactInterface $user, ContactGroup $contactGroup): void;
 }

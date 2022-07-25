@@ -39,9 +39,9 @@ class LogoutSession
      * @param WriteTokenRepositoryInterface $writeTokenRepository
      */
     public function __construct(
-        private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
-        private WriteSessionRepositoryInterface $writeSessionRepository,
-        private WriteTokenRepositoryInterface $writeTokenRepository,
+        private readonly WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
+        private readonly WriteSessionRepositoryInterface $writeSessionRepository,
+        private readonly WriteTokenRepositoryInterface $writeTokenRepository,
     ) {
     }
 

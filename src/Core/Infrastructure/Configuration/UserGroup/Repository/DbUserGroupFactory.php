@@ -29,7 +29,6 @@ class DbUserGroupFactory
 {
     /**
      * @param array<string, mixed> $data
-     * @return UserGroup
      */
     public static function createFromRecord(array $data): UserGroup
     {

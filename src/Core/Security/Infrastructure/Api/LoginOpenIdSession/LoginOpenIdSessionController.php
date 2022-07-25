@@ -67,10 +67,6 @@ class LoginOpenIdSessionController extends AbstractController
         );
     }
 
-    /**
-     * @param Request $request
-     * @return LoginOpenIdSessionRequest
-     */
     private function createLoginOpenIdSessionRequest(Request $request): LoginOpenIdSessionRequest
     {
         $loginOpenIdSessionRequest = new LoginOpenIdSessionRequest();

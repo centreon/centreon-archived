@@ -27,18 +27,13 @@ use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
 {
-    public const NAME = 'configuration';
+    final public const NAME = 'configuration';
     private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
-    /**
-     * @var \ConfigGenerateRemote\Generate
-     */
-    private $generateService;
+    private ?\ConfigGenerateRemote\Generate $generateService = null;
 
     /**
      * Set generate service
-     *
-     * @param \ConfigGenerateRemote\Generate $generateService
      */
     public function setGenerateService(\ConfigGenerateRemote\Generate $generateService): void
     {
@@ -47,7 +42,6 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Export data
-     * @param int $remoteId
      * @return mixed[]
      */
     public function export(int $remoteId): array
@@ -62,8 +56,6 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Import data
-     *
-     * @param \CentreonRemote\Infrastructure\Export\ExportManifest $manifest
      */
     public function import(ExportManifest $manifest): void
     {
@@ -125,7 +117,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
             // commit transaction
             $db->commit();
-        } catch (\ErrorException $e) {
+        } catch (\ErrorException) {
             // rollback changes
             $db->rollBack();
             echo date("Y-m-d H:i:s") . " - ERROR - Loading failed.\n";

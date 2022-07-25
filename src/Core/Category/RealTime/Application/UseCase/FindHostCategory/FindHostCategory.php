@@ -35,7 +35,7 @@ class FindHostCategory
      * @param ReadTagRepositoryInterface $repository
      */
     public function __construct(
-        private ReadTagRepositoryInterface $repository
+        private readonly ReadTagRepositoryInterface $repository
     ) {
     }
 
@@ -48,7 +48,7 @@ class FindHostCategory
 
         try {
             $hostCategories = $this->repository->findAllByTypeId(Tag::HOST_CATEGORY_TYPE_ID);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->error('An error occurred while retrieving host categories');
             $presenter->setResponseStatus(new ErrorResponse('An error occurred while retrieving host categories'));
             return;
@@ -61,7 +61,6 @@ class FindHostCategory
 
     /**
      * @param Tag[] $categories
-     * @return FindHostCategoryResponse
      */
     private function createResponse(array $categories): FindHostCategoryResponse
     {

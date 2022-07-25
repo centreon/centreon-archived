@@ -27,7 +27,7 @@ namespace CentreonRemote\Domain\Resources\RemoteConfig;
 class NagiosServer
 {
     // ZMQ enum value
-    public const ZMQ = '1';
+    final public const ZMQ = '1';
 
     /**
      * Get template configuration

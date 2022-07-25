@@ -48,7 +48,6 @@ interface ReadAccessGroupRepositoryInterface
     /**
      * Find all access groups according to a contact with filter
      *
-     * @param ContactInterface $contact
      * @return AccessGroup[]
      * @throws \Throwable
      */

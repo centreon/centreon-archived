@@ -44,9 +44,9 @@ abstract class Status
      * @param int $type
      */
     public function __construct(
-        private string $name,
-        private int $code,
-        private int $type
+        private readonly string $name,
+        private readonly int $code,
+        private readonly int $type
     ) {
     }
 

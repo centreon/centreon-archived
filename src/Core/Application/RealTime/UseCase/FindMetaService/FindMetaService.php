@@ -52,12 +52,12 @@ class FindMetaService
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      */
     public function __construct(
-        private ReadMetaServiceRepositoryInterface $repository,
-        private ReadMetaServiceConfigurationRepositoryInterface $configurationRepository,
-        private ContactInterface $contact,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private ReadDowntimeRepositoryInterface $downtimeRepository,
-        private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
+        private readonly ReadMetaServiceRepositoryInterface $repository,
+        private readonly ReadMetaServiceConfigurationRepositoryInterface $configurationRepository,
+        private readonly ContactInterface $contact,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly ReadDowntimeRepositoryInterface $downtimeRepository,
+        private readonly ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
     ) {
     }
 
@@ -132,10 +132,6 @@ class FindMetaService
 
     /**
      * Handle Meta Service Configuration not found. This method will log the error and set the ResponseStatus
-     *
-     * @param int $metaId
-     * @param FindMetaServicePresenterInterface $presenter
-     * @return void
      */
     private function handleMetaServiceConfigurationNotFound(
         int $metaId,
@@ -153,10 +149,6 @@ class FindMetaService
 
     /**
      * Handle Meta Service not found. This method will log the error and set the ResponseStatus
-     *
-     * @param int $metaId
-     * @param FindMetaServicePresenterInterface $presenter
-     * @return void
      */
     private function handleMetaServiceNotFound(
         int $metaId,
@@ -169,15 +161,11 @@ class FindMetaService
                 'userId' => $this->contact->getId()
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('MetaService'));
+        $presenter->setResponseStatus(new NotFoundResponse(\MetaService::class));
     }
 
     /**
-     * @param MetaService $metaService
-     * @param MetaServiceConfiguration $metaServiceConfiguration
      * @param Downtime[] $downtimes
-     * @param Acknowledgement|null $acknowledgement
-     * @return FindMetaServiceResponse
      */
     public function createResponse(
         MetaService $metaService,

@@ -39,8 +39,8 @@ class FindContactGroups
      * @param ContactInterface $user
      */
     public function __construct(
-        private ReadContactGroupRepositoryInterface $repository,
-        private ContactInterface $user
+        private readonly ReadContactGroupRepositoryInterface $repository,
+        private readonly ContactInterface $user
     ) {
     }
 

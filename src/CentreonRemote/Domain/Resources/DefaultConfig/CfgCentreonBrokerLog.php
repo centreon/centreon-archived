@@ -31,8 +31,6 @@ class CfgCentreonBrokerLog
     /**
      * Get template configuration
      *
-     * @param CentreonDB $db
-     * @param int $brokerId
      * @return \Generator<array<string,string|int>> the configuration template
      */
     public static function getConfiguration(CentreonDB $db, int $brokerId): \Generator
@@ -65,7 +63,6 @@ class CfgCentreonBrokerLog
     /**
      * Get logger ids
      *
-     * @param CentreonDB $db
      * @return array<string,int>
      */
     private static function getLoggerIds(CentreonDB $db): array
@@ -80,7 +77,6 @@ class CfgCentreonBrokerLog
     /**
      * Get logger level ids
      *
-     * @param CentreonDB $db
      * @return array<string,int>
      */
     private static function getLoggerLevelIds(CentreonDB $db): array

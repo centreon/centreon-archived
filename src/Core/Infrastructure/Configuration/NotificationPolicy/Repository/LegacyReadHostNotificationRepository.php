@@ -47,7 +47,7 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
      */
     public function __construct(
         DatabaseConnection $db,
-        private Container $dependencyInjector,
+        private readonly Container $dependencyInjector,
     ) {
         $this->db = $db;
     }
@@ -78,8 +78,6 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
 
     /**
      * Initialize notified contacts and contactgroups for given host id
-     *
-     * @param int $hostId
      */
     private function fetchNotifiedContactsAndContactGroups(int $hostId): void
     {

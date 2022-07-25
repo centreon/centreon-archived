@@ -16,30 +16,21 @@ use Centreon\Domain\Entity\Command;
 class CentreonWorker implements CentreonClapiServiceInterface
 {
 
-    /**
-     * @var Container
-     */
-    private $di;
-
-    public function __construct(Container $di)
+    public function __construct(private readonly Container $di)
     {
-        $this->di = $di;
     }
 
     /**
      * Get Class name
-     * @return string
      * @throws \ReflectionException
      */
     public static function getName() : string
     {
-        return (new \ReflectionClass(__CLASS__))->getShortName();
+        return (new \ReflectionClass(self::class))->getShortName();
     }
 
     /**
      * Process task queue for import/export
-     *
-     * @return void
      */
     public function processQueue(): void
     {
@@ -52,8 +43,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
     /**
      * Execute export tasks which are store in task table
-     *
-     * @return void
      */
     private function processExportTasks(): void
     {
@@ -62,7 +51,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
             ->findExportTasks() ?? [];
 
         echo date("Y-m-d H:i:s") . " - INFO - Checking for pending export tasks: "
-            . count($tasks) . " task(s) found.\n";
+            . (is_countable($tasks) ? count($tasks) : 0) . " task(s) found.\n";
 
         foreach (array_values($tasks) as $task) {
             echo date("Y-m-d H:i:s") . " - INFO - Processing task #" . $task->getId() . "...\n";
@@ -109,8 +98,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
     /**
      * Execute import tasks which are store in task table
-     *
-     * @return void
      */
     private function processImportTasks(): void
     {
@@ -119,7 +106,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
             ->findImportTasks() ?? [];
 
         echo date("Y-m-d H:i:s") . " - INFO - Checking for pending import tasks: "
-            . count($tasks) . " task(s) found.\n";
+            . (is_countable($tasks) ? count($tasks) : 0) . " task(s) found.\n";
 
         foreach ($tasks as $x => $task) {
             echo date("Y-m-d H:i:s") . " - INFO - Processing task #"
@@ -149,7 +136,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
      * Worker method to create task for import on remote.
      *
      * @param int $taskId the task id to create on the remote server
-     * @return void
      */
     public function createRemoteTask(int $taskId): void
     {
@@ -170,8 +156,8 @@ class CentreonWorker implements CentreonClapiServiceInterface
             throw new \Exception('Missing parameters: params');
         }
         $params = $taskParams['params'];
-        $centreonPath = trim($params['centreon_path'], '/');
-        $centreonPath = $centreonPath ? $centreonPath : '/centreon';
+        $centreonPath = trim((string) $params['centreon_path'], '/');
+        $centreonPath = $centreonPath ?: '/centreon';
         $url = $params['http_method'] ? $params['http_method'] . "://" : "";
         $url .= $params['remote_ip'];
         $url .= $params['http_port'] ? ":" . $params['http_port'] : "";

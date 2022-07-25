@@ -36,9 +36,6 @@ interface ReadContactTemplateRepositoryInterface
 
     /**
      * Find a contact template by id
-     *
-     * @param integer $id
-     * @return ContactTemplate|null
      */
     public function find(int $id): ?ContactTemplate;
 }

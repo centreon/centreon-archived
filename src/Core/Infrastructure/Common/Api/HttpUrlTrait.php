@@ -31,11 +31,8 @@ trait HttpUrlTrait
     /**
      * @var ServerBag|null
      */
-    private ?ServerBag $httpServerBag;
+    private ?ServerBag $httpServerBag = null;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     #[Required]
     public function setHttpServerBag(RequestStack $requestStack): void
     {
@@ -44,8 +41,6 @@ trait HttpUrlTrait
 
     /**
      * Get base URL (example: https://127.0.0.1/centreon)
-     *
-     * @return string
      */
     protected function getBaseUrl(): string
     {
@@ -79,8 +74,6 @@ trait HttpUrlTrait
 
     /**
      * Get base URI (example: /centreon)
-     *
-     * @return string
      */
     protected function getBaseUri(): string
     {
@@ -103,6 +96,6 @@ trait HttpUrlTrait
             $baseUri = $matches[1];
         }
 
-        return rtrim($baseUri, '/');
+        return rtrim((string) $baseUri, '/');
     }
 }

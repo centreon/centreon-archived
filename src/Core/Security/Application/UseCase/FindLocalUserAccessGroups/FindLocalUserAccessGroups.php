@@ -36,7 +36,7 @@ class FindLocalUserAccessGroups
      * @param ReadAccessGroupRepositoryInterface $repository
      * @param ContactInterface $user
      */
-    public function __construct(private ReadAccessGroupRepositoryInterface $repository, private ContactInterface $user)
+    public function __construct(private readonly ReadAccessGroupRepositoryInterface $repository, private readonly ContactInterface $user)
     {
     }
 

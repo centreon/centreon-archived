@@ -33,7 +33,7 @@ class FindOpenIdConfiguration
     /**
      * @param ReadOpenIdConfigurationRepositoryInterface $repository
      */
-    public function __construct(private ReadOpenIdConfigurationRepositoryInterface $repository)
+    public function __construct(private readonly ReadOpenIdConfigurationRepositoryInterface $repository)
     {
     }
 
@@ -57,10 +57,6 @@ class FindOpenIdConfiguration
         $presenter->present($this->createResponse($configuration));
     }
 
-    /**
-     * @param Configuration $configuration
-     * @return FindOpenIdConfigurationResponse
-     */
     private function createResponse(Configuration $configuration): FindOpenIdConfigurationResponse
     {
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();

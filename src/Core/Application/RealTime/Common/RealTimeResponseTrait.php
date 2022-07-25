@@ -50,7 +50,6 @@ trait RealTimeResponseTrait
     /**
      * Converts an Icon model into an array
      *
-     * @param Icon|null $icon
      * @return array<string, string|null>
      */
     public function iconToArray(?Icon $icon): array
@@ -98,7 +97,6 @@ trait RealTimeResponseTrait
     /**
      * Converts an Acknowledgement entity into an array
      *
-     * @param Acknowledgement|null $acknowledgement
      * @return array<string, mixed>
      */
     public function acknowledgementToArray(?Acknowledgement $acknowledgement): array
@@ -127,7 +125,6 @@ trait RealTimeResponseTrait
     /**
      * Converts Status model into an array for DTO
      *
-     * @param Status $status
      * @return array<string, mixed>
      */
     private function statusToArray(Status $status): array

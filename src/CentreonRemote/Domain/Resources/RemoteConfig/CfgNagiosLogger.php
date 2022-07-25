@@ -31,7 +31,6 @@ class CfgNagiosLogger
     /**
      * Get template configuration
      *
-     * @param int $nagiosId
      * @return array<string,string|int>
      */
     public static function getConfiguration(int $nagiosId): array

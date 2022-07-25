@@ -48,11 +48,11 @@ class FindMetaServiceNotificationPolicy
      * @param ReadRealTimeMetaServiceRepositoryInterface $readRealTimeMetaServiceRepository
      */
     public function __construct(
-        private ReadMetaServiceNotificationRepositoryInterface $readMetaServiceNotificationRepository,
-        private MetaServiceConfigurationReadRepositoryInterface $readMetaServiceRepository,
-        private EngineConfigurationServiceInterface $engineService,
-        private ContactInterface $contact,
-        private ReadRealTimeMetaServiceRepositoryInterface $readRealTimeMetaServiceRepository,
+        private readonly ReadMetaServiceNotificationRepositoryInterface $readMetaServiceNotificationRepository,
+        private readonly MetaServiceConfigurationReadRepositoryInterface $readMetaServiceRepository,
+        private readonly EngineConfigurationServiceInterface $engineService,
+        private readonly ContactInterface $contact,
+        private readonly ReadRealTimeMetaServiceRepositoryInterface $readRealTimeMetaServiceRepository,
     ) {
     }
 
@@ -99,9 +99,6 @@ class FindMetaServiceNotificationPolicy
 
     /**
      * Find host by id
-     *
-     * @param int $metaServiceId
-     * @return MetaServiceConfiguration|null
      */
     private function findMetaService(int $metaServiceId): ?MetaServiceConfiguration
     {
@@ -116,10 +113,6 @@ class FindMetaServiceNotificationPolicy
         return $metaService;
     }
 
-    /**
-     * @param int $metaServiceId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleMetaServiceNotFound(
         int $metaServiceId,
         FindNotificationPolicyPresenterInterface $presenter,
@@ -134,9 +127,6 @@ class FindMetaServiceNotificationPolicy
         $presenter->setResponseStatus(new NotFoundResponse('Meta service'));
     }
 
-    /**
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleEngineHostConfigurationNotFound(
         FindNotificationPolicyPresenterInterface $presenter,
     ): void {
@@ -152,9 +142,6 @@ class FindMetaServiceNotificationPolicy
     /**
      * If engine configuration related to the meta service has notification disabled,
      * it overrides meta service notification status
-     *
-     * @param EngineConfiguration $engineConfiguration
-     * @param RealtimeMetaService $realtimeMetaService
      */
     private function overrideMetaServiceNotificationByEngineConfiguration(
         EngineConfiguration $engineConfiguration,
@@ -171,8 +158,6 @@ class FindMetaServiceNotificationPolicy
     /**
      * @param NotifiedContact[] $notifiedContacts
      * @param NotifiedContactGroup[] $notifiedContactGroups
-     * @param bool $isNotificationEnabled
-     * @return FindNotificationPolicyResponse
      */
     public function createResponse(
         array $notifiedContacts,

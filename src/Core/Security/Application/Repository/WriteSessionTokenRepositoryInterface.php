@@ -26,8 +26,6 @@ interface WriteSessionTokenRepositoryInterface
 {
     /**
      * Delete a session.
-     *
-     * @param string $token
      */
     public function deleteSession(string $token): void;
 }

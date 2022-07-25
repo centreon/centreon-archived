@@ -45,7 +45,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private HypermediaCreator $hypermediaCreator,
+        private readonly HypermediaCreator $hypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
     }

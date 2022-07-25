@@ -51,14 +51,9 @@ class RenewPasswordController extends AbstractController
         return $presenter->show();
     }
 
-    /**
-     * @param Request $request
-     * @param string $userAlias
-     * @return RenewPasswordRequest
-     */
     private function createRenewPasswordRequest(Request $request, string $userAlias): RenewPasswordRequest
     {
-        $requestData = json_decode((string) $request->getContent(), true);
+        $requestData = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $renewPasswordRequest = new RenewPasswordRequest();
         $renewPasswordRequest->userAlias = $userAlias;
         $renewPasswordRequest->oldPassword = $requestData['old_password'];

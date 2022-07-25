@@ -31,7 +31,6 @@ interface WriteOpenIdConfigurationRepositoryInterface
     /**
      * Update the OpenId Configuration.
      *
-     * @param Configuration $configuration
      * @throws \Throwable
      */
     public function updateConfiguration(Configuration $configuration): void;

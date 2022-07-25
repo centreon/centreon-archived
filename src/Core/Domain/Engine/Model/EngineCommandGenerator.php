@@ -43,8 +43,6 @@ class EngineCommandGenerator
 
     /**
      * Add a new command handler.
-     *
-     * @param HandlerInterface $handler
      */
     public function addHandler(HandlerInterface $handler): void
     {
@@ -54,9 +52,6 @@ class EngineCommandGenerator
 
     /**
      * Gets the Engine command according to the different handlers who might want to modify it.
-     *
-     * @param string $command
-     * @return string
      */
     public function getEngineCommand(string $command): string
     {

@@ -27,7 +27,7 @@ class ForbiddenResponse implements ResponseStatusInterface
     /**
      * @param string $message
      */
-    public function __construct(private string $message)
+    public function __construct(private readonly string $message)
     {
     }
 

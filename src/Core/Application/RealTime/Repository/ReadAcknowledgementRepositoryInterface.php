@@ -27,16 +27,7 @@ use Core\Domain\RealTime\Model\Acknowledgement;
 
 interface ReadAcknowledgementRepositoryInterface
 {
-    /**
-     * @param int $hostId
-     * @return Acknowledgement|null
-     */
     public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
 
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
     public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
 }

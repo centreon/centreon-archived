@@ -36,8 +36,8 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private ContactHypermediaCreator $contactHypermediaCreator,
-        private ContactGroupHypermediaCreator $contactGroupHypermediaCreator,
+        private readonly ContactHypermediaCreator $contactHypermediaCreator,
+        private readonly ContactGroupHypermediaCreator $contactGroupHypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
     }
@@ -47,6 +47,7 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
      */
     public function present(mixed $response): void
     {
+        $presenterResponse = [];
         $presenterResponse['contacts'] = array_map(
             fn (array $notifiedContact) => [
                 'id' => $notifiedContact['id'],

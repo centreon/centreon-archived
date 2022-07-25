@@ -54,14 +54,11 @@ class UpdateConfigurationController extends AbstractController
 
     /**
      * Create a DTO from HTTP Request or throw an exception if the body is incorrect.
-     *
-     * @param Request $request
-     * @return UpdateConfigurationRequest
      */
     private function createUpdateConfigurationRequest(
         Request $request,
     ): UpdateConfigurationRequest {
-        $requestData = json_decode((string) $request->getContent(), true);
+        $requestData = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $passwordPolicy = $requestData['password_security_policy'];
         $updateRequest = new UpdateConfigurationRequest();
         $updateRequest->passwordMinimumLength = $passwordPolicy['password_min_length'];

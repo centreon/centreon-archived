@@ -29,7 +29,6 @@ interface WriteConfigurationRepositoryInterface
     /**
      * Update the provider configuration.
      *
-     * @param Configuration $configuration
      * @param int[] $excludedUserIds
      */
     public function updateConfiguration(Configuration $configuration, array $excludedUserIds): void;

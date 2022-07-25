@@ -32,12 +32,12 @@ class FindProviderConfigurations
     /**
      * @var ReadProviderConfigurationsRepositoryInterface[]
      */
-    private array $providerRepositories;
+    private readonly array $providerRepositories;
 
     /**
      * @var ProviderResponseInterface[]
      */
-    private array $providerResponses;
+    private readonly array $providerResponses;
 
     /**
      * @param \Traversable<ReadProviderConfigurationsRepositoryInterface> $providerRepositories

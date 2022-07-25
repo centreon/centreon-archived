@@ -57,17 +57,12 @@ final class PatchUserController extends AbstractController
         return $presenter->show();
     }
 
-    /**
-     * @param Request $request
-     * @param int $userId
-     * @return PatchUserRequest
-     */
     private function createRequest(Request $request, int $userId): PatchUserRequest
     {
         /**
          * @var array{theme: string} $requestData
          */
-        $requestData = json_decode((string) $request->getContent(), true);
+        $requestData = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $updateUserRequest = new PatchUserRequest();
         $updateUserRequest->theme = $requestData['theme'];
         $updateUserRequest->userId = $userId;

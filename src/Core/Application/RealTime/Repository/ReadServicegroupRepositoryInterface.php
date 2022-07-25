@@ -30,8 +30,6 @@ interface ReadServicegroupRepositoryInterface
     /**
      * Find Servicegroups that contains the requested Service by Id without ACL
      *
-     * @param int $hostId
-     * @param int $serviceId
      * @return Servicegroup[]
      */
     public function findAllByHostIdAndServiceId(int $hostId, int $serviceId): array;
@@ -39,8 +37,6 @@ interface ReadServicegroupRepositoryInterface
     /**
      * Find Servicegroups that contains the requested Service by Id with ACL
      *
-     * @param int $hostId
-     * @param int $serviceId
      * @param int[] $accessGroupIds
      * @return Servicegroup[]
      */

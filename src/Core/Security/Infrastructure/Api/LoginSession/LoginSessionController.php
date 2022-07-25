@@ -64,14 +64,11 @@ class LoginSessionController extends AbstractController
 
     /**
      * Create a DTO from HTTP Request or throw an exception if the body is incorrect.
-     *
-     * @param Request $request
-     * @return LoginSessionRequest
      */
     private function createLoginSessionRequest(
         Request $request
     ): LoginSessionRequest {
-        $requestData = json_decode((string) $request->getContent(), true);
+        $requestData = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $loginSessionRequest = new LoginSessionRequest();
         $loginSessionRequest->login = $requestData['login'];

@@ -35,7 +35,7 @@ class FindUsersPresenter extends AbstractPresenter implements FindUsersPresenter
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private RequestParametersInterface $requestParameters,
+        private readonly RequestParametersInterface $requestParameters,
         protected PresenterFormatterInterface $presenterFormatter,
     ) {
     }

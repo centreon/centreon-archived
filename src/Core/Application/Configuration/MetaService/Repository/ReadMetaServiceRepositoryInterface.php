@@ -28,18 +28,13 @@ interface ReadMetaServiceRepositoryInterface
 {
     /**
      * Find MetaService configuration without ACL
-     *
-     * @param integer $metaId
-     * @return MetaService|null
      */
     public function findMetaServiceById(int $metaId): ?MetaService;
 
     /**
      * Find MetaService configuration with ACL
      *
-     * @param int $metaId
      * @param int[] $accessGroupIds
-     * @return MetaService|null
      */
     public function findMetaServiceByIdAndAccessGroupIds(int $metaId, array $accessGroupIds): ?MetaService;
 }

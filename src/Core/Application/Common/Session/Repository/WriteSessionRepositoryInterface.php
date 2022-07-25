@@ -27,11 +27,6 @@ interface WriteSessionRepositoryInterface
 {
     /**
      * Update a value in session.
-     *
-     * @param string $sessionId
-     * @param string $key
-     * @param mixed $value
-     * @return void
      */
     public function updateSession(string $sessionId, string $key, mixed $value): void;
 }

@@ -61,15 +61,15 @@ class FindService
      * @param ReadTagRepositoryInterface $tagRepository
      */
     public function __construct(
-        private ReadServiceRepositoryInterface $repository,
-        private ReadHostRepositoryInterface $hostRepository,
-        private ReadServicegroupRepositoryInterface $servicegroupRepository,
-        private ContactInterface $contact,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private ReadDowntimeRepositoryInterface $downtimeRepository,
-        private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
-        private MonitoringServiceInterface $monitoringService,
-        private ReadTagRepositoryInterface $tagRepository,
+        private readonly ReadServiceRepositoryInterface $repository,
+        private readonly ReadHostRepositoryInterface $hostRepository,
+        private readonly ReadServicegroupRepositoryInterface $servicegroupRepository,
+        private readonly ContactInterface $contact,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly ReadDowntimeRepositoryInterface $downtimeRepository,
+        private readonly ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
+        private readonly MonitoringServiceInterface $monitoringService,
+        private readonly ReadTagRepositoryInterface $tagRepository,
     ) {
     }
 
@@ -164,10 +164,6 @@ class FindService
 
     /**
      * Handle Host not found. This method will log the error and set the ResponseStatus
-     *
-     * @param int $hostId
-     * @param FindServicePresenterInterface $presenter
-     * @return void
      */
     private function handleHostNotFound(int $hostId, FindServicePresenterInterface $presenter): void
     {
@@ -178,16 +174,11 @@ class FindService
                 'userId' => $this->contact->getId()
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('Host'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Host::class));
     }
 
     /**
      * Handle Service not found. This method will log the error and set the ResponseStatus
-     *
-     * @param int $hostId
-     * @param int $serviceId
-     * @param FindServicePresenterInterface $presenter
-     * @return void
      */
     private function handleServiceNotFound(int $hostId, int $serviceId, FindServicePresenterInterface $presenter): void
     {
@@ -199,14 +190,11 @@ class FindService
                 'userId' => $this->contact->getId()
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('Service'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Service::class));
     }
 
     /**
-     * @param Service $service
      * @param Downtime[] $downtimes
-     * @param Acknowledgement|null $acknowledgement
-     * @return FindServiceResponse
      */
     public function createResponse(
         Service $service,
@@ -254,9 +242,6 @@ class FindService
 
     /**
      * Obfuscate passwords in the commandline
-     *
-     * @param Service $service
-     * @return string|null
      */
     private function obfuscatePasswordInServiceCommandLine(Service $service): ?string
     {

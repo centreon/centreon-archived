@@ -29,8 +29,6 @@ interface ReadConfigurationRepositoryInterface
 {
     /**
      * Find the provider configuration.
-     *
-     * @return Configuration|null
      */
     public function findConfiguration(): ?Configuration;
 }

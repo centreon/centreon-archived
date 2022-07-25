@@ -26,9 +26,6 @@ use Centreon\Domain\Repository\RepositoryException;
 
 class ConfigurationException extends RepositoryException
 {
-    /**
-     * @return self
-     */
     public static function errorWhileReadingConfiguration(): self
     {
         return new self(_('Error while reading local provider configuration'));

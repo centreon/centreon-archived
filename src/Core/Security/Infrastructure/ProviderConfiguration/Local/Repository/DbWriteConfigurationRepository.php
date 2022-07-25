@@ -68,8 +68,6 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
 
     /**
      * Update custom configuration
-     *
-     * @param LocalProviderConfiguration $localConfiguration
      */
     private function updateCustomConfiguration(LocalProviderConfiguration $localConfiguration): void
     {

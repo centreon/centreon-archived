@@ -35,7 +35,7 @@ class FindServiceCategory
      * @param ReadTagRepositoryInterface $repository
      */
     public function __construct(
-        private ReadTagRepositoryInterface $repository
+        private readonly ReadTagRepositoryInterface $repository
     ) {
     }
 
@@ -48,7 +48,7 @@ class FindServiceCategory
 
         try {
             $serviceCategories = $this->repository->findAllByTypeId(Tag::SERVICE_CATEGORY_TYPE_ID);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->error('An error occurred while retrieving service categories');
             $presenter->setResponseStatus(new ErrorResponse('An error occurred while retrieving service categories'));
             return;
@@ -61,7 +61,6 @@ class FindServiceCategory
 
     /**
      * @param Tag[] $serviceCategories
-     * @return FindServiceCategoryResponse
      */
     private function createResponse(array $serviceCategories): FindServiceCategoryResponse
     {

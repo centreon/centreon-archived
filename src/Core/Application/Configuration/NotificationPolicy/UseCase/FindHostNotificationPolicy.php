@@ -49,12 +49,12 @@ class FindHostNotificationPolicy
      * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
      */
     public function __construct(
-        private ReadHostNotificationRepositoryInterface $readHostNotificationRepository,
-        private HostConfigurationRepositoryInterface $hostRepository,
-        private EngineConfigurationServiceInterface $engineService,
-        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private ContactInterface $contact,
-        private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
+        private readonly ReadHostNotificationRepositoryInterface $readHostNotificationRepository,
+        private readonly HostConfigurationRepositoryInterface $hostRepository,
+        private readonly EngineConfigurationServiceInterface $engineService,
+        private readonly ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly ContactInterface $contact,
+        private readonly ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
     ) {
     }
 
@@ -101,9 +101,6 @@ class FindHostNotificationPolicy
 
     /**
      * Find host by id
-     *
-     * @param int $hostId
-     * @return Host|null
      */
     private function findHost(int $hostId): ?Host
     {
@@ -128,10 +125,6 @@ class FindHostNotificationPolicy
         return $host;
     }
 
-    /**
-     * @param int $hostId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleHostNotFound(
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter,
@@ -143,13 +136,9 @@ class FindHostNotificationPolicy
                 'userId' => $this->contact->getId(),
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('Host'));
+        $presenter->setResponseStatus(new NotFoundResponse(\Host::class));
     }
 
-    /**
-     * @param int $hostId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
     private function handleEngineHostConfigurationNotFound(
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter,
@@ -167,9 +156,6 @@ class FindHostNotificationPolicy
     /**
      * If engine configuration related to the host has notification disabled,
      * it overrides host notification status
-     *
-     * @param EngineConfiguration $engineConfiguration
-     * @param RealtimeHost $realtimeHost
      */
     private function overrideHostNotificationByEngineConfiguration(
         EngineConfiguration $engineConfiguration,
@@ -186,8 +172,6 @@ class FindHostNotificationPolicy
     /**
      * @param NotifiedContact[] $notifiedContacts
      * @param NotifiedContactGroup[] $notifiedContactGroups
-     * @param bool $isNotificationEnabled
-     * @return FindNotificationPolicyResponse
      */
     public function createResponse(
         array $notifiedContacts,

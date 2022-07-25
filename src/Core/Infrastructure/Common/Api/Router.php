@@ -37,31 +37,17 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     use HttpUrlTrait;
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var RequestMatcherInterface
-     */
-    private $requestMatcher;
-
-    /**
      * MyRouter constructor.
      *
      * @param RouterInterface $router
      * @param RequestMatcherInterface $requestMatcher
      */
-    public function __construct(RouterInterface $router, RequestMatcherInterface $requestMatcher)
+    public function __construct(private readonly RouterInterface $router, private readonly RequestMatcherInterface $requestMatcher)
     {
-        $this->router = $router;
-        $this->requestMatcher = $requestMatcher;
     }
 
     /**
      * Get router
-     *
-     * @return RouterInterface
      */
     public function getRouter(): RouterInterface
     {
@@ -71,9 +57,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * {@inheritDoc}
      *
-     * @param string $name
      * @param array<string,mixed> $parameters
-     * @param int $referenceType
      */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
@@ -91,7 +75,6 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * {@inheritDoc}
      *
-     * @param RequestContext $context
      * @return void
      */
     public function setContext(RequestContext $context)

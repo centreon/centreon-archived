@@ -35,7 +35,7 @@ class FindConfiguration
     /**
      * @param ReadConfigurationRepositoryInterface $repository
      */
-    public function __construct(private ReadConfigurationRepositoryInterface $repository)
+    public function __construct(private readonly ReadConfigurationRepositoryInterface $repository)
     {
     }
 
@@ -72,10 +72,6 @@ class FindConfiguration
         $presenter->present($this->createResponse($configuration));
     }
 
-    /**
-     * @param Configuration $configuration
-     * @return FindConfigurationResponse
-     */
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
         $response = new FindConfigurationResponse();

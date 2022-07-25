@@ -34,8 +34,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -339,7 +337,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer(): array
     {
         // retrieve post values to be used in other classes
-        $_POST = json_decode(file_get_contents('php://input'), true);
+        $_POST = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
 
         $openBrokerFlow = isset($this->arguments['open_broker_flow']) && $this->arguments['open_broker_flow'] === true;
         $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
@@ -360,8 +358,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
         // extract HTTP method and port from form or database if registered
-        $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
-        $serverName = substr($this->arguments['server_name'], 0, 40);
+        $serverIP = parse_url((string) $this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
+        $serverName = substr((string) $this->arguments['server_name'], 0, 40);
 
         // Check IPv6, IPv4 and FQDN format
         if (
@@ -390,8 +388,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool)$dbAdapter->count();
 
         if (!$hasIpInTable) {
-            $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
-            $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
+            $httpMethod = parse_url((string) $this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
+            $httpPort = parse_url((string) $this->arguments['server_ip'], PHP_URL_PORT) ?: '';
         } else {
             $result = $dbAdapter->results();
             $remoteData = reset($result);
@@ -415,7 +413,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $serverConfigurationService->setDbPassword($this->arguments['db_password']);
             if (
                 $serverWizardIdentity->checkBamOnRemoteServer(
-                    $httpMethod . '://' . $serverIP . ':' . $httpPort . '/' . trim($centreonPath, '/'),
+                    $httpMethod . '://' . $serverIP . ':' . $httpPort . '/' . trim((string) $centreonPath, '/'),
                     $noCheckCertificate,
                     $noProxy
                 )
@@ -605,12 +603,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Create New Task for export
      *
-     * @return bool|int
      * @param array<string,mixed> $params
      */
-    private function createExportTask(array $params)
+    private function createExportTask(array $params): bool|int
     {
-        return $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params' => $params));
+        return $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $params]);
     }
 
     /**

@@ -31,9 +31,6 @@ trait DbFactoryUtilitiesTrait
 {
     /**
      * Creates DateTime from timestamp
-     *
-     * @param int|null $timestamp
-     * @return \DateTime|null
      */
     public static function createDateTimeFromTimestamp(?int $timestamp): ?\DateTime
     {
@@ -45,9 +42,6 @@ trait DbFactoryUtilitiesTrait
 
     /**
      * Creates DateTimeImmutable from timestamp
-     *
-     * @param int|string|null $timestamp
-     * @return \DateTimeImmutable|null
      */
     public static function createDateTimeImmutableFromTimestamp(int|string|null $timestamp): ?\DateTimeImmutable
     {
@@ -58,7 +52,6 @@ trait DbFactoryUtilitiesTrait
 
     /**
      * @param int|string|null $property
-     * @return int|null
      */
     public static function getIntOrNull($property): ?int
     {
@@ -67,7 +60,6 @@ trait DbFactoryUtilitiesTrait
 
     /**
      * @param float|string|null $property
-     * @return float|null
      */
     public static function getFloatOrNull($property): ?float
     {

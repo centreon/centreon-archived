@@ -64,17 +64,17 @@ class LoginOpenIdSession
      * @param WriteAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
-        private string $redirectDefaultPage,
-        private ReadOpenIdConfigurationRepositoryInterface $repository,
-        private OpenIdProviderInterface $provider,
-        private RequestStack $requestStack,
-        private Container $dependencyInjector,
-        private AuthenticationServiceInterface $authenticationService,
-        private AuthenticationRepositoryInterface $authenticationRepository,
-        private SessionRepositoryInterface $sessionRepository,
-        private DataStorageEngineInterface $dataStorageEngine,
-        private WriteContactGroupRepositoryInterface $contactGroupRepository,
-        private WriteAccessGroupRepositoryInterface $accessGroupRepository,
+        private readonly string $redirectDefaultPage,
+        private readonly ReadOpenIdConfigurationRepositoryInterface $repository,
+        private readonly OpenIdProviderInterface $provider,
+        private readonly RequestStack $requestStack,
+        private readonly Container $dependencyInjector,
+        private readonly AuthenticationServiceInterface $authenticationService,
+        private readonly AuthenticationRepositoryInterface $authenticationRepository,
+        private readonly SessionRepositoryInterface $sessionRepository,
+        private readonly DataStorageEngineInterface $dataStorageEngine,
+        private readonly WriteContactGroupRepositoryInterface $contactGroupRepository,
+        private readonly WriteAccessGroupRepositoryInterface $accessGroupRepository,
     ) {
     }
 
@@ -172,7 +172,6 @@ class LoginOpenIdSession
     /**
      * Start the Centreon session.
      *
-     * @param \Centreon $legacySession
      * @throws LegacyAuthenticationException
      */
     private function startLegacySession(\Centreon $legacySession): void
@@ -188,9 +187,6 @@ class LoginOpenIdSession
 
     /**
      * Get the redirection uri where user will be redirect once logged.
-     *
-     * @param ContactInterface $providerUser
-     * @return string
      */
     private function getRedirectionUri(
         ContactInterface $providerUser,
@@ -204,9 +200,6 @@ class LoginOpenIdSession
 
     /**
      * build the redirection uri based on isReact page property.
-     *
-     * @param Page $defaultPage
-     * @return string
      */
     private function buildDefaultRedirectionUri(Page $defaultPage): string
     {
@@ -223,12 +216,6 @@ class LoginOpenIdSession
 
     /**
      * create Authentication tokens.
-     *
-     * @param string $sessionToken
-     * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
-     * @param string|null $clientIp
      */
     private function createAuthenticationTokens(
         string $sessionToken,
@@ -255,7 +242,7 @@ class LoginOpenIdSession
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->commitTransaction();
             }
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }
@@ -263,11 +250,6 @@ class LoginOpenIdSession
         }
     }
 
-    /**
-     * @param string|null $redirectUri
-     * @param string|null $error
-     * @return LoginOpenIdSessionResponse
-     */
     private function createResponse(?string $redirectUri, ?string $error = null): LoginOpenIdSessionResponse
     {
         $response = new LoginOpenIdSessionResponse();
@@ -280,7 +262,6 @@ class LoginOpenIdSession
     /**
      * Find User in Centreon or throw an exception
      *
-     * @return ContactInterface
      * @throws NotFoundException
      */
     private function findUserOrFail(): ContactInterface
@@ -305,8 +286,6 @@ class LoginOpenIdSession
 
     /**
      * Update User ACL On authentication
-     *
-     * @param ContactInterface $user
      */
     private function updateUserACL(ContactInterface $user): void
     {
@@ -383,7 +362,6 @@ class LoginOpenIdSession
     /**
      * Delete and Insert Access Groups for authenticated user
      *
-     * @param ContactInterface $user
      * @param AccessGroup[] $userAccessGroups
      */
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
@@ -409,8 +387,6 @@ class LoginOpenIdSession
 
     /**
      * Delete and Insert Contact Group for authenticated user
-     *
-     * @param ContactInterface $user
      */
     private function updateContactGroupsForUser(ContactInterface $user): void
     {

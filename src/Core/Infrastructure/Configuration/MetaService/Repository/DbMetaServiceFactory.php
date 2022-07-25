@@ -31,7 +31,6 @@ class DbMetaServiceFactory
 
     /**
      * @param array<string, mixed> $data
-     * @return MetaService
      */
     public static function createFromRecord(array $data): MetaService
     {
@@ -52,9 +51,6 @@ class DbMetaServiceFactory
 
     /**
      * This function will normalize the calculation type coming from the database
-     *
-     * @param string|null $calculationType
-     * @return string
      */
     private static function normalizeCalculationType(?string $calculationType): string
     {
@@ -69,9 +65,6 @@ class DbMetaServiceFactory
 
     /**
      * This function will normalize the data source type coming from the database
-     *
-     * @param int|null $dataSourceType
-     * @return string
      */
     private static function normalizeDataSourceType(?int $dataSourceType): string
     {
