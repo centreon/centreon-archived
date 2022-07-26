@@ -29,13 +29,13 @@ use Core\Security\User\Domain\Model\UserPassword;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Core\Security\Application\UseCase\RenewPassword\RenewPassword;
-use Core\Security\Application\UseCase\RenewPassword\RenewPasswordRequest;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPassword;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordRequest;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 use Core\Security\User\Application\Repository\ReadUserRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\User\Application\Repository\WriteUserRepositoryInterface;
-use Core\Security\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPasswordTest extends TestCase

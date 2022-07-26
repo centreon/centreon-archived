@@ -25,9 +25,9 @@ namespace Core\Security\User\Infrastructure\Api\RenewPassword;
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Security\Application\UseCase\RenewPassword\RenewPassword;
-use Core\Security\Application\UseCase\RenewPassword\RenewPasswordRequest;
-use Core\Security\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPassword;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordRequest;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 
 class RenewPasswordController extends AbstractController
 {

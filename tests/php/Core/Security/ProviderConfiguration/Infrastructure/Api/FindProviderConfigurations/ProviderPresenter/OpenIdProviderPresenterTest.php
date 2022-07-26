@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter;
 
-use Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\OpenIdProviderPresenter;
+use Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\OpenIdProviderPresenter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;

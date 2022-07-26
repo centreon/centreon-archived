@@ -26,8 +26,12 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
+use Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\{
+    ProviderPresenterInterface
+};
+use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\{
+    FindProviderConfigurationsPresenterInterface
+};
 
 class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     FindProviderConfigurationsPresenterInterface

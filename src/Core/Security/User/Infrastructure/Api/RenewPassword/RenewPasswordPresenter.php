@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\User\Infrastructure\Api\RenewPassword;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
+use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 
 class RenewPasswordPresenter extends AbstractPresenter implements RenewPasswordPresenterInterface
 {
