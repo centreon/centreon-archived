@@ -2,7 +2,6 @@ import React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { mount } from '../../../../../cypress/support';
 import { centreonUi } from '../helpers';
 
 import UserMenu from './index';
@@ -26,7 +25,7 @@ describe('User Menu', () => {
       toTime: (): string => '4:20 PM',
     });
 
-    mount(
+    cy.mount(
       <Router>
         <UserMenu />
       </Router>,
@@ -53,6 +52,7 @@ describe('User Menu', () => {
     cy.get('@popper').contains('Dark');
     cy.get('@popper').contains('Light');
     cy.get('@popper').contains('Logout');
+
     cy.matchImageSnapshot();
   });
 
@@ -62,6 +62,7 @@ describe('User Menu', () => {
     cy.get('@switchMode').click();
     cy.matchImageSnapshot();
     cy.get('@switchMode').click();
+
     cy.matchImageSnapshot();
   });
 });
