@@ -40,9 +40,7 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Pimple\Psr11\Container as ContainerWrap;
 use Symfony\Component\Finder\Finder;
-use Vfs\FileSystem;
-use Vfs\Node\Directory;
-use Vfs\Node\File;
+use VirtualFileSystem\FileSystem;
 use Centreon\Test\Mock;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\WidgetSource;
@@ -107,13 +105,12 @@ class WidgetSourceTest extends TestCase
     protected function setUp(): void
     {
         // mount VFS
-        $this->fs = FileSystem::factory('vfs://');
-        $this->fs->mount();
-        $this->fs->get('/')->add('widgets', new Directory([]));
-        $this->fs->get('/widgets')->add(static::$widgetName, new Directory([]));
-        $this->fs->get('/widgets/' . static::$widgetName)
-            ->add(WidgetSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
+        $this->fs = new FileSystem();
+        $this->fs->createDirectory('/widgets');
+        $this->fs->createDirectory('/widgets/' . static::$widgetName);
+        $this->fs->createFile(
+            '/widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE, static::buildConfContent()
+        );
 
         // provide services
         $container = new Container();
@@ -142,17 +139,13 @@ class WidgetSourceTest extends TestCase
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://widgets/';
-
-                    return $result;
+                return $this->fs->path('/widgets/');
             }))
         ;
     }
 
     public function tearDown(): void
     {
-        // unmount VFS
-        $this->fs->unmount();
     }
 
     public function testGetList(): void
@@ -182,7 +175,7 @@ class WidgetSourceTest extends TestCase
 
     public function testCreateEntityFromConfig(): void
     {
-        $configFile = static::getConfFilePath();
+        $configFile = $this->getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
 
         $this->assertInstanceOf(Module::class, $result);
@@ -196,9 +189,9 @@ class WidgetSourceTest extends TestCase
         $this->assertFalse($result->isUpdated());
     }
 
-    public static function getConfFilePath(): string
+    private function getConfFilePath(): string
     {
-        return 'vfs://widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE;
+        return $this->fs->path('/widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE);
     }
 
     public static function buildConfContent(): string

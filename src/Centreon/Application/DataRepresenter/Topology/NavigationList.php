@@ -74,9 +74,9 @@ class NavigationList implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return array<mixed>
+     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $groups = $this->extractGroups($this->entities);
         $naviList = $this->generateLevels($this->entities, $groups);

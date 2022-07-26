@@ -289,12 +289,12 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return PDOStatement|null
      * @param string $queryString
      * @param mixed $parameters
      * @param mixed $parametersArgs
+     * @return PDOStatement|null
      */
-    public function query($queryString, $parameters = null, ...$parametersArgs)
+    public function query($queryString, $parameters = null, ...$parametersArgs): CentreonDBStatement|false
     {
         if (!is_null($parameters) && !is_array($parameters)) {
             $parameters = [$parameters];

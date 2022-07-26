@@ -66,9 +66,9 @@ class ValidatorErrorList implements JsonSerializable
      *
      * JSON serialization of errors
      *
-     * @return array
+     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $result = [];
 

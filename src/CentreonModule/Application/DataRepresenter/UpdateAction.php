@@ -76,7 +76,7 @@ class UpdateAction implements JsonSerializable
      *
      * @return array<string,\CentreonModule\Application\DataRepresenter\ModuleEntity|string|null>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $entity = null;
 

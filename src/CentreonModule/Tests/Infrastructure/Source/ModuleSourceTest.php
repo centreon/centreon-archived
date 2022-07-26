@@ -40,9 +40,7 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Pimple\Psr11\Container as ContainerWrap;
 use Symfony\Component\Finder\Finder;
-use Vfs\FileSystem;
-use Vfs\Node\Directory;
-use Vfs\Node\File;
+use VirtualFileSystem\FileSystem;
 use Centreon\Test\Mock;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\ModuleSource;
@@ -117,13 +115,12 @@ class ModuleSourceTest extends TestCase
     protected function setUp(): void
     {
         // mount VFS
-        $this->fs = FileSystem::factory('vfs://');
-        $this->fs->mount();
-        $this->fs->get('/')->add('modules', new Directory([]));
-        $this->fs->get('/modules')->add(static::$moduleName, new Directory([]));
-        $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
+        $this->fs = new FileSystem();
+        $this->fs->createDirectory('/modules');
+        $this->fs->createDirectory('/modules/' . static::$moduleName);
+        $this->fs->createFile(
+            '/modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE, static::buildConfContent()
+        );
 
         // provide services
         $container = new Container();
@@ -152,27 +149,21 @@ class ModuleSourceTest extends TestCase
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                $result = 'vfs://modules/';
-
-                return $result;
+                return $this->fs->path('/modules/');
             }))
         ;
         $this->source
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
-                $result = [
+                return [
                     ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
                 ];
-
-                return $result;
             }))
         ;
     }
 
     public function tearDown(): void
     {
-        // unmount VFS
-        $this->fs->unmount();
     }
 
     public function testGetList(): void
@@ -234,7 +225,7 @@ class ModuleSourceTest extends TestCase
 
     public function testCreateEntityFromConfig(): void
     {
-        $configFile = static::getConfFilePath();
+        $configFile = $this->getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
         $images = [
             ModuleSource::PATH_WEB . $result->getId() . '/' . static::$moduleInfo['images'],
@@ -254,19 +245,12 @@ class ModuleSourceTest extends TestCase
         $this->assertFalse($result->isUpdated());
     }
 
-//    public function testGetModuleConf()
-//    {
-//        $moduleSource = new ModuleSource($this->containerWrap);
-//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' .
-//    }
-
     /**
      * @return string
      */
-    public static function getConfFilePath(): string
+    private function getConfFilePath(): string
     {
-        return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
+        return $this->fs->path('/modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE);
     }
 
     /**
