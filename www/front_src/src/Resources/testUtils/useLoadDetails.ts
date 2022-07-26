@@ -7,7 +7,6 @@ import { useAtom } from 'jotai';
 
 import { useRequest, getData } from '@centreon/ui';
 
-import { replaceBasename } from '../helpers';
 import {
   labelNoResourceFound,
   labelSomethingWentWrong,
@@ -23,9 +22,10 @@ import { ResourceDetails } from '../Details/models';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
+  selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
-  selectedResourceDetailsEndpointAtom,
 } from '../Details/detailsAtoms';
 import { ChangeCustomTimePeriodProps } from '../Details/tabs/Graph/models';
 
@@ -47,31 +47,28 @@ const useLoadDetails = (): DetailsState => {
   });
 
   const [customTimePeriod, setCustomTimePeriod] = useAtom(customTimePeriodAtom);
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
-    selectedResourceDetailsEndpointAtom,
+    selectedResourceDetailsEndpointDerivedAtom,
   );
   const sendingDetails = useAtomValue(sendingDetailsAtom);
   const setDetails = useUpdateAtom(detailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
   const setSelectedTimePeriod = useUpdateAtom(selectedTimePeriodAtom);
   const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
-  const resourceDetailsEndPoint = replaceBasename({
-    endpoint: selectedResourceDetailsEndpoint || '',
-    newWord: './',
-  });
 
   useTimePeriod({
     sending: sendingDetails,
   });
 
   const loadDetails = (): void => {
-    if (isNil(selectedResourceDetailsEndpoint)) {
+    if (isNil(selectedResourceId)) {
       return;
     }
 
     sendRequest({
-      endpoint: resourceDetailsEndPoint,
+      endpoint: selectedResourceDetailsEndpoint,
     })
       .then(setDetails)
       .catch(() => {

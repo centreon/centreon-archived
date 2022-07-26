@@ -1,6 +1,9 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
+import { isNil } from 'ramda';
 
+import { resourcesEndpoint } from '../api/endpoint';
+import { replaceBasename } from '../helpers';
 import { Resource } from '../models';
 
 import {
@@ -17,12 +20,10 @@ export const panelWidthStorageAtom = atomWithStorage(
   'centreon-resource-status-details-21.10',
   550,
 );
-export const selectedResourceDetailsEndpointAtom = atomWithStorage<
-  string | undefined
->('resourceDetailsEndpoint', undefined);
+export const selectedResourceIdAtom = atom<number | undefined>(undefined);
+
 export const openDetailsTabIdAtom = atom<TabId>(0);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
-export const selectedResourceIdAtom = atom<number | undefined>(undefined);
 export const detailsAtom = atom<ResourceDetails | undefined>(undefined);
 export const tabParametersAtom = atom<TabParameters>({});
 export const defaultSelectedTimePeriodIdAtom = atom<TimePeriodId | undefined>(
@@ -34,18 +35,20 @@ export const defaultSelectedCustomTimePeriodAtom = atom<
 
 export const selectResourceDerivedAtom = atom(
   null,
-  (_, set, resource: Resource) => {
+  (get, set, resource: Resource) => {
     set(openDetailsTabIdAtom, detailsTabId);
     set(selectedResourceUuidAtom, resource.uuid);
-    set(
-      selectedResourceDetailsEndpointAtom,
-      resource?.links?.endpoints?.details,
-    );
+    set(selectedResourcesDetailsAtom, {
+      resourceId: resource.id,
+      resourcesDetailsEndpoint: resource?.links?.endpoints?.details,
+      selectedResourceType: resource.type,
+    });
   },
 );
 
 export const clearSelectedResourceDerivedAtom = atom(null, (_, set) => {
-  set(selectedResourceDetailsEndpointAtom, undefined);
+  set(selectedResourceUuidAtom, undefined);
+  set(selectedResourcesDetailsAtom, undefined);
 });
 
 export const setServicesTabParametersDerivedAtom = atom(
@@ -61,5 +64,29 @@ export const setGraphTabParametersDerivedAtom = atom(
     set(tabParametersAtom, { ...get(tabParametersAtom), graph: parameters });
   },
 );
+
+export const selectedResourcesDetailsAtom = atomWithStorage<
+  | {
+      resourceId?: number;
+      resourcesDetailsEndpoint?: string;
+      selectedResourceType?: string;
+    }
+  | undefined
+>('resource_details', undefined);
+
+export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
+  const selectedResourceDetailsEndpoint = get(selectedResourcesDetailsAtom);
+
+  const resourceDetailsEndPoint = replaceBasename({
+    endpoint: selectedResourceDetailsEndpoint?.resourcesDetailsEndpoint || '',
+    newWord: './',
+  });
+
+  if (!isNil(selectedResourceDetailsEndpoint?.selectedResourceType)) {
+    return `${resourcesEndpoint}/${selectedResourceDetailsEndpoint?.selectedResourceType}s/${selectedResourceDetailsEndpoint?.resourceId}`;
+  }
+
+  return resourceDetailsEndPoint;
+});
 
 export const sendingDetailsAtom = atom(false);

@@ -82,9 +82,10 @@ export interface TabParameters {
 
 export interface DetailsUrlQueryParameters {
   customTimePeriod?: CustomTimePeriod;
-  selectedResourceDetailsEndpoint: string;
+  id: number;
   selectedTimePeriodId?: TimePeriodId;
   tab?: string;
   tabParameters?: TabParameters;
+  type: string;
   uuid: string;
 }

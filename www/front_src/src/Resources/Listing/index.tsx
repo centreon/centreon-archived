@@ -15,7 +15,7 @@ import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
 import {
   openDetailsTabIdAtom,
   selectedResourceUuidAtom,
-  selectedResourceDetailsEndpointAtom,
+  selectedResourcesDetailsAtom,
 } from '../Details/detailsAtoms';
 import {
   resourcesToAcknowledgeAtom,
@@ -62,6 +62,7 @@ const ResourceListing = (): JSX.Element => {
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const search = useAtomValue(searchAtom);
+
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
   const setLimit = useUpdateAtom(limitAtom);
   const setResourcesToAcknowledge = useUpdateAtom(resourcesToAcknowledgeAtom);
@@ -70,8 +71,8 @@ const ResourceListing = (): JSX.Element => {
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,
   );
-  const setSelectedResourceDetailsEndpoint = useUpdateAtom(
-    selectedResourceDetailsEndpointAtom,
+  const setSelectedResourceDetails = useUpdateAtom(
+    selectedResourcesDetailsAtom,
   );
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -92,9 +93,12 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ uuid, links }: Resource): void => {
+  const selectResource = ({ id, links, uuid }: Resource): void => {
     setSelectedResourceUuid(uuid);
-    setSelectedResourceDetailsEndpoint(links?.endpoints?.details);
+    setSelectedResourceDetails({
+      resourceId: id,
+      resourcesDetailsEndpoint: links?.endpoints?.details,
+    });
   };
 
   const resourceDetailsOpenCondition = {
