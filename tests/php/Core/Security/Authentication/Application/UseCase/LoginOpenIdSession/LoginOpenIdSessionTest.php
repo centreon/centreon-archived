@@ -46,7 +46,7 @@ use Core\Security\Authentication\Application\UseCase\LoginOpenIdSession\LoginOpe
 use Core\Security\Authentication\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionPresenter;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 
 beforeEach(function () {

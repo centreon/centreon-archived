@@ -24,7 +24,7 @@ namespace Core\Application\RealTime\UseCase\FindMetaService;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Domain\RealTime\Model\MetaService;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;

@@ -28,7 +28,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;

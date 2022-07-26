@@ -25,7 +25,7 @@ namespace Tests\Core\Security\AccessGroup\Domain\Model;
 
 use Assert\InvalidArgumentException;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 
 it('should thrown an Exception when an access group name is empty', function () {
     new AccessGroup(1, '', 'alias');

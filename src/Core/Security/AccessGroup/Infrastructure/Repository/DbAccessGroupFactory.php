@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\AccessGroup\Infrastructure\Repository;
 
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 
 class DbAccessGroupFactory
 {

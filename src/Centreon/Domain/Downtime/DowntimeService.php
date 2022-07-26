@@ -32,7 +32,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 

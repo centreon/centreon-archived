@@ -40,7 +40,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdC
 };
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 

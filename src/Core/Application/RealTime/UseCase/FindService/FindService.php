@@ -32,7 +32,7 @@ use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Service as LegacyService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
