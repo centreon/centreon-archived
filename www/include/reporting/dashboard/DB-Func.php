@@ -467,9 +467,8 @@ function getServicesLogs(array $services, $startDate, $endDate, $reportTimePerio
         . $aclCondition . " "
         . $servicesSubquery . " "
         . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $daysOfWeek . ") "
-        . "GROUP BY las.service_id";
+        . "GROUP BY las.host_id, las.service_id";
     $statement = $pearDBO->prepare($rq);
-
     foreach ($bindValues as $bindName => $bindParams) {
         list($bindType, $bindValue) = $bindParams;
         $statement->bindValue($bindName, $bindValue, $bindType);
@@ -531,7 +530,6 @@ function getServicesLogs(array $services, $startDate, $endDate, $reportTimePerio
 
         $servicesStats[$serviceStats['host_id']][$serviceStats['service_id']] = $serviceStats;
     }
-
     return $servicesStats;
 }
 
