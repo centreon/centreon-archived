@@ -29,7 +29,7 @@ use Core\Domain\RealTime\Model\MetaService;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Domain\Configuration\Model\MetaService as MetaServiceConfiguration;

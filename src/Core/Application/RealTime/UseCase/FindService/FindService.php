@@ -41,7 +41,7 @@ use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
 use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;

@@ -33,16 +33,16 @@ use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Security\Domain\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
+use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
-use Core\Security\Domain\Authentication\SSOAuthenticationException;
+use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
+use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebSSOEventSubscriber implements EventSubscriberInterface

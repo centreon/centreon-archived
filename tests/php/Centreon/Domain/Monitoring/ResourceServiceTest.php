@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceService;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 

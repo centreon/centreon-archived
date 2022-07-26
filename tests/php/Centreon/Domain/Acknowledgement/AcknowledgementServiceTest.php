@@ -28,7 +28,7 @@ use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterfac
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;

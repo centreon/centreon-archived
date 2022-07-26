@@ -31,7 +31,7 @@ use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Authentication\Domain\Authentication\AuthenticationException;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
 
 /**

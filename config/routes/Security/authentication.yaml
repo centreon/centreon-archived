@@ -1,22 +1,22 @@
 centreon_security_authentication_login:
     methods: POST
     path: /providers/configurations/local
-    controller: 'Core\Security\Infrastructure\Api\LoginSession\LoginSessionController'
+    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginSession\LoginSessionController'
 
 centreon_security_authentication_logout:
     methods: POST
     path: /logout
-    controller: 'Core\Security\Infrastructure\Api\LogoutSession\LogoutSessionController'
+    controller: 'Core\Security\Authentication\Infrastructure\Api\LogoutSession\LogoutSessionController'
 
 centreon_security_authentication_openid_login:
     methods: GET
     path: /providers/configurations/openid
-    controller: 'Core\Security\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionController'
+    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionController'
 
 centreon_security__renew_user_password:
     methods: PUT
     path: /users/{alias}/password
-    controller: 'Core\Security\Infrastructure\Api\RenewPassword\RenewPasswordController'
+    controller: 'Core\Security\User\Infrastructure\Api\RenewPassword\RenewPasswordController'
 
 centreon_security_authentication_websso_login:
     methods: GET
