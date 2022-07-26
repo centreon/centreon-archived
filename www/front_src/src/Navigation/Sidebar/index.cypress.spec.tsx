@@ -1,8 +1,8 @@
+import React from 'react';
+
 import { BrowserRouter as Router } from 'react-router-dom';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { useAtom } from 'jotai';
-
-import { mount } from '../../../../../cypress/support';
 
 import { selectedNavigationItemsAtom } from './sideBarAtoms';
 
@@ -11,7 +11,7 @@ import SideBar from './index';
 describe('Navigation menu', () => {
   beforeEach(() => {
     cy.fixture('menuData').then((data) => {
-      mount(
+      cy.mount(
         <Router>
           <SideBar navigationData={data.result} />
         </Router>,
@@ -47,6 +47,7 @@ describe('Navigation menu', () => {
         cy.get('@element').contains('Configuration');
       }
     });
+
     cy.matchImageSnapshot();
   });
 
@@ -58,8 +59,9 @@ describe('Navigation menu', () => {
   });
 
   it('highlights the menu item when double clicked', () => {
-    cy.get('li').eq(1).as('element').trigger('mouseover');
+    cy.get('li').eq(0).as('element').trigger('mouseover');
     cy.get('@element').trigger('dblclick');
+
     cy.matchImageSnapshot();
   });
 
