@@ -102,14 +102,4 @@ class ExportParserJsonTest extends TestCase
 
         $this->assertFileDoesNotExist($this->fs->path('/tmp/test.json'));
     }
-
-    /**
-     * @covers \CentreonRemote\Infrastructure\Export\ExportParserJson::dump
-     */
-    public function testDump2(): void
-    {
-        $this->parser->dump(['key' => 'val'], $this->fs->path('/tmp/test.json'));
-
-        $this->assertFileExists($this->fs->path('tmp/test.json'));
-    }
 }

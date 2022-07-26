@@ -118,28 +118,6 @@ class ExportServiceTest extends TestCase
         $this->export = new ExportService(new ContainerWrap($this->container));
     }
 
-    public function tearDown(): void
-    {
-    }
-
-    /**
-     * @covers \CentreonRemote\Infrastructure\Service\ExportService::export
-     */
-    public function testExport(): void
-    {
-        $path = $this->fs->path('/export');
-
-        $this->fs->createFile('/export/test.txt', '');
-
-        $commitment = new ExportCommitment(1, [2, 3], null, null, $path, [
-            ConfigurationExporter::class,
-        ]);
-
-        $this->export->export($commitment);
-
-        $this->assertFileExists("{$path}/manifest.json");
-    }
-
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::import
      */
