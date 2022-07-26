@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations;
 
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
+use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\{
+    FindProviderConfigurations,
+    FindProviderConfigurationsPresenterInterface,
+    ProviderResponse\LocalProviderResponse
+};
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 
 beforeEach(function () {

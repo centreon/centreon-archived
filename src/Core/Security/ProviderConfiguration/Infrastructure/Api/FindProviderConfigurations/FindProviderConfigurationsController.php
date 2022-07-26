@@ -24,7 +24,9 @@ namespace Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderCon
 
 use Centreon\Application\Controller\AbstractController;
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
+use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\{
+    FindProviderConfigurationsPresenterInterface
+};
 
 class FindProviderConfigurationsController extends AbstractController
 {

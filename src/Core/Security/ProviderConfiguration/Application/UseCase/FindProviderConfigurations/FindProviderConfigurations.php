@@ -24,7 +24,9 @@ namespace Core\Security\ProviderConfiguration\Application\UseCase\FindProviderCo
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface;
+use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\{
+    ProviderResponseInterface
+};
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class FindProviderConfigurations

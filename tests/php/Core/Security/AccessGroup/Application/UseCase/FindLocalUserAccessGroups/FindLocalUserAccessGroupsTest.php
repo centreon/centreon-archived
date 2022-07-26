@@ -30,7 +30,9 @@ use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryIn
 use Core\Security\AccessGroup\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroups;
 use Core\Security\AccessGroup\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsResponse;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Tests\Core\Security\AccessGroup\Application\UseCase\FindLocalUserAccessGroups\FindLocalUserAccessGroupsPresenterStub;
+use Tests\Core\Security\AccessGroup\Application\UseCase\FindLocalUserAccessGroups\{
+    FindLocalUserAccessGroupsPresenterStub
+};
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadAccessGroupRepositoryInterface::class);

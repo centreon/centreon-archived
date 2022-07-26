@@ -22,10 +22,14 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter;
 
-use Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\LocalProviderPresenter;
+use Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\{
+    LocalProviderPresenter
+};
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
-use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
+use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\{
+    LocalProviderResponse,
+    OpenIdProviderResponse
+};
 
 beforeEach(function () {
     $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
