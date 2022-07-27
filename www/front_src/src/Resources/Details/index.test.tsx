@@ -140,8 +140,8 @@ const categories = [
 
 const serviceDetailsUrlParameters = {
   id: 1,
-  parentId: 1,
-  parentType: 'host',
+  resourcesDetailsEndpoint:
+    'api/latest/monitoring/resources/hosts/1/services/1',
   tab: 'details',
   type: 'service',
   uuid: 'h1-s1',
@@ -167,6 +167,8 @@ const serviceDetailsTimelineUrlParameters = {
 
 const hostDetailsServicesUrlParameters = {
   id: 1,
+  parentId: 3,
+  parentType: 'service',
   tab: 'services',
   type: 'host',
   uuid: 'h1',
@@ -253,6 +255,7 @@ const retrievedDetails = {
   latency: 0.005,
   links: {
     endpoints: {
+      details: '/centreon/api/latest/monitoring/resources/hosts/1/services/1',
       notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
@@ -1045,8 +1048,8 @@ describe(Details, () => {
 
     const retrievedServiceDetails = {
       id: 2,
-      parentId: 3,
-      parentType: 'host',
+      resourcesDetailsEndpoint:
+        'api/latest/monitoring/resources/hosts/1/services/2',
       tab: 'details',
       tabParameters: {
         graph: {
@@ -1071,7 +1074,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
+        './api/latest/monitoring/resources/hosts/1/services/2' as string,
         expect.anything(),
       );
     });
@@ -1096,6 +1099,8 @@ describe(Details, () => {
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
       .details as DetailsUrlQueryParameters;
 
+    console.log('getUrlQueryParameters', getUrlQueryParameters());
+
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
         customTimePeriod: {
@@ -1103,8 +1108,8 @@ describe(Details, () => {
           start: '2020-01-14T06:00:00.000Z',
         },
         id: 2,
-        parentId: 3,
-        parentType: 'host',
+        resourcesDetailsEndpoint:
+          'api/latest/monitoring/resources/hosts/1/services/2',
         selectedTimePeriodId: 'last_7_days',
         tab: 'graph',
         tabParameters: {
@@ -1127,7 +1132,6 @@ describe(Details, () => {
             },
           },
         },
-        type: 'service',
         uuid: 'h3-s2',
       });
     });
@@ -1199,6 +1203,8 @@ describe(Details, () => {
       buildResourcesEndpoint({
         hostCategories: [],
         hostGroups: [],
+        hostSeverities: [],
+        hostSeverityLevels: [],
         limit: 30,
         monitoringServers: [],
         page: 1,
@@ -1215,6 +1221,8 @@ describe(Details, () => {
         },
         serviceCategories: [],
         serviceGroups: [],
+        serviceSeverities: [],
+        serviceSeverityLevels: [],
         states: [],
         statusTypes: [],
         statuses: [],

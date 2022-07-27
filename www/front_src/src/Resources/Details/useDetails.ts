@@ -60,11 +60,13 @@ const useDetails = (): void => {
     const {
       uuid,
       id,
-      type,
+      parentId,
+      parentType,
       tab,
       tabParameters: tabParametersFromUrl,
       selectedTimePeriodId,
       customTimePeriod: customTimePeriodFromUrl,
+      resourcesDetailsEndpoint,
     } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
@@ -74,8 +76,10 @@ const useDetails = (): void => {
     setSelectedResourceUuid(uuid);
     setSelectedResource({
       ...selectedResource,
+      parentResourceId: parentId,
+      parentResourceType: parentType,
       resourceId: id,
-      selectedResourceType: type,
+      resourcesDetailsEndpoint,
     });
     setTabParameters(tabParametersFromUrl || {});
     setDefaultSelectedTimePeriodId(selectedTimePeriodId);
@@ -89,10 +93,12 @@ const useDetails = (): void => {
         value: {
           customTimePeriod,
           id: selectedResource?.resourceId,
+          parentId: selectedResource?.parentResourceId,
+          parentType: selectedResource?.parentResourceType,
+          resourcesDetailsEndpoint: selectedResource?.resourcesDetailsEndpoint,
           selectedTimePeriodId: selectedTimePeriod?.id,
           tab: getTabLabelFromId(openDetailsTabId),
           tabParameters,
-          type: selectedResource?.selectedResourceType,
           uuid: selectedResourceUuid,
         },
       },
@@ -100,7 +106,9 @@ const useDetails = (): void => {
   }, [
     openDetailsTabId,
     selectedResource?.resourceId,
-    selectedResource?.selectedResourceType,
+    selectedResource?.parentResourceType,
+    selectedResource?.parentResourceId,
+    selectedResource?.resourcesDetailsEndpoint,
     tabParameters,
     selectedTimePeriod,
     customTimePeriod,
