@@ -20,8 +20,6 @@ export const panelWidthStorageAtom = atomWithStorage(
   'centreon-resource-status-details-21.10',
   550,
 );
-export const selectedResourceIdAtom = atom<number | undefined>(undefined);
-
 export const openDetailsTabIdAtom = atom<TabId>(0);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
 export const detailsAtom = atom<ResourceDetails | undefined>(undefined);

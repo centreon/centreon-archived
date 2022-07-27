@@ -23,9 +23,9 @@ import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
   selectedResourceDetailsEndpointDerivedAtom,
-  selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
+  selectedResourcesDetailsAtom,
 } from '../Details/detailsAtoms';
 import { ChangeCustomTimePeriodProps } from '../Details/tabs/Graph/models';
 
@@ -47,7 +47,7 @@ const useLoadDetails = (): DetailsState => {
   });
 
   const [customTimePeriod, setCustomTimePeriod] = useAtom(customTimePeriodAtom);
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
     selectedResourceDetailsEndpointDerivedAtom,
@@ -63,7 +63,7 @@ const useLoadDetails = (): DetailsState => {
   });
 
   const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
+    if (isNil(selectedResource?.resourceId)) {
       return;
     }
 

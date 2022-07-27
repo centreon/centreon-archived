@@ -72,8 +72,11 @@ const useDetails = (): void => {
     }
 
     setSelectedResourceUuid(uuid);
-    setSelectedResource({ ...selectedResource, resourceId: id });
-    setSelectedResource({ ...selectedResource, selectedResourceType: type });
+    setSelectedResource({
+      ...selectedResource,
+      resourceId: id,
+      selectedResourceType: type,
+    });
     setTabParameters(tabParametersFromUrl || {});
     setDefaultSelectedTimePeriodId(selectedTimePeriodId);
     setDefaultSelectedCustomTimePeriod(customTimePeriodFromUrl);
@@ -101,6 +104,7 @@ const useDetails = (): void => {
     tabParameters,
     selectedTimePeriod,
     customTimePeriod,
+    selectedResourceUuid,
   ]);
 };
 
