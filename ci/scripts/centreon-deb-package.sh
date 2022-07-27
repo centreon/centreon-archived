@@ -15,6 +15,8 @@ AUTHOR_EMAIL="me@luizgustavo.pro.br"
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 MAJOR_VERSION="$(echo $VERSION | egrep -o '^[0-9][0-9].[0-9][0-9]')"
 
+echo "coucou"
+
 cd centreon/
 
 # Replace basic macros.
