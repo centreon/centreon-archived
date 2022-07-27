@@ -234,7 +234,7 @@ if ($o == METRIC_MODIFY || $o == METRIC_ADD) {
     <script type='text/javascript'>
         function insertValueQuery() {
             var e_txtarea = document.Form.rpn_function;
-            var e_select = document.getElementById('metrics');
+            var e_select = document.getElementById('sl_list_metrics');
             var sd_o = e_select.selectedIndex;
             if (sd_o != -1) {
                 var chaineAj = '';
@@ -342,7 +342,7 @@ if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
 ?>
 <script type="text/javascript">
     jQuery(function () {
-        jQuery('#metrics').centreonSelect2({
+        jQuery('#sl_list_metrics').centreonSelect2({
             select2: {
                 ajax: {
                     url: './api/internal.php?object=centreon_metric&action=ListOfMetricsByService'

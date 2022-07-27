@@ -357,7 +357,7 @@ if ($o === MODIFY_COMPONENT_TEMPLATE || $o === ADD_COMPONENT_TEMPLATE) {
     <script type='text/javascript'>
         function insertValueQuery() {
             var e_input = document.Form.ds_name;
-            var e_select = document.getElementById('metrics');
+            var e_select = document.getElementById('sl_list_metrics');
             var sd_o = e_select.selectedIndex;
             if (sd_o != -1) {
                 var chaineAj = '';
@@ -446,7 +446,7 @@ if ($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) {
 
 <script type="text/javascript">
     jQuery(function () {
-        jQuery('#metrics').centreonSelect2({
+        jQuery('#sl_list_metrics').centreonSelect2({
             select2: {
                 ajax: {
                     url: './api/internal.php?object=centreon_metric&action=ListOfMetricsByService'
