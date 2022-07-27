@@ -34,7 +34,7 @@ done
 rm -rf lang
 
 # Generate API documentation.
-curl -fsSL https://deb.nodesource.com/setup_16.x | -E bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 apt-get install -y nodejs
 node -v
 npm -v
