@@ -37,9 +37,10 @@ export const selectResourceDerivedAtom = atom(
     set(openDetailsTabIdAtom, detailsTabId);
     set(selectedResourceUuidAtom, resource.uuid);
     set(selectedResourcesDetailsAtom, {
-      resourceId: resource.id,
+      parentResourceId: resource?.parent?.id,
+      parentResourceType: resource?.parent?.type,
+      resourceId: resource?.id,
       resourcesDetailsEndpoint: resource?.links?.endpoints?.details,
-      selectedResourceType: resource.type,
     });
   },
 );
@@ -64,9 +65,10 @@ export const setGraphTabParametersDerivedAtom = atom(
 );
 
 export const selectedResourcesDetailsAtom = atomWithStorage<{
+  parentResourceId?: number;
+  parentResourceType?: string;
   resourceId?: number;
   resourcesDetailsEndpoint?: string;
-  selectedResourceType?: string;
 } | null>('resource_details', null);
 
 export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
@@ -77,8 +79,8 @@ export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
     newWord: './',
   });
 
-  if (!isNil(selectedResourceDetailsEndpoint?.selectedResourceType)) {
-    return `${resourcesEndpoint}/${selectedResourceDetailsEndpoint?.selectedResourceType}s/${selectedResourceDetailsEndpoint?.resourceId}`;
+  if (!isNil(selectedResourceDetailsEndpoint?.parentResourceId)) {
+    return `${resourcesEndpoint}/${selectedResourceDetailsEndpoint?.parentResourceType}s/${selectedResourceDetailsEndpoint?.parentResourceId}`;
   }
 
   return resourceDetailsEndPoint;

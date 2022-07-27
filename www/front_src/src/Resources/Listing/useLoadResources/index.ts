@@ -269,7 +269,7 @@ const useLoadResources = (): LoadResources => {
   useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceUuid]);
+  }, [selectedResourceUuid, selectedResourceDetails?.parentResourceId]);
 
   return { initAutorefreshAndLoad };
 };

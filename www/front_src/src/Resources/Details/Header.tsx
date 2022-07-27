@@ -189,7 +189,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
             <SelectableResourceName
               name={details.parent.name}
               variant="caption"
-              onSelect={(): void => onSelectParent(details.parent)}
+              onSelect={(): void => onSelectParent(details)}
             />
           </div>
         )}
