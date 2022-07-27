@@ -34,7 +34,9 @@ done
 rm -rf lang
 
 # Generate API documentation.
-apt install -y nodejs && sleep 30
+apt install -y nodejs npm && sleep 30
+node -v
+npm -v
 npm install -g redoc-cli
 /usr/local/bin/redoc-cli bundle --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
