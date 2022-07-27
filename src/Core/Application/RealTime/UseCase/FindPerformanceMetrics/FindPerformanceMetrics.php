@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindPerformanceMetrics;
 
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\RealTime\Repository\ReadPerformanceDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadIndexDataRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetricRepositoryInterface;
@@ -30,6 +32,8 @@ use Core\Domain\RealTime\Model\IndexData;
 
 class FindPerformanceMetrics
 {
+    use LoggerTrait;
+
     /**
      * @param ReadIndexDataRepositoryInterface $indexDataRepository
      * @param ReadMetricRepositoryInterface $metricRepository
@@ -51,18 +55,41 @@ class FindPerformanceMetrics
         FindPerformanceMetricRequest $request,
         FindPerformanceMetricPresenterInterface $presenter
     ): void {
-        $index = $this->indexDataRepository->findIndexByHostIdAndServiceId($request->hostId, $request->serviceId);
-        $metrics = $this->metricRepository->findMetricsByIndexId($index);
+        try {
+            $this->debug(
+                'Retrieve performance metrics',
+                [
+                    'host_id' => $request->hostId,
+                    'service_id' => $request->serviceId
+                ]
+            );
 
-        $performanceMetrics = $this->performanceDataRepository->findDataByMetricsAndDates(
-            $metrics,
-            $request->startDate,
-            $request->endDate
-        );
+            $index = $this->indexDataRepository->findIndexByHostIdAndServiceId($request->hostId, $request->serviceId);
+            $metrics = $this->metricRepository->findMetricsByIndexId($index);
 
-        $fileName = $this->generateDownloadFileNameByIndex($index);
-        $presenter->setDownloadFileName($fileName);
-        $presenter->present(new FindPerformanceMetricResponse($performanceMetrics));
+            $performanceMetrics = $this->performanceDataRepository->findDataByMetricsAndDates(
+                $metrics,
+                $request->startDate,
+                $request->endDate
+            );
+
+            $fileName = $this->generateDownloadFileNameByIndex($index);
+            $this->info('Filename used to download metrics', ['filename' => $fileName]);
+            $presenter->setDownloadFileName($fileName);
+            $presenter->present(new FindPerformanceMetricResponse($performanceMetrics));
+        } catch (\Throwable $ex) {
+            $this->error(
+                'Impossible to retrieve performance metrics',
+                [
+                    'host_id' => $request->hostId,
+                    'service_id' => $request->serviceId,
+                    'error_message' => $ex->__toString(),
+                ]
+            );
+            $presenter->setResponseStatus(
+                new ErrorResponse('Impossible to retrieve performance metrics')
+            );
+        }
     }
 
     /**

@@ -25,6 +25,10 @@ namespace Core\Domain\RealTime\Model;
 
 class Metric
 {
+    /**
+     * @param int $id
+     * @param string $name
+     */
     public function __construct(private int $id, private string $name)
     {
     }

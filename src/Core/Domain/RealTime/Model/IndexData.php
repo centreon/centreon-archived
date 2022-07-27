@@ -25,6 +25,10 @@ namespace Core\Domain\RealTime\Model;
 
 class IndexData
 {
+    /**
+     * @param string $hostName
+     * @param string $serviceDescription
+     */
     public function __construct(private string $hostName, private string $serviceDescription)
     {
     }
