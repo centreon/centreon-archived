@@ -329,7 +329,7 @@ if ($valid) {
     $tpl->display("formVirtualMetrics.ihtml");
 }
 $vdef = 1; /* Display VDEF too */
-include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
+
 if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
     isset($_POST["host_id"]) && $_POST["host_id"] != null
         ? $host_service_id = $_POST["host_id"]
