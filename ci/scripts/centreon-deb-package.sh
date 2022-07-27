@@ -39,7 +39,7 @@ apt-get install -y nodejs
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 export PATH=~/.npm-global/bin:$PATH
-source ~/.profile
+. ~/.profile
 npx redoc-cli build --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
 # Make tar with original content
