@@ -342,7 +342,6 @@ if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
 ?>
 <script type="text/javascript">
     jQuery(function () {
-
         jQuery('#metrics').centreonSelect2({
             select2: {
                 ajax: {

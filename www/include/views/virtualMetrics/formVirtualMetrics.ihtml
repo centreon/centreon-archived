@@ -49,7 +49,9 @@
 			{if $o == "a" || $o == "c"}
 				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
 					&nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" onclick="insertValueQuery()" />&nbsp;
-					 <select id="metrics" size="1"></select>
+					<td class="log-select" style="padding-bottom: 4px">
+						 <select id="metrics" size="1"></select>
+					</td>
 				</td>
 			{/if}
 		</tr></table></td>
