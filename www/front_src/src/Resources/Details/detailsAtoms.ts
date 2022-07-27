@@ -48,7 +48,7 @@ export const selectResourceDerivedAtom = atom(
 
 export const clearSelectedResourceDerivedAtom = atom(null, (_, set) => {
   set(selectedResourceUuidAtom, undefined);
-  set(selectedResourcesDetailsAtom, undefined);
+  set(selectedResourcesDetailsAtom, null);
 });
 
 export const setServicesTabParametersDerivedAtom = atom(
@@ -65,14 +65,11 @@ export const setGraphTabParametersDerivedAtom = atom(
   },
 );
 
-export const selectedResourcesDetailsAtom = atomWithStorage<
-  | {
-      resourceId?: number;
-      resourcesDetailsEndpoint?: string;
-      selectedResourceType?: string;
-    }
-  | undefined
->('resource_details', undefined);
+export const selectedResourcesDetailsAtom = atomWithStorage<{
+  resourceId?: number;
+  resourcesDetailsEndpoint?: string;
+  selectedResourceType?: string;
+} | null>('resource_details', null);
 
 export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
   const selectedResourceDetailsEndpoint = get(selectedResourcesDetailsAtom);
