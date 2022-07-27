@@ -1,17 +1,31 @@
 Feature: Autologin
     As a Centreon Web user
-    I want to use the Autologin feature
-    So that I can access centreon without using the login page
+    I want to autologin automatically without password
+    In order to access selected pages without going through the login process
+    So the selected pages can be displayed permanently on a screen
 
     Background:
-        Given I am logged in a Centreon server
+        Given an authenticated user
+        And autologin configuration menus can be accessed
 
-    Scenario: Connection via autologin
-        Given the user with autologin enabled
-        When the user generates autologin key
-        Then the user arrives on the configured page for its account
+    Scenario: Enable autologin on the platfrom
+        Given an Administrator is logged in the plateform 
+        When the administrator activates autologin on the plateform
+        Then any user of the plateform should be able to generate an autologin link 
+    
+    Scenario: Generate autologin key
+        Given
+        When a user generate his autologin key
+        Then the key is properly generated and displayed 
 
-    Scenario: Connection via autologin with topology
-        Given the user with autologin enabled
-        When the user generates autologin key
-        Then the user enters a topology and arrives at the linked page
+    Scenario: Generate autologin link
+        Given a User with autologin key generated
+        When a User generates an autologin link  
+        Then the autologin link is copied in the clipboard
+
+    Scenario: Connection using autologin
+        Given a plateform with autologin enabled
+        And a user with autologin key generated
+        And a user with autologin link generated
+        When the user opens the autologin link in a browser
+        Then the page is accessed without manual login
