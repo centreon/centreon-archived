@@ -256,12 +256,11 @@ function getMyHostField($host_id, $field)
     $statement = $pearDB->prepare($query);
     $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
     $statement->execute();
+    $hostStatement = $pearDB->prepare("SELECT `" . $field . "` FROM host WHERE host_id = :host_tpl_id");
     while ($row = $statement->fetchRow()) {
-        $statement2 = $pearDB->prepare("SELECT :field  FROM host WHERE host_id = :host_tpl_id");
-        $statement2->bindValue(':host_tpl_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
-        $statement2->bindColumn(':field', $field, \PDO::PARAM_STR);
-        $statement2->execute();
-        while ($row2 = $statement2->fetchRow()) {
+        $hostStatement->bindValue(':host_tpl_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
+        $hostStatement->execute();
+        while ($row2 = $hostStatement->fetchRow()) {
             if (isset($row2[$field]) && $row2[$field]) {
                 return $row2[$field];
             }
@@ -291,7 +290,7 @@ function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field)
     $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
     $statement->execute();
     while ($row = $statement->fetchRow()) {
-        $rq2 = "SELECT ehi." . ":field" .
+        $rq2 = "SELECT ehi.`" . $field . "` " .
             " FROM extended_host_information ehi " .
             "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
 
@@ -430,11 +429,10 @@ function getMyHostExtendedInfoField($host_id, $field)
     }
     global $pearDB, $oreon;
 
-    $rq = "SELECT ehi." . ":field" . " " .
+    $rq = "SELECT ehi.`" . $field . "` " .
         "FROM extended_host_information ehi " .
         "WHERE ehi.host_host_id = :host_id LIMIT 1";
     $statement = $pearDB->prepare($rq);
-    $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
     $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
     $statement->execute();
     $row = $statement->fetchRow();
@@ -454,11 +452,10 @@ function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $ant
     }
 
     if (isset($flag1stLevel) && $flag1stLevel) {
-        $rq = "SELECT :field " .
+        $rq = "SELECT ehi.`" . $field . "` " .
             "FROM extended_host_information ehi " .
             "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
         $statement = $pearDB->prepare($rq);
-        $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
         $statement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -487,7 +484,7 @@ function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $ant
         $htStatement = $pearDB->prepare($rq);
         $htStatement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
         $htStatement->execute();
-        $rq2 = "SELECT :field " .
+        $rq2 = "SELECT `" . $field . "` " .
                "FROM extended_host_information ehi " .
                "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
         $ehiStatement = $pearDB->prepare($rq2);
@@ -496,7 +493,6 @@ function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $ant
                  AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1";
         $imgStatement = $pearDB->prepare($query);
         while ($row = $htStatement->fetch(\PDO::FETCH_ASSOC)) {
-            $ehiStatement->bindColumn(':field', $field, \PDO::PARAM_STR);
             $ehiStatement->bindValue(':host_host_id', (int) $row['host_tpl_id'], \PDO::PARAM_INT);
             $ehiStatement->execute();
             $row2 = $ehiStatement->fetch(\PDO::FETCH_ASSOC);
