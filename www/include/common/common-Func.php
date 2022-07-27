@@ -2498,3 +2498,294 @@ function unvalidFormMessage()
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
         "</div>";
 }
+
+/**
+ * Return ids of hosts linked to hostgroups
+ *
+ * @param int[] $hostgroupIds
+ * @param bool $shouldHostgroupBeEnabled (default true)
+ * @return int[]
+ * @throws \Exception
+ */
+function findHostsForConfigChangeFlagFromHostGroupIds(array $hostgroupIds, bool $shouldHostgroupBeEnabled = true): array
+{
+    if (empty($hostgroupIds)) {
+        return [];
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($hostgroupIds as $key => $hostgroupId) {
+        $bindedParams[':hostgroup_id_' . $key] = $hostgroupId;
+    }
+
+    if ($shouldHostgroupBeEnabled) {
+        $query = "SELECT DISTINCT(hgr.host_host_id)
+            FROM hostgroup_relation hgr
+            JOIN hostgroup ON hostgroup.hg_id = hgr.hostgroup_hg_id
+            WHERE hostgroup.hg_activate = '1'
+            AND hgr.hostgroup_hg_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    } else {
+        $query = "SELECT DISTINCT(hgr.host_host_id) FROM hostgroup_relation hgr
+            WHERE hgr.hostgroup_hg_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    }
+
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+/**
+ * Return ids of hosts linked to services
+ *
+ * @param int[] $serviceIds
+ * @param bool $shouldServiceBeEnabled (default true)
+ * @return int[]
+ * @throws \Exception
+ */
+function findHostsForConfigChangeFlagFromServiceIds(array $serviceIds, bool $shoudlServiceBeEnabled = true): array
+{
+    if (empty($serviceIds)) {
+        return [];
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($serviceIds as $key => $serviceId) {
+        $bindedParams[':service_id_' . $key] = $serviceId;
+    }
+
+    if ($shoudlServiceBeEnabled) {
+        $query = "SELECT DISTINCT(hsr.host_host_id)
+            FROM host_service_relation hsr
+            JOIN service ON service.service_id = hsr.service_service_id
+            WHERE service.service_activate = '1' AND hsr.service_service_id IN ("
+            . implode(', ', array_keys($bindedParams)) . ")";
+    } else {
+        $query = "SELECT DISTINCT(hsr.host_host_id)
+            FROM host_service_relation hsr
+            WHERE hsr.service_service_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    }
+
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+/**
+ * Return ids of services linked to templates recursively
+ *
+ * @param int[] $serviceTemplateIds
+ * @return int[]
+ * @throws \Exception
+ */
+function findServicesForConfigChangeFlagFromServiceTemplateIds(array $serviceTemplateIds): array
+{
+    if (empty($serviceTemplateIds)) {
+        return [];
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($serviceTemplateIds as $key => $serviceTemplateId) {
+        $bindedParams[':servicetemplate_id_' . $key] = $serviceTemplateId;
+    }
+
+    $query = "SELECT service_id, service_register FROM service
+        WHERE service.service_activate = '1'
+        AND service_template_model_stm_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+
+    $serviceIds = [];
+    $serviceTemplateIds2 = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        if ($value['service_register'] === '0') {
+            $serviceTemplateIds2[] = $value['service_id'];
+        } else {
+            $serviceIds[] = $value['service_id'];
+        }
+    }
+    return array_merge(
+        $serviceIds,
+        findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds2)
+    );
+}
+
+/**
+ * Return ids of hosts linked to service
+ *
+ * @param int $servicegroupId
+ * @param bool $shouldServicegroupBeEnabled (default true)
+ * @return int[]
+ * @throws \Exception
+ */
+function findHostsForConfigChangeFlagFromServiceGroupId(
+    int $servicegroupId,
+    bool $shouldServicegroupBeEnabled = true
+): array {
+    global $pearDB;
+
+    $query = "SELECT sgr.*, service.service_register
+        FROM servicegroup_relation sgr
+        JOIN servicegroup ON servicegroup.sg_id = sgr.servicegroup_sg_id
+        JOIN service ON service.service_id = sgr.service_service_id
+        WHERE service.service_activate = '1' AND sgr.servicegroup_sg_id = :servicegroup_id"
+        . ($shouldServicegroupBeEnabled ? " AND servicegroup.sg_activate = '1'" : "");
+
+    $stmt = $pearDB->prepare($query);
+    $stmt->bindValue(':servicegroup_id', $servicegroupId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $hostIds = [];
+    $hostgroupIds = [];
+    $serviceTemplateIds = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        if ($value['service_register'] === '0') {
+            $serviceTemplateIds[] = $value['service_service_id'];
+        } elseif ($value['hostgroup_hg_id'] !== null) {
+            $hostgroupIds[] = $value['hostgroup_hg_id'];
+        } else {
+            $hostIds[] = $value['host_host_id'];
+        }
+    }
+
+    $serviceIds = findServicesForConfigChangeFlagFromServiceTemplateIds($serviceTemplateIds);
+
+    return array_merge(
+        $hostIds,
+        findHostsForConfigChangeFlagFromHostGroupIds($hostgroupIds),
+        findHostsForConfigChangeFlagFromServiceIds($serviceIds)
+    );
+}
+
+/**
+ * Return ids of pollers linked to hosts
+ *
+ * @param int[] $hostIds
+ * @param bool $shouldHostBeEnabled (default true)
+ * @return int[]
+ * @throws \Exception
+ */
+function findPollersForConfigChangeFlagFromHostIds(array $hostIds, bool $shouldHostBeEnabled = true): array
+{
+    if (empty($hostIds)) {
+        return [];
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($hostIds as $key => $hostId) {
+        $bindedParams[':host_id_' . $key] = $hostId;
+    }
+
+    if ($shouldHostBeEnabled) {
+        $query = "SELECT DISTINCT(phr.nagios_server_id)
+        FROM ns_host_relation phr
+        JOIN host ON host.host_id = phr.host_host_id
+        WHERE host.host_activate = '1' AND phr.host_host_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    } else {
+        $query = "SELECT DISTINCT(phr.nagios_server_id) FROM ns_host_relation phr
+           WHERE phr.host_host_id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    }
+
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+/**
+ * Set 'updated' flag to '1' for all listed poller ids
+ *
+ * @param int[] $pollerIds
+ * @throws \Exception
+ */
+function definePollersToUpdated(array $pollerIds): void
+{
+    if (empty($pollerIds)) {
+        return;
+    }
+
+    global $pearDB;
+
+    $bindedParams = [];
+    foreach ($pollerIds as $key => $pollerId) {
+        $bindedParams[':poller_id_' . $key] = $pollerId;
+    }
+    $query = "UPDATE nagios_server SET updated = '1' WHERE id IN (" . implode(', ', array_keys($bindedParams)) . ")";
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedParams as $bindedParam => $bindedValue) {
+        $stmt->bindValue($bindedParam, $bindedValue, \PDO::PARAM_INT);
+    }
+    $stmt->execute();
+}
+
+/**
+ * Set relevent pollers as updated
+ *
+ * @param string $resourceType
+ * @param int $resourceId
+ * @param int[] $previousPollers
+ * @param bool $shouldResourceBeEnabled (default true)
+ * @throws \Exception
+ */
+function signalConfigurationChange(
+    string $resourceType,
+    int $resourceId,
+    array $previousPollers = [],
+    bool $shouldResourceBeEnabled = true
+): void {
+    $hostIds = [];
+    switch ($resourceType) {
+        case 'host':
+            $hostIds[] = $resourceId;
+            break;
+        case 'hostgroup':
+            $hostIds = array_merge(
+                $hostIds,
+                findHostsForConfigChangeFlagFromHostGroupIds([$resourceId], $shouldResourceBeEnabled)
+            );
+            break;
+        case 'service':
+            $hostIds = array_merge(
+                $hostIds,
+                findHostsForConfigChangeFlagFromServiceIds([$resourceId], $shouldResourceBeEnabled)
+            );
+            break;
+        case 'servicegroup':
+            $hostIds = array_merge(
+                $hostIds,
+                findHostsForConfigChangeFlagFromServiceGroupId($resourceId, $shouldResourceBeEnabled)
+            );
+            break;
+        default:
+            throw new \Exception("Unknown resource type:" . $resourceType);
+            break;
+    }
+    $pollerIds = findPollersForConfigChangeFlagFromHostIds(
+        $hostIds,
+        $resourceType === 'host' ? $shouldResourceBeEnabled : true
+    );
+
+    definePollersToUpdated(array_merge($pollerIds, $previousPollers));
+}
