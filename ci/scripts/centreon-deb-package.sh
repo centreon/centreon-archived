@@ -34,7 +34,8 @@ done
 rm -rf lang
 
 # Generate API documentation.
-apt install -y nodejs npm && sleep 30
+curl -fsSL https://deb.nodesource.com/setup_16.x | -E bash -
+apt-get install -y nodejs
 node -v
 npm -v
 npm install -g redoc-cli
