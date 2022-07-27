@@ -247,7 +247,7 @@ class CentreonServiceTemplate extends CentreonObject
             $exportedFields = [];
             $resultString = "";
             foreach ($listParam as $paramSearch) {
-                if (!$paramString) {
+                if (!isset($paramString)) {
                     $paramString = $paramSearch;
                 } else {
                     $paramString = $paramString . $this->delim . $paramSearch;
