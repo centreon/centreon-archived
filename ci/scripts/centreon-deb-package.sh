@@ -36,10 +36,7 @@ rm -rf lang
 # Generate API documentation.
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 apt-get install -y nodejs
-node -v
-npm -v
-npm install -g redoc-cli
-/usr/local/bin/redoc-cli bundle --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
+npx redoc-cli build --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
 # Make tar with original content
 cd ..
