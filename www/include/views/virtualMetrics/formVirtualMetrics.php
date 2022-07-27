@@ -234,9 +234,9 @@ if ($o == METRIC_MODIFY || $o == METRIC_ADD) {
     <script type='text/javascript'>
         function insertValueQuery() {
             var e_txtarea = document.Form.rpn_function;
-            var e_select = document.getElementById('sl_list_metrics');
+            var e_select = document.getElementById('metrics');
             var sd_o = e_select.selectedIndex;
-            if (sd_o != 0) {
+            if (sd_o != -1) {
                 var chaineAj = '';
                 chaineAj = e_select.options[sd_o].text;
                 //chaineAj = chaineAj.substring(0, chaineAj.length - 3);
@@ -340,11 +340,21 @@ if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
         : $host_service_id = 0;
 }
 ?>
-
 <script type="text/javascript">
-    update_select_list('<?php echo $host_service_id;?>');
+    jQuery(function () {
 
-    jQuery("#host_id").on('change', function () {
-        update_select_list(this.value);
+        jQuery('#metrics').centreonSelect2({
+            select2: {
+                ajax: {
+                    url: './api/internal.php?object=centreon_metric&action=ListOfMetricsByService'
+                },
+                placeholder: "List of known metrics",
+                containerCssClass: 'filter-select'
+            },
+            multiple: false,
+            additionnalFilters: {
+                id: '#host_id',
+            }
+        });
     });
 </script>
