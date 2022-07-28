@@ -129,7 +129,7 @@ class CentreonResourceCfg extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -173,7 +173,7 @@ class CentreonResourceCfg extends CentreonObject
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -214,7 +214,7 @@ class CentreonResourceCfg extends CentreonObject
      */
     public function addPoller($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -416,7 +416,7 @@ class CentreonResourceCfg extends CentreonObject
                 if (!isset($arg[0])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
-                $args = explode($this->delim, $arg[0]);
+                $args = $this->explodeDelimEscaped($arg[0]);
 
                 $object = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
                 if (isset($object[0][$this->object->getPrimaryKey()])) {

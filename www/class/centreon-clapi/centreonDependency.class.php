@@ -128,7 +128,7 @@ class CentreonDependency extends CentreonObject
      */
     public function add($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -387,7 +387,7 @@ class CentreonDependency extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -664,7 +664,7 @@ class CentreonDependency extends CentreonObject
      */
     protected function addRelations($parameters, $relType = 'parent')
     {
-        $param = explode($this->delim, $parameters);
+        $param = $this->explodeDelimEscaped($parameters);
         if (count($param) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -977,7 +977,7 @@ class CentreonDependency extends CentreonObject
      */
     protected function deleteRelations($parameters, $relType = 'parent')
     {
-        $param = explode($this->delim, $parameters);
+        $param = $this->explodeDelimEscaped($parameters);
         if (count($param) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

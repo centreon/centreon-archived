@@ -81,7 +81,7 @@ class CentreonContactTemplate extends CentreonContact
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

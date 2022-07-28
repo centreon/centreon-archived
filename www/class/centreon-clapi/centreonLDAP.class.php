@@ -210,7 +210,7 @@ class CentreonLDAP extends CentreonObject
         if (!isset($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_ADD_PARAM) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -239,7 +239,7 @@ class CentreonLDAP extends CentreonObject
         if (!isset($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 5) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -324,7 +324,7 @@ class CentreonLDAP extends CentreonObject
         if (empty($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -379,7 +379,7 @@ class CentreonLDAP extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

@@ -71,7 +71,7 @@ class CentreonManufacturer extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -103,7 +103,7 @@ class CentreonManufacturer extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -120,7 +120,7 @@ class CentreonManufacturer extends CentreonObject
      */
     public function generatetraps($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

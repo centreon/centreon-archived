@@ -83,7 +83,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -127,7 +127,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -232,7 +232,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 4) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -296,7 +296,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

@@ -205,7 +205,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function initInsertParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -223,7 +223,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -283,7 +283,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addweeklyperiod($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 6) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
@@ -324,7 +324,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addmonthlyperiod($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 6) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
@@ -355,7 +355,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addspecificperiod($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 7) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
@@ -402,7 +402,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delperiod($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
@@ -586,7 +586,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function sethost($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException("Missing parameters");
         }
@@ -626,7 +626,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function sethostgroup($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException("Missing parameters");
         }
@@ -657,7 +657,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function addservice($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException('Missing parameters');
         }
@@ -722,7 +722,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function setservice($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException("Missing parameters");
         }
@@ -740,7 +740,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function delservice($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException('Missing parameters');
         }
@@ -813,7 +813,7 @@ class CentreonDowntime extends CentreonObject
      */
     public function setservicegroup($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException("Missing parameters");
         }
@@ -1075,7 +1075,7 @@ class CentreonDowntime extends CentreonObject
      */
     protected function addGenericRelation($parameters, $object, $relTable, $relField)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException('Missing parameters');
         }
@@ -1122,7 +1122,7 @@ class CentreonDowntime extends CentreonObject
      */
     protected function delGenericRelation($parameters, $object, $relTable, $relField)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) != 2) {
             throw new CentreonClapiException('Missing parameters');
         }

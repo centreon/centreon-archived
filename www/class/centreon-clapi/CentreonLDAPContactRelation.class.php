@@ -69,7 +69,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     */
     public function initUpdateParameters(string $parameters): void
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }

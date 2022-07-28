@@ -274,7 +274,7 @@ class CentreonHost extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -384,7 +384,7 @@ class CentreonHost extends CentreonObject
      */
     public function showinstance($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if ($parameters == '') {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -419,7 +419,7 @@ class CentreonHost extends CentreonObject
      */
     public function setinstance($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -443,7 +443,7 @@ class CentreonHost extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -617,7 +617,7 @@ class CentreonHost extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -732,7 +732,7 @@ class CentreonHost extends CentreonObject
      */
     public function setseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -773,7 +773,7 @@ class CentreonHost extends CentreonObject
      */
     public function unsetseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -858,7 +858,7 @@ class CentreonHost extends CentreonObject
      */
     public function setmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) == 3) {
             $params[3] = 0;
         }
@@ -950,7 +950,7 @@ class CentreonHost extends CentreonObject
      */
     public function delmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -1128,7 +1128,7 @@ class CentreonHost extends CentreonObject
                 if (!isset($arg[0])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
-                $args = explode($this->delim, $arg[0]);
+                $args = $this->explodeDelimEscaped($arg[0]);
                 $hostIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
                 if (!count($hostIds)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);

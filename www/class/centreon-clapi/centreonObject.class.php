@@ -344,7 +344,7 @@ abstract class CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -665,5 +665,24 @@ abstract class CentreonObject
         }
 
         return self::$instances[$class];
+    }
+
+    /**
+     * Get values from a concatened string (with delimiter escapement support)
+     *
+     * @param string $values
+     * @return array
+     */
+    protected function explodeDelimEscaped($values)
+    {
+        // token used to replace escaped delimiters before explode
+        $tmptok = '##I_AM_NOT_A_DELIM##';
+
+        // then on each values the token is replaced by the unescaped char
+        return array_map(function($v) use($tmptok) {
+            return str_replace($tmptok, $this->delim, $v);
+        }, explode($this->delim,
+            str_replace("\\".$this->delim, $tmptok, $values)
+        ));
     }
 }

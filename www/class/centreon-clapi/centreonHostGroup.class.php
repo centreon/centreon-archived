@@ -113,7 +113,7 @@ class CentreonHostGroup extends CentreonObject
      */
     public function initInsertParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -152,7 +152,7 @@ class CentreonHostGroup extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -223,7 +223,7 @@ class CentreonHostGroup extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
 
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -292,7 +292,7 @@ class CentreonHostGroup extends CentreonObject
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
-            $args = explode($this->delim, $arg[0]);
+            $args = $this->explodeDelimEscaped($arg[0]);
             $hgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hgIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);

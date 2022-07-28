@@ -122,7 +122,7 @@ class CentreonCommand extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
 
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -149,7 +149,7 @@ class CentreonCommand extends CentreonObject
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -194,7 +194,7 @@ class CentreonCommand extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -296,7 +296,7 @@ class CentreonCommand extends CentreonObject
      */
     public function setargumentdescr($descriptions)
     {
-        $data = explode($this->delim, trim($descriptions, $this->delim));
+        $data = $this->explodeDelimEscaped(trim($descriptions, $this->delim));
         if (count($data) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
