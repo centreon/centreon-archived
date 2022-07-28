@@ -79,7 +79,6 @@ import {
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
-import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/graphOptionsAtoms';
@@ -1098,8 +1097,6 @@ describe(Details, () => {
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
       .details as DetailsUrlQueryParameters;
-
-    console.log('getUrlQueryParameters', getUrlQueryParameters());
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
