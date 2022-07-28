@@ -324,7 +324,6 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
     $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
     $statement->execute();
     while ($row = $statement->fetchRow()) {
-
         $statement2 = $pearDB->prepare("SELECT macro.host_macro_value " .
             "FROM on_demand_macro_host macro " .
             "WHERE macro.host_host_id = :host_host_id  AND macro.host_macro_name = :field LIMIT 1");
@@ -1320,8 +1319,6 @@ function service_has_graph($host, $service, $dbo = null)
         $dbo = $pearDBO;
     }
     if (is_numeric($host) && is_numeric($service)) {
-
-
         $statement = $pearDBO->prepare("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id " .
             "AND i.host_id = :host_id  AND i.service_id = :service_id");
         $statement->bindValue(':host_id', (int)$host, \PDO::PARAM_INT);
