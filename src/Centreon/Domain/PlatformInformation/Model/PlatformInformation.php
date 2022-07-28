@@ -275,7 +275,7 @@ class PlatformInformation
     public function setApiPath(?string $path): self
     {
         if ($path !== null) {
-            $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
+            $path = trim(filter_var($path, FILTER_SANITIZE_FULL_SPECIAL_CHARS), '/');
             if (empty($path)) {
                 throw PlatformInformationException::inconsistentDataException();
             }
