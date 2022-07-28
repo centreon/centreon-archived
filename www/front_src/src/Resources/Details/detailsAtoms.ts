@@ -11,6 +11,7 @@ import {
   ResourceDetails,
   ServicesTabParameters,
   TabParameters,
+  ResourceDetailsAtom,
 } from './models';
 import { detailsTabId } from './tabs';
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
@@ -64,23 +65,19 @@ export const setGraphTabParametersDerivedAtom = atom(
   },
 );
 
-export const selectedResourcesDetailsAtom = atomWithStorage<{
-  parentResourceId?: number;
-  parentResourceType?: string;
-  resourceId?: number;
-  resourcesDetailsEndpoint?: string;
-} | null>('resource_details', null);
+export const selectedResourcesDetailsAtom =
+  atomWithStorage<ResourceDetailsAtom | null>('resource_details', null);
 
 export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
-  const selectedResourceDetailsEndpoint = get(selectedResourcesDetailsAtom);
+  const selectedResourceDetails = get(selectedResourcesDetailsAtom);
 
   const resourceDetailsEndPoint = replaceBasename({
-    endpoint: selectedResourceDetailsEndpoint?.resourcesDetailsEndpoint || '',
+    endpoint: selectedResourceDetails?.resourcesDetailsEndpoint || '',
     newWord: './',
   });
 
-  if (!isNil(selectedResourceDetailsEndpoint?.parentResourceId)) {
-    return `${resourcesEndpoint}/${selectedResourceDetailsEndpoint?.parentResourceType}s/${selectedResourceDetailsEndpoint?.parentResourceId}`;
+  if (!isNil(selectedResourceDetails?.parentResourceId)) {
+    return `${resourcesEndpoint}/${selectedResourceDetails?.parentResourceType}s/${selectedResourceDetails?.parentResourceId}`;
   }
 
   return resourceDetailsEndPoint;

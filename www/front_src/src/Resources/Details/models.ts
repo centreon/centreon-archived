@@ -57,6 +57,13 @@ export interface ResourceDetails extends NamedEntity {
   uuid: string;
 }
 
+export interface ResourceDetailsAtom {
+  parentResourceId?: number;
+  parentResourceType?: string;
+  resourceId?: number;
+  resourcesDetailsEndpoint?: string;
+}
+
 export interface GraphOption {
   id: GraphOptionId;
   label: string;

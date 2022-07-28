@@ -29,8 +29,9 @@ import {
   labelShortcuts,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import { Parent, ResourceUris } from '../models';
+import { ResourceUris } from '../models';
 
+import { ResourceDetails } from './models';
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
 import ShortcutsTooltip from './ShortcutsTooltip';
 
@@ -100,7 +101,7 @@ const LoadingSkeleton = (): JSX.Element => (
 );
 
 type Props = {
-  onSelectParent: (parent: Parent) => void;
+  onSelectParent: (resource: ResourceDetails | undefined) => void;
 } & DetailsSectionProps;
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
@@ -115,6 +116,8 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   });
 
   const copyLink = (): Promise<void> => copy(window.location.href);
+
+  const selectResourceDetails = (): void => onSelectParent(details);
 
   if (details === undefined) {
     return <LoadingSkeleton />;
@@ -189,7 +192,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
             <SelectableResourceName
               name={details.parent.name}
               variant="caption"
-              onSelect={(): void => onSelectParent(details)}
+              onSelect={selectResourceDetails}
             />
           </div>
         )}

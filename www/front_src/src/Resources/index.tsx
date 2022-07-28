@@ -1,7 +1,8 @@
-import { lazy } from 'react';
+import { lazy, useEffect } from 'react';
 
 import { isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
@@ -16,8 +17,23 @@ const Filter = lazy(() => import('./Filter'));
 const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
-  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
+  const [selectedResource, setSelectedResource] = useAtom(
+    selectedResourcesDetailsAtom,
+  );
   const editPanelOpen = useAtomValue(editPanelOpenAtom);
+
+  useEffect(() => {
+    const cleanup = (): void => {
+      setSelectedResource(null);
+    };
+
+    window.addEventListener('beforeunload', cleanup);
+
+    return () => {
+      window.removeEventListener('beforeunload', cleanup);
+      setSelectedResource(null);
+    };
+  }, []);
 
   return useMemoComponent({
     Component: (
