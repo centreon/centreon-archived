@@ -1,14 +1,16 @@
 import { lazy, useEffect } from 'react';
 
 import { isNil } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
-import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
 import Details from './Details';
 import EditFiltersPanel from './Filter/Edit';
-import { selectedResourcesDetailsAtom } from './Details/detailsAtoms';
+import {
+  selectedResourcesDetailsAtom,
+  clearSelectedResourceDerivedAtom,
+} from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
@@ -17,21 +19,16 @@ const Filter = lazy(() => import('./Filter'));
 const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
-  const [selectedResource, setSelectedResource] = useAtom(
-    selectedResourcesDetailsAtom,
-  );
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
   const editPanelOpen = useAtomValue(editPanelOpenAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
 
   useEffect(() => {
-    const cleanup = (): void => {
-      setSelectedResource(null);
-    };
-
-    window.addEventListener('beforeunload', cleanup);
+    window.addEventListener('beforeunload', clearSelectedResource);
 
     return () => {
-      window.removeEventListener('beforeunload', cleanup);
-      setSelectedResource(null);
+      window.removeEventListener('beforeunload', clearSelectedResource);
+      clearSelectedResource();
     };
   }, []);
 
