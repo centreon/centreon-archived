@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c4ccf2b3d1f768dfd30298637120a27",
+    "content-hash": "ebd4e22dd6e157f0211787b976299251",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6625,16 +6625,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-MON-14359-fix-metrics-acceptance-tests",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6"
+                "reference": "87824c44047fcdb3b71fcf09ee858cfce6b713b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2aed30ebf46d7b76478166fdf122112a1c3722c6",
-                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/87824c44047fcdb3b71fcf09ee858cfce6b713b8",
+                "reference": "87824c44047fcdb3b71fcf09ee858cfce6b713b8",
                 "shasum": ""
             },
             "require": {
@@ -6654,7 +6654,6 @@
                 "behat/mink-selenium2-driver": "Mink driver using Selenium",
                 "phpstan/phpstan": "PHP static analysis"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6677,9 +6676,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/MON-14359-fix-metrics-acceptance-tests"
             },
-            "time": "2022-04-27T09:10:57+00:00"
+            "time": "2022-07-28T16:10:26+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -10964,5 +10963,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }
