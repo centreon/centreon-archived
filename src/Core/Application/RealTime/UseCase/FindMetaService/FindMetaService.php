@@ -24,12 +24,12 @@ namespace Core\Application\RealTime\UseCase\FindMetaService;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Domain\RealTime\Model\MetaService;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Domain\Configuration\Model\MetaService as MetaServiceConfiguration;

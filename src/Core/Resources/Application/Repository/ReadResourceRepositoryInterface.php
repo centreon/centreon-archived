@@ -45,7 +45,7 @@ interface ReadResourceRepositoryInterface
     /**
      * Sets the access groups that will be used to filter services and the host.
      *
-     * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
+     * @param \Core\Security\AccessGroup\Domain\Model\AccessGroup[]|null $accessGroups
      * @return self
      */
     public function filterByAccessGroups(?array $accessGroups): self;

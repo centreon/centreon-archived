@@ -25,8 +25,8 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Domain\Authentication\SSOAuthenticationException;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\Authentication\Domain\Authentication\SSOAuthenticationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 
 interface OpenIdProviderInterface extends ProviderInterface
 {

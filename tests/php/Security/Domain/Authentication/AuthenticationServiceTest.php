@@ -30,7 +30,7 @@ use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderToken;
-use Core\Security\Application\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 
 /**
