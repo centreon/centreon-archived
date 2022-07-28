@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Security\Authentication\Application\Provider\ProviderFactoryInterface;
 
@@ -46,6 +47,18 @@ class Login
         $provider->authenticateOrFail($loginRequest);
 
         // TODO call the repo (ContactRepositoryRDB) to get the user
-        $provider->findUserOrFail($loginRequest);
+        $provider->findUserOrFail($provider->getUsername());
+    }
+
+    private function findUserOrFail(string $username): ContactInterface
+    {
+        $contact = $this->contactRepository->findByName($username);
+        if ($contact === null) {
+            if (! $this->provider->canAutoImport) {
+                throw \Exception();
+            }
+            // autoimport
+        }
+        return $contact;
     }
 }
