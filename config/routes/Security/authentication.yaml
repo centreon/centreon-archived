@@ -1,7 +1,14 @@
-centreon_security_authentication_login:
+centreon_security_authentication_login_tmp:
     methods: POST
-    path: /providers/configurations/local
-    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginSession\LoginSessionController'
+    path: /providers/configurations/{providerName}
+    requirements:
+        providerName: '\w+'
+    controller: 'Core\Security\Authentication\Infrastructure\Api\Login\LoginController'
+
+#centreon_security_authentication_login:
+#    methods: POST
+#    path: /providers/configurations/local
+#    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginSession\LoginSessionController'
 
 centreon_security_authentication_logout:
     methods: POST
