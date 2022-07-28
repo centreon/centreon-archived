@@ -382,7 +382,7 @@ class CentreonTopCounter extends CentreonWebService
             }
             $changeStateServers = getChangeState($changeStateServers);
             foreach ($pollers as $poller) {
-                if ($changeStateServers[$poller['id']]) {
+                if ($poller['updated']) {
                     $result['pollers'][] = array(
                         'id' => $poller['id'],
                         'name' => $poller['name'],
@@ -759,7 +759,7 @@ class CentreonTopCounter extends CentreonWebService
     {
         /* Get the list of configured pollers */
         $listPoller = array();
-        $query = 'SELECT id, name, last_restart FROM nagios_server WHERE ns_activate = "1"';
+        $query = 'SELECT id, name, last_restart, updated FROM nagios_server WHERE ns_activate = "1"';
 
         /* Add ACL */
         $aclPoller = $this->centreon->user->access->getPollerString('id');
@@ -783,7 +783,8 @@ class CentreonTopCounter extends CentreonWebService
             $listPoller[$row['id']] = array(
                 'id' => $row['id'],
                 'name' => $row['name'],
-                'lastRestart' => $row['last_restart']
+                'lastRestart' => $row['last_restart'],
+                'updated' => $row['updated']
             );
         }
         return $listPoller;
@@ -886,7 +887,7 @@ class CentreonTopCounter extends CentreonWebService
             "WHERE nagios_server_id = '$pollerId' AND hsr.host_host_id = nhr.host_host_id)))" .
             "OR (object_type = 'servicegroup' AND ((action_type = 'd' AND object_id IN (SELECT DISTINCT servicegroup_id " .
             "FROM services_servicegroups)) OR object_id IN (SELECT DISTINCT servicegroup_sg_id FROM `" .
-            $conf_centreon['db'] . "`.servicegroup_relation sgr, 
+            $conf_centreon['db'] . "`.servicegroup_relation sgr,
             `" . $conf_centreon['db'] . "`.ns_host_relation nhr " .
             "WHERE sgr.host_host_id = nhr.host_host_id AND nhr.nagios_server_id = '$pollerId')))" .
             "OR (object_type = 'hostgroup' AND ((action_type = 'd' AND object_id IN (SELECT DISTINCT hostgroup_id " .
