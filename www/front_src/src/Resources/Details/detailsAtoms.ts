@@ -34,9 +34,9 @@ export const defaultSelectedCustomTimePeriodAtom = atom<
 
 export const selectResourceDerivedAtom = atom(
   null,
-  (get, set, resource: Resource) => {
+  (get, set, resource: ResourceDetails) => {
     set(openDetailsTabIdAtom, detailsTabId);
-    set(selectedResourceUuidAtom, resource.uuid);
+    set(selectedResourceUuidAtom, resource?.uuid);
     set(selectedResourcesDetailsAtom, {
       parentResourceId: resource?.parent?.id,
       parentResourceType: resource?.parent?.type,

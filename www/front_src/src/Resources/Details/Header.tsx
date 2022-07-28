@@ -101,7 +101,7 @@ const LoadingSkeleton = (): JSX.Element => (
 );
 
 type Props = {
-  onSelectParent: (resource: ResourceDetails | undefined) => void;
+  onSelectParent: (resource: ResourceDetails) => void;
 } & DetailsSectionProps;
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
@@ -117,7 +117,8 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   const copyLink = (): Promise<void> => copy(window.location.href);
 
-  const selectResourceDetails = (): void => onSelectParent(details);
+  const selectResourceDetails = (): void =>
+    onSelectParent(details as ResourceDetails);
 
   if (details === undefined) {
     return <LoadingSkeleton />;
