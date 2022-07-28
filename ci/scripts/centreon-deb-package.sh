@@ -34,12 +34,6 @@ done
 rm -rf lang
 
 # Generate API documentation.
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-apt-get install -y nodejs
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH
-. ~/.profile
 npm i -g redoc-cli
 redoc-cli build --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
