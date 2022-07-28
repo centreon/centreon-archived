@@ -1307,9 +1307,8 @@ class CentreonService extends CentreonObject
         $extendedObj = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
@@ -1320,11 +1319,10 @@ class CentreonService extends CentreonObject
                         $element[$param] = "";
                     }
                 }
-                $addStr .= $element[$param];
+                $addTab[] = $element[$param];
             }
+            echo $this->implodeDelimEscaped($addTab) . "\n";
 
-            $addStr .= "\n";
-            echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
@@ -1344,14 +1342,15 @@ class CentreonService extends CentreonObject
                         }
                         unset($tmpObj);
                     }
-                    $value = CentreonUtils::convertLineBreak($value);
-
                     if ($this->getClapiActionName($parameter) != "host_id") {
-                        echo $this->action . $this->delim . "setparam" . $this->delim
-                            . $element['host_name'] . $this->delim
-                            . $element['service_description'] . $this->delim
-                            . $this->getClapiActionName($parameter) . $this->delim
-                            . $value . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element['host_name'],
+                            $element['service_description'],
+                            $this->getClapiActionName($parameter),
+                            CentreonUtils::convertLineBreak($value)
+                        )) . "\n";
                     }
                 }
             }
@@ -1368,11 +1367,14 @@ class CentreonService extends CentreonObject
             if (isset($params) && is_array($params)) {
                 foreach ($params as $k => $v) {
                     if (!is_null($v) && $v != "") {
-                        $v = CentreonUtils::convertLineBreak($v);
-                        echo $this->action . $this->delim . "setparam" . $this->delim
-                            . $element['host_name'] . $this->delim
-                            . $element['service_description'] . $this->delim
-                            . $this->getClapiActionName($k) . $this->delim . $v . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element['host_name'],
+                            $element['service_description'],
+                            $this->getClapiActionName($k),
+                            CentreonUtils::convertLineBreak($v)
+                        )) . "\n";
                     }
                 }
             }
@@ -1397,13 +1399,16 @@ class CentreonService extends CentreonObject
                     $description = "'" . $description . "'";
                 }
 
-                echo $this->action . $this->delim . "setmacro" . $this->delim
-                    . $element['host_name'] . $this->delim
-                    . $element['service_description'] . $this->delim
-                    . $this->stripMacro($macro['svc_macro_name']) . $this->delim
-                    . $macro['svc_macro_value'] . $this->delim
-                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
-                    . $description . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "setmacro",
+                    $element['host_name'],
+                    $element['service_description'],
+                    $this->stripMacro($macro['svc_macro_name']),
+                    $macro['svc_macro_value'],
+                    ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']),
+                    $description
+                )) . "\n";
             }
             $cgRel = new \Centreon_Object_Relation_Contact_Group_Service($this->dependencyInjector);
             $cgelements = $cgRel->getMergedParameters(
@@ -1421,10 +1426,13 @@ class CentreonService extends CentreonObject
             );
             foreach ($cgelements as $cgelement) {
                 CentreonContactGroup::getInstance()->export($cgelement['cg_name']);
-                echo $this->action . $this->delim . "addcontactgroup" . $this->delim
-                    . $element['host_name'] . $this->delim
-                    . $cgelement['service_description'] . $this->delim
-                    . $cgelement['cg_name'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addcontactgroup",
+                    $element['host_name'],
+                    $cgelement['service_description'],
+                    $cgelement['cg_name']
+                )) . "\n";
             }
             $contactRel = new \Centreon_Object_Relation_Contact_Service($this->dependencyInjector);
             $celements = $contactRel->getMergedParameters(
@@ -1442,10 +1450,13 @@ class CentreonService extends CentreonObject
             );
             foreach ($celements as $celement) {
                 CentreonContact::getInstance()->export($celement['contact_alias']);
-                echo $this->action . $this->delim . "addcontact" . $this->delim
-                    . $element['host_name'] . $this->delim
-                    . $celement['service_description'] . $this->delim
-                    . $celement['contact_alias'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addcontact",
+                    $element['host_name'],
+                    $celement['service_description'],
+                    $celement['contact_alias']
+                )) . "\n";
             }
             $trapRel = new \Centreon_Object_Relation_Trap_Service($this->dependencyInjector);
             $telements = $trapRel->getMergedParameters(
@@ -1463,10 +1474,13 @@ class CentreonService extends CentreonObject
             );
             foreach ($telements as $telement) {
                 CentreonTrap::getInstance()->export($telement['traps_name']);
-                echo $this->action . $this->delim . "addtrap" . $this->delim
-                    . $element['host_name'] . $this->delim
-                    . $telement['service_description'] . $this->delim
-                    . $telement['traps_name'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addtrap",
+                    $element['host_name'],
+                    $telement['service_description'],
+                    $telement['traps_name']
+                )) . "\n";
             }
         }
     }

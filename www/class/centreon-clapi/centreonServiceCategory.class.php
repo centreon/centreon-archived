@@ -428,16 +428,20 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                         "AND"
                     );
                     foreach ($elements as $element) {
-                        echo $this->action . $this->delim
-                            . "addservice" . $this->delim
-                            . $scName . $this->delim
-                            . $element['host_name'] . "," . $element['service_description'] . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "addservice",
+                            $scName,
+                            $element['host_name'] . "," . $element['service_description']
+                        )) . "\n";
                     }
                 } else {
-                    echo $this->action . $this->delim
-                        . "addservicetemplate" . $this->delim
-                        . $scName . $this->delim
-                        . $svcParam['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addservicetemplate",
+                        $scName,
+                        $svcParam['service_description']
+                    )) . "\n";
                 }
             }
         }

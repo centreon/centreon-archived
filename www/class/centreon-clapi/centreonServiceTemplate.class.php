@@ -1013,9 +1013,8 @@ class CentreonServiceTemplate extends CentreonObject
         $extendedObj = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         foreach ($tree as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
@@ -1026,10 +1025,9 @@ class CentreonServiceTemplate extends CentreonObject
                         $element[$param] = "";
                     }
                 }
-                $addStr .= $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
@@ -1047,12 +1045,13 @@ class CentreonServiceTemplate extends CentreonObject
                         }
                         unset($tmpObj);
                     }
-                    $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element['service_description']
-                        . $this->delim . $this->getClapiActionName($parameter) . $this->delim
-                        . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element['service_description'],
+                        $this->getClapiActionName($parameter),
+                        CentreonUtils::convertLineBreak($value)
+                    )) . "\n";
                 }
             }
             $params = $extendedObj->getParameters(
@@ -1068,12 +1067,13 @@ class CentreonServiceTemplate extends CentreonObject
             if (isset($params) && is_array($params)) {
                 foreach ($params as $k => $v) {
                     if (!is_null($v) && $v != "") {
-                        $v = CentreonUtils::convertLineBreak($v);
-                        echo $this->action . $this->delim
-                            . "setparam" . $this->delim
-                            . $element['service_description'] . $this->delim
-                            . $this->getClapiActionName($k) . $this->delim
-                            . $v . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element['service_description'],
+                            $this->getClapiActionName($k),
+                            CentreonUtils::convertLineBreak($v)
+                        )) . "\n";
                     }
                 }
             }
@@ -1087,11 +1087,13 @@ class CentreonServiceTemplate extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
-                echo $this->action . $this->delim
-                    . "setmacro" . $this->delim
-                    . $element['service_description'] . $this->delim
-                    . $this->stripMacro($macro['svc_macro_name']) . $this->delim
-                    . $macro['svc_macro_value'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "setmacro",
+                    $element['service_description'],
+                    $this->stripMacro($macro['svc_macro_name']),
+                    $macro['svc_macro_value']
+                )) . "\n";
             }
             if (isset($element['children']) && count($element['children'])) {
                 $this->parseTemplateTree($element['children'], $extendedObj);
@@ -1155,10 +1157,12 @@ class CentreonServiceTemplate extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonContactGroup::getInstance()->export($element['cg_name']);
-            echo $this->action . $this->delim
-                . "addcontactgroup" . $this->delim
-                . $element['service_description'] . $this->delim
-                . $element['cg_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addcontactgroup",
+                $element['service_description'],
+                $element['cg_name']
+            )) . "\n";
         }
 
         // contacts
@@ -1179,10 +1183,12 @@ class CentreonServiceTemplate extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonContact::getInstance()->export($element['contact_alias']);
-            echo $this->action . $this->delim
-                . "addcontact" . $this->delim
-                . $element['service_description'] . $this->delim
-                . $element['contact_alias'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addcontact",
+                $element['service_description'],
+                $element['contact_alias']
+            )) . "\n";
         }
 
         // macros
@@ -1200,12 +1206,14 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($macros as $macro) {
-            echo $this->action . $this->delim
-                . "setmacro" . $this->delim
-                . $element['service_description'] . $this->delim
-                . $this->stripMacro($macro['svc_macro_name']) . $this->delim
-                . $macro['svc_macro_value'] . $this->delim
-                . "'" . $macro['description'] . "'" . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "setmacro",
+                $element['service_description'],
+                $this->stripMacro($macro['svc_macro_name']),
+                $macro['svc_macro_value'],
+                "'" . $macro['description'] . "'"
+            )) . "\n";
         }
 
         // traps
@@ -1226,10 +1234,12 @@ class CentreonServiceTemplate extends CentreonObject
         );
         foreach ($telements as $telement) {
             CentreonTrap::getInstance()->export($telement['traps_name']);
-            echo $this->action . $this->delim
-                . "addtrap" . $this->delim
-                . $telement['service_description'] . $this->delim
-                . $telement['traps_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addtrap",
+                $telement['service_description'],
+                $telement['traps_name']
+            )) . "\n";
         }
 
         // hosts
@@ -1249,10 +1259,12 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($helements as $helement) {
-            echo $this->action . $this->delim
-                . "addhosttemplate" . $this->delim
-                . $helement['service_description'] . $this->delim
-                . $helement['host_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addhosttemplate",
+                $helement['service_description'],
+                $helement['host_name']
+            )) . "\n";
         }
     }
 }

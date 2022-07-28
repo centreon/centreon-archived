@@ -407,25 +407,26 @@ class CentreonACLMenu extends CentreonObject
             $filters
         );
 
-        $exportLine = '';
         foreach ($aclMenuList as $aclMenu) {
-            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
-                . $aclMenu['acl_topo_name'] . $this->delim
-                . $aclMenu['acl_topo_alias'] . $this->delim . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "ADD",
+                $aclMenu['acl_topo_name'],
+                $aclMenu['acl_topo_alias']
+            )) . "\n";
 
-            $exportLine .= $this->action . $this->delim .
-                "SETPARAM" . $this->delim .
-                $aclMenu['acl_topo_name'] . $this->delim;
-
+            $setTab = array(
+                $this->action,
+                "SETPARAM",
+                $aclMenu['acl_topo_name'],
+            );
             if (!empty($aclMenu['acl_comments'])) {
-                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim;
+                $setTab = array_merge($setTab, array('comment', $aclMenu['acl_comments']));
             }
+            $setTab = array_merge($setTab, array('activate', $aclMenu['acl_topo_activate']));
+            echo $this->implodeDelimEscaped($setTab) . "\n";
 
-            $exportLine .= 'activate' . $this->delim . $aclMenu['acl_topo_activate'] . $this->delim . "\n";
-            $exportLine .= $this->grantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
-
-            echo $exportLine;
-            $exportLine = '';
+            echo $this->grantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
         }
     }
 
@@ -438,11 +439,13 @@ class CentreonACLMenu extends CentreonObject
     {
         $grantedMenu = '';
 
-        $grantedMenuTpl = $this->action . $this->delim .
-            '%s' . $this->delim .
-            $aclTopoName . $this->delim .
-            '%s' . $this->delim .
-            '%s' . $this->delim . "\n";
+        $grantedMenuTpl = $this->implodeDelimEscaped(array(
+            $this->action,
+            '%s',
+            $aclTopoName,
+            '%s',
+            '%s'
+        )) . "\n";
 
         $grantedPossibilities = array(
             '1' => 'GRANTRW',

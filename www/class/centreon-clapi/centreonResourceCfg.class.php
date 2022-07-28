@@ -357,7 +357,7 @@ class CentreonResourceCfg extends CentreonObject
             );
 
             /* ADD action */
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
                 if ($param == 'instance_id') {
                     $instances = array();
@@ -366,22 +366,22 @@ class CentreonResourceCfg extends CentreonObject
                     }
                     $element[$param] = implode('|', $instances);
                 }
-                $addStr .= $this->delim . $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
 
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $parameter = str_replace("resource_", "", $parameter);
                     $value = str_replace("\n", "<br/>", $value);
-                    $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element[$this->object->getPrimaryKey()] . $this->delim
-                        . $parameter . $this->delim
-                        . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element[$this->object->getPrimaryKey()],
+                        $parameter,
+                        CentreonUtils::convertLineBreak($value)
+                    )) . "\n";
                 }
             }
         }

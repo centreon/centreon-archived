@@ -721,36 +721,50 @@ class CentreonCentbrokerCfg extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD" .
-                $this->delim . $element['config_name'] .
-                $this->delim . $this->instanceObj->getInstanceName($element['ns_nagios_server']);
-            echo $addStr . "\n";
-            echo $this->action . $this->delim
-                . "SETPARAM" . $this->delim
-                . $element['config_name'] . $this->delim
-                . "filename" . $this->delim
-                . $element['config_filename'] . "\n";
-            echo $this->action . $this->delim
-                . "SETPARAM" . $this->delim
-                . $element['config_name'] . $this->delim
-                . "cache_directory" . $this->delim
-                . $element['cache_directory'] . "\n";
-            echo $this->action . $this->delim
-                . "SETPARAM" . $this->delim
-                . $element['config_name'] . $this->delim
-                . "stats_activate" . $this->delim
-                . $element['stats_activate'] . "\n";
-            echo $this->action . $this->delim
-                . "SETPARAM" . $this->delim
-                . $element['config_name'] . $this->delim
-                . "daemon" . $this->delim
-                . $element['daemon'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "ADD",
+                $element['config_name'],
+                $this->instanceObj->getInstanceName($element['ns_nagios_server'])
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $element['config_name'],
+                "filename",
+                $element['config_filename']
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $element['config_name'],
+                "cache_directory",
+                $element['cache_directory']
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $element['config_name'],
+                "stats_activate",
+                $element['stats_activate']
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $element['config_name'],
+                "daemon",
+                $element['daemon']
+            )) . "\n";
+
             $poolSize = empty($element['pool_size']) ? '' : $element['pool_size'];
-            echo $this->action . $this->delim
-                . "SETPARAM" . $this->delim
-                . $element['config_name'] . $this->delim
-                . "pool_size" . $this->delim
-                . $poolSize . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $element['config_name'],
+                "pool_size",
+                $poolSize
+            )) . "\n";
+
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?
@@ -758,7 +772,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             $res = $this->db->query($sql, array($element['config_id']));
             $blockId = array();
             $categories = array();
-            $addParamStr = array();
+            $addParamTab = array();
             $setParamStr = array();
             $resultSet = $res->fetchAll();
             unset($res);
@@ -775,24 +789,30 @@ class CentreonCentbrokerCfg extends CentreonObject
                     $row['config_value'] = CentreonUtils::convertLineBreak($row['config_value']);
                     if ($row['config_value'] != '') {
                         $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] .=
-                            $this->action . $this->delim . "SET" . strtoupper($row['config_group']) .
-                            $this->delim . $element['config_name'] .
-                            $this->delim . $row['config_group_id'] .
-                            $this->delim . $row['config_key'] .
-                            $this->delim . $row['config_value'] . "\n";
+                            $this->implodeDelimEscaped(array(
+                                $this->action,
+                                "SET" . strtoupper($row['config_group']),
+                                $element['config_name'],
+                                $row['config_group_id'],
+                                $row['config_key'],
+                                $row['config_value']
+                            )) . "\n"
+                        ;
                     }
                 } elseif ($row['config_key'] == 'name') {
-                    $addParamStr[$row['config_group'] . '_' . $row['config_group_id']] =
-                        $this->action . $this->delim . "ADD" . strtoupper($row['config_group']) .
-                        $this->delim . $element['config_name'] .
-                        $this->delim . $row['config_value'];
+                    $addParamTab[$row['config_group'] . '_' . $row['config_group_id']] = array(
+                        $this->action,
+                        "ADD" . strtoupper($row['config_group']),
+                        $element['config_name'],
+                        $row['config_value']
+                    );
                 } elseif ($row['config_key'] == 'blockId') {
                     $blockId[$row['config_group'] . '_' . $row['config_group_id']] = $row['config_value'];
                 } elseif ($row['config_key'] == 'category') {
                     $categories[$row['config_group'] . '_' . $row['config_group_id']][] = $row['config_value'];
                 }
             }
-            foreach ($addParamStr as $id => $add) {
+            foreach ($addParamTab as $id => $addTab) {
                 if (isset($blockId[$id]) && isset($setParamStr[$id])) {
                     list($tag, $type) = explode('_', $blockId[$id]);
                     $resType = $this->db->query(
@@ -801,18 +821,22 @@ class CentreonCentbrokerCfg extends CentreonObject
                     );
                     $rowType = $resType->fetch();
                     if (isset($rowType['type_shortname'])) {
-                        echo $add . $this->delim . $rowType['type_shortname'] . "\n";
+                        $addTab[] = $rowType['type_shortname'];
+                        echo $this->implodeDelimEscaped($addTab) . "\n";
                         echo $setParamStr[$id];
                     }
                     unset($resType);
                 }
                 if (isset($categories[$id])) {
                     list($configGroup, $configGroupId) = explode('_', $id);
-                    echo $this->action . $this->delim . "SET" . strtoupper($configGroup)
-                        . $this->delim . $element['config_name']
-                        . $this->delim . $configGroupId
-                        . $this->delim . 'category'
-                        . $this->delim . implode(',', $categories[$id]) . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "SET" . strtoupper($configGroup),
+                        $element['config_name'],
+                        $configGroupId,
+                        'category',
+                        implode(',', $categories[$id])
+                    )) . "\n";
                 }
             }
         }

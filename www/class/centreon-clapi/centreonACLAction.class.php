@@ -307,24 +307,24 @@ class CentreonACLAction extends CentreonObject
             $filters
         );
 
-        $exportLine = '';
         foreach ($aclActionRuleList as $aclActionRule) {
-            $exportLine .= $this->action . $this->delim . 'ADD' . $this->delim
-                . $aclActionRule['acl_action_name'] . $this->delim
-                . $aclActionRule['acl_action_description'] . $this->delim . "\n";
-
-            $exportLine .= $this->action . $this->delim . 'SETPARAM' . $this->delim
-                . $aclActionRule['acl_action_name'] . $this->delim;
-
-            $exportLine .= 'activate' . $this->delim . $aclActionRule['acl_action_activate'] . $this->delim . "\n";
-
-            $exportLine .= $this->exportGrantActions(
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                'ADD',
+                $aclActionRule['acl_action_name'],
+                $aclActionRule['acl_action_description']
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                'SETPARAM',
+                $aclActionRule['acl_action_name'],
+                'activate',
+                $aclActionRule['acl_action_activate']
+            )) . "\n";
+            echo $this->exportGrantActions(
                 $aclActionRule['acl_action_id'],
                 $aclActionRule['acl_action_name']
             );
-
-            echo $exportLine;
-            $exportLine = '';
         }
     }
 
@@ -343,9 +343,12 @@ class CentreonACLAction extends CentreonObject
         $aclActionList = $stmt->fetchAll();
 
         foreach ($aclActionList as $aclAction) {
-            $grantActions .= $this->action . $this->delim . 'GRANT' . $this->delim .
-                $aclActionName . $this->delim .
-                $aclAction['acl_action_name'] . $this->delim . "\n";
+            $grantActions .= $this->implodeDelimEscaped(array(
+                $this->action,
+                'GRANT',
+                $aclActionName,
+                $aclAction['acl_action_name']
+            )) . "\n";
         }
 
         return $grantActions;

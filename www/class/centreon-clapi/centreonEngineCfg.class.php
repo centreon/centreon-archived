@@ -331,15 +331,14 @@ class CentreonEngineCfg extends CentreonObject
             $element = array_merge($element, $this->getLoggerV2Cfg($element['nagios_id']));
 
             /* ADD action */
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
                 if ($param == 'nagios_server_id') {
                     $element[$param] = $this->instanceObj->getInstanceName($element[$param]);
                 }
-                $addStr .= $this->delim . $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
 
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
@@ -362,12 +361,13 @@ class CentreonEngineCfg extends CentreonObject
                     }
 
                     $value = str_replace("\n", "<br/>", $value);
-                    $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $parameter . $this->delim
-                        . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element[$this->object->getUniqueLabelField()],
+                        $parameter,
+                        CentreonUtils::convertLineBreak($value)
+                    )) . "\n";
                 }
             }
             $modules = $this->brokerModuleObj->getList(
@@ -383,11 +383,13 @@ class CentreonEngineCfg extends CentreonObject
             foreach ($modules as $module) {
                 array_push($moduleList, $module['broker_module']);
             }
-            echo $this->action . $this->delim
-                . "setparam" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . 'broker_module' . $this->delim
-                . implode('|', $moduleList) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "setparam",
+                $element[$this->object->getUniqueLabelField()],
+                'broker_module',
+                implode('|', $moduleList)
+            )) . "\n";
         }
     }
 

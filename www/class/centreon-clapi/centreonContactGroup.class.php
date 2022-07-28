@@ -256,9 +256,13 @@ class CentreonContactGroup extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonContact::getInstance()->export($element[$cFieldName]);
-            echo $this->action . $this->delim . "addcontact" .
-                $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
-                $this->delim . $element['contact_alias'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addcontact",
+                $element[$cgFieldName],
+                $element[$cFieldName],
+                $element['contact_alias']
+            )) . "\n";
         }
     }
 }

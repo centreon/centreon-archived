@@ -268,10 +268,12 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             'AND'
         );
         foreach ($elements as $element) {
-            echo $this->action . $this->delim
-                . "addmember" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . $element['host_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addmember",
+                $element[$this->object->getUniqueLabelField()],
+                $element['host_name']
+            )) . "\n";
         }
     }
 }

@@ -423,15 +423,20 @@ class CentreonLDAP extends CentreonObject
         );
 
         foreach ($ldapList as $ldap) {
-            echo $this->action . $this->delim . "ADD" . $this->delim
-                . $ldap['ar_name'] . $this->delim
-                . $ldap['ar_description'] . $this->delim . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "ADD",
+                $ldap['ar_name'],
+                $ldap['ar_description']
+            )) . "\n";
 
-            echo $this->action . $this->delim . "SETPARAM" . $this->delim
-                . $ldap['ar_name'] . $this->delim
-                . 'enable' . $this->delim
-                . $ldap['ar_enable'] . $this->delim . "\n";
-
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $ldap['ar_name'],
+                'enable',
+                $ldap['ar_enable']
+            )) . "\n";
 
             $filters = array('`auth_ressource_id`' => $ldap['ar_id']);
 
@@ -446,14 +451,16 @@ class CentreonLDAP extends CentreonObject
             );
 
             foreach ($ldapServerList as $server) {
-                echo $this->action . $this->delim . "ADDSERVER" . $this->delim
-                    . $ldap['ar_name'] . $this->delim
-                    . $server['host_address'] . $this->delim
-                    . $server['host_port'] . $this->delim
-                    . $server['use_ssl'] . $this->delim
-                    . $server['use_tls'] . $this->delim . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "ADDSERVER",
+                    $ldap['ar_name'],
+                    $server['host_address'],
+                    $server['host_port'],
+                    $server['use_ssl'],
+                    $server['use_tls']
+                )) . "\n";
             }
-
 
             $filters = array('`ar_id`' => $ldap['ar_id']);
 
@@ -483,10 +490,13 @@ class CentreonLDAP extends CentreonObject
                             ? $contactGroupName['cg_name']
                             : null;
                     }
-                    echo $this->action . $this->delim . "SETPARAM" . $this->delim
-                        . $ldap['ar_name'] . $this->delim
-                        . $configuration['ari_name'] . $this->delim
-                        . $configuration['ari_value'] . $this->delim . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "SETPARAM",
+                        $ldap['ar_name'],
+                        $configuration['ari_name'],
+                        $configuration['ari_value']
+                    )) . "\n";
                 }
             }
         }

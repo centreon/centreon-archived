@@ -891,8 +891,7 @@ class CentreonDowntime extends CentreonObject
             }
             if (!is_null($periodType)) {
                 echo
-                    implode(
-                        $this->delim,
+                    $this->implodeDelimEscaped(
                         array_merge(
                             array(
                                 $this->action,
@@ -970,8 +969,7 @@ class CentreonDowntime extends CentreonObject
         $rows = $stmt->fetchAll();
         foreach ($rows as $row) {
             echo
-                implode(
-                    $this->delim,
+                $this->implodeDelimEscaped(
                     array(
                         $this->action,
                         $actionType,

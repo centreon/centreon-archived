@@ -461,10 +461,12 @@ class CentreonServiceGroup extends CentreonObject
                     "AND"
                 );
                 foreach ($elements as $element) {
-                    echo $this->action . $this->delim
-                        . "addservice" . $this->delim
-                        . $sgName . $this->delim
-                        . $element['host_name'] . "," . $element['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addservice",
+                        $sgName,
+                        $element['host_name'] . "," . $element['service_description']
+                    )) . "\n";
                 }
             }
             $existingRelationIds = $relobjHgSvc->getHostGroupIdServiceIdFromServicegroupId($sgId);
@@ -483,10 +485,12 @@ class CentreonServiceGroup extends CentreonObject
                     "AND"
                 );
                 foreach ($elements as $element) {
-                    echo $this->action . $this->delim
-                        . "addhostgroupservice" . $this->delim
-                        . $sgName . $this->delim
-                        . $element['hg_name'] . "," . $element['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addhostgroupservice",
+                        $sgName,
+                        $element['hg_name'] . "," . $element['service_description']
+                    )) . "\n";
                 }
             }
         }

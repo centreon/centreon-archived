@@ -385,10 +385,12 @@ class CentreonHostGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            echo $this->action . $this->delim
-                . "addhost" . $this->delim
-                . $element[$labelField] . $this->delim
-                . $element[$hFieldName] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addhost",
+                $element[$labelField],
+                $element[$hFieldName]
+            )) . "\n";
         }
     }
 }

@@ -454,25 +454,26 @@ class CentreonACLResource extends CentreonObject
             $filters
         );
 
-        $exportLine = '';
         foreach ($aclResourceList as $aclResource) {
-            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
-                . $aclResource['acl_res_name'] . $this->delim
-                . $aclResource['acl_res_alias'] . $this->delim . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "ADD",
+                $aclResource['acl_res_name'],
+                $aclResource['acl_res_alias']
+            )) . "\n";
 
-            $exportLine .= $this->action . $this->delim . "SETPARAM" . $this->delim
-                . $aclResource['acl_res_name'] . $this->delim;
-
+            $setTab = array(
+                $this->action,
+                "SETPARAM",
+                $aclResource['acl_res_name']
+            );
             if (!empty($aclResource['acl_res_comment'])) {
-                $exportLine .= 'comment' . $this->delim . $aclResource['acl_res_comment'] . $this->delim;
+                $setTab = array_merge($setTab, array('comment', $aclResource['acl_res_comment']));
             }
+            $setTab = array_merge($setTab, array('activate', $aclResource['acl_res_activate']));
+            echo $this->implodeDelimEscaped($setTab) . "\n";
 
-            $exportLine .= 'activate' . $this->delim . $aclResource['acl_res_activate'] . $this->delim . "\n";
-
-            $exportLine .= $this->exportGrantResources($aclResource);
-
-            echo $exportLine;
-            $exportLine = '';
+            echo $this->exportGrantResources($aclResource);
         }
     }
 
@@ -742,9 +743,12 @@ class CentreonACLResource extends CentreonObject
         $grantObject = '';
 
         // Template for object export command
-        $grantedCommandTpl = $this->action . $this->delim . $grantCommand . $this->delim .
-            $aclResName . $this->delim .
-            '%s' . $this->delim . "\n";
+        $grantedCommandTpl = $this->implodeDelimEscaped(array(
+            $this->action,
+            $grantCommand,
+            $aclResName,
+            '%s'
+        )) . "\n";
 
         $grantedObjectList = '';
         if (is_array($grantedResourceItems)) { // Non wildcard mode
