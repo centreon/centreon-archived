@@ -289,14 +289,12 @@ function getMyHostExtendedInfoFieldFromMultiTemplates($host_id, $field)
     $statement = $pearDB->prepare($rq);
     $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
     $statement->execute();
+    $rq2 = "SELECT ehi.`" . $field . "` " .
+        " FROM extended_host_information ehi " .
+        "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
+    $statement2 = $pearDB->prepare($rq2);
     while ($row = $statement->fetchRow()) {
-        $rq2 = "SELECT ehi.`" . $field . "` " .
-            " FROM extended_host_information ehi " .
-            "WHERE ehi.host_host_id = :host_host_id LIMIT 1";
-
-        $statement2 = $pearDB->prepare($rq2);
         $statement2->bindValue(":host_host_id", (int)$row['host_tpl_id'], \PDO::PARAM_INT);
-        $statement2->bindColumn(":field", $field, \PDO::PARAM_STR);
         $statement2->execute();
 
         $row2 = $statement2->fetchRow();
