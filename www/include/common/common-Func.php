@@ -80,6 +80,15 @@ function returnSvg(string $svgPath, string $color, float $height, float $width):
     }
 }
 
+/*
+ * Form Rules
+ */
+function slash($elem = null)
+{
+    if ($elem) {
+        return rtrim($elem, "/") . "/";
+    }
+}
 
 /*
  * function table_not_exists()
@@ -1657,6 +1666,14 @@ function getDuplicateNumberOption()
     }
 }
 
+function isNotEmptyAfterStringSanitize($test): bool
+{
+    if (empty(filter_var($test, FILTER_SANITIZE_STRING))) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 /**
  * Create a CSRF token
