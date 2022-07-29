@@ -351,6 +351,7 @@ if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
                 containerCssClass: 'filter-select'
             },
             multiple: false,
+            allowClear: true,
             additionnalFilters: {
                 id: '#host_id',
             }
