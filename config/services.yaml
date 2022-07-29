@@ -35,8 +35,6 @@ services:
     _instanceof:
         Security\Domain\Authentication\Interfaces\ProviderInterface:
             tags: ['authentication.providers']
-        Core\Domain\RealTime\ResourceTypeInterface:
-            tags: ['monitoring.resource.type']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'

@@ -259,7 +259,9 @@ class MonitoringResourceController extends AbstractController
 
         foreach ($filter->getTypes() as $resourceType) {
             if (! in_array($resourceType, $availableResourceTypes)) {
-                throw new \InvalidArgumentException(_('Resource type provided not supported'));
+                throw new \InvalidArgumentException(
+                    sprintf(_('Resource type "%s" provided not supported'), $resourceType)
+                );
             }
         }
     }
