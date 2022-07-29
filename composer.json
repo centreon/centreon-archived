@@ -6,7 +6,7 @@
     "config": {
         "secure-http": false,
         "platform": {
-            "php": "8.1"
+            "php": "8.0"
         },
         "allow-plugins": {
             "pestphp/pest-plugin": false,
@@ -14,7 +14,7 @@
         }
     },
     "require-dev": {
-        "php-vfs/php-vfs": "^1.4.2",
+        "adlawson/vfs": "^0.12.1",
         "behat/behat": "^3.10",
         "behat/mink-selenium2-driver": "^1.5",
         "friends-of-behat/mink": "^1.9",
@@ -31,7 +31,8 @@
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^4.0",
-        "pestphp/pest": "^1.21"
+        "pestphp/pest": "^1.21",
+        "php-vfs/php-vfs": "^1.4"
     },
     "require": {
         "beberlei/assert": "^3.3",
