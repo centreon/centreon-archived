@@ -122,3 +122,5 @@ ALTER TABLE cfg_nagios MODIFY `enable_predictive_service_dependency_checks` enum
 ALTER TABLE cfg_nagios MODIFY `debug_verbosity` enum('0','1');
 
 ALTER TABLE contact DROP COLUMN `enable_one_click_export`;
+
+ALTER TABLE remote_servers DROP COLUMN `app_key`;

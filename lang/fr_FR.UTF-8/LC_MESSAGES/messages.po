@@ -16957,3 +16957,12 @@ msgstr "Niveau de criticité d'hôte"
 
 msgid "Resource type provided not supported"
 msgstr "Type de ressource fourni non supporté"
+
+msgid "Following modules need to be removed first: %s"
+msgstr "Les modules suivants doivent être supprimés : %s"
+
+msgid "Module \"%s\" is missing"
+msgstr "Le module \"%s\" est manquant"
+
+msgid "An error occured while retrieving details of module \"%s\""
+msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""

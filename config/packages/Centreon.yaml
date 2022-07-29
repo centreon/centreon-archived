@@ -53,6 +53,14 @@ services:
         class: Centreon\Infrastructure\Serializer\ObjectConstructor
         public: false
 
+    json_presenter:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
+    Core\Infrastructure\Common\Presenter\PresenterFormatterInterface:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
     # Encryption
     Security\Interfaces\EncryptionInterface:
         class: Security\Encryption
@@ -84,6 +92,14 @@ services:
     contact.provider:
         class: Centreon\Domain\Contact\ContactProvider
         public: true
+
+    presenter.download.csv:
+        class: Core\Infrastructure\Common\Presenter\DownloadPresenter
+        arguments: ['@Core\Infrastructure\Common\Presenter\CsvPresenter']
+
+    Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
+        class: Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics\DownloadPerformanceMetricsPresenter
+        arguments: ['@presenter.download.csv']
 
     # Authentication
     Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface:
