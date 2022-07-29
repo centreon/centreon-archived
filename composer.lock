@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b9eb600adfeba511127dbe1f41c76b0",
+    "content-hash": "5fee409d5626f6479247dd2858a2acbe",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6228,66 +6228,6 @@
     ],
     "packages-dev": [
         {
-            "name": "adlawson/vfs",
-            "version": "0.12.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/adlawson/php-vfs.git",
-                "reference": "e955034419d6a8f92c9a8ea2e626eeed96b41095"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/adlawson/php-vfs/zipball/e955034419d6a8f92c9a8ea2e626eeed96b41095",
-                "reference": "e955034419d6a8f92c9a8ea2e626eeed96b41095",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5",
-                "psr/log": "^1.0"
-            },
-            "require-dev": {
-                "adlawson/timezone": "^1.0",
-                "fabpot/php-cs-fixer": "^1.9",
-                "mockery/mockery": "^0.9",
-                "phpunit/phpunit": "^4.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Vfs\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Lawson",
-                    "homepage": "http://adlawson.com"
-                }
-            ],
-            "description": "Virtual file system",
-            "homepage": "https://github.com/adlawson/php-vfs",
-            "keywords": [
-                "dir",
-                "directory",
-                "file",
-                "fs",
-                "read",
-                "stream",
-                "system",
-                "virtual",
-                "wrapper",
-                "write"
-            ],
-            "support": {
-                "issues": "https://github.com/adlawson/php-vfs/issues",
-                "source": "https://github.com/adlawson/php-vfs/tree/develop"
-            },
-            "time": "2016-02-20T12:46:01+00:00"
-        },
-        {
             "name": "behat/behat",
             "version": "v3.10.0",
             "source": {
@@ -11017,7 +10957,7 @@
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "8.0"
+        "php": "8.1"
     },
     "plugin-api-version": "2.3.0"
 }

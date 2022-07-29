@@ -27,7 +27,7 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 /**
  * Class Kernel
@@ -148,11 +148,11 @@ class Kernel extends BaseKernel
     }
 
     /**
-     * @param RoutingConfigurator $routes
+     * @param RouteCollectionBuilder $routes
      *
      * @throws \Symfony\Component\Config\Exception\LoaderLoadException
      */
-    protected function configureRoutes(RoutingConfigurator $routes): void
+    protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
         $confDir = $this->getProjectDir() . '/config';
 
