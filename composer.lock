@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c4ccf2b3d1f768dfd30298637120a27",
+    "content-hash": "668e34fd2ddb66b073d8e525d65c166a",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6628,12 +6628,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6"
+                "reference": "1f51490fe248f71e8c464c4ebfb5d0f04af7a129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2aed30ebf46d7b76478166fdf122112a1c3722c6",
-                "reference": "2aed30ebf46d7b76478166fdf122112a1c3722c6",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/1f51490fe248f71e8c464c4ebfb5d0f04af7a129",
+                "reference": "1f51490fe248f71e8c464c4ebfb5d0f04af7a129",
                 "shasum": ""
             },
             "require": {
@@ -6678,7 +6678,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-04-27T09:10:57+00:00"
+            "time": "2022-07-29T09:34:33+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -10964,5 +10964,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }
