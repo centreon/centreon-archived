@@ -455,6 +455,7 @@ if ($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) {
                 containerCssClass: 'filter-select'
             },
             multiple: false,
+            allowClear: true,
             additionnalFilters: {
                 id: '#host_id',
             }
