@@ -35,6 +35,9 @@
 				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
 					&nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" onclick="insertValueQuery()" />&nbsp;
 				</td>
+				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
+					<select id="sl_list_metrics" class="metrics" size="1"></select>
+				</td>
 			{/if}
 		</tr></table></td>
 	</tr>
