@@ -36,7 +36,6 @@
 
 namespace CentreonClapi;
 
-require_once __DIR__ . '/../../../bootstrap.php';
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";

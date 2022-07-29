@@ -49,6 +49,14 @@ require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 
+if (! function_exists('loadDependencyInjector')) {
+	function loadDependencyInjector()
+	{
+		global $dependencyInjector;
+		return $dependencyInjector;
+	}
+}
+
 
 /**
  * General Centreon Management
