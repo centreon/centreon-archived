@@ -38,9 +38,9 @@ for i in lang/* ; do
 done
 rm -rf lang
 
-# Install npm dependency
-apt-get update
-apt install -y npm
+# Generate API documentation.
+npm i -g redoc-cli
+redoc-cli build --options.hideDownloadButton=true doc/API/centreon-api-v${MAJOR_VERSION}.yaml -o ../centreon-api-v${MAJOR_VERSION}.html
 
 # Make tar with original content
 cd ..

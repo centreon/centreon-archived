@@ -308,7 +308,7 @@ try {
           checkout scm
         }
         sh 'rm -rf *.deb'
-        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
+        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -w "/src" -v "$PWD:/src" -e DISTRIB="bullseye" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/mon-build-dependencies-22.04:debian11'
         stash name: 'Debian11', includes: '*.deb'
         archiveArtifacts artifacts: "*"
         sh 'rm -rf *.deb'
