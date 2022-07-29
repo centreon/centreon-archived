@@ -57,6 +57,9 @@ const ResourceListing = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useAtom(
     selectedResourcesAtom,
   );
+  const [selectedResourceDetails, setSelectedResourceDetails] = useAtom(
+    selectedResourcesDetailsAtom,
+  );
   const listing = useAtomValue(listingAtom);
   const sending = useAtomValue(sendingAtom);
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
@@ -70,9 +73,6 @@ const ResourceListing = (): JSX.Element => {
   const setResourcesToCheck = useUpdateAtom(resourcesToCheckAtom);
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,
-  );
-  const setSelectedResourceDetails = useUpdateAtom(
-    selectedResourcesDetailsAtom,
   );
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -103,7 +103,17 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     color: alpha(theme.palette.primary.main, 0.08),
-    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
+    condition: ({ uuid, id }): boolean => {
+      if (!selectedResourceDetails) {
+        return false;
+      }
+
+      const { parentResourceId } = selectedResourceDetails;
+
+      return parentResourceId
+        ? equals(id, parentResourceId)
+        : equals(uuid, selectedResourceUuid);
+    },
     name: 'detailsOpen',
   };
 
@@ -185,6 +195,7 @@ const ResourceListing = (): JSX.Element => {
         selectedResourceUuid,
         sending,
         enabledAutoRefresh,
+        selectedResourceDetails,
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
