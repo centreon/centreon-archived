@@ -58,6 +58,12 @@ services:
         class: Centreon\Domain\Entity\EntityValidator
         arguments: ['%validation_path%']
 
+    Psr\Container\ContainerInterface:
+        class: Symfony\Component\DependencyInjection\Container
+
+    Symfony\Component\DependencyInjection\ContainerInterface:
+        class: Symfony\Component\DependencyInjection\Container
+
     Pimple\Container:
         factory: ['Centreon\LegacyContainer', 'getInstance']
 
