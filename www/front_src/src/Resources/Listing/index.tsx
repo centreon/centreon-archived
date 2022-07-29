@@ -1,4 +1,4 @@
-import { equals, includes, not } from 'ramda';
+import { equals, includes, not, isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
@@ -103,8 +103,8 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     color: alpha(theme.palette.primary.main, 0.08),
-    condition: ({ uuid, id }): boolean => {
-      if (!selectedResourceDetails) {
+    condition: ({ id }): boolean => {
+      if (isEmpty(selectedResourceDetails) || isNil(selectedResourceDetails)) {
         return false;
       }
 
@@ -112,7 +112,7 @@ const ResourceListing = (): JSX.Element => {
 
       return parentResourceId
         ? equals(id, parentResourceId)
-        : equals(uuid, selectedResourceUuid);
+        : equals(id, selectedResourceDetails?.resourceId);
     },
     name: 'detailsOpen',
   };
