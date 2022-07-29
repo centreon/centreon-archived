@@ -3400,6 +3400,40 @@ paths:
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/download:
+    get:
+      tags:
+        - Metrics
+      summary: 'Download performance data as csv file'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: query
+          name: start_date
+          required: true
+          description: "Start date of metrics (date format should be in ISO 8601)"
+          schema:
+            type: string
+            format: date-time
+            example: '2022-01-01T00:00:22Z'
+        - in: query
+          name: end
+          required: true
+          description: "End date of metrics (date format should be in ISO 8601)"
+          schema:
+            type: string
+            format: date-time
+            example: '2023-01-01T00:00:00Z'
+      responses:
+        '200':
+          description: A CSV file containg performance data
+          content:
+            application/force-download:
+              schema:
+                type: string
+                format: string
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
     get:
       tags:

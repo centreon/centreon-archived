@@ -29,6 +29,15 @@ monitoring.metric.getServicePerformanceMetrics:
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServicePerformanceMetrics'
     condition: "request.attributes.get('version') >= 21.10"
 
+monitoring.metric.downloadPerformanceMetrics:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/download
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics\DownloadPerformanceMetricsController'
+    condition: "request.attributes.get('version') >= 22.10"
+
 monitoring.metric.getServiceStatusMetrics:
     methods: GET
     path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/status

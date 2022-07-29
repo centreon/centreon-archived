@@ -209,7 +209,9 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-fe.xml'
+          junit 'cypress-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'cypress-fe.xml', includes: 'cypress-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
           publishHTML([
             allowMissing: false,

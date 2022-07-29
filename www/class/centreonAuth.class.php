@@ -339,12 +339,13 @@ class CentreonAuth
         if ($dbResult->rowCount()) {
             $this->userInfos = $dbResult->fetch();
             if ($this->userInfos["default_page"]) {
-                $dbResult2 = $this->pearDB->query(
-                    "SELECT topology_url_opt FROM topology WHERE topology_page = "
-                    . $this->userInfos["default_page"]
+                $statement = $this->pearDB->prepare(
+                    "SELECT topology_url_opt FROM topology WHERE topology_page = :topology_page"
                 );
-                if ($dbResult2->numRows()) {
-                    $data = $dbResult2->fetch();
+                $statement->bindValue(':topology_page', (int) $this->userInfos["default_page"], \PDO::PARAM_INT);
+                $statement->execute();
+                if ($statement->rowCount()) {
+                    $data = $statement->fetch(\PDO::FETCH_ASSOC);
                     $this->userInfos["default_page"] .= $data["topology_url_opt"];
                 }
             }
@@ -382,20 +383,23 @@ class CentreonAuth
             /*
              * Reset userInfos with imported information
              */
-            $dbResult = $this->pearDB->query(
+            $statement = $this->pearDB->prepare(
                 "SELECT * FROM `contact` " .
-                "WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'" .
+                "WHERE `contact_alias` = :contact_alias" .
                 "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
-            if ($dbResult->rowCount()) {
-                $this->userInfos = $dbResult->fetch();
+            $statement->bindValue(':contact_alias', $this->pearDB->escape($username, true), \PDO::PARAM_STR);
+            $statement->execute();
+            if ($statement->rowCount()) {
+                $this->userInfos = $statement->fetch(\PDO::FETCH_ASSOC);
                 if ($this->userInfos["default_page"]) {
-                    $dbResult2 = $this->pearDB->query(
-                        "SELECT topology_url_opt FROM topology WHERE topology_page = "
-                        . $this->userInfos["default_page"]
+                    $statement = $this->pearDB->prepare(
+                        "SELECT topology_url_opt FROM topology WHERE topology_page = :topology_page"
                     );
-                    if ($dbResult2->numRows()) {
-                        $data = $dbResult2->fetch();
+                    $statement->bindValue(':topology_page', (int) $this->userInfos["default_page"], \PDO::PARAM_INT);
+                    $statement->execute();
+                    if ($statement->rowCount()) {
+                        $data = $statement->fetch(\PDO::FETCH_ASSOC);
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
                 }

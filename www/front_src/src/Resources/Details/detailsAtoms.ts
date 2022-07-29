@@ -4,7 +4,6 @@ import { isNil } from 'ramda';
 
 import { resourcesEndpoint } from '../api/endpoint';
 import { replaceBasename } from '../helpers';
-import { Resource } from '../models';
 
 import {
   GraphTabParameters,

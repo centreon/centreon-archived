@@ -124,10 +124,12 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["dep_hgParents"] = "";
+                    $query = "INSERT INTO dependency_hostgroupParent_relation VALUES (:max_id, :hg_id)";
+                    $statement = $pearDB->prepare($query);
                     while ($hg = $dbResult->fetch()) {
-                        $query = "INSERT INTO dependency_hostgroupParent_relation VALUES ('" .
-                            $maxId["MAX(dep_id)"] . "', '" . $hg["hostgroup_hg_id"] . "')";
-                        $pearDB->query($query);
+                        $statement->bindValue(':max_id', (int) $maxId["MAX(dep_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':hg_id', (int) $hg["hostgroup_hg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
@@ -136,10 +138,12 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["dep_hgChilds"] = "";
+                    $query = "INSERT INTO dependency_hostgroupChild_relation VALUES (:max_id, :hg_id)";
+                    $statement = $pearDB->prepare($query);
                     while ($hg = $dbResult->fetch()) {
-                        $query = "INSERT INTO dependency_hostgroupChild_relation VALUES ('" .
-                            $maxId["MAX(dep_id)"] . "', '" . $hg["hostgroup_hg_id"] . "')";
-                        $pearDB->query($query);
+                        $statement->bindValue(':max_id', (int) $maxId["MAX(dep_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':hg_id', (int) $hg["hostgroup_hg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                         $fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
