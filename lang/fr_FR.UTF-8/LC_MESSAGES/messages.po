@@ -16955,7 +16955,7 @@ msgstr "Criticité d'hôte"
 msgid "Host severity level"
 msgstr "Niveau de criticité d'hôte"
 
-msgid "Resource type \"%s\"" provided not supported"
+msgid "Resource type \"%s\" provided not supported"
 msgstr "Type de ressource \"%s\" fourni non supporté"
 
 msgid "Following modules need to be removed first: %s"
