@@ -90,7 +90,11 @@ const useLoadDetails = (): DetailsState => {
   useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceUuid, selectedResource?.parentResourceId]);
+  }, [
+    selectedResourceUuid,
+    selectedResource?.parentResourceId,
+    selectedResource?.resourceId,
+  ]);
 
   return {
     changeCustomTimePeriod,
