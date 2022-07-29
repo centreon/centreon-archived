@@ -3,12 +3,13 @@
 if [ "$1" = "configure" ] ; then
   if [ ! "$(getent passwd centreon)" ]; then
     # User will have a shell. Not secure but require refactoring otherwise.
-    adduser --system --group --shell /bin/bash --home /var/lib/centreon centreon
+    adduser --system --group --shell /bin/bash --home /var/spool/centreon centreon
   fi
 
   chown -vR centreon:centreon \
     /etc/centreon \
-    /var/cache/centreon
+    /var/cache/centreon \
+    /var/spool/centreon
   chmod -R 0775 \
     /var/cache/centreon
 fi
