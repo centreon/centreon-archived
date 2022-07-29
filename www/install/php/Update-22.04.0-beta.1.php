@@ -157,6 +157,7 @@ try {
 
     $errorMessage = 'Unable to exclude Gorgone / MBI / MAP users from password policy';
     excludeUsersFromPasswordPolicy($pearDB);
+
     $pearDB->commit();
     if ($pearDB->isColumnExist('contact', 'contact_passwd') === 1) {
         $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
