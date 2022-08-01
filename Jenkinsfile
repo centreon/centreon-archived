@@ -9,7 +9,7 @@ def stableBranch = "${serie}.x"
 def devBranch = "dev-${serie}.x"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.BRANCH_NAME.startsWith('release-')) {
+if (env.CHANGE_BRANCH.startsWith('hotfix-') || env.CHANGE_BRANCH.startsWith('release-') || env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'RELEASE'
   env.DELIVERY_STAGE = 'Delivery to testing'
   env.DOCKER_STAGE = 'Docker packaging'
