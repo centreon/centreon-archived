@@ -208,7 +208,6 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-
       <IconButton
         ariaLabel={t(labelViewLogs)}
         data-testid={labelViewLogs}
@@ -218,7 +217,6 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       >
         <LogsIcon fontSize="small" />
       </IconButton>
-
       <IconButton
         ariaLabel={t(labelViewReport)}
         data-testid={labelViewReport}
@@ -228,7 +226,6 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       >
         <ReportIcon fontSize="small" />
       </IconButton>
-
       <IconButton
         ariaLabel={t(labelCopyLink)}
         data-testid={labelCopyLink}
