@@ -152,11 +152,13 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
         $row["acl_res_id"] = '';
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
+            $values = [];
+
             foreach ($row as $key2 => $value2) {
                 $key2 == "acl_res_name" ? ($acl_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                $values[] = $value2 != null || $value2 === 0
+                    ? "'" . $value2 . "'"
+                    : 'NULL';
                 if ($key2 != "acl_res_id") {
                     $fields[$key2] = $value2;
                 }
@@ -166,8 +168,9 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
             }
 
             if (testExistence($acl_name)) {
-                $val ? $rq = "INSERT INTO acl_resources VALUES (" . $val . ")" : $rq = null;
-                $pearDB->query($rq);
+                if (! empty($values)) {
+                    $pearDB->query("INSERT INTO acl_resources VALUES (" . implode(',', $values) . ")");
+                }
 
                 $dbResult = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
                 $maxId = $dbResult->fetch();
