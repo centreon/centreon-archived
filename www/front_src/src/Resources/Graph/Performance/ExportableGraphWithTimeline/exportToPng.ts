@@ -2,7 +2,7 @@ import { saveAs } from 'file-saver';
 import dom2image from 'dom-to-image';
 
 interface Props {
-  bgcolor: string;
+  backgroundColor: string;
   element: HTMLElement;
   ratio: number;
   title: string;
