@@ -25,7 +25,7 @@ const exportToPng = async ({
 
   return dom2image
     .toBlob(element, {
-      bgcolor,
+      bgcolor: backgroundColor,
       height: element.offsetHeight * ratio,
       style: {
         transform: `translate(-${translateX}px, -${translateY}px) scale(${ratio})`,
