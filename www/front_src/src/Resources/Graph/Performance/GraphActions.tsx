@@ -98,7 +98,6 @@ const GraphActions = ({
   const convertToPng = (ratio: number): void => {
     setMenuAnchor(null);
     setExporting(true);
-    const bgcolor = theme.palette.background.default;
     exportToPng({
       bgcolor: theme.palette.background.default,
       element: performanceGraphRef.current as HTMLElement,
