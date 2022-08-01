@@ -9,7 +9,7 @@ def stableBranch = "22.04.x"
 def devBranch = "dev-22.04.x"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.CHANGE_BRANCH.startsWith('hotfix-') || env.BRANCH_NAME.startsWith('release-')) {
+if (env.BRANCH_NAME.startsWith("hotfix-") || env.BRANCH_NAME.startsWith("release-")) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
