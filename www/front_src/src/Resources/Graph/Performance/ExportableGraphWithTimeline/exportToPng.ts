@@ -12,7 +12,7 @@ const exportToPng = async ({
   element,
   title,
   ratio,
-  bgcolor,
+  backgroundColor,
 }: Props): Promise<void> => {
   const dateTime = new Date().toISOString().substring(0, 19);
 
