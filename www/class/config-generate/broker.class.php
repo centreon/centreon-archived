@@ -344,9 +344,9 @@ class Broker extends AbstractObjectJSON
         }
 
         // Manage path of cbd watchdog log
-        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
-            '/var/log/centreon-broker/watchdog.log' :
-            trim($this->engine['broker_logs_path']) . '/watchdog.log';
+        $watchdogLogsPath = $this->engine['broker_logs_path'] === null || empty(trim($this->engine['broker_logs_path']))
+            ? '/var/log/centreon-broker/watchdog.log'
+            : trim($this->engine['broker_logs_path']) . '/watchdog.log';
         $watchdog['log'] = $watchdogLogsPath;
 
         $this->generate_filename = 'watchdog.json';
