@@ -417,6 +417,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "host_name" ? ($hostName = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
@@ -602,6 +603,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $ehi["host_host_id"] = $maxId["MAX(host_id)"];
                         $ehi["ehi_id"] = null;
                         foreach ($ehi as $key2 => $value2) {
+                            $value2 = is_int($value2) ? (string) $value2 : $value2;
                             $val
                                 ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
                                 : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");

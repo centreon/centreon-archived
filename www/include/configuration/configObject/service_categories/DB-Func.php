@@ -102,6 +102,7 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
             $val = null;
             $bindParams = [];
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 switch ($key2) {
                     case 'sc_name':
                         $value2 = filter_var($value2, FILTER_SANITIZE_STRING);
