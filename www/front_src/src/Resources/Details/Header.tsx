@@ -51,7 +51,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridGap: theme.spacing(2),
     gridTemplateColumns: `${
       displaySeverity ? 'auto' : ''
-    } auto minmax(0, 1fr) repeat(3,auto)`,
+    } auto minmax(0, 1fr) repeat(3, auto)`,
     height: 43,
     padding: theme.spacing(0, 1),
   }),
