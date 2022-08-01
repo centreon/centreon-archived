@@ -109,8 +109,8 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
             foreach ($row as $key2 => $value2) {
                 $key2 == "dep_name" ? ($dep_name = $value2 = $value2 . "_" . $i) : null;
                 $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "dep_id") {
                     $fields[$key2] = $value2;
                 }

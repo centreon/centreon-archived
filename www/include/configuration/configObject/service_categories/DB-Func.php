@@ -136,8 +136,8 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                         break;
                 }
                 $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
             }
             if (testServiceCategorieExistence($sc_name)) {
                 $val

@@ -209,8 +209,8 @@ function multipleComponentTemplateInDB($compos = [], $nbrDup = [])
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                $val ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
             }
             if (NameHsrTestExistence($name)) {
                 $val ? $rq = "INSERT INTO giv_components_template VALUES (" . $val . ")" : $rq = null;

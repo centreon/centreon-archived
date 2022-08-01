@@ -156,8 +156,8 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
             foreach ($row as $key2 => $value2) {
                 $key2 == "meta_name" ? ($meta_name = $value2 = $value2 . "_" . $i) : null;
                 $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
             }
             if (testExistence($meta_name)) {
                 $val ? $rq = "INSERT INTO meta_service VALUES (" . $val . ")" : $rq = null;
@@ -196,8 +196,8 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                         foreach ($metric as $key2 => $value2) {
                             $key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
                             $val
-                                ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                                : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                                ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                                : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
                         }
                         $pearDB->query("INSERT INTO meta_service_relation VALUES (" . $val . ")");
                     }
@@ -240,8 +240,8 @@ function multipleMetricInDB($metrics = array(), $nbrDup = array())
             # Create a sentence which contains all the value
             foreach ($row as $key2 => $value2) {
                 $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
             }
             $val ? $rq = "INSERT INTO meta_service_relation VALUES (" . $val . ")" : $rq = null;
             $dbResult = $pearDB->query($rq);
