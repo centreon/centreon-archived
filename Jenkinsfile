@@ -9,7 +9,8 @@ def stableBranch = "21.10.x"
 def devBranch = "dev-21.10.x"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
-if (env.CHANGE_BRANCH.startsWith('hotfix-') || env.CHANGE_BRANCH.startsWith('release-')) {
+
+if (env.BRANCH_NAME.startsWith("hotfix-") || env.BRANCH_NAME.startsWith("release-")) {
   env.BUILD = 'RELEASE'
   env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
@@ -27,9 +28,9 @@ if (env.CHANGE_BRANCH.startsWith('hotfix-') || env.CHANGE_BRANCH.startsWith('rel
   env.BUILD = 'CI'
 }
 
-env.BUILD_BRANCH = env.BRANCH_NAME
+def buildBranch = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
-  env.BUILD_BRANCH = env.CHANGE_BRANCH
+  buildBranch = env.CHANGE_BRANCH
 }
 
 def backendFiles = [
