@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Grid,
@@ -12,6 +13,8 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LogsIcon from '@mui/icons-material/Assignment';
+import ReportIcon from '@mui/icons-material/Assessment';
 import { CreateCSSProperties } from '@mui/styles';
 
 import {
@@ -26,13 +29,14 @@ import {
   labelConfigure,
   labelCopyLink,
   labelLinkCopied,
-  labelShortcuts,
+  labelViewLogs,
+  labelViewReport,
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import { Parent, ResourceUris } from '../models';
+import { replaceBasename } from '../helpers';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
-import ShortcutsTooltip from './ShortcutsTooltip';
 
 import { DetailsSectionProps } from '.';
 
@@ -47,7 +51,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridGap: theme.spacing(2),
     gridTemplateColumns: `${
       displaySeverity ? 'auto' : ''
-    } auto minmax(0, 1fr) auto auto`,
+    } auto minmax(0, 1fr) repeat(3,auto)`,
     height: 43,
     padding: theme.spacing(0, 1),
   }),
@@ -108,6 +112,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     displaySeverity: not(isNil(details?.severity)),
   });
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { copy } = useCopyToClipboard({
     errorMessage: t(labelSomethingWentWrong),
@@ -115,6 +120,15 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   });
 
   const copyLink = (): Promise<void> => copy(window.location.href);
+
+  const navigateToResourceUris = (category: keyof ResourceUris): void => {
+    const url = replaceBasename({
+      endpoint: prop(category, resourceUris) || '',
+      newWord: '/',
+    });
+
+    navigate(`${url}`);
+  };
 
   if (details === undefined) {
     return <LoadingSkeleton />;
@@ -194,10 +208,27 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip
-        data-testid={labelShortcuts}
-        resourceUris={resourceUris}
-      />
+
+      <IconButton
+        ariaLabel={t(labelViewLogs)}
+        data-testid={labelViewLogs}
+        size="small"
+        title={t(labelViewLogs)}
+        onClick={(): void => navigateToResourceUris('logs')}
+      >
+        <LogsIcon fontSize="small" />
+      </IconButton>
+
+      <IconButton
+        ariaLabel={t(labelViewReport)}
+        data-testid={labelViewReport}
+        size="small"
+        title={t(labelViewReport)}
+        onClick={(): void => navigateToResourceUris('reporting')}
+      >
+        <ReportIcon fontSize="small" />
+      </IconButton>
+
       <IconButton
         ariaLabel={t(labelCopyLink)}
         data-testid={labelCopyLink}
