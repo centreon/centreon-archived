@@ -151,8 +151,8 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "acl_action_name" ? ($acl_action_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "acl_action_id") {
                     $fields[$key2] = $value2;
                 }

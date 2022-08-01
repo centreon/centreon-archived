@@ -104,8 +104,8 @@ function multipleGraphTemplateInDB($graphs = [], $nbrDup = []): void
                     foreach ($row as $key2 => $value2) {
                         $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
                         $val
-                            ? $val .= ($value2 !== null ? (", '" . $value2 . "'") : ", NULL")
-                            : $val .= ($value2 !== null ? ("'" . $value2 . "'") : "NULL");
+                            ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                            : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                     }
                     if (testExistence($name)) {
                         $val ? $rq = "INSERT INTO giv_graphs_template VALUES (" . $val . ")" : $rq = null;

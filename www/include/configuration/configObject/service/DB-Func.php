@@ -584,8 +584,8 @@ function multipleServiceInDB(
                     $service_description = null;
                 }
                 $val ? $val .=
-                    ($value2 !== null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL")
-                    : $val .= ($value2 !== null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
+                    ($value2 != null ? (", '" . $pearDB->escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                 if ($key2 != "service_id") {
                     $fields[$key2] = $value2;
                 }
@@ -808,10 +808,10 @@ function multipleServiceInDB(
                             foreach ($esi as $key2 => $value2) {
                                 $val ? $val .=
                                     (
-                                        $value2 !== null
+                                        $value2 != null
                                         ? (", '" . $pearDB->escape($value2) . "'")
                                         : ", NULL"
-                                    ) : $val .= ($value2 !== null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
+                                    ) : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
                             }
                             $val ? $rq = "INSERT INTO extended_service_information VALUES (" . $val . ")" : $rq = null;
                             $pearDB->query($rq);
@@ -1967,7 +1967,7 @@ function updateServiceNotifOptionTimeperiod($service_id = null, $ret = array())
 
     $rq = "UPDATE service SET ";
     $rq .= "timeperiod_tp_id2 = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '" . $service_id . "'";
     $dbResult = $pearDB->query($rq);
 }
@@ -1983,7 +1983,7 @@ function updateServiceNotifOptionTimeperiod_MC($service_id = null)
 
     $ret = $form->getSubmitValue("timeperiod_tp_id2");
 
-    if (isset($ret) && $ret !== null) {
+    if (isset($ret) && $ret != null) {
         $rq = "UPDATE service SET ";
         $rq .= "timeperiod_tp_id2 = '" . $ret . "' ";
         $rq .= "WHERE service_id = '" . $service_id . "'";

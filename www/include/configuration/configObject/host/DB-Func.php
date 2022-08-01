@@ -419,8 +419,8 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
             foreach ($row as $key2 => $value2) {
                 $key2 == "host_name" ? ($hostName = $value2 = $value2 . "_" . $i) : null;
                 $val
-                    ? $val .= ($value2 !== null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
-                    : $val .= ($value2 !== null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
+                    ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                 if ($key2 != "host_id") {
                     $fields[$key2] = $value2;
                 }
@@ -603,8 +603,8 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $ehi["ehi_id"] = null;
                         foreach ($ehi as $key2 => $value2) {
                             $val
-                                ? $val .= ($value2 !== null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
-                                : $val .= ($value2 !== null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
+                                ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
+                                : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                             if ($key2 != "ehi_id") {
                                 $fields[$key2] = $value2;
                             }
@@ -1996,7 +1996,7 @@ function updateHostNotifs($host_id = null, $ret = array())
 
     $rq = "UPDATE host SET ";
     $rq .= "host_notification_options  = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . implode(",", array_keys($ret)) . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . implode(",", array_keys($ret)) . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
     $dbResult = $pearDB->query($rq);
 }
@@ -2047,7 +2047,7 @@ function updateHostNotifOptionInterval($host_id = null, $ret = array())
 
     $rq = "UPDATE host SET ";
     $rq .= "host_notification_interval = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
     $dbResult = $pearDB->query($rq);
 }
@@ -2065,7 +2065,7 @@ function updateHostNotifOptionInterval_MC($host_id = null)
 
     $ret = $form->getSubmitValue("host_notification_interval");
 
-    if (isset($ret) && $ret !== null) {
+    if (isset($ret) && $ret != null) {
         $rq = "UPDATE host SET ";
         $rq .= "host_notification_interval = '" . $ret . "' ";
         $rq .= "WHERE host_id = '" . $host_id . "'";
@@ -2089,9 +2089,9 @@ function updateHostNotifOptionTimeperiod($host_id = null, $ret = array())
 
     $rq = "UPDATE host SET ";
     $rq .= "timeperiod_tp_id2 = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 }
 
 /**
@@ -2132,9 +2132,9 @@ function updateHostNotifOptionFirstNotificationDelay($host_id = null, $ret = arr
 
     $rq = "UPDATE host SET ";
     $rq .= "host_first_notification_delay = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 }
 
 /**
@@ -2179,7 +2179,7 @@ function updateHostNotifOptionRecoveryNotificationDelay($host_id = null, $ret = 
     }
     $rq = "UPDATE host SET ";
     $rq .= "host_recovery_notification_delay = ";
-    isset($ret) && $ret !== null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
+    isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
     $pearDB->query($rq);
 }
