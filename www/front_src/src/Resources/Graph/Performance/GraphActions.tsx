@@ -100,7 +100,7 @@ const GraphActions = ({
     setExporting(true);
     const bgcolor = theme.palette.background.default;
     exportToPng({
-      bgcolor,
+      bgcolor: theme.palette.background.default,
       element: performanceGraphRef.current as HTMLElement,
       ratio,
       title: `${resourceName}-performance`,
