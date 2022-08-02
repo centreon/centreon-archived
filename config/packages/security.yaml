@@ -17,6 +17,14 @@ security:
         authentication:
             pattern: ^.*(?<!administration)/authentication/(providers/configurations|users)(.*)$
             security: false
+        updates:
+            stateless: true
+            pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/updates$
+            security: true
+            custom_authenticators:
+                - security.provider.updatePlatformBody
+                - security.provider.updatePlatformToken
+            entry_point: security.provider.updatePlatformBody
         api:
             stateless: true
             pattern: ^(?!.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login)/.*
