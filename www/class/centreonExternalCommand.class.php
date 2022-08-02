@@ -451,9 +451,9 @@ class CentreonExternalCommand
         $dateTime3->sub(new \DateInterval('PT1H'));
         if ($dateTime3->format('H:m') === $dateTime->format('H:m')) {
             if ($start) {
-                return $dateTime3->getTimestamp() - 3600;
+                return $dateTime->getTimestamp() - 3600;
             } else {
-                return $dateTime3->getTimestamp();
+                return $dateTime->getTimestamp();
             }
         }
 
@@ -461,9 +461,9 @@ class CentreonExternalCommand
         $dateTime4->add(new \DateInterval('PT1H'));
         if ($dateTime4->format('H:m') === $dateTime->format('H:m')) {
             if ($start) {
-                return $dateTime4->getTimestamp();
+                return $dateTime->getTimestamp();
             } else {
-                return $dateTime4->getTimestamp() + 3600;
+                return $dateTime->getTimestamp() + 3600;
             }
         }
 
