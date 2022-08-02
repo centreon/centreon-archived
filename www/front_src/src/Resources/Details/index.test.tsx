@@ -994,46 +994,6 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the More icon is clicked', async () => {
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedDetails,
-        links: {
-          ...retrievedDetails.links,
-          uris: {
-            logs: '/logs',
-            reporting: '/reporting',
-          },
-        },
-      },
-    });
-
-    setUrlQueryParameters([
-      { name: 'details', value: serviceDetailsUrlParameters },
-    ]);
-
-    const { getByLabelText, getAllByLabelText } = renderDetails();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    await waitFor(() =>
-      expect(getByLabelText(labelShortcuts)).toBeInTheDocument(),
-    );
-
-    userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
-
-    expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
-      'href',
-      '/logs',
-    );
-    expect(getAllByLabelText(labelViewReport)[0]).toHaveAttribute(
-      'href',
-      '/reporting',
-    );
-  });
-
   it('sets the details according to the details URL query parameter when given', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
