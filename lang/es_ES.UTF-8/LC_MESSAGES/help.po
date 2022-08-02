@@ -4326,3 +4326,63 @@ msgstr "Ejecuta el comando definido en la configuración del recopilador (Config
 
 #  msgid "Allows user to deploy configuration."
 #  msgstr ""
+
+#  msgid "Fill in this field only if you want to specify the address on which Broker should listen"
+#  msgstr ""
+
+#  msgid "TCP port on which Broker should listen"
+#  msgstr ""
+
+#  msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
+#  msgstr ""
+
+#  msgid "Authorization token to be requested from the client (must be the same for both client and server)"
+#  msgstr ""
+
+#  msgid "Enable TLS 1.3 encryption"
+#  msgstr ""
+
+#  msgid "Full path to the file containing the private key in PEM format (required for encryption)"
+#  msgstr ""
+
+#  msgid "Full path to the file containing the certificate in PEM format (required for encryption)"
+#  msgstr ""
+
+#  msgid "Enable data compression"
+#  msgstr ""
+
+#  msgid "Enable data retention until the client is connected"
+#  msgstr ""
+
+#  msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
+#  msgstr ""
+
+#  msgid "Address of the server to which the client should connect"
+#  msgstr ""
+
+#  msgid "TCP port of the server to which the client should connect"
+#  msgstr ""
+
+#  msgid "Number of seconds between a lost or failed connection and the next try"
+#  msgstr ""
+
+#  msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
+#  msgstr ""
+
+#  msgid "Authorization token expected by the server (must be the same for both client and server)"
+#  msgstr ""
+
+#  msgid "If the server’s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate’s path.
+#  If the server’s certificate is self-signed, then specify its path.
+#  You can also add the certificate to the store of certificates trusted by the operating system.
+#  The file must be in PEM format."
+#  msgstr ""
+
+#  msgid "If the Common Name (CN) of the certificate is different from the value in the \"Server address\" field, the CN must be provided here"
+#  msgstr ""
+
+#  msgid "Enable compression"
+#  msgstr ""
+
+#  msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
+#  msgstr ""

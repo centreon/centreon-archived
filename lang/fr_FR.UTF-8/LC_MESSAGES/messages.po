@@ -16971,3 +16971,45 @@ msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
 
 msgid "Please use Web UI to update Centreon."
 msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
+
+msgid "Listening address (optional)"
+msgstr "Adresse d'écoute (optionnel)"
+
+msgid "Listening port"
+msgstr "Port d'écoute"
+
+msgid "Transport protocol"
+msgstr "Protocole de transport"
+
+msgid "Authorization token (optional)"
+msgstr "Jeton d’autorisation (optionnel)"
+
+msgid "Private key path"
+msgstr "Chemin de la clé privée"
+
+msgid "Certificate path"
+msgstr "Chemin du certificat serveur"
+
+msgid "Compression"
+msgstr "Compression"
+
+msgid "Enable retention"
+msgstr "Activer la rétention"
+
+msgid "Filter on event categories"
+msgstr "Filtrage des évènements par catégories"
+
+msgid "Server address"
+msgstr "Adresse du serveur"
+
+msgid "Server port"
+msgstr "Port de connexion"
+
+msgid "Retry interval (seconds)"
+msgstr "Intervalle entre deux tentatives"
+
+msgid "Trusted CA's certificate path (optional)"
+msgstr "Chemin du certificat de l’autorité de certification"
+
+msgid "Certificate Common Name (optional)"
+msgstr "\"Common Name\" du certificat du serveur"
