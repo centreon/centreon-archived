@@ -284,22 +284,15 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $datetime->setTime($hour, '00');
         }
 
-        $datetimeLessOneHour = clone $datetime;
-        $datetimeLessOneHour->sub(new \DateInterval('PT1H'));
-
-        if ($datetimeLessOneHour->format('H:m') === $datetime->format('H:m')) {
-            return $datetimeLessOneHour->getTimestamp() - 3600;
-        }
-
         return $datetime->getTimestamp();
     }
 
     private function manageSummerToWinterTimestamp(\Datetime $dateTime)
     {
         $datetimePlusOneHour = clone $dateTime;
-        $datetimePlusOneHour->add(new \DateInterval('PT1H'));
+        $datetimePlusOneHour->sub(new \DateInterval('PT1H'));
         if ($datetimePlusOneHour->format('H:m') === $dateTime->format('H:m')) {
-            return $dateTime->getTimestamp();
+            return $dateTime->getTimestamp() - 3600;
         }
 
         return $dateTime->getTimestamp();
@@ -338,7 +331,9 @@ class CentreonDowntimeBroker extends CentreonDowntime
             }
 
             # Check if we jump an hour
+            $before = $downtimeStartDate->getTimestamp();
             $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate, $downtime['dtp_start_time']);
+            //throw new \Exception($before . ' -> ' . $startTimestamp);
             $endTimestamp = $this->manageWinterToSummerTimestamp($downtimeEndDate, $downtime['dtp_end_time']);
 
             if ($startTimestamp == $endTimestamp) {
