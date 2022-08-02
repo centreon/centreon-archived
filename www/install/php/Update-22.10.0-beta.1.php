@@ -36,6 +36,9 @@ try {
     $errorMessage = "Unable to delete 'appKey' information from database";
     $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
 
+    $errorMessage = "Unable to drop 'app_key' from remote_servers table";
+    $pearDB->query("ALTER TABLE remote_servers DROP COLUMN `app_key`");
+
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
