@@ -284,6 +284,13 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $datetime->setTime($hour, '00');
         }
 
+        $datetimeLessOneHour = clone $datetime;
+        $datetimeLessOneHour->sub(new \DateInterval('PT1H'));
+
+        if ($datetimeLessOneHour->format('H:m') === $datetime->format('H:m')) {
+            return $datetimeLessOneHour->getTimestamp() - 3600;
+        }
+
         return $datetime->getTimestamp();
     }
 
