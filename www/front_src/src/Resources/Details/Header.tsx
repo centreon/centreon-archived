@@ -121,13 +121,17 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   const copyLink = (): Promise<void> => copy(window.location.href);
 
-  const navigateToResourceUris = (category: keyof ResourceUris): void => {
-    const url = replaceBasename({
-      endpoint: prop(category, resourceUris) || '',
-      newWord: '/',
-    });
+  const navigateToResourceUris = (
+    category: keyof ResourceUris,
+  ): (() => void) => {
+    return (): void => {
+      const url = replaceBasename({
+        endpoint: prop(category, resourceUris) || '',
+        newWord: '/',
+      });
 
-    navigate(`${url}`);
+      navigate(`${url}`);
+    };
   };
 
   if (details === undefined) {
@@ -213,7 +217,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelViewLogs}
         size="small"
         title={t(labelViewLogs)}
-        onClick={(): void => navigateToResourceUris('logs')}
+        onClick={navigateToResourceUris('logs')}
       >
         <LogsIcon fontSize="small" />
       </IconButton>
@@ -222,7 +226,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelViewReport}
         size="small"
         title={t(labelViewReport)}
-        onClick={(): void => navigateToResourceUris('reporting')}
+        onClick={navigateToResourceUris('reporting')}
       >
         <ReportIcon fontSize="small" />
       </IconButton>
