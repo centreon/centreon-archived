@@ -121,7 +121,7 @@ class CentreonCeip extends CentreonWebService
     private function getVisitorInformation(): array
     {
         $locale = $this->user->lang === 'browser'
-            ? null
+            ? \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']) . ".UTF-8"
             : $this->user->lang;
 
         $role = $this->user->admin
