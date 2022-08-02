@@ -160,64 +160,73 @@ const ServiceStatusCounter = (): JSX.Element => {
               pending={hasPending}
               onClick={toggleDetailedView}
             />
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Critical"
-              to={unhandledCriticalServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledCriticalServicesCriterias,
-                link: unhandledCriticalServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.critical.unhandled}
-                severityCode={SeverityCode.High}
+            <div className={classes.subMenuRight}>
+              <div
+                className={`${classes.subMenuCounters} ${classes.subMenuCounters_marginLeft}`}
+              >
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Services Critical"
+                  to={unhandledCriticalServicesLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: unhandledCriticalServicesCriterias,
+                    link: unhandledCriticalServicesLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.critical.unhandled}
+                    severityCode={SeverityCode.High}
+                  />
+                </Link>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Services Warning"
+                  to={unhandledWarningServicesLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: unhandledWarningServicesCriterias,
+                    link: unhandledWarningServicesLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.warning.unhandled}
+                    severityCode={SeverityCode.Medium}
+                  />
+                </Link>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Services Unknown"
+                  to={unhandledUnknownServicesLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: unhandledUnknownServicesCriterias,
+                    link: unhandledUnknownServicesLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.unknown.unhandled}
+                    severityCode={SeverityCode.Low}
+                  />
+                </Link>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Services Ok"
+                  to={okServicesLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: okServicesCriterias,
+                    link: okServicesLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.ok}
+                    severityCode={SeverityCode.Ok}
+                  />
+                </Link>
+              </div>
+              <IconToggleSubmenu
+                data-testid="submenu-service"
+                rotate={toggled}
+                onClick={toggleDetailedView}
               />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Warning"
-              to={unhandledWarningServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledWarningServicesCriterias,
-                link: unhandledWarningServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.warning.unhandled}
-                severityCode={SeverityCode.Medium}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Unknown"
-              to={unhandledUnknownServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledUnknownServicesCriterias,
-                link: unhandledUnknownServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.unknown.unhandled}
-                severityCode={SeverityCode.Low}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Ok"
-              to={okServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: okServicesCriterias,
-                link: okServicesLink,
-              })}
-            >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
-            </Link>
-            <IconToggleSubmenu
-              data-testid="submenu-service"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
+            </div>
             <div
               className={clsx(classes.subMenuToggle, {
                 [classes.subMenuToggleActive]: toggled,

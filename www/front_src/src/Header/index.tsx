@@ -13,43 +13,34 @@ const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
+    justifyContent: 'space-between',
   },
   header: {
     background: theme.palette.common.black,
+    paddingInline: theme.spacing(1.5),
     width: '100%',
   },
-  hookComponent: {
-    display: 'flex',
-    flex: 0.4,
-    justifyContent: 'flex-end',
-  },
-  hostStatusContainer: {
-    display: 'flex',
-    flex: 0.35,
-    justifyContent: 'center',
-  },
-  pollerContainer: {
-    flex: 0.4,
-  },
-  rightContainer: {
+  leftContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 0.9,
-  },
-  serviceStatusContainer: {
-    display: 'flex',
-    flex: 0.45,
+    gap: theme.spacing(3),
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(2.5),
+    },
+    [theme.breakpoints.down(900)]: {
+      gap: theme.spacing(1.5),
+    },
+    [theme.breakpoints.down(600)]: {
+      gap: theme.spacing(1),
+    },
   },
   userMenu: {
     display: 'flex',
-    flex: 0.8,
     justifyContent: 'flex-end',
   },
   userMenuContainer: {
     alignItems: 'center',
     display: 'flex',
-    flex: 0.3,
-    justifyContent: 'flex-end',
   },
 }));
 
@@ -60,22 +51,22 @@ const Header = (): JSX.Element => {
   return (
     <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
-        <div className={classes.pollerContainer}>
-          <PollerMenu />
-        </div>
-        <div className={classes.rightContainer}>
-          <div className={classes.hookComponent}>
-            <FederatedComponent path="/bam/header/topCounter" />
+        <div className={classes.leftContainer}>
+          <div>
+            <PollerMenu />
           </div>
-          <div className={classes.hostStatusContainer}>
-            <HostStatusCounter />
-          </div>
-          <div className={classes.serviceStatusContainer}>
+          <div>
             <ServiceStatusCounter />
           </div>
-          <div className={classes.userMenuContainer}>
-            <UserMenu headerRef={headerRef} />
+          <div>
+            <HostStatusCounter />
           </div>
+          <div>
+            <FederatedComponent path="/bam/header/topCounter" />
+          </div>
+        </div>
+        <div className={classes.userMenuContainer}>
+          <UserMenu headerRef={headerRef} />
         </div>
       </div>
     </header>

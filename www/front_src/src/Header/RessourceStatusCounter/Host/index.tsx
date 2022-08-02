@@ -160,50 +160,58 @@ const HostStatusCounter = (): JSX.Element => {
               pending={hasPending}
               onClick={toggleDetailedView}
             />
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Down"
-              to={unhandledDownHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledDownHostsCriterias,
-                link: unhandledDownHostsLink,
-              })}
-            >
-              <StatusCounter
-                count={data.down.unhandled}
-                severityCode={SeverityCode.High}
+            <div className={classes.subMenuRight}>
+              <div className={classes.subMenuCounters}>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Hosts Down"
+                  to={unhandledDownHostsLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: unhandledDownHostsCriterias,
+                    link: unhandledDownHostsLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.down.unhandled}
+                    severityCode={SeverityCode.High}
+                  />
+                </Link>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Hosts Unreachable"
+                  to={unhandledUnreachableHostsLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: unhandledUnreachableHostsCriterias,
+                    link: unhandledUnreachableHostsLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.unreachable.unhandled}
+                    severityCode={SeverityCode.Low}
+                  />
+                </Link>
+                <Link
+                  className={clsx(classes.link, classes.wrapMiddleIcon)}
+                  data-testid="Hosts Up"
+                  to={upHostsLink}
+                  onClick={changeFilterAndNavigate({
+                    criterias: upHostsCriterias,
+                    link: upHostsLink,
+                  })}
+                >
+                  <StatusCounter
+                    count={data.ok}
+                    severityCode={SeverityCode.Ok}
+                  />
+                </Link>
+              </div>
+              <IconToggleSubmenu
+                data-testid="submenu-hosts"
+                rotate={toggled}
+                onClick={toggleDetailedView}
               />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Unreachable"
-              to={unhandledUnreachableHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledUnreachableHostsCriterias,
-                link: unhandledUnreachableHostsLink,
-              })}
-            >
-              <StatusCounter
-                count={data.unreachable.unhandled}
-                severityCode={SeverityCode.Low}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Up"
-              to={upHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: upHostsCriterias,
-                link: upHostsLink,
-              })}
-            >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
-            </Link>
-            <IconToggleSubmenu
-              data-testid="submenu-hosts"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
+            </div>
+
             <div
               className={clsx(classes.subMenuToggle, {
                 [classes.subMenuToggleActive]: toggled,

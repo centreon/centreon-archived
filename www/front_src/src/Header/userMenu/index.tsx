@@ -21,7 +21,10 @@ import {
   ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
-import UserIcon from '@mui/icons-material/AccountCircle';
+// import UserIcon from '@mui/icons-material/AccountCircle';
+import UserIcon from '@mui/icons-material/Person';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import SearchIcon from '@mui/icons-material/Search';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -82,6 +85,15 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  badge: {
+    alignItems: 'center',
+    borderRadius: '100%',
+    display: 'flex',
+    fontSize: '12px',
+    height: 15,
+    justifyContent: 'spaceBetween',
+    minWidth: 15,
+  },
   button: {
     '&:hover': {
       '&:after': {
@@ -94,6 +106,11 @@ const useStyles = makeStyles((theme) => ({
         right: 0,
         top: 0,
       },
+    },
+  },
+  clock: {
+    [theme.breakpoints.down(900)]: {
+      display: 'none',
     },
   },
   containerList: {
@@ -118,6 +135,14 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     minWidth: theme.spacing(3.75),
   },
+  icons: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: theme.spacing(2),
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(1),
+    },
+  },
   loaderUserMenu: {
     marginRight: theme.spacing(22 / 8),
   },
@@ -133,12 +158,25 @@ const useStyles = makeStyles((theme) => ({
   nameContainer: {
     padding: theme.spacing(0, 2, 0.25, 2.25),
   },
+  notificationIcon: {
+    color: theme.palette.common.white,
+    cursor: 'pointer',
+    fontSize: theme.spacing(3.3),
+  },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
   popper: {
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
+  },
+  searchIcon: {
+    color: theme.palette.common.white,
+    cursor: 'pointer',
+    fontSize: theme.spacing(3.3),
+    [theme.breakpoints.down(600)]: {
+      display: 'none',
+    },
   },
   switchItem: {
     padding: theme.spacing(0, 2, 0.25, 11 / 8),
@@ -148,24 +186,29 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
+
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    marginLeft: theme.spacing(1),
+    fontSize: theme.spacing(3.3),
   },
   wrapRightUser: {
     alignItems: 'center',
     background: theme.palette.common.black,
     display: 'flex',
     flexWrap: 'wrap',
-    marginLeft: theme.spacing(0.5),
     padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
+    width: '100%',
   },
   wrapRightUserItems: {
     display: 'flex',
-    flex: '1 0 76%',
-    justifyContent: 'flex-end',
+    gap: theme.spacing(8),
+    justifyContent: 'space-between',
+    width: '100%',
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(2.5),
+    },
   },
 }));
 interface Props {
@@ -346,8 +389,21 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
         className={classes.wrapRightUserItems}
         ref={profile as RefObject<HTMLDivElement>}
       >
-        <Clock />
-        <div>
+        <div className={classes.clock}>
+          <Clock />
+        </div>
+        <div className={classes.icons}>
+          <Badge>
+            <SearchIcon className={classes.searchIcon} />
+          </Badge>
+
+          <Badge
+            badgeContent={4}
+            classes={{ badge: classes.badge }}
+            color="error"
+          >
+            <NotificationsNoneIcon className={classes.notificationIcon} />
+          </Badge>
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire

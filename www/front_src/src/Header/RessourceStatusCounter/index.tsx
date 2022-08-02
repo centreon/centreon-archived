@@ -14,6 +14,33 @@ export const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
   },
+  subMenuCounters: {
+    display: 'flex',
+    gap: theme.spacing(0.5),
+
+    [theme.breakpoints.down(900)]: {
+      display: 'grid',
+      gridTemplateColumns: 'auto auto',
+    },
+  },
+  subMenuCounters_marginLeft: {
+    marginLeft: theme.spacing(-1),
+    [theme.breakpoints.down(900)]: {
+      marginLeft: 0,
+    },
+  },
+  subMenuRight: {
+    alignItem: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.8),
+    justifyContent: 'space-between',
+    [theme.breakpoints.down(900)]: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: theme.spacing(0.1),
+    },
+  },
   subMenuToggle: {
     backgroundColor: theme.palette.common.black,
     boxSizing: 'border-box',
@@ -23,7 +50,10 @@ export const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
-    width: '100%',
+    width: '135%',
+    [theme.breakpoints.down(900)]: {
+      width: '150%',
+    },
     zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {

@@ -53,14 +53,30 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   container: {
+    borderRight: '1px solid white',
     display: 'flex',
-    flex: 0.4,
+    paddingRight: theme.spacing(3),
+    [theme.breakpoints.down(1200)]: {
+      paddingRight: theme.spacing(1.5),
+    },
+    [theme.breakpoints.down(900)]: {
+      paddingRight: theme.spacing(0.8),
+    },
   },
   label: {
     color: theme.palette.common.white,
   },
   link: {
     textDecoration: 'none',
+  },
+  pollarHeaderRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+    justifyContent: 'space-between',
+    [theme.breakpoints.down(900)]: {
+      gap: theme.spacing(0.6),
+    },
   },
   pollerDetailRow: {
     borderBottomStyle: 'solid',
@@ -81,7 +97,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
-    width: '100%',
+    width: '160%',
+    [theme.breakpoints.down(900)]: {
+      width: '180%',
+    },
     zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {
@@ -185,15 +204,17 @@ const PollerMenu = (): JSX.Element | null => {
             iconName={t(labelPoller)}
             onClick={toggleDetailedView}
           />
-          <PollerStatusIcon issues={issues} />
 
-          <IconToggleSubmenu
-            cursor="pointer"
-            data-testid="submenu-poller"
-            iconType="arrow"
-            rotate={toggled}
-            onClick={toggleDetailedView}
-          />
+          <div className={classes.pollarHeaderRight}>
+            <PollerStatusIcon issues={issues} />
+            <IconToggleSubmenu
+              data-testid="submenu-poller"
+              iconType="arrow"
+              rotate={toggled}
+              onClick={toggleDetailedView}
+            />
+          </div>
+
           <div
             className={clsx(classes.subMenuToggle, {
               [classes.subMenuToggleActive]: toggled,
