@@ -40,7 +40,9 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const equalsService = equals('service');
   const equalsMetaService = equals('metaservice');
 
-  const isService = or(equalsService(type), equalsMetaService(type));
+  const isService =
+    or(equalsService(type), equalsMetaService(type)) ||
+    equals(type, 'anomalydetection');
 
   return (
     <div className={classes.container}>

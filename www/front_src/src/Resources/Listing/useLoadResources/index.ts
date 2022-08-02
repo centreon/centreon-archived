@@ -128,7 +128,7 @@ const useLoadResources = (): LoadResources => {
       endpoint: selectedResourceDetailsEndpoint,
     })
       .then((data) => {
-        if (!equals(data?.id, 14)) {
+        if (!equals(data?.id, 26)) {
           setDetails(data);
 
           return;
