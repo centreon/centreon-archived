@@ -302,7 +302,7 @@ function updateGroupActions($aclActionId, $ret = array())
     }
     global $form, $pearDB;
 
-    $rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $aclActionId . "'";
+    $rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = :acl_action_id";
     $statement = $pearDB->prepare($rq);
     $statement->bindValue(':acl_action_id', (int) $aclActionId, \PDO::PARAM_INT);
     $statement->execute();
