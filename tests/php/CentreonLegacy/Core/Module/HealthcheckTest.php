@@ -57,9 +57,11 @@ class HealthcheckTest extends TestCase
 
         $this->container[ServiceProvider::CONFIGURATION]
             ->method('getModulePath')
-            ->will($this->returnCallback(function () {
+            ->will(
+                $this->returnCallback(function () {
                     return $this->fs->path('/');
-                }));
+                })
+            );
 
         $this->service = $this->getMockBuilder(Module\Healthcheck::class)
             ->setConstructorArgs([
@@ -89,7 +91,11 @@ class HealthcheckTest extends TestCase
      * @param int $licenseExpirationV
      */
     protected function setRequirementMockMethodValue(
-        $messageV = null, $customActionV = null, $warningV = false, $criticalV = false, $licenseExpirationV = null
+        $messageV = null,
+        $customActionV = null,
+        $warningV = false,
+        $criticalV = false,
+        $licenseExpirationV = null
     ) {
         $this->service
             ->method('getRequirements')

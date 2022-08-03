@@ -49,7 +49,7 @@ class DependencyInjector implements ArrayAccess
     /**
      * Setter
      *
-     * @param string|int $offset
+     * @param mixed $offset
      * @param mixed $value
      */
     public function offsetSet($offset, $value): void
@@ -62,8 +62,8 @@ class DependencyInjector implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
-     * @return mixed
+     * @param mixed $offset
+     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -71,7 +71,7 @@ class DependencyInjector implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
+     * @param mixed $offset
      */
     public function offsetUnset($offset): void
     {
@@ -81,7 +81,7 @@ class DependencyInjector implements ArrayAccess
     /**
      * Getter
      *
-     * @param string|int $offset
+     * @param mixed $offset
      * @return mixed
      */
     public function offsetGet($offset): mixed

@@ -347,7 +347,8 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $startTimestamp = $this->manageSummerToWinterTimestamp($downtimeStartDate);
 
             $approaching = false;
-            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+            if (
+                preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
                 && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])
             ) {
                 $approaching = $this->isWeeklyApproachingDowntime(
@@ -363,7 +364,8 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     $downtime['dtp_day_of_month'],
                     $tomorrow
                 );
-            } elseif (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+            } elseif (
+                preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
                 && $downtime['dtp_month_cycle'] != 'none'
             ) {
                 $approaching = $this->isSpecificDateDowntime(

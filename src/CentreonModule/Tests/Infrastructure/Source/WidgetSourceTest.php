@@ -109,7 +109,8 @@ class WidgetSourceTest extends TestCase
         $this->fs->createDirectory('/widgets');
         $this->fs->createDirectory('/widgets/' . static::$widgetName);
         $this->fs->createFile(
-            '/widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE, static::buildConfContent()
+            '/widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE,
+            static::buildConfContent(),
         );
 
         // provide services

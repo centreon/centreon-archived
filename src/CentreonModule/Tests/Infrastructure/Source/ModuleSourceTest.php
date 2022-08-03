@@ -119,7 +119,8 @@ class ModuleSourceTest extends TestCase
         $this->fs->createDirectory('/modules');
         $this->fs->createDirectory('/modules/' . static::$moduleName);
         $this->fs->createFile(
-            '/modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE, static::buildConfContent()
+            '/modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE,
+            static::buildConfContent(),
         );
 
         // provide services
