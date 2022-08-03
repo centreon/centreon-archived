@@ -61,14 +61,14 @@ class UpdateEventSubscriber implements EventSubscriberInterface
      */
     public function validateCentreonWebVersionOrFail(RequestEvent $event)
     {
-        $this->info('Checking if route matches updates endpoint');
+        $this->debug('Checking if route matches updates endpoint');
         if (
             preg_match(
                 '#^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/updates$#',
                 $event->getRequest()->getPathInfo(),
             )
         ) {
-            $this->info('Getting Centreon web current version');
+            $this->debug('Getting Centreon web current version');
             $currentVersion = $this->readVersionRepository->findCurrentVersion();
 
             if ($currentVersion === null) {
@@ -77,7 +77,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
                 throw new \Exception($errorMessage);
             }
 
-            $this->info(
+            $this->debug(
                 sprintf(
                     'Comparing installed version %s to required version %s',
                     $currentVersion,
@@ -90,7 +90,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
                     self::MINIMAL_INSTALLED_VERSION,
                     $currentVersion,
                 );
-                $this->error($errorMessage);
+                $this->debug($errorMessage);
                 throw new \Exception($errorMessage);
             }
         }
