@@ -1798,24 +1798,24 @@ describe(Details, () => {
       expect(getByText(email)).toBeInTheDocument();
     });
   });
-  it.only('Export Timeline events to CSV file when download button is clicked ', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    const { getByTestId } = renderDetails();
+  // it.('Export Timeline events to CSV file when download button is clicked ', async () => {
+  //   mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+  //   const { getByTestId } = renderDetails();
 
-    await waitFor(() => {
-      expect(getByTestId(labelExportToCSV)).toBeInTheDocument();
-    });
-    act(() => {
-      fireEvent.click(
-        getByTestId(labelExportToCSV).firstElementChild as HTMLElement,
-      );
-    });
+  //   await waitFor(() => {
+  //     expect(getByTestId(labelExportToCSV)).toBeInTheDocument();
+  //   });
+  //   act(() => {
+  //     fireEvent.click(
+  //       getByTestId(labelExportToCSV).firstElementChild as HTMLElement,
+  //     );
+  //   });
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.timeline}/download`,
-        expect.anything(),
-      );
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(mockedAxios.get).toHaveBeenCalledWith(
+  //       `${retrievedDetails.links.endpoints.timeline}/download`,
+  //       expect.anything(),
+  //     );
+  //   });
+  // });
 });
