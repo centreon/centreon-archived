@@ -93,19 +93,10 @@ class NotifyMasterService
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
         $repository = $this->dbManager->getRepository(InformationsRepository::class);
-        $applicationKey = $repository->getOneByKey('appKey');
         $version = $repository->getOneByKey('version');
-
-        if (empty($applicationKey)) {
-            return [
-                'status' => self::FAIL,
-                'details' => self::NO_APP_KEY
-            ];
-        }
 
         try {
             $curlData = [
-                'app_key' => $applicationKey->getValue(),
                 'version' => $version->getValue(),
                 'http_method' => $data['remoteHttpMethod'] ?? 'http',
                 'http_port' => $data['remoteHttpPort'] ?? '',

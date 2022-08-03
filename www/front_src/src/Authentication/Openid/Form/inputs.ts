@@ -1,4 +1,4 @@
-import { equals, isEmpty, isNil, not, path, prop } from 'ramda';
+import { equals, isEmpty, not, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import {
@@ -32,7 +32,7 @@ import {
   labelDeleteRelation,
   labelAuthorizationKey,
 } from '../translatedLabels';
-import { AuthenticationType, AuthorizationRule } from '../models';
+import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
@@ -249,20 +249,6 @@ export const inputs: Array<InputProps> = [
         claimValue: '',
       },
       deleteLabel: labelDeleteRelation,
-      getRequired: ({ values, index }): boolean => {
-        const tableValues = prop('authorizationRules', values);
-
-        const rowValues = path<AuthorizationRule>(
-          ['authorizationRules', index],
-          values,
-        );
-
-        return isNil(prop('contactGroup', values))
-          ? not(isNil(rowValues))
-          : isNil(tableValues) ||
-              isEmpty(rowValues?.claimValue) ||
-              isNil(rowValues?.accessGroup);
-      },
     },
     label: labelDefineRelationAuthorizationValueAndAccessGroup,
     type: InputType.FieldsTable,

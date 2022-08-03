@@ -89,10 +89,10 @@ try {
 
     //If it doesn't exist, create it
     if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
-        $db->exec("CREATE DATABASE " . $parameters['db_configuration']);
+        $db->exec('CREATE DATABASE `' . $parameters['db_configuration'] . '`');
 
         //Create table
-        $db->exec('use ' . $parameters['db_configuration']);
+        $db->exec('use `' . $parameters['db_configuration'] . '`');
         $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
         if ("0" != $result) {
             $return['msg'] = $result;
@@ -115,7 +115,7 @@ try {
         }
     }
     //Create table
-    $db->exec('use ' . $parameters['db_configuration']);
+    $db->exec('use `' . $parameters['db_configuration'] . '`');
     $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
     if ("0" != $result) {
         $return['msg'] = $result;

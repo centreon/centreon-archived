@@ -65,7 +65,7 @@ try {
  * Create tables
  */
 try {
-    $result = $link->query('use ' . $parameters['db_configuration']);
+    $result = $link->query('use `' . $parameters['db_configuration'] . '`');
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_configuration'] . '" database');
     }
@@ -138,9 +138,7 @@ if ($row = $resTimezone->fetch()) {
 $link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')");
 
 # Generate random key for this instance and set it to be not central and not remote
-$uniqueKey = md5(uniqid(rand(), true));
 $informationsTableInsert = "INSERT INTO `informations` (`key`,`value`) VALUES
-    ('appKey', '{$uniqueKey}'),
     ('isRemote', 'no'),
     ('isCentral', 'yes')";
 
