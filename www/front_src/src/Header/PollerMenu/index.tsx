@@ -49,7 +49,14 @@ interface PollerData {
 
 const useStyles = makeStyles((theme) => ({
   confButton: {
+    '&:hover': {
+      background: '#969faf',
+    },
+    background: theme.palette.common.black,
+    border: '1px solid white',
+    color: theme.palette.common.white,
     display: 'flex',
+    fontSize: theme.spacing(1.4),
     marginTop: theme.spacing(1),
   },
   container: {
@@ -97,9 +104,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
-    width: '160%',
+    width: '180%',
     [theme.breakpoints.down(900)]: {
-      width: '180%',
+      width: '200%',
     },
     zIndex: theme.zIndex.mobileStepper,
   },
@@ -250,9 +257,10 @@ const PollerMenu = (): JSX.Element | null => {
               </div>
             )}
             {allowPollerConfiguration && (
-              <Paper className={classes.confButton}>
+              <Paper>
                 <Button
                   fullWidth
+                  className={classes.confButton}
                   data-testid={labelConfigurePollers}
                   size="small"
                   onClick={redirectToPollerConfiguration}

@@ -30,7 +30,14 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   exportButton: {
+    '&:hover': {
+      background: '#969faf',
+    },
+    background: theme.palette.common.black,
+    border: '1px solid white',
+    color: theme.palette.common.white,
     display: 'flex',
+    fontSize: theme.spacing(1.4),
     marginTop: theme.spacing(1),
   },
   pollerText: {
@@ -88,8 +95,9 @@ const ExportConfiguration = ({
 
   return (
     <>
-      <Paper className={classes.exportButton}>
+      <Paper>
         <Button
+          className={classes.exportButton}
           data-testid={labelExportConfiguration}
           disabled={disableButton}
           size="small"

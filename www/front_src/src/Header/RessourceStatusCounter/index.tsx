@@ -52,9 +52,15 @@ export const useStyles = makeStyles((theme) => ({
     top: '100%',
     width: '135%',
     [theme.breakpoints.down(900)]: {
-      width: '150%',
+      width: '170%',
     },
     zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggle_extraWidth: {
+    width: '170%',
+    [theme.breakpoints.down(900)]: {
+      width: '190%',
+    },
   },
   subMenuToggleActive: {
     display: 'block',
