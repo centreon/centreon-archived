@@ -46,13 +46,6 @@ services:
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
 
-    Core\Platform\Infrastructure\Api\UpdateVersions\UpdateVersionsController:
-        arguments: ['@security.authenticator.manager.api', '@security.token_storage']
-        #arguments: ['@security.provider.tokenapi']
-    #Symfony\Component\Security\Http\Authentication\AuthenticatorManagerInterface:
-    #    class: "@security.authenticator.manager"
-    #    class: Symfony\Component\Security\Http\Authentication\AuthenticatorManager
-
     security.provider.tokenapi:
         class: Security\TokenAPIAuthenticator
         public: false

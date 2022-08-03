@@ -24,12 +24,6 @@ declare(strict_types=1);
 namespace Core\Platform\Infrastructure\Api\UpdateVersions;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Authentication\AuthenticatorManagerInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticatorManager;
-use Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Security\TokenAPIAuthenticator;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Contact\Contact;
@@ -37,63 +31,23 @@ use Core\Platform\Application\UseCase\UpdateVersions\{
     UpdateVersions,
     UpdateVersionsPresenterInterface
 };
-use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Core\Application\Common\UseCase\ForbiddenResponse;
 
 class UpdateVersionsController extends AbstractController
 {
     use LoggerTrait;
 
-    private const MINIMAL_INSTALLED_VERSION = '22.04.0';
-
-    public function __construct(
-        //private TokenAPIAuthenticator $authenticatorManager,
-        private AuthenticatorManagerInterface $authenticatorManager,
-        private TokenStorageInterface $token,
-    ) {
-    }
-
     /**
-     * @param ReadVersionRepositoryInterface $readVersionRepository
      * @param UpdateVersions $useCase
      * @param Request $request
      * @param UpdateVersionsPresenterInterface $presenter
      * @return object
      */
     public function __invoke(
-        ReadVersionRepositoryInterface $readVersionRepository,
         UpdateVersions $useCase,
         Request $request,
         UpdateVersionsPresenterInterface $presenter
     ): object {
-        $currentVersion = $readVersionRepository->findCurrentVersion();
-        if ($currentVersion === null || version_compare($currentVersion, self::MINIMAL_INSTALLED_VERSION, '<')) {
-            $presenter->setResponseStatus(
-                new ForbiddenResponse(
-                    sprintf('Centreon installed version %s required', self::MINIMAL_INSTALLED_VERSION)
-                        . ($currentVersion !== null ? sprintf(' (%s installed)', $currentVersion) : ''),
-                ),
-            );
-
-            return $presenter->show();
-        }
-
-        $this->denyAccessUnlessGrantedForApiConfiguration();
-
-        //dump($this->token->getToken());
-
-        //dump(get_class($this->authenticatorManager));
-        //dump($request->attributes->get('_security_authenticators'));
-        //dump($request->attributes->get('_security_authenticators'));
-        //dump($request->attributes->get('_security_skipped_authenticators'));
-        //dump($request->attributes);
-        dump($this->authenticatorManager->authenticateRequest($request));
-        //dump($this->authenticatorManager);
-
-        $contact = $this->getUser();
-        dump($contact);
-
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         /**
