@@ -72,9 +72,9 @@ class UpdateEventSubscriber implements EventSubscriberInterface
             $currentVersion = $this->readVersionRepository->findCurrentVersion();
 
             if ($currentVersion === null) {
-                throw new \Exception(
-                    sprintf('Required Centreon installed version is %s', self::MINIMAL_INSTALLED_VERSION),
-                );
+                $errorMessage = sprintf('Required Centreon installed version is %s', self::MINIMAL_INSTALLED_VERSION);
+                $this->error($errorMessage);
+                throw new \Exception($errorMessage);
             }
 
             $this->info(
