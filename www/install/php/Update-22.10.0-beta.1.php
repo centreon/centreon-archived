@@ -35,12 +35,12 @@ try {
 
     $errorMessage = "Unable to delete 'appKey' information from database";
     $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
+    $pearDB->commit();
+
     if ($pearDB->isColumnExist('remote_servers', 'app_key') === 1) {
         $errorMessage = "Unable to drop 'app_key' from remote_servers table";
         $pearDB->query("ALTER TABLE remote_servers DROP COLUMN `app_key`");
     }
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
