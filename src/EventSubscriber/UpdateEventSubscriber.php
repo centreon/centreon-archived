@@ -31,7 +31,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
 {
     use LoggerTrait;
 
-    private const MINIMAL_INSTALLED_VERSION = '22.11.0';
+    private const MINIMAL_INSTALLED_VERSION = '22.04.0';
 
     /**
      * @param ReadVersionRepositoryInterface $readVersionRepository
@@ -48,7 +48,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => [
-                ['checkCentreonWebVersion', 35],
+                ['validateCentreonWebVersionOrFail', 35],
             ],
         ];
     }

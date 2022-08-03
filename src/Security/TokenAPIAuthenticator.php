@@ -36,7 +36,6 @@ use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -47,7 +46,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
  *
  * @package Security
  */
-class TokenAPIAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface, AuthenticatorInterface
+class TokenAPIAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     /**
      * @var AuthenticationRepositoryInterface
