@@ -5,27 +5,27 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 ** Variables.
 */
 def serie = '21.10'
-def stableBranch = "21.10.x"
-def devBranch = "dev-21.10.x"
+def stableBranch = "${serie}.x"
+def devBranch = "dev-${serie}.x"
 env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 
 if (env.BRANCH_NAME.startsWith("hotfix-") || env.BRANCH_NAME.startsWith("release-")) {
   env.BUILD = 'RELEASE'
-  env.REPO = 'testing'
   env.DELIVERY_STAGE = 'Delivery to testing'
-  env.DOCKER_STAGE = 'Docker packaging with testing rpms'
+  env.DOCKER_STAGE = 'Docker packaging'
 } else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
   env.DELIVERY_STAGE = 'Delivery to canary'
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
-  env.REPO = 'unstable'
   env.DELIVERY_STAGE = 'Delivery to unstable'
   env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
 def buildBranch = env.BRANCH_NAME
