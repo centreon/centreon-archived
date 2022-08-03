@@ -16963,3 +16963,9 @@ msgstr "Le module \"%s\" est manquant"
 
 msgid "An error occured while retrieving details of module \"%s\""
 msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
+
+msgid "Required Centreon installed version is %s"
+msgstr "La version installée de Centreon requise est %s"
+
+msgid "Required Centreon installed version is %s (%s installed)"
+msgstr "La version installée de Centreon requise est %s (%s installée)"

@@ -74,7 +74,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
             if ($currentVersion === null) {
                 $errorMessage = sprintf('Required Centreon installed version is %s', self::MINIMAL_INSTALLED_VERSION);
                 $this->error($errorMessage);
-                throw new \Exception($errorMessage);
+                throw new \Exception(_($errorMessage));
             }
 
             $this->debug(
@@ -91,7 +91,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
                     $currentVersion,
                 );
                 $this->debug($errorMessage);
-                throw new \Exception($errorMessage);
+                throw new \Exception(_($errorMessage));
             }
         }
     }
