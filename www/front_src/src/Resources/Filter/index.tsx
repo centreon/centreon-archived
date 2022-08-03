@@ -100,7 +100,7 @@ const renderClearFilter = (onClear) => (): JSX.Element => {
   );
 };
 interface DynamicCriteriaResult {
-  result: Array<{ name: string }>;
+  result: Array<{ level: string; name: string }>;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -170,7 +170,7 @@ const Filter = (): JSX.Element => {
     criteria,
     values,
   }: DynamicCriteriaParametersAndValues): void => {
-    const { buildAutocompleteEndpoint, autocompleteSearch } = criteria;
+    const { buildAutocompleteEndpoint, autocompleteSearch, label } = criteria;
 
     const lastValue = last(values);
 
@@ -197,13 +197,17 @@ const Filter = (): JSX.Element => {
         },
       }),
     }).then(({ result }): void => {
-      const names = pluck('name', result);
+      const results = label.includes('severity level')
+        ? pluck('level', result)
+        : pluck('name', result);
 
-      const lastValueEqualsToAResult = find(equals(lastValue), names);
+      const formattedResult = results.map((item) => item.toString());
 
-      const notSelectedValues = difference(names, values);
+      const lastValueEqualsToAResult = find(equals(lastValue), formattedResult);
 
-      if (or(lastValueEqualsToAResult, isEmpty(names))) {
+      const notSelectedValues = difference(formattedResult, values);
+
+      if (or(lastValueEqualsToAResult, isEmpty(formattedResult))) {
         const res = [
           ...notSelectedValues,
           ...map(concat(','), notSelectedValues),
@@ -214,7 +218,7 @@ const Filter = (): JSX.Element => {
         return;
       }
 
-      setAutoCompleteSuggestions(names);
+      setAutoCompleteSuggestions(formattedResult);
     });
   };
 

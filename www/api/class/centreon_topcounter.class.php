@@ -382,7 +382,7 @@ class CentreonTopCounter extends CentreonWebService
             }
             $changeStateServers = getChangeState($changeStateServers);
             foreach ($pollers as $poller) {
-                if ($changeStateServers[$poller['id']]) {
+                if ($poller['updated']) {
                     $result['pollers'][] = array(
                         'id' => $poller['id'],
                         'name' => $poller['name'],
@@ -759,7 +759,7 @@ class CentreonTopCounter extends CentreonWebService
     {
         /* Get the list of configured pollers */
         $listPoller = array();
-        $query = 'SELECT id, name, last_restart FROM nagios_server WHERE ns_activate = "1"';
+        $query = 'SELECT id, name, last_restart, updated FROM nagios_server WHERE ns_activate = "1"';
 
         /* Add ACL */
         $aclPoller = $this->centreon->user->access->getPollerString('id');
@@ -783,7 +783,8 @@ class CentreonTopCounter extends CentreonWebService
             $listPoller[$row['id']] = array(
                 'id' => $row['id'],
                 'name' => $row['name'],
-                'lastRestart' => $row['last_restart']
+                'lastRestart' => $row['last_restart'],
+                'updated' => $row['updated']
             );
         }
         return $listPoller;
@@ -878,19 +879,20 @@ class CentreonTopCounter extends CentreonWebService
 
         $query = "SELECT * FROM log_action WHERE action_log_date > $lastRestart " .
             "AND ((object_type = 'host' AND ((action_type = 'd' AND object_id IN (SELECT host_id FROM hosts)) " .
-            "OR object_id IN (SELECT host_host_id FROM " .
-            $conf_centreon['db'] . ".ns_host_relation WHERE nagios_server_id = '$pollerId'))) " .
+            "OR object_id IN (SELECT host_host_id FROM `" .
+            $conf_centreon['db'] . "`.ns_host_relation WHERE nagios_server_id = '$pollerId'))) " .
             "OR (object_type = 'service' AND ((action_type = 'd' AND object_id IN (SELECT service_id FROM services)) OR " .
-            "object_id IN (SELECT service_service_id FROM " .
-            $conf_centreon['db'] . ".ns_host_relation nhr, " . $conf_centreon['db'] . ".host_service_relation hsr " .
+            "object_id IN (SELECT service_service_id FROM `" .
+            $conf_centreon['db'] . "`.ns_host_relation nhr, `" . $conf_centreon['db'] . "`.host_service_relation hsr " .
             "WHERE nagios_server_id = '$pollerId' AND hsr.host_host_id = nhr.host_host_id)))" .
             "OR (object_type = 'servicegroup' AND ((action_type = 'd' AND object_id IN (SELECT DISTINCT servicegroup_id " .
-            "FROM services_servicegroups)) OR object_id IN (SELECT DISTINCT servicegroup_sg_id FROM " .
-            $conf_centreon['db'] . ".servicegroup_relation sgr, " . $conf_centreon['db'] . ".ns_host_relation nhr " .
+            "FROM services_servicegroups)) OR object_id IN (SELECT DISTINCT servicegroup_sg_id FROM `" .
+            $conf_centreon['db'] . "`.servicegroup_relation sgr,
+            `" . $conf_centreon['db'] . "`.ns_host_relation nhr " .
             "WHERE sgr.host_host_id = nhr.host_host_id AND nhr.nagios_server_id = '$pollerId')))" .
             "OR (object_type = 'hostgroup' AND ((action_type = 'd' AND object_id IN (SELECT DISTINCT hostgroup_id " .
-            "FROM hosts_hostgroups)) OR object_id IN (SELECT DISTINCT hr.hostgroup_hg_id FROM " .
-            $conf_centreon['db'] . ".hostgroup_relation hr, " . $conf_centreon['db'] . ".ns_host_relation nhr " .
+            "FROM hosts_hostgroups)) OR object_id IN (SELECT DISTINCT hr.hostgroup_hg_id FROM `" .
+            $conf_centreon['db'] . "`.hostgroup_relation hr, `" . $conf_centreon['db'] . "`.ns_host_relation nhr " .
             "WHERE hr.host_host_id = nhr.host_host_id AND nhr.nagios_server_id = '$pollerId'))))";
 
         try {

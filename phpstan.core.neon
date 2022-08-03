@@ -1,0 +1,8 @@
+includes:
+    - vendor/centreon/centreon-test-lib/src/PHPStan/phpstan.neon
+
+parameters:
+    level: max
+    paths:
+        - src/Core
+        - tests/php/Core

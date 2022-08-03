@@ -460,8 +460,8 @@ class CentreonAPI
         /**
          * Default class needed
          */
-        require_once _CLAPI_CLASS_ . "/centreonTimePeriod.class.php";
-        require_once _CLAPI_CLASS_ . "/centreonACLResources.class.php";
+        require_once __DIR__ . "/centreonTimePeriod.class.php";
+        require_once __DIR__ . "/centreonACLResources.class.php";
     }
 
     /**

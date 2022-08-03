@@ -27,6 +27,10 @@ import {
   labelSoft,
   labelHostCategory,
   labelServiceCategory,
+  labelServiceSeverity,
+  labelHostSeverity,
+  labelHostSeverityLevel,
+  labelServiceSeverityLevel,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -34,6 +38,8 @@ import {
   buildServiceCategoriesEndpoint,
   buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
+  buildHostServeritiesEndpoint,
+  buildServiceSeveritiesEndpoint,
 } from '../api/endpoint';
 
 export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
@@ -189,10 +195,14 @@ export interface CriteriaById {
 export enum CriteriaNames {
   hostCategories = 'host_categories',
   hostGroups = 'host_groups',
+  hostSeverities = 'host_severities',
+  hostSeverityLevels = 'host_severity_levels',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceCategories = 'service_categories',
   serviceGroups = 'service_groups',
+  serviceSeverities = 'service_severities',
+  serviceSeverityLevels = 'service_severity_levels',
   states = 'states',
   statusTypes = 'status_types',
   statuses = 'statuses',
@@ -235,6 +245,22 @@ const selectableCriterias: CriteriaById = {
   [CriteriaNames.serviceCategories]: {
     buildAutocompleteEndpoint: buildServiceCategoriesEndpoint,
     label: labelServiceCategory,
+  },
+  [CriteriaNames.hostSeverities]: {
+    buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
+    label: labelHostSeverity,
+  },
+  [CriteriaNames.serviceSeverities]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
+    label: labelServiceSeverity,
+  },
+  [CriteriaNames.hostSeverityLevels]: {
+    buildAutocompleteEndpoint: buildHostServeritiesEndpoint,
+    label: labelHostSeverityLevel,
+  },
+  [CriteriaNames.serviceSeverityLevels]: {
+    buildAutocompleteEndpoint: buildServiceSeveritiesEndpoint,
+    label: labelServiceSeverityLevel,
   },
 };
 

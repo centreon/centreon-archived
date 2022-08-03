@@ -254,3 +254,7 @@ export const labelCategories = 'Categories';
 export const labelHostCategory = 'Host category';
 export const labelServiceCategory = 'Service category';
 export const labelExportToCSV = 'Export to CSV';
+export const labelServiceSeverity = 'Service severity';
+export const labelHostSeverity = 'Host severity';
+export const labelHostSeverityLevel = 'Host severity level';
+export const labelServiceSeverityLevel = 'Service severity level';

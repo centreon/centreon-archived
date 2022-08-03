@@ -15625,3 +15625,15 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 
 # msgid "Export to CSV"
 # msgstr ""
+
+msgid "Service severity"
+msgstr "Severidade de serviço"
+
+msgid "Service severity level"
+msgstr "Nível de Severidade de serviço"
+
+msgid "Host severity"
+msgstr "Severidade de host"
+
+msgid "Host severity level"
+msgstr "Nível de Severidade de host"

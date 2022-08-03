@@ -24,9 +24,9 @@ namespace Tests\Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceService;
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 
 it('find resources and build uuids', function () {
     $hostResource = (new Resource())
@@ -39,7 +39,7 @@ it('find resources and build uuids', function () {
         ->setName('service1')
         ->setParent($hostResource);
 
-    $resourceRepository = $this->createMock(ResourceRepositoryInterface::class);
+    $resourceRepository = $this->createMock(ReadResourceRepositoryInterface::class);
     $resourceRepository->expects($this->any())
         ->method('findResources')
         ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
