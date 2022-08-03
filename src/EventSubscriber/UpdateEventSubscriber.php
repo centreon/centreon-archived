@@ -23,6 +23,7 @@ namespace EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Platform\Application\Repository\ReadVersionRepositoryInterface;
@@ -59,11 +60,12 @@ class UpdateEventSubscriber implements EventSubscriberInterface
      * @param RequestEvent $event
      * @throws \Exception
      */
-    public function validateCentreonWebVersionOrFail(RequestEvent $event)
+    public function validateCentreonWebVersionOrFail(RequestEvent $event): void
     {
         $this->debug('Checking if route matches updates endpoint');
         if (
-            preg_match(
+            $event->getRequest()->getMethod() === Request::METHOD_PATCH
+            && preg_match(
                 '#^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/updates$#',
                 $event->getRequest()->getPathInfo(),
             )
