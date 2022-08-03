@@ -15983,6 +15983,9 @@ msgstr "Afficher les évènements"
 msgid "Export to png"
 msgstr "Exporter comme png"
 
+msgid "Edit performance AD"
+msgstr "modifier les performances AD"
+
 msgid "Go to performance page"
 msgstr "Aller vers la page de performance"
 

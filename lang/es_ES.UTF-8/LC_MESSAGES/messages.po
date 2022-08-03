@@ -14636,6 +14636,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Edit performance AD"
+#  msgstr ""
+
 #  msgid "Go to performance page"
 #  msgstr ""
 

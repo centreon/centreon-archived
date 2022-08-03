@@ -257,3 +257,4 @@ export const labelServiceSeverity = 'Service severity';
 export const labelHostSeverity = 'Host severity';
 export const labelHostSeverityLevel = 'Host severity level';
 export const labelServiceSeverityLevel = 'Service severity level';
+export const labelPerformanceGraphAD = 'Edit performance AD';
