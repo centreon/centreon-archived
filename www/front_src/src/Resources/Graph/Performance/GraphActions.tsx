@@ -1,6 +1,6 @@
 import { MouseEvent, MutableRefObject, useState } from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import { Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
+import WrenchIcon from '@mui/icons-material/Build';
 
 import {
   ContentWithCircularLoading,
@@ -21,10 +22,12 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
+  labelPerformanceGraphAD,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
+import { ResourceType } from '../../models';
 
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
@@ -33,6 +36,7 @@ interface Props {
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   resourceName: string;
   resourceParentName?: string;
+  resourceType?: string;
   timeline?: Array<TimelineEvent>;
 }
 
@@ -52,6 +56,7 @@ const GraphActions = ({
   customTimePeriod,
   resourceParentName,
   resourceName,
+  resourceType,
   timeline,
   performanceGraphRef,
 }: Props): JSX.Element => {
@@ -61,7 +66,7 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-
+  const isResourceAD = equals(resourceType, ResourceType.anomalydetection);
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
@@ -135,6 +140,21 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
+
+          {isResourceAD && (
+            <IconButton
+              disableTouchRipple
+              ariaLabel={t(labelPerformanceGraphAD)}
+              data-testid={labelPerformanceGraphAD}
+              disabled={isNil(timeline)}
+              size="large"
+              title={t(labelPerformanceGraphAD)}
+              onClick={(): void => undefined}
+            >
+              <WrenchIcon style={{ fontSize: 18 }} />
+            </IconButton>
+          )}
+
           <Menu
             keepMounted
             anchorEl={menuAnchor}

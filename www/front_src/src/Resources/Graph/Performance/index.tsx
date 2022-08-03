@@ -374,6 +374,7 @@ const PerformanceGraph = ({
             performanceGraphRef={performanceGraphRef}
             resourceName={resource.name}
             resourceParentName={resource.parent?.name}
+            resourceType={resource.type}
             timeline={timeline}
           />
         </div>
