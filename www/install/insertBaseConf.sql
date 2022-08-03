@@ -947,23 +947,16 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (34, 77, 1, 18),
 (35, 78, 0, 0),
 (35, 79, 1, 1),
-(35, 80, 1, 2),
 (35, 81, 0, 3),
-(35, 82, 1, 4),
 (35, 83, 0, 5),
 (35, 84, 0, 6),
-(35, 85, 1, 7),
-(35, 86, 1, 8),
 (35, 87, 0, 9),
 (36, 88, 1, 0),
 (36, 89, 1, 1),
 (36, 90, 0, 2),
-(36, 91, 1, 3),
 (36, 92, 0, 4),
-(36, 93, 1, 5),
 (36, 94, 0, 6),
 (36, 95, 0, 7),
-(36, 96, 1, 8),
 (36, 97, 0, 9);
 
 --
@@ -973,7 +966,15 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
 (13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
 (16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
-(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
+(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
+(35, 80, 1, 2, 'bbdoStreams', '{"target": "authorization", "value": "gRPC"}'),
+(35, 82, 1, 4, 'bbdoStreams', '{"target": ["private_key", "certificate"], "value": "yes"}'),
+(35, 85, 1, 7, 'bbdoStreams', '{"tag": "output"}'),
+(35, 86, 1, 8, 'bbdoStreams', '{"tag": "output"}'),
+(36, 91, 1, 3, 'bbdoStreams', '{"target": "authorization", "value": "gRPC"}'),
+(36, 93, 1, 5, 'bbdoStreams', '{"target": ["ca_certificate", "ca_name"], "value": "yes"}'),
+(36, 96, 1, 8, 'bbdoStreams', '{"tag": "output"}'),
+;
 
 --
 -- Contenu de la table `widget_parameters_field_type`

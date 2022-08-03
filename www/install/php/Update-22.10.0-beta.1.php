@@ -20,7 +20,6 @@
  */
 
 require_once __DIR__ . '/../../class/centreonLog.class.php';
-
 $centreonLog = new CentreonLog();
 
 //error specific content
@@ -38,7 +37,6 @@ try {
 
     $errorMessage = "Unable to delete 'appKey' information from database";
     $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
-
 
     $errorMessage = "Impossible to add new BBDO streams";
     createBbdoStreamConfigurationForms($pearDB);
@@ -73,7 +71,7 @@ function createBbdoStreamConfigurationForms(CentreonDb $pearDB): void
     $streams = insertStreams($pearDB);
     $fields = getFieldsDetails();
 
-    $tagTypeRelationStmt = $pearDB->prepare('INSERT INTO cb_tag_type_relation VALUES (:tagId, :typeId, 1)');
+    $tagTypeRelationStmt = $pearDB->prepare('INSERT INTO cb_tag_type_relation VALUES (:tagId, :typeId, 0)');
 
     foreach ($streams as $id => $name) {
         $tagTypeRelationStmt->bindValue(':tagId', 1, \PDO::PARAM_INT);
@@ -95,8 +93,8 @@ function createBbdoStreamConfigurationForms(CentreonDb $pearDB): void
 function linkFieldsToStreamType(CentreonDB $pearDB, int $streamTypeId, array $fields): void
 {
     $typeFieldRelationStmt = $pearDB->prepare(
-        'INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display)
-        VALUES (:typeId, :fieldId, :isRequired, :orderDisplay)'
+        'INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display, jshook_name, jshook_arguments)
+        VALUES (:typeId, :fieldId, :isRequired, :orderDisplay, :jshook_name, :jshook_arguments)'
     );
 
     foreach ($fields as $key => $field) {
@@ -104,6 +102,8 @@ function linkFieldsToStreamType(CentreonDB $pearDB, int $streamTypeId, array $fi
         $typeFieldRelationStmt->bindValue(':fieldId', $field['id'], \PDO::PARAM_INT);
         $typeFieldRelationStmt->bindValue(':isRequired', $field['isRequired'], \PDO::PARAM_STR);
         $typeFieldRelationStmt->bindValue(':orderDisplay', $key, \PDO::PARAM_STR);
+        $typeFieldRelationStmt->bindValue(':jshook_name', $field['jsHook'] ?? null, \PDO::PARAM_STR);
+        $typeFieldRelationStmt->bindValue(':jshook_arguments', $field['jsArguments'] ?? null, \PDO::PARAM_STR);
         $typeFieldRelationStmt->execute();
     }
 }
@@ -153,7 +153,7 @@ function insertFields(CentreonDB $pearDB, array $fields): array
 
         $field['id'] = $pearDB->lastInsertId();
 
-        if ($field['fieldtype'] === 'radio') {
+        if (in_array($field['fieldtype'], ['radio', 'multiselect'])) {
             insertFieldOptions($pearDB, $field);
         }
     }
@@ -205,6 +205,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'gRPC',
             "optionListId" => 13,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"target": "authorization", "value": "gRPC"}',
         ],
         [
             "fieldname" => 'authorization',
@@ -222,6 +224,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'no',
             "optionListId" => 1,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"target": ["private_key", "certificate"], "value": "yes"}',
         ],
         [
             "fieldname" => 'private_key',
@@ -245,6 +249,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'no',
             "optionListId" => 1,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"tag": "output"}',
         ],
         [
             "fieldname" => 'retention',
@@ -254,6 +260,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'no',
             "optionListId" => 1,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"tag": "output"}',
         ],
         [
             "fieldname" => 'category',
@@ -297,6 +305,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'gRPC',
             "optionListId" => 13,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"target": "authorization", "value": "gRPC"}',
         ],
         [
             "fieldname" => 'authorization',
@@ -313,6 +323,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'no',
             "optionListId" => 1,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"target": ["ca_certificate", "ca_name"], "value": "yes"}',
         ],
         [
             "fieldname" => 'ca_certificate',
@@ -340,6 +352,8 @@ function getFieldsDetails(): array
             "isRequired" => 1,
             "defaultValue" => 'no',
             "optionListId" => 1,
+            "jsHook" => 'bbdoStreams',
+            "jsArguments" => '{"tag": "output"}',
         ],
         [
             "fieldname" => 'category',
