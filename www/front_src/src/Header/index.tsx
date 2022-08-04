@@ -14,10 +14,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
+    margin: '0 34px 0 24px',
+    width: '100%',
   },
   header: {
+    alignItems: 'center',
     background: theme.palette.common.black,
-    paddingInline: theme.spacing(1.5),
+    display: 'flex',
+    height: '70px',
+    // paddingInline: theme.spacing(1.5),
     width: '100%',
   },
   leftContainer: {
@@ -52,18 +57,10 @@ const Header = (): JSX.Element => {
     <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
         <div className={classes.leftContainer}>
-          <div>
-            <PollerMenu />
-          </div>
-          <div>
-            <ServiceStatusCounter />
-          </div>
-          <div>
-            <HostStatusCounter />
-          </div>
-          <div>
-            <FederatedComponent path="/bam/header/topCounter" />
-          </div>
+          <PollerMenu />
+          <ServiceStatusCounter />
+          <HostStatusCounter />
+          <FederatedComponent path="/bam/header/topCounter" />
         </div>
         <div className={classes.userMenuContainer}>
           <UserMenu headerRef={headerRef} />

@@ -87,9 +87,9 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 const useStyles = makeStyles((theme) => ({
   badge: {
     alignItems: 'center',
-    borderRadius: '100%',
+    borderRadius: '50%',
     display: 'flex',
-    fontSize: '12px',
+    fontSize: '10px',
     height: 15,
     justifyContent: 'spaceBetween',
     minWidth: 15,
@@ -197,7 +197,6 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.common.black,
     display: 'flex',
     flexWrap: 'wrap',
-    padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
     width: '100%',
   },
@@ -393,17 +392,17 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
           <Clock />
         </div>
         <div className={classes.icons}>
-          <Badge>
+          {/* <Badge>
             <SearchIcon className={classes.searchIcon} />
-          </Badge>
-
+          </Badge> */}
+          {/* 
           <Badge
             badgeContent={4}
             classes={{ badge: classes.badge }}
             color="error"
           >
             <NotificationsNoneIcon className={classes.notificationIcon} />
-          </Badge>
+          </Badge> */}
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire
