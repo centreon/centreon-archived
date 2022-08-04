@@ -60,7 +60,6 @@ const tabs: Array<Tab> = [
   {
     Component: GraphTab,
     getIsActive: (details: ResourceDetails): boolean => {
-      console.log('detaaaails', details);
       if (isNil(details)) {
         return false;
       }

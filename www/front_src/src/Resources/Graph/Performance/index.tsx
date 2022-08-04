@@ -33,7 +33,7 @@ import {
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
-import { Resource } from '../../models';
+import { Resource, ResourceType } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
@@ -185,11 +185,21 @@ const PerformanceGraph = ({
       endpoint,
     })
       .then((graphData) => {
-        console.log({ resource });
-        setTimeSeries(getTimeSeries(mockedResultGraph));
-        setBase(mockedResultGraph.global.base);
-        setTitle(mockedResultGraph.global.title);
-        const newLineData = getLineData(mockedResultGraph);
+        const type = resource?.type;
+        let newLineData;
+
+        if (equals(type, ResourceType.anomalydetection)) {
+          setTimeSeries(getTimeSeries(mockedResultGraph));
+          setBase(mockedResultGraph.global.base);
+          setTitle(mockedResultGraph.global.title);
+          newLineData = getLineData(mockedResultGraph);
+        } else {
+          setTimeSeries(getTimeSeries(graphData));
+          setBase(graphData.global.base);
+          setTitle(graphData.global.title);
+          newLineData = getLineData(graphData);
+        }
+
         if (lineData) {
           setLineData(
             newLineData.map((line) => ({

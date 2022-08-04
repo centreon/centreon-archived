@@ -1,27 +1,27 @@
-import { difference, min, max, isNil, prop, equals } from 'ramda';
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { Threshold } from '@visx/threshold';
-import { curveBasis } from '@visx/curve';
+import { difference, equals, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
+import { ResourceType } from '../../../models';
 import { Line, TimeValue } from '../models';
 import {
-  getUnits,
-  getSortedStackedLines,
-  getTimeSeriesForLines,
-  getMin,
-  getMax,
-  getNotInvertedStackedLines,
   getInvertedStackedLines,
-  getYScale,
+  getMax,
+  getMin,
+  getNotInvertedStackedLines,
+  getSortedStackedLines,
   getTime,
+  getTimeSeriesForLines,
+  getUnits,
+  getYScale,
 } from '../timeSeries';
 
-import RegularLine from './RegularLine';
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
+import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
+import TresholdGraph from './TresholdGraph';
 
 interface Props {
   displayTimeValues: boolean;
@@ -31,6 +31,7 @@ interface Props {
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
+  type?: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -82,6 +83,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
+  type,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -102,49 +104,21 @@ const Lines = ({
   const stackedYScale = getStackedYScale({ leftScale, rightScale });
 
   const regularLines = difference(lines, stackedLines);
-  const [
-    {
-      metric: metricY1,
-      unit: unitY1,
-      invert: invertY1,
-      lineColor: lineColorY1,
-    },
-  ] = regularLines.filter((item) =>
-    equals(item.metric, 'connection_upper_thresholds'),
-  );
 
-  const [
-    {
-      metric: metricY0,
-      unit: unitY0,
-      invert: invertY0,
-      lineColor: lineColorY0,
-    },
-  ] = regularLines.filter((item) =>
-    equals(item.metric, 'connection_lower_thresholds'),
-  );
+  const isAnomalyDetection = equals(type, ResourceType.anomalydetection);
 
-  const y1Scale = getYScale({
-    hasMoreThanTwoUnits: !isNil(thirdUnit),
-    invert: invertY1,
+  const propsTresholdGraph = {
+    getTime,
+    getYScale,
+    graphHeight,
     leftScale,
+    regularLines,
     rightScale,
     secondUnit,
-    unit: unitY1,
-  });
-
-  const y0Scale = getYScale({
-    hasMoreThanTwoUnits: !isNil(thirdUnit),
-    invert: invertY0,
-    leftScale,
-    rightScale,
-    secondUnit,
-    unit: unitY0,
-  });
-
-  const X = (timeValue): number => xScale(getTime(timeValue)) as number;
-  const Y1 = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
-  const Y0 = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
+    thirdUnit,
+    timeSeries,
+    xScale,
+  };
 
   return (
     <g>
@@ -165,24 +139,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        <Threshold
-          aboveAreaProps={{
-            fill: lineColorY1,
-            fillOpacity: 0.2,
-          }}
-          belowAreaProps={{
-            fill: lineColorY0,
-            fillOpacity: 0.2,
-          }}
-          clipAboveTo={0}
-          clipBelowTo={graphHeight}
-          curve={curveBasis}
-          data={timeSeries}
-          id={`${Math.random()}`}
-          x={X}
-          y0={Y0}
-          y1={Y1}
-        />
+        {isAnomalyDetection && <TresholdGraph {...propsTresholdGraph} />}
         {regularLines.map(
           ({
             metric,

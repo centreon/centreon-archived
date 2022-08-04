@@ -36,8 +36,6 @@ const RegularLine = ({
   transparency,
   graphHeight,
 }: Props): JSX.Element => {
-  console.log({ metric });
-
   const strockWidth =
     equals(metric, 'connection_lower_thresholds') ||
     equals(metric, 'connection_upper_thresholds')
