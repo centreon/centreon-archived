@@ -393,9 +393,6 @@ $sessionKeyFreeze = 'administration-form-my-account-freeze';
 
 if ($form->validate()) {
     updateContactInDB($centreon->user->get_id());
-    if ($form->getSubmitValue("contact_passwd")) {
-        $centreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
-    }
     $o = null;
     $features = $form->getSubmitValue('features');
 
