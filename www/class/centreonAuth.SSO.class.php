@@ -45,9 +45,6 @@ class CentreonAuthSSO extends CentreonAuth
     private const START = 0;
     private const LENGTH = 8;
 
-    private const START = 0;
-    private const LENGTH = 8;
-
     /**
      * @var using a proxy
      */
