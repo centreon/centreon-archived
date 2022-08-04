@@ -8,6 +8,10 @@ import { centreonUi } from '../helpers/index';
 const useStyles = makeStyles((theme) => ({
   dateTime: {
     color: theme.palette.common.white,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'space-between',
   },
 }));
 
@@ -49,8 +53,13 @@ const Clock = (): JSX.Element => {
 
   return (
     <div className={classes.dateTime} data-cy="clock">
-      <Typography variant="body2">{date}</Typography>
-      <Typography variant="body1">{time}</Typography>
+      <Typography style={{ lineHeight: '1' }} variant="body2">
+        {date}
+      </Typography>
+
+      <Typography style={{ lineHeight: '1' }} variant="body1">
+        {time}
+      </Typography>
     </div>
   );
 };

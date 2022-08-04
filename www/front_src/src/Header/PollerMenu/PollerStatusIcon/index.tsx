@@ -52,9 +52,9 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
   return {
     avatar: {
       fontSize: theme.typography.body1.fontSize,
-      height: theme.spacing(2.5),
+      height: theme.spacing(2.2),
       position: 'relative',
-      width: theme.spacing(2.5),
+      width: theme.spacing(2.2),
       [theme.breakpoints.down(900)]: {
         height: theme.spacing(2),
         width: theme.spacing(2),
@@ -67,8 +67,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
-      height: theme.spacing(2),
-      width: theme.spacing(2),
+      height: theme.spacing(1.7),
+      width: theme.spacing(1.7),
       [theme.breakpoints.down(900)]: {
         height: theme.spacing(1.6),
         width: theme.spacing(1.6),

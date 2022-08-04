@@ -186,12 +186,17 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
-
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    fontSize: theme.spacing(3.3),
+    fontSize: theme.spacing(3.2),
   },
+  // userIconBadge: {
+  //   border: '1.5px solid white',
+  //   borderRadius: '100%',
+  //   cursor: 'pointer',
+  //   padding: theme.spacing(0.4),
+  // },
   wrapRightUser: {
     alignItems: 'center',
     background: theme.palette.common.black,
@@ -413,6 +418,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             }
           >
             <Badge
+              className={classes.userIconBadge}
               color="warning"
               invisible={passwordIsNotYetAboutToExpire}
               variant="dot"
