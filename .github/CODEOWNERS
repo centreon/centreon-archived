@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /.github/       @centreon/centreon-ci
 /.git*          @centreon/centreon-ci
 /.project       @centreon/centreon-ci
@@ -5,8 +6,17 @@
 /selinux/       @centreon/centreon-ci
 /project/       @centreon/centreon-ci
 *.sh            @centreon/centreon-ci
+=======
+/.github/       @centreon/centreon-devops
+/.git*          @centreon/centreon-devops
+/.project       @centreon/centreon-devops
+/Jenkinsfile    @centreon/centreon-devops
+/selinux/       @centreon/centreon-devops
+/project/       @centreon/centreon-devops
+*.sh            @centreon/centreon-devops
+>>>>>>> dev-21.04.x-backup-2022-08-04
 
-*.po            @ghost
+*.po            @centreon/centreon-documentation
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php

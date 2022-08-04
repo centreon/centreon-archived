@@ -180,7 +180,7 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => CentreonUtils::escapeSecure($config["config_name"]),
+        "RowMenu_name" => htmlentities($config["config_name"], ENT_QUOTES, 'UTF-8'),
         "RowMenu_link" => "main.php?p=" . $p . "&o=c&id=" . $config['config_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
             substr(

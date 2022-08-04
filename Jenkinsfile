@@ -288,27 +288,6 @@ try {
         ])
       }
     }
-  }
-  
-  // TODO : add canary management in centreon-build
-  /*if ((env.BUILD == 'CI')) {
-    stage('Docker packaging with canary rpms') {
-      def parallelSteps = [:]
-      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-      for (x in osBuilds) {
-        def osBuild = x
-        parallelSteps[osBuild] = {
-          node {
-            checkoutCentreonBuild()
-            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-          }
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
-    }
   }*/
 
   stage('Acceptance tests') {
@@ -342,5 +321,8 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev-21.04.x-backup-2022-08-04
 }
