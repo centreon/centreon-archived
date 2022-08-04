@@ -76,7 +76,6 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
-  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -1200,6 +1199,8 @@ describe(Details, () => {
       buildResourcesEndpoint({
         hostCategories: [],
         hostGroups: [],
+        hostSeverities: [],
+        hostSeverityLevels: [],
         limit: 30,
         monitoringServers: [],
         page: 1,
@@ -1216,6 +1217,8 @@ describe(Details, () => {
         },
         serviceCategories: [],
         serviceGroups: [],
+        serviceSeverities: [],
+        serviceSeverityLevels: [],
         states: [],
         statusTypes: [],
         statuses: [],
