@@ -60,14 +60,12 @@ const tabs: Array<Tab> = [
   {
     Component: GraphTab,
     getIsActive: (details: ResourceDetails): boolean => {
+      console.log('detaaaails', details);
       if (isNil(details)) {
         return false;
       }
 
-      if (
-        equals(details.type, 'host') ||
-        equals(details.type, 'anomalydetection')
-      ) {
+      if (equals(details.type, 'host')) {
         return true;
       }
 

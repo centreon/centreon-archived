@@ -43,6 +43,7 @@ import {
 } from '../../Details/tabs/Graph/models';
 import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
+import { mockedResultGraph } from './mockedResultGraph';
 import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
@@ -184,10 +185,11 @@ const PerformanceGraph = ({
       endpoint,
     })
       .then((graphData) => {
-        setTimeSeries(getTimeSeries(graphData));
-        setBase(graphData.global.base);
-        setTitle(graphData.global.title);
-        const newLineData = getLineData(graphData);
+        console.log({ resource });
+        setTimeSeries(getTimeSeries(mockedResultGraph));
+        setBase(mockedResultGraph.global.base);
+        setTitle(mockedResultGraph.global.title);
+        const newLineData = getLineData(mockedResultGraph);
         if (lineData) {
           setLineData(
             newLineData.map((line) => ({
