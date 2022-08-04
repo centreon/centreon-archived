@@ -26,11 +26,7 @@
         "symfony/twig-bundle": "^4.4",
         "symfony/var-dumper": "4.4.*",
         "symfony/web-profiler-bundle": "^4.4",
-<<<<<<< HEAD
-        "twig/twig": "^2.0",
-=======
         "twig/twig": "2.*",
->>>>>>> origin/dev-21.10.x-backup-2022-08-04
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^3.0"
     },
@@ -55,11 +51,7 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "pimple/pimple": "^3.2",
         "sensio/framework-extra-bundle": "^5.3",
-<<<<<<< HEAD
-        "smarty/smarty": "^3.1",
-=======
         "smarty/smarty": "3.*",
->>>>>>> origin/dev-21.10.x-backup-2022-08-04
         "smarty-gettext/smarty-gettext": "^1.6",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
