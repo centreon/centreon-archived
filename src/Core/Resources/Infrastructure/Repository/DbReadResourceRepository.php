@@ -239,11 +239,14 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
                 },
                 $this->accessGroups
             );
+            // @todo resource type 4 must be managed using an iterator
             $request .= ' AND EXISTS (
               SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
                   (resources.type IN (0,2) AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
                   OR
                   (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
+                  OR
+                  (resources.type = 4 AND resources.id = acl.service_id)
                   AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
               LIMIT 1
             )';
