@@ -72,7 +72,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
     >
       {() => (
         <List dense>
-          {shortcuts.map(({ Icon, uri, name, id }) => (
+          {shortcuts.map(({ Icon, uri, name }) => (
             <Tooltip
               key={name}
               title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
