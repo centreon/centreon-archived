@@ -288,7 +288,7 @@ try {
         ])
       }
     }
-  }*/
+  }
 
   stage('Acceptance tests') {
     def parallelSteps = [:]
