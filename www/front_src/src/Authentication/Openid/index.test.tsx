@@ -445,11 +445,10 @@ describe('Openid configuration form', () => {
       accessGroupsEndpoint,
       labelAccessGroup,
       'Access Group 2',
-      1,
     ],
   ])(
     'updates the %p field when an option is selected from the retrieved options',
-    async (_, retrievedOptions, endpoint, label, value, index = 0) => {
+    async (_, retrievedOptions, endpoint, label, value) => {
       mockGetRequestsWithNoAuthorizationConfiguration();
       renderOpenidConfigurationForm();
 
@@ -484,7 +483,7 @@ describe('Openid configuration form', () => {
       userEvent.click(screen.getByText(value));
 
       await waitFor(() => {
-        expect(screen.getAllByLabelText(label)[index]).toHaveValue(value);
+        expect(screen.getAllByLabelText(label)[0]).toHaveValue(value);
       });
     },
   );
@@ -504,42 +503,6 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(labelContactGroup)).toHaveAttribute(
-        'required',
-      );
-    });
-  });
-
-  it('displays the "Authorization value" and "Access group" fields as required when the "Contact group" field is filled', async () => {
-    mockGetRequestsWithNoAuthorizationConfiguration();
-    mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedContactGroups,
-    });
-
-    renderOpenidConfigurationForm();
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelContactGroup)).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByLabelText(labelContactGroup));
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${contactGroupsEndpoint}?page=1&sort_by=${encodeURIComponent(
-          '{"name":"ASC"}',
-        )}`,
-        cancelTokenRequestParam,
-      );
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Contact Group 1')).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByText('Contact Group 1'));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelAuthorizationValue)).toHaveAttribute(
         'required',
       );
     });

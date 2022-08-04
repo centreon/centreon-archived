@@ -109,10 +109,8 @@ describe('User Menu', () => {
     userEvent.click(screen.getByLabelText(labelProfile));
 
     await waitFor(() => {
-      expect(screen.getByText('Admin admin')).toBeInTheDocument();
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
-
-    expect(screen.getByText('as admin')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('1:20 PM')).toBeInTheDocument();
@@ -139,7 +137,7 @@ describe('User Menu', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Admin admin')).toBeInTheDocument();
+      expect(screen.getByText('admin')).toBeInTheDocument();
     });
 
     userEvent.click(screen.getByText(labelCopyAutologinLink));

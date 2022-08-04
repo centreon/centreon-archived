@@ -223,6 +223,42 @@ services:
         class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
+    Core\Platform\Application\Validator\RequirementValidatorsInterface:
+        class: Core\Platform\Infrastructure\Validator\RequirementValidators
+        arguments:
+            $requirementValidators: !tagged_iterator 'platform.requirement.validators'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidator:
+        arguments:
+            $dbRequirementValidators: !tagged_iterator 'platform.requirement.database.validators'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\PhpRequirementValidator:
+        arguments:
+            $requiredPhpVersion: '%required_php_version%'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidators\MariaDbRequirementValidator:
+        arguments:
+            $requiredMariaDbMinVersion: '%required_mariadb_min_version%'
+
+    Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\DbReadVersionRepository
+        public: true
+
+    Core\Platform\Application\Repository\ReadUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\FsReadUpdateRepository
+        arguments:
+            $installDir: '%centreon_install_path%'
+        public: true
+
+    Core\Platform\Application\Repository\UpdateLockerRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\SymfonyUpdateLockerRepository
+        public: true
+
+    Core\Platform\Application\Repository\WriteUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\DbWriteUpdateRepository
+        arguments: ['%centreon_var_lib%', '%centreon_install_path%']
+        public: true
+
     # Monitoring resources
     _instanceof:
         Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
@@ -238,6 +274,10 @@ services:
             tags: ['authentication.provider.responses']
         Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
+        Core\Platform\Application\Validator\RequirementValidatorInterface:
+            tags: ['platform.requirement.validators']
+        Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidatorInterface:
+            tags: ['platform.requirement.database.validators']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
         factory: ['@Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory', 'createResourceRepository']

@@ -6,7 +6,6 @@ import {
   labelRequired,
   labelInvalidURL,
   labelInvalidIPAddress,
-  labelAtLeastOneAuthorizationIsRequired,
 } from './translatedLabels';
 
 const IPAddressRegexp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
@@ -29,15 +28,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
   return Yup.object({
     authenticationType: Yup.string().required(t(labelRequired)),
     authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
-    authorizationRules: Yup.array()
-      .of(authorizationSchema)
-      .when('contactGroup', (contactGroup, schema) => {
-        return contactGroup
-          ? schema
-              .min(1, t(labelAtLeastOneAuthorizationIsRequired))
-              .required(t(labelRequired))
-          : schema.nullable();
-      }),
+    authorizationRules: Yup.array().of(authorizationSchema),
     autoImport: Yup.boolean().required(t(labelRequired)),
     baseUrl: Yup.string()
       .matches(urlRegexp, t(labelInvalidURL))

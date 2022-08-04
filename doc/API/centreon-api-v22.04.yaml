@@ -3528,6 +3528,8 @@ paths:
                       moduleName:
                         type: object
                         $ref: '#/components/schemas/Platform.Versions'
+  /platform/updates:
+    $ref: "./v22.04/Administration/updates.yaml"
   /platform/installation/status:
     get:
       tags:
