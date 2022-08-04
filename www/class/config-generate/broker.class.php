@@ -269,16 +269,6 @@ class Broker extends AbstractObjectJSON
                             ) {
                                 $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
-
-                            if (
-                                $subvalue['config_key'] === 'type'
-                                && $subvalue['config_value'] === 'bbdo_server'
-                                && $subvalue['config_group'] === 'input'
-                            ) {
-                                echo 'hello';
-                                unset($object[$key][$subvalue['config_group_id']]['compression']);
-                                $object[$key][$subvalue['config_group_id']]['toto'] = 'hello';
-                            }
                         }
                     } else {
                         $res = explode('__', $subvalue['config_key'], 3);
@@ -347,6 +337,7 @@ class Broker extends AbstractObjectJSON
                 'port' => 51000 + (int) $row['config_id']
             ];
 
+            $object = $this->cleanBbdoStreams($object);
 
             // Generate file
             $this->generateFile($object);
@@ -362,6 +353,41 @@ class Broker extends AbstractObjectJSON
         $this->generate_filename = 'watchdog.json';
         $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
+    }
+
+    private function cleanBbdoStreams(array $object): array
+    {
+        foreach ($object['input'] as $key => $inputCfg) {
+            if ($inputCfg['type'] === 'bbdo_server') {
+                unset($object['input'][$key]['compression']);
+                unset($object['input'][$key]['retention']);
+
+                if ($object['input']['encrypt'] === 'no') {
+                    unset($object['input'][$key]['private_key']);
+                    unset($object['input'][$key]['certificate']);
+                }
+            }
+            if ($inputCfg['type'] === 'bbdo_client') {
+                unset($object['input'][$key]['compression']);
+
+                if ($object['input'][$key]['encrypt'] === 'no') {
+                    unset($object['input'][$key]['ca_certificate']);
+                    unset($object['input'][$key]['ca_name']);
+                }
+            }
+        }
+        foreach ($object['output'] as $key => $inputCfg) {
+            if ($inputCfg['type'] === 'bbdo_server' && $object['output'][$key]['encrypt'] === 'no') {
+                unset($object['output'][$key]['private_key']);
+                unset($object['output'][$key]['certificate']);
+            }
+            if ($inputCfg['type'] === 'bbdo_client' && $object['output'][$key]['encrypt'] === 'no') {
+                unset($object['output'][$key]['ca_certificate']);
+                unset($object['output'][$key]['ca_name']);
+            }
+        }
+
+        return $object;
     }
 
     private function getEngineParameters($poller_id)

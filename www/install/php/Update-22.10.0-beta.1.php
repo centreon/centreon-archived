@@ -71,10 +71,9 @@ function createBbdoStreamConfigurationForms(CentreonDb $pearDB): void
     $streams = insertStreams($pearDB);
     $fields = getFieldsDetails();
 
-    $tagTypeRelationStmt = $pearDB->prepare('INSERT INTO cb_tag_type_relation VALUES (:tagId, :typeId, 0)');
+    $tagTypeRelationStmt = $pearDB->prepare('INSERT INTO cb_tag_type_relation VALUES (1, :typeId, 0), (2, :typeId, 0)');
 
     foreach ($streams as $id => $name) {
-        $tagTypeRelationStmt->bindValue(':tagId', 1, \PDO::PARAM_INT);
         $tagTypeRelationStmt->bindValue(':typeId', $id, \PDO::PARAM_INT);
         $tagTypeRelationStmt->execute();
 
