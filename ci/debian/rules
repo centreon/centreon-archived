@@ -13,7 +13,7 @@ override_dh_clean:
 
 override_dh_auto_build:
 	composer install --no-dev --optimize-autoloader -n
-	npm ci
+	npm ci --legacy-peer-deps
 	npm run build
 	find . -type f | \
 		grep -v debian/extra/centreon-web/centreon-macroreplacement.txt | \
