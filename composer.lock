@@ -6569,12 +6569,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "2b37ea5749540ab5e6a95e6c1706e9b576d31dff"
+                "reference": "21cc92a04a6b84568dab3e4a5236750af98cdf47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2b37ea5749540ab5e6a95e6c1706e9b576d31dff",
-                "reference": "2b37ea5749540ab5e6a95e6c1706e9b576d31dff",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/21cc92a04a6b84568dab3e4a5236750af98cdf47",
+                "reference": "21cc92a04a6b84568dab3e4a5236750af98cdf47",
                 "shasum": ""
             },
             "require": {
@@ -6618,7 +6618,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/MON-14509-php-81"
             },
-            "time": "2022-08-02T16:02:54+00:00"
+            "time": "2022-08-04T05:40:10+00:00"
         },
         {
             "name": "facade/ignition-contracts",
