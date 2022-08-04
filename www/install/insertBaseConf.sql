@@ -630,7 +630,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (79, 'port','Listening port','TCP port on which Broker should listen','text', NULL),
 (80, 'transport_protocol','Transport protocol','The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)','radio', NULL),
 (81, 'authorization','Authorization token (optional)','Authorization token to be requested from the client (must be the same for both client and server)','password', NULL),
-(82, 'encryption','Enable TLS encryption','Enable TLS 1.3 encryption''radio', NULL),
+(82, 'encryption','Enable TLS encryption','Enable TLS 1.3 encryption','radio', NULL),
 (83, 'private_key','Private key path','Full path to the file containing the private key in PEM format (required for encryption)','text', NULL),
 (84, 'certificate','Certificate path','Full path to the file containing the certificate in PEM format (required for encryption)','text', NULL),
 (85, 'compression','Compression','Enable data compression','radio', NULL),
@@ -642,7 +642,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (91, 'transport_protocol','Transport protocol','The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)','radio', NULL),
 (92, 'authorization','Authorization token (optional)','Authorization token expected by the server (must be the same for both client and server)','password', NULL),
 (93, 'encryption','Enable TLS encryption','Enable TLS 1.3 encryption','radio', NULL),
-(94, 'ca_certificate',"Trusted CA\'s certificate path (optional)","If the server\'s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate\'s path.\nIf the server\s certificate is self-signed, then specify its path.\nYou can also add the certificate to the store of certificates trusted by the operating system.\nThe file must be in PEM format.",'text', NULL),
+(94, 'ca_certificate',"Trusted CA's certificate path (optional)","If the server's certificate is signed by an untrusted Certification Authority (CA), then specify the certificate's path.\nIf the server\s certificate is self-signed, then specify its path.\nYou can also add the certificate to the store of certificates trusted by the operating system.\nThe file must be in PEM format.",'text', NULL),
 (95, 'ca_name','Certificate Common Name (optional)','If the Common Name (CN) of the certificate is different from the value in the "Server address" field, the CN must be provided here','text', NULL),
 (96, 'compression','Compression','Enable data compression','radio', NULL),
 (97, 'category','Filter on event categories','Broker event categories to filter. If none is selected, all categories of events will be processed','multiselect', NULL);
