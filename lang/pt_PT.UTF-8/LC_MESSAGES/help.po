@@ -4836,23 +4836,18 @@ msgstr ""
 #  msgid "Number of seconds between a lost or failed connection and the next try"
 #  msgstr ""
 
-#  msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
-#  msgstr ""
-
 #  msgid "Authorization token expected by the server (must be the same for both client and server)"
 #  msgstr ""
 
-#  msgid "If the server’s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate’s path.
-#  If the server’s certificate is self-signed, then specify its path.
-#  You can also add the certificate to the store of certificates trusted by the operating system.
-#  The file must be in PEM format."
+#  msgid ""
+#  "If the server’s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate’s path."
+#  "If the server’s certificate is self-signed, then specify its path."
+#  "You can also add the certificate to the store of certificates trusted by the operating system."
+#  "The file must be in PEM format."
 #  msgstr ""
 
 #  msgid "If the Common Name (CN) of the certificate is different from the value in the \"Server address\" field, the CN must be provided here"
 #  msgstr ""
 
 #  msgid "Enable compression"
-#  msgstr ""
-
-#  msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
 #  msgstr ""

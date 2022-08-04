@@ -7276,26 +7276,22 @@ msgstr "Port TCP du serveur auquel le client doit se connecter"
 msgid "Number of seconds between a lost or failed connection and the next try"
 msgstr "Nombre de secondes entre une perte ou un échec de connexion et la tentative suivante"
 
-msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
-msgstr "Le protocole de transport peut être soit TCP (flux binaire sur TCP) soit gRPC (HTTP2)"
-
 msgid "Authorization token expected by the server (must be the same for both client and server)"
 msgstr "Jeton d’autorisation attendu par le serveur (doit être identique entre le client et le serveur)"
 
-msgid "If the server’s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate’s path.
-If the server’s certificate is self-signed, then specify its path.
-You can also add the certificate to the store of certificates trusted by the operating system.
-The file must be in PEM format."
-msgstr "Si le certificat du serveur est signé par une autorité de certification (CA) non reconnue, spécifiez le chemin du certificat de la CA.
-Si le certificat du serveur est autosigné, spécifiez son chemin.
-Il est également possible d’ajouter le certificat au magasin des certificats reconnnus par le système d’exploitation.
-Le fichier doit être au format PEM."
+msgid ""
+"If the server’s certificate is signed by an untrusted Certification Authority (CA), then specify the certificate’s path."
+"If the server’s certificate is self-signed, then specify its path."
+"You can also add the certificate to the store of certificates trusted by the operating system.""
+"The file must be in PEM format."
+msgstr ""
+"Si le certificat du serveur est signé par une autorité de certification (CA) non reconnue, spécifiez le chemin du certificat de la CA."
+"Si le certificat du serveur est autosigné, spécifiez son chemin."
+"Il est également possible d’ajouter le certificat au magasin des certificats reconnnus par le système d’exploitation."
+"Le fichier doit être au format PEM."
 
 msgid "If the Common Name (CN) of the certificate is different from the value in the \"Server address\" field, the CN must be provided here"
 msgstr "Si le \"Common Name\" (CN) du certificat est différent de la valeur du champ \"Adresse du serveur\", alors saisissez le CN du certificat"
 
 msgid "Enable compression"
 msgstr "Activer la compression des données"
-
-msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
-msgstr "Catégories d'évènements à filtrer. Si aucune n’est sélectionnée, toutes les catégories seront traitées"
