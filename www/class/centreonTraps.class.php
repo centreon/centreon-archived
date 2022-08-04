@@ -172,37 +172,6 @@ class CentreonTraps
 
     /**
      *
-     * tests if trap already exists
-     * @param $oid
-     */
-    public function testTrapExistence($oid = null)
-    {
-        if ($oid !== null && $this->testOidFormat($oid) === true) {
-            $id = null;
-            if (isset($this->form)) {
-                $id = $this->form->getSubmitValue('traps_id');
-            }
-            $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = :oid ";
-
-            $statement = $this->db->prepare($query);
-            $statement->bindValue(':oid', $oid, \PDO::PARAM_STR);
-            $statement->execute();
-
-            $trap = $statement->fetch(\PDO::FETCH_ASSOC);
-
-            /**
-             * If the trap already existing return false to trigger an error with the form validation rule
-             */
-            if ($statement->rowCount() >= 1 && $trap["traps_id"] != $id) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
-    /**
-     *
      * Delete Traps
      * @param $traps
      */

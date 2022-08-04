@@ -3,7 +3,7 @@ import * as React from 'react';
 import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 
 import { labelGroups } from '../../../../translatedLabels';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';

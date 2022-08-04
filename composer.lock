@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "74ec0c199110e2586a3d4ff7b2b9c7ea",
+=======
+    "content-hash": "066af2fa4dca18f83ca6eb4393bdf972",
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1951,6 +1955,7 @@
         },
         {
             "name": "smarty/smarty",
+<<<<<<< HEAD
             "version": "v3.1.40",
             "source": {
                 "type": "git",
@@ -1961,6 +1966,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/smarty-php/smarty/zipball/9d4f8309ed49702e0d7152f9983c3a9c4b98eb9d",
                 "reference": "9d4f8309ed49702e0d7152f9983c3a9c4b98eb9d",
+=======
+            "version": "v3.1.45",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smarty-php/smarty.git",
+                "reference": "a2713ab89e6d773bc4819f11857af7f6b2e353a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/a2713ab89e6d773bc4819f11857af7f6b2e353a9",
+                "reference": "a2713ab89e6d773bc4819f11857af7f6b2e353a9",
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
                 "shasum": ""
             },
             "require": {
@@ -2008,9 +2025,15 @@
                 "forum": "http://www.smarty.net/forums/",
                 "irc": "irc://irc.freenode.org/smarty",
                 "issues": "https://github.com/smarty-php/smarty/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/smarty-php/smarty/tree/v3.1.40"
             },
             "time": "2021-10-13T10:04:31+00:00"
+=======
+                "source": "https://github.com/smarty-php/smarty/tree/v3.1.45"
+            },
+            "time": "2022-05-17T12:57:52+00:00"
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
         },
         {
             "name": "symfony/cache",
@@ -3135,6 +3158,7 @@
         },
         {
             "name": "symfony/framework-bundle",
+<<<<<<< HEAD
             "version": "v4.4.31",
             "source": {
                 "type": "git",
@@ -3145,6 +3169,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/cc936cd733d94e4752a26cfc25a4825724571765",
                 "reference": "cc936cd733d94e4752a26cfc25a4825724571765",
+=======
+            "version": "v4.4.37",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/framework-bundle.git",
+                "reference": "5ae3655a69ac8b6a7bf46ce2b1e04b7be2ec05c7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/5ae3655a69ac8b6a7bf46ce2b1e04b7be2ec05c7",
+                "reference": "5ae3655a69ac8b6a7bf46ce2b1e04b7be2ec05c7",
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
                 "shasum": ""
             },
             "require": {
@@ -3261,7 +3297,11 @@
             "description": "Provides a tight integration between Symfony components and the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/framework-bundle/tree/v4.4.31"
+=======
+                "source": "https://github.com/symfony/framework-bundle/tree/v4.4.37"
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
             },
             "funding": [
                 {
@@ -3277,7 +3317,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2021-09-23T07:45:14+00:00"
+=======
+            "time": "2022-01-12T11:20:14+00:00"
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
         },
         {
             "name": "symfony/http-client",
@@ -8932,6 +8976,7 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.3"
+<<<<<<< HEAD
             },
             "type": "library",
             "extra": {
@@ -8961,6 +9006,37 @@
                 "issues": "https://github.com/sebastianbergmann/cli-parser/issues",
                 "source": "https://github.com/sebastianbergmann/cli-parser/tree/1.0.1"
             },
+=======
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Library for parsing CLI options",
+            "homepage": "https://github.com/sebastianbergmann/cli-parser",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/cli-parser/issues",
+                "source": "https://github.com/sebastianbergmann/cli-parser/tree/1.0.1"
+            },
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
             "funding": [
                 {
                     "url": "https://github.com/sebastianbergmann",
@@ -10533,6 +10609,7 @@
         },
         {
             "name": "twig/twig",
+<<<<<<< HEAD
             "version": "v2.14.7",
             "source": {
                 "type": "git",
@@ -10543,12 +10620,25 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/twigphp/Twig/zipball/8e202327ee1ed863629de9b18a5ec70ac614d88f",
                 "reference": "8e202327ee1ed863629de9b18a5ec70ac614d88f",
+=======
+            "version": "v2.15.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4",
+                "reference": "3b7cedb2f736899a7dbd0ba3d6da335a015f5cc4",
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=7.1.3",
                 "symfony/polyfill-ctype": "^1.8",
-                "symfony/polyfill-mbstring": "^1.3"
+                "symfony/polyfill-mbstring": "^1.3",
+                "symfony/polyfill-php72": "^1.8"
             },
             "require-dev": {
                 "psr/container": "^1.0",
@@ -10557,7 +10647,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.14-dev"
+                    "dev-master": "2.15-dev"
                 }
             },
             "autoload": {
@@ -10596,7 +10686,11 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/twigphp/Twig/tree/v2.14.7"
+=======
+                "source": "https://github.com/twigphp/Twig/tree/v2.15.1"
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
             },
             "funding": [
                 {
@@ -10608,7 +10702,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2021-09-17T08:39:54+00:00"
+=======
+            "time": "2022-05-17T05:46:24+00:00"
+>>>>>>> origin/dev-21.10.x-backup-2022-08-04
         },
         {
             "name": "zircote/swagger-php",

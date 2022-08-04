@@ -9079,10 +9079,6 @@ msgstr "Compruebe si el servicio está parado"
 msgid "Preexec definition"
 msgstr "Definiendo el comando PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "El mismo OID ya existe."
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Reglas de correspondencia avanzadas"
@@ -14745,7 +14741,7 @@ msgid "Clear filter"
 msgstr ""
 
 msgid "Last check with OK status"
-msgstr "" 
+msgstr ""
 
 # msgid "Status type"
 # msgstr ""
@@ -14758,3 +14754,6 @@ msgstr ""
 
 # msgid "Force active checks"
 # msgstr ""
+
+#  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+#  msgstr ""
