@@ -269,6 +269,16 @@ class Broker extends AbstractObjectJSON
                             ) {
                                 $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
+
+                            if (
+                                $subvalue['config_key'] === 'type'
+                                && $subvalue['config_value'] === 'bbdo_server'
+                                && $subvalue['config_group'] === 'input'
+                            ) {
+                                echo 'hello';
+                                unset($object[$key][$subvalue['config_group_id']]['compression']);
+                                $object[$key][$subvalue['config_group_id']]['toto'] = 'hello';
+                            }
                         }
                     } else {
                         $res = explode('__', $subvalue['config_key'], 3);

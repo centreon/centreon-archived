@@ -93,7 +93,8 @@ function createBbdoStreamConfigurationForms(CentreonDb $pearDB): void
 function linkFieldsToStreamType(CentreonDB $pearDB, int $streamTypeId, array $fields): void
 {
     $typeFieldRelationStmt = $pearDB->prepare(
-        'INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display, jshook_name, jshook_arguments)
+        'INSERT INTO cb_type_field_relation
+        (cb_type_id, cb_field_id, is_required, order_display, jshook_name, jshook_arguments)
         VALUES (:typeId, :fieldId, :isRequired, :orderDisplay, :jshook_name, :jshook_arguments)'
     );
 
@@ -270,7 +271,7 @@ function getFieldsDetails(): array
             "description" => 'Broker event categories to filter. If none is selected, all categories of events will '
                 . 'be processed',
             "isRequired" => 0,
-            "defaultValue" => NULL,
+            "defaultValue" => null,
             "optionListId" => 6,
         ],
     ];
@@ -331,7 +332,7 @@ function getFieldsDetails(): array
             "displayname" => 'Trusted CA\'s certificate path (optional)',
             "fieldtype" => 'text',
             "description" => "If the server's certificate is signed by an untrusted Certification Authority (CA), "
-                . "then specify the certificate’s path.\nIf the server’s certificate is self-signed, then specify "
+                . "then specify the certificate's path.\nIf the server's certificate is self-signed, then specify "
                 . "its path.\n You can also add the certificate to the store of certificates trusted by the operating "
                 . "system.\nThe file must be in PEM format.",
             "isRequired" => 0,
@@ -362,7 +363,7 @@ function getFieldsDetails(): array
             "description" => 'Broker event categories to filter. If none is selected, all categories of events will '
                 . 'be processed',
             "isRequired" => 0,
-            "defaultValue" => NULL,
+            "defaultValue" => null,
             "optionListId" => 6,
         ],
     ];
