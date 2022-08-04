@@ -75,7 +75,7 @@ class UpdateEventSubscriber implements EventSubscriberInterface
 
             if ($currentVersion === null) {
                 $errorMessage =
-                    _('Centreon database schema seems not installed.')
+                    _('Centreon database schema does not seem to be installed.')
                     . ' '
                     . _('Please use Web UI to install Centreon.');
                 $this->error($errorMessage);
