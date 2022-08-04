@@ -482,11 +482,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                             \PDO::PARAM_INT
                         );
                         $countStatement->execute();
-<<<<<<< HEAD
-                        $mulHostSv = $countStatement->fetchrow(\PDO::FETCH_ASSOC);
-=======
                         $mulHostSv = $countStatement->fetch(\PDO::FETCH_ASSOC);
->>>>>>> dev-21.04.x-backup-2022-08-04
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $insertStatement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
                             $insertStatement->bindValue(

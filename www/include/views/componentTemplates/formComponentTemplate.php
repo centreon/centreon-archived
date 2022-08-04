@@ -430,10 +430,6 @@ if ($valid) {
 }
 $vdef = 0; /* don't list VDEF in metrics list */
 
-<<<<<<< HEAD
-include_once('./include/views/graphs/common/makeJS_formMetricsList.php');
-=======
->>>>>>> dev-21.04.x-backup-2022-08-04
 if ($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) {
     $host_service_id = filter_var(
         $_POST['host_service_id'] ?? ($compo["host_id"] . '-' . $compo['service_id']),

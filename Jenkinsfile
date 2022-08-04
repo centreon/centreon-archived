@@ -321,8 +321,5 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> dev-21.04.x-backup-2022-08-04
 }
