@@ -17,14 +17,14 @@ export const useStyles = makeStyles((theme) => ({
   subMenuCounters: {
     display: 'flex',
     gap: theme.spacing(0.5),
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       display: 'grid',
       gridTemplateColumns: 'auto auto',
     },
   },
   subMenuCounters_marginLeft: {
     marginLeft: theme.spacing(-1),
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       marginLeft: 0,
     },
   },
@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     gap: theme.spacing(0.8),
     justifyContent: 'space-between',
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       alignItems: 'center',
       flexDirection: 'row',
       gap: theme.spacing(0.1),
@@ -50,14 +50,14 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '135%',
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       width: '170%',
     },
     zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggle_extraWidth: {
     width: '170%',
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       width: '190%',
     },
   },

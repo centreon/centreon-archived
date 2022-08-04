@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   clock: {
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(648)]: {
       display: 'none',
     },
   },
@@ -189,7 +189,7 @@ const useStyles = makeStyles((theme) => ({
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    fontSize: theme.spacing(3.2),
+    fontSize: theme.spacing(3.7),
   },
   // userIconBadge: {
   //   border: '1.5px solid white',

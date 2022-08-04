@@ -55,7 +55,7 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
       height: theme.spacing(2.2),
       position: 'relative',
       width: theme.spacing(2.2),
-      [theme.breakpoints.down(900)]: {
+      [theme.breakpoints.down(768)]: {
         height: theme.spacing(2),
         width: theme.spacing(2),
       },
@@ -63,13 +63,16 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     container: {
       display: 'flex',
       gap: theme.spacing(0.5),
+      [theme.breakpoints.down(768)]: {
+        marginLeft: theme.spacing(-1),
+      },
     },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
       height: theme.spacing(1.7),
       width: theme.spacing(1.7),
-      [theme.breakpoints.down(900)]: {
+      [theme.breakpoints.down(768)]: {
         height: theme.spacing(1.6),
         width: theme.spacing(1.6),
       },

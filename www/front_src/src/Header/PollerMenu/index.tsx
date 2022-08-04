@@ -70,6 +70,15 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(0.8),
     },
   },
+  iconToggleMenu: {
+    alignItems: 'flex-end',
+    display: 'flex',
+    [theme.breakpoints.down(768)]: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: '-5px',
+    },
+  },
   label: {
     color: theme.palette.common.white,
   },
@@ -81,7 +90,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     gap: theme.spacing(1),
     justifyContent: 'space-between',
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
+      flexDirection: 'row',
       gap: theme.spacing(0.6),
     },
   },
@@ -105,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '180%',
-    [theme.breakpoints.down(900)]: {
+    [theme.breakpoints.down(768)]: {
       width: '200%',
     },
     zIndex: theme.zIndex.mobileStepper,
@@ -214,12 +224,14 @@ const PollerMenu = (): JSX.Element | null => {
 
           <div className={classes.pollarHeaderRight}>
             <PollerStatusIcon issues={issues} />
-            <IconToggleSubmenu
-              data-testid="submenu-poller"
-              iconType="arrow"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
+            <div className={classes.iconToggleMenu}>
+              <IconToggleSubmenu
+                data-testid="submenu-poller"
+                iconType="arrow"
+                rotate={toggled}
+                onClick={toggleDetailedView}
+              />
+            </div>
           </div>
 
           <div
