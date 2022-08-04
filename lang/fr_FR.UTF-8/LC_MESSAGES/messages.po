@@ -16964,8 +16964,14 @@ msgstr "Le module \"%s\" est manquant"
 msgid "An error occured while retrieving details of module \"%s\""
 msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
 
-msgid "Required Centreon installed version is %s"
-msgstr "La version installée de Centreon requise est %s"
+msgid "Centreon database schema seems not installed."
+msgstr "Le schema de base de données de Centreon ne semble pas installé."
 
-msgid "Required Centreon installed version is %s (%s installed)"
-msgstr "La version installée de Centreon requise est %s (%s installée)"
+msgid "Centreon database schema version is \"%s\" (\"%s\" required)."
+msgstr "La version du schema de base de données de Centreon est \"%s\" (\"%s\" requise)."
+
+msgid "Please use Web UI to install Centreon."
+msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
+
+msgid "Please use Web UI to update Centreon."
+msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."

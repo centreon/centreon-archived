@@ -74,7 +74,10 @@ class UpdateEventSubscriber implements EventSubscriberInterface
             $currentVersion = $this->readVersionRepository->findCurrentVersion();
 
             if ($currentVersion === null) {
-                $errorMessage = sprintf('Required Centreon installed version is %s', self::MINIMAL_INSTALLED_VERSION);
+                $errorMessage =
+                    _('Centreon database schema seems not installed.')
+                    . ' '
+                    . _('Please use Web UI to install Centreon.');
                 $this->error($errorMessage);
                 throw new \Exception(_($errorMessage));
             }
@@ -88,9 +91,11 @@ class UpdateEventSubscriber implements EventSubscriberInterface
             );
             if (version_compare($currentVersion, self::MINIMAL_INSTALLED_VERSION, '<')) {
                 $errorMessage = sprintf(
-                    'Required Centreon installed version is %s (%s installed)',
-                    self::MINIMAL_INSTALLED_VERSION,
+                    _('Centreon database schema version is "%s" ("%s" required).')
+                    . ' '
+                    . _('Please use Web UI to update Centreon.'),
                     $currentVersion,
+                    self::MINIMAL_INSTALLED_VERSION,
                 );
                 $this->debug($errorMessage);
                 throw new \Exception(_($errorMessage));
