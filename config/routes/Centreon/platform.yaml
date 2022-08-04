@@ -4,6 +4,12 @@ centreon_application_platform_getversion:
   controller: 'Centreon\Application\Controller\PlatformController::getVersions'
   condition: "request.attributes.get('version') >= 21.10"
 
+centreon_application_platform_updateversions:
+  methods: PATCH
+  path: /platform/updates
+  controller: 'Core\Platform\Infrastructure\Api\UpdateVersions\UpdateVersionsController'
+  condition: "request.attributes.get('version') >= 22.04"
+
 centreon_application_platformtopology_addplatformtotopology:
   methods: POST
   path: /platform/topology

@@ -9,6 +9,7 @@ import { Divider, Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { useTheme } from '@mui/material/styles';
 
 import {
   ContentWithCircularLoading,
@@ -63,6 +64,8 @@ const GraphActions = ({
   performanceGraphRef,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const theme = useTheme();
+
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
   const [exporting, setExporting] = useState<boolean>(false);
@@ -111,6 +114,7 @@ const GraphActions = ({
     setMenuAnchor(null);
     setExporting(true);
     exportToPng({
+      backgroundColor: theme.palette.background.default,
       element: performanceGraphRef.current as HTMLElement,
       ratio,
       title: `${resourceName}-performance`,

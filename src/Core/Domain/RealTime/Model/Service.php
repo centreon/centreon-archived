@@ -27,6 +27,7 @@ use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 class Service
 {
@@ -123,11 +124,6 @@ class Service
     private $lastTimeOk;
 
     /**
-     * @var int|null
-     */
-    private $severityLevel;
-
-    /**
      * @var Icon|null
      */
     private $icon;
@@ -156,6 +152,11 @@ class Service
      * @var Tag[]
      */
     private array $categories = [];
+
+    /**
+     * @var Severity|null
+     */
+    private ?Severity $severity;
 
     /**
      * @param int $id
@@ -542,24 +543,6 @@ class Service
     }
 
     /**
-     * @param int|null $severityLevel
-     * @return self
-     */
-    public function setSeverityLevel(?int $severityLevel): self
-    {
-        $this->severityLevel = $severityLevel;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getSeverityLevel(): ?int
-    {
-        return $this->severityLevel;
-    }
-
-    /**
      *
      * @param ?Icon $icon
      * @return self
@@ -686,5 +669,25 @@ class Service
         }
 
         return $this;
+    }
+
+    /**
+     * @param Severity|null $severity
+     * @return self
+     * @throws \TypeError
+     */
+    public function setSeverity(?Severity $severity): self
+    {
+        $this->severity = $severity;
+
+        return $this;
+    }
+
+    /**
+     * @return Severity|null
+     */
+    public function getSeverity(): ?Severity
+    {
+        return $this->severity;
     }
 }

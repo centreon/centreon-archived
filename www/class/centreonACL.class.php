@@ -400,15 +400,17 @@ class CentreonACL
             if ($DBRESULT->rowCount()) {
                 $topology = array();
                 $tmp_topo_page = array();
-                while ($topo_group = $DBRESULT->fetchRow()) {
-                    $query2 = "SELECT topology_topology_id, acl_topology_relations.access_right "
+                $statement = $centreonDb
+                    ->prepare("SELECT topology_topology_id, acl_topology_relations.access_right "
                         . "FROM acl_topology_relations, acl_topology "
                         . "WHERE acl_topology.acl_topo_activate = '1' "
                         . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                        . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' "
-                        . "AND acl_topology_relations.access_right != 0"; // do not get "access none"
-                    $DBRESULT2 = $centreonDb->query($query2);
-                    while ($topo_page = $DBRESULT2->fetchRow()) {
+                        . "AND acl_topology_relations.acl_topo_id = :acl_topology_id "
+                        . "AND acl_topology_relations.access_right != 0");
+                while ($topo_group = $DBRESULT->fetchRow()) {
+                    $statement->bindValue(':acl_topology_id', (int) $topo_group["acl_topology_id"], \PDO::PARAM_INT);
+                    $statement->execute();
+                    while ($topo_page = $statement->fetchRow()) {
                         $topology[] = (int) $topo_page["topology_topology_id"];
                         if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
                             $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
@@ -423,7 +425,7 @@ class CentreonACL
                             }
                         }
                     }
-                    $DBRESULT2->closeCursor();
+                    $statement->closeCursor();
                 }
                 $DBRESULT->closeCursor();
 
@@ -1691,22 +1693,28 @@ class CentreonACL
                         $request = "SELECT group_id FROM centreon_acl " .
                             "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NULL";
                         $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
+                        $hostAclStatement = \CentreonDBInstance::getMonInstance()
+                            ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
+                                . "VALUES (:data_id, NULL, :group_id)");
+                        $serviceAclStatement = \CentreonDBInstance::getMonInstance()
+                            ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
+                                . "VALUES (:data_id, :service_id, :group_id) "
+                                . "ON DUPLICATE KEY UPDATE group_id = :group_id");
                         while ($row = $DBRESULT->fetchRow()) {
                             // Insert New Host
-                            $request1 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                . "VALUES ('" . $data["id"] . "', NULL, " . $row['group_id'] . ")";
-                            \CentreonDBInstance::getMonInstance()->query($request1);
-
+                            $hostAclStatement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                            $hostAclStatement->bindValue(':group_id', (int) $row['group_id'], \PDO::PARAM_INT);
+                            $hostAclStatement->execute();
                             // Insert services
                             $request = "SELECT service_id, group_id FROM centreon_acl "
                                 . "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
                             $DBRESULT2 = \CentreonDBInstance::getMonInstance()->query($request);
                             while ($row2 = $DBRESULT2->fetch()) {
-                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                    . "VALUES ('" . $data["id"] . "', "
-                                    . "'" . $row2["service_id"] . "', " . $row2['group_id'] . ") "
-                                    . "ON DUPLICATE KEY UPDATE group_id = " . $row2['group_id'];
-                                \CentreonDBInstance::getMonInstance()->query($request2);
+                                $serviceAclStatement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                                $serviceAclStatement
+                                    ->bindValue(':service_id', (int) $row2["service_id"], \PDO::PARAM_INT);
+                                $serviceAclStatement->bindValue(':group_id', (int) $row2['group_id'], \PDO::PARAM_INT);
+                                $serviceAclStatement->execute();
                             }
                         }
                     }
@@ -1730,10 +1738,14 @@ class CentreonACL
                             $request = "SELECT group_id FROM centreon_acl "
                                 . "WHERE host_id = $host_id AND service_id = " . $data['duplicate_service'];
                             $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
+                            $statement = \CentreonDBInstance::getMonInstance()
+                                ->prepare("INSERT INTO centreon_acl (host_id, service_id, group_id) "
+                                    . "VALUES (:host_id, :data_id, :group_id)");
                             while ($row = $DBRESULT->fetchRow()) {
-                                $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                    . "VALUES ('" . $host_id . "', '" . $data["id"] . "', " . $row['group_id'] . ")";
-                                \CentreonDBInstance::getMonInstance()->query($request2);
+                                $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
+                                $statement->bindValue(':data_id', (int) $data["id"], \PDO::PARAM_INT);
+                                $statement->bindValue(':group_id', (int) $row['group_id'], \PDO::PARAM_INT);
+                                $statement->execute();
                             }
                         }
                     }

@@ -10,15 +10,15 @@ jms_serializer:
             infrastructure:
                 namespace_prefix: "Centreon\\Infrastructure"
                 path: '%kernel.project_dir%/config/packages/serializer/Infrastructure'
+            core:
+                namespace_prefix: "Core\\"
+                path: '%kernel.project_dir%/config/packages/serializer/Core'
 parameters:
     api.header: "Api-Version"
     api.version.latest: "22.10"
     debug_log_file: '%log_path%/centreon-web.log'
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
     curl.timeout: 60
-    resource.status.repository.legacy: 'legacy'
-    env(APP_RESOURCE_STATUS_REPOSITORY_MODE): '%resource.status.repository.legacy%'
-    resource.status.repository: '%env(APP_RESOURCE_STATUS_REPOSITORY_MODE)%'
     debug_level: "%env(int:DEBUG_LEVEL)%"
     env(DEBUG_CONTACT): null
 
@@ -53,6 +53,14 @@ services:
         class: Centreon\Infrastructure\Serializer\ObjectConstructor
         public: false
 
+    json_presenter:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
+    Core\Infrastructure\Common\Presenter\PresenterFormatterInterface:
+        class: Core\Infrastructure\Common\Presenter\JsonPresenter
+        public: false
+
     # Encryption
     Security\Interfaces\EncryptionInterface:
         class: Security\Encryption
@@ -84,6 +92,14 @@ services:
     contact.provider:
         class: Centreon\Domain\Contact\ContactProvider
         public: true
+
+    presenter.download.csv:
+        class: Core\Infrastructure\Common\Presenter\DownloadPresenter
+        arguments: ['@Core\Infrastructure\Common\Presenter\CsvPresenter']
+
+    Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricPresenterInterface:
+        class: Core\Infrastructure\RealTime\Api\DownloadPerformanceMetrics\DownloadPerformanceMetricsPresenter
+        arguments: ['@presenter.download.csv']
 
     # Authentication
     Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface:
@@ -220,13 +236,44 @@ services:
         class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
         arguments: ['%centreon_etc_path%', '%centreon_install_path%']
 
+    Core\Platform\Application\Validator\RequirementValidatorsInterface:
+        class: Core\Platform\Infrastructure\Validator\RequirementValidators
+        arguments:
+            $requirementValidators: !tagged_iterator 'platform.requirement.validators'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidator:
+        arguments:
+            $dbRequirementValidators: !tagged_iterator 'platform.requirement.database.validators'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\PhpRequirementValidator:
+        arguments:
+            $requiredPhpVersion: '%required_php_version%'
+
+    Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidators\MariaDbRequirementValidator:
+        arguments:
+            $requiredMariaDbMinVersion: '%required_mariadb_min_version%'
+
+    Core\Platform\Application\Repository\ReadVersionRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\DbReadVersionRepository
+        public: true
+
+    Core\Platform\Application\Repository\ReadUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\FsReadUpdateRepository
+        arguments:
+            $installDir: '%centreon_install_path%'
+        public: true
+
+    Core\Platform\Application\Repository\UpdateLockerRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\SymfonyUpdateLockerRepository
+        public: true
+
+    Core\Platform\Application\Repository\WriteUpdateRepositoryInterface:
+        class: Core\Platform\Infrastructure\Repository\DbWriteUpdateRepository
+        arguments: ['%centreon_var_lib%', '%centreon_install_path%']
+        public: true
+
     # Monitoring resources
     _instanceof:
-        Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
-            tags: ['monitoring.resource.providers']
-            calls:
-                - method: setSqlRequestTranslator
-                  arguments: ['@sqlRequestTranslator']
         Core\Infrastructure\RealTime\Hypermedia\HypermediaProviderInterface:
             tags: ['realtime.hypermedia']
         Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
@@ -235,15 +282,15 @@ services:
             tags: ['authentication.provider.responses']
         Core\Security\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
             tags: ['authentication.provider.presenters']
+        Core\Platform\Application\Validator\RequirementValidatorInterface:
+            tags: ['platform.requirement.validators']
+        Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidatorInterface:
+            tags: ['platform.requirement.database.validators']
 
-    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        factory: ['@Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory', 'createResourceRepository']
-
-    Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory:
-        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryFactory
-        arguments: ['@=parameter("resource.status.repository") === parameter("resource.status.repository.legacy")
-                ? service("Centreon\\Infrastructure\\Monitoring\\Resource\\ResourceRepositoryRDB")
-                : service("Centreon\\Infrastructure\\Monitoring\\Resource\\DbReadResourceRepository")']
+    Core\Resources\Application\Repository\ReadResourceRepositoryInterface:
+        class: Core\Resources\Infrastructure\Repository\DbReadResourceRepository
+        arguments:
+            $sqlRequestTranslator: '@sqlRequestTranslator'
 
     Core\Security\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
         arguments:
@@ -252,19 +299,6 @@ services:
 
     Core\Security\Infrastructure\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
         arguments: [!tagged_iterator 'authentication.provider.presenters']
-
-
-    Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB:
-        calls:
-            - method: setSqlRequestTranslator
-              arguments: ['@sqlRequestTranslator']
-            - method: setProviders
-              arguments: [!tagged_iterator 'monitoring.resource.providers']
-
-    Centreon\Infrastructure\Monitoring\Resource\DbReadResourceRepository:
-        calls:
-            - method: setSqlRequestTranslator
-              arguments: ['@sqlRequestTranslator']
 
     Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator:
         class: Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator

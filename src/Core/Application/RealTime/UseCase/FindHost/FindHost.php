@@ -28,6 +28,7 @@ use Core\Domain\RealTime\Model\Host;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -40,6 +41,7 @@ use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
 class FindHost
 {
@@ -54,6 +56,7 @@ class FindHost
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      * @param MonitoringServiceInterface $monitoringService
      * @param ReadTagRepositoryInterface $tagRepository
+     * @param ReadSeverityRepositoryInterface $severityRepository
      */
     public function __construct(
         private ReadHostRepositoryInterface $repository,
@@ -64,6 +67,7 @@ class FindHost
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService,
         private ReadTagRepositoryInterface $tagRepository,
+        private ReadSeverityRepositoryInterface $severityRepository
     ) {
     }
 
@@ -109,6 +113,22 @@ class FindHost
         $categories = $this->tagRepository->findAllByResourceAndTypeId($host->getId(), 0, Tag::HOST_CATEGORY_TYPE_ID);
 
         $host->setCategories($categories);
+
+        $this->info(
+            'Fetching severity from the database for host',
+            [
+                'hostId' => $hostId,
+                'typeId' => Severity::HOST_SEVERITY_TYPE_ID
+            ]
+        );
+
+        $severity = $this->severityRepository->findByResourceAndTypeId(
+            $hostId,
+            0,
+            Severity::HOST_SEVERITY_TYPE_ID
+        );
+
+        $host->setSeverity($severity);
 
         /**
          * Obfuscate the passwords in Host commandLine
@@ -163,6 +183,7 @@ class FindHost
             $downtimes,
             $acknowledgement,
             $host->getCategories(),
+            $host->getSeverity()
         );
 
         $findHostResponse->timezone = $host->getTimezone();
@@ -184,7 +205,6 @@ class FindHost
         $findHostResponse->hasPassiveChecks = $host->hasPassiveChecks();
         $findHostResponse->hasActiveChecks = $host->hasActiveChecks();
         $findHostResponse->lastTimeUp = $host->getLastTimeUp();
-        $findHostResponse->severityLevel = $host->getSeverityLevel();
         $findHostResponse->checkAttempts = $host->getCheckAttempts();
         $findHostResponse->maxCheckAttempts = $host->getMaxCheckAttempts();
 

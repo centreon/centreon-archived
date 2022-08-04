@@ -45,29 +45,6 @@ class CentreonAdministrationWidget extends CentreonWebService implements Centreo
     use CentreonWebServiceDiAndUtilisTrait;
 
     /**
-     * Get the list of installed widgets
-     */
-    public function getListAvailable()
-    {
-        // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
-            $q = $this->arguments['q'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
-        $widgetInfo = $factory->newInformation();
-        $widgets = $widgetInfo->getAvailableList($q);
-
-        foreach ($widgets as &$widget) {
-            unset($widget['preferences']);
-        }
-
-        return $widgets;
-    }
-
-    /**
      * @return array
      * @throws RestBadRequestException
      */
@@ -99,60 +76,6 @@ class CentreonAdministrationWidget extends CentreonWebService implements Centreo
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
 
         return $widgetObj->getWidgetModels($q, $range);
-    }
-
-    /**
-     * @return int
-     * @throws Exception
-     */
-    public function postInstall()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
-        $widgetInstaller = $factory->newInstaller($name);
-
-        return $widgetInstaller->install();
-    }
-
-    /**
-     * @return bool
-     * @throws Exception
-     */
-    public function postUpgrade()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
-        $widgetUpgrader = $factory->newUpgrader($name);
-
-        return $widgetUpgrader->upgrade();
-    }
-
-    /**
-     * @return bool
-     * @throws Exception
-     */
-    public function postRemove()
-    {
-        if (!isset($this->arguments['name'])) {
-            throw new \Exception('Missing argument : name');
-        } else {
-            $name = $this->arguments['name'];
-        }
-
-        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
-        $widgetInstaller = $factory->newRemover($name);
-
-        return $widgetInstaller->remove();
     }
 
     /**

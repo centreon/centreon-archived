@@ -24,8 +24,7 @@ foreach ($mockedPathConstants as $mockedPathConstant) {
 }
 
 $mockedPreRequisiteConstants = [
-    '_CENTREON_PHP_MIN_VERSION_' => '8.0',
-    '_CENTREON_PHP_MAX_VERSION_' => '8.0',
+    '_CENTREON_PHP_VERSION_' => '8.0',
     '_CENTREON_MARIA_DB_MIN_VERSION_' => '10.5',
 ];
 foreach ($mockedPreRequisiteConstants as $mockedPreRequisiteConstant => $value) {

@@ -11,5 +11,6 @@ module.exports = mergeDeepRight(
       '@testing-library/jest-dom/extend-expect',
       '<rootDir>/setupTest.js',
     ],
+    testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(test).[jt]s?(x)'],
   },
 );
