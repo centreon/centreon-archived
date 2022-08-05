@@ -3,8 +3,8 @@ import { Threshold } from '@visx/threshold';
 import { curveBasis } from '@visx/curve';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { TimeValue } from '../models';
-import { getTime } from '../timeSeries';
+import { TimeValue } from '../../models';
+import { getTime } from '../../timeSeries';
 
 interface Props {
   getYScale;
@@ -18,7 +18,7 @@ interface Props {
   xScale: ScaleTime<number, number>;
 }
 
-const TresholdGraph = ({
+const TresholdAD = ({
   secondUnit,
   regularLines,
   xScale,
@@ -95,4 +95,4 @@ const TresholdGraph = ({
   );
 };
 
-export default TresholdGraph;
+export default TresholdAD;

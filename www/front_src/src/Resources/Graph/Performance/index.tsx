@@ -384,6 +384,7 @@ const PerformanceGraph = ({
           <MemoizedGraphActions
             customTimePeriod={customTimePeriod}
             performanceGraphRef={performanceGraphRef}
+            resource={resource}
             resourceName={resource.name}
             resourceParentName={resource.parent?.name}
             resourceType={resource.type}

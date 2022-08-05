@@ -21,7 +21,7 @@ import {
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
-import TresholdGraph from './TresholdGraph';
+import TresholdAD from './TresholdAD/TresholdAD';
 
 interface Props {
   displayTimeValues: boolean;
@@ -108,7 +108,7 @@ const Lines = ({
   const isDisplayedTreshold =
     equals(type, ResourceType.anomalydetection) && lines?.length > 1;
 
-  const propsTresholdGraph = {
+  const propsTresholdAD = {
     getTime,
     getYScale,
     graphHeight,
@@ -140,7 +140,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isDisplayedTreshold && <TresholdGraph {...propsTresholdGraph} />}
+        {isDisplayedTreshold && <TresholdAD {...propsTresholdAD} />}
         {regularLines.map(
           ({
             metric,

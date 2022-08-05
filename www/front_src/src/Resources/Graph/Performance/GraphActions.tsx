@@ -29,11 +29,13 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
 import { ResourceType } from '../../models';
 
+import ModalAD from './Lines/TresholdAD/ModalAD';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
+  resource: any;
   resourceName: string;
   resourceParentName?: string;
   resourceType?: string;
@@ -59,11 +61,13 @@ const GraphActions = ({
   resourceType,
   timeline,
   performanceGraphRef,
+  resource,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
   const [exporting, setExporting] = useState<boolean>(false);
+  const [isOpenModalAD, setIsOpenModalAD] = useState(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
   const isResourceAD = equals(resourceType, ResourceType.anomalydetection);
@@ -109,6 +113,8 @@ const GraphActions = ({
     });
   };
 
+  const openModalAD = (): void => setIsOpenModalAD(!isOpenModalAD);
+
   return (
     <div className={classes.buttonGroup}>
       <ContentWithCircularLoading
@@ -149,12 +155,18 @@ const GraphActions = ({
               disabled={isNil(timeline)}
               size="large"
               title={t(labelPerformanceGraphAD)}
-              onClick={(): void => undefined}
+              onClick={openModalAD}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
             </IconButton>
           )}
-
+          {isOpenModalAD && (
+            <ModalAD
+              details={resource}
+              isOpen={isOpenModalAD}
+              setIsOpen={setIsOpenModalAD}
+            />
+          )}
           <Menu
             keepMounted
             anchorEl={menuAnchor}
