@@ -245,12 +245,6 @@ try {
         }
       }
     }
-    //'Docker centos8': {
-    //  node {
-    //    checkoutCentreonBuild(buildBranch)
-    //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
-    //  }
-    //}
     parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
@@ -295,7 +289,7 @@ try {
         ])
       }
     }
-  }*/
+  }
 
   stage('Acceptance tests') {
     def parallelSteps = [:]
