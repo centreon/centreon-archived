@@ -6466,12 +6466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "6e6d23855e01752485a6f7f00beb8fc19808ba87"
+                "reference": "38b1cbb842bcaa2a526d71236e2d2f2c755098ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/6e6d23855e01752485a6f7f00beb8fc19808ba87",
-                "reference": "6e6d23855e01752485a6f7f00beb8fc19808ba87",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/38b1cbb842bcaa2a526d71236e2d2f2c755098ad",
+                "reference": "38b1cbb842bcaa2a526d71236e2d2f2c755098ad",
                 "shasum": ""
             },
             "require": {
@@ -6493,10 +6493,10 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\PHPStan\\": "src/PHPStan",
                     "Centreon\\Test\\Mock\\": "src/mock",
-                    "Centreon\\Test\\Traits\\": "src/traits",
-                    "Centreon\\PHPStan\\": "src/PHPStan"
+                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\Test\\Traits\\": "src/traits"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6520,7 +6520,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/21.04.x"
             },
-            "time": "2021-05-07T14:20:01+00:00"
+            "time": "2022-08-05T09:14:27+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -9931,5 +9931,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
