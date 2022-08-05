@@ -9564,10 +9564,6 @@ msgstr "Contrôle si le service est en plage de maintenance"
 msgid "Preexec definition"
 msgstr "Définition de la commande PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "Le même OID existe déjà"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Règles de correspondance avancées"
@@ -16326,3 +16322,6 @@ msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être diff�
 
 # msgid "Force active checks"
 # msgstr "Forcer les contrôles actif"
+
+msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"

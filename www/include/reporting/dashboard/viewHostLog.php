@@ -45,7 +45,6 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-
 $id = filter_var($_GET['host'] ?? $_POST['hostElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*

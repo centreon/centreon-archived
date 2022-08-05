@@ -6730,7 +6730,7 @@
 									"  while(curDate-date < millis);",
 									"}",
 									"",
-									"wait(5000);"
+									"wait(8000);"
 								]
 							}
 						},
