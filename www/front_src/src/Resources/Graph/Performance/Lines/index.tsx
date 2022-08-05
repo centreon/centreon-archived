@@ -105,7 +105,8 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
-  const isAnomalyDetection = equals(type, ResourceType.anomalydetection);
+  const isDisplayedTreshold =
+    equals(type, ResourceType.anomalydetection) && lines?.length > 1;
 
   const propsTresholdGraph = {
     getTime,
@@ -139,7 +140,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isAnomalyDetection && <TresholdGraph {...propsTresholdGraph} />}
+        {isDisplayedTreshold && <TresholdGraph {...propsTresholdGraph} />}
         {regularLines.map(
           ({
             metric,
