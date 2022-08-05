@@ -45,7 +45,7 @@ export const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
-    padding: theme.spacing(1),
+    padding: '8px 8px 0 8px',
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
