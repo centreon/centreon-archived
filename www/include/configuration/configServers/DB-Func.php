@@ -770,7 +770,7 @@ function addUserRessource(int $serverId): bool
  * Update Remote Server information
  *
  * @param array $data
- * @param int $oldIpAddress Old IP address of the server before the upgrade
+ * @param int $id remote server id
  */
 function updateRemoteServerInformation(array $data, int $id)
 {
