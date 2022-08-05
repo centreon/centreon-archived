@@ -43,7 +43,8 @@ import {
 } from '../../Details/tabs/Graph/models';
 import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
-import { mockedResultGraph } from './mockedResultGraph';
+import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
+import { mockedeResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
@@ -181,6 +182,8 @@ const PerformanceGraph = ({
       return;
     }
 
+    console.log({ endpoint });
+
     sendGetGraphDataRequest({
       endpoint,
     })
@@ -188,16 +191,24 @@ const PerformanceGraph = ({
         const type = resource?.type;
         let newLineData;
 
+        setTimeSeries(getTimeSeries(graphData));
+        setBase(graphData.global.base);
+        setTitle(graphData.global.title);
+        newLineData = getLineData(graphData);
+
         if (equals(type, ResourceType.anomalydetection)) {
+          const isModalAD = endpoint.includes('15');
           setTimeSeries(getTimeSeries(mockedResultGraph));
           setBase(mockedResultGraph.global.base);
           setTitle(mockedResultGraph.global.title);
           newLineData = getLineData(mockedResultGraph);
-        } else {
-          setTimeSeries(getTimeSeries(graphData));
-          setBase(graphData.global.base);
-          setTitle(graphData.global.title);
-          newLineData = getLineData(graphData);
+
+          if (isModalAD) {
+            setTimeSeries(getTimeSeries(mockedeResultModalGraph));
+            setBase(mockedeResultModalGraph.global.base);
+            setTitle(mockedeResultModalGraph.global.title);
+            newLineData = getLineData(mockedeResultModalGraph);
+          }
         }
 
         if (lineData) {

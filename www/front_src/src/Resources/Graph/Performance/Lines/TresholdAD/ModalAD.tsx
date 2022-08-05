@@ -26,8 +26,6 @@ const style = {
 const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
   const handleClose = (): void => setIsOpen(false);
 
-  console.log({ details });
-
   return (
     <Modal
       aria-describedby="modal-modal-description"
@@ -41,7 +39,7 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
         </div>
         <div>
           <ExportablePerformanceGraphWithTimeline
-            graphHeight={180}
+            graphHeight={200}
             resource={details}
           />
         </div>

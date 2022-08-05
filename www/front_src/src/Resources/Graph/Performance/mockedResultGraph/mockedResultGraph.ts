@@ -1,4 +1,4 @@
-import { GraphData } from './models';
+import { GraphData } from '../models';
 
 export const mockedResultGraph: GraphData = {
   global: {
