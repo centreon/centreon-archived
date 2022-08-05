@@ -56,15 +56,18 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
       position: 'relative',
       width: theme.spacing(2.2),
       [theme.breakpoints.down(768)]: {
-        height: theme.spacing(2),
-        width: theme.spacing(2),
+        height: theme.spacing(1.8),
+        width: theme.spacing(1.8),
       },
     },
     container: {
       display: 'flex',
       gap: theme.spacing(0.5),
+      marginLeft: theme.spacing(-0.5),
       [theme.breakpoints.down(768)]: {
-        marginLeft: theme.spacing(-1),
+        gap: theme.spacing(0.4),
+        marginLeft: theme.spacing(-1.2),
+        marginTop: theme.spacing(0.4),
       },
     },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
@@ -73,8 +76,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
       height: theme.spacing(1.7),
       width: theme.spacing(1.7),
       [theme.breakpoints.down(768)]: {
-        height: theme.spacing(1.6),
-        width: theme.spacing(1.6),
+        height: theme.spacing(1.4),
+        width: theme.spacing(1.4),
       },
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
