@@ -29,14 +29,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(3),
-    [theme.breakpoints.down(1200)]: {
-      gap: theme.spacing(2.5),
-    },
-    [theme.breakpoints.down(900)]: {
-      gap: theme.spacing(1.5),
-    },
+    // [theme.breakpoints.down(1200)]: {
+    //   gap: theme.spacing(2.5),
+    // },
+    // [theme.breakpoints.down(900)]: {
+    //   gap: theme.spacing(1.5),
+    // },
     [theme.breakpoints.down(600)]: {
-      gap: theme.spacing(1),
+      // gap: theme.spacing(1),
+      gap: '10px',
     },
   },
   userMenu: {

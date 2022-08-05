@@ -63,11 +63,12 @@ const useStyles = makeStyles((theme) => ({
     borderRight: '1px solid white',
     display: 'flex',
     paddingRight: theme.spacing(3),
-    [theme.breakpoints.down(1200)]: {
-      paddingRight: theme.spacing(1.5),
-    },
-    [theme.breakpoints.down(900)]: {
-      paddingRight: theme.spacing(0.8),
+    // [theme.breakpoints.down(1200)]: {
+    //   paddingRight: theme.spacing(1.5),
+    // },
+    [theme.breakpoints.down(768)]: {
+      // paddingRight: theme.spacing(0.8),
+      paddingRight: '10px',
     },
   },
   iconToggleMenu: {
