@@ -109,7 +109,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     public function __construct(
         DatabaseConnection $db,
         SqlRequestParametersTranslator $sqlRequestTranslator,
-        \Traversable $resourceTypes
+        \Traversable $resourceTypes,
+        // \Traversable $resourceProviderRepositories,
     ) {
         $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
@@ -144,6 +145,30 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         $this->accessGroups = $accessGroups ?? [];
 
         return $this;
+    }
+
+    public function findResources(ResourceFilter $filter): array
+    {
+        return $this->findResourcesWithAcl($filter, null);
+    }
+
+    public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array
+    {
+        $aclQueries = [];
+        foreach ($resourceProviderRepositories as $resourceProviderRepository) {
+            $aclQueries[] = $resourceProviderRepository->getAclSubQueryForResources();
+        }
+        $request .= ' AND EXISTS (
+            SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
+                ('
+                . '(' . implode(') OR (', $aclQueries) . ')';
+
+        return $this->findResourcesWithAcl($filter, $request);
+    }
+
+    private function findResourcesWithAcl(ResourceFilter $filter, ?string $aclSubQuery): array
+    {
+        return resources;
     }
 
     /**
@@ -232,6 +257,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         /**
          * Handle ACL
          */
+        // @todo split in a dedicated method to remove contact notion
+        // findResources & findResourcesByAccessGroupIds
         if (! $this->contact->isAdmin()) {
             $accessGroupIds = array_map(
                 function (AccessGroup $accessGroup) {
@@ -243,7 +270,9 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
             $request .= ' AND EXISTS (
               SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
                   (
-                    (resources.type IN (0,2) AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
+                    (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
+                    OR
+                    (resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
                     OR
                     (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
                     OR
@@ -253,6 +282,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
               LIMIT 1
             )';
         }
+
+        //$request .= $this->addResourceAclSubRequest($filter, $accessGroupIds);
 
         /**
          * Resource Type filter
