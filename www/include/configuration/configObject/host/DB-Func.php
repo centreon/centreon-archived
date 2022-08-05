@@ -482,7 +482,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                             \PDO::PARAM_INT
                         );
                         $countStatement->execute();
-                        $mulHostSv = $countStatement->fetchrow(\PDO::FETCH_ASSOC);
+                        $mulHostSv = $countStatement->fetch(\PDO::FETCH_ASSOC);
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $insertStatement->bindValue(':host_id', (int) $maxId["MAX(host_id)"], \PDO::PARAM_INT);
                             $insertStatement->bindValue(
@@ -2697,7 +2697,7 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'mc_contact_additive_inheritance':
             case 'mc_cg_additive_inheritance':
-                $bindParams[':' . ltrim($inputName, 'mc_')] = [
+                $bindParams[':' . str_replace('mc_', '', $inputName)] = [
                     \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
                 ];
                 break;

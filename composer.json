@@ -7,6 +7,10 @@
         "secure-http": false,
         "platform": {
             "php": "7.3"
+        },
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "symfony/flex": true
         }
     },
     "require-dev": {
@@ -22,13 +26,12 @@
         "centreon/centreon-test-lib": "21.04.x-dev",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.4.*",
-        "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.59",
         "webmozart/assert": "^1.8",
         "symfony/stopwatch": "^4.4",
         "symfony/twig-bundle": "^4.4",
         "symfony/web-profiler-bundle": "^4.4",
-        "twig/twig": "^2.0",
+        "twig/twig": "2.*",
         "phpstan/phpstan-beberlei-assert": "^0.12"
     },
     "require": {
@@ -39,7 +42,7 @@
         "symfony/filesystem": "4.4.*",
         "symfony/finder": "4.4.*",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6",
+        "smarty/smarty": "2.*",
         "curl/curl" : "^1.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
@@ -53,7 +56,6 @@
         "symfony/security-bundle": "4.4.*",
         "symfony/yaml": "4.4.*",
         "symfony/options-resolver": "4.4.*",
-        "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
         "nelmio/cors-bundle": "^2.1",
         "symfony/validator": "4.4.*",
@@ -66,7 +68,12 @@
         "dragonmantank/cron-expression": "3.0.1",
         "beberlei/assert": "v3.3.0",
         "enshrined/svg-sanitize": "^0.14.0",
-        "symfony/monolog-bundle": "^3.7"
+        "symfony/monolog-bundle": "^3.7",
+        "doctrine/annotations": "^1.0",
+        "phpdocumentor/reflection-docblock": "^5.2",
+        "symfony/property-access": "4.4.*",
+        "symfony/property-info": "4.4.*",
+        "symfony/serializer": "4.4.*"
     },
     "autoload": {
         "psr-4": {

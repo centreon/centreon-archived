@@ -206,6 +206,13 @@ try {
         sh 'rm -rf output'
       }
     }
+    //'Docker centos8': {
+    //  node {
+    //    checkoutCentreonBuild(buildBranch)
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+    //  }
+    //}
+    parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error("Unit test // packaging stage failure.");
     }
@@ -213,7 +220,7 @@ try {
 
   stage("$DELIVERY_STAGE") {
     node {
-      checkoutCentreonBuild(buildBranch)    
+      checkoutCentreonBuild(buildBranch)
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
@@ -225,7 +232,7 @@ try {
       error('Delivery stage failure');
     }
   }
-  
+
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
@@ -288,27 +295,6 @@ try {
         ])
       }
     }
-  }
-  
-  // TODO : add canary management in centreon-build
-  /*if ((env.BUILD == 'CI')) {
-    stage('Docker packaging with canary rpms') {
-      def parallelSteps = [:]
-      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-      for (x in osBuilds) {
-        def osBuild = x
-        parallelSteps[osBuild] = {
-          node {
-            checkoutCentreonBuild()
-            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-          }
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
-    }
   }*/
 
   stage('Acceptance tests') {
@@ -342,5 +328,4 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
-
 }
