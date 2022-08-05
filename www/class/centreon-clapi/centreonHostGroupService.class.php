@@ -227,7 +227,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function del($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -289,7 +289,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -343,7 +343,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -497,7 +497,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function getmacro($parameters)
     {
-        $tmp = explode($this->delim, $parameters);
+        $tmp = $this->explodeDelimEscaped($parameters);
         if (count($tmp) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -544,7 +544,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function setmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 4) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -600,7 +600,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function delmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -647,7 +647,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function setseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -705,7 +705,7 @@ class CentreonHostGroupService extends CentreonObject
      */
     public function unsetseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -766,7 +766,7 @@ class CentreonHostGroupService extends CentreonObject
         if (!isset($objectName) || !$objectName) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $tmp = explode($this->delim, $objectName);
+        $tmp = $this->explodeDelimEscaped($objectName);
         if (count($tmp) != 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -828,7 +828,7 @@ class CentreonHostGroupService extends CentreonObject
                 if (!isset($arg[0]) || !$arg[0]) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
-                $args = explode($this->delim, $arg[0]);
+                $args = $this->explodeDelimEscaped($arg[0]);
                 $relObject = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
                 $elements = $relObject->getMergedParameters(
                     array('hg_id'),
@@ -944,9 +944,8 @@ class CentreonHostGroupService extends CentreonObject
         $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
@@ -957,10 +956,9 @@ class CentreonHostGroupService extends CentreonObject
                         $element[$param] = "";
                     }
                 }
-                $addStr .= $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
@@ -983,12 +981,14 @@ class CentreonHostGroupService extends CentreonObject
                         }
                         unset($tmpObj);
                     }
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element['hg_name'] . $this->delim
-                        . $element['service_description'] . $this->delim
-                        . $this->getClapiActionName($parameter) . $this->delim
-                        . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element['hg_name'],
+                        $element['service_description'],
+                        $this->getClapiActionName($parameter),
+                        $value
+                    )) . "\n";
                 }
             }
             $params = $extendedObj->getParameters(
@@ -1004,12 +1004,14 @@ class CentreonHostGroupService extends CentreonObject
             if (isset($params) && is_array($params)) {
                 foreach ($params as $k => $v) {
                     if (!is_null($v) && $v != "") {
-                        echo $this->action . $this->delim
-                            . "setparam" . $this->delim
-                            . $element['hg_name'] . $this->delim
-                            . $element['service_description'] . $this->delim
-                            . $this->getClapiActionName($k) . $this->delim
-                            . $v . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element['hg_name'],
+                            $element['service_description'],
+                            $this->getClapiActionName($k),
+                            $v
+                        )) . "\n";
                     }
                 }
             }
@@ -1023,12 +1025,14 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
-                echo $this->action . $this->delim
-                    . "setmacro" . $this->delim
-                    . $element['hg_name'] . $this->delim
-                    . $element['service_description'] . $this->delim
-                    . $this->stripMacro($macro['svc_macro_name']) . $this->delim
-                    . $macro['svc_macro_value'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "setmacro",
+                    $element['hg_name'],
+                    $element['service_description'],
+                    $this->stripMacro($macro['svc_macro_name']),
+                    $macro['svc_macro_value']
+                )) . "\n";
             }
             $cgRel = new \Centreon_Object_Relation_Contact_Group_Service($this->dependencyInjector);
             $cgelements = $cgRel->getMergedParameters(
@@ -1046,11 +1050,13 @@ class CentreonHostGroupService extends CentreonObject
             );
             foreach ($cgelements as $cgelement) {
                 CentreonContactGroup::getInstance()->export($element['cg_name']);
-                echo $this->action . $this->delim
-                    . "addcontactgroup" . $this->delim
-                    . $element['hg_name'] . $this->delim
-                    . $cgelement['service_description'] . $this->delim
-                    . $cgelement['cg_name'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addcontactgroup",
+                    $element['hg_name'],
+                    $cgelement['service_description'],
+                    $cgelement['cg_name']
+                )) . "\n";
             }
             $contactRel = new \Centreon_Object_Relation_Contact_Service($this->dependencyInjector);
             $celements = $contactRel->getMergedParameters(
@@ -1068,11 +1074,13 @@ class CentreonHostGroupService extends CentreonObject
             );
             foreach ($celements as $celement) {
                 CentreonContact::getInstance()->export($celement['contact_alias']);
-                echo $this->action . $this->delim
-                    . "addcontact" . $this->delim
-                    . $element['hg_name'] . $this->delim
-                    . $celement['service_description'] . $this->delim
-                    . $celement['contact_name'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addcontact",
+                    $element['hg_name'],
+                    $celement['service_description'],
+                    $celement['contact_name']
+                )) . "\n";
             }
         }
     }

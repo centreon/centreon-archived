@@ -103,7 +103,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -121,7 +121,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -155,7 +155,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
-            $args = explode($this->delim, $arg[0]);
+            $args = $this->explodeDelimEscaped($arg[0]);
             $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hcIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
@@ -428,16 +428,20 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                         "AND"
                     );
                     foreach ($elements as $element) {
-                        echo $this->action . $this->delim
-                            . "addservice" . $this->delim
-                            . $scName . $this->delim
-                            . $element['host_name'] . "," . $element['service_description'] . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "addservice",
+                            $scName,
+                            $element['host_name'] . "," . $element['service_description']
+                        )) . "\n";
                     }
                 } else {
-                    echo $this->action . $this->delim
-                        . "addservicetemplate" . $this->delim
-                        . $scName . $this->delim
-                        . $svcParam['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addservicetemplate",
+                        $scName,
+                        $svcParam['service_description']
+                    )) . "\n";
                 }
             }
         }

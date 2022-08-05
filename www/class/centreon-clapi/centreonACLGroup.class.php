@@ -91,7 +91,7 @@ class CentreonACLGroup extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -109,7 +109,7 @@ class CentreonACLGroup extends CentreonObject
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -184,7 +184,7 @@ class CentreonACLGroup extends CentreonObject
                 if (!isset($arg[0])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
-                $args = explode($this->delim, $arg[0]);
+                $args = $this->explodeDelimEscaped($arg[0]);
                 $groupIds = $this->object->getIdByParameter($uniqueLabel, array($args[0]));
                 if (!count($groupIds)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
@@ -283,21 +283,24 @@ class CentreonACLGroup extends CentreonObject
             $filters
         );
 
-        $exportLine = '';
         foreach ($aclGroupList as $aclGroup) {
-            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
-                . $aclGroup['acl_group_name'] . $this->delim
-                . $aclGroup['acl_group_alias'] . $this->delim . "\n";
-
-            $exportLine .= $this->action . $this->delim . "SETPARAM" . $this->delim
-                . $aclGroup['acl_group_name'] . $this->delim
-                . 'activate' . $this->delim
-                . $aclGroup['acl_group_activate'] . $this->delim . "\n";
-
-            $exportLine .= $this->exportLinkedObjects($aclGroup['acl_group_id'], $aclGroup['acl_group_name']);
-
-            echo $exportLine;
-            $exportLine = '';
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "ADD",
+                $aclGroup['acl_group_name'],
+                $aclGroup['acl_group_alias']
+            )) . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "SETPARAM",
+                $aclGroup['acl_group_name'],
+                'activate',
+                $aclGroup['acl_group_activate']
+            )) . "\n";
+            echo $this->exportLinkedObjects(
+                $aclGroup['acl_group_id'],
+                $aclGroup['acl_group_name']
+            );
         }
     }
 
@@ -336,9 +339,12 @@ class CentreonACLGroup extends CentreonObject
             ),
         );
 
-        $linkedObjectsSetter = $this->action . $this->delim . 'SET%s' . $this->delim .
-            $aclGroupName . $this->delim .
-            '%s' . $this->delim . "\n";
+        $linkedObjectsSetter = $this->implodeDelimEscaped(array(
+            $this->action,
+            'SET%s',
+            $aclGroupName,
+            '%s'
+        )) . "\n";
 
         $linkedObjectsStr = '';
 

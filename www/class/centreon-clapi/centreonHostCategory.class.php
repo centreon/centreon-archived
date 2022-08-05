@@ -111,7 +111,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -129,7 +129,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -187,7 +187,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
-            $args = explode($this->delim, $arg[0]);
+            $args = $this->explodeDelimEscaped($arg[0]);
             $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hcIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
@@ -268,10 +268,12 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             'AND'
         );
         foreach ($elements as $element) {
-            echo $this->action . $this->delim
-                . "addmember" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . $element['host_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addmember",
+                $element[$this->object->getUniqueLabelField()],
+                $element['host_name']
+            )) . "\n";
         }
     }
 }

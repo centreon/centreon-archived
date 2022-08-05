@@ -274,7 +274,7 @@ class CentreonHost extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -384,7 +384,7 @@ class CentreonHost extends CentreonObject
      */
     public function showinstance($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if ($parameters == '') {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -419,7 +419,7 @@ class CentreonHost extends CentreonObject
      */
     public function setinstance($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -443,7 +443,7 @@ class CentreonHost extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -617,7 +617,7 @@ class CentreonHost extends CentreonObject
      */
     public function initUpdateParameters($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -732,7 +732,7 @@ class CentreonHost extends CentreonObject
      */
     public function setseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -773,7 +773,7 @@ class CentreonHost extends CentreonObject
      */
     public function unsetseverity($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -858,7 +858,7 @@ class CentreonHost extends CentreonObject
      */
     public function setmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) == 3) {
             $params[3] = 0;
         }
@@ -950,7 +950,7 @@ class CentreonHost extends CentreonObject
      */
     public function delmacro($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -1128,7 +1128,7 @@ class CentreonHost extends CentreonObject
                 if (!isset($arg[0])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
-                $args = explode($this->delim, $arg[0]);
+                $args = $this->explodeDelimEscaped($arg[0]);
                 $hostIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
                 if (!count($hostIds)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
@@ -1297,24 +1297,24 @@ class CentreonHost extends CentreonObject
         }
 
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim;
+                $value = '';
                 if ($param == 'instance') {
                     if ($this->register) {
                         foreach ($instElements as $instElem) {
                             if ($element['host_name'] == $instElem['host_name']) {
-                                $addStr .= $instElem['name'];
+                                $value = $instElem['name'];
                             }
                         }
                     }
                 }
                 if (isset($element[$param]) && $param != "hostgroup" && $param != "template") {
-                    $addStr .= $element[$param];
+                    $value = $element[$param];
                 }
+                $addTab[] = $value;
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
@@ -1338,30 +1338,32 @@ class CentreonHost extends CentreonObject
                         }
                         unset($tmpObj);
                     }
-                    $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $this->getClapiActionName($parameter) . $this->delim
-                        . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element[$this->object->getUniqueLabelField()],
+                        $this->getClapiActionName($parameter),
+                        CentreonUtils::convertLineBreak($value)
+                    )) . "\n";
                 }
             }
 
             // Set parentship
             if (isset($parentShip[$element[$this->object->getPrimaryKey()]])) {
                 foreach ($parentShip[$element[$this->object->getPrimaryKey()]] as $parentId) {
-                    echo $this->action . $this->delim
-                    . "addparent" . $this->delim
-                    . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . (
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addparent",
+                        $element[$this->object->getUniqueLabelField()],
                         (
-                            isset($elements[$parentId])
-                            && isset($elements[$parentId][$this->object->getUniqueLabelField()])
-                        )
+                            (
+                                isset($elements[$parentId])
+                                && isset($elements[$parentId][$this->object->getUniqueLabelField()])
+                            )
                             ? $elements[$parentId][$this->object->getUniqueLabelField()]
                             : ''
-                    )
-                    . "\n";
+                        )
+                    )) . "\n";
                 }
             }
 
@@ -1382,12 +1384,13 @@ class CentreonHost extends CentreonObject
             if (isset($params) && is_array($params)) {
                 foreach ($params as $k => $v) {
                     if (!is_null($v) && $v != "") {
-                        $v = CentreonUtils::convertLineBreak($v);
-                        echo $this->action . $this->delim
-                            . "setparam" . $this->delim
-                            . $element[$this->object->getUniqueLabelField()] . $this->delim
-                            . $this->getClapiActionName($k) . $this->delim
-                            . $v . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element[$this->object->getUniqueLabelField()],
+                            $this->getClapiActionName($k),
+                            CentreonUtils::convertLineBreak($v)
+                        )) . "\n";
                     }
                 }
             }
@@ -1410,13 +1413,15 @@ class CentreonHost extends CentreonObject
                     $description = "'" . $description . "'";
                 }
 
-                echo $this->action . $this->delim
-                    . "setmacro" . $this->delim
-                    . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . $this->stripMacro($macro['host_macro_name']) . $this->delim
-                    . $macro['host_macro_value'] . $this->delim
-                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
-                    . $description . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "setmacro",
+                    $element[$this->object->getUniqueLabelField()],
+                    $this->stripMacro($macro['host_macro_name']),
+                    $macro['host_macro_value'],
+                    ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']),
+                    $description
+                )) . "\n";
             }
         }
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host($this->dependencyInjector);
@@ -1436,10 +1441,12 @@ class CentreonHost extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonContactGroup::getInstance()->export($element['cg_name']);
-            echo $this->action . $this->delim
-                . "addcontactgroup" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . $element['cg_name'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addcontactgroup",
+                $element[$this->object->getUniqueLabelField()],
+                $element['cg_name']
+            )) . "\n";
         }
         $contactRel = new \Centreon_Object_Relation_Contact_Host($this->dependencyInjector);
         $filters_contactRel = array("host_register" => $this->register);
@@ -1458,10 +1465,12 @@ class CentreonHost extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonContact::getInstance()->export($element['contact_alias']);
-            echo $this->action . $this->delim
-                . "addcontact" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . $element['contact_alias'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addcontact",
+                $element[$this->object->getUniqueLabelField()],
+                $element['contact_alias']
+            )) . "\n";
         }
         $htplRel = new \Centreon_Object_Relation_Host_Template_Host($this->dependencyInjector);
         $filters_htplRel = array("h.host_register" => $this->register);
@@ -1480,10 +1489,12 @@ class CentreonHost extends CentreonObject
         );
         foreach ($elements as $element) {
             CentreonHostTemplate::getInstance()->export($element['template']);
-            echo $this->action . $this->delim
-                . "addtemplate" . $this->delim
-                . $element['host'] . $this->delim
-                . $element['template'] . "\n";
+            echo $this->implodeDelimEscaped(array(
+                $this->action,
+                "addtemplate",
+                $element['host'],
+                $element['template']
+            )) . "\n";
         }
 
         // Filter only

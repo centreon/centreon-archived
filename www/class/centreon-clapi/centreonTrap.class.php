@@ -83,7 +83,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -127,7 +127,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -232,7 +232,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 4) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -296,7 +296,7 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -346,12 +346,11 @@ class CentreonTrap extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim . $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
             foreach ($element as $parameter => $value) {
                 if ($parameter != 'traps_id') {
                     if (!is_null($value) && $value != "") {
@@ -360,12 +359,13 @@ class CentreonTrap extends CentreonObject
                             $parameter = 'vendor';
                             $value = $this->manufacturerObj->getName($value);
                         }
-                        $value = CentreonUtils::convertLineBreak($value);
-                        echo $this->action . $this->delim
-                            . "setparam" . $this->delim
-                            . $element[$this->object->getUniqueLabelField()] . $this->delim
-                            . $parameter . $this->delim
-                            . $value . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element[$this->object->getUniqueLabelField()],
+                            $parameter,
+                            CentreonUtils::convertLineBreak($value)
+                        )) . "\n";
                     }
                 }
             }
@@ -379,12 +379,14 @@ class CentreonTrap extends CentreonObject
                 array('trap_id' => $element['traps_id'])
             );
             foreach ($matchingProps as $prop) {
-                echo $this->action . $this->delim .
-                    "addmatching" . $this->delim .
-                    $element['traps_name'] . $this->delim .
-                    $prop['tmo_string'] . $this->delim .
-                    $prop['tmo_regexp'] . $this->delim .
-                    $prop['tmo_status'] . "\n";
+                echo $this->implodeDelimEscaped(array(
+                    $this->action,
+                    "addmatching",
+                    $element['traps_name'],
+                    $prop['tmo_string'],
+                    $prop['tmo_regexp'],
+                    $prop['tmo_status']
+                )) . "\n";
             }
         }
     }

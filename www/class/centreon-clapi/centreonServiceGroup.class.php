@@ -112,7 +112,7 @@ class CentreonServiceGroup extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -131,7 +131,7 @@ class CentreonServiceGroup extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -197,7 +197,7 @@ class CentreonServiceGroup extends CentreonObject
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -237,7 +237,7 @@ class CentreonServiceGroup extends CentreonObject
             if (!isset($arg[0])) {
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
-            $args = explode($this->delim, $arg[0]);
+            $args = $this->explodeDelimEscaped($arg[0]);
             $sgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($sgIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
@@ -461,10 +461,12 @@ class CentreonServiceGroup extends CentreonObject
                     "AND"
                 );
                 foreach ($elements as $element) {
-                    echo $this->action . $this->delim
-                        . "addservice" . $this->delim
-                        . $sgName . $this->delim
-                        . $element['host_name'] . "," . $element['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addservice",
+                        $sgName,
+                        $element['host_name'] . "," . $element['service_description']
+                    )) . "\n";
                 }
             }
             $existingRelationIds = $relobjHgSvc->getHostGroupIdServiceIdFromServicegroupId($sgId);
@@ -483,10 +485,12 @@ class CentreonServiceGroup extends CentreonObject
                     "AND"
                 );
                 foreach ($elements as $element) {
-                    echo $this->action . $this->delim
-                        . "addhostgroupservice" . $this->delim
-                        . $sgName . $this->delim
-                        . $element['hg_name'] . "," . $element['service_description'] . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "addhostgroupservice",
+                        $sgName,
+                        $element['hg_name'] . "," . $element['service_description']
+                    )) . "\n";
                 }
             }
         }

@@ -122,7 +122,7 @@ class CentreonCommand extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
 
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -149,7 +149,7 @@ class CentreonCommand extends CentreonObject
      */
     public function initUpdateParameters($parameters)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -194,7 +194,7 @@ class CentreonCommand extends CentreonObject
      */
     public function getparam($parameters = null)
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -296,7 +296,7 @@ class CentreonCommand extends CentreonObject
      */
     public function setargumentdescr($descriptions)
     {
-        $data = explode($this->delim, trim($descriptions, $this->delim));
+        $data = $this->explodeDelimEscaped(trim($descriptions, $this->delim));
         if (count($data) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -360,22 +360,22 @@ class CentreonCommand extends CentreonObject
             $filters
         );
         foreach ($elements as $element) {
-            $addStr = $this->action . $this->delim . "ADD";
+            $addTab = array($this->action, "ADD");
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim . $element[$param];
+                $addTab[] = $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            echo $this->implodeDelimEscaped($addTab) . "\n";
 
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams)) {
                     if (!is_null($value) && $value != "") {
-                        $value = CentreonUtils::convertLineBreak($value);
-                        echo $this->action . $this->delim
-                            . "setparam" . $this->delim
-                            . $element[$this->object->getUniqueLabelField()] . $this->delim
-                            . $parameter . $this->delim
-                            . $value . "\n";
+                        echo $this->implodeDelimEscaped(array(
+                            $this->action,
+                            "setparam",
+                            $element[$this->object->getUniqueLabelField()],
+                            $parameter,
+                            CentreonUtils::convertLineBreak($value)
+                        )) . "\n";
                     }
                 }
                 if ($parameter == "graph_id" && !empty($value)) {
@@ -387,22 +387,23 @@ class CentreonCommand extends CentreonObject
                     }
 
                     $v = $tmp[$graphObject->getUniqueLabelField()];
-                    $v = CentreonUtils::convertLineBreak($v);
-
-                    echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $this->getClapiActionName($parameter) . $this->delim
-                        . $v . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $element[$this->object->getUniqueLabelField()],
+                        $this->getClapiActionName($parameter),
+                        CentreonUtils::convertLineBreak($v)
+                    )) . "\n";
                 }
             }
 
             $argDescriptions = $this->getArgsDescriptions($element['command_id']);
             if (sizeof($argDescriptions) > 0) {
-                echo $this->action . $this->delim
-                    . "setargumentdescr" . $this->delim
-                    . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . implode(';', $argDescriptions) . "\n";
+                echo $this->implodeDelimEscaped(array_merge(array(
+                    $this->action,
+                    "setargumentdescr",
+                    $element[$this->object->getUniqueLabelField()]
+                ), $argDescriptions)) . "\n";
             }
         }
     }

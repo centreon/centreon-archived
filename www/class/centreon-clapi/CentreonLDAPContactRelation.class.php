@@ -69,7 +69,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     */
     public function initUpdateParameters(string $parameters): void
     {
-        $params = explode($this->delim, $parameters);
+        $params = $this->explodeDelimEscaped($parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
@@ -106,12 +106,13 @@ class CentreonLDAPContactRelation extends CentreonObject
             foreach ($contact as $parameter => $value) {
                 if (!empty($value) && !in_array($parameter, $this->exportExcludedParams) && $parameter === "ar_id") {
                     $value = $this->ldap->getObjectName($value);
-                    $value = CentreonUtils::convertLineBreak($value);
-                    echo $this->action . $this->delim
-                    . "setparam" . $this->delim
-                    . $contact[$this->contact->getUniqueLabelField()] . $this->delim
-                    . self::LDAP_PARAMETER_NAME . $this->delim
-                    . $value . "\n";
+                    echo $this->implodeDelimEscaped(array(
+                        $this->action,
+                        "setparam",
+                        $contact[$this->contact->getUniqueLabelField()],
+                        self::LDAP_PARAMETER_NAME,
+                        CentreonUtils::convertLineBreak($value)
+                    )) . "\n";
                 }
             }
         }
