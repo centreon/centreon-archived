@@ -6839,12 +6839,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "6f8b486c4444ba2998d62edf84c14b8af6155e90"
+                "reference": "b2319b653c1a552c1b9c510e203c06e521e3e3a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/6f8b486c4444ba2998d62edf84c14b8af6155e90",
-                "reference": "6f8b486c4444ba2998d62edf84c14b8af6155e90",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/b2319b653c1a552c1b9c510e203c06e521e3e3a9",
+                "reference": "b2319b653c1a552c1b9c510e203c06e521e3e3a9",
                 "shasum": ""
             },
             "require": {
@@ -6893,7 +6893,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/21.10.x"
             },
-            "time": "2022-08-05T09:14:17+00:00"
+            "time": "2022-08-05T09:53:23+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
