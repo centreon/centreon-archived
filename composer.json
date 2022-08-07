@@ -86,7 +86,7 @@
             "Tests\\": "tests/php/",
             "Centreon\\Test\\Api\\": "tests/api/"
         },
-        "classmap": ["www/class/"],
+        "classmap": ["www/class/", "lib/Centreon"],
         "files" : [
             "GPL_LIB/smarty-plugins/function.eval.php",
             "www/api/exceptions.php",
