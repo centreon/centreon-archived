@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction } from 'react';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import makeStyles from '@mui/styles/makeStyles';
+import Paper from '@mui/material/Paper';
 
 import TimePeriodButtonGroup from '../../TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../ExportableGraphWithTimeline';
@@ -15,19 +17,29 @@ interface Props {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const style = {
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  left: '50%',
-  p: 4,
-  position: 'absolute',
-  top: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '80%',
-};
+const useStyles = makeStyles((theme) => ({
+  container: {
+    backgroundColor: theme.palette.background.default,
+    left: '50%',
+    padding: theme.spacing(2),
+    position: 'absolute',
+    top: '40%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
+  },
+
+  footer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  spacing: {
+    paddingBottom: theme.spacing(1),
+  },
+}));
 
 const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
+  const classes = useStyles();
+
   const handleClose = (): void => setIsOpen(false);
 
   return (
@@ -36,20 +48,23 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
       aria-labelledby="modal-modal-title"
       open={isOpen}
     >
-      <Box sx={style}>
-        <div>
+      <Box className={classes.container}>
+        <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div>
+        <div className={classes.spacing}>
           <ExportablePerformanceGraphWithTimeline
-            graphHeight={200}
+            graphHeight={180}
             isTabDetails={false}
             resource={details}
           />
         </div>
-        <div>footer</div>
-        <div>
-          <Button onClick={handleClose}>Close</Button>
+        <div className={classes.footer}>
+          <Paper>Manage envelope size</Paper>
+          <Paper>Exclusion of periods</Paper>
+          <div>
+            <Button onClick={handleClose}>Close</Button>
+          </div>
         </div>
       </Box>
     </Modal>
