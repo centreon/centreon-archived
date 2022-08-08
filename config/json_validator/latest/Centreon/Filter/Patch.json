@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Patch a user filter",
+  "type": "object",
+  "required": ["order"],
+  "additionalProperties": false,
+  "properties": {
+    "order": {
+      "type": "integer"
+    }
+  }
+}

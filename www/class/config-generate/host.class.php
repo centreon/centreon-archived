@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,10 +39,10 @@ require_once dirname(__FILE__) . '/abstract/service.class.php';
 
 class Host extends AbstractHost
 {
-    const VERTICAL_NOTIFICATION = 1;
-    const CLOSE_NOTIFICATION = 2;
-    const CUMULATIVE_NOTIFICATION = 3;
-    
+    public const VERTICAL_NOTIFICATION = 1;
+    public const CLOSE_NOTIFICATION = 2;
+    public const CUMULATIVE_NOTIFICATION = 3;
+
     protected $hosts_by_name = array();
     protected $hosts = null;
     protected $generate_filename = 'hosts.cfg';
@@ -55,13 +56,15 @@ class Host extends AbstractHost
 
     private function getHostGroups(&$host)
     {
+        $host['group_tags'] = $host['group_tags'] ?? [];
+
         if (!isset($host['hg'])) {
             if (is_null($this->stmt_hg)) {
-                $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
-                    hostgroup_hg_id
-                FROM hostgroup_relation
-                WHERE host_host_id = :host_id
-                ");
+                $this->stmt_hg = $this->backend_instance->db->prepare(
+                    "SELECT hostgroup_hg_id
+                    FROM hostgroup_relation hgr, hostgroup hg
+                    WHERE host_host_id = :host_id AND hg.hg_id = hgr.hostgroup_hg_id AND hg.hg_activate = '1'"
+                );
             }
             $this->stmt_hg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_hg->execute();
@@ -69,8 +72,9 @@ class Host extends AbstractHost
         }
 
         $hostgroup = Hostgroup::getInstance($this->dependencyInjector);
-        foreach ($host['hg'] as $hg_id) {
-            $hostgroup->addHostInHg($hg_id, $host['host_id'], $host['host_name']);
+        foreach ($host['hg'] as $hostGroupId) {
+            $host['group_tags'][] = $hostGroupId;
+            $hostgroup->addHostInHg($hostGroupId, $host['host_id'], $host['host_name']);
         }
     }
 
@@ -151,13 +155,15 @@ class Host extends AbstractHost
                 $contacts = array();
                 $cg = array();
                 while (($hostId = array_shift($stack))) {
-                    if (isset($loop[$hostId])) {
+                    if (isset($loop[$hostId]) || !isset($hostsTpl[$hostId])) {
                         continue;
                     }
                     $loop[$hostId] = 1;
                     // if notifications_enabled is disabled. We don't go in branch
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
@@ -214,8 +220,10 @@ class Host extends AbstractHost
                     }
                     $loop[$hostId] = 1;
 
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
@@ -245,11 +253,13 @@ class Host extends AbstractHost
     private function manageVerticalInheritance(array &$host, string $attribute, string $attributeAdditive): array
     {
         $results = $host[$attribute . '_cache'];
-        if (count($results) > 0
-            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
+        if (
+            count($results) > 0
+            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)
+        ) {
             return $results;
         }
-        
+
         $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $hostIdCache = null;
         foreach ($host['htpl'] as $hostIdTopLevel) {
@@ -267,15 +277,20 @@ class Host extends AbstractHost
                     }
                     $loop[$hostId] = 1;
 
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
                     if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
                         $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
                         $currentLevelCatch = $level;
-                        if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
+                        if (
+                            is_null($hostsTpl[$hostId][$attributeAdditive])
+                            || $hostsTpl[$hostId][$attributeAdditive] != 1
+                        ) {
                             break;
                         }
                     }
@@ -307,7 +322,7 @@ class Host extends AbstractHost
      * @param array $host
      * @param array $cg
      */
-    private function setContactGroups(array &$host, array $cg = []) : void
+    private function setContactGroups(array &$host, array $cg = []): void
     {
         $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
@@ -328,7 +343,7 @@ class Host extends AbstractHost
      * @param array $host
      * @param array $contacts
      */
-    private function setContacts(array &$host, array $contacts = []) : void
+    private function setContacts(array &$host, array $contacts = []): void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
@@ -392,19 +407,26 @@ class Host extends AbstractHost
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity'])) {
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] =
-                $this->hosts[$host_id_arg]['severity']['level'];
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
+            $macros = [
+                '_CRITICALITY_LEVEL' => $this->hosts[$host_id_arg]['severity']['level'],
+                '_CRITICALITY_ID' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+                'severity' => $this->hosts[$host_id_arg]['severity']['hc_id'],
+            ];
+
+            $this->hosts[$host_id_arg]['macros'] = array_merge(
+                $this->hosts[$host_id_arg]['macros'] ?? [],
+                $macros
+            );
         }
 
         $hosts_tpl = &HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id_arg]['htpl'];
-        while ((is_null($severity_id) && ($host_id = array_shift($stack)))) {
+        while ((is_null($severity_id) && (!is_null($stack) && ($host_id = array_shift($stack))))) {
             if (isset($loop[$host_id])) {
                 continue;
             }
             $loop[$host_id] = 1;
-            if (isset($hosts_tpl[$host_id]['severity_id']) && !is_null($hosts_tpl[$host_id]['severity_id'])) {
+            if (isset($hosts_tpl[$host_id]['severity_id'])) {
                 $severity_id = $hosts_tpl[$host_id]['severity_id'];
                 break;
             }
@@ -414,19 +436,17 @@ class Host extends AbstractHost
             }
 
             $stack2 = $hosts_tpl[$host_id]['htpl'];
-            while ((is_null($severity_id) && ($host_id2 = array_shift($stack2)))) {
+            while ((is_null($severity_id) && (!is_null($stack2) && ($host_id2 = array_shift($stack2))))) {
                 if (isset($loop[$host_id2])) {
                     continue;
                 }
                 $loop[$host_id2] = 1;
-                if (isset($hosts_tpl[$host_id2]['severity_id']) && !is_null($hosts_tpl[$host_id2]['severity_id'])) {
-                    $severity_id = $hosts_tpl[$host_id2]['severity_id'];
-                }
+
                 if (isset($hosts_tpl[$host_id2]['severity_id'])) {
                     $severity_id = $hosts_tpl[$host_id2]['severity_id'];
                     break;
                 }
-                $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
+                $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'] ?? [], $stack2);
             }
 
             if ($severity_id) {
@@ -471,11 +491,17 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
+
+        // Set HostCategories
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        $this->insertHostInHostCategoryMembers($hostCategory, $host);
+        $host['category_tags'] = $hostCategory->getIdsByHostId($host['host_id']);
+
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
-        
+
         $this->manageNotificationInheritance($host);
-        
+
         $this->getServices($host);
         $this->getServicesByHg($host);
 
@@ -505,6 +531,9 @@ class Host extends AbstractHost
         Servicegroup::getInstance($this->dependencyInjector)->generateObjects();
         Escalation::getInstance($this->dependencyInjector)->generateObjects();
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
+        Severity::getInstance($this->dependencyInjector)->generateObjects();
+        HostCategory::getInstance($this->dependencyInjector)->generateObjects();
+        ServiceCategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)
@@ -534,16 +563,16 @@ class Host extends AbstractHost
      * @param int $hostId
      * @return array
      */
-    public function getCgAndContacts(int $hostId) : array
+    public function getCgAndContacts(int $hostId): array
     {
         // we pass null because it can be a meta_host with host_register = '2'
         $host = $this->getHostById($hostId, null);
-    
+
         $this->getContacts($host);
         $this->getContactGroups($host);
         $this->getHostTemplates($host, false);
 
-        $hostTplInstance = &HostTemplate::getInstance($this->dependencyInjector);
+        $hostTplInstance = HostTemplate::getInstance($this->dependencyInjector);
 
         $stack = $host['htpl'];
         $loop = array();

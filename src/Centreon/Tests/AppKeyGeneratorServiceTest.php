@@ -51,13 +51,13 @@ class AppKeyGeneratorServiceTest extends TestCase
         /**
          *  string generated is an md5
          */
-        $this->assertRegExp(self::MD5_REGEX, $key);
+        $this->assertMatchesRegularExpression(self::MD5_REGEX, $key);
 
         /**
          * second string different and matches format
          */
         $key2 = $service->generateKey();
-        $this->assertRegExp(self::MD5_REGEX, $key2);
+        $this->assertMatchesRegularExpression(self::MD5_REGEX, $key2);
         $this->assertNotSame($key, $key2);
     }
 }

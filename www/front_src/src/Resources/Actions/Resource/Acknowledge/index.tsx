@@ -1,29 +1,44 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import { useSnackbar, useRequest } from '@centreon/ui';
+import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelRequired,
-  labelSomethingWentWrong,
   labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
 } from '../../../translatedLabels';
-import DialogAcknowledge from './Dialog';
 import { Resource } from '../../../models';
-import { acknowledgeResources, getUser } from '../../../api';
+import { acknowledgeResources } from '../../api';
+
+import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  force_active_checks: Yup.boolean(),
+  is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
+  persistent: Yup.boolean(),
 });
 
 interface Props {
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
-  onClose;
-  onSuccess;
+}
+
+export interface AcknowledgeFormValues {
+  acknowledgeAttachedResources: boolean;
+  comment?: string;
+  forceActiveChecks: boolean;
+  isSticky: boolean;
+  notify: boolean;
+  persistent: boolean;
 }
 
 const AcknowledgeForm = ({
@@ -31,67 +46,54 @@ const AcknowledgeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
-  const { cancel, token } = useCancelTokenSource();
-  const { showMessage } = useSnackbar();
+  const { t } = useTranslation();
+  const { showSuccessMessage } = useSnackbar();
 
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
+  const {
+    sendRequest: sendAcknowledgeResources,
+    sending: sendingAcknowledgeResources,
+  } = useRequest({
+    request: acknowledgeResources,
+  });
 
-  const [loaded, setLoaded] = React.useState(false);
+  const { alias } = useAtomValue(userAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
 
-  const form = useFormik({
+  const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
-      comment: '',
-      notify: false,
-      acknowledgeAttachedResources: false,
+      acknowledgeAttachedResources: acknowledgement.with_services,
+      comment: undefined,
+      forceActiveChecks: acknowledgement.force_active_checks,
+      isSticky: acknowledgement.sticky,
+      notify: acknowledgement.notify,
+      persistent: acknowledgement.persistent,
     },
-    onSubmit: (values, { setSubmitting }) => {
-      setSubmitting(true);
-
-      acknowledgeResources({
-        resources,
+    onSubmit: (values): void => {
+      sendAcknowledgeResources({
         params: values,
-        cancelToken: token,
-      })
-        .then(() => {
-          showSuccess(labelAcknowledgeCommandSent);
-          onSuccess();
-        })
-        .catch(() => showError(labelSomethingWentWrong))
-        .finally(() => setSubmitting(false));
+        resources,
+      }).then(() => {
+        showSuccessMessage(t(labelAcknowledgeCommandSent));
+        onSuccess();
+      });
     },
     validationSchema,
   });
 
-  const hasResources = resources.length > 0;
-
-  React.useEffect(() => {
-    getUser(token)
-      .then((user) =>
-        form.setFieldValue(
-          'comment',
-          `${labelAcknowledgedBy} ${user.username}`,
-        ),
-      )
-      .catch(() => showError(labelSomethingWentWrong))
-      .finally(() => setLoaded(true));
-  }, [hasResources]);
-
-  React.useEffect(() => (): void => cancel(), []);
+  useEffect(() => {
+    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${alias}`);
+  }, []);
 
   return (
     <DialogAcknowledge
-      resources={resources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
       canConfirm={form.isValid}
       errors={form.errors}
-      values={form.values}
       handleChange={form.handleChange}
-      submitting={form.isSubmitting}
-      loading={!loaded}
+      resources={resources}
+      submitting={sendingAcknowledgeResources}
+      values={form.values}
+      onCancel={onClose}
+      onConfirm={form.submitForm}
     />
   );
 };

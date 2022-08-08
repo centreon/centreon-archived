@@ -1,10 +1,12 @@
 Centreon\Domain\Monitoring\Service:
     virtual_properties:
-        getActiveCheck:
-            serialized_name: active_checks
-            type: bool
+        getDuration:
+            name: getDuration
+            serialized_name: duration
+            type: string
             groups:
-                - 'resource_details_service'
+                - 'service_main'
+                - 'service_full'
     properties:
         id:
             type: int
@@ -12,57 +14,47 @@ Centreon\Domain\Monitoring\Service:
                 - 'service_min'
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         checkAttempt:
             type: string
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         checkCommand:
             type: string
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         checkInterval:
             type: float
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         checkPeriod:
             type: string
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         checkType:
             type: int
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         commandLine:
             type: string
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         description:
             type: string
             groups:
                 - 'service_min'
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         displayName:
             type: string
             groups:
                 - 'service_min'
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         executionTime:
             type: float
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         host:
             type: "Centreon\\Domain\\Monitoring\\Host"
             groups:
@@ -72,19 +64,16 @@ Centreon\Domain\Monitoring\Service:
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         iconImageAlt:
             type: string
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         isAcknowledged:
             type: bool
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         isActiveCheck:
             type: bool
             groups:
@@ -93,117 +82,101 @@ Centreon\Domain\Monitoring\Service:
             type: bool
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         scheduledDowntimeDepth:
             type: int
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         lastCheck:
             type: DateTime
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         lastHardStateChange:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastNotification:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastTimeCritical:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastTimeOk:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastTimeUnknown:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastTimeWarning:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastUpdate:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         lastStateChange:
             type: DateTime
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         latency:
             type: float
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         maxCheckAttempts:
             type: int
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         nextCheck:
             type: DateTime
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         output:
             type: string
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         performanceData:
             type: string
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         state:
             type: int
             groups:
+                - 'service_min'
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         stateType:
             type: int
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         criticality:
             type: int
             groups:
                 - 'service_main'
                 - 'service_full'
-                - 'resource_details_service'
         downtimes:
             type: array<Centreon\Domain\Downtime\Downtime>
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         flapping:
             type: bool
             groups:
                 - 'service_full'
-                - 'resource_details_service'
+        status:
+            type: Centreon\Domain\Monitoring\ResourceStatus
+            groups:
+                - 'service_main'
+                - 'service_full'

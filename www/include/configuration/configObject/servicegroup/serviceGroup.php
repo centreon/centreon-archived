@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,18 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["sg_id"]) ? $sG = $_GET["sg_id"] : $sG = null;
-isset($_POST["sg_id"]) ? $sP = $_POST["sg_id"] : $sP = null;
-$sG ? $sg_id = $sG : $sg_id = $sP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 /*
  * Path to the configuration dir
  */
@@ -57,11 +46,26 @@ $path = "./include/configuration/configObject/servicegroup/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+$sg_id = filter_var(
+    $_GET['sg_id'] ?? $_POST['sg_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -72,37 +76,60 @@ $sgs = $acl->getServiceGroupAclConf(null, 'broker');
 
 function mywrap($el)
 {
-    return "'".$el."'";
+    return "'" . $el . "'";
 }
 $sgString = implode(',', array_map('mywrap', array_keys($sgs)));
 
 switch ($o) {
-    case "a":
-        require_once($path."formServiceGroup.php");
-        break; #Add a Servicegroup
-    case "w":
-        require_once($path."formServiceGroup.php");
-        break; #Watch a Servicegroup
-    case "c":
-        require_once($path."formServiceGroup.php");
-        break; #Modify a Servicegroup
-    case "s":
-        enableServiceGroupInDB($sg_id);
-        require_once($path."listServiceGroup.php");
-        break; #Activate a Servicegroup
-    case "u":
-        disableServiceGroupInDB($sg_id);
-        require_once($path."listServiceGroup.php");
-        break; #Desactivate a Servicegroup
-    case "m":
-        multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceGroup.php");
-        break; #Duplicate n Service grou
-    case "d":
-        deleteServiceGroupInDB(isset($select) ? $select : array());
-        require_once($path."listServiceGroup.php");
-        break; #Delete n Service group
+    case "a": # Add a service group
+    case "w": # Watch a service group
+    case "c": # Modify a service group
+        require_once($path . "formServiceGroup.php");
+        break;
+    case "s": # Activate a service group
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceGroupInDB($sg_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceGroup.php");
+        break;
+    case "u": # Deactivate a service group
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceGroupInDB($sg_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceGroup.php");
+        break;
+    case "m": # Duplicate n service groups
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceGroupInDB(
+                is_array($select) ? $select : [],
+                is_array($dupNbr) ? $dupNbr : []
+            );
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceGroup.php");
+        break;
+    case "d": # Delete n service groups
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceGroupInDB(is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceGroup.php");
+        break;
     default:
-        require_once($path."listServiceGroup.php");
+        require_once($path . "listServiceGroup.php");
         break;
 }

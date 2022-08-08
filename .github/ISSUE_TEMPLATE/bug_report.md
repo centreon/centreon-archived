@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: status/new
-assignees: cgagnaire, lpinsivy
+assignees: ''
 
 ---
 
@@ -41,7 +41,7 @@ For the RPM based systems
 
 -- Copy/Paste the result of the following command --
 ```
-$ rpm -qa | grep centreon
+$ rpm -qa | grep centreon | egrep -v "(plugin|pack)" | sort
 ```
 
 For the deb based systems
@@ -85,9 +85,21 @@ Please describe precisely the steps to reproduce the encountered issue.
 
 **PHP error logs**
 
+For version using PHP 7.2 or 7.3 on centOs 8 or PHP 8
 ```
-tail -f /var/opt/rh/rh-php71/log/php-fpm/centreon-error.log
+tail -f /var/log/php-fpm/centreon-error.log
 ```
+
+For version using PHP 7.3 on centOs 7
+```
+tail -f /var/opt/rh/rh-php73/log/php-fpm/centreon-error.log
+```
+
+For version using PHP 7.2 on centOs 7
+```
+tail -f /var/opt/rh/rh-php72/log/php-fpm/centreon-error.log
+```
+
 **centreon-engine logs (*if needed*)**
 
 ```
@@ -98,7 +110,12 @@ tail -f /var/log/centreon-engine/centengine.log
 ```
 tail -f /var/log/centreon-broker/central-broker-master.log
 ```
-**centcore logs (*if needed*)**
+**centreon gorgone logs for Centreon >= 20.4  (*if needed*)**
+
+```
+tail -f /var/log/centreon-gorgone/gorgoned.log
+```
+**centcore logs for Centreon <= 19.10.x (*if needed*)**
 
 ```
 tail -f /var/log/centreon/centcore.log

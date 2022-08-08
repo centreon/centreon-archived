@@ -1,27 +1,30 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { connect } from 'react-redux';
+import { useAtomValue } from 'jotai/utils';
+import { isNil } from 'ramda';
 
-import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-import breadcrumbSelector from './selector';
+import navigationAtom from '../Navigation/navigationAtoms';
+
 import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
+import getBreadcrumbsByPath from './getBreadcrumbsByPath';
 
 const useStyles = makeStyles({
-  root: {
-    padding: '4px 16px',
-  },
   item: {
     display: 'flex',
+  },
+  root: {
+    padding: '4px 16px',
   },
 });
 
 interface Props {
   breadcrumbsByPath: BreadcrumbsByPath;
   path: string;
-  children: React.ReactNode;
 }
 
 const getBreadcrumbs = ({
@@ -51,15 +54,14 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
 
   return (
     <MuiBreadcrumbs
-      classes={{ root: classes.root, li: classes.item }}
-      separator={<NavigateNextIcon fontSize="small" />}
       aria-label="Breadcrumb"
+      classes={{ li: classes.item, root: classes.root }}
+      separator={<NavigateNextIcon fontSize="small" />}
     >
       {breadcrumbs.map((breadcrumb, index) => (
         <Breadcrumb
-          key={`${breadcrumb.label}-${breadcrumb.index}`}
           breadcrumb={breadcrumb}
-          index={index}
+          key={breadcrumb.label}
           last={index === breadcrumbs.length - 1}
         />
       ))}
@@ -67,8 +69,19 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
   );
 };
 
-const mapStateToProps = (state): { breadcrumbsByPath: BreadcrumbsByPath } => ({
-  breadcrumbsByPath: breadcrumbSelector(state),
-});
+const Breadcrumbs = ({ path }: Pick<Props, 'path'>): JSX.Element | null => {
+  const navigation = useAtomValue(navigationAtom);
 
-export default connect(mapStateToProps)(BreadcrumbTrail);
+  if (isNil(navigation)) {
+    return null;
+  }
+
+  return (
+    <BreadcrumbTrail
+      breadcrumbsByPath={getBreadcrumbsByPath(navigation.result)}
+      path={path}
+    />
+  );
+};
+
+export default Breadcrumbs;

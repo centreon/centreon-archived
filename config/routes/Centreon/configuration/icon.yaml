@@ -1,0 +1,5 @@
+centreon_application_configuration_icon_getIcons:
+  methods: GET
+  path: /configuration/icons
+  controller: 'Centreon\Application\Controller\Configuration\IconController::getIcons'
+  condition: "request.attributes.get('version') >= 21.10"

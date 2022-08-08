@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,16 +36,6 @@
 
 if (!isset($centreon)) {
     exit();
-}
-
-/**
- * Database retrieve information for Trap
- */
-function testTrapExistence()
-{
-    global $trapObj;
-
-    return $trapObj->testTrapExistence();
 }
 
 function myDecodeTrap($arg)
@@ -389,7 +380,9 @@ $form->addRule('traps_name', _("Compulsory Name"), 'required');
 $form->addRule('traps_oid', _("Compulsory Name"), 'required');
 $form->addRule('manufacturer_id', _("Compulsory Name"), 'required');
 $form->addRule('traps_args', _("Compulsory Name"), 'required');
-$form->registerRule('exist', 'callback', 'testTrapExistence');
+$form->registerRule('exist', 'callback', [$trapObj, "testTrapExistence"]);
+$form->registerRule('wellFormated', 'callback', [$trapObj, "testOidFormat"]);
+$form->addRule('traps_oid', _("Bad OID Format"), 'wellFormated');
 $form->addRule('traps_oid', _("The same OID element already exists"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 

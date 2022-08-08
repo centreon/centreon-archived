@@ -92,7 +92,7 @@ function fillBuffer($statesTab, $row, $color)
     $detailPopup = '{table class=bulleDashtab}';
     $detailPopup .= '{tr}{td class=bulleDashleft colspan=3}' . $Day .
         ': {span class ="isTimestamp isDate"}';
-    $detailPopup .= $date_start . '{/span} --  ' . $Duration . ': '.
+    $detailPopup .= $date_start . '{/span} --  ' . $Duration . ': ' .
         CentreonDuration::toString($totalTime) . '{/td}{td class=bulleDashleft }' . $Alert . '{/td}{/tr}';
     foreach ($statesTab as $key => $value) {
         $detailPopup .= '{tr}' .

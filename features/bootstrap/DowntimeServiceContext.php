@@ -32,7 +32,8 @@ class DowntimeServiceContext extends CentreonContext
             'retry_check_interval' => 1
         ));
         $metaservicePage->save();
-        $this->restartAllPollers();
+
+        $this->reloadAllPollers();
     }
 
     /**

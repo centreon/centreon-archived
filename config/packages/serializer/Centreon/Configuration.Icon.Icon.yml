@@ -1,0 +1,18 @@
+Centreon\Domain\Configuration\Icon\Icon:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'icon_main'
+        directory:
+            type: string
+            groups:
+                - 'icon_main'
+        name:
+            type: string
+            groups:
+                - 'icon_main'
+        url:
+            type: string
+            groups:
+                - 'icon_main'

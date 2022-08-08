@@ -116,18 +116,4 @@ class CentreonBase
     {
         $this->general_opt = $options;
     }
-
-    /*
-	 * Get user id from session_id
-	 */
-    private function getUserIdFromSID()
-    {
-        $DBRESULT = $this->DB->query("SELECT user_id FROM session
-            WHERE session_id = '" . $this->sessionId . "' LIMIT 1");
-        $admin = $DBRESULT->fetchRow();
-        unset($DBRESULT);
-        if (isset($admin["user_id"])) {
-            $this->userId = $admin["user_id"];
-        }
-    }
 }

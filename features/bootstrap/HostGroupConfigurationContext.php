@@ -30,7 +30,7 @@ class HostGroupConfigurationContext extends CentreonContext
         'action_url' => 'hostGroupActionUrl',
         'icon' => '',
         'map_icon' => '       centreon (png)',
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'rrd_retention' => 80,
         'comments' => 'hostGroupComments',
         'enabled' => 1
@@ -45,7 +45,7 @@ class HostGroupConfigurationContext extends CentreonContext
         'action_url' => 'hostGroupActionUrl',
         'icon' => '',
         'map_icon' => '       centreon (png)',
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'rrd_retention' => 80,
         'comments' => 'hostGroupComments',
         'enabled' => 1
@@ -60,7 +60,7 @@ class HostGroupConfigurationContext extends CentreonContext
         'action_url' => 'hostGroupActionUrlChanged',
         'icon' => '       centreon (png)',
         'map_icon' => '',
-        'geo_coordinates' => '1.2.3',
+        'geo_coordinates' => '2.3522219,48.856614',
         'rrd_retention' => 45,
         'comments' => 'hostGroupCommentsChanged',
         'enabled' => 0

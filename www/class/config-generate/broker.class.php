@@ -51,7 +51,12 @@ class Broker extends AbstractObjectJSON
         command_file,
         cache_directory,
         stats_activate,
-        daemon
+        daemon,
+        log_directory,
+        log_filename,
+        log_max_size,
+        pool_size,
+        bbdo_version
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -82,11 +87,10 @@ class Broker extends AbstractObjectJSON
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
     protected $cacheExternalValue = null;
+    protected $cacheLogValue = null;
 
     private function getExternalValues()
     {
-        global $pearDB;
-
         if (!is_null($this->cacheExternalValue)) {
             return;
         }
@@ -102,6 +106,26 @@ class Broker extends AbstractObjectJSON
         $stmt->execute();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $this->cacheExternalValue[$row['name']] = $row['external'];
+        }
+    }
+
+    private function getLogsValues(): void
+    {
+        if (!is_null($this->cacheLogValue)) {
+            return;
+        }
+        $this->cacheLogValue = array();
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT relation.`id_centreonbroker`, log.`name`, lvl.`name` as level
+            FROM `cfg_centreonbroker_log` relation
+            INNER JOIN `cb_log` log
+                ON relation.`id_log` = log.`id`
+            INNER JOIN `cb_log_level` lvl
+                ON relation.`id_level` = lvl.`id`
+        ");
+        $stmt->execute();
+        while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+            $this->cacheLogValue[$row['id_centreonbroker']][$row['name']] = $row['level'];
         }
     }
 
@@ -154,6 +178,10 @@ class Broker extends AbstractObjectJSON
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
+            $object['bbdo_version'] = (string) $row['bbdo_version'];
+            if (!empty($row['pool_size'])) {
+                $object['pool_size'] = (int)$row['pool_size'];
+            }
 
             if ($row['daemon'] == '1') {
                 $watchdog['cbd'][] = [
@@ -168,11 +196,18 @@ class Broker extends AbstractObjectJSON
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
+            //logger
+            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
+            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
+            $this->getLogsValues();
+            $logs = $this->cacheLogValue[$object['broker_id']];
+            $object['log']['loggers'] = $logs;
+
             // Flow parameters
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
                 $blockId = 0;
-                $configGroupdId = null;
                 for ($i = count($value); $i > 0; $i--) {
                     if (isset($value[$i]['config_key']) && $value[$i]['config_key'] == 'blockId') {
                         $blockId = $value[$i]['config_value'];
@@ -184,9 +219,10 @@ class Broker extends AbstractObjectJSON
                 $subValuesToCastInArray = [];
                 $rrdCacheOption = 'disable';
                 foreach ($value as $subvalue) {
-                    if (!isset($subvalue['fieldIndex']) ||
-                        $subvalue['fieldIndex'] == "" ||
-                        is_null($subvalue['fieldIndex'])
+                    if (
+                        !isset($subvalue['fieldIndex'])
+                        || $subvalue['fieldIndex'] == ""
+                        || is_null($subvalue['fieldIndex'])
                     ) {
                         if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
                             continue;
@@ -221,11 +257,16 @@ class Broker extends AbstractObjectJSON
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
                                 $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
-                                    $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
+                                    $this->getInfoDb(
+                                        $this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]
+                                    );
                             }
                             // Let broker insert in index data in pollers
-                            if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
-                                && !$localhost) {
+                            if (
+                                $subvalue['config_key'] === 'type'
+                                && $subvalue['config_value'] === 'storage'
+                                && !$localhost
+                            ) {
                                 $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
                         }
@@ -260,13 +301,13 @@ class Broker extends AbstractObjectJSON
                 }
 
                 // cast into arrays instead of objects with integer as key
-                $object[$key] = array_values($object[$key]);
                 foreach ($subValuesToCastInArray as $configGroupId => $subValues) {
                     foreach ($subValues as $subValue) {
                         $object[$key][$configGroupId][$subValue] =
                             array_values($object[$key][$configGroupId][$subValue]);
                     }
                 }
+                $object[$key] = array_values($object[$key]);
             }
 
             // Stats parameters
@@ -503,9 +544,13 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $proxy = (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME)
-                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '//:')
+                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '://')
                             : 'http://'
-                        ) . $proxy . parse_url($proxyInfo['proxy_url'], PHP_URL_HOST);
+                        ) .  $proxy;
+
+                $proxy .= (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME))
+                    ? parse_url($proxyInfo['proxy_url'], PHP_URL_HOST)
+                    : parse_url($proxyInfo['proxy_url'], PHP_URL_PATH);
                 if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
                     $proxy .= ':' . $proxyInfo['proxy_port'];
                 }

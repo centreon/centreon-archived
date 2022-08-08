@@ -26,6 +26,7 @@ class Check
 {
     public const VALIDATION_GROUPS_HOST_CHECK = ['check_host'];
     public const VALIDATION_GROUPS_SERVICE_CHECK = ['check_service'];
+    public const VALIDATION_GROUPS_META_SERVICE_CHECK = ['check_meta_service'];
 
     /**
      * @var int Resource id
@@ -89,18 +90,18 @@ class Check
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getCheckTime(): \DateTime
+    public function getCheckTime(): ?\DateTime
     {
         return $this->checkTime;
     }
 
     /**
-     * @param \DateTime $checkTime
+     * @param \DateTime|null $checkTime
      * @return Check
      */
-    public function setCheckTime(\DateTime $checkTime): Check
+    public function setCheckTime(?\DateTime $checkTime): Check
     {
         $this->checkTime = $checkTime;
         return $this;

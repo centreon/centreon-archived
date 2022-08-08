@@ -55,6 +55,6 @@ $help['no_proxy'] = dgettext(
 );
 $help['remote_server_use_as_proxy'] = dgettext(
     "help",
-    "If checked, the Central server will send configuration and external commands directly to the poller "
+    "If disabled, the Central server will send configuration and external commands directly to the poller "
     . "and will not use the Remote Server as a proxy."
 );

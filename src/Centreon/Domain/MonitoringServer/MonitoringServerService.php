@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer;
 
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 
@@ -52,9 +53,41 @@ class MonitoringServerService implements MonitoringServerServiceInterface
     public function findServers(): array
     {
         try {
-            return $this->monitoringServerRepository->findServers();
+            return $this->monitoringServerRepository->findServersWithRequestParameters();
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when searching for monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                'Error when searching for a monitoring server (' . $monitoringServerId . ')',
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServerByName(string $monitoringServerName): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServerByName($monitoringServerName);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                sprintf(_('Error when searching for a monitoring server %s'), $monitoringServerName),
+                0,
+                $ex
+            );
         }
     }
 
@@ -96,6 +129,18 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             $this->monitoringServerRepository->notifyConfigurationChanged($monitoringServer);
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteServer(int $monitoringServerId): void
+    {
+        try {
+            $this->monitoringServerRepository->deleteServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when deleting a monitoring server', 0, $ex);
         }
     }
 }

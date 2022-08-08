@@ -47,8 +47,7 @@ use RuntimeException;
 
 class CentreonPaginationService
 {
-
-    const LIMIT_MAX = 500;
+    public const LIMIT_MAX = 500;
 
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService

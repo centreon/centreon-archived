@@ -51,10 +51,13 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
             throw new \Exception('Missing argument');
         }
 
-        $page = (int)$this->arguments['page'];
-        $position = (int)$this->arguments['position'];
-        $blockId = (string)$this->arguments['blockId'];
-        $tag = (string)$this->arguments['tag'];
+        $page = filter_var((int)$this->arguments['page'], FILTER_VALIDATE_INT);
+        $position = filter_var((int)$this->arguments['position'], FILTER_VALIDATE_INT);
+        $blockId = filter_var((string)$this->arguments['blockId'], FILTER_SANITIZE_STRING);
+        $tag = filter_var((string)$this->arguments['tag'], FILTER_SANITIZE_STRING);
+        if (empty($tag) || empty($blockId) || $page === false || $position === false) {
+            throw new \InvalidArgumentException('Invalid Parameters');
+        }
 
         $cbObj = new CentreonConfigCentreonBroker($this->pearDB);
 
@@ -86,17 +89,16 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
         $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
-        require_once $smartyDir . 'libs/Smarty.class.php';
-        $tpl = new \Smarty();
-        $tpl->compile_dir = $libDir . '/SmartyCache/compile';
-        $tpl->config_dir = $libDir . '/SmartyCache/config';
-        $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/';
-        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
-
-        $tpl->caching = 0;
-        $tpl->compile_check = true;
-        $tpl->force_compile = true;
+        require_once $smartyDir . 'libs/SmartyBC.class.php';
+        $tpl = new \SmartyBC();
+        $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/');
+        $tpl->setCompileDir($libDir . '/SmartyCache/compile');
+        $tpl->setConfigDir($libDir . '/SmartyCache/config');
+        $tpl->setCacheDir($libDir . '/SmartyCache/cache');
+        $tpl->addPluginsDir($libDir . '/smarty-plugins');
+        $tpl->loadPlugin('smarty_function_eval');
+        $tpl->setForceCompile(true);
+        $tpl->setAutoLiteral(false);
 
         /*
          * Apply a template definition

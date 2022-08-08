@@ -1,0 +1,35 @@
+centreon_application_user_getFilters:
+  methods: GET
+  path: /users/filters/{pageName}
+  controller: 'Centreon\Application\Controller\FilterController::getFilters'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_getFilter:
+  methods: GET
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::getFilter'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_addFilter:
+  methods: POST
+  path: /users/filters/{pageName}
+  controller: 'Centreon\Application\Controller\FilterController::addFilter'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_updateFilter:
+  methods: PUT
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::updateFilter'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_patchFilter:
+  methods: PATCH
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::patchFilter'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_deleteFilter:
+  methods: DELETE
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::deleteFilter'
+  condition: "request.attributes.get('version') >= 21.10"

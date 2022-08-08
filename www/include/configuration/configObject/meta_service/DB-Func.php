@@ -49,14 +49,15 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('meta_id');
     }
-    $query = "SELECT meta_id FROM meta_service WHERE meta_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $dbResult = $pearDB->query($query);
-    $meta = $dbResult->fetch();
+    $query = "SELECT meta_id FROM meta_service WHERE meta_name = :meta_name";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':meta_name', htmlentities($name, ENT_QUOTES, "UTF-8"), \PDO::PARAM_STR);
+    $statement->execute();
+    $meta = $statement->fetch(\PDO::FETCH_ASSOC);
     #Modif case
-    if ($dbResult->rowCount() >= 1 && $meta["meta_id"] == $id) {
+    if ($statement->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
-    } #Duplicate entry
-    elseif ($dbResult->rowCount() >= 1 && $meta["meta_id"] != $id) {
+    } elseif ($statement->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
@@ -81,10 +82,31 @@ function disableMetaServiceInDB($meta_id = null)
     $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '" . $meta_id . "'");
 }
 
+/**
+ * @param int $serviceId
+ */
+function removeRelationLastMetaServiceDependency(int $serviceId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_metaserviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_metaserviceParent_relation 
+                                         WHERE meta_service_meta_id =  ' . $serviceId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
 function deleteMetaServiceInDB($metas = array())
 {
     global $pearDB;
     foreach ($metas as $key => $value) {
+        removeRelationLastMetaServiceDependency((int)$key);
         $pearDB->query("DELETE FROM meta_service WHERE meta_id = '" . $pearDB->escape($key) . "'");
         $query = "DELETE FROM service WHERE service_description = 'meta_" .
             $pearDB->escape($key) . "' AND service_register = '2'";
@@ -148,19 +170,24 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     /* Duplicate contacts */
                     $query = "SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
-                    while ($Contact = $dbResult->fetch()) {
-                        $query = "INSERT INTO meta_contact VALUES ('" .
-                            $maxId["MAX(meta_id)"] . "', '" . $Contact["contact_id"] . "')";
-                        $pearDB->query($query);
+                    while ($contact = $dbResult->fetch()) {
+                        $query = "INSERT INTO meta_contact VALUES (:max_mc_id, :contact_id)";
+                        $statement = $pearDB->prepare($query);
+                        $statement->bindValue(':max_mc_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':contact_id', (int) $contact["contact_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     /* Duplicate contactgroups */
                     $query = "SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
 
-                    while ($Cg = $dbResult->fetch()) {
+                    while ($cg = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contactgroup_relation " .
-                            "VALUES ('" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
-                        $pearDB->query($query);
+                            "VALUES (:max_mg_id, :cg_id)";
+                        $statement = $pearDB->prepare($query);
+                        $statement->bindValue(':max_mg_id', (int) $maxId["MAX(meta_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':cg_id', (int) $cg["cg_cg_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
                     while ($metric = $dbResult->fetch()) {
@@ -229,7 +256,16 @@ function checkMetaHost()
     $query = "SELECT host_id FROM host WHERE host_register = '2'  AND host_name = '_Module_Meta' ";
     $res = $pearDB->query($query);
     if (!$res->rowCount()) {
+        # Add virtual _Module_Meta host
         $query = "INSERT INTO host (host_name, host_register) VALUES ('_Module_Meta', '2') ";
+        $pearDB->query($query);
+        # Link _Module_Meta to default localhost poller
+        $query = "INSERT INTO ns_host_relation(`nagios_server_id`, `host_host_id`)
+        VALUES(
+            (SELECT id FROM nagios_server WHERE localhost = '1'),
+            (SELECT host_id FROM host WHERE host_name = '_Module_Meta')
+        )
+        ON DUPLICATE KEY UPDATE nagios_server_id = (SELECT id FROM nagios_server WHERE localhost = '1')";
         $pearDB->query($query);
     }
 }
@@ -425,8 +461,10 @@ function updateMetaServiceContact($meta_id)
     global $form;
     global $pearDB;
     /* Purge old relation */
-    $queryPurge = "DELETE FROM meta_contact WHERE meta_id = " . $meta_id;
-    $pearDB->query($queryPurge);
+    $queryPurge = "DELETE FROM meta_contact WHERE meta_id = :meta_id";
+    $statement = $pearDB->prepare($queryPurge);
+    $statement->bindValue(':meta_id', (int) $meta_id, \PDO::PARAM_INT);
+    $statement->execute();
 
     /* Add relation between metaservice and contact */
     $ret = array();

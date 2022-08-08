@@ -33,8 +33,6 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Host implements EntityDescriptorMetadataInterface
 {
-    use Model\ImportTrait;
-
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'host_min';
     public const SERIALIZER_GROUP_MAIN = 'host_main';
@@ -47,7 +45,7 @@ class Host implements EntityDescriptorMetadataInterface
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @var int Id of host
+     * @var int|null Id of host
      */
     protected $id;
 
@@ -307,6 +305,11 @@ class Host implements EntityDescriptorMetadataInterface
     protected $acknowledgement;
 
     /**
+     * @var string|null
+     */
+    protected $pollerName;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -320,9 +323,9 @@ class Host implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -1270,6 +1273,25 @@ class Host implements EntityDescriptorMetadataInterface
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPollerName(): ?string
+    {
+        return $this->pollerName;
+    }
+
+    /**
+     * @param string|null $pollerName
+     * @return self
+     */
+    public function setPollerName(?string $pollerName): self
+    {
+        $this->pollerName = $pollerName;
+
         return $this;
     }
 }

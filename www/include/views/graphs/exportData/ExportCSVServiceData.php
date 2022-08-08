@@ -58,58 +58,101 @@ if (isset($sid)) {
     get_error('need session id !');
 }
 
-isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES, "UTF-8") : $index = null;
-isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES, "UTF-8") : $index = $index;
+$index = filter_var(
+    $_GET['index'] ?? $_POST['index'] ?? false,
+    FILTER_VALIDATE_INT
+);
+$period = filter_var(
+    $_GET['period'] ?? $_POST['period'] ?? 'today',
+    FILTER_SANITIZE_STRING
+);
+$start = filter_var(
+    $_GET['start'] ?? false,
+    FILTER_VALIDATE_INT
+);
+$end = filter_var(
+    $_GET['end'] ?? false,
+    FILTER_VALIDATE_INT
+);
+$chartId = filter_var(
+    $_GET['chartId'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_GET['chartId'])) {
-    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
-    if (false === isset($hostId) || false === isset($serviceId)) {
-        die('Resource not found');
-    }
-    $res = $pearDBO->query('SELECT id
-        FROM index_data
-        WHERE host_id = ' . $pearDBO->escape($hostId) .
-        ' AND service_id = ' . $pearDBO->escape($serviceId));
-    if ($res->rowCount()) {
-        $row = $res->fetchRow();
-        $index = $row['id'];
+if (!empty($chartId)) {
+    if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+        // Should be allowed chartId matching int_int regexp
+        $hostId = (int)$matches[1];
+        $serviceId = (int)$matches[2];
+
+        // Making sure that splitted values are positive.
+        if ($hostId > 0 && $serviceId > 0) {
+            $query = 'SELECT id'
+                . ' FROM index_data'
+                . ' WHERE host_id = :hostId'
+                . ' AND service_id = :serviceId';
+
+            $stmt = $pearDBO->prepare($query);
+            $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+            $stmt->execute();
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $index = $row['id'];
+            }
+        }
     } else {
         die('Resource not found');
     }
 }
+if ($index !== false) {
+    $stmt = $pearDBO->prepare(
+        'SELECT host_name, service_description FROM index_data WHERE id = :index'
+    );
+    $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+    $stmt->execute();
+    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $hName = $row["host_name"];
+        $sName = $row["service_description"];
+    }
 
-$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
-$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
+    header("Content-Type: application/csv-tab-delimited-table");
+    if (isset($hName) && isset($sName)) {
+        header("Content-disposition: filename=" . $hName . "_" . $sName . ".csv");
+    } else {
+        header("Content-disposition: filename=" . $index . ".csv");
+    }
 
-$DBRESULT = $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
-while ($res = $DBRESULT->fetchRow()) {
-    $hName = $res["host_name"];
-    $sName = $res["service_description"];
-}
+    if ($start === false || $end === false) {
+        die('Start or end time is not consistent or not an integer');
+    }
 
-header("Content-Type: application/csv-tab-delimited-table");
-if (isset($hName) && isset($sName)) {
-    header("Content-disposition: filename=" . $hName . "_" . $sName . ".csv");
-} else {
-    header("Content-disposition: filename=" . $index . ".csv");
-}
+    $listMetric = array();
+    $datas = array();
+    $listEmptyMetric = array();
 
-$listMetric = array();
-$datas = array();
-$listEmptyMetric = array();
+    $stmt = $pearDBO->prepare(
+        'SELECT DISTINCT metric_id, metric_name ' .
+        'FROM metrics, index_data ' .
+        'WHERE metrics.index_id = index_data.id AND id = :index ORDER BY metric_name'
+    );
 
-$query = "SELECT DISTINCT metric_id, metric_name FROM metrics, index_data " .
-    "WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name";
-$DBRESULT = $pearDBO->query($query);
-while ($index_data = $DBRESULT->fetchRow()) {
-    $listMetric[$index_data["metric_id"]] = $index_data["metric_name"];
-    $listEmptyMetric[$index_data["metric_id"]] = '';
-    $query2 = "SELECT ctime,value FROM data_bin WHERE id_metric = '" . $index_data["metric_id"] .
-        "' AND ctime >= '" . htmlentities($_GET["start"], ENT_QUOTES, "UTF-8") .
-        "' AND ctime < '" . htmlentities($_GET["end"], ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT2 = $pearDBO->query($query2);
-    while ($data = $DBRESULT2->fetchRow()) {
-        $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+    $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    while ($indexData = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $listMetric[$indexData['metric_id']] = $indexData['metric_name'];
+        $listEmptyMetric[$indexData['metric_id']] = '';
+        $stmt2 = $pearDBO->prepare(
+            "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
+            "AND ctime >= :start AND ctime < :end"
+        );
+        $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
+        $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
+        $stmt2->bindValue(':metricId', $indexData['metric_id'], \PDO::PARAM_INT);
+        $stmt2->execute();
+        while ($data = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
+            $datas[$data["ctime"]][$indexData["metric_id"]] = $data["value"];
+        }
     }
 }
 

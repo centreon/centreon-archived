@@ -12,17 +12,9 @@
             <td><h4>{$Pollers}</h4></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$searchH}"/></td>
-            <td><input type='text' name='searchS' value="{$searchS}"/></td>
-            <td>
-                <select name="searchP">
-                    <option value=""></option>
-                    {foreach from=$instances key=instanceId item=instanceName}
-                    <option value="{$instanceId}" {if $instanceId== $searchP} selected{
-                    /if}>{$instanceName}</option>
-                    {/foreach}
-                </select>
-            </td>
+            <td><input type='text' name='searchH' value="{if isset($searchH)}{$searchH}{/if}"/></td>
+            <td><input type='text' name='searchS' value="{if isset($searchS)}{$searchS}{/if}"/></td>
+            <td>{$form.searchP.html}</td>
             <td>{$form.Search.html}</td>
         </tr>
         </tbody>
@@ -30,10 +22,9 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o1.html}
+                {$form.o1.html}
                 &nbsp;&nbsp;&nbsp;
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -59,7 +50,12 @@
         {assign var='host_name' value=''}
         {foreach item=d from=$data}
         <tr class="{$d.class}">
-            <td class="ListColCenter"><input name="select[{$d.id}]" value="1" type="checkbox"></td>
+            <td class="ListColCenter">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input name="select[{$d.id}]" id="{$d.id}" value="1" type="checkbox">
+                    <label class="empty-label" for="{$d.id}"></label>
+                </div>
+            </td>
             <td class="ListColLeft">{if !$host_name || $host_name != $d.host_name}{$d.host_name}{/if}</td>
             <td class="ListColLeft">{$d.service_description}</td>
             <td class="ListColCenter">{$d.metrics_name}</td>
@@ -74,10 +70,9 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o2.html}
+                {$form.o2.html}
                 &nbsp;&nbsp;&nbsp;
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

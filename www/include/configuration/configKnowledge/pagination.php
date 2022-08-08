@@ -127,7 +127,8 @@ if (isset($_GET["sort_types"])) {
 /*
  * Smarty template Init
  */
-$tpl = initSmartyTpl($path, new Smarty(), "./include/configuration/configKnowledge/");
+$path = "./include/configuration/configKnowledge/";
+$tpl = initSmartyTpl($path, new Smarty(), "./");
 
 $page_max = ceil($rows / $limit);
 if ($num >= $page_max && $rows) {
@@ -269,7 +270,10 @@ $tpl->assign("limite", isset($limite) ? $limite : null);
 $tpl->assign("begin", $num);
 $tpl->assign("end", $limit);
 $tpl->assign("pagin_page", _("Page"));
-$tpl->assign("order", $_GET["order"]);
+$tpl->assign(
+    "order",
+    isset($_GET["order"]) && $_GET["order"] === "DESC" ? "DESC" : "ASC"
+);
 $tpl->assign("tab_order", $tab_order);
 $tpl->assign('form', $renderer->toArray());
 

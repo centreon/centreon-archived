@@ -45,7 +45,6 @@ use PDOStatement;
  */
 class StatementCollector
 {
-
     /**
      * Collection of columns
      *

@@ -145,38 +145,56 @@ class CentreonDowntime extends CentreonObject
         if (count($filter) === 0) {
             echo $paramString . "\n";
             $filterList = '';
+            foreach ($elements as $element) {
+                echo implode($this->delim, $element) . "\n";
+            }
         } else {
+            if (isset($filter[1])) {
+                switch (strtolower($filter[1])) {
+                    case 'host':
+                        $paramString .= ";hosts\n";
+                        break;
+                    case 'hg':
+                        $paramString .= ";host groups\n";
+                        break;
+                    case 'service':
+                        $paramString .= ";services\n";
+                        break;
+                    case 'sg':
+                        $paramString .= ";service groups\n";
+                        break;
+                    default:
+                        throw new CentreonClapiException(self::UNKNOWNPARAMETER);
+                }
+            } else {
+                $paramString .= ";hosts;host groups;services;service groups\n";
+            }
+            echo $paramString;
             foreach ($elements as $element) {
                 if (isset($filter[1])) {
                     switch (strtolower($filter[1])) {
                         case 'host':
-                            echo $paramString . ";hosts\n";
-                            $filterList = ';' . $this->listHosts($element["dt_id"]);
+                            $filterList = $this->listHosts($element["dt_id"]);
                             break;
                         case 'hg':
-                            echo $paramString . ";host groups\n";
-                            $filterList = ';' . $this->listHostGroups($element["dt_id"]);
+                            $filterList = $this->listHostGroups($element["dt_id"]);
                             break;
                         case 'service':
-                            echo $paramString . ";services\n";
-                            $filterList = ';' . $this->listServices($element["dt_id"]);
+                            $filterList = $this->listServices($element["dt_id"]);
                             break;
                         case 'sg':
-                            echo $paramString . ";service groups\n";
-                            $filterList = ';' . $this->listServiceGroups($element["dt_id"]);
+                            $filterList = $this->listServiceGroups($element["dt_id"]);
                             break;
                         default:
                             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
                     }
                 } else {
-                    echo $paramString . ";hosts;host groups;services;service groups\n";
-                    $filterList = ';' . $this->listResources($element["dt_id"]);
+                    $filterList = $this->listResources($element["dt_id"]);
+                }
+                if (!empty($filterList)) {
+                    echo implode($this->delim, $element) . ';' . $filterList . "\n";
                 }
             }
-        }
-
-        foreach ($elements as $tab) {
-            echo implode($this->delim, $tab) . $filterList . "\n";
         }
     }
 
@@ -272,8 +290,8 @@ class CentreonDowntime extends CentreonObject
         if (!is_numeric($tmp[3])) {
             throw new CentreonClapiException('Incorrect fixed parameters');
         }
-        if (!is_numeric($tmp[4])) {
-            throw new CentreonClapiException('Incorrect duration parameters');
+        if ($tmp[3] == 0 && !is_numeric($tmp[4])) {
+            throw new CentreonClapiException('Incorrect duration parameters: mandatory for flexible downtimes');
         }
 
         $p = array();
@@ -281,7 +299,7 @@ class CentreonDowntime extends CentreonObject
         $p[':start_time'] = $tmp[1];
         $p[':end_time'] = $tmp[2];
         $p[':fixed'] = $tmp[3];
-        $p[':duration'] = $tmp[4];
+        $p[':duration'] = $tmp[3] == 0 ? $tmp[4] : null;
         $daysOfWeek = explode(',', strtolower($tmp[5]));
         $days = array();
         foreach ($daysOfWeek as $dayOfWeek) {
@@ -548,7 +566,7 @@ class CentreonDowntime extends CentreonObject
         }
 
         return implode("|", $hosts) . $this->delim . implode("|", $hostgroups) . $this->delim .
-            implode("|", $services) . $this->delim . implode("|", $servicegroups) . "\n";
+            implode("|", $services) . $this->delim . implode("|", $servicegroups);
     }
 
     /**

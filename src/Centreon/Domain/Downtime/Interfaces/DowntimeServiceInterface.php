@@ -94,6 +94,15 @@ interface DowntimeServiceInterface
     public function findDowntimesByService(int $hostId, int $serviceId): array;
 
     /**
+     * Find all downtimes for a metaservice.
+     *
+     * @param int $metaId ID of the metaservice
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findDowntimesByMetaService(int $metaId): array;
+
+    /**
      * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add

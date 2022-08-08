@@ -191,7 +191,7 @@ class CentreonRtDowntime extends CentreonObject
             if (strtoupper($parsedParameters['type']) !== 'HOST' && strtoupper($parsedParameters['type']) !== 'SVC') {
                 throw new CentreonClapiException(self::UNKNOWNPARAMETER . ' : ' . $parsedParameters['type']);
             }
-            $method = 'show' . ucfirst($parsedParameters['type']);
+            $method = 'show' . ucfirst(strtolower($parsedParameters['type']));
             $this->$method($parsedParameters['resource']);
         } else {
             $this->dHosts = $this->object->getHostDowntimes();
@@ -364,7 +364,7 @@ class CentreonRtDowntime extends CentreonObject
                 foreach ($existingService as $svc) {
                     $tmpDowntime = $this->object->getSvcDowntimes($svc);
                     if (!empty($tmpDowntime)) {
-                        $serviceDowntimesList[] = $tmpDowntime[0];
+                        $serviceDowntimesList = $tmpDowntime;
                     }
                 }
             }
@@ -431,8 +431,8 @@ class CentreonRtDowntime extends CentreonObject
         $parsedParameters = $this->parseParameters($parameters);
 
         // to choose the best add (addHostDowntime, addSvcDowntime etc.)
-        $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
-        if ((ucfirst($parsedParameters['type']) === 'Host') || (ucfirst($parsedParameters['type']) === 'Hg')) {
+        $method = 'add' . ucfirst(strtolower($parsedParameters['type'])) . 'Downtime';
+        if ((strtolower($parsedParameters['type']) === 'host') || (strtolower($parsedParameters['type']) === 'hg')) {
             $this->$method(
                 $parsedParameters['resource'],
                 $parsedParameters['start'],
@@ -471,19 +471,13 @@ class CentreonRtDowntime extends CentreonObject
         $fixed,
         $duration,
         $comment,
-        $withServices = 1
+        $withServices = true
     ) {
         if ($resource === "") {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $unknownHost = array();
         $listHost = explode('|', $resource);
-
-        if ($withServices == 1) {
-            $withServices = true;
-        } else {
-            $withServices = false;
-        }
 
         foreach ($listHost as $host) {
             if ($this->hostObject->getHostID($host)) {
@@ -576,15 +570,10 @@ class CentreonRtDowntime extends CentreonObject
         $fixed,
         $duration,
         $comment,
-        $withServices = 1
+        $withServices = true
     ) {
         if ($resource === "") {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        if ($withServices == 1) {
-            $withServices = true;
-        } else {
-            $withServices = false;
         }
         $existingHg = array();
         $unknownHg = array();

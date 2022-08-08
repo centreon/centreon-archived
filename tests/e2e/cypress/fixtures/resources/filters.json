@@ -1,0 +1,48 @@
+{
+  "name": "OK services",
+  "criterias": [
+    {
+      "name": "resource_types",
+      "value": [
+        {
+          "id": "service",
+          "name": "Service"
+        }
+      ],
+      "type": "multi_select",
+      "object_type": null
+    },
+    {
+      "name": "states",
+      "value": [],
+      "type": "multi_select",
+      "object_type": null
+    },
+    {
+      "name": "statuses",
+      "value": [
+        {
+          "id": "OK",
+          "name": "Ok"
+        }
+      ],
+      "type": "multi_select",
+      "object_type": null
+    },
+    {
+      "name": "search",
+      "value": "s.description:.*test.*",
+      "type": "text",
+      "object_type": null
+    },
+    {
+      "name": "sort",
+      "value": [
+        "status_severity_code",
+        "asc"
+      ],
+      "type": "array",
+      "object_type": null
+    }
+  ]
+}

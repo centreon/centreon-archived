@@ -116,12 +116,13 @@ class CentreonCentbrokerCfg extends CentreonObject
                 $params[1] = "ns_nagios_server";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif (!preg_match('/^config_/', $params[1])) {
-                $parametersWithoutPrefix = array(
+                $parametersWithoutPrefix = [
                     "event_queue_max_size",
                     "cache_directory",
                     "stats_activate",
-                    "daemon"
-                );
+                    "daemon",
+                    "pool_size",
+                ];
                 if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_' . $params[1];
                 }
@@ -195,7 +196,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         $name = strtolower($name);
 
         /* Get the action and the object */
-        if (preg_match("/^(list|get|set|add|del)(input|output|logger)/", $name, $matches)) {
+        if (preg_match("/^(list|get|set|add|del)(input|output)/", $name, $matches)) {
             $tagName = $matches[2];
 
             /* Parse arguments */
@@ -207,6 +208,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             if (!count($configIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
+
             $configId = $configIds[0];
 
             switch ($matches[1]) {
@@ -743,6 +745,12 @@ class CentreonCentbrokerCfg extends CentreonObject
                 . $element['config_name'] . $this->delim
                 . "daemon" . $this->delim
                 . $element['daemon'] . "\n";
+            $poolSize = empty($element['pool_size']) ? '' : $element['pool_size'];
+            echo $this->action . $this->delim
+                . "SETPARAM" . $this->delim
+                . $element['config_name'] . $this->delim
+                . "pool_size" . $this->delim
+                . $poolSize . "\n";
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?
@@ -755,10 +763,12 @@ class CentreonCentbrokerCfg extends CentreonObject
             $resultSet = $res->fetchAll();
             unset($res);
             foreach ($resultSet as $row) {
-                if ($row['config_key'] != 'name'
+                if (
+                    $row['config_key'] != 'name'
                     && $row['config_key'] != 'blockId'
                     && $row['config_key'] != 'filters'
-                    && $row['config_key'] != 'category') {
+                    && $row['config_key'] != 'category'
+                ) {
                     if (!isset($setParamStr[$row['config_group'] . '_' . $row['config_group_id']])) {
                         $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] = "";
                     }

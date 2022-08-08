@@ -1,122 +1,79 @@
+import { isNil } from 'ramda';
+
 import {
+  labelAll,
+  labelNewFilter,
   labelUnhandledProblems,
   labelResourceProblems,
-  labelAll,
-  labelUnhandled,
-  labelAcknowledged,
-  labelInDowntime,
-  labelHost,
-  labelService,
-  labelOk,
-  labelUp,
-  labelWarning,
-  labelDown,
-  labelCritical,
-  labelUnreachable,
-  labelUnknown,
-  labelPending,
 } from '../translatedLabels';
 
+import getDefaultCriterias from './Criterias/default';
+import {
+  Criteria,
+  criticalStatus,
+  downStatus,
+  hardStateType,
+  selectableResourceTypes,
+  selectableStates,
+  selectableStatuses,
+  unhandledState,
+  unknownStatus,
+  warningStatus,
+} from './Criterias/models';
+
 export interface Filter {
-  id: string;
+  criterias: Array<Criteria>;
+  id: number | string;
   name: string;
 }
 
-export interface Criterias {
-  resourceTypes: Array<Filter>;
-  states: Array<Filter>;
-  statuses: Array<Filter>;
-  hostGroups: Array<Filter>;
-  serviceGroups: Array<Filter>;
-}
-
-export type FilterGroup = {
-  search?: string;
-  criterias: Criterias;
-} & Filter;
-
-const unhandledState = {
-  id: 'unhandled_problems',
-  name: labelUnhandled,
-};
-const acknowledgedState = { id: 'acknowledged', name: labelAcknowledged };
-const inDowntimeState = { id: 'in_downtime', name: labelInDowntime };
-
-const states = [unhandledState, acknowledgedState, inDowntimeState];
-
-const hostResourceType = { id: 'host', name: labelHost };
-const serviceResourceType = { id: 'service', name: labelService };
-
-const resourceTypes = [hostResourceType, serviceResourceType];
-
-const okStatus = { id: 'OK', name: labelOk };
-const upStatus = { id: 'UP', name: labelUp };
-const warningStatus = { id: 'WARNING', name: labelWarning };
-const downStatus = { id: 'DOWN', name: labelDown };
-const criticalStatus = { id: 'CRITICAL', name: labelCritical };
-const unreachableStatus = { id: 'UNREACHABLE', name: labelUnreachable };
-const unknownStatus = { id: 'UNKNOWN', name: labelUnknown };
-const pendingStatus = { id: 'PENDING', name: labelPending };
-
-const statuses = [
-  okStatus,
-  upStatus,
-  warningStatus,
-  downStatus,
-  criticalStatus,
-  unreachableStatus,
-  unknownStatus,
-  pendingStatus,
-];
-
 const allFilter = {
+  criterias: getDefaultCriterias(),
   id: 'all',
   name: labelAll,
-  criterias: {
-    resourceTypes: [],
-    states: [],
-    statuses: [],
-    hostGroups: [],
-    serviceGroups: [],
-  },
 };
 
-const unhandledProblemsFilter: FilterGroup = {
+const newFilter = {
+  id: '',
+  name: labelNewFilter,
+} as Filter;
+
+const unhandledProblemsFilter: Filter = {
+  criterias: getDefaultCriterias({
+    states: [unhandledState],
+    statusTypes: [hardStateType],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+  }),
   id: 'unhandled_problems',
   name: labelUnhandledProblems,
-  criterias: {
-    resourceTypes: [],
-    states: [unhandledState],
-    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-    hostGroups: [],
-    serviceGroups: [],
-  },
 };
 
-const resourceProblemsFilter: FilterGroup = {
+const resourceProblemsFilter: Filter = {
+  criterias: getDefaultCriterias({
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+  }),
   id: 'resource_problems',
   name: labelResourceProblems,
-  criterias: {
-    resourceTypes: [],
-    states: [],
-    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-    hostGroups: [],
-    serviceGroups: [],
-  },
 };
 
-const filterById = {
-  resource_problems: resourceProblemsFilter,
+const standardFilterById = {
   all: allFilter,
+  resource_problems: resourceProblemsFilter,
   unhandled_problems: unhandledProblemsFilter,
+};
+
+const isCustom = ({ id }: Filter): boolean => {
+  return isNil(standardFilterById[id]);
 };
 
 export {
   allFilter,
   unhandledProblemsFilter,
   resourceProblemsFilter,
-  resourceTypes,
-  states,
-  statuses,
-  filterById,
+  newFilter,
+  selectableResourceTypes,
+  selectableStates,
+  selectableStatuses,
+  standardFilterById,
+  isCustom,
 };

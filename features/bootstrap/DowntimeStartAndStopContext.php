@@ -22,7 +22,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function __construct()
     {
         parent::__construct();
-        $this->downtimeStartTime = date("H:i");
+        $this->downtimeStartTime = (new \DateTime('now', new \DateTimezone('Europe/Paris')))->format('H:i');
         $this->page = '';
         $this->dateStartTimestamp = '';
         $this->dateEndTimestamp = '';
@@ -64,10 +64,8 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function aFixedDowntimeOnAMonitoredElement()
     {
-
         $page = new DowntimeConfigurationPage($this);
-        $downtimeEndTime = '+2 minutes';
-        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $this->downtimeEndTime = (new \DateTime('+2 minutes', new \DateTimezone('Europe/Paris')))->format('H:i');
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
             'service' => $this->host . ' - ' . $this->service,
@@ -86,8 +84,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
 
         $page = new DowntimeConfigurationPage($this);
-        $downtimeEndTime = '+2 minutes';
-        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $this->downtimeEndTime = (new \DateTime('+2 minutes', new \DateTimezone('Europe/Paris')))->format('H:i');
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
             'service' => $this->host . ' - ' . $this->service,
@@ -139,7 +136,8 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                if (date("H:i") >= $context->downtimeStartTime) {
+                $currentTime = (new \DateTime('now', new \DateTimezone('Europe/Paris')))->format('H:i');
+                if ($currentTime >= $context->downtimeStartTime) {
                     return true;
                 }
             },
@@ -171,7 +169,8 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return date("H:i") >= $context->downtimeEndTime;
+                $currentTime = (new \DateTime('now', new \DateTimezone('Europe/Paris')))->format('H:i');
+                return $currentTime >= $context->downtimeEndTime;
             },
             'The end of the downtime is too late (' . $this->downtimeEndTime . ').',
             180 // 3 minutes for 2 minutes-long downtimes

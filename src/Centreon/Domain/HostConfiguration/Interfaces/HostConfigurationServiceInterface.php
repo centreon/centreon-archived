@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
+use Centreon\Domain\HostConfiguration\Exception\HostConfigurationServiceException;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
-use Centreon\Domain\HostConfiguration\HostConfigurationService;
+use Centreon\Domain\HostConfiguration\HostMacro;
 
 interface HostConfigurationServiceInterface
 {
@@ -32,10 +33,9 @@ interface HostConfigurationServiceInterface
      * Add a host.
      *
      * @param Host $host
-     * @return int Returns the host id
-     * @throws HostConfigurationException
+     * @throws HostConfigurationServiceException
      */
-    public function addHost(Host $host): int;
+    public function addHost(Host $host): void;
 
     /**
      * Find a host.
@@ -53,4 +53,99 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function getNumberOfHosts(): int;
+
+    /**
+     * Find host templates recursively.
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host Host for which we want to find all host templates recursively
+     * @return Host[]
+     * @throws HostConfigurationException
+     */
+    public function findHostTemplatesRecursively(Host $host): array;
+
+    /**
+     * Find the command of a host.
+     * A recursive search will be performed in the inherited templates in the
+     * case where the host does not have a command.
+     *
+     * @param int $hostId Host id
+     * @return string|null Return the command if found
+     * @throws HostConfigurationException
+     */
+    public function findCommandLine(int $hostId): ?string;
+
+    /**
+     * Find all host macros for the host.
+     *
+     * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
+     * @return HostMacro[] List of host macros found
+     * @throws HostConfigurationException
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
+
+    /**
+     * Find all on-demand host macros needed for this command.
+     *
+     * @param int $hostId Host id
+     * @param string $command Command to analyse
+     * @return HostMacro[] List of host macros
+     * @throws HostConfigurationException
+     */
+    public function findHostMacrosFromCommandLine(int $hostId, string $command): array;
+
+    /**
+     * Change the activation status of host.
+     *
+     * @param Host $host Host for which we want to change the activation status
+     * @param bool $shouldBeActivated TRUE to activate a host
+     * @throws HostConfigurationException
+     */
+    public function changeActivationStatus(Host $host, bool $shouldBeActivated): void;
+
+    /**
+     * Find host names already used by hosts.
+     *
+     * @param string[] $namesToCheck List of names to find
+     * @return string[] Return the host names found
+     * @throws HostConfigurationException
+     */
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array;
+
+    /**
+     * Update a host.
+     *
+     * @param Host $host
+     * @throws HostConfigurationServiceException
+     */
+    public function updateHost(Host $host): void;
+
+    /**
+     * Find host templates by host id (non recursive)
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host
+     * @return Host[]
+     */
+    public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find a host by its name
+     *
+     * @param string $hostName Host name to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws HostConfigurationException
+     */
+    public function findHostByName(string $hostName): ?Host;
+
+    /**
+     * Find a host template by its id
+     *
+     * @param int $hostTemplateId
+     * @return Host|null
+     */
+    public function findHostTemplate(int $hostTemplateId): ?Host;
 }

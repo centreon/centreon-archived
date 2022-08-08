@@ -62,21 +62,28 @@
         jQuery.ajax({
             type: 'POST',
             url: './steps/process/process_step5.php',
-            data: jQuery('#form_step5').serialize()
-        }).success(function (data) {
-            var result = JSON.parse(data);
-            if (!result.required.length && result.email && result.password) {
-                nextStep();
-            } else {
-                result.required.forEach(function (element) {
-                    jQuery("input[name=" + element + "]").next().html("Parameter is required");
-                });
-                if (!result.email) {
-                    jQuery('input[name="email"]').next().html("Email address is not valid");
+            data: jQuery('#form_step5').serialize(),
+            success: (data) => {
+                var result = JSON.parse(data);
+                if (!result.required.length && result.email && result.password && result.password_security_policy) {
+                    loadStep("nextStep");
+                } else {
+                    result.required.forEach(function (element) {
+                        jQuery("input[name=" + element + "]").next().html("Parameter is required");
+                    });
+                    if (!result.email) {
+                        jQuery('input[name="email"]').next().html("Email address is not valid");
+                    }
+                    if (!result.password) {
+                        jQuery('input[name="confirm_password"]').next().html("Password does not match");
+                    };
+                    if (!result.password_security_policy) {
+                        jQuery(
+                            'input[name="admin_password"]').next().html("Password must contain at least: " +
+                            "1 letter uppercase, 1 letter lowercase, 1 number, 1 special character from '@$!%*?&' " +
+                            "and should be at least 12 characters long");
+                    };
                 }
-                if (!result.password) {
-                    jQuery('input[name="confirm_password"]').next().html("Password does not match");
-                };
             }
         });
 

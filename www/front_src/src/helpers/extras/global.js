@@ -59,12 +59,14 @@
       else if (!secondGlobalProp) secondGlobalProp = p;
       lastGlobalProp = p;
     }
+
     return lastGlobalProp;
   }
 
   const impt = systemJSPrototype.import;
   systemJSPrototype.import = function (id, parentUrl) {
     noteGlobalProps();
+
     return impt.call(this, id, parentUrl);
   };
 
@@ -99,7 +101,7 @@
       function (_export) {
         return {
           execute() {
-            _export({ default: globalExport, __useDefault: true });
+            _export({ __useDefault: true, default: globalExport });
           },
         };
       },

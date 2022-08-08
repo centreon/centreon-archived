@@ -41,6 +41,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      * the http port to use to contact the remote,
      * a boolean to enable/disable certificate check to contact the remote,
      * a boolean to enable/disable the use of proxy to contact the central
+     * @return int|void
      */
     public function enableRemote(string $parametersString)
     {
@@ -51,6 +52,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             'remoteHttpPort' => null,
             'remoteNoCheckCertificate' => false,
         );
+        $urlString = $noProxy = '';
 
         /* Check CLAPI */
         $options = explode(';', $parametersString);
@@ -108,7 +110,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
 
         echo "Notifying Master...\n";
         $result = "";
-        foreach ($hostList as $host) {
+        foreach ($urlList as $host) {
             echo "  Trying host '$host'... ";
             $result = $this->getDi()['centreon.notifymaster']->pingMaster(
                 $host,

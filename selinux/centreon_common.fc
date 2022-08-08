@@ -1,0 +1,5 @@
+/etc/centreon(/.*)?	gen_context(system_u:object_r:centreon_etc_t,s0)
+/var/log/centreon(/.*)? gen_context(system_u:object_r:centreon_log_t,s0)
+/var/cache/centreon(/.*)?   gen_context(system_u:object_r:centreon_var_cache_t,s0)
+/var/spool/centreon(/.*)?   gen_context(system_u:object_r:centreon_spool_t,s0)
+/var/spool/centreontrapd(/.*)?  gen_context(system_u:object_r:centreon_spool_t,s0)

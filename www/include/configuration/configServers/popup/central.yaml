@@ -1,0 +1,59 @@
+name: gorgoned-__SERVERNAME__
+description: Configuration for remote server __SERVERNAME__
+gorgone:
+  gorgonecore:
+    privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
+    pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
+  modules:
+    - name: httpserver
+      package: "gorgone::modules::core::httpserver::hooks"
+      enable: true
+      address: "0.0.0.0"
+      port: "8085"
+      ssl: false
+      auth:
+        enabled: false
+      allowed_hosts:
+        enabled: true
+        subnets:
+          - 127.0.0.1/32
+    - name: action
+      package: "gorgone::modules::core::action::hooks"
+      enable: true
+    - name: cron
+      package: "gorgone::modules::core::cron::hooks"
+      enable: true
+      cron: !include cron.d/*.yaml
+    - name: nodes
+      package: "gorgone::modules::centreon::nodes::hooks"
+      enable: true
+    - name: proxy
+      package: "gorgone::modules::core::proxy::hooks"
+      enable: true
+    - name: legacycmd
+      package: "gorgone::modules::centreon::legacycmd::hooks"
+      enable: true
+      cmd_dir: "__CENTREON_VARLIB__/centcore/"
+      cmd_file: "__CENTREON_VARLIB__/centcore.cmd"
+      cache_dir: "__CENTREON_CACHEDIR__"
+      cache_dir_trap: "/etc/snmp/centreon_traps"
+      remote_dir: "__CENTREON_CACHEDIR__/config/remote-data/"
+    - name: engine
+      package: "gorgone::modules::centreon::engine::hooks"
+      enable: true
+      command_file: "__COMMAND__"
+    - name: statistics
+      package: "gorgone::modules::centreon::statistics::hooks"
+      enable: true
+      broker_cache_dir: "__CENTREON_CACHEDIR__/broker-stats/"
+      cron:
+        - id: broker_stats
+          timespec: "*/5 * * * *"
+          action: BROKERSTATS
+          parameters:
+            timeout: 10
+        - id: engine_stats
+          timespec: "*/5 * * * *"
+          action: ENGINESTATS
+          parameters:
+            timeout: 10

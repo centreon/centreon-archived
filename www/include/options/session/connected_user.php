@@ -51,9 +51,9 @@ $action = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$selectedUserSid = filter_var(
-    $_GET['session'] ?? null, // the sessionId of the chosen user
-    FILTER_SANITIZE_STRING
+$selectedUserId = filter_var(
+    $_GET['user'] ?? null,
+    FILTER_VALIDATE_INT
 );
 
 $currentPage = filter_var(
@@ -61,7 +61,7 @@ $currentPage = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if ($selectedUserSid) {
+if ($selectedUserId) {
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
     $msg->setTimeOut("3");
@@ -69,8 +69,8 @@ if ($selectedUserSid) {
     switch ($action) {
         // logout action
         case KICK_USER:
-            $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
-            $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
+            $stmt = $pearDB->prepare("DELETE FROM session WHERE user_id = :userId");
+            $stmt->bindValue(':userId', $selectedUserId, \PDO::PARAM_INT);
             $stmt->execute();
             $msg->setText(_("User kicked"));
             break;
@@ -122,9 +122,10 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     if ($centreon->user->admin) {
         // adding the link to be able to kick the user
         $session_data[$cpt]["actions"] =
-            "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] . "'>" .
-                "<img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
-                "' title='" . _("Kick User") . "'>" .
+            "<a href='./main.php?p=" . $p . "&o=k&user=" . $r['user_id'] . "'>" .
+                "<span title='" . _("Kick User") . "'>" .
+                    returnSvg("www/img/icons/delete.svg", "var(--icons-fill-color)", 22, 22) .
+                "</span>" .
             "</a>";
 
         // checking if the user account is linked to an LDAP
@@ -137,9 +138,10 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
             }
             $session_data[$cpt]["synchronize"] =
                 "<a href='#'>" .
-                    "<img src='./img/icons/refresh.png' border='0' " .
-                        "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
-                        "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>" .
+                    "<span onclick='submitSync(" . $currentPage . ", \"" . $r['user_id'] . "\")' 
+                    title='" . _("Synchronize LDAP") . "'>" .
+                        returnSvg("www/img/icons/refresh.svg", "var(--icons-fill-color)", 18, 18) .
+                    "</span>" .
                 "</a>";
         } else {
             // hiding the synchronization option and details
@@ -163,6 +165,8 @@ $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
 $tpl->assign("distant_location", _("IP Address"));
+$tpl->assign("adminIcon", returnSvg("www/img/icons/admin.svg", "var(--icons-fill-color)", 17, 17));
+$tpl->assign("userIcon", returnSvg("www/img/icons/user.svg", "var(--icons-fill-color)", 17, 17));
 $tpl->display("connected_user.ihtml");
 ?>
 
@@ -171,7 +175,7 @@ $tpl->display("connected_user.ihtml");
     formatDateMoment();
 
     // ask for confirmation when requesting to resynchronize contact data from the LDAP
-    function submitSync(p, sessionId) {
+    function submitSync(p, contactId) {
         // msg = localized message to be displayed in the confirmation popup
         let msg = "<?= _('All this contact sessions will be closed. Are you sure you want to request a ' .
             'synchronization at the next login of this Contact ?'); ?>";
@@ -181,7 +185,7 @@ $tpl->display("connected_user.ihtml");
                 url: './api/internal.php?object=centreon_ldap_synchro&action=requestLdapSynchro',
                 type: 'POST',
                 async: false,
-                data: {sessionId: sessionId},
+                data: {contactId: contactId},
                 success: function(data) {
                     if (data === true) {
                         window.location.href = "?p=" + p;

@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Service;
 
 use Centreon\Domain\Entity\Command;
@@ -65,11 +84,19 @@ class TaskService
     }
 
     /**
-     * @return \CentreonRestHttp
+     * @param \CentreonRestHttp $centreonRestHttp
      */
     public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
     {
         $this->centreonRestHttp = $centreonRestHttp;
+    }
+
+    /**
+     * @return \CentreonRestHttp
+     */
+    public function getCentreonRestHttp(): \CentreonRestHttp
+    {
+        return $this->centreonRestHttp;
     }
 
     /**
@@ -91,11 +118,11 @@ class TaskService
      * Adds a new task
      *
      * @param string $type
-     * @param array $params
+     * @param array<string, array<string,mixed>> $params
      * @param int $parentId
      * @return int|bool
      */
-    public function addTask(string $type, array $params, int $parentId = null)
+    public function addTask(string $type, array $params, int $parentId = null): int|bool
     {
         $newTask = new Task();
         $newTask->setStatus(Task::STATE_PENDING);
@@ -129,52 +156,6 @@ class TaskService
         $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
             ->findOneById($taskId);
         return $task ? $task->getStatus() : null;
-    }
-
-    /**
-     * Get remote existing task status by parent id
-     *
-     * @param int $parentId the parent task id on remote server
-     * @param string $serverIp the ip address of the remote server
-     * @param string $centreonFolder the folder of centreon on remote server
-     * @return null
-     */
-    public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
-    {
-        $query = "SELECT params FROM task WHERE id = '" . $parentId  . "'";
-
-        try {
-            $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
-            $result = unserialize($remoteDataResult[0]->params);
-
-            $httpMethod = $result['params']['http_method'];
-            $httpPort = $result['params']['http_port'];
-            $noCheckCertificate = $result['params']['no_check_certificate'];
-            $noProxy = $result['params']['no_proxy'];
-
-            $url = "";
-            if (parse_url($serverIp, PHP_URL_SCHEME)) {
-                $url = $serverIp;
-            } else {
-                $url = ($httpMethod ?? 'http') . '://' . $serverIp . ($httpPort ? ':' . $httpPort : '');
-            }
-            $url .= '/' . $centreonFolder
-                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
-
-            $result = $this->centreonRestHttp->call(
-                $url,
-                'POST',
-                ['parent_id' => $parentId],
-                null,
-                false,
-                $noCheckCertificate,
-                $noProxy
-            );
-
-            return isset($result['status']) ? $result['status'] : null;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
     }
 
     /**

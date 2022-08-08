@@ -22,55 +22,35 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Normalizer;
 
-use Centreon\Domain\Monitoring\Resource;
-use Centreon\Domain\Monitoring\Icon;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Centreon\Domain\Configuration\Icon\Icon as ConfigurationIcon;
+use Centreon\Domain\Monitoring\Icon as MonitoringIcon;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Normalize icon url to build full url
  */
-class IconUrlNormalizer implements ContextAwareNormalizerInterface
+class IconUrlNormalizer implements NormalizerInterface
 {
     private const IMG_DIR = '/img/media';
 
     /**
-     * @inheritDoc
-     */
-    public function normalize($resource, $format = null, array $context = [])
-    {
-        // normalize resource icon
-        if ($resource->getIcon() !== null) {
-            $this->normalizeIcon($resource->getIcon());
-        }
-
-        // normalize parent resource icon
-        if ($resource->getParent() !== null && $resource->getParent()->getIcon() !== null) {
-            $this->normalizeIcon($resource->getParent()->getIcon());
-        }
-
-        return $resource;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function supportsNormalization($data, $format = null, array $context = [])
-    {
-        return $data instanceof Resource;
-    }
-
-    /**
      * Concat base url with icon path to get full url
-     *
-     * @param Icon $icon The icon to normalize
-     * @return Icon
+     * {@inheritDoc}
      */
-    private function normalizeIcon(Icon $icon): Icon
+    public function normalize($icon, $format = null, array $context = [])
     {
         if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
             $icon->setUrl($matches[1] . self::IMG_DIR . '/' . $icon->getUrl());
         }
 
         return $icon;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsNormalization($data, $format = null)
+    {
+        return $data instanceof ConfigurationIcon || $data instanceof MonitoringIcon;
     }
 }

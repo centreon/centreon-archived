@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,23 +38,23 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["acl_res_id"]) ? $cG = $_GET["acl_res_id"] : $cG = null;
-isset($_POST["acl_res_id"]) ? $cP = $_POST["acl_res_id"] : $cP = null;
-$cG ? $acl_id = $cG : $acl_id = $cP;
+$aclId = filter_var(
+    $_GET['acl_res_id'] ?? $_POST['acl_res_id'] ?? null,
+    FILTER_VALIDATE_INT
+) ?: null;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
-/* Path to the configuration dir */
-$path = "./include/options/accessLists/resourcesACL/";
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
 /* PHP functions */
-require_once $path . "DB-Func.php";
+require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
@@ -67,42 +68,78 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 
 switch ($o) {
     case "a":
-        require_once($path . "formResourcesAccess.php");
+        require_once(__DIR__ . '/formResourcesAccess.php');
         break; #Add a LCA
     case "w":
-        require_once($path . "formResourcesAccess.php");
+        require_once(__DIR__ . '/formResourcesAccess.php');
         break; #Watch a LCA
     case "c":
-        require_once($path . "formResourcesAccess.php");
+        require_once(__DIR__ . '/formResourcesAccess.php');
         break; #Modify a LCA
     case "s":
-        enableLCAInDB($acl_id);
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate a LCA
     case "ms":
-        enableLCAInDB(null, isset($select) ? $select : array());
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate n LCA
     case "u":
-        disableLCAInDB($acl_id);
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate a LCA
     case "mu":
-        disableLCAInDB(null, isset($select) ? $select : array());
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate n LCA
     case "m":
-        multipleLCAInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleLCAInDB($select, $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Duplicate n LCAs
     case "d":
-        deleteLCAInDB(isset($select) ? $select : array());
-        require_once($path . "listsResourcesAccess.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteLCAInDB($select);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Delete n LCAs
     case "t":
-        require_once($path . "showUsersAccess.php");
+        require_once(__DIR__ . '/showUsersAccess.php');
         break;
     default:
-        require_once($path . "listsResourcesAccess.php");
+        require_once(__DIR__ . '/listsResourcesAccess.php');
         break;
 }

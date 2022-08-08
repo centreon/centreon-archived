@@ -22,14 +22,16 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Engine\Interfaces;
 
-use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
-use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Monitoring\Comment\Comment;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
+use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 
 interface EngineServiceInterface extends ContactFilterInterface
 {
@@ -65,6 +67,15 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function scheduleForcedHostCheck(Host $host): void;
 
     /**
+     * Schedules an immediate force check for a Service.
+     *
+     * @param Service $service
+     * @throws EngineException
+     * @throws \Exception
+     */
+    public function scheduleImmediateForcedServiceCheck(Service $service): void;
+
+    /**
      * Disacknowledge a host.
      *
      * @param Host $host Host to disacknowledge
@@ -86,7 +97,7 @@ interface EngineServiceInterface extends ContactFilterInterface
      * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add on the host
-     * @param Host $hosts Host for which we want to add the downtime
+     * @param Host $host Host for which we want to add the downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
@@ -95,7 +106,7 @@ interface EngineServiceInterface extends ContactFilterInterface
      * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Service[] $services Service for which we want to add a downtime
+     * @param Service $service Service for which we want to add a downtime
      * @throws \Exception
      */
     public function addServiceDowntime(Downtime $downtime, Service $service): void;
@@ -126,4 +137,40 @@ interface EngineServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function scheduleServiceCheck(Check $check, Service $service): void;
+
+     /**
+     * Submit a result to a host.
+     *
+     * @param SubmitResult $result Result to submit
+     * @param Host $host Host on which to submit the result
+     * @throws \Exception
+     */
+    public function submitHostResult(SubmitResult $result, Host $host): void;
+
+    /**
+     * Submit a result to a service.
+     *
+     * @param SubmitResult $result Result to submit
+     * @param Service $service Service on which to submit the result
+     * @throws \Exception
+     */
+    public function submitServiceResult(SubmitResult $result, Service $service): void;
+
+    /**
+     * Add a comment to a monitored service
+     *
+     * @param Comment $comment
+     * @param Service $service
+     * @throws \Exception
+     */
+    public function addServiceComment(Comment $comment, Service $service): void;
+
+    /**
+     * Add a comment to a monitored host
+     *
+     * @param Comment $comment
+     * @param Host $host
+     * @throws \Exception
+     */
+    public function addHostComment(Comment $comment, Host $host): void;
 }

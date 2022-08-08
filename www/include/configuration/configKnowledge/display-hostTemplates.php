@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,32 +46,16 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
-if (isset($_POST['num']) && $_POST['num'] == 0) {
-    $_GET['num'] = 0;
-}
-
-if (isset($_POST['searchHostTemplate'])) {
-    if (!isset($_POST['searchHasNoProcedure']) && isset($_GET['searchHasNoProcedure'])) {
-        unset($_REQUEST['searchHasNoProcedure']);
-    }
-    if (!isset($_POST['searchTemplatesWithNoProcedure']) && isset($_GET['searchTemplatesWithNoProcedure'])) {
-        unset($_REQUEST['searchTemplatesWithNoProcedure']);
-    }
-}
-
+$orderBy = "host_name";
 $order = "ASC";
-$orderby = "host_name";
-if (isset($_REQUEST['order'])
-    && $_REQUEST['order']
-    && isset($_REQUEST['orderby'])
-    && $_REQUEST['orderby']
-) {
-    $order = $_REQUEST['order'];
-    $orderby = $_REQUEST['orderby'];
+
+// Use whitelist as we can't bind ORDER BY sort parameter
+if (!empty($_POST['order']) && in_array($_POST['order'], ["ASC", "DESC"])) {
+    $order = $_POST['order'];
 }
 
 require_once "./include/common/autoNumLimit.php";
@@ -87,6 +72,16 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
+    $postHostTemplate = !empty($_POST['searchHostTemplate'])
+        ? filter_input(INPUT_POST, 'searchHostTemplate', FILTER_SANITIZE_STRING)
+        : '';
+    $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+
     $conf = getWikiConfig($pearDB);
     $WikiURL = $conf['kb_wiki_url'];
 
@@ -94,39 +89,44 @@ try {
     require_once $modules_path . 'search.php';
 
     // Init Status Template
-    $status = array(
+    $status = [
         0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
         1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
-    );
-    $line = array(0 => "list_one", 1 => "list_two");
+    ];
+    $line = [0 => "list_one", 1 => "list_two"];
 
-    $proc = new procedures(
-        $pearDB
-    );
-    $proc->setHostInformations();
-    $proc->setServiceInformations();
+    $proc = new procedures($pearDB);
+    $proc->fetchProcedures();
 
-    $query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image " .
-        "FROM host, extended_host_information ehi " .
-        "WHERE host.host_id = ehi.host_host_id " .
-        "AND host.host_register = '0' " .
-        "AND host.host_locked = '0' ";
-    if (isset($_REQUEST['searchHostTemplate']) && $_REQUEST['searchHostTemplate']) {
-        $query .= " AND host.host_name LIKE '%" . $_REQUEST['searchHostTemplate'] . "%' ";
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
+        FROM host, extended_host_information ehi
+        WHERE host.host_id = ehi.host_host_id
+            AND host.host_register = '0'
+            AND host.host_locked = '0' ";
+
+    if (!empty($postHostTemplate)) {
+        $query .= "AND host.host_name LIKE :postHostTemplate ";
     }
-    $query .= " ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
-    $dbResult = $pearDB->query($query);
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT :offset, :limit";
+
+    $statement = $pearDB->prepare($query);
+    if (!empty($postHostTemplate)) {
+        $statement->bindValue(':postHostTemplate', '%' . $postHostTemplate . '%', PDO::PARAM_STR);
+    }
+    $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
+    $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $statement->execute();
 
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-    $selection = array();
-    while ($data = $dbResult->fetch()) {
+    $selection = [];
+    while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
         if ($data["host_register"] == 0) {
             $selection[$data["host_name"]] = $data["host_id"];
         }
-        $proc->hostIconeList[$data["host_name"]] = "./img/media/" . $proc->getImageFilePath($data["ehi_icon_image"]);
     }
-    $dbResult->closeCursor();
+    $statement->closeCursor();
     unset($data);
 
     /*
@@ -135,8 +135,8 @@ try {
 
     $tpl->assign("host_name", _("Hosts Templates"));
 
-    $diff = array();
-    $templateHostArray = array();
+    $diff = [];
+    $templateHostArray = [];
     foreach ($selection as $key => $value) {
         $tplStr = "";
         $tplArr = $proc->getMyHostMultipleTemplateModels($value);
@@ -146,15 +146,16 @@ try {
             $diff[$key] = 0;
         }
 
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-            if ($diff[$key] == 1
+        if (!empty($templatesHasNoProcedure)) {
+            if (
+                $diff[$key] == 1
                 || $proc->hostTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
                 $rows--;
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($searchHasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -190,7 +191,6 @@ try {
     $tpl->assign("content", $diff);
     $tpl->assign("status", $status);
     $tpl->assign("selection", 2);
-    $tpl->assign("icone", $proc->getIconeList());
 
     /*
      * Send template in order to open
@@ -206,7 +206,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderBy', $orderBy);
     $tpl->assign('defaultOrderby', 'host_name');
 
     // Apply a template definition

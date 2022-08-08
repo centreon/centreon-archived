@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -74,7 +75,8 @@ try {
         $step->getDatabaseConfiguration(),
         $step->getAdminConfiguration(),
         $step->getEngineConfiguration(),
-        $step->getBrokerConfiguration()
+        $step->getBrokerConfiguration(),
+        getGorgoneApiCredentialMacros(_CENTREON_ETC_ . '/../centreon-gorgone'),
     );
 
     $utils->executeSqlFile(__DIR__ . '/../../insertMacros.sql', $macros);
@@ -90,7 +92,37 @@ try {
     exit;
 }
 
-# Manage timezone
+$hostName = gethostname() ?: null;
+// Insert Central to 'platform_topology' table, as first server and parent of all others.
+$centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
+if ($row = $centralServerQuery->fetch()) {
+    $stmt = $link->prepare("
+        INSERT INTO `platform_topology` (
+            `address`,
+            `hostname`,
+            `name`,
+            `type`,
+            `parent_id`,
+            `server_id`,
+            `pending`
+        ) VALUES (
+            :centralAddress,
+            :hostname,
+            :name,
+            'central',
+            NULL,
+            :id,
+            '0'
+        )
+    ");
+    $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+    $stmt->bindValue(':hostname', $hostName, \PDO::PARAM_STR);
+    $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
+    $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+// Manage timezone
 $timezone = date_default_timezone_get();
 $resTimezone = $link->query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'");
 if (!$resTimezone) {
@@ -107,10 +139,11 @@ $link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezone
 
 # Generate random key for this instance and set it to be not central and not remote
 $uniqueKey = md5(uniqid(rand(), true));
-$informationsTableInsert = 'INSERT INTO `informations` (`key`,`value`) VALUES ' .
-    "('appKey', '{$uniqueKey}'), ".
-    "('isRemote', 'no'), ".
-    "('isCentral', 'no')";
+$informationsTableInsert = "INSERT INTO `informations` (`key`,`value`) VALUES
+    ('appKey', '{$uniqueKey}'),
+    ('isRemote', 'no'),
+    ('isCentral', 'yes')";
+
 $link->exec($informationsTableInsert);
 
 splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');

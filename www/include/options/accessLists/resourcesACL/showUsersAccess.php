@@ -68,7 +68,7 @@ $host_method = new CentreonHost($pearDB);
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 /*
  * start header menu

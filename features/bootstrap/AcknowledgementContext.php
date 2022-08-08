@@ -88,6 +88,9 @@ class AcknowledgementContext extends CentreonContext
     public function iAcknowledgeTheService()
     {
         $page = new MonitoringServicesPage($this);
+
+        $url = 'http://' . $this->container->getHost() . ':' . $this->container->getPort(80, 'web') .
+        '/centreon/include/monitoring/external_cmd/cmdPopup.php';
         $page->addAcknowledgementOnService(
             'Centreon-Server',
             'AcceptanceTestService',
@@ -95,7 +98,8 @@ class AcknowledgementContext extends CentreonContext
             true,
             true,
             true,
-            false
+            false,
+            $url
         );
     }
 
@@ -105,6 +109,8 @@ class AcknowledgementContext extends CentreonContext
     public function iAcknowledgeTheMetaService()
     {
         $page = new MonitoringServicesPage($this);
+        $url = 'http://' . $this->container->getHost() . ':' . $this->container->getPort(80, 'web') .
+            '/centreon/include/monitoring/external_cmd/cmdPopup.php';
         $page->addAcknowledgementOnService(
             '_Module_Meta',
             'meta_1',
@@ -112,7 +118,8 @@ class AcknowledgementContext extends CentreonContext
             true,
             true,
             true,
-            false
+            false,
+            $url
         );
     }
 

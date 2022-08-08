@@ -1,0 +1,14 @@
+Centreon\Domain\PlatformTopology\Platform:
+  properties:
+    address:
+      type: string
+      groups: [platform_topology_main]
+    name:
+      type: string
+      groups: [platform_topology_main]
+    type:
+      type: string
+      groups: [platform_topology_main]
+    parentAddress:
+      type: string
+      groups: [platform_topology_main]

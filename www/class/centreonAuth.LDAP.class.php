@@ -40,7 +40,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
  */
 class CentreonAuthLDAP
 {
-
     protected $pearDB;
     protected $ldap;
     protected $CentreonLog;
@@ -54,10 +53,10 @@ class CentreonAuthLDAP
      * Constructor
      *
      * @param CentreonDB $pearDB Connection to centreon database
-     * @param CentreonLog $CentreonLog Log event
+     * @param CentreonUserLog $CentreonLog Log event
      * @param string $login The username
      * @param string $password The user password
-     * @param string $contactInfos
+     * @param mixed[] $contactInfos
      * @param int $arId | Auth Ressource ID
      * @return void
      */
@@ -112,11 +111,18 @@ class CentreonAuthLDAP
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
 
         /* Validate if user exists in this resource */
-        } elseif (isset($this->contactInfos['contact_ldap_dn'])
+        } elseif (
+            isset($this->contactInfos['contact_ldap_dn'])
             && $this->contactInfos['contact_ldap_dn'] != ''
             && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']
         ) {
-            return 0;
+            if ($this->ldap->connect()) {
+                //User resource error
+                return 0;
+            } else {
+                //LDAP fallback
+                return 2;
+            }
         }
 
         /*
@@ -221,7 +227,8 @@ class CentreonAuthLDAP
 
             //getting user's email
             $userEmail = $this->contactInfos['contact_email'];
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'email')])
+            if (
+                isset($userInfos[$this->ldap->getAttrName('user', 'email')])
                 && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != ''
             ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
@@ -235,7 +242,8 @@ class CentreonAuthLDAP
             }
             //getting user's pager
             $userPager = $this->contactInfos['contact_pager'];
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')])
+            if (
+                isset($userInfos[$this->ldap->getAttrName('user', 'pager')])
                 && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != ''
             ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
@@ -263,7 +271,8 @@ class CentreonAuthLDAP
                 );
                 try {
                     // checking if the LDAP synchronization on login is enabled or needed
-                    if (!$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])
+                    if (
+                        !$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])
                     ) {
                         // skipping the update
                         return true;

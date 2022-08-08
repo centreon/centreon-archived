@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -233,22 +234,31 @@ class CentreonWidget
 
 
     /**
-     * @param $params
+     * @param int $customViewId
+     * @param int $widgetModelId
+     * @param string $widgetTitle
+     * @param bool $permission
+     * @param bool $authorized
      * @throws CentreonWidgetException
      * @throws Exception
      */
-    public function addWidget($params)
-    {
-        if (!isset($params['custom_view_id'])
-            || !isset($params['widget_model_id'])
-            || !isset($params['widget_title'])
-        ) {
+    public function addWidget(
+        int $customViewId,
+        int $widgetModelId,
+        string $widgetTitle,
+        bool $permission,
+        bool $authorized
+    ) {
+        if (!$authorized || !$permission) {
+            throw new CentreonWidgetException('You are not allowed to add a widget.');
+        }
+        if (empty($customViewId) || empty($widgetModelId)) {
             throw new CentreonWidgetException('No custom view or no widget selected');
         }
         $query = 'INSERT INTO widgets (title, widget_model_id) VALUES (:title, :id)';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':title', $params['widget_title'], PDO::PARAM_STR);
-        $stmt->bindParam(':id', $params['widget_model_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':title', $widgetTitle, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $widgetModelId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -259,7 +269,7 @@ class CentreonWidget
             'FROM custom_views ' .
             'WHERE custom_view_id = :id';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $params['custom_view_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':id', $customViewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new CentreonWidgetException('No view found');
@@ -278,7 +288,7 @@ class CentreonWidget
             'WHERE custom_view_id = :id';
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $params['custom_view_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':id', $customViewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new CentreonWidgetException('No view found');
@@ -313,10 +323,10 @@ class CentreonWidget
             $newPosition = '0_' . $rowNb;
         }
 
-        $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
+        $lastId = $this->getLastInsertedWidgetId($widgetTitle);
         $query = 'INSERT INTO widget_views (custom_view_id, widget_id, widget_order) VALUES (:id, :lastId, :neworder)';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $params['custom_view_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':id', $customViewId, PDO::PARAM_INT);
         $stmt->bindParam(':lastId', $lastId, PDO::PARAM_INT);
         $stmt->bindParam(':neworder', $newPosition, PDO::PARAM_STR);
         $dbResult = $stmt->execute();
@@ -404,7 +414,7 @@ class CentreonWidget
      * @return array
      * @throws Exception
      */
-    public function getWidgetsFromViewId(int $viewId) : array
+    public function getWidgetsFromViewId(int $viewId): array
     {
         if (!isset($this->widgets[$viewId])) {
             $this->widgets[$viewId] = array();
@@ -476,11 +486,11 @@ class CentreonWidget
     }
 
     /**
-     * @param $viewId
-     * @param $widgetList
+     * @param int $viewId
+     * @param array $widgetList
      * @throws Exception
      */
-    public function udpateViewWidgetRelations($viewId, $widgetList)
+    public function updateViewWidgetRelations($viewId, array $widgetList = [])
     {
         $query = 'DELETE FROM widget_views WHERE custom_view_id = :viewId';
         $stmt = $this->db->prepare($query);
@@ -557,12 +567,16 @@ class CentreonWidget
 
     /**
      * @param $params
-     * @param bool $hasPermission
+     * @param bool $permission
+     * @param bool $authorized
      * @throws CentreonWidgetException
      * @throws Exception
      */
-    public function updateUserWidgetPreferences($params, $hasPermission = false)
+    public function updateUserWidgetPreferences(array $params, bool $permission, bool $authorized)
     {
+        if (!$authorized || !$permission) {
+            throw new CentreonWidgetException('You are not allowed to set preferences on the widget');
+        }
         $queryValues = array();
         $query = 'SELECT wv.widget_view_id ' .
             'FROM widget_views wv, custom_view_user_relation cvur ' .
@@ -602,7 +616,7 @@ class CentreonWidget
             throw new CentreonWidgetException('No widget_view_id found for user');
         }
 
-        if ($hasPermission == false) {
+        if ($permission == false) {
             $query = 'DELETE FROM widget_preferences ' .
                 'WHERE widget_view_id = :widgetViewId ' .
                 'AND user_id = :userId ' .
@@ -678,17 +692,23 @@ class CentreonWidget
     }
 
     /**
-     * @param $params
+     * @param int $customViewId
+     * @param int $widgetId
+     * @param bool $authorized
+     * @param bool $permission
      * @throws Exception
      */
-    public function deleteWidgetFromView($params)
+    public function deleteWidgetFromView(int $customViewId, int $widgetId, bool $authorized, bool $permission)
     {
+        if (!$authorized || !$permission) {
+            throw new CentreonWidgetException('You are not allowed to delete the widget');
+        }
         $query = 'DELETE FROM widget_views ' .
             'WHERE custom_view_id = :viewId ' .
             'AND widget_id = :widgetId';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':widgetId', $params['widget_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
+        $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -696,41 +716,41 @@ class CentreonWidget
     }
 
     /**
-     * @param $params
+     * Updates a widget position on a customview
+     *
+     * @param int $customViewId
+     * @param string[] $position
+     * @param bool $permission
      * @throws CentreonWidgetException
      * @throws Exception
      */
-    public function updateWidgetPositions($params)
+    public function updateWidgetPositions(int $customViewId, bool $permission, array $positions = [])
     {
-        if (!isset($params['custom_view_id'])) {
-            throw new CentreonWidgetException('No custom view id');
+        if (!$permission) {
+            throw new CentreonWidgetException('You are not allowed to change widget position');
         }
-        $viewId = $params['custom_view_id'];
-        if (isset($params['positions']) && is_array($params['positions'])) {
-            foreach ($params['positions'] as $rawData) {
-                $tmp = explode("_", $rawData);
-                if (count($tmp) != 3) {
-                    throw new CentreonWidgetException('incorrect position data');
-                }
-                $widgetOrder = "{$tmp[0]}_{$tmp[1]}";
-                $widgetId = $tmp[2];
+        if (empty($customViewId)) {
+            throw new CentreonWidgetException('No custom view id provided');
+        }
+        if (!empty($positions) && is_array($positions)) {
+            foreach ($positions as $rawData) {
+                if (preg_match('/([0-9]+)_([0-9]+)_([0-9]+)/', $rawData, $matches)) {
+                    $widgetOrder = "{$matches[1]}_{$matches[2]}";
+                    $widgetId = $matches[3];
 
-                $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
-                    'WHERE custom_view_id = :viewId ' .
-                    'AND widget_id = :widgetId';
-                $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
-                $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
-                $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
-                $dbResult = $stmt->execute();
+                    $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
+                        'WHERE custom_view_id = :viewId ' .
+                        'AND widget_id = :widgetId';
+                    $stmt = $this->db->prepare($query);
+                    $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
+                    $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
+                    $dbResult = $stmt->execute();
 
-                if (!$dbResult) {
-                    throw new \Exception("An error occured");
                 }
             }
         }
     }
-
     /**
      * Read Configuration File
      *
@@ -1366,34 +1386,20 @@ class CentreonWidget
     /**
      * Rename widget
      *
-     * @param array $params
+     * @param int $elementId widget id
+     * @param string $newName widget new name
      * @return string
      */
-    public function rename($params)
+    public function rename(int $widgetId, string $newName)
     {
-        if (!isset($params['elementId']) || !isset($params['newName'])) {
-            throw new CentreonWidgetException('Missing mandatory parameters elementId or newName');
-        }
-        if (preg_match("/title_(\d+)/", $params['elementId'], $matches)) {
-            if (isset($matches[1])) {
-                $widgetId = $matches[1];
-            }
-        }
-        if (!isset($widgetId)) {
-            throw new CentreonWidgetException('Missing widget id');
-        }
-
         $query = 'UPDATE widgets ' .
             'SET title = :title ' .
             'WHERE widget_id = :widgetId';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':title', $params['newName'], PDO::PARAM_STR);
+        $stmt->bindParam(':title', $newName, PDO::PARAM_STR);
         $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+        $stmt->execute();
 
-        return $params['newName'];
+        return $newName;
     }
 }

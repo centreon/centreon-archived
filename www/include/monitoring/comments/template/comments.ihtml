@@ -52,12 +52,16 @@
                 {foreach item=tcs from=$tab_comments_svc}
                 <tr class={cycle values="list_two, list_one" }>
                     <td class="ListColPicker"><input type="checkbox"
-                                                     name='select[{$tcs.comment_type};{$tcs.host_name_link};{$tcs.internal_id}]'>
+                                                     name='select[{$tcs.comment_type};{$tcs.host_name};{$tcs.internal_id}]'>
                     </td>
-                    <td class="ListColLeft"><a href='./main.php?p=20202&o=hd&host_name={$tcs.host_name_link}'>{$tcs.host_name}</a>
+                    <td class="ListColLeft"><a href='{$tcs.h_details_uri}' isreact="true">{$tcs.host_name}</a>
                     </td>
-                    <td class="ListColLeft"><a
-                            href='./main.php?p=202&o=svcd&host_name={$tcs.host_name_link}&service_description={$tcs.service_description}'>{$tcs.service_description}</a>
+                    <td class="ListColLeft">
+                    {if isset($tcs.s_details_uri)}
+                        <a href='{$tcs.s_details_uri}' isreact="true">{$tcs.service_description}</a>
+                    {else}
+                        {$tcs.service_description}
+                    {/if}
                     </td>
                     <!-- using a class to format the timestamp -->
                     <td class="ListColCenter isTimestamp">{$tcs.entry_time}</td>

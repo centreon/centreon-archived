@@ -82,7 +82,9 @@ try {
     if (empty($data)) {
         try {
             // at first run (eg: after the install), data may be missing.
-            $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
+            $pearDB->query(
+                "INSERT INTO `cron_operation` (`name`, `system`, `activate`) VALUES ('centAcl.php', '1', '1')"
+            );
         } catch (\PDOException $e) {
             programExit("Error can't insert centAcl values in the `cron_operation` table.");
         }
@@ -228,7 +230,6 @@ try {
                 }
                 $pearDB->commit();
                 $res1->closeCursor();
-
             } catch (\PDOException $e) {
                 $pearDB->rollBack();
                 $centreonLog->insertLog(
@@ -341,7 +342,10 @@ try {
         WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id
             AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id
             AND acl_groups.acl_group_activate = '1'
-            AND (acl_groups.acl_group_changed = '1' OR acl_resources.changed = '1')"
+            AND (
+                acl_groups.acl_group_changed = '1' OR 
+                (acl_resources.changed = '1' AND acl_resources.acl_res_activate IS NOT NULL)
+            )"
     );
     while ($result = $dbResult1->fetch()) {
         $tabGroups[] = $result['acl_group_id'];

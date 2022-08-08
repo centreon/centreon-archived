@@ -28,7 +28,14 @@
 			<td>{$form.template.html}</td>
 			<td>{$form.status.html}</td>
 			{if (! isset($hostgroupsFilter))}
-				<td><h4><input type="checkbox" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}</h4></td>
+				<td>
+                    <h4>
+                        <div class="md-checkbox md-checkbox-inline">
+                            <input type="checkbox" id="statusHostFilter" name='statusHostFilter' {$hostStatusChecked}/>&nbsp;{$HostStatus}
+                            <label class="empty-label" for="statusHostFilter"></label>
+                        </div>
+                    </h4>
+                </td>
 			{/if}
 			<td>{$form.Search.html}</td>
         </tr>
@@ -38,12 +45,11 @@
 		<tr class="ToolbarTR">
 			{if $mode_access == 'w'}
 				<td>
-					{$msg.options} {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+					{$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 				</td>
 			{else}
 				<td>&nbsp;</td>
 			{/if}
-			<input name="p" value="{$p}" type="hidden" />
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -68,15 +74,28 @@
 			<tr class={$elemArr[elem].MenuClass}>
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
-					{if $elemArr[elem].RowMenu_name != "" && $elemArr[elem].RowMenu_icone != ""}
-						<img src="{$elemArr[elem].RowMenu_icone}" class="ico-18" />
+					{if
+						$elemArr[elem].RowMenu_name != ""
+						&& isset($elemArr[elem].RowMenu_icone)
+						&& $elemArr[elem].RowMenu_icone != ""}
+                        {if $elemArr[elem].isHostSvgFile}
+                            <span class="ico-18  margin_right">
+                                {$elemArr[elem].RowMenu_icone}
+                            </span>
+                        {else}
+                            <img src="{$elemArr[elem].RowMenu_icone}" class="ico-18" />
+                        {/if}
 					{/if}
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft resizeTitle">
 					<a href="{$elemArr[elem].RowMenu_link2}">
-						{if $elemArr[elem].RowMenu_sicon != ""}
+						{if $elemArr[elem].RowMenu_sicon != "" && !$elemArr[elem].isServiceSvgFile}
 							<img src="{$elemArr[elem].RowMenu_sicon}" class="ico-14 margin_right"/>
+                        {else}
+                            <span class="ico-14  margin_right">
+                                {$elemArr[elem].RowMenu_sicon}
+                            </span>
 						{/if}{$elemArr[elem].RowMenu_desc}
 					</a>
 				</td>
@@ -95,13 +114,12 @@
 		<tr>
 			{if $mode_access == 'w'}
 				<td class="Toolbar_TDSelectAction_Bottom">
-					{$msg.options} {$form.o2.html}
+					{$form.o2.html}
 					<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 				</td>
 			{else}
 				<td>&nbsp;</td>
 			{/if}
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

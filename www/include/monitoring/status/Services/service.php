@@ -207,6 +207,47 @@ include_once("./include/monitoring/status/Common/default_hostgroups.php");
 include_once("./include/monitoring/status/Common/default_servicegroups.php");
 include_once($svc_path . "/serviceJS.php");
 
+/**
+ * Build the resource status listing URI that will be used in the
+ * deprecated banner
+ */
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
+$deprecationMessage = _('[Page deprecated] Please use the new page: ');
+$resourcesStatusLabel = _('Resources Status');
+
+$filter = [
+    'criterias' => [
+        [
+            'name' => 'resource_types',
+            'value' => [
+                [
+                    'id' => 'service',
+                    'name' => 'Service'
+                ]
+            ]
+        ],
+        [
+            'name' => 'states',
+            'value' => [
+                [
+                    'id' => 'unhandled_problems',
+                    'name' => 'Unhandled'
+                ]
+            ]
+        ],
+        [
+            'name' => 'search',
+            'value' => ''
+        ]
+    ]
+];
+
+$redirectionUrl = $resourceController->buildListingUri(['filter' => json_encode($filter)]);
+
 /*
  * Smarty template Init
  */
@@ -485,6 +526,18 @@ $tpl->display("service.ihtml");
     var critical = '<?php echo _("Critical");?>';
     var unknown = '<?php echo _("Unknown");?>';
     var pending = '<?php echo _("Pending");?>';
+
+    display_deprecated_banner();
+
+    function display_deprecated_banner() {
+        const url = "<?php echo $redirectionUrl; ?>";
+        const message = "<?php echo $deprecationMessage; ?>";
+        const label = "<?php echo $resourcesStatusLabel; ?>";
+        jQuery('.pathway').append(
+            '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
+            '<a style="position:relative" href="' + url + '" isreact="isreact">' + label + '</a></span>'
+        );
+    }
 
     jQuery('#statusService').change(function () {
         updateSelect();

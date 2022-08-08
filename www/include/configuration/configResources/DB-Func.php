@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -222,51 +223,52 @@ function updateResource($resourceId)
     if (is_null($resourceId)) {
         return;
     }
-    
+
     $submitedValues = $form->getSubmitValues();
-        
+
     $isActivate = false;
-    if (isset($submitedValues["resource_activate"])
+    if (
+        isset($submitedValues["resource_activate"])
         && isset($submitedValues["resource_activate"]["resource_activate"])
         && $submitedValues["resource_activate"]["resource_activate"] == '1'
     ) {
         $isActivate = true;
     }
-    
+
     $prepare = $pearDB->prepare(
         "UPDATE cfg_resource "
         . "SET resource_name = :resource_name, resource_line = :resource_line, "
         . "resource_comment= :resource_comment, resource_activate= :is_activate "
         . "WHERE resource_id = :resource_id"
     );
-    
+
     $prepare->bindValue(
         ':resource_name',
         $pearDB->escape($submitedValues["resource_name"]),
         \PDO::PARAM_STR
     );
-    
+
     $prepare->bindValue(
         ':resource_line',
         $pearDB->escape($submitedValues["resource_line"]),
         \PDO::PARAM_STR
     );
- 
+
     $prepare->bindValue(
         ':resource_comment',
         $pearDB->escape($submitedValues["resource_comment"]),
         \PDO::PARAM_STR
     );
-       
+
     $prepare->bindValue(
         ':is_activate',
-        ($isActivate ? '1': '0'),
+        ($isActivate ? '1' : '0'),
         \PDO::PARAM_STR
     );
- 
+
     $prepare->bindValue(':resource_id', $resourceId, \PDO::PARAM_INT);
     $prepare->execute();
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($submitedValues);
     $centreon->CentreonLogAction->insertLog(
@@ -327,25 +329,31 @@ function insertResource($ret = array())
 
 function insertInstanceRelations($resourceId, $instanceId = null)
 {
-    global $form, $pearDB;
+    if (is_numeric($resourceId)) {
+        global $pearDB;
+        $pearDB->query('DELETE FROM cfg_resource_instance_relations WHERE resource_id = ' . (int) $resourceId);
 
-    $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
-    $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
-
-    if (!is_null($instanceId)) {
-        $instances = array($instanceId);
-    } else {
-        $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
-    }
-    $query2 = "";
-    foreach ($instances as $instanceId) {
-        if ($query2 != "") {
-            $query2 .= ", ";
+        if (! is_null($instanceId)) {
+            $instances = array($instanceId);
+        } else {
+            global $form;
+            $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
         }
-        $query2 .= "(" . $pearDB->escape($resourceId) . ", " . $pearDB->escape($instanceId) . ")";
-    }
-    if ($query2) {
-        $pearDB->query($query . $query2);
+
+        $subQuery = '';
+        foreach ($instances as $instanceId) {
+            if (is_numeric($instanceId)) {
+                if (!empty($subQuery)) {
+                    $subQuery .= ', ';
+                }
+                $subQuery .= '(' . (int)$resourceId . ', ' . (int)$instanceId . ')';
+            }
+        }
+        if (!empty($subQuery)) {
+            $pearDB->query(
+                'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ' . $subQuery
+            );
+        }
     }
 }
 

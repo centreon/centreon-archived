@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonUser\Domain\Entity\Timeperiod;
 use CentreonUser\Domain\Repository\TimeperiodRepository;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser
@@ -37,14 +37,19 @@ class TimeperiodRepositoryTest extends TestCase
     use Traits\PaginationListTrait;
 
     /**
-     * @var array
+     * @var array<int, array<string, array<int, array<string, int|string>>|string>>
      */
     protected $datasets = [];
 
     /**
+     * @var CentreonDB
+     */
+    private $db;
+
+    /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->db = new CentreonDB();
         $this->repository = new TimeperiodRepository($this->db);
@@ -93,7 +98,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * Test the method entityClass
      */
-    public function testEntityClass()
+    public function testEntityClass(): void
     {
         $this->assertEquals(Timeperiod::class, TimeperiodRepository::entityClass());
     }
@@ -101,7 +106,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             TimeperiodRepository::class,
@@ -112,7 +117,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $this->getPaginationListTrait($this->datasets[0]['data'][0]);
     }
@@ -120,7 +125,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList with different set of arguments
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $this->getPaginationListTrait(
             $this->datasets[1]['data'][0],
@@ -140,7 +145,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * Test the method getPaginationListTotal
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $this->getPaginationListTotalTrait(
             $this->datasets[2]['data'][0]['number']

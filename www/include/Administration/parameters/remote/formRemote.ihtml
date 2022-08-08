@@ -1,0 +1,68 @@
+{$form.javascript}
+
+<form {$form.attributes}>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.information}</h4>
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="username"> {$form.apiUsername.label}</td>
+            <td class="FormRowValue">{$form.apiUsername.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.apiCredentials.label}</td>
+            <td class="FormRowValue">{$form.apiCredentials.html}</td>
+        </tr>
+
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.informationUri}</h4>
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_uri">&nbsp;{$form.apiScheme.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.apiScheme.html} :// {$form.header.informationIp}:{$form.apiPort.html}/{$form.apiPath.html}
+            </td>
+        </tr>
+        <tr class="list_two" id="apiPeerValidation" style="visibility: {$sslVisibility};" >
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_peer_validation">
+                {$form.apiPeerValidation.label}
+            </td>
+            <td class="FormRowValue">{$form.apiPeerValidation.html}</td>
+        </tr>
+    </table>
+    {if !$valid}
+        <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+    {else}
+        <div id="validForm" class="oreonbutton"><p>{$form.change.html}</p></div>
+    {/if}
+    {$form.hidden}
+</form>
+{$helptext}
+
+<script>
+{literal}
+
+function checkSsl(scheme) {
+    if (scheme === 'http') {
+        jQuery('#apiPort').val('80');
+        jQuery('#apiPeerValidation').css("visibility","hidden");
+    } else {
+        jQuery('#apiPort').val('443');
+        jQuery('#apiPeerValidation').css("visibility","visible");
+    }
+}
+
+{/literal}
+</script>

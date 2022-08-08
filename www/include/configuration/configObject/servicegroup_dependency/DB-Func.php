@@ -179,123 +179,133 @@ function insertServiceGroupDependencyInDB($ret = array())
     return ($dep_id);
 }
 
-function insertServiceGroupDependency($ret = array())
+/**
+ * Create a service group dependency
+ *
+ * @param array<string, mixed> $ret
+ * @return int
+ */
+function insertServiceGroupDependency($ret = array()): int
 {
-    global $form;
-    global $pearDB, $oreon;
+    global $form, $pearDB, $centreon;
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-    $rq = "INSERT INTO dependency ";
-    $rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, " .
-        "notification_failure_criteria, dep_comment) ";
-    $rq .= "VALUES (";
-    isset($ret["dep_name"]) && $ret["dep_name"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    isset($ret["dep_description"]) && $ret["dep_description"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null
-        ? $rq .= "'" . $ret["inherits_parent"]["inherits_parent"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["execution_failure_criteria"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["notification_failure_criteria"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["dep_comment"]) && $ret["dep_comment"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8") . "' "
-        : $rq .= "NULL ";
-    $rq .= ")";
-    $pearDB->query($rq);
-    $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-    $dep_id = $dbResult->fetch();
 
-    $fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
-    $fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
-    $fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-    $fields["execution_failure_criteria"] = (isset($ret["execution_failure_criteria"]) ? implode(",", array_keys($ret["execution_failure_criteria"])) : '');
-    $fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
-    $fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
-    $fields["dep_sgParents"] = "";
-    if (isset($ret["dep_sgParents"])) {
-        $fields["dep_sgParents"] = implode(",", $ret["dep_sgParents"]);
-    }
-    $fields["dep_sgChilds"] = "";
-    if (isset($ret["dep_sgChilds"])) {
-        $fields["dep_sgChilds"] = implode(",", $ret["dep_sgChilds"]);
-    }
-    $oreon->CentreonLogAction->insertLog(
+    $resourceValues = sanitizeResourceParameters($ret);
+    $statement = $pearDB->prepare(
+        "INSERT INTO `dependency`
+        (dep_name, dep_description, inherits_parent, execution_failure_criteria,
+         notification_failure_criteria, dep_comment)
+        VALUES (:depName, :depDescription, :inheritsParent, :executionFailure,
+                :notificationFailure, :depComment)"
+    );
+    $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
+    $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
+    $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
+    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
+    $statement->execute();
+
+    $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+    $depId = $dbResult->fetch();
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($resourceValues);
+    $centreon->CentreonLogAction->insertLog(
         "servicegroup dependency",
-        $dep_id["MAX(dep_id)"],
-        htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"),
+        $depId["MAX(dep_id)"],
+        $resourceValues["dep_name"],
         "a",
         $fields
     );
-
-    return ($dep_id["MAX(dep_id)"]);
+    return ((int) $depId["MAX(dep_id)"]);
 }
 
-function updateServiceGroupDependency($dep_id = null)
+/**
+ * Update a service group dependency
+ *
+ * @param null|int $depId
+ */
+function updateServiceGroupDependency($depId = null): void
 {
-    if (!$dep_id) {
+    if (!$depId) {
         exit();
     }
-    global $form;
-    global $pearDB, $oreon;
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    $rq = "UPDATE dependency SET ";
-    $rq .= "dep_name = ";
-    isset($ret["dep_name"]) && $ret["dep_name"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "dep_description = ";
-    isset($ret["dep_description"]) && $ret["dep_description"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "inherits_parent = ";
-    isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != null
-        ? $rq .= "'" . $ret["inherits_parent"]["inherits_parent"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "execution_failure_criteria = ";
-    isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["execution_failure_criteria"])) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "notification_failure_criteria = ";
-    isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["notification_failure_criteria"])) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "dep_comment = ";
-    isset($ret["dep_comment"]) && $ret["dep_comment"] != null
-        ? $rq .= "'" . htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8") . "' "
-        : $rq .= "NULL ";
-    $rq .= "WHERE dep_id = '" . $dep_id . "'";
-    $pearDB->query($rq);
+    global $form, $pearDB, $centreon;
 
-    $fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
-    $fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
-    $fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-    $fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
-    $fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
-    $fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
-    $fields["dep_sgParents"] = "";
-    if (isset($ret["dep_sgParents"])) {
-        $fields["dep_sgParents"] = implode(",", $ret["dep_sgParents"]);
-    }
-    $fields["dep_sgChilds"] = "";
-    if (isset($ret["dep_sgChilds"])) {
-        $fields["dep_sgChilds"] = implode(",", $ret["dep_sgChilds"]);
-    }
-    $oreon->CentreonLogAction->insertLog(
+    $resourceValues = sanitizeResourceParameters($form->getSubmitValues());
+    $statement = $pearDB->prepare(
+        "UPDATE `dependency`
+        SET dep_name = :depName,
+        dep_description = :depDescription,
+        inherits_parent = :inheritsParent,
+        execution_failure_criteria = :executionFailure,
+        notification_failure_criteria = :notificationFailure,
+        dep_comment = :depComment
+        WHERE dep_id = :depId"
+    );
+    $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
+    $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
+    $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
+    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
+    $statement->bindValue(':depId', $depId, \PDO::PARAM_INT);
+    $statement->execute();
+
+    /* Prepare value for changelog */
+    $fields = CentreonLogAction::prepareChanges($resourceValues);
+    $centreon->CentreonLogAction->insertLog(
         "servicegroup dependency",
-        $dep_id,
-        htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"),
+        $depId,
+        $resourceValues["dep_name"],
         "c",
         $fields
     );
+}
+
+/**
+ * sanitize resources parameter for Create / Update a service group dependency
+ *
+ * @param array<string, mixed> $resources
+ * @return array<string, mixed>
+ */
+function sanitizeResourceParameters(array $resources): array
+{
+    $sanitizedParameters = [];
+    $sanitizedParameters['dep_name'] = filter_var($resources['dep_name'], FILTER_SANITIZE_STRING);
+    if (empty($sanitizedParameters['dep_name'])) {
+        throw new InvalidArgumentException(_("Dependency name can't be empty"));
+    }
+
+    $sanitizedParameters['dep_description'] = filter_var($resources['dep_description'], FILTER_SANITIZE_STRING);
+    if (empty($sanitizedParameters['dep_description'])) {
+        throw new InvalidArgumentException(_("Dependency description can't be empty"));
+    }
+
+    $resources["inherits_parent"]["inherits_parent"] == 1
+        ? $sanitizedParameters["inherits_parent"] = '1'
+        : $sanitizedParameters["inherits_parent"] = '0';
+
+    $sanitizedParameters['execution_failure_criteria'] = filter_var(
+        implode(
+            ",",
+            array_keys($resources["execution_failure_criteria"])
+        ),
+        FILTER_SANITIZE_STRING
+    );
+
+    $sanitizedParameters['notification_failure_criteria'] = filter_var(
+        implode(
+            ",",
+            array_keys($resources["notification_failure_criteria"])
+        ),
+        FILTER_SANITIZE_STRING
+    );
+    $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
+    return $sanitizedParameters;
 }
 
 function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = array())

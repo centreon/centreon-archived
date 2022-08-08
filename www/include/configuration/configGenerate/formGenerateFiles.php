@@ -37,6 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+if (!$centreon->user->admin && $centreon->user->access->checkAction('generate_cfg') === 0) {
+    require_once _CENTREON_PATH_ . 'www/include/core/errors/alt_error.php';
+    return null;
+}
+
 /*
  *  Get Poller List
  */
@@ -155,6 +160,8 @@ $tpl->display("formGenerateFiles.ihtml");
     var postcmdOption;
 
     var tooltip = new CentreonToolTip();
+    var svg = "<?php displaySvg("www/img/icons/question.svg", "var(--help-tool-tip-icon-fill-color)", 18, 18); ?>"
+    tooltip.setSource(svg);
     var session_id = "<?php echo session_id(); ?>";
     tooltip.render();
     var msgTab = new Array();
@@ -497,7 +504,8 @@ $tpl->display("formGenerateFiles.ihtml");
         divErrors.style.visibility = 'hidden';
         tdEl2.appendChild(divErrors);
         for (var i = 0; i < errors.length; i++) {
-            divErrors.innerHTML += errors.item(i).firstChild.data;
+            divErrors.innerHTML += errors.get(i).firstChild.data;
+            divErrors.innerHTML += "<br/>";
         }
     }
 

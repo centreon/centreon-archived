@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -114,17 +115,19 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
     $moptions = "";
     if ($hg["hg_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=u&limit=" . $limit
-            . "&num=" . $num . "&search=" . $search
+            . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken
             . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=s&limit=" . $limit
-            . "&num=" . $num . "&search=" . $search
+            . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled") . "'></a>";
     }
@@ -149,13 +152,15 @@ for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     }
     $rq = "SELECT h.host_id, h.host_activate
                FROM hostgroup_relation hgr, host h $aclFrom
-               WHERE hostgroup_hg_id = '" . $hg['hg_id'] . "'
+               WHERE hostgroup_hg_id = :hostgroup_hg_id
                AND h.host_id = hgr.host_host_id
                AND h.host_register = '1' $aclCond";
-    $dbResult2 = $pearDB->query($rq);
+    $statement = $pearDB->prepare($rq);
+    $statement->bindValue(':hostgroup_hg_id', (int) $hg['hg_id'], \PDO::PARAM_INT);
+    $statement->execute();
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
-    while ($row = $dbResult2->fetch()) {
+    while (($row = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         if ($row['host_activate']) {
             $nbrhostActArr[$row['host_id']] = true;
         } else {
@@ -165,10 +170,13 @@ for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     $nbrhostAct = count($nbrhostActArr);
     $nbrhostDeact = count($nbrhostDeactArr);
 
+    $isHGSvgFile = true;
     if ($hg['hg_icon_image'] != "") {
+        $isHGSvgFile = false;
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
     } else {
-        $hgIcone = "./img/icons/host_group.png";
+        $isHGSvgFile = true;
+        $hgIcone = returnSvg("www/img/icons/host_group.svg", "var(--icons-fill-color)", 16, 16);
     }
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
@@ -183,7 +191,8 @@ for ($i = 0; $hg = $dbResult->fetch(); $i++) {
         "RowMenu_hostAct" => $nbrhostAct,
         "RowMenu_icone" => $hgIcone,
         "RowMenu_hostDeact" => $nbrhostDeact,
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isHgSvgFile" => $isHGSvgFile
     );
 
     // Switch color line

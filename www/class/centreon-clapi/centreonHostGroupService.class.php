@@ -447,7 +447,7 @@ class CentreonHostGroupService extends CentreonObject
                 $params[2] = "esi_" . $params[2];
                 if ($params[2] == "esi_icon_image") {
                     if ($params[3]) {
-                        $id = CentreonUtils::getImageId($params[3]);
+                        $id = CentreonUtils::getImageId($params[3], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[3]);
                         }
@@ -1054,7 +1054,7 @@ class CentreonHostGroupService extends CentreonObject
             }
             $contactRel = new \Centreon_Object_Relation_Contact_Service($this->dependencyInjector);
             $celements = $contactRel->getMergedParameters(
-                array("contact_name", "contact_id"),
+                array("contact_name", "contact_id", 'contact_alias'),
                 array('service_description'),
                 -1,
                 0,
@@ -1067,7 +1067,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                CentreonContact::getInstance()->export($element['contact_name']);
+                CentreonContact::getInstance()->export($celement['contact_alias']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim

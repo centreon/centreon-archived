@@ -23,7 +23,7 @@
 
     <tr style='height:40px;'>
         <td>
-            {if $finish}
+            {if isset($finish)}
                 <p class="link-group">
                     <a href="https://documentation.centreon.com" target="_blank">Documentation</a> |
                     <a href="https://github.com/centreon/centreon" target="_blank">Github </a> |
@@ -36,12 +36,12 @@
 
         <td align='right'>
         {if ($step-1)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='previousStep();'/>
+        <input class='btc bt_back_install' type='button' id='previous' value='Back' onClick='loadStep("previousStep");'/>
         {/if}
-        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep();'/>
+        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep("stepContent");'/>
         {if (!isset($validate) || $validate)}
-            {if !$finish}
-            <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
+            {if !isset($finish)}
+            <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) loadStep("nextStep");'/>
             {else}
             <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
             {/if}

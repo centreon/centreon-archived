@@ -1,67 +1,52 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const merge = require('webpack-merge');
 const path = require('path');
 
-const baseConfig = require('@centreon/frontend-core/webpack/base');
-const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const webpack = require('webpack');
+const { merge } = require('webpack-merge');
+const getBaseConfiguration = require('centreon-frontend/packages/frontend-config/webpack/base');
 
-module.exports = merge(baseConfig, extractCssConfig, {
-  entry: [
-    'react-hot-loader/patch',
-    '@babel/polyfill',
-    './www/front_src/src/index.js',
-  ],
-  output: {
-    path: path.resolve(`${__dirname}/www/static`),
-    publicPath: './static/',
-    library: ['name'],
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
+module.exports = (jscTransformConfiguration) =>
+  merge(
+    getBaseConfiguration({ jscTransformConfiguration, moduleName: 'centreon' }),
+    {
+      entry: ['./www/front_src/src/index.tsx'],
+      module: {
+        rules: [
+          {
+            test: /\.icon.svg$/,
+            use: ['@svgr/webpack'],
+          },
+          {
+            test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,
+            use: [
+              {
+                loader: 'url-loader',
+                options: {
+                  limit: 10000,
+                  name: '[name].[hash:8].[ext]',
+                },
+              },
+            ],
+          },
+        ],
+      },
+      output: {
+        crossOriginLoading: 'anonymous',
+        library: ['name'],
+        path: path.resolve(`${__dirname}/www/static`),
+        publicPath: './static/',
+      },
+      plugins: [
+        new webpack.ProvidePlugin({
+          process: 'process/browser',
+        }),
+        new HtmlWebpackPlugin({
+          alwaysWriteToDisk: true,
+          filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
+          template: './www/front_src/public/index.html',
+        }),
+        new HtmlWebpackHarddiskPlugin(),
+      ],
     },
-    runtimeChunk: true,
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: './www/front_src/public/index.html',
-      filename: '../index.html',
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-  ],
-  module: {
-    rules: [
-      { parser: { system: false } },
-      {
-        test: /fonts(\\|\/).+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[hash:8].[ext]',
-              publicPath: './',
-            },
-          },
-        ],
-      },
-      {
-        test: /\.icon.svg$/,
-        use: ['@svgr/webpack'],
-      },
-      {
-        test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              name: '[name].[hash:8].[ext]',
-            },
-          },
-        ],
-      },
-    ],
-  },
-});
+  );

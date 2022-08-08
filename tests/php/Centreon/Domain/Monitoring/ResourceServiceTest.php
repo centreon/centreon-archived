@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,38 +21,41 @@
 
 namespace Tests\Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Monitoring\ResourceService;
+use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
-class ResourceServiceTest extends TestCase
-{
-    /**
-     * @throws \Exception
-     */
-    public function testFindResources()
-    {
-        $resource = (new Resource())
-            ->setId(1)
-            ->setName('test');
+it('find resources and build uuids', function () {
+    $hostResource = (new Resource())
+        ->setType('host')
+        ->setId(1)
+        ->setName('host1');
+    $serviceResource = (new Resource())
+        ->setType('service')
+        ->setId(1)
+        ->setName('service1')
+        ->setParent($hostResource);
 
-        $repository = $this->createMock(ResourceRepositoryInterface::class);
-        $repository->expects(self::any())
-            ->method('findResources')
-            ->willReturn([$resource]); // values returned for the all next tests
+    $resourceRepository = $this->createMock(ResourceRepositoryInterface::class);
+    $resourceRepository->expects($this->any())
+        ->method('findResources')
+        ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+    $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
+    $accessGroup = $this->createMock(ReadAccessGroupRepositoryInterface::class);
 
-        $resourceService = new ResourceService($repository, $accessGroup);
+    $resourceService = new ResourceService(
+        $monitoringRepository,
+        $accessGroup,
+        $resourceRepository
+    );
 
-        $resourcesFound = $resourceService->findResources(new ResourceFilter());
-        $this->assertCount(
-            1,
-            $resourcesFound,
-            "Error, this method must relay the 'findResources' method of the monitoring repository"
-        );
-    }
-}
+    $resourcesFound = $resourceService->findResources(new ResourceFilter());
+
+    expect($resourcesFound)->toHaveCount(2);
+    expect($resourcesFound[0]->getUuid())->toBe('h1');
+    expect($resourcesFound[1]->getUuid())->toBe('h1-s1');
+});

@@ -103,10 +103,10 @@
 		green = 128+(green-128)*coef;
 		blue = 128+(blue-128)*coef;
 		
-		// mise � jour de la couleur finale
+		// mise à jour de la couleur finale
 		updateColor('#' + dechex(red) + dechex(green) + dechex(blue));
 		
-		// mise � jour de la barre de droite en fonction de cette couleur
+		// mise à jour de la barre de droite en fonction de cette couleur
 		updateGradBarColor(red, green, blue, l_slice);
 		
 	}

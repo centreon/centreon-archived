@@ -56,7 +56,7 @@ class UpdateAction implements JsonSerializable
      * Construct
      *
      * @param \CentreonModule\Infrastructure\Entity\Module $entity
-     * @param bool $status
+     * @param Module|null $entity
      * @param string $message
      */
     public function __construct(Module $entity = null, string $message = null)
@@ -74,13 +74,13 @@ class UpdateAction implements JsonSerializable
      *
      * JSON serialization of entity
      *
-     * @return array
+     * @return array<string,\CentreonModule\Application\DataRepresenter\ModuleEntity|string|null>
      */
     public function jsonSerialize()
     {
         $entity = null;
 
-        if ($this->entity) {
+        if ($this->entity !== null) {
             $entity = new ModuleEntity($this->entity);
         }
 

@@ -29,11 +29,13 @@ use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
@@ -44,16 +46,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements MonitoringRepositoryInterface
 {
-    /**
-     * @var string Name of the configuration database
-     */
-    private $centreonDbName;
-
-    /**
-     * @var string Name of the storage database
-     */
-    private $storageDbName;
-
     /**
      * @var AccessGroup[] List of access group used to filter the requests
      */
@@ -77,8 +69,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     public function __construct(DatabaseConnection $pdo)
     {
         $this->db = $pdo;
-        $this->centreonDbName = $this->db->getCentreonDbName();
-        $this->storageDbName = $this->db->getStorageDbName();
     }
 
     /**
@@ -131,21 +121,27 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'host.criticality' => 'cv.value'
         ]);
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ''
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               h.*,
               cv.value AS criticality,
-              i.name AS instance_name,
+              i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -190,9 +186,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         $hostIds = [];
 
@@ -216,19 +215,25 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return [];
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              hg.hostgroup_id, h.*, i.name AS instance_name,
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+              hg.hostgroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -272,19 +277,25 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return [];
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              ssg.servicegroup_id, h.*, i.name AS instance_name,
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+              ssg.servicegroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -456,9 +467,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $hostGroups[] = EntityCreator::createEntityByArray(
@@ -479,25 +493,37 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return null;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT h.*,
+            i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
-            FROM `:dbstg`.`hosts` h'
-            . $accessGroupFilter .
-            ' WHERE h.host_id = :host_id
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state,
+            host_cvl.value AS `criticality`
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\'
-              AND h.enabled = \'1\'';
+            LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
+              AND host_cvl.service_id = 0 AND host_cvl.name = "CRITICALITY_LEVEL"'
+            . $accessGroupFilter .
+            ' WHERE h.host_id = :host_id';
 
         $request = $this->translateDbName($request);
 
@@ -539,27 +565,227 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
+    public function findServicesByIdsForAdminUser(array $serviceIds): array
+    {
+        $services = [];
+
+        $collector = new StatementCollector();
+
+        if (empty($serviceIds)) {
+            return $services;
+        }
+
+        $request =
+            'SELECT DISTINCT srv.*,
+              h.host_id AS `host_host_id`, h.name AS `host_name`, h.alias AS `host_alias`,
+              h.instance_id AS `host_poller_id`, srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
+            FROM `:dbstg`.services srv
+            LEFT JOIN `:dbstg`.hosts h
+              ON h.host_id = srv.host_id
+              WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'';
+
+        $idsListKey = [];
+        foreach ($serviceIds as $index => $hostServiceIds) {
+            $hostKey = ":host_id{$index}";
+            $hostIdsListKey[] = $hostKey;
+            $serviceKey = ":service_id{$index}";
+            $serviceIdsListKey[] = $serviceKey;
+            $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
+            $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
+        }
+        $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
+        $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
+
+        $request .= ' GROUP BY srv.service_id';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
+        $statement->execute();
+
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+            $services[] = $service;
+        }
+        return $services;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostsByIdsForAdminUser(array $hostIds): array
+    {
+        $hosts = [];
+
+        if (empty($hostIds)) {
+            return $hosts;
+        }
+
+        $collector = new StatementCollector();
+
+        $request =
+            'SELECT DISTINCT h.*,
+            i.name AS poller_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\'';
+
+        $idsListKey = [];
+        foreach ($hostIds as $index => $id) {
+            $key = ":id{$index}";
+            $idsListKey[] = $key;
+            $collector->addValue($key, $id, \PDO::PARAM_INT);
+        }
+        $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
+        $statement->execute();
+
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $hosts[] = EntityCreator::createEntityByArray(
+                Host::class,
+                $row
+            );
+        }
+
+        return $hosts;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostsByIdsForNonAdminUser(array $hostIds): array
+    {
+        $hosts = [];
+
+        if (empty($hostIds)) {
+            return $hosts;
+        }
+
+        $collector = new StatementCollector();
+
+        $accessGroupFilter =
+            ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+            INNER JOIN `:db`.`acl_groups` acg
+                ON acg.acl_group_id = acl.group_id
+                AND acg.acl_group_activate = \'1\'
+                AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT DISTINCT h.*,
+            i.name AS poller_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\''
+            . $accessGroupFilter;
+
+        $idsListKey = [];
+        foreach ($hostIds as $index => $id) {
+            $key = ":id{$index}";
+            $idsListKey[] = $key;
+            $collector->addValue($key, $id, \PDO::PARAM_INT);
+        }
+
+        $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
+        $statement->execute();
+
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $hosts[] = EntityCreator::createEntityByArray(
+                Host::class,
+                $row
+            );
+        }
+
+        return $hosts;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
         if ($this->hasNotEnoughRightsToContinue()) {
             return null;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`,
+              service_cvl.value AS `criticality`
             FROM `:dbstg`.services srv
-            LEFT JOIN `:dbstg`.hosts h 
-              ON h.host_id = srv.host_id'
+            LEFT JOIN `:dbstg`.hosts h
+              ON h.host_id = srv.host_id
+            LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = srv.host_id
+              AND service_cvl.service_id = srv.service_id AND service_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter
             . ' WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'
@@ -573,21 +799,25 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
 
-        if ($statement->execute()) {
-            if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $service = EntityCreator::createEntityByArray(
-                    Service::class,
-                    $row
-                );
+        $statement->execute();
 
-                $service->setHost(
-                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
-                );
-            } else {
-                return null;
-            }
+        if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            return null;
         }
 
         //get downtimes for service
@@ -604,6 +834,180 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         return $service;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOneServiceByDescription(string $serviceDescription): ?Service
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
+
+        $request =
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
+            FROM `:dbstg`.services srv
+            LEFT JOIN `:dbstg`.hosts h
+              ON h.host_id = srv.host_id'
+            . $accessGroupFilter
+            . ' WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'
+              AND srv.description = :service_description
+            GROUP BY srv.service_id';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':service_description', $serviceDescription, \PDO::PARAM_STR);
+
+        $statement->execute();
+
+        if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+        } else {
+            return null;
+        }
+
+        //get downtimes for service
+        $downtimes = $this->findDowntimes($service->getHost()->getId(), $service->getId());
+        $service->setDowntimes($downtimes);
+
+        //get active acknowledgment for service
+        if ($service->isAcknowledged()) {
+            $acknowledgements = $this->findAcknowledgements($service->getHost()->getId(), $service->getId());
+
+            if (!empty($acknowledgements)) {
+                $service->setAcknowledgement($acknowledgements[0]);
+            }
+        }
+
+        return $service;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServicesByIdsForNonAdminUser(array $serviceIds): array
+    {
+        $services = [];
+
+        $collector = new StatementCollector();
+
+        if (empty($serviceIds)) {
+            return $services;
+        }
+
+        $accessGroupFilter =
+            ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+            INNER JOIN `:db`.`acl_groups` acg
+                ON acg.acl_group_id = acl.group_id
+                AND acg.acl_group_activate = \'1\'
+                AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT DISTINCT srv.*,
+              h.host_id AS `host_host_id`, h.name AS `host_name`, h.alias AS `host_alias`,
+              h.instance_id AS `host_poller_id`, srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
+            FROM `:dbstg`.services srv
+            LEFT JOIN `:dbstg`.hosts h
+              ON h.host_id = srv.host_id'
+            . $accessGroupFilter
+            . ' WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'';
+
+        $idsListKey = [];
+        foreach ($serviceIds as $index => $hostServiceIds) {
+            $hostKey = ":host_id{$index}";
+            $hostIdsListKey[] = $hostKey;
+            $serviceKey = ":service_id{$index}";
+            $serviceIdsListKey[] = $serviceKey;
+            $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
+            $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
+        }
+        $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
+        $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
+
+        $request .= ' GROUP BY srv.service_id';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
+        $statement->execute();
+
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+            $services[] = $service;
+        }
+
+        return $services;
     }
 
     /**
@@ -637,26 +1041,47 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'service.criticality' => 'cv.value'
         ]);
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = srv.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = srv.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               srv.*,
               h.host_id, h.alias AS host_alias, h.name AS host_name,
               cv.value as criticality,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS host_display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
-            . ' INNER JOIN `:dbstg`.hosts h 
+            . ' INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'
@@ -703,15 +1128,24 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
                 Service::class,
                 $result
             );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
 
             $host = (new Host())
                 ->setId((int) $result['host_id'])
@@ -730,14 +1164,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServicesByHost(int $hostId): array
+    public function findServicesByHostWithRequestParameters(int $hostId): array
     {
-        $services = [];
-
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $services;
-        }
-
         $this->sqlRequestTranslator->setConcordanceArray([
             'service.id' => 'srv.service_id',
             'service.description' => 'srv.description',
@@ -747,18 +1175,81 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'service.state' => 'srv.state'
         ]);
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = srv.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->findServicesByHost($hostId, $searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array
+    {
+        return $this->findServicesByHost($hostId, null, null, null);
+    }
+
+    /**
+     * Retrieve all real time services according to ACL of contact and host id
+     *
+     * @param int $hostId Host ID for which we want to find services
+     * @param string|null $searchRequest search request
+     * @param string|null $sortRequest sort request
+     * @param string|null $paginationRequest pagination request
+     * @return Service[]
+     * @throws \Exception
+     */
+    private function findServicesByHost(
+        int $hostId,
+        ?string $searchRequest = null,
+        ?string $sortRequest = null,
+        ?string $paginationRequest = null
+    ): array {
+        $services = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $services;
+        }
+
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = srv.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
             . ' INNER JOIN `:dbstg`.hosts h
@@ -776,18 +1267,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request = $this->translateDbName($request);
 
         // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
 
         // Group
         $request .= ' GROUP BY srv.service_id';
 
         // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : '';
 
         // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
 
         $statement = $this->db->prepare($request);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
@@ -802,15 +1291,26 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $services[] = EntityCreator::createEntityByArray(
+            $service = EntityCreator::createEntityByArray(
                 Service::class,
                 $result
             );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
+
+            $services[] = $service;
         }
 
         return $services;
@@ -827,40 +1327,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $serviceGroups;
         }
 
-        $hostGroupConcordanceArray = [
-            'id' => 'hg.hostgroup_id',
-            'name' => 'hg.name'
+        $serviceGroupConcordanceArray = [
+            'id' => 'sg.servicegroup_id',
+            'name' => 'sg.name'
         ];
 
-        // To allow to find host groups relating to host information
-        $hostConcordanceArray = [
-            'host.id' => 'h.host_id',
-            'host.name' => 'h.name',
-            'host.alias' => 'h.alias',
-            'host.address' => 'h.address',
-            'host.display_name' => 'h.display_name',
-            'host.state' => 'h.state',
-            'poller.id' => 'h.instance_id'];
-
-        $serviceConcordanceArray = [
-            'service.display_name' => 'srv.display_name',
-            'service_group.id' => 'sg.servicegroup_id',
-            'service_group.name' => 'sg.name'
-        ];
-
-        $searchParameters = $this->sqlRequestTranslator->getRequestParameters()->extractSearchNames();
-
-        $shouldJoinHost = false;
-        if (count(array_intersect($searchParameters, array_keys($hostConcordanceArray))) > 0) {
-            $shouldJoinHost = true;
-            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
-        }
-
-        if (count(array_intersect($searchParameters, array_keys($serviceConcordanceArray))) > 0) {
-            $shouldJoinHost = true;
-            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $serviceConcordanceArray);
-        }
-        $this->sqlRequestTranslator->setConcordanceArray($hostGroupConcordanceArray);
+        $this->sqlRequestTranslator->setConcordanceArray($serviceGroupConcordanceArray);
 
         $sqlExtraParameters = [];
         $subRequest = '';
@@ -887,30 +1359,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     ON gcgr.acl_group_id = grp.acl_group_id
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                     ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
-                    AND cgcr.contact_contact_id = :contact_id 
+                    AND cgcr.contact_contact_id = :contact_id
                     OR gcr.contact_contact_id = :contact_id';
         }
 
-        // This join will only be added if a search parameter corresponding to one of the host parameter
-        if ($shouldJoinHost) {
-            $subRequest .=
-                ' INNER JOIN `:dbstg`.services_servicegroups ssg 
-                    ON ssg.servicegroup_id = sg.servicegroup_id
-                    AND ssg.service_id = srv.service_id
-                INNER JOIN `:dbstg`.hosts h
-                    ON h.host_id = ssg.host_id';
-
-            if (!$this->isAdmin()) {
-                $subRequest .=
-                    ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                        ON acl.host_id = h.host_id
-                        AND acl.service_id = srv.service_id
-                        AND acl.group_id = grp.acl_group_id';
-            }
-        }
-
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.*
             FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
         $request = $this->translateDbName($request);
 
@@ -942,9 +1396,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $serviceGroups[] = EntityCreator::createEntityByArray(
@@ -977,16 +1434,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $serviceIds
         );
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
 
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT DISTINCT 
@@ -1031,21 +1493,27 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $services;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
-            'SELECT DISTINCT 
-                srv.service_id, 
-                srv.display_name, 
-                srv.description, 
+            'SELECT DISTINCT
+                srv.service_id,
+                srv.display_name,
+                srv.description,
                 srv.host_id,
                 srv.state
             FROM :dbstg.services srv
@@ -1074,15 +1542,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * @param array $serviceGroups
-     * @return array
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function findServicesByServiceGroups(array $serviceGroups): array
+    public function findServicesByServiceGroups(array $serviceGroupIds): array
     {
         $servicesByServiceGroupId = [];
 
-        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroups)) {
+        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroupIds)) {
             return $servicesByServiceGroupId;
         }
 
@@ -1115,14 +1581,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               ON ssg.service_id = srv.service_id
               AND ssg.host_id = srv.host_id'
             . $subRequest
-            . 'WHERE ssg.servicegroup_id IN (' . str_repeat('?,', count($serviceGroups) - 1) . '?)
+            . 'WHERE ssg.servicegroup_id IN (' . str_repeat('?,', count($serviceGroupIds) - 1) . '?)
                 AND srv.enabled = 1
             GROUP by ssg.servicegroup_id, srv.host_id, srv.service_id';
 
         $request = $this->translateDbName($request);
 
         $statement = $this->db->prepare($request);
-        $statement->execute($serviceGroups);
+        $statement->execute($serviceGroupIds);
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -1143,7 +1609,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return array
+     * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
     {
@@ -1232,9 +1698,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int)$result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $serviceGroups[] = EntityCreator::createEntityByArray(
@@ -1247,10 +1716,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * Find downtimes for host or service
-     * @param int $hostId
-     * @param int $serviceId
-     * @return array
+     * @inheritDoc
      */
     public function findDowntimes(int $hostId, int $serviceId): array
     {
@@ -1285,10 +1751,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * Find acknowledgements for host or service
-     * @param int $hostId
-     * @param int $serviceId
-     * @return array
+     * @inheritDoc
      */
     public function findAcknowledgements(int $hostId, int $serviceId): array
     {

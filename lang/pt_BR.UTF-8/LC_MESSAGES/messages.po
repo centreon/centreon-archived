@@ -363,55 +363,46 @@ msgid "Yes"
 msgstr "Sim"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Host Check Execution Time"
 msgstr "Tempo máximo de checagem de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Hosts Actively Checked"
 msgstr "Hosts atualmente checados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Host check latency"
 msgstr "Latência de checagem de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Service Check Execution Time"
 msgstr "Duração da checagem de Serviço"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Services Actively Checked"
 msgstr "Serviços atualmente checados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:169
 msgid "Service check latency"
 msgstr "Latência de checagem de Serviço"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:170
 msgid "Commands in buffer"
 msgstr "Comandos em buffer"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:136
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:171
 msgid "Host status"
 msgstr "Estado de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:137
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:172
 msgid "Service status"
 msgstr "Estado do Serviço"
@@ -6653,8 +6644,8 @@ msgid "Proxy URL"
 msgstr "URL de Proxy"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:162
-msgid "Test Proxy Configuration"
-msgstr "Configuração do Proxy de Teste"
+msgid "Test Internet Connection"
+msgstr "Teste a conexão com a Internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:165
 msgid "Proxy port"
@@ -6683,26 +6674,38 @@ msgstr "Ativa autenticação SSO"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Você tem certeza que quer alterar este parâmetro? Por favor, leia a ajuda antes."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Endereços de confiança do SSO Keycloak"
+msgid "Trusted client addresses"
+msgstr "Endereços de confiança"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Endereços de clientes de bloqueios Keycloak"
+msgid "Blacklist client addresses"
+msgstr "Endereços de clientes de bloqueios"
 
-msgid "Keycloak Server Url"
-msgstr "URL do servidor Keycloak"
+msgid "Base Url"
+msgstr "Url base"
 
-msgid "Keycloak Redirect Url"
-msgstr "Endereço de redirecionamento do Centreon para o Keycloak"
+msgid "Authorization Endpoint"
+msgstr "Endpoint de autorização"
 
-msgid "Keycloak Client Realm"
-msgstr "Dominio cliente Keycloak"
+msgid "Token Endpoint"
+msgstr "Endpoint de token"
 
-msgid "Keycloak Client ID"
-msgstr "Identificação de cliente Keycloak"
+msgid "Introspection Token Endpoint"
+msgstr "Endpoint de introspecção do token"
 
-msgid "Keycloak Client Secret"
-msgstr "Segredo de cliente Keycloak"
+msgid "User Information Endpoint"
+msgstr "Endpoint de informações do usuário"
+
+msgid "Scope"
+msgstr "Escopo"
+
+msgid "Redirect Url"
+msgstr "URL de redirecionamento"
+
+msgid "Client ID"
+msgstr "Identificação de cliente"
+
+msgid "Client Secret"
+msgstr "Segredo de cliente"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:202
 msgid "SSO only"
@@ -7834,10 +7837,6 @@ msgstr "Informações Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Informação do Motor de Monitoramento"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:137
-msgid "Miscelleneous"
-msgstr "Diversos"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:138
 msgid "Centreon Trap Collector"
 msgstr "Coletor Centreon Trap"
@@ -7915,6 +7914,12 @@ msgstr "Diretorio de banco de dados leve para traps SNMP"
 #: centreon-web/www/include/configuration/configServers/formServers.php:254
 msgid "The name of the poller is mandatory"
 msgstr "O nome do coletor é obrigatorio"
+
+#: msgid "The IP address is already registered on another poller"
+#: msgstr ""
+
+#: msgid "The IP address is already registered"
+#: msgstr ""
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:133
 msgid "Server type"
@@ -8117,8 +8122,11 @@ msgstr "Serviços Utilizados"
 msgid "Check"
 msgstr "Checagem"
 
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:118
-#: centreon-web/www/install/menu_translation.php:109
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diversos"
 
@@ -10077,6 +10085,9 @@ msgstr "Retenção RRD"
 msgid "OID"
 msgstr "OID"
 
+# msgid "Bad OID Format"
+# msgstr ""
+
 #: centreon-web/www/include/configuration/configObject/traps/listTraps.php:104
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:171
 msgid "Output Message"
@@ -10350,14 +10361,6 @@ msgstr "Campo obrigatório para fins de permissionamento (ACL)."
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1086
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "Impossível mudar de servidor devido ao parentesco com outros hosts"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1089
-msgid "Some hosts parent has not the same instance"
-msgstr "Alguns hosts parente não tem a mesma instância"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1090
-msgid "Some hosts child has not the same instance"
-msgstr "Alguns hosts filho não tem a mesma instância"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1096
 msgid "_Module_ is not a legal expression"
@@ -11736,7 +11739,7 @@ msgid "Performances"
 msgstr "Informações de Performance"
 
 #: centreon-web/www/install/smarty_translate.php:210
-msgid "Host Informations"
+msgid "Host Information"
 msgstr "Informações de Host"
 
 #: centreon-web/www/install/smarty_translate.php:225
@@ -12680,10 +12683,6 @@ msgstr "Criando Tarefa de Exportação"
 #: centreon-web/www/install/react_translation.php:64
 msgid "Generating Export Files"
 msgstr "Gerando Arquivos para serem Exportados"
-
-#: centreon-web/www/install/react_translation.php:65
-msgid "Processing Remote Import/Configuration"
-msgstr "Processando Configuração/Importação Remota"
 
 #: centreon-web/www/install/react_translation.php:66
 msgid "The field is required"
@@ -14515,6 +14514,12 @@ msgstr "Host não encontrado"
 msgid "Service not found"
 msgstr "Serviço não encontrado"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:312
+#:Centreon/Domain/Check/CheckService.php:172
+#:Centreon/Domain/Downtime/DowntimeService.php:183
+msgid "Meta service not found"
+msgstr "Meta serviço não encontrado"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:250
 msgid "No acknowledgement found for this host"
 msgstr "Nenhum reconhecimento encontrado para este host"
@@ -14527,9 +14532,17 @@ msgstr "Reconhecimento já foi cancelado para este host"
 msgid "No acknowledgement found for this service"
 msgstr "Nenhum reconhecimento encontrado para este serviço"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:319
+msgid "No acknowledgement found for this meta service"
+msgstr "Nenhum reconhecimento encontrado para este meta serviço"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
 msgid "Acknowledgement already cancelled for this service"
 msgstr "Reconhecimento já foi cancelado para este serviço"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:322
+msgid "Acknowledgement already cancelled for this meta service"
+msgstr "Reconhecimento já foi cancelado para este meta serviço"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
 msgid "Incorrect Resource type: %s"
@@ -14759,185 +14772,856 @@ msgstr "Erro ao recuperar o número de tokens"
 #:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:232
 msgid "Error when deleting tokens for one contact"
 msgstr "Erro ao remover tokens de um contato"
-msgid "Acknowledged by"
+
+#  msgid "Acknowledged by"
+#  msgstr ""
+
+#  msgid "Acknowledge services attached to host"
+#  msgstr ""
+
+#  msgid "at"
+#  msgstr ""
+
+#  msgid "Clear"
+#  msgstr ""
+
+#  msgid "Criterias"
+#  msgstr ""
+
+#  msgid "Copy"
+#  msgstr ""
+
+#  msgid "Command copied to clipboard"
+#  msgstr ""
+
+#  msgid "Current notification number"
+#  msgstr ""
+
+#  msgid "Current status duration"
+#  msgstr ""
+
+#  msgid "Downtime duration"
+#  msgstr ""
+
+#  msgid "End date must be greater than start date"
+#  msgstr ""
+
+#  msgid "End time"
+#  msgstr ""
+
+#  msgid "This Resource is flapping"
+#  msgstr ""
+
+#  msgid "Show criterias filters"
+#  msgstr ""
+
+#  msgid "Start date"
+#  msgstr ""
+
+#  msgid "Change start date"
+#  msgstr ""
+
+#  msgid "Change start time"
+#  msgstr ""
+
+#  msgid "Host group"
+#  msgstr ""
+
+#  msgid "In downtime"
+#  msgstr ""
+
+# msgid "1 day"
+# msgstr ""
+
+# msgid "7 days"
+# msgstr ""
+
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
+
+#  msgid "Set downtime on"
+#  msgstr ""
+
+#  msgid "Downtime set by"
+#  msgstr ""
+
+#  msgid "Set downtime on services attached to host"
+#  msgstr ""
+
+#  msgid "Last notification"
+#  msgstr ""
+
+#  msgid "Last status change"
+#  msgstr ""
+
+#  msgid "Next check"
+#  msgstr ""
+
+#  msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+#  msgstr ""
+
+#  msgid "Open"
+#  msgstr ""
+
+#  msgid "Status change percentage"
+#  msgstr ""
+
+#  msgid "Resource name"
+#  msgstr ""
+
+#  msgid "Resource problems"
+#  msgstr ""
+
+#  msgid "Rows per page"
+#  msgstr ""
+
+#  msgid "of"
+#  msgstr ""
+
+#  msgid "More"
+#  msgstr ""
+
+#  msgid "Disable autorefresh"
+#  msgstr ""
+
+#  msgid "Enable autorefresh"
+#  msgstr ""
+
+#  msgid "Search help"
+#  msgstr ""
+
+#  msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+#  msgstr ""
+
+#  msgid "You can use regular expression syntax to retrieve more relevant results"
+#  msgstr ""
+
+#  msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+#  msgstr ""
+
+#  msgid "Some examples:"
+#  msgstr ""
+
+#  msgid "will display resources with host name starting by'"
+#  msgstr ""
+
+#  msgid "will display resources with service description finishing by"
+#  msgstr ""
+
+#  msgid "will display all resources with host having alias containing"
+#  msgstr ""
+
+#  msgid "will display resources having FQDN that doesn't contain"
+#  msgstr ""
+
+#  msgid "and host alias containing"
+#  msgstr ""
+
+#  msgid "Tips"
+#  msgstr ""
+
+#  msgid "get some help while creating your regular expression query at"
+#  msgstr ""
+
+#  msgid "Service group"
+#  msgstr ""
+
+#  msgid "State filter"
+#  msgstr ""
+
+#  msgid "Acknowledge command sent"
+#  msgstr ""
+
+#  msgid "Downtime command sent"
+#  msgstr ""
+
+#  msgid "Check command sent"
+#  msgstr ""
+
+#  msgid "Type of resource"
+#  msgstr ""
+
+#  msgid "Unhandled problems"
+#  msgstr ""
+
+#  msgid "Oops, something went wrong"
+#  msgstr ""
+
+#  msgid "Seems that your Apache configuration is not up-to-date"
+#  msgstr ""
+
+#  msgid "Contact your Centreon administrator or update the following file"
+#  msgstr ""
+
+#  msgid "See Documentation"
+#  msgstr ""
+
+#  msgid "Services will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "Hosts will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "No results found"
+#  msgstr ""
+
+#  msgid "Error when decoding sent data"
+#  msgstr ""
+
+#  msgid "Filter id %d not found"
+#  msgstr ""
+
+#  msgid "Filter already exists"
+#  msgstr ""
+
+#  msgid "Error when adding filter %s"
+#  msgstr ""
+
+#  msgid "Error when updating filter %s"
+#  msgstr ""
+
+#  msgid "Error when deleting filter %s"
+#  msgstr ""
+
+#  msgid "Error when searching filters"
+#  msgstr ""
+
+#  msgid "Error when searching filter id %d"
+#  msgstr ""
+
+#  msgid "Save filter"
+#  msgstr ""
+
+#  msgid "Save as new"
+#  msgstr ""
+
+#  msgid "My filters"
+#  msgstr ""
+
+#  msgid "New filter"
+#  msgstr ""
+
+#  msgid "Filter created"
+#  msgstr ""
+
+#  msgid "Filter saved"
+#  msgid ""
+
+#  msgid "Edit filters"
+#  msgstr ""
+
+#  msgid "Rename"
+#  msgstr ""
+
+#  msgid "Delete filter?"
+#  msgstr ""
+
+#  msgid "Filter deleted"
+#  msgstr ""
+
+#  msgid "Filter updated"
+#  msgstr ""
+
+#  msgid "Name cannot be empty"
+#  msgstr ""
+
+#  msgid "Timeline"
+#  msgstr ""
+
+#  msgid "by"
+#  msgstr ""
+
+#  msgid "Notification sent to"
+#  msgstr ""
+
+#  msgid "Shortcuts"
+#  msgstr ""
+
+#  msgid "View logs"
+#  msgstr ""
+
+#  msgid "Configure"
+#  msgstr ""
+
+#  msgid "View report"
+#  msgstr ""
+
+#  msgid "Copy the link to this resource"
+#  msgstr ""
+
+#  msgid "Resource link copied to the clipboard"
+#  msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgstr ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""
+
+#  msgid "Groups"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Go to performance page"
+#  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As Displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
 msgstr ""
 
-msgid "Acknowledge services attached to host"
+msgid "Last check with OK status"
 msgstr ""
 
-msgid "at"
-msgstr ""
+# msgid "Define the password security policy"
+# msgstr ""
 
-msgid "Clear all"
-msgstr ""
+# msgid "Password case policy"
+# msgstr ""
 
-msgid "Criterias"
-msgstr ""
+# msgid "Minimum password length"
+# msgstr ""
 
-msgid "Copy"
-msgstr ""
+# msgid "Minimum 8 characters"
+# msgstr ""
 
-msgid "Command copied to clipboard"
-msgstr ""
+# msgid "Maximum 128 characters"
+# msgstr ""
 
-msgid "Current notification number"
-msgstr ""
+# msgid "Password must contain upper case"
+# msgstr ""
 
-msgid "Current state duration"
-msgstr ""
+# msgid "Password must contain lower case"
+# msgstr ""
 
-msgid "Downtime duration"
-msgstr ""
+# msgid "Password must contain numbers"
+# msgstr ""
 
-msgid "End date must be greater than start date"
-msgstr ""
+# msgid "Password must contain special characters"
+# msgstr ""
 
-msgid "End time"
-msgstr ""
+# msgid "Password cases"
+# msgstr ""
 
-msgid "Is this resource flapping?"
-msgstr ""
+# msgid "Weak"
+# msgstr ""
 
-msgid "Show criterias filters"
-msgstr ""
+# msgid "Good"
+# msgstr ""
 
-msgid "Start date"
-msgstr ""
+# msgid "Strong"
+# msgstr ""
 
-msgid "Change start date"
-msgstr ""
+# msgid "Password expiration policy"
+# msgstr ""
 
-msgid "Change start time"
-msgstr ""
+# msgid "Password expires after"
+# msgstr ""
 
-msgid "Host group"
-msgstr ""
+# msgid "Choose a duration between 7 days and 12 months"
+# msgstr ""
 
-msgid "In downtime"
-msgstr ""
+# msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
 
-msgid "Last 24 hours"
-msgstr ""
+# msgid "Reset the form"
+# msgstr ""
 
-msgid "Last 7 days"
-msgstr ""
+# msgid "Do you want to reset the form?"
+# msgstr ""
 
-msgid "Last 31 days"
-msgstr ""
+# msgid "Excluded users"
+# msgstr ""
 
-msgid "Set downtime on"
-msgstr ""
+# msgid "Month"
+# msgstr ""
 
-msgid "Downtime set by"
-msgstr ""
+# msgid "Months"
+# msgstr ""
 
-msgid "Set downtime on services attached to host"
-msgstr ""
+# msgid "Hour"
+# msgstr ""
 
-msgid "Last notification"
-msgstr ""
+# msgid "Minute"
+# msgstr ""
 
-msgid "Last state change"
-msgstr ""
+# msgid "Second"
+# msgstr ""
 
-msgid "Next check"
-msgstr ""
+# msgid "Last 3 passwords can be reused"
+# msgstr ""
 
-msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
-msgstr ""
+# msgid "Minimum time between password changes"
+# msgstr ""
 
-msgid "Open"
-msgstr ""
+# msgid "Choose a duration between 1 hour and 1 week"
+# msgstr ""
 
-msgid "Percent state change"
-msgstr ""
+# msgid "Password blocking policy"
+# msgstr ""
 
-msgid "Resource name"
-msgstr ""
+# msgid "Number of attempts before user is blocked"
+# msgstr ""
 
-msgid "Resource problems"
-msgstr ""
+# msgid "Choose a value between 1 and 10"
+# msgstr ""
 
-msgid "Rows per page"
-msgstr ""
+# msgid "Time that must pass before new connection is allowed"
+# msgstr ""
 
-msgid "of"
-msgstr ""
+# msgid "Blocking duration must be less than or equal to 7 days"
+# msgstr ""
 
-msgid "More"
-msgstr ""
+# msgid "Saving..."
+# msgstr ""
 
-msgid "Disable autorefresh"
-msgstr ""
+# msgid "Saved"
+# msgstr ""
 
-msgid "Enable autorefresh"
-msgstr ""
+# msgid "Password security policy saved"
+# msgstr ""
 
-msgid "Search help"
-msgstr ""
+# msgid "Failed to save password security policy"
+# msgstr ""
 
-msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
-msgstr ""
+# msgid "This will not be used because the number of attempts is not defined"
+# msgstr ""
 
-msgid "You can use regular expression syntax to retrieve more relevant results"
-msgstr ""
+# msgid "Status type"
+# msgstr ""
 
-msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
-msgstr ""
+# msgid "Hard"
+# msgstr ""
 
-msgid "Some examples:"
-msgstr ""
+# msgid "Soft"
+# msgstr ""
 
-msgid "will display resources with host name starting by'"
-msgstr ""
+# msgid "You are disconnected"
+# msgstr ""
 
-msgid "will display resources with service description finishing by"
-msgstr ""
+# msgid "Centreon is loading..."
+# msgstr ""
 
-msgid "will display all resources with host having alias containing"
-msgstr ""
+# msgid "Login succeeded"
+# msgstr ""
 
-msgid "will display resources having FQDN that doesn't contain"
-msgstr ""
+# msgid "Login"
+# msgstr ""
 
-msgid "and host alias containing"
-msgstr ""
+# msgid "Centreon Logo"
+# msgstr ""
 
-msgid "Tips"
-msgstr ""
+# msgid "You are not allowed to see this page"
+# msgstr ""
 
-msgid "get some help while creating your regular expression query at"
-msgstr ""
+# msgid "This page could not be found"
+# msgstr ""
 
-msgid "Service group"
-msgstr ""
+# msgid "Display the password"
+# msgstr ""
 
-msgid "State filter"
-msgstr ""
+# msgid "Hide the password"
+# msgstr ""
 
-msgid "Acknowledge command sent"
-msgstr ""
+# msgid "You have been logged out"
+# msgstr ""
 
-msgid "Downtime command sent"
-msgstr ""
+# msgid "Profile"
+# msgstr ""
 
-msgid "Check command sent"
-msgstr ""
+# msgid "Password security policy"
+# msgstr ""
 
-msgid "Type of resource"
-msgstr ""
+# msgid "OpenID Connect Configuration"
+# msgstr ""
 
-msgid "Unhandled problems"
-msgstr ""
+# msgid "Define OpenID Connect configuration"
+# msgstr ""
 
-msgid "Oops, something went wrong"
-msgstr ""
+# msgid "Invalid URL"
+# msgstr ""
 
-msgid "Seems that your Apache configuration is not up-to-date"
-msgstr ""
+# msgid "Invalid IP Address"
+# msgstr ""
 
-msgid "Contact your Centreon administrator or update the following file"
-msgstr ""
+# msgid "Failed to save OpenID Connect configuration"
+# msgstr ""
 
-msgid "See Documentation"
-msgstr ""
+# msgid "OpenID Connect configuration saved"
+# msgstr ""
+
+# msgid "Enable OpenID Connect authentication"
+# msgstr ""
+
+# msgid "Authentication mode"
+# msgstr ""
+
+# msgid "Base URL"
+# msgstr ""
+
+# msgid "Authorization endpoint"
+# msgstr ""
+
+# msgid "Token endpoint"
+# msgstr ""
+
+# msgid "Introspection token endpoint"
+# msgstr ""
+
+# msgid "User information endpoint"
+# msgstr ""
+
+# msgid "End session endpoint"
+# msgstr ""
+
+# msgid "Scopes"
+# msgstr ""
+
+# msgid "Login claim value"
+# msgstr ""
+
+# msgid "Client ID"
+# msgstr ""
+
+# msgid "Client secret"
+# msgstr ""
+
+# msgid "Use basic authentication for token endpoint authentication"
+# msgstr ""
+
+# msgid "Disable verify peer"
+# msgstr ""
+
+# msgid "OpenID Connect only"
+# msgstr ""
+
+# msgid "Mixed"
+# msgstr ""
+
+# msgid "Reset your password"
+# msgstr ""
+
+# msgid "Current password"
+# msgstr ""
+
+# msgid "New password"
+# msgstr ""
+
+# msgid "New password confirmation"
+# msgstr ""
+
+# msgid "New passwords must match"
+# msgstr ""
+
+# msgid "The new password is the same as the old password"
+# msgstr ""
+
+# msgid "Reset password"
+# msgstr ""
+
+# msgid "Password renewed"
+# msgstr ""
+
+# msgid "Your password will expire in"
+# msgstr ""
+
+# msgid "Password has expired"
+# msgstr ""
+
+# msgid "Choose letter cases"
+# msgstr ""
+
+# msgid "Activation"
+# msgstr ""
+
+# msgid "Identity provider"
+# msgstr ""
+
+# msgid "Client addresses"
+# msgstr ""
+
+# msgid "Login with"
+# msgstr ""
+
+# msgid "Enable auto import"
+# msgstr ""
+
+# msgid "Email attribute to bind"
+# msgstr ""
+
+# msgid "Alias attribute to bind"
+# msgstr ""
+
+# msgid "Fullname attribute to bind"
+# msgstr ""
+
+# msgid "Auto import"
+# msgstr ""
+
+# msgid "You are not authorized to access the configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration"
+# msgstr ""
+
+# msgid "Define Web SSO Configuration"
+# msgstr ""
+
+# msgid "Failed to save Web SSO configuration"
+# msgstr ""
+
+# msgid "Web SSO configuration saved"
+# msgstr ""
+
+# msgid "Enable Web SSO authentication"
+# msgstr ""
+
+# msgid "Web SSO only"
+# msgstr ""
+
+# msgid "Pattern match login (regex)"
+# msgstr ""
+
+# msgid "Pattern replace login (regex)"
+# msgstr ""
+
+# msgid "Login header attribute name"
+# msgstr ""
+
+# msgid "Invalid regex"
+# msgstr ""
+
+# msgid "Do you want to save the changes?"
+# msgstr ""
+
+# msgid "Your form has unsaved changes. Do you want to quit the form without saving the changes?"
+# msgstr ""
+
+# msgid "There are errors in the form. Do you want to quit the form without resolving the errors?"
+# msgstr ""
+
+# msgid "Discard"
+# msgstr ""
+
+# msgid "No contact are configured for this resource"
+# msgstr ""
+
+# msgid "No contact groups are configured for this resource"
+# msgstr ""
+
+# msgid "At least one of the two following fields must be filled"
+# msgstr ""
+
+# msgid "Press Enter to accept"
+# msgstr ""
+
+# msgid "License invalid or expired"
+# msgstr ""
+
+# msgid "Please contact your administrator"
+# msgstr ""
+
+# msgid "Broker events"
+# msgstr ""
+
+# msgid "Events"
+# msgstr ""
+
+# msgid "Functions"
+# msgstr ""
+
+# msgid "Process"
+# msgstr ""
+
+# msgid "Runtime"
+# msgstr ""
+
+# msgid "Log destination"
+# msgstr ""
+
+# msgid "Error"
+# msgstr ""
+
+# msgid "Do not use configured proxy to connect to this server"
+# msgstr ""
+
+# msgid "At least one authorization relation is required"
+# msgstr ""
+
+# msgid "Authorization value"
+# msgstr ""
+
+# msgid "Access group"
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group"
+# msgstr ""
+
+# msgid "Delete the relation"
+# msgstr ""
+
+# msgid "Authorization key"
+# msgstr ""
+
+# msgid "Authorizations"
+# msgstr ""
+
+#  msgid "Error while searching for the host template %d"
+#  msgstr ""
+
+# msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+# msgstr ""
+
+# msgid "Contact group: Define a contact group for the imported user."
+# msgstr ""
+
+# msgid "Authorization key: The key"
+# msgstr ""
+
+# msgid "key is defined by default. You can define another one."
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+# msgstr ""
+
+# msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+# msgstr ""
+
+# msgid "and an access group:"
+# msgstr ""
+
+# msgid "License end date:"
+# msgstr ""
+
+# msgid "License expired"
+# msgstr ""
+
+# msgid "Parent alias
+# msgstr ""
+
+

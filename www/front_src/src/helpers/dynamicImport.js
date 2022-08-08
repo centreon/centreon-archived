@@ -1,3 +1,4 @@
+/* eslint-disable import/no-relative-packages */
 /* eslint-disable no-console */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable consistent-return */
@@ -8,12 +9,12 @@
 import '../../../../node_modules/systemjs/dist/s.js'; // IIFE format so it's imported on window
 import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid to check module.default.default
 import './extras/global.js'; // fork global.js from systemjs to embed patch for IE (https://github.com/systemjs/systemjs/pull/2035)
-import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
 const getGlobalName = (filename) => {
   const normalizedFilename = filename
     .replace(/(^\.?\/)|(\.js)/g, '')
     .replace(/\//g, '$');
+
   return `$centreonExternalModule$${normalizedFilename}`;
 };
 
@@ -42,6 +43,7 @@ const importModules = ({ basename, files }) => {
   const promises = files.map((file) => {
     return importModule({ basename, file });
   });
+
   return Promise.all(promises);
 };
 
@@ -51,19 +53,14 @@ export const dynamicImport = (basename, parameters) =>
   new Promise(async (resolve, _reject) => {
     const {
       js: { commons, chunks, bundle },
-      css,
     } = parameters;
     if (!bundle) {
       console.error(new Error('dynamic import should contains js parameter.'));
+
       return null;
     }
 
     try {
-      // dynamically import css if external component needs one
-      if (css && css.length > 0) {
-        await systemCss.fetch({ address: basename + css });
-      }
-
       // import commons and vendor chunks
       await importModules({
         basename,

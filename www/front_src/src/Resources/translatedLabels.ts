@@ -1,157 +1,252 @@
-import { I18n } from 'react-redux-i18n';
-
-export const labelAcknowledged = I18n.t('Acknowledged');
-export const labelAcknowledge = I18n.t('Acknowledge');
-export const labelAcknowledgedBy = I18n.t('Acknowledged by');
-export const labelAcknowledgeServices = I18n.t(
-  'Acknowledge services attached to host',
-);
-export const labelAt = I18n.t('at');
-export const labelActive = I18n.t('Active');
-export const labelAll = I18n.t('All');
-export const labelAuthor = I18n.t('Author');
-export const labelComment = I18n.t('Comment');
-export const labelCancel = I18n.t('Cancel');
-export const labelClearAll = I18n.t('Clear all');
-export const labelCriterias = I18n.t('Criterias');
-export const labelCritical = I18n.t('Critical');
-export const labelCheckDuration = I18n.t('Check duration');
-export const labelCommand = I18n.t('Command');
-export const labelCopy = I18n.t('Copy');
-export const labelCommandCopied = I18n.t('Command copied to clipboard');
-export const labelCurrentNotificationNumber = I18n.t(
-  'Current notification number',
-);
-export const labelCurrentStateDuration = I18n.t('Current state duration');
-export const labelDetails = I18n.t('Details');
-export const labelDown = I18n.t('Down');
-export const labelDowntimeDuration = I18n.t('Downtime duration');
-export const labelDuration = I18n.t('Duration');
-export const labelSeconds = I18n.t('Seconds');
-export const labelMinutes = I18n.t('Minutes');
-export const labelHours = I18n.t('Hours');
-export const labelEndDateMustBeGreater = I18n.t(
-  'End date must be greater than start date',
-);
-export const labelEndTime = I18n.t('End time');
-export const labelEntryTime = I18n.t('Entry time');
-export const labelFilter = I18n.t('Filter');
-export const labelNoDataForThisPeriod = I18n.t(
-  'No data available for this period',
-);
-export const labelResourceFlapping = I18n.t('Is this resource flapping?');
-export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
-export const labelFrom = I18n.t('From');
-export const labelStartDate = I18n.t('Start date');
-export const labelEndDate = I18n.t('End date');
-export const labelChangeStartDate = I18n.t('Change start date');
-export const labelChangeStartTime = I18n.t('Change start time');
-export const labelChangeEndDate = I18n.t('Change end date');
-export const labelChangeEndTime = I18n.t('Change end time');
-export const labelFixed = I18n.t('Fixed');
-export const labelGraph = I18n.t('Graph');
-export const labelHost = I18n.t('Host');
-export const labelHostGroup = I18n.t('Host group');
-export const labelDowntime = I18n.t('Downtime');
-export const labelInDowntime = I18n.t('In downtime');
-export const labelLast24h = I18n.t('Last 24 hours');
-export const labelLast7Days = I18n.t('Last 7 days');
-export const labelLast31Days = I18n.t('Last 31 days');
-export const labelSetDowntime = I18n.t('Set downtime');
-export const labelSetDowntimeOn = I18n.t('Set downtime on');
-export const labelDowntimeBy = I18n.t('Downtime set by');
-export const labelSetDowntimeOnServices = I18n.t(
-  'Set downtime on services attached to host',
-);
-export const labelCheck = I18n.t('Check');
-export const labelLastCheck = I18n.t('Last check');
-export const labelLastNotification = I18n.t('Last notification');
-export const labelLastStateChange = I18n.t('Last state change');
-export const labelLatency = I18n.t('Latency');
-export const labelLess = I18n.t('Less');
-export const labelNextCheck = I18n.t('Next check');
-export const labelNo = I18n.t('No');
-export const labelNotify = I18n.t('Notify');
-export const labelNotifyHelpCaption = I18n.t(
-  'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged',
-);
-export const labelOk = I18n.t('Ok');
-export const labelOpen = I18n.t('Open');
-export const labelPercentStateChange = I18n.t('Percent state change');
-export const labelPerformanceData = I18n.t('Performance data');
-export const labelPersistent = I18n.t('Persistent');
-export const labelPending = I18n.t('Pending');
-export const labelPoller = I18n.t('Poller');
-export const labelRequired = I18n.t('Required');
-export const labelResourceName = I18n.t('Resource name');
-export const labelResourceProblems = I18n.t('Resource problems');
-export const labelResource = I18n.t('Resource');
-export const labelRowsPerPage = I18n.t('Rows per page');
-export const labelOf = I18n.t('of');
-export const labelSearch = I18n.t('Search');
-export const labelSeverity = I18n.t('Severity');
-export const labelStatus = I18n.t('Status');
-export const labelSticky = I18n.t('Sticky');
-export const labelTries = I18n.t('Tries');
-export const labelInformation = I18n.t('Information');
-export const labelMore = I18n.t('More');
-export const labelRefresh = I18n.t('Refresh');
-export const labelDisableAutorefresh = I18n.t('Disable autorefresh');
-export const labelEnableAutorefresh = I18n.t('Enable autorefresh');
-export const labelSearchHelp = I18n.t('Search help');
-export const labelSearchOnFields = I18n.t(
-  'This search bar will search matching occurences you type, contained in: host name or alias or address or service description',
-);
-export const labelSearchByRegexp = I18n.t(
-  'You can use regular expression syntax to retrieve more relevant results',
-);
-export const labelSearchSyntax = I18n.t(
-  "It's possible to specify the criteria you precisely want to search, by using the following syntax:",
-);
-export const labelSearchSomeExamples = I18n.t('Some examples:');
-export const labelSearchByHostNameStartingWith = I18n.t(
-  'will display resources with host name starting by',
-);
-export const labelSearchByServiceDescEndingWith = I18n.t(
-  'will display resources with service description finishing by',
-);
-export const labelSearchByHostAliasContaining = I18n.t(
-  'will display all resources with host having alias containing',
-);
-export const labelSearchByHostAddressNotContaining = I18n.t(
-  "will display resources having FQDN that doesn't contain",
-);
-export const labelSearchAndHostAliasContaining = I18n.t(
-  'and host alias containing',
-);
-export const labelTips = I18n.t('Tips');
-export const labelGetRegexHelp = I18n.t(
-  'get some help while creating your regular expression query at',
-);
-export const labelService = I18n.t('Service');
-export const labelServiceGroup = I18n.t('Service group');
-export const labelStartTime = I18n.t('Start time');
-export const labelState = I18n.t('State');
-export const labelStateFilter = I18n.t('State filter');
-export const labelStatusInformation = I18n.t('Status information');
-export const labelTimezone = I18n.t('Timezone');
-export const labelTo = I18n.t('To');
-export const labelAcknowledgeCommandSent = I18n.t('Acknowledge command sent');
-export const labelDowntimeCommandSent = I18n.t('Downtime command sent');
-export const labelCheckCommandSent = I18n.t('Check command sent');
-export const labelTypeOfResource = I18n.t('Type of resource');
-export const labelUnhandledProblems = I18n.t('Unhandled problems');
-export const labelUnhandled = I18n.t('Unhandled');
-export const labelUnreachable = I18n.t('Unreachable');
-export const labelUnknown = I18n.t('Unknown');
-export const labelUp = I18n.t('Up');
-export const labelYes = I18n.t('Yes');
-export const labelSomethingWentWrong = I18n.t('Oops, something went wrong');
-export const labelWarning = I18n.t('Warning');
-export const labelApiNotFoundNotUpToDate = I18n.t(
-  'Seems that your Apache configuration is not up-to-date',
-);
-export const labelApiNotFoundContactAdmin = I18n.t(
-  'Contact your Centreon administrator or update the following file',
-);
-export const labelApiNotFoundDocumentation = I18n.t('See Documentation');
+export const labelAcknowledged = 'Acknowledged';
+export const labelAcknowledge = 'Acknowledge';
+export const labelAcknowledgedBy = 'Acknowledged by';
+export const labelAcknowledgeServices = 'Acknowledge services attached to host';
+export const labelAt = 'at';
+export const labelActive = 'Active';
+export const labelAdd = 'Add';
+export const labelAll = 'All';
+export const labelAuthor = 'Author';
+export const labelComment = 'Comment';
+export const labelCancel = 'Cancel';
+export const labelClear = 'Clear';
+export const labelCriterias = 'Criterias';
+export const labelCritical = 'Critical';
+export const labelCheckDuration = 'Check duration';
+export const labelCommand = 'Command';
+export const labelCopy = 'Copy';
+export const labelCommandCopied = 'Command copied to clipboard';
+export const labelCurrentNotificationNumber = 'Current notification number';
+export const labelCurrentStatusDuration = 'Current status duration';
+export const labelDetails = 'Details';
+export const labelDown = 'Down';
+export const labelDowntimeDuration = 'Downtime duration';
+export const labelDuration = 'Duration';
+export const labelSeconds = 'Seconds';
+export const labelMinutes = 'Minutes';
+export const labelHours = 'Hours';
+export const labelEndTime = 'End time';
+export const labelEntryTime = 'Entry time';
+export const labelFilter = 'Filter';
+export const labelNoDataForThisPeriod = 'No data available for this period';
+export const labelResourceFlapping = 'This Resource is flapping';
+export const labelFlapping = 'Flapping';
+export const labelShowCriteriasFilters = 'Show criterias filters';
+export const labelFrom = 'From';
+export const labelStartDate = 'Start date';
+export const labelEndDate = 'End date';
+export const labelChangeStartDate = 'Change start date';
+export const labelChangeStartTime = 'Change start time';
+export const labelChangeEndDate = 'Change end date';
+export const labelChangeEndTime = 'Change end time';
+export const labelFixed = 'Fixed';
+export const labelGraph = 'Graph';
+export const labelHost = 'Host';
+export const labelHostGroup = 'Host group';
+export const labelDowntime = 'Downtime';
+export const labelInDowntime = 'In downtime';
+export const label1Day = '1 day';
+export const label7Days = '7 days';
+export const label31Days = '31 days';
+export const labelLastDay = 'Last day';
+export const labelLast7Days = 'Last 7 days';
+export const labelLast31Days = 'Last 31 days';
+export const labelSetDowntime = 'Set downtime';
+export const labelSetDowntimeOn = 'Set downtime on';
+export const labelDowntimeBy = 'Downtime set by';
+export const labelSetDowntimeOnServices =
+  'Set downtime on services attached to host';
+export const labelCheck = 'Check';
+export const labelLastCheck = 'Last check';
+export const labelLastNotification = 'Last notification';
+export const labelLastStatusChange = 'Last status change';
+export const labelLatency = 'Latency';
+export const labelLess = 'Less';
+export const labelNextCheck = 'Next check';
+export const labelNo = 'No';
+export const labelNotify = 'Notify';
+export const labelNotifyHelpCaption =
+  'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged';
+export const labelOk = 'Ok';
+export const labelOpen = 'Open';
+export const labelStatusChangePercentage = 'Status change percentage';
+export const labelPerformanceData = 'Performance data';
+export const labelPersistent = 'Persistent';
+export const labelPending = 'Pending';
+export const labelMonitoringServer = 'Monitoring server';
+export const labelRequired = 'Required';
+export const labelResourceName = 'Resource name';
+export const labelResourceProblems = 'Resource problems';
+export const labelResource = 'Resource';
+export const labelRowsPerPage = 'Rows per page';
+export const labelOf = 'of';
+export const labelSearch = 'Search';
+export const labelSeverity = 'Severity';
+export const labelStatus = 'Status';
+export const labelSticky = 'Sticky';
+export const labelTries = 'Tries';
+export const labelInformation = 'Information';
+export const labelMore = 'More';
+export const labelRefresh = 'Refresh';
+export const labelDisableAutorefresh = 'Disable autorefresh';
+export const labelEnableAutorefresh = 'Enable autorefresh';
+export const labelSearchHelp = 'Search help';
+export const labelSearchOnFields =
+  'This search bar will search matching occurences you type, contained in: host name or alias or address or service description';
+export const labelSearchByRegexp =
+  'You can use regular expression syntax to retrieve more relevant results';
+export const labelSearchSyntax =
+  "It's possible to specify the criteria you precisely want to search, by using the following syntax:";
+export const labelSearchSomeExamples = 'Some examples:';
+export const labelSearchByHostNameStartingWith =
+  'will display resources with host name starting by';
+export const labelSearchByServiceDescEndingWith =
+  'will display resources with service description finishing by';
+export const labelSearchByHostAliasContaining =
+  'will display all resources with host having alias containing';
+export const labelSearchByHostAddressNotContaining =
+  "will display resources having FQDN that doesn't contain";
+export const labelSearchAndHostAliasContaining = 'and host alias containing';
+export const labelTips = 'Tips';
+export const labelGetRegexHelp =
+  'get some help while creating your regular expression query at';
+export const labelService = 'Service';
+export const labelServices = 'Services';
+export const labelServiceGroup = 'Service group';
+export const labelStartTime = 'Start time';
+export const labelState = 'State';
+export const labelStateFilter = 'State filter';
+export const labelStatusInformation = 'Status information';
+export const labelTimezone = 'Timezone';
+export const labelTo = 'To';
+export const labelAcknowledgeCommandSent = 'Acknowledge command sent';
+export const labelDowntimeCommandSent = 'Downtime command sent';
+export const labelCheckCommandSent = 'Check command sent';
+export const labelTypeOfResource = 'Type of resource';
+export const labelUnhandledProblems = 'Unhandled problems';
+export const labelUnhandled = 'Unhandled';
+export const labelUnreachable = 'Unreachable';
+export const labelUnknown = 'Unknown';
+export const labelUp = 'Up';
+export const labelYes = 'Yes';
+export const labelSomethingWentWrong = 'Oops, something went wrong';
+export const labelWarning = 'Warning';
+export const labelApiNotFoundNotUpToDate =
+  'Seems that your Apache configuration is not up-to-date';
+export const labelApiNotFoundContactAdmin =
+  'Contact your Centreon administrator or update the following file';
+export const labelApiNotFoundDocumentation = 'See Documentation';
+export const labelServicesDenied =
+  "Services will not be affected because you don't have sufficient permission";
+export const labelHostsDenied =
+  "Hosts will not be affected because you don't have sufficient permission";
+export const labelNoResultsFound = 'No results found';
+export const labelSaveFilter = 'Save filter';
+export const labelSaveAsNew = 'Save as new';
+export const labelSave = 'Save';
+export const labelNewFilter = 'New filter';
+export const labelName = 'Name';
+export const labelFilterCreated = 'Filter created';
+export const labelFilterSaved = 'Filter saved';
+export const labelMyFilters = 'My filters';
+export const labelEditFilters = 'Edit filters';
+export const labelRename = 'Rename';
+export const labelDelete = 'Delete';
+export const labelAskDelete = 'Delete filter?';
+export const labelFilterDeleted = 'Filter deleted';
+export const labelFilterUpdated = 'Filter updated';
+export const labelNameCannotBeEmpty = 'Name cannot be empty';
+export const labelTimeline = 'Timeline';
+export const labelEvent = 'Event';
+export const labelAcknowledgement = 'Acknowledgement';
+export const labelBy = 'by';
+export const labelNotificationSentTo = 'Notification sent to';
+export const labelNotification = 'Notification';
+export const labelShortcuts = 'Shortcuts';
+export const labelConfigure = 'Configure';
+export const labelViewLogs = 'View logs';
+export const labelViewReport = 'View report';
+export const labelCopyLink = 'Copy the link to this resource';
+export const labelLinkCopied = 'Resource link copied to the clipboard';
+export const labelDisacknowledge = 'Disacknowledge';
+export const labelMoreActions = 'More actions';
+export const labelDisacknowledgeServices =
+  'Disacknowledge services attached to hosts';
+export const labelDisacknowledgementCommandSent =
+  'Disacknowledgement command sent';
+export const labelSubmitStatus = 'Submit a status';
+export const labelSubmit = 'Submit';
+export const labelStatusSubmitted = 'Status submitted';
+export const labelOutput = 'Output';
+export const labelNoResourceFound = 'No resource found';
+export const labelFqdn = 'FQDN / Address';
+export const labelAlias = 'Alias';
+export const labelUrl = 'URL';
+export const labelSwitchToGraph = 'Switch to graph mode';
+export const labelSwitchToList = 'Switch to list mode';
+export const labelNoDataFor = 'No data for';
+export const labelGroups = 'Groups';
+export const labelAddComment = 'Add a comment';
+export const labelCommentAdded = 'Comment added';
+export const labelDisplayEvents = 'Display events';
+export const labelExportToPng = 'Export to png';
+export const labelPerformancePage = 'Go to performance page';
+export const labelParent = 'Parent';
+export const labelSelectCriterias = 'Select criterias';
+export const labelForward = 'Forward';
+export const labelBackward = 'Backward';
+export const labelEndDateGreaterThanStartDate =
+  'The end date must be greater than the start date';
+export const labelGraphOptions = 'Graph options';
+export const labelMin = 'Min';
+export const labelMax = 'Max';
+export const labelAvg = 'Avg';
+export const labelCompactTimePeriod = 'Compact time period';
+export const labelAction = 'Action';
+export const labelNotes = 'Notes';
+export const labelChecksDisabled = 'All checks are disabled';
+export const labelOnlyPassiveChecksEnabled = 'Only passive checks are enabled';
+export const labelNotificationDisabled = 'Notifications disabled';
+export const labelNotificationEnabled = 'Notifications enabled';
+export const labelMetrics = 'Metrics';
+export const labelMetaService = 'Meta service';
+export const labelCalculationType = 'Calculation type';
+export const labelSelectAtLeastOneColumn =
+  'At least one column must be selected';
+export const labelMaxDuration1Year = 'The duration must be less than a year';
+export const labelAsDisplayed = 'As displayed';
+export const labelMediumSize = 'Medium size';
+export const labelSmallSize = 'Small size';
+export const labelSearchOptions = 'Filter options';
+export const labelDisplayCompleteGraph = 'Display the complete graph';
+export const labelActionNotPermitted = 'Action not permitted';
+export const labelScrollToTop = 'Scroll to top';
+export const labelToday = 'Today';
+export const labelYesterday = 'Yesterday';
+export const labelThisWeek = 'This week';
+export const labelLastWeek = 'Last week';
+export const labelLastMonth = 'Last month';
+export const labelLastYear = 'Last year';
+export const labelBeforeLastYear = 'Before last year';
+export const labelServiceGraphs = 'Service graphs';
+export const labelClearFilter = 'Clear filter';
+export const labelLastCheckWithOkStatus = 'Last check with OK status';
+export const labelStatusType = 'Status type';
+export const labelHard = 'Hard';
+export const labelSoft = 'Soft';
+export const labelInvalidFormat = 'Invalid format';
+export const labelType = 'Type';
+export const labelEmail = 'E-mail';
+export const labelContacts = 'Contacts';
+export const labelContactGroups = 'Contact groups';
+export const labelSettings = 'Settings';
+export const labelNotificationStatus = 'Notification status';
+export const labelConfiguration = 'Configuration';
+export const labelNotAuthorizedToAccessConfiguration =
+  'You are not authorized to access the configuration';
+export const labelForceActiveChecks = 'Force active checks';
+export const labelNoContactIsConfiguredForThisResource =
+  'No contacts are configured for this resource';
+export const labelNoContactGroupsIsConfiguredForThisResource =
+  'No contact groups are configured for this resource';
+export const labelParentAlias = 'Parent alias';

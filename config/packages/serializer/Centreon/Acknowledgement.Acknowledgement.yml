@@ -5,6 +5,8 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
             groups:
                 - 'ack_main'
                 - 'ack_event_list'
+                - 'ack_service'
+                - 'ack_host'
                 - 'ack_full'
         pollerId:
             type: int
@@ -96,6 +98,12 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 - 'ack_event_list'
                 - 'ack_full'
         withServices:
+            type: bool
+            groups:
+                - 'ack_host_add'
+                - 'ack_resource'
+                - 'ack_full'
+        forceActiveChecks:
             type: bool
             groups:
                 - 'ack_host_add'

@@ -6,7 +6,6 @@ use PDO;
 
 class HostRepository extends ServiceEntityRepository
 {
-
     /**
      * Export hosts
      *

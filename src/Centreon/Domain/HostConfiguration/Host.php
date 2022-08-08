@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\Annotation\EntityDescriptor;
+use Centreon\Domain\Common\Assertion\Assertion;
 
 /***
  * This class is designed to represent a host configuration.
@@ -31,6 +36,10 @@ use Centreon\Domain\MonitoringServer\MonitoringServer;
  */
 class Host
 {
+    public const OPTION_NO = 0,
+                 OPTION_YES = 1,
+                 OPTION_DEFAULT = 2;
+
     /**
      * Host template
      */
@@ -43,6 +52,16 @@ class Host
      * Host meta
      */
     public const TYPE_META = 2;
+
+    public const NOTIFICATIONS_OPTION_DISABLED = 0,
+                 NOTIFICATIONS_OPTION_ENABLED = 1,
+                 NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE = 2;
+
+    private const AVAILABLE_NOTIFICATION_OPTIONS = [
+        self::NOTIFICATIONS_OPTION_DISABLED,
+        self::NOTIFICATIONS_OPTION_ENABLED,
+        self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE,
+    ];
 
     /**
      * @var int|null
@@ -86,8 +105,9 @@ class Host
 
     /**
      * @var bool
+     * @EntityDescriptor(column="is_activated", modifier="setActivated")
      */
-    private $isActivate = true;
+    private $isActivated = true;
 
     /**
      * @var int Host type
@@ -105,12 +125,32 @@ class Host
     /**
      * @var Host[] Host templates
      */
-    private $template = [];
+    private $templates = [];
 
     /**
      * @var HostMacro[]
      */
     private $macros = [];
+
+    /**
+     * @var HostCategory[]
+     */
+    private $categories = [];
+
+    /**
+     * @var HostGroup[]
+     */
+    private $groups = [];
+
+    /**
+     * @var HostSeverity|null
+     */
+    private $severity;
+
+    /**
+     * @var int
+     */
+    private $notificationsEnabledOption = self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE;
 
     /**
      * @return int|null
@@ -122,9 +162,9 @@ class Host
 
     /**
      * @param int|null $id
-     * @return Host
+     * @return self
      */
-    public function setId(?int $id): Host
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
@@ -140,9 +180,9 @@ class Host
 
     /**
      * @param string|null $name
-     * @return Host
+     * @return self
      */
-    public function setName(?string $name): Host
+    public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
@@ -158,9 +198,9 @@ class Host
 
     /**
      * @param string|null $alias
-     * @return Host
+     * @return self
      */
-    public function setAlias(?string $alias): Host
+    public function setAlias(?string $alias): self
     {
         $this->alias = $alias;
         return $this;
@@ -176,9 +216,9 @@ class Host
 
     /**
      * @param string|null $displayName
-     * @return Host
+     * @return self
      */
-    public function setDisplayName(?string $displayName): Host
+    public function setDisplayName(?string $displayName): self
     {
         $this->displayName = $displayName;
         return $this;
@@ -194,9 +234,9 @@ class Host
 
     /**
      * @param string|null $ipAddress
-     * @return Host
+     * @return self
      */
-    public function setIpAddress(?string $ipAddress): Host
+    public function setIpAddress(?string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
         return $this;
@@ -212,9 +252,9 @@ class Host
 
     /**
      * @param string|null $comment
-     * @return Host
+     * @return self
      */
-    public function setComment(?string $comment): Host
+    public function setComment(?string $comment): self
     {
         $this->comment = $comment;
         return $this;
@@ -230,9 +270,9 @@ class Host
 
     /**
      * @param string|null $geoCoords
-     * @return Host
+     * @return self
      */
-    public function setGeoCoords(?string $geoCoords): Host
+    public function setGeoCoords(?string $geoCoords): self
     {
         $this->geoCoords = $geoCoords;
         return $this;
@@ -241,18 +281,18 @@ class Host
     /**
      * @return bool
      */
-    public function isActivate(): bool
+    public function isActivated(): bool
     {
-        return $this->isActivate;
+        return $this->isActivated;
     }
 
     /**
-     * @param bool $isActivate
-     * @return Host
+     * @param bool $isActivated
+     * @return self
      */
-    public function setIsActivate(bool $isActivate): Host
+    public function setActivated(bool $isActivated): self
     {
-        $this->isActivate = $isActivate;
+        $this->isActivated = $isActivated;
         return $this;
     }
 
@@ -266,9 +306,9 @@ class Host
 
     /**
      * @param ExtendedHost|null $extendedHost
-     * @return Host
+     * @return self
      */
-    public function setExtendedHost(?ExtendedHost $extendedHost): Host
+    public function setExtendedHost(?ExtendedHost $extendedHost): self
     {
         $this->extendedHost = $extendedHost;
         return $this;
@@ -284,9 +324,9 @@ class Host
 
     /**
      * @param MonitoringServer|null $monitoringServer
-     * @return Host
+     * @return self
      */
-    public function setMonitoringServer(?MonitoringServer $monitoringServer): Host
+    public function setMonitoringServer(?MonitoringServer $monitoringServer): self
     {
         $this->monitoringServer = $monitoringServer;
         return $this;
@@ -302,39 +342,66 @@ class Host
 
     /**
      * @param int $type
+     * @return self
      */
-    public function setType(int $type): void
+    public function setType(int $type): self
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
      * @return Host[]
      */
-    public function getTemplate(): array
+    public function getTemplates(): array
     {
-        return $this->template;
-    }
-
-    /**
-     * @param Host[] $template
-     * @return Host
-     */
-    public function setTemplate(array $template): Host
-    {
-        $this->template = $template;
-        return $this;
+        return $this->templates;
     }
 
     /**
      * Add a host template.
      *
      * @param Host $hostTemplate
-     * @return Host
+     * @return self
+     * @throws \InvalidArgumentException
      */
-    public function addTemplate(Host $hostTemplate): Host
+    public function addTemplate(Host $hostTemplate): self
     {
-        $this->template[] = $hostTemplate;
+        if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+            throw new \InvalidArgumentException(_('This host is not a host template'));
+        }
+        $this->templates[] = $hostTemplate;
+        return $this;
+    }
+
+    /**
+     * Clear and add all host templates.
+     *
+     * @param Host[] $hostTemplates
+     * @return self
+     * @throws \InvalidArgumentException
+     */
+    public function setTemplates(array $hostTemplates): self
+    {
+        $this->clearTemplates();
+        foreach ($hostTemplates as $hostTemplate) {
+            if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+                throw new \InvalidArgumentException(_('This host is not a host template'));
+            }
+            $this->templates[] = $hostTemplate;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clear all templates.
+     *
+     * @return self
+     */
+    public function clearTemplates(): self
+    {
+        $this->templates = [];
         return $this;
     }
 
@@ -348,9 +415,9 @@ class Host
 
     /**
      * @param HostMacro[] $macros
-     * @return Host
+     * @return self
      */
-    public function setMacros(array $macros): Host
+    public function setMacros(array $macros): self
     {
         $this->macros = $macros;
         return $this;
@@ -360,11 +427,108 @@ class Host
      * Add a host macro.
      *
      * @param HostMacro $hostMacro Host macro to be added
-     * @return Host
+     * @return self
      */
-    public function addMacro(HostMacro $hostMacro): Host
+    public function addMacro(HostMacro $hostMacro): self
     {
         $this->macros[] = $hostMacro;
+        return $this;
+    }
+
+    /**
+     * @param HostCategory $category
+     * @return self
+     */
+    public function addCategory(HostCategory $category): self
+    {
+        $this->categories[] = $category;
+        return $this;
+    }
+
+    /**
+     * @return HostCategory[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearCategories(): self
+    {
+        $this->categories = [];
+        return $this;
+    }
+
+    /**
+     * @param HostGroup $hostGroup
+     * @return self
+     */
+    public function addGroup(HostGroup $hostGroup): self
+    {
+        $this->groups[] = $hostGroup;
+        return $this;
+    }
+
+    /**
+     * @return HostGroup[]
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearGroups(): self
+    {
+        $this->groups = [];
+        return $this;
+    }
+
+    /**
+     * @param HostSeverity|null $hostSeverity
+     * @return self
+     */
+    public function setSeverity(?HostSeverity $hostSeverity): self
+    {
+        $this->severity = $hostSeverity;
+        return $this;
+    }
+
+    /**
+     * @return HostSeverity|null
+     */
+    public function getSeverity(): ?HostSeverity
+    {
+        return $this->severity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationsEnabledOption(): int
+    {
+        return $this->notificationsEnabledOption;
+    }
+
+    /**
+     * @param int $notificationsEnabledOption
+     * @return self
+     */
+    public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
+    {
+        Assertion::inArray(
+            $notificationsEnabledOption,
+            self::AVAILABLE_NOTIFICATION_OPTIONS,
+            'Engine::notificationsEnabledOption',
+        );
+
+        $this->notificationsEnabledOption = $notificationsEnabledOption;
+
         return $this;
     }
 }

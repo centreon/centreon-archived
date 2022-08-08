@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,13 +36,12 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDBInstance.class.php";
 require_once _CENTREON_PATH_ . '/www/class/centreonWidget.class.php';
-require_once dirname(__FILE__) . "/webService.class.php";
-require_once dirname(__FILE__) . '/../interface/di.interface.php';
-require_once dirname(__FILE__) . '/../trait/diAndUtilis.trait.php';
+require_once __DIR__ . "/webService.class.php";
+require_once __DIR__ . '/../interface/di.interface.php';
+require_once __DIR__ . '/../trait/diAndUtilis.trait.php';
 
 class CentreonAdministrationWidget extends CentreonWebService implements CentreonWebServiceDiInterface
 {
-
     use CentreonWebServiceDiAndUtilisTrait;
 
     /**
@@ -83,8 +83,12 @@ class CentreonAdministrationWidget extends CentreonWebService implements Centreo
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('Error, limit must be numerical');
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
+                throw new \RestBadRequestException('Error, limit must be an integer greater than zero');
             }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = array((int) $limit, (int) $this->arguments['page_limit']);

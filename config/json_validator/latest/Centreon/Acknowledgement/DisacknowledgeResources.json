@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Disacknowledge resources",
+    "type": "object",
+    "required": ["disacknowledgement", "resources"],
+    "additionalProperties": false,
+    "properties": {
+        "disacknowledgement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "with_services": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "id"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "service",
+                            "host",
+                            "metaservice"
+                        ]
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

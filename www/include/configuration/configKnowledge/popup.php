@@ -68,16 +68,4 @@ $pearDB = $dependencyInjector['configuration_db'];
 $conf = getWikiConfig($pearDB);
 $WikiURL = $conf['kb_wiki_url'];
 
-$proc = new procedures(
-    $pearDB
-);
-
-if (isset($_GET["template"]) && $_GET["template"] != "") {
-    $proc->duplicate(
-        htmlentities($_GET["template"], ENT_QUOTES),
-        htmlentities($_GET["object"], ENT_QUOTES),
-        htmlentities($_GET["type"], ENT_QUOTES)
-    );
-}
-
 header("Location: $WikiURL/index.php?title=" . htmlentities($_GET["object"], ENT_QUOTES) . "&action=edit");

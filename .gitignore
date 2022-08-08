@@ -6,6 +6,8 @@ doc/API/centreon-api-v2.html
 
 #backend development and project files
 .idea/
+.vscode/
+.scannerwork/
 vendor/
 nbproject/
 GPL_LIB/SmartyCache/*
@@ -34,21 +36,22 @@ config/centreon.config.php
 
 #continuous integration and testing files
 *-dev.yml
+.phpunit.result.cache
 coverage-report/
 centreon-build/
 secret
 build/*
 build/coverage/*
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/public/bundles/
-/var/
-###< symfony/framework-bundle ###
-/bin/.phpunit/
-/doc/en/_build/
+#symfony/framework-bundle
+.env.local
+.env.local.php
+.env.*.local
+public/bundles/
+var/
+bin/.phpunit/
+doc/en/_build/
+symfony/
 
 src/Centreon*
 !src/Centreon/
@@ -62,4 +65,20 @@ www/modules/centreon-*
 www/widgets
 !www/widgets/require.php
 
-.vscode/
+.DS_store
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+.lighthouseci
+lighthouse/report
+lighthouse/build
+manifest.json
+
+!config/packages/serializer/Centreon/
+config/packages/serializer/Centreon*
+config/packages/dev/Centreon*
+config/packages/prod/Centreon*

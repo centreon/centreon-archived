@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -176,12 +177,17 @@ abstract class Centreon_Object_Relation
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
-                $sql .= " $filterType $key LIKE ? ";
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
+                if (is_array($rawvalue)) {
+                    $sql .= " $filterType $key IN (" . str_repeat('?,', count($rawvalue) - 1) . '?) ';
+                    $filterTab = array_merge($filterTab, $rawvalue);
+                } else {
+                    $sql .= " $filterType $key LIKE ? ";
+                    $value = trim($rawvalue);
+                    $value = str_replace("\\", "\\\\", $value);
+                    $value = str_replace("_", "\_", $value);
+                    $value = str_replace(" ", "\ ", $value);
+                    $filterTab[] = $value;
+                }
             }
         }
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
@@ -235,8 +241,10 @@ abstract class Centreon_Object_Relation
             throw new Exception("Not a relation table");
         }
         if (preg_match('/^get([a-zA-Z0-9_]+)From([a-zA-Z0-9_]+)/', $name, $matches)) {
-            if (($matches[1] != $this->firstKey && $matches[1] != $this->secondKey) ||
-                ($matches[2] != $this->firstKey && $matches[2] != $this->secondKey)) {
+            if (
+                ($matches[1] != $this->firstKey && $matches[1] != $this->secondKey)
+                || ($matches[2] != $this->firstKey && $matches[2] != $this->secondKey)
+            ) {
                 throw new Exception('Unknown field');
             }
             return $this->getTargetIdFromSourceId($matches[1], $matches[2], $args);

@@ -213,8 +213,8 @@ msgid "Time in seconds to wait before launching failover."
 msgstr "Tiempo en segundos para esperar antes de habilitar la conmutación por error."
 
 #: centreon-web/help.php:50 centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Tiempo de espera en segundos entre cada intento de conexión."
+msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
+msgstr "Tiempo de espera en segundos entre cada intento de conexión (valor predeterminado: 30s)."
 
 #: centreon-web/help.php:51 centreon-web/www/include/configuration/configCentreonBroker/help.php:39
 msgid "Trusted CA's certificate."
@@ -673,11 +673,11 @@ msgstr ""
 "Esta opción debe habilitarse en un entorno seguro dedicado a la autenticación SSO. \n"
 "El acceso directo a la interfaz web de Centreon para usuarios debe estar deshabilitado."
 
-msgid "Enable login with Keycloak."
-msgstr "Habilitar inicio de sesión con Keycloak"
+msgid "Enable login with OpenId Connect."
+msgstr "Habilitar inicio de sesión con OpenId Connect"
 
-msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
-msgstr "La autenticación puede basarse únicamente en Keycloak o puede funcionar tanto con Keycloak como con sistemas de autenticación locales."
+msgid "Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect and local authentication systems."
+msgstr "La autenticación puede basarse únicamente en OpenId Connect o puede funcionar tanto con OpenId Connect como con sistemas de autenticación locales."
 
 msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el caso de varios clientes."
@@ -685,20 +685,32 @@ msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el cas
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes cerrados. Use una coma como delimitador en el caso de varios clientes."
 
-msgid "Your Keycloak server url (with \"/auth\")."
-msgstr "Su URL del servidor de Keycloak (con \"/auth\")."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "Su url básico del servicio de OpenId Connect (por ejemplo http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your Keycloak redirect url (this server)."
-msgstr "Su URL de redirección de Keycloak (este servidor)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "Su url del servicio de OpenId Connect Authorization (por ejemplo /auth)."
 
-msgid "Your Keycloak Realm name."
-msgstr "Tu nombre de Dominio Keycloak."
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "Su url del servicio de OpenId Connect Token (por ejemplo /token)."
 
-msgid "Your Keycloak client ID."
-msgstr "Su identificación de cliente de Keycloak."
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "Su url del servicio de OpenId Connect Introspection Token (por ejemplo /token/introspect)."
 
-msgid "Your Keycloak client secret."
-msgstr "Su secreto de cliente de Keycloak"
+msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
+msgstr "Su url del servicio de OpenId Connect User Info (por ejemplo /userinfo)."
+
+msgid "Your OpenId Connect Scope (for example openid)."
+msgstr "El campo de aplicación 'scope' (por ejemplo openid)."
+
+msgid "Your OpenId Connect redirect url (this server)."
+msgstr "Su URL de redirección de OpenId Connect (este servidor)."
+
+msgid "Your OpenId Connect client ID."
+msgstr "Su identificación de cliente de OpenId Connect."
+
+msgid "Your OpenId Connect client secret."
+msgstr "Su secreto de cliente de OpenId Connect"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:80
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
@@ -1532,16 +1544,6 @@ msgstr ""
 "La opción `use_retained_program_state está deshabilitada. \n"
 "Para cambiar esta opción cuando la retención de estado está activa (y use_retained_program_state está activa), será necesario usar el comando externo apropiado o cambiarlo a través de la interfaz web. \n"
 "La opción está habilitada por defecto."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:174
-msgid "This is the rotation method that you would like Monitoring Engine to use for your log file."
-msgstr "El método de rotación que desea que el motor de administración use para sus archivos de registro."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:178
-msgid "This is the directory where Monitoring Engine should place log files that have been rotated. This option is ignored if you choose to not use the log rotation functionality."
-msgstr ""
-"Este es el directorio donde el motor de administración debe guardar los archivos de registro que se han girado. \n"
-"Esta opción se ignora si no ha habilitado la rotación de registros."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:183
 msgid "This option determines whether or not Monitoring Engine will check the command file for commands that should be executed. This option must be enabled if you plan on using Centreon to issue commands via the web interface."
@@ -2393,13 +2395,6 @@ msgstr ""
 "Esta opción determina el tamaño máximo (en bytes) del archivo de depuración. Si el archivo excede el tamaño que especificó, se le cambiará el nombre con una extensión .old. \n"
 "Si el archivo .old ya existe, se eliminará automáticamente. \n"
 "Esta opción le permite mantener un control sobre el espacio en disco que ocupa el motor de administración cuando está en modo de depuración."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:481
-msgid "This option allows dumping core in case a segmentation fault occurs. Warning: Make sure that server has sufficient disk space for these dumps (ulimit). This option is discarded when using Centreon Engine."
-msgstr ""
-"Esta opción permite la creación de un archivo de depuración si se produce un error de segmentación. \n"
-"Advertencia: asegúrese de que el servidor tenga suficiente espacio en disco para estos archivos (ulimit). \n"
-"Esta opción no se puede utilizar con el programador de Centreon Engine."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:482
 msgid "This option determines how much debugging information Monitoring Engine should write to the debug_file. By default the verbosity is set to level 1."
@@ -4310,3 +4305,24 @@ msgstr "Ejecuta el comando definido en la configuración del recopilador (Config
 
 #~ msgid "Additional Remote Server to which this server will be attached"
 #~ msgstr ""
+
+#  msgid "Create and edit pollers"
+#  msgstr ""
+
+#  msgid "Delete pollers"
+#  msgstr ""
+
+#  msgid "Deploy configuration"
+#  msgstr ""
+
+#  msgid "Poller Configuration Actions / Poller Management"
+#  msgstr ""
+
+#  msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
+#  msgstr ""
+
+#  msgid "Allows user to delete pollers."
+#  msgstr ""
+
+#  msgid "Allows user to deploy configuration."
+#  msgstr ""

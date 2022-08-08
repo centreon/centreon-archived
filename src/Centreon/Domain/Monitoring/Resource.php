@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\Icon;
-use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceSeverity;
-use DateTime;
 use CentreonDuration;
+use Centreon\Domain\Monitoring\Icon;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceGroup;
+use Centreon\Domain\Monitoring\ResourceLinks;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 /**
  * Class representing a record of a resource in the repository.
@@ -35,17 +37,24 @@ use CentreonDuration;
  */
 class Resource
 {
-    // Groups for serializing
+    // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
 
-    //Groups for validation
+    // Groups for validation
+    public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
+    public const VALIDATION_GROUP_ACK_SERVICE = ['ack_service'];
+    public const VALIDATION_GROUP_ACK_META = ['ack_meta'];
     public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
     public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
+    public const VALIDATION_GROUP_DOWNTIME_HOST = ['downtime_host'];
+    public const VALIDATION_GROUP_DOWNTIME_META = ['downtime_meta'];
+    public const VALIDATION_GROUP_DOWNTIME_SERVICE = ['downtime_service'];
 
     // Types
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
+    public const TYPE_META = 'metaservice';
 
     /**
      * @var int|null
@@ -63,9 +72,44 @@ class Resource
     private $name;
 
     /**
+     * @var string|null
+     */
+    private $alias;
+
+    /**
+     * @var string|null
+     */
+    private $fqdn;
+
+    /**
+     * @var int|null
+     */
+    private $hostId;
+
+    /**
+     * @var int|null
+     */
+    private $serviceId;
+
+    /**
      * @var \Centreon\Domain\Monitoring\Icon|null
      */
     private $icon;
+
+    /**
+     * @var string|null
+     */
+    protected $commandLine;
+
+    /**
+     * @var string
+     */
+    private $monitoringServerName;
+
+    /**
+     * @var string|null
+     */
+    private $timezone;
 
     /**
      * @var \Centreon\Domain\Monitoring\Resource|null
@@ -78,6 +122,21 @@ class Resource
     private $status;
 
     /**
+     * @var bool|null
+     */
+    private $flapping;
+
+    /**
+     * @var double|null
+     */
+    private $percentStateChange;
+
+    /**
+     * @var int|null
+     */
+    protected $criticality;
+
+    /**
      * @var bool
      */
     private $inDowntime = false;
@@ -88,44 +147,24 @@ class Resource
     private $acknowledged = false;
 
     /**
-     * @var string|null
+     * @var bool
      */
-    private $downtimeEndpoint;
+    private $activeChecks = true;
 
     /**
-     * @var string|null
+     * @var bool
      */
-    private $acknowledgementEndpoint;
+    private $passiveChecks = false;
 
     /**
-     * @var string|null
+     * @var ResourceLinks
      */
-    private $detailsEndpoint;
+    private $links;
 
     /**
-     * @var string|null
+     * @var int|null
      */
-    private $statusGraphEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $performanceGraphEndpoint;
-
-    /**
-     * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
-     */
-    private $severity;
-
-    /**
-     * @var int
-     */
-    private $impactedResourcesCount = 0;
-
-    /**
-     * @var string|null
-     */
-    private $actionUrl;
+    private $severityLevel;
 
     /**
      * @var string|null
@@ -138,6 +177,26 @@ class Resource
     private $lastStatusChange;
 
     /**
+     * @var \DateTime|null
+     */
+    private $lastTimeWithNoIssue;
+
+    /**
+     * @var \DateTime|null
+     */
+    private $lastNotification;
+
+    /**
+     * @var int|null
+     */
+    private $notificationNumber;
+
+    /**
+     * @var int
+     */
+    private $stateType;
+
+    /**
      * @var string|null
      */
     private $tries;
@@ -148,24 +207,72 @@ class Resource
     private $lastCheck;
 
     /**
+     * @var \DateTime|null
+     */
+    private $nextCheck;
+
+    /**
      * @var string|null
      */
     private $information;
 
     /**
-     * Get prepared list of groups for the context
-     *
-     * @return array
+     * @var string
      */
-    public static function contextGroupsForListing(): array
+    private $performanceData;
+
+    /**
+     * @var double|null
+     */
+    private $executionTime;
+
+    /**
+     * @var double|null
+     */
+    private $latency;
+
+    /**
+     * @var Downtime[]
+     */
+    private $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    private $acknowledgement;
+
+    /**
+     * Groups to which belongs the resource
+     *
+     * @var ResourceGroup[]
+     */
+    private $groups = [];
+
+    /**
+     * Calculation type of the Resource
+     *
+     * @var string|null
+     */
+    private $calculationType;
+
+    /**
+     * Indicates if notifications are enabled for the Resource
+     *
+     * @var bool
+     */
+    private $notificationEnabled = false;
+
+    /**
+     * @var bool
+     */
+    private $hasGraph = false;
+
+    /**
+     * Resource constructor.
+     */
+    public function __construct()
     {
-        return [
-            static::SERIALIZER_GROUP_MAIN,
-            static::SERIALIZER_GROUP_PARENT,
-            Icon::SERIALIZER_GROUP_MAIN,
-            ResourceStatus::SERIALIZER_GROUP_MAIN,
-            ResourceSeverity::SERIALIZER_GROUP_MAIN,
-        ];
+        $this->links = new ResourceLinks();
     }
 
     /**
@@ -173,7 +280,7 @@ class Resource
      */
     public function getShortType(): ?string
     {
-        return $this->type ? $this->type{0} : null;
+        return $this->type ? $this->type[0] : null;
     }
 
     /**
@@ -183,7 +290,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastStatusChange()) {
+        if ($this->getLastStatusChange() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
         }
 
@@ -197,11 +304,29 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastCheck()) {
+        if ($this->getLastCheck() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastCheck()->getTimestamp());
         }
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid(): string
+    {
+        $uuid = '';
+
+        if ($this->getShortType() !== null && $this->getId() !== null) {
+            $uuid = $this->getShortType() . $this->getId();
+        }
+
+        if ($this->getParent() !== null) {
+            $uuid = $this->getParent()->getUuid() . '-' . $uuid;
+        }
+
+        return $uuid;
     }
 
     /**
@@ -262,6 +387,81 @@ class Resource
     }
 
     /**
+     * @return string|null
+     */
+    public function getAlias(): ?string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string|null $alias
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setAlias(?string $alias): self
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFqdn(): ?string
+    {
+        return $this->fqdn;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int|null $hostId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setHostId(?int $hostId): self
+    {
+        $this->hostId = $hostId;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int|null $serviceId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setServiceId(?int $serviceId): self
+    {
+        $this->serviceId = $serviceId;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $fqdn
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setFqdn(?string $fqdn): self
+    {
+        $this->fqdn = $fqdn;
+
+        return $this;
+    }
+
+    /**
      * @return \Centreon\Domain\Monitoring\Icon|null
      */
     public function getIcon(): ?Icon
@@ -277,6 +477,70 @@ class Resource
     {
         $this->icon = $icon;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCommandLine(): ?string
+    {
+        return $this->commandLine;
+    }
+
+    /**
+     * @param string|null $commandLine
+     * @return self
+     */
+    public function setCommandLine(?string $commandLine): self
+    {
+        $this->commandLine = $commandLine;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMonitoringServerName(): string
+    {
+        return $this->monitoringServerName;
+    }
+
+   /**
+     * @param string $monitoringServerName
+     * @return self
+     */
+    public function setMonitoringServerName(string $monitoringServerName): self
+    {
+        $this->monitoringServerName = $monitoringServerName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSanitizedTimezone(): ?string
+    {
+        return (null !== $this->timezone) ?
+            preg_replace('/^:/', '', $this->timezone) :
+            $this->timezone;
+    }
+
+    /**
+     * @param string|null $timezone
+     * @return self
+     */
+    public function setTimezone(?string $timezone): self
+    {
+        $this->timezone = $timezone;
         return $this;
     }
 
@@ -319,6 +583,60 @@ class Resource
     }
 
     /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return self
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPercentStateChange(): ?float
+    {
+        return $this->percentStateChange;
+    }
+
+    /**
+     * @param float|null $percentStateChange
+     * @return self
+     */
+    public function setPercentStateChange(?float $percentStateChange): self
+    {
+        $this->percentStateChange = $percentStateChange;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return self
+     */
+    public function setCriticality(?int $criticality): self
+    {
+        $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getInDowntime(): bool
@@ -333,7 +651,6 @@ class Resource
     public function setInDowntime(bool $inDowntime): self
     {
         $this->inDowntime = $inDowntime;
-
         return $this;
     }
 
@@ -352,158 +669,78 @@ class Resource
     public function setAcknowledged(bool $acknowledged): self
     {
         $this->acknowledged = $acknowledged;
-
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return bool
      */
-    public function getDowntimeEndpoint(): ?string
+    public function getActiveChecks(): bool
     {
-        return $this->downtimeEndpoint;
+        return $this->activeChecks;
     }
 
     /**
-     * @param string $downtimeEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param bool $activeChecks
+     * @return self
      */
-    public function setDowntimeEndpoint(string $downtimeEndpoint): self
+    public function setActiveChecks(bool $activeChecks): self
     {
-        $this->downtimeEndpoint = $downtimeEndpoint;
-
+        $this->activeChecks = $activeChecks;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return bool
      */
-    public function getAcknowledgementEndpoint(): ?string
+    public function getPassiveChecks(): bool
     {
-        return $this->acknowledgementEndpoint;
+        return $this->passiveChecks;
     }
 
     /**
-     * @param string $acknowledgementEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param bool $passiveChecks
+     * @return self
      */
-    public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
+    public function setPassiveChecks(bool $passiveChecks): self
     {
-        $this->acknowledgementEndpoint = $acknowledgementEndpoint;
-
+        $this->passiveChecks = $passiveChecks;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return ResourceLinks
      */
-    public function getDetailsEndpoint(): ?string
+    public function getLinks(): ResourceLinks
     {
-        return $this->detailsEndpoint;
+        return $this->links;
     }
 
     /**
-     * @param string|null $detailsEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param ResourceLinks $links
+     * @return self
      */
-    public function setDetailsEndpoint(?string $detailsEndpoint): self
+    public function setLinks(ResourceLinks $links): self
     {
-        $this->detailsEndpoint = $detailsEndpoint ?: null;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatusGraphEndpoint(): ?string
-    {
-        return $this->statusGraphEndpoint;
-    }
-
-    /**
-     * @param string $statusGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setStatusGraphEndpoint(string $statusGraphEndpoint): self
-    {
-        $this->statusGraphEndpoint = $statusGraphEndpoint;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPerformanceGraphEndpoint(): ?string
-    {
-        return $this->performanceGraphEndpoint;
-    }
-
-    /**
-     * @param string $performanceGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setPerformanceGraphEndpoint(string $performanceGraphEndpoint): self
-    {
-        $this->performanceGraphEndpoint = $performanceGraphEndpoint;
-
-        return $this;
-    }
-
-    /**
-     * @return \Centreon\Domain\Monitoring\ResourceSeverity|null
-     */
-    public function getSeverity(): ?ResourceSeverity
-    {
-        return $this->severity;
-    }
-
-    /**
-     * @param \Centreon\Domain\Monitoring\ResourceSeverity|null $severity
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setSeverity(?ResourceSeverity $severity): self
-    {
-        $this->severity = $severity;
-
+        $this->links = $links;
         return $this;
     }
 
     /**
      * @return int|null
      */
-    public function getImpactedResourcesCount(): ?int
+    public function getSeverityLevel(): ?int
     {
-        return $this->impactedResourcesCount;
+        return $this->severityLevel;
     }
 
     /**
-     * @param int|null $impactedResourcesCount
+     * @param int|null $severityLevel
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setImpactedResourcesCount(?int $impactedResourcesCount): self
+    public function setSeverityLevel(?int $severityLevel): self
     {
-        $this->impactedResourcesCount = $impactedResourcesCount ?: 0;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getActionUrl(): ?string
-    {
-        return $this->actionUrl;
-    }
-
-    /**
-     * @param string|null $actionUrl
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setActionUrl(?string $actionUrl): self
-    {
-        $this->actionUrl = $actionUrl ?: null;
+        $this->severityLevel = $severityLevel;
 
         return $this;
     }
@@ -530,7 +767,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastStatusChange(): ?DateTime
+    public function getLastStatusChange(): ?\DateTime
     {
         return $this->lastStatusChange;
     }
@@ -539,10 +776,81 @@ class Resource
      * @param \DateTime|null $lastStatusChange
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastStatusChange(?DateTime $lastStatusChange): self
+    public function setLastStatusChange(?\DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
 
+        return $this;
+    }
+
+   /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeWithNoIssue(): ?\DateTime
+    {
+        return $this->lastTimeWithNoIssue;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeWithNoIssue
+     * @return self
+     */
+    public function setLastTimeWithNoIssue(?\DateTime $lastTimeWithNoIssue): self
+    {
+        $this->lastTimeWithNoIssue = $lastTimeWithNoIssue;
+        return $this;
+    }
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastNotification(): ?\DateTime
+    {
+        return $this->lastNotification;
+    }
+
+    /**
+     * @param \DateTime|null $lastNotification
+     * @return self
+     */
+    public function setLastNotification(?\DateTime $lastNotification): self
+    {
+        $this->lastNotification = $lastNotification;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNotificationNumber(): ?int
+    {
+        return $this->notificationNumber;
+    }
+
+    /**
+     * @param int|null $notificationNumber
+     * @return self
+     */
+    public function setNotificationNumber(?int $notificationNumber): self
+    {
+        $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStateType(): int
+    {
+        return $this->stateType;
+    }
+
+    /**
+     * @param integer $stateType
+     * @return self
+     */
+    public function setStateType(int $stateType): self
+    {
+        $this->stateType = $stateType;
         return $this;
     }
 
@@ -568,7 +876,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastCheck(): ?DateTime
+    public function getLastCheck(): ?\DateTime
     {
         return $this->lastCheck;
     }
@@ -577,9 +885,28 @@ class Resource
      * @param \DateTime|null $lastCheck
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastCheck(?DateTime $lastCheck): self
+    public function setLastCheck(?\DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getNextCheck(): ?\DateTime
+    {
+        return $this->nextCheck;
+    }
+
+    /**
+     * @param \DateTime|null $nextCheck
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setNextCheck(?\DateTime $nextCheck): self
+    {
+        $this->nextCheck = $nextCheck;
 
         return $this;
     }
@@ -598,8 +925,183 @@ class Resource
      */
     public function setInformation(?string $information): self
     {
-        $this->information = trim($information);
+        $this->information = $information !== null ? trim($information) : null;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPerformanceData(): string
+    {
+        return $this->performanceData;
+    }
+
+    /**
+     * @param string $performanceData
+     * @return self
+     */
+    public function setPerformanceData(string $performanceData): self
+    {
+        $this->performanceData = $performanceData;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getExecutionTime(): ?float
+    {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param float|null $executionTime
+     * @return self
+     */
+    public function setExecutionTime(?float $executionTime): self
+    {
+        $this->executionTime = $executionTime;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLatency(): ?float
+    {
+        return $this->latency;
+    }
+
+    /**
+     * @param float|null $latency
+     * @return self
+     */
+    public function setLatency(?float $latency): self
+    {
+        $this->latency = $latency;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return self
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return self
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+
+    /**
+     * Get groups to which belongs the resource.
+     *
+     * @return ResourceGroup[]
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
+    /**
+     * Set groups to which belongs the resource
+     *
+     * @param ResourceGroup[] $groups
+     * @throws \InvalidArgumentException
+     * @return self
+     */
+    public function setGroups(array $groups): self
+    {
+        foreach ($groups as $group) {
+            if (!($group instanceof ResourceGroup)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a ResourceGroup type'));
+            }
+        }
+        $this->groups = $groups;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $calculationType
+     * @return self
+     */
+    public function setCalculationType(?string $calculationType): self
+    {
+        $this->calculationType = $calculationType;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCalculationType(): ?string
+    {
+        return $this->calculationType;
+    }
+
+    /*
+     * @return boolean
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->notificationEnabled;
+    }
+
+    /**
+     * @param boolean $notificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $notificationEnabled): self
+    {
+        $this->notificationEnabled = $notificationEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $hasGraph
+     * @return self
+     */
+    public function setHasGraph(bool $hasGraph): self
+    {
+        $this->hasGraph = $hasGraph;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasGraph(): bool
+    {
+        return $this->hasGraph;
     }
 }

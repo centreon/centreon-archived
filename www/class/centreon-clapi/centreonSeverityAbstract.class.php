@@ -62,7 +62,7 @@ abstract class CentreonSeverityAbstract extends CentreonObject
                 throw new CentreonClapiException('Incorrect severity level parameters');
             }
             $level = (int)$params[1];
-            $iconId = CentreonUtils::getImageId($params[2]);
+            $iconId = CentreonUtils::getImageId($params[2], $this->db);
             if (is_null($iconId)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
             }

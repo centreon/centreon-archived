@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\Model;
-use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 interface ResourceServiceInterface
 {
@@ -103,7 +103,7 @@ interface ResourceServiceInterface
      * Find all resources.
      *
      * @param ResourceFilter $filter
-     * @return \Centreon\Domain\Monitoring\Resource[]
+     * @return ResourceEntity[]
      * @throws \Exception
      */
     public function findResources(ResourceFilter $filter): array;
@@ -111,26 +111,18 @@ interface ResourceServiceInterface
     /**
      * Get list of resources with graph data.
      *
-     * @param Resource[] $resources
-     * @return int[]
+     * @param ResourceEntity[] $resources
+     * @return ResourceEntity[]
      */
-    public function getListOfResourcesWithGraphData(array $resources): array;
+    public function extractResourcesWithGraphData(array $resources): array;
 
     /**
-     * Create a new object with details but with data from the parent
+     * Replace macros set in the external links by their actual values
      *
-     * @param Host $host
-     * @return Model\ResourceDetailsHost
+     * @param ResourceEntity $resource
+     * @return void
      */
-    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost;
-
-    /**
-     * Create a new object with details but with data from the parent
-     *
-     * @param Service $service
-     * @return Model\ResourceDetailsService
-     */
-    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService;
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
 
     /**
      * Used to filter requests according to a contact.

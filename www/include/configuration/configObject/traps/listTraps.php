@@ -63,15 +63,25 @@ $searchTraps = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$searchStatus = filter_var(
-    $_POST['status'] ?? $_GET['status'] ?? null,
-    FILTER_VALIDATE_INT
-);
+$searchStatus = null;
+if (!empty($_POST['status']) || !empty($_GET['status'])) {
+    $searchStatus = filter_var(
+        $_POST['status'] ?? $_GET['status'],
+        FILTER_VALIDATE_INT
+    );
+}
 
-$searchVendor = filter_var(
-    $_POST['vendor'] ?? $_GET['vendor'] ?? null,
-    FILTER_VALIDATE_INT
-);
+$searchVendor = null;
+if (!empty($_POST['vendor']) || !empty($_GET['vendor'])) {
+    $searchVendor = filter_var(
+        $_POST['vendor'] ?? $_GET['vendor'],
+        FILTER_VALIDATE_INT
+    );
+}
+
+if ($searchStatus === false || $searchVendor === false) {
+    throw new \InvalidArgumentException('Bad Parameters');
+}
 
 if (isset($_POST['Search'])) {
     //saving filters values

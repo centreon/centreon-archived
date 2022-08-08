@@ -1,33 +1,33 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Copyright 2005-2020 Centreon
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
+#
+# You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
 # General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
+#
+# As a special exception, the copyright holders of this program give Centreon
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of Centreon choice, provided that
+# Centreon also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 #
 ####################################################################################
 
@@ -79,13 +79,13 @@ sub getStateEventDurations {
             my @tab = (0, 0, 0, 0, 0, 0, 0, 0);
             # index 0: UP, index 1: DOWN, index 2: UNREACHABLE, index 3: DOWNTIME, index 4: UNDETERMINED
             # index 5: UP alerts, index 6: Down alerts, , index 7: Unreachable alerts
-            $hosts{$row->{host_id}} = \@tab;            
+            $hosts{$row->{host_id}} = \@tab;
         }
-        
+
         my $stats = $hosts{$row->{host_id}};
         if ($row->{in_downtime} == 0) {
             $stats->[$row->{state}] += $row->{end_time} - $row->{start_time};
-            
+
             # We count UP alert like a recovery (don't put it otherwise)
             if ($row->{state} != 0 || ($row->{state} == 0 && $row->{start_time} > $start)) {
                 $stats->[$row->{state} + 5] += 1;
@@ -106,26 +106,26 @@ sub getStateEventDurations {
 # Get last events for each host
 # Parameters:
 # $start: max date possible for each event
-# $serviceNames: references a hash table containing a list of host
+# $hostIds: references a hash table containing a list of host ids
 sub getLastStates {
     my $self = shift;
     my $centstorage = $self->{centstorage};
-    my $hostNames = shift;
-    
+    my $hostIds = shift;
+
     my %currentStates;
-    
+
     my $query = "SELECT `host_id`, `state`, `hoststateevent_id`, `end_time`, `in_downtime`, `in_ack`".
                 " FROM `hoststateevents`".
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        if (defined($hostNames->{$row->{host_id}})) {
+        if (defined($hostIds->{$row->{host_id}})) {
             my @tab = ($row->{end_time}, $row->{state}, $row->{hoststateevent_id}, $row->{in_downtime}, $row->{in_ack});
-            $currentStates{$hostNames->{$row->{host_id}}} = \@tab;
+            $currentStates{$row->{host_id}} = \@tab;
         }
     }
     $sth->finish();
-    
+
     return (\%currentStates);
 }
 
@@ -139,7 +139,7 @@ sub updateEventEndTime {
     my $centreonDownTime = $self->{centreonDownTime};
     my $centreonAck = $self->{centreonAck};
 
-    my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
+    my ($hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
     my $return = {};
 
     my ($events, $updateTime);
@@ -149,7 +149,7 @@ sub updateEventEndTime {
     if (defined($events)) {
         $totalEvents = scalar(@$events);
     }
-    my ($ack, $sticky) = $centreonAck->getHostAckTime($start, $updateTime, $id);
+    my ($ack, $sticky) = $centreonAck->getHostAckTime($start, $updateTime, $hostId);
     if (defined($ack) && $sticky == 1) {
         $inAck = 1;
     }
@@ -163,9 +163,9 @@ sub updateEventEndTime {
                 " WHERE `hoststateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
-        return $self->insertEventTable($id, $hostId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }
@@ -181,14 +181,14 @@ sub insertEvent {
     my $self = shift;
     my $centreonDownTime = $self->{centreonDownTime};
 
-    my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime, $inAck) = @_;
+    my ($hostId, $state, $start, $end, $lastUpdate, $downtimes, $inAck) = @_;
     my $return = { in_ack => $inAck };
 
-    my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
+    my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downtimes, $state);
     if ($state ne "") {
-        return $self->insertEventTable($id, $hostId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     return $return;
 }
 
@@ -197,11 +197,11 @@ sub insertEventTable {
     my $centstorage = $self->{centstorage};
     my $centreonAck = $self->{centreonAck};
 
-    my ($id, $hostId, $state, $lastUpdate, $events, $inAck) =  @_;
+    my ($hostId, $state, $lastUpdate, $events, $inAck) =  @_;
     my $return = {};
 
     my $query_start = "INSERT INTO `hoststateevents`".
-        " (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)".
+        " (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)" .
         " VALUES (";
     my $count = 0;
     my $totalEvents = 0;
@@ -212,7 +212,7 @@ sub insertEventTable {
     }
     for($count = 0; $count < scalar(@$events) - 1; $count++) {
         my $tab = $events->[$count];
-        my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+        my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $hostId);
         if ($inAck == 1) {
             $sticky = 1;
             $ack = $tab->[0];
@@ -226,7 +226,7 @@ sub insertEventTable {
     if (scalar(@$events)) {
         my $tab = $events->[$count];
         if (defined($hostId) && defined($state)) {
-            my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+            my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $hostId);
             if ($inAck == 1) {
                 $sticky = 1;
                 $ack = $tab->[0];
@@ -234,11 +234,12 @@ sub insertEventTable {
             if (defined($ack) && $sticky == 1) {
                 $inAck = 1;
             }
-            my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].", ".$ack.", '$sticky')";        
+            my $query_end = $hostId . ", " . $state . ", " . $tab->[0] . ", " . $tab->[1] . ", " .
+                $lastUpdate . ", " . $tab->[2] . ", " . $ack . ", '$sticky')";
             $centstorage->query($query_start.$query_end);
         }
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }

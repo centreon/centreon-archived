@@ -33,8 +33,9 @@
  *
  */
 
-require_once("centreonACL.class.php");
-require_once("centreonLog.class.php");
+require_once __DIR__ . '/centreonACL.class.php';
+require_once __DIR__ . '/centreonLog.class.php';
+require_once __DIR__ . '/centreonAuth.class.php';
 
 class CentreonUser
 {
@@ -48,7 +49,6 @@ class CentreonUser
     public $version;
     public $admin;
     public $limit;
-    public $js_effects;
     public $num;
     public $gmt;
     public $is_admin;
@@ -59,7 +59,9 @@ class CentreonUser
     public $userCrypted;
     protected $token;
     public $default_page;
+    private $showDeprecatedPages;
     private $currentPage;
+    public $theme;
 
     protected $restApi;
     protected $restApiRt;
@@ -88,14 +90,15 @@ class CentreonUser
         $this->email = html_entity_decode($user["contact_email"], ENT_QUOTES, "UTF-8");
         $this->lang = $user["contact_lang"];
         $this->charset = "UTF-8";
-        $this->passwd = $user["contact_passwd"];
+        $this->passwd = $user["contact_passwd"] ?? null;
         $this->token = $user['contact_autologin_key'];
         $this->admin = $user["contact_admin"];
         $this->version = 3;
-        $this->default_page = $user["default_page"];
+        $this->default_page = $user["default_page"] ?? CentreonAuth::DEFAULT_PAGE;
         $this->gmt = $user["contact_location"];
-        $this->js_effects = $user["contact_js_effects"];
+        $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
+        $this->theme = $user["contact_theme"] ?? null;
         /*
          * Initiate ACL
          */
@@ -143,7 +146,7 @@ class CentreonUser
     public function getAllTopology($pearDB)
     {
         $DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");
-        while ($topo = $DBRESULT->fetchRow()) {
+        while ($topo = $DBRESULT->fetch()) {
             if (isset($topo["topology_page"])) {
                 $lcaTopo[$topo["topology_page"]] = 1;
             }
@@ -159,20 +162,24 @@ class CentreonUser
      * @param string $sid
      * @param \CentreonDB $pearDB
      */
-    public function checkUserStatus($sid = null, $pearDB)
+    public function checkUserStatus($sid, $pearDB)
     {
         $query1 = "SELECT contact_admin, contact_id FROM session, contact " .
-            "WHERE session.session_id = '" . $sid .
-            "' AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
-        $dbResult = $pearDB->query($query1);
-        $admin = $dbResult->fetchRow();
-        $dbResult->closeCursor();
+            "WHERE session.session_id = :session_id" .
+            " AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
+        $statement = $pearDB->prepare($query1);
+        $statement->bindValue(':session_id', $sid);
+        $statement->execute();
+        $admin = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         $query2 = "SELECT count(*) FROM `acl_group_contacts_relations` " .
-            "WHERE contact_contact_id = '" . $admin["contact_id"] . "'";
-        $dbResult = $pearDB->query($query2);
-        $admin2 = $dbResult->fetchRow();
-        $dbResult->closeCursor();
+            "WHERE contact_contact_id = :contact_id";
+        $statement = $pearDB->prepare($query2);
+        $statement->bindValue(':contact_id', (int)$admin["contact_id"], \PDO::PARAM_INT);
+        $statement->execute();
+        $admin2 = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         if ($admin["contact_admin"]) {
             unset($admin);
@@ -193,7 +200,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_name()
     {
@@ -202,7 +209,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_email()
     {
@@ -220,7 +227,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_version()
     {
@@ -229,7 +236,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_lang()
     {
@@ -237,7 +244,9 @@ class CentreonUser
 
         // Get locale from browser
         if ($lang === 'browser') {
-            $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            }
 
             // check that the variable value end with .UTF-8 or add it
             $lang = (strpos($lang, '.UTF-8') !== false) ?: $lang . '.UTF-8';
@@ -275,21 +284,20 @@ class CentreonUser
 
     /**
      *
-     * @global type $pearDB
-     * @return type
+     * @return bool
      */
-    public function get_js_effects()
+    public function doesShowDeprecatedPages()
     {
-        global $pearDB;
+        return $this->showDeprecatedPages;
+    }
 
-        $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
-        if (($jsEffectsEnabled = $DBRESULT->fetchRow()) && isset($jsEffectsEnabled['contact_js_effects'])) {
-            $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
-        } else {
-            $this->js_effects = 0;
-        }
-
-        return $this->js_effects;
+    /**
+     *
+     * @param bool $showDeprecatedPages
+     */
+    public function setShowDeprecatedPages(bool $showDeprecatedPages)
+    {
+        $this->showDeprecatedPages = $showDeprecatedPages;
     }
 
     // Set
@@ -350,15 +358,6 @@ class CentreonUser
 
     /**
      *
-     * @param type $js_effects
-     */
-    public function set_js_effects($js_effects)
-    {
-        $this->js_effects = $js_effects;
-    }
-
-    /**
-     *
      * @return type
      */
     public function getMyGMT()
@@ -405,7 +404,7 @@ class CentreonUser
         if (!isset($userNames)) {
             $userNames = array();
             $res = $db->query("SELECT contact_name, contact_id FROM contact");
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $userNames[$row['contact_id']] = $row['contact_name'];
             }
         }
@@ -439,7 +438,7 @@ class CentreonUser
             . $queryParameters;
 
         $res = $db->query($query);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $values[$row['cp_key']] = $row['cp_value'];
         }
 
@@ -502,6 +501,27 @@ class CentreonUser
     public function setCurrentPage($currentPage)
     {
         $this->currentPage = $currentPage;
+    }
+
+    /**
+     * Get theme
+     *
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+    /**
+     * Set theme
+     *
+     * @param string $theme
+     * @return void
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,38 +40,20 @@ require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wikiApi.class.php"
 
 class procedures
 {
-    private $procList;
+    private $procList = [];
     public $DB;
     public $centreon_DB;
-    public $db_prefix;
-    public $hostList;
-    public $hosttplList;
-    public $serviceList;
-    public $serviceTplList;
-    public $hostIconeList;
-    public $diff;
     public $api;
 
     /**
      * Constructor
      *
-     * @param int $retry
-     * @param string $db_name
-     * @param string $db_user
-     * @param string $db_host
-     * @param string $db_password
      * @param CentreonDB $pearDB
-     * @param string $db_prefix
      */
     public function __construct($pearDB)
     {
         $this->api = new WikiApi();
         $this->centreon_DB = $pearDB;
-        $this->hostList = array();
-        $this->hosttplList = array();
-        $this->serviceList = array();
-        $this->serviceTplList = array();
-        $this->setProcedures();
     }
 
     /**
@@ -78,87 +61,17 @@ class procedures
      *
      * @return void
      */
-    private function setProcedures()
+    public function fetchProcedures()
     {
-         $pages = $this->api->getAllPages();
+        if (!empty($this->procList)) {
+            return null;
+        }
+
+        $pages = $this->api->getAllPages();
         //replace space
         foreach ($pages as $page) {
             $page = str_replace(' ', '_', $page);
             $this->procList[$page] = '';
-        }
-    }
-
-    /**
-     * Get Procedures
-     *
-     * @return array
-     */
-    public function getProcedures()
-    {
-        return $this->procList;
-    }
-
-    /**
-     * Get Icon List
-     *
-     * @return array
-     */
-    public function getIconeList()
-    {
-        return $this->hostIconeList;
-    }
-
-    /**
-     *
-     */
-    public function getDiff($selection, $type = null)
-    {
-        $wikiContent = $this->getProcedures();
-        $diff = array();
-        $prefix = "";
-        switch ($type) {
-            case 0:
-                $prefix = "Host_:_";
-                break;
-            case 1:
-                $prefix = "Service_:_";
-                break;
-            case 2:
-                $prefix = "Host-Template_:_";
-                break;
-            case 3:
-                $prefix = "Service-Template_:_";
-                break;
-        }
-
-        foreach ($selection as $key => $value) {
-            if (!isset($wikiContent[$prefix . trim($key)])) {
-                $diff[$key] = 0;
-            } else {
-                $diff[$key] = 1;
-            }
-        }
-
-        return $diff;
-    }
-
-    /**
-     * Get Host Id
-     *
-     * @param string $host_name
-     * @param CentreonDB $pearDB
-     * @return int
-     */
-    public function getMyHostID($host_name = null)
-    {
-        $dbResult = $this->centreon_DB->query(
-            "SELECT host_id FROM host " .
-            "WHERE host_name = '" . $host_name . "' " .
-            "LIMIT 1 "
-        );
-        $row = $dbResult->fetch();
-        if ($row["host_id"]) {
-            return $row["host_id"];
         }
     }
 
@@ -211,12 +124,12 @@ class procedures
      * Get host template models
      *
      * @param int $host_id
-     * @return void
+     * @return array
      */
     public function getMyHostMultipleTemplateModels($host_id = null)
     {
         if (!$host_id) {
-            return;
+            return [];
         }
 
         $tplArr = array();
@@ -237,86 +150,7 @@ class procedures
         }
         unset($row);
         unset($hTpl);
-        return ($tplArr);
-    }
-
-    /**
-     * Set host information
-     *
-     * @return void
-     */
-    public function setHostInformations()
-    {
-        /*
-         * Get Host Informations
-         */
-        $dbResult = $this->centreon_DB->query(
-            "SELECT host_name, host_id, host_register, ehi_icon_image " .
-            "FROM host, extended_host_information ehi " .
-            "WHERE host.host_id = ehi.host_host_id " .
-            "ORDER BY host_name"
-        );
-        while ($data = $dbResult->fetch()) {
-            if ($data["host_register"] == 1) {
-                $this->hostList[$data["host_name"]] = $data["host_id"];
-            } else {
-                $this->hostTplList[$data["host_name"]] = $data["host_id"];
-            }
-            $this->hostIconeList["Host_:_" . $data["host_name"]]
-                = "./img/media/" . $this->getImageFilePath($data["ehi_icon_image"]);
-        }
-        $dbResult->closeCursor();
-        unset($data);
-    }
-
-    /**
-     * Get image file path
-     *
-     * @param int $image_id
-     * @return string
-     */
-    public function getImageFilePath($image_id)
-    {
-        if (isset($image_id) && $image_id) {
-            $dbResult2 = $this->centreon_DB->query(
-                "SELECT img_path, dir_alias " .
-                "FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
-                "WHERE vi.img_id = " . $image_id . " " .
-                "AND vidr.img_img_id = vi.img_id " .
-                "AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1"
-            );
-            $row2 = $dbResult2->fetch();
-            if (isset($row2["dir_alias"])
-                && isset($row2["img_path"])
-                && $row2["dir_alias"]
-                && $row2["img_path"]
-            ) {
-                return $row2["dir_alias"] . "/" . $row2["img_path"];
-            }
-            $dbResult2->closeCursor();
-            unset($row2);
-        } else {
-            return "../icones/16x16/server_network.gif";
-        }
-    }
-
-    /**
-     * Set service information
-     *
-     * @return void
-     */
-    public function setServiceInformations()
-    {
-        $dbResult = $this->centreon_DB->query(
-            "SELECT service_description, service_id, service_register " .
-            "FROM service WHERE service_register = '0' " .
-            "ORDER BY service_description"
-        );
-        while ($data = $dbResult->fetch()) {
-            $this->serviceTplList["Service_:_" . $data["service_description"]] = $data["service_id"];
-        }
-        $dbResult->closeCursor();
-        unset($data);
+        return $tplArr;
     }
 
     /**

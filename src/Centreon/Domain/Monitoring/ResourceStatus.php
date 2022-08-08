@@ -38,6 +38,15 @@ class ResourceStatus
     public const SEVERITY_PENDING = 4;
     public const SEVERITY_OK = 5;
 
+    public const STATUS_NAME_PENDING = 'PENDING';
+    public const STATUS_NAME_UP = 'UP';
+    public const STATUS_NAME_DOWN = 'DOWN';
+    public const STATUS_NAME_UNREACHABLE = 'UNREACHABLE';
+    public const STATUS_NAME_OK = 'OK';
+    public const STATUS_NAME_WARNING = 'WARNING';
+    public const STATUS_NAME_CRITICAL = 'CRITICAL';
+    public const STATUS_NAME_UNKNOWN = 'UNKNOWN';
+
     /**
      * @var int|null
      */
@@ -77,7 +86,7 @@ class ResourceStatus
      */
     public function getName(): ?string
     {
-        return $this->name ? _($this->name) : $this->name;
+        return $this->name;
     }
 
     /**

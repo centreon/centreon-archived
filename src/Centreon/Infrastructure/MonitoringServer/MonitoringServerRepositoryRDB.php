@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements MonitoringServerRepositoryInterface
 {
-
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -69,7 +68,9 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
      */
     public function findLocalServer(): ?MonitoringServer
     {
-        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\'');
+        $request = $this->translateDbName(
+            'SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\' AND ns_activate = \'1\''
+        );
         $statement = $this->db->query($request);
         if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             /**
@@ -90,7 +91,7 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServers(): array
+    public function findServersWithRequestParameters(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
@@ -100,20 +101,44 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'is_activate' => 'ns_activate'
         ]);
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->findServers($searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServersWithoutRequestParameters(): array
+    {
+        return $this->findServers(null, null, null);
+    }
+
+    /**
+     * Find servers.
+     *
+     * @param string|null $searchRequest Search request
+     * @param string|null $sortRequest Sort request
+     * @param string|null $paginationRequest Pagination request
+     * @return MonitoringServer[]
+     * @throws \Exception
+     */
+    private function findServers(?string $searchRequest, ?string $sortRequest, ?string $paginationRequest): array
+    {
         $request = $this->translateDbName(
             'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.nagios_server'
         );
 
-        // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
-
-        // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id DESC';
-
-        // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
@@ -149,10 +174,62 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE id = :server_id');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            /**
+             * @var MonitoringServer $server
+             */
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
+                $record
+            );
+            if ((int) $record['last_restart'] === 0) {
+                $server->setLastRestart(null);
+            }
+            return $server;
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServerByName(string $monitoringServerName): ?MonitoringServer
+    {
+        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE name = :server_name');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':server_name', $monitoringServerName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            /**
+             * @var MonitoringServer $server
+             */
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
+                $record
+            );
+            if ((int) $record['last_restart'] === 0) {
+                $server->setLastRestart(null);
+            }
+            return $server;
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
     {
         $request = $this->translateDbName(
-            'SELECT resource.* FROM `:db`.cfg_resource resource 
+            'SELECT resource.* FROM `:db`.cfg_resource resource
             INNER JOIN `:db`.cfg_resource_instance_relations rel
                 ON rel.resource_id = resource.resource_id
             WHERE rel.instance_id = :monitoring_server_id
@@ -194,5 +271,15 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue(':server_name', $monitoringServer->getName(), \PDO::PARAM_STR);
             $statement->execute();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteServer(int $monitoringServerId): void
+    {
+        $statement = $this->db->prepare($this->translateDbName("DELETE FROM `:db`.nagios_server WHERE id = :id"));
+        $statement->bindValue(':id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 }

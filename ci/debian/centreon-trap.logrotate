@@ -1,0 +1,10 @@
+/var/log/centreon/centreontrapd.log {
+    copytruncate
+    weekly
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    missingok
+    su root root
+}

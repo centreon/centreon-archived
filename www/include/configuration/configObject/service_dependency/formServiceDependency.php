@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,8 +41,10 @@ $parentServices = array();
 $childServices = array();
 
 $initialValues = array();
-if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
+if (($o == MODIFY_DEPENDENCY || $o == WATCH_DEPENDENCY) && $dep_id) {
+    $DBRESULT = $pearDB->prepare('SELECT * FROM dependency WHERE dep_id = :dep_id LIMIT 1');
+    $DBRESULT->bindValue(':dep_id', $dep_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     // Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -87,11 +90,11 @@ $attrServices = array(
 
 # Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == ADD_DEPENDENCY) {
     $form->addElement('header', 'title', _("Add a Dependency"));
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_DEPENDENCY) {
     $form->addElement('header', 'title', _("Modify a Dependency"));
-} elseif ($o == "w") {
+} elseif ($o == WATCH_DEPENDENCY) {
     $form->addElement('header', 'title', _("View a Dependency"));
 }
 
@@ -112,42 +115,42 @@ $tab[] = $form->createElement(
     'o',
     '&nbsp;',
     _("Ok"),
-    array('id' => 'sOk', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nOk', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
-    array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nWarning', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
-    array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nUnknown', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
-    array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nCritical', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
-    array('id' => 'sPending', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nPending', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
     _("None"),
-    array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nNone', 'onClick' => 'applyNotificationRules(this);')
 );
 
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
@@ -157,42 +160,42 @@ $tab[] = $form->createElement(
     'o',
     '&nbsp;',
     _("Ok"),
-    array('id' => 'sOk2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eOk', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
-    array('id' => 'sWarning2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eWarning', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
-    array('id' => 'sUnknown2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eUnknown', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
-    array('id' => 'sCritical2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eCritical', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
-    array('id' => 'sPending2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'ePending', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
     _("None"),
-    array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eNone', 'onClick' => 'applyExecutionRules(this);')
 );
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
@@ -230,15 +233,19 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
+$form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
 $form->addRule('dep_name', _("Compulsory Name"), 'required');
+$form->addRule('dep_name', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_description', _("Required Field"), 'required');
+$form->addRule('dep_description', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_hSvPar', _("Required Field"), 'required');
 $form->registerRule('cycleH', 'callback', 'testCycleH');
 $form->addRule('dep_hSvChi', _("Circular Definition"), 'cycleH');
 $form->registerRule('exist', 'callback', 'testServiceDependencyExistence');
 $form->addRule('dep_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
-
+$form->addRule('execution_failure_criteria', _("Required Field"), 'required');
+$form->addRule('notification_failure_criteria', _("Required Field"), 'required');
 
 /*
  * Smarty template Init
@@ -265,7 +272,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 // Just watch a Dependency information
-if ($o == "w") {
+if ($o == WATCH_DEPENDENCY) {
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -276,11 +283,11 @@ if ($o == "w") {
     }
     $form->setDefaults($dep);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_DEPENDENCY) {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
-} elseif ($o == "a") {
+} elseif ($o == ADD_DEPENDENCY) {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults(array('inherits_parent', '0'));
@@ -303,8 +310,8 @@ if ($valid) {
     require_once("listServiceDependency.php");
 } else {
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -315,110 +322,28 @@ if ($valid) {
 }
 ?>
 <script type="text/javascript">
-    function uncheckAllS(object) {
-        if (object.id == "sNone" && object.checked) {
-            document.getElementById('sOk').checked = false;
-            document.getElementById('sWarning').checked = false;
-            document.getElementById('sUnknown').checked = false;
-            document.getElementById('sCritical').checked = false;
-            document.getElementById('sPending').checked = false;
+    function applyNotificationRules(object) {
+        if (object.id == "nNone" && object.checked) {
+            document.getElementById('nOk').checked = false;
+            document.getElementById('nWarning').checked = false;
+            document.getElementById('nUnknown').checked = false;
+            document.getElementById('nCritical').checked = false;
+            document.getElementById('nPending').checked = false;
         } else {
-            document.getElementById('sNone').checked = false;
+            document.getElementById('nNone').checked = false;
         }
     }
 
-    function uncheckAllS2(object) {
-        if (object.id == "sNone2" && object.checked) {
-            document.getElementById('sOk2').checked = false;
-            document.getElementById('sWarning2').checked = false;
-            document.getElementById('sUnknown2').checked = false;
-            document.getElementById('sCritical2').checked = false;
-            document.getElementById('sPending2').checked = false;
+    function applyExecutionRules(object) {
+        if (object.id == "eNone" && object.checked) {
+            document.getElementById('eOk').checked = false;
+            document.getElementById('eWarning').checked = false;
+            document.getElementById('eUnknown').checked = false;
+            document.getElementById('eCritical').checked = false;
+            document.getElementById('ePending').checked = false;
         } else {
-            document.getElementById('sNone2').checked = false;
+            document.getElementById('eNone').checked = false;
         }
     }
 
-    function hostFilterSelect(type, elem) {
-        var arg = 'host_id=' + elem.value;
-
-        if (window.XMLHttpRequest) {
-            var xhr = new XMLHttpRequest();
-        } else if (window.ActiveXObject) {
-            r
-            try {
-                var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-        } else {
-            var xhr = false;
-        }
-
-        var mselect1;
-        var mselect2;
-        if (type == "parent") {
-            mselect1 = "dep_hSvPar-f";
-            mselect2 = "__dep_hSvPar";
-        } else {
-            mselect1 = "dep_hSvChi-f";
-            mselect2 = "__dep_hSvChi";
-        }
-
-        xhr.open("POST", "./include/configuration/configObject/service_dependency/getServiceXml.php", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(arg);
-
-        xhr.onreadystatechange = function () {
-            if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML) {
-                var response = xhr.responseXML.documentElement;
-                var _services = response.getElementsByTagName("services");
-                var _selbox;
-
-                if (document.getElementById(mselect1)) {
-                    _selbox = document.getElementById(mselect1);
-                    if (type == "parent") {
-                        _selected = document.getElementById("dep_hSvPar-t");
-                    } else {
-                        _selected = document.getElementById("dep_hSvChi-t");
-                    }
-                } else if (document.getElementById(mselect2)) {
-                    _selbox = document.getElementById(mselect2);
-                    if (type == "parent") {
-                        _selected = document.getElementById("_dep_hSvPar");
-                    } else {
-                        _selected = document.getElementById("_dep_hSvChi");
-                    }
-                }
-
-                while (_selbox.options.length > 0) {
-                    _selbox.options[0] = null;
-                }
-
-                if (_services.length == 0) {
-                    _selbox.setAttribute('disabled', 'disabled');
-                } else {
-                    _selbox.removeAttribute('disabled');
-                }
-
-                for (var i = 0; i < _services.length; i++) {
-                    var _svc = _services[i];
-                    var _id = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-                    var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-                    var validFlag = true;
-
-                    for (var j = 0; j < _selected.length; j++) {
-                        if (_id == _selected.options[j].value) {
-                            validFlag = false;
-                        }
-                    }
-
-                    if (validFlag == true) {
-                        new_elem = new Option(_description, _id);
-                        _selbox.options[_selbox.length] = new_elem;
-                    }
-                }
-            }
-        }
-    }
 </script>

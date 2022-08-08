@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -21,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact\Interfaces;
 
+use Centreon\Domain\Menu\Model\Page;
+
 interface ContactInterface
 {
     /**
@@ -41,6 +44,21 @@ interface ContactInterface
      * @return bool
      */
     public function isActive(): bool;
+
+    /**
+     * Indicates whether the contact is allowed to reach web application.
+     *
+     * @return bool
+     */
+    public function isAllowedToReachWeb(): bool;
+
+    /**
+     * Allow user or not to reach web application.
+     *
+     * @param bool $isAllowed
+     * @return static
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): static;
 
     /**
      * Contact name.
@@ -73,9 +91,9 @@ interface ContactInterface
     /**
      * Contact template id.
      *
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int;
+    public function getTemplateId(): ?int;
 
     /**
      * Contact token.
@@ -87,9 +105,41 @@ interface ContactInterface
     /**
      * Contact encoded password.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string;
+    public function getEncodedPassword(): ?string;
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     *     public function getRoles()
+     *     {
+     *         return array('ROLE_USER');
+     *     }
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return string[] The user roles
+     */
+    public function getRoles(): array;
+
+    /**
+     * Indicates if this user has a role.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasRole(string $role): bool;
+
+    /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool;
 
     /**
      * Contact timezone.
@@ -104,4 +154,52 @@ interface ContactInterface
      * @return string|null
      */
     public function getLocale(): ?string;
+
+    /**
+     * Contact default page.
+     *
+     * @return Page|null
+     */
+    public function getDefaultPage(): ?Page;
+
+    /**
+     * @param Page|null $defaultPage
+     * @return static
+     */
+    public function setDefaultPage(?Page $defaultPage): static;
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return bool
+     */
+    public function isUsingDeprecatedPages(): bool;
+
+    /**
+     * @param bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return static
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages): static;
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiConfiguration(): bool;
+
+    /**
+     * @param bool $hasAccessToApiConfiguration
+     * @return static
+     */
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static;
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiRealTime(): bool;
+
+    /**
+     * @param bool $hasAccessToApiRealTime
+     * @return static
+     */
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
 }

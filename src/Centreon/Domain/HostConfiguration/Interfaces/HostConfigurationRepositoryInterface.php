@@ -22,42 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\Repository\RepositoryException;
-
-interface HostConfigurationRepositoryInterface
+/**
+ * This interface gathers all the writing and reading operations on the repository
+ *
+ * @package Centreon\Domain\HostConfiguration\Interfaces
+ */
+interface HostConfigurationRepositoryInterface extends
+    HostConfigurationReadRepositoryInterface,
+    HostConfigurationWriteRepositoryInterface
 {
-    /**
-     * Add a host
-     *
-     * @param Host $host Host to add
-     * @return int Returns the host id
-     * @throws RepositoryException
-     * @throws \Exception
-     */
-    public function addHost(Host $host): int;
-
-    /**
-     * Find a host.
-     *
-     * @param int $hostId Host Id to be found
-     * @return Host|null Returns a host otherwise null
-     * @throws \Exception
-     */
-    public function findHost(int $hostId): ?Host;
-
-    /**
-     * Indicates if a hostname is already in use.
-     *
-     * @param string $hostName Hostname to be found
-     * @return bool True if the hostname is already in use
-     */
-    public function hasHostWithSameName(string $hostName): bool;
-
-    /**
-     * Returns the number of hosts.
-     *
-     * @return int Number of hosts
-     */
-    public function getNumberOfHosts(): int;
 }

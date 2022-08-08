@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class CfgResourceRepository extends ServiceEntityRepository
 {
-
     /**
      * Export cfg resources
      *

@@ -105,8 +105,8 @@ try {
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?'
-        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id'
-        . (isset($connector_id) ? "&id={$connector_id}" : ''),
+        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id='
+        . (isset($connector_id) ? $connector_id : ''),
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?'
         . 'object=centreon_configuration_command&action=list',
         'linkedObject' => 'centreonCommand'
@@ -171,19 +171,21 @@ try {
         $cntObj = new CentreonConnector($pearDB);
         $tab = $form->getSubmitValues();
         $connectorValues = array();
-        $connectorValues['name'] = $tab['connector_name'];
-        $connectorValues['description'] = $tab['connector_description'];
-        $connectorValues['command_line'] = $tab['command_line'];
-        $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
+        $connectorValues['name'] = filter_var($tab['connector_name'], FILTER_SANITIZE_STRING);
+        $connectorValues['description'] = filter_var($tab['connector_description'], FILTER_SANITIZE_STRING);
+        $connectorValues['enabled'] = $tab['connector_status']['connector_status'] === '0' ? 0 : 1;
         $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
-        $connectorId = $tab['connector_id'];
-        
-        if ($form->getSubmitValue("submitA")) {
-            $connectorId = $cntObj->create($connectorValues, true);
-        } elseif ($form->getSubmitValue("submitC")) {
-            $cntObj->update((int)$connectorId, $connectorValues);
+        $connectorValues['command_line'] = $tab['command_line'];
+        $connectorId = (int)$tab['connector_id'];
+
+        if (!empty($connectorValues['name'])) {
+            if ($form->getSubmitValue("submitA")) {
+                $connectorId = $cntObj->create($connectorValues, true);
+            } elseif ($form->getSubmitValue("submitC")) {
+                $cntObj->update((int)$connectorId, $connectorValues);
+            }
+            $valid = true;
         }
-        $valid = true;
     }
 
     if ($valid) {

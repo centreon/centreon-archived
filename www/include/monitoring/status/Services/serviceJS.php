@@ -293,6 +293,7 @@ if (isset($_GET["acknowledge"])) {
         var keyz;
 
         _cmd = cmd;
+        var resources = [];
         _getVar = "";
 
         if (cmd != '70' && cmd != '72' && cmd != '74' && cmd != '75') {
@@ -304,13 +305,13 @@ if (isset($_GET["acknowledge"])) {
                     document.getElementById(decodeURIComponent(keyz))
                 ) {
                     if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                        _getVar += '&select[' + keyz + ']=1';
+                        resources.push(keyz);
                     }
                 }
             }
-
+            _getVar = JSON.stringify(resources)
             var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o +
-                '&p=' + _p + '&cmd=' + cmd + _getVar;
+                '&p=' + _p + '&cmd=' + cmd;
 
             var popin = jQuery('<div>');
             popin.centreonPopin({open: true, url: url});
@@ -367,13 +368,21 @@ if (isset($_GET["acknowledge"])) {
             var author = jQuery('#author').val();
 
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment +
-                "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify +
-                "&ackhostservice=" + ackhostservice + "&force_check=" + force_check +
-                "&author=" + author + _getVar,
+                "POST",
+                "./include/monitoring/external_cmd/cmdPopup.php",
                 true
             );
+            var data = new FormData();
+            data.append('cmd', _cmd);
+            data.append('comment', comment);
+            data.append('sticky', sticky);
+            data.append('persistent', persistent);
+            data.append('notify', notify);
+            data.append('ackhostservice', ackhostservice);
+            data.append('force_check', force_check);
+            data.append('author', author);
+            data.append('resources', _getVar);
+
         } else if (_cmd == '74' || _cmd == '75') {
 
             var downtimehostservice = 0;
@@ -403,16 +412,24 @@ if (isset($_GET["acknowledge"])) {
             }
 
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration +
-                "&duration_scale=" + duration_scale + "&comment=" + comment + "&start=" + start + "&end=" + end +
-                "&host_or_centreon_time=" + host_or_centreon_time + "&fixed=" + fixed +
-                "&downtimehostservice=" + downtimehostservice + "&author=" + author + _getVar,
+                "POST",
+                "./include/monitoring/external_cmd/cmdPopup.php",
                 true
             );
+            var data = new FormData();
+            data.append('cmd', _cmd);
+            data.append('duration', duration);
+            data.append('duration_scale', duration_scale);
+            data.append('comment', comment);
+            data.append('start', start);
+            data.append('end', end);
+            data.append('host_or_centreon_time', host_or_centreon_time);
+            data.append('fixed', fixed);
+            data.append('downtimehostservice', downtimehostservice);
+            data.append('author', author);
+            data.append('resources', _getVar);
         }
-
-        xhr_cmd.send(null);
+        xhr_cmd.send(data);
 
         window.currentPopin.centreonPopin("close");
         unsetCheckboxes();

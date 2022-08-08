@@ -1,18 +1,33 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerBroker;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerModule;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerRrd;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputBroker;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputRrd;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputPerfdata;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputRrd;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputRrdMaster;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputSqlMaster;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputForwardMaster;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputModuleMaster;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputUnifiedSql;
 
 /**
  * Get broker configuration template
@@ -26,7 +41,7 @@ class CfgCentreonBrokerInfo
      * @param string $serverName the poller name
      * @param string|null $dbUser the database user
      * @param string|null $dbPassword the database password
-     * @return array the configuration template
+     * @return array<string, array<string, array<int, array<string>>>> the configuration template
      */
     public static function getConfiguration(string $serverName, $dbUser, $dbPassword): array
     {
@@ -34,29 +49,19 @@ class CfgCentreonBrokerInfo
 
         $data = [
             'central-broker' => [
-                'logger'          => LoggerBroker::getConfiguration(),
                 'broker'          => InputBroker::getConfiguration(),
                 'output_rrd'      => OutputRrdMaster::getConfiguration(),
                 'output_forward'  => OutputForwardMaster::getConfiguration(),
-                'output_prefdata' => OutputPerfdata::getConfiguration($dbUser, $dbPassword),
-                'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword),
+                'output_unified_sql' => OutputUnifiedSql::getConfiguration($dbUser, $dbPassword),
             ],
             'central-module' => [
-                'logger' => LoggerModule::getConfiguration(),
                 'output' => OutputModuleMaster::getConfiguration(),
             ],
             'central-rrd' => [
-                'logger' => LoggerRrd::getConfiguration(),
                 'input'  => InputRrd::getConfiguration(),
                 'output' => OutputRrd::getConfiguration(),
             ]
         ];
-
-        // update logs paths
-        $data['central-broker']['logger'][0]['config_value'] = "/var/log/centreon-broker/broker-{$serverName}.log";
-        $data['central-module']['logger'][0]['config_value'] = "/var/log/centreon-broker/module-{$serverName}.log";
-        $data['central-rrd']['logger'][0]['config_value'] = "/var/log/centreon-broker/rrd-{$serverName}.log";
-
         return $data;
     }
 }

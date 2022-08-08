@@ -169,15 +169,16 @@ class CentreonExternalCommand
         $this->actions["service_notifications"][0] = "ENABLE_SVC_NOTIFICATIONS";
         $this->actions["service_notifications"][1] = "DISABLE_SVC_NOTIFICATIONS";
 
-        $this->actions["service_acknowledgement"] = "";
-        $this->actions["service_disacknowledgement"] = "";
+        $this->actions["service_acknowledgement"][0] = "ACKNOWLEDGE_SVC_PROBLEM";
+        $this->actions["service_disacknowledgement"][0] = "REMOVE_SVC_ACKNOWLEDGEMENT";
 
         $this->actions["service_schedule_check"][0] = "SCHEDULE_SVC_CHECK";
         $this->actions["service_schedule_check"][1] = "SCHEDULE_FORCED_SVC_CHECK";
+        $this->actions["service_schedule_forced_check"][0] = "SCHEDULE_FORCED_SVC_CHECK";
 
-        $this->actions["service_schedule_downtime"] = "";
+        $this->actions["service_schedule_downtime"][0] = "SCHEDULE_SVC_DOWNTIME";
 
-        $this->actions["service_comment"] = "";
+        $this->actions["service_comment"][0] = "ADD_SVC_COMMENT";
 
         $this->actions["service_event_handler"][0] = "ENABLE_SVC_EVENT_HANDLER";
         $this->actions["service_event_handler"][1] = "DISABLE_SVC_EVENT_HANDLER";
@@ -188,7 +189,7 @@ class CentreonExternalCommand
         $this->actions["service_passive_checks"][0] = "ENABLE_PASSIVE_SVC_CHECKS";
         $this->actions["service_passive_checks"][1] = "DISABLE_PASSIVE_SVC_CHECKS";
 
-        $this->actions["service_submit_result"] = "";
+        $this->actions["service_submit_result"][0] = "PROCESS_SERVICE_CHECK_RESULT";
 
         $this->actions["service_obsess"][0] = "START_OBSESSING_OVER_SVC";
         $this->actions["service_obsess"][1] = "STOP_OBSESSING_OVER_SVC";
@@ -203,15 +204,16 @@ class CentreonExternalCommand
         $this->actions["host_notifications"][0] = "ENABLE_HOST_NOTIFICATIONS";
         $this->actions["host_notifications"][1] = "DISABLE_HOST_NOTIFICATIONS";
 
-        $this->actions["host_acknowledgement"] = "";
-        $this->actions["host_disacknowledgement"] = "";
+        $this->actions["host_acknowledgement"][0] = "ACKNOWLEDGE_HOST_PROBLEM";
+        $this->actions["host_disacknowledgement"][0] = "REMOVE_HOST_ACKNOWLEDGEMENT";
 
         $this->actions["host_schedule_check"][0] = "SCHEDULE_HOST_SVC_CHECKS";
         $this->actions["host_schedule_check"][1] = "SCHEDULE_FORCED_HOST_SVC_CHECKS";
+        $this->actions["host_schedule_forced_check"][0] = "SCHEDULE_FORCED_HOST_SVC_CHECKS";
 
-        $this->actions["host_schedule_downtime"] = "";
+        $this->actions["host_schedule_downtime"][0] = "SCHEDULE_HOST_DOWNTIME";
 
-        $this->actions["host_comment"] = "";
+        $this->actions["host_comment"][0] = "ADD_HOST_COMMENT";
 
         $this->actions["host_event_handler"][0] = "ENABLE_HOST_EVENT_HANDLER";
         $this->actions["host_event_handler"][1] = "DISABLE_HOST_EVENT_HANDLER";

@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class HostGroupRepository extends ServiceEntityRepository
 {
-
     /**
      * Export host's groups
      *

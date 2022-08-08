@@ -81,14 +81,15 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      *
      * Get info for BAM module
      *
-     * @return array
+     * @return array<string,bool>
      */
     public function postGetBamModuleInfo(): array
     {
         $moduleInfoObj = $this->getDi()[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION];
         $modules = $moduleInfoObj->getList();
 
-        if (array_key_exists('centreon-bam-server', $modules) &&
+        if (
+            array_key_exists('centreon-bam-server', $modules) &&
             $modules['centreon-bam-server']['is_installed']
         ) {
             return ['enabled' => true];
@@ -106,7 +107,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      *
      * @return boolean If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal = false)
+    public function authorize($action, $user, $isInternal = false): bool
     {
         return true;
     }

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,28 +46,16 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
-if (isset($_POST['searchHost'])) {
-    if (!isset($_POST['searchHasNoProcedure']) && isset($_GET['searchHasNoProcedure'])) {
-        unset($_REQUEST['searchHasNoProcedure']);
-    }
-    if (!isset($_POST['searchTemplatesWithNoProcedure']) && isset($_GET['searchTemplatesWithNoProcedure'])) {
-        unset($_REQUEST['searchTemplatesWithNoProcedure']);
-    }
-}
-
+$orderBy = "host_name";
 $order = "ASC";
-$orderby = "host_name";
-if (isset($_REQUEST['order'])
-    && $_REQUEST['order']
-    && isset($_REQUEST['orderby'])
-    && $_REQUEST['orderby']
-) {
-    $order = $_REQUEST['order'];
-    $orderby = $_REQUEST['orderby'];
+
+// Use whitelist as we can't bind ORDER BY sort parameter
+if (!empty($_POST['order']) && in_array($_POST['order'], ["ASC", "DESC"])) {
+    $order = $_POST['order'];
 }
 
 require_once "./include/common/autoNumLimit.php";
@@ -83,57 +72,89 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
+    $postHost = !empty($_POST['searchHost'])
+        ? filter_input(INPUT_POST, 'searchHost', FILTER_SANITIZE_STRING)
+        : '';
+    $postHostgroup = !empty($_POST['searchHostgroup'])
+        ? filter_input(INPUT_POST, 'searchHostgroup', FILTER_VALIDATE_INT)
+        : false;
+    $postPoller = !empty($_POST['searchPoller'])
+        ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
+        : false;
+    $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+
     $conf = getWikiConfig($pearDB);
     $WikiURL = $conf['kb_wiki_url'];
 
     $currentPage = "hosts";
     require_once $modules_path . 'search.php';
 
-
     // Init Status Template
-    $status = array(
+    $status = [
         0 => "<font color='orange'> " . _("No wiki page defined") . " </font>",
         1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
-    );
-    $line = array(0 => "list_one", 1 => "list_two");
-    $proc = new procedures(
-        $pearDB
-    );
-    $proc->setHostInformations();
-    $proc->setServiceInformations();
+    ];
+    $line = [0 => "list_one", 1 => "list_two"];
+    $proc = new procedures($pearDB);
+    $proc->fetchProcedures();
 
-    $query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image " .
-        "FROM extended_host_information ehi, host ";
-    if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
-        $query .= " JOIN ns_host_relation nhr ON nhr.host_host_id = host.host_id ";
+    $queryValues = [];
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
+        FROM extended_host_information ehi, host ";
+
+    if ($postPoller !== false) {
+        $query .= "JOIN ns_host_relation nhr ON nhr.host_host_id = host.host_id ";
     }
-    if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
-        $query .= " JOIN hostgroup_relation hgr ON hgr.host_host_id = host.host_id ";
+    if ($postHostgroup !== false) {
+        $query .= "JOIN hostgroup_relation hgr ON hgr.host_host_id = host.host_id ";
     }
-    $query .= " WHERE host.host_id = ehi.host_host_id ";
-    if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
-        $query .= " AND nhr.nagios_server_id = " . $pearDB->escape($_REQUEST['searchPoller']);
+    $query .= "WHERE host.host_id = ehi.host_host_id ";
+    if ($postPoller !== false) {
+        $query .= "AND nhr.nagios_server_id = :postPoller ";
+        $queryValues[':postPoller'] = [
+            PDO::PARAM_INT => $postPoller
+        ];
     }
-    $query .= " AND host.host_register = '1' ";
-    if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
-        $query .= " AND hgr.hostgroup_hg_id = " . $pearDB->escape($_REQUEST['searchHostgroup']);
+    $query .= "AND host.host_register = '1' ";
+    if ($postHostgroup !== false) {
+        $query .= "AND hgr.hostgroup_hg_id = :postHostgroup ";
+        $queryValues[':postHostgroup'] = [
+            PDO::PARAM_INT => $postHostgroup
+        ];
     }
-    if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
-        $query .= " AND host_name LIKE '%" . $pearDB->escape($_REQUEST['searchHost']) . "%'";
+    if (!empty($postHost)) {
+        $query .= "AND host_name LIKE :postHost ";
+        $queryValues[':postHost'] = [
+            PDO::PARAM_STR => "%" . $postHost . "%"
+        ];
     }
-    $query .= " ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
-    $dbResult = $pearDB->query($query);
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT :offset, :limit";
+
+    $statement = $pearDB->prepare($query);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $statement->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
+    $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
+    $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $statement->execute();
 
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-    $selection = array();
-    while ($data = $dbResult->fetch()) {
+    $selection = [];
+    while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
         if ($data["host_register"] == 1) {
             $selection[$data["host_name"]] = $data["host_id"];
         }
-        $proc->hostIconeList[$data["host_name"]] = "./img/media/" . $proc->getImageFilePath($data["ehi_icon_image"]);
     }
-    $dbResult->closeCursor();
+    $statement->closeCursor();
     unset($data);
 
     /*
@@ -141,8 +162,8 @@ try {
      */
     $tpl->assign("host_name", _("Hosts"));
 
-    $diff = array();
-    $templateHostArray = array();
+    $diff = [];
+    $templateHostArray = [];
 
     foreach ($selection as $key => $value) {
         $tplStr = "";
@@ -152,14 +173,13 @@ try {
         } else {
             $diff[$key] = 0;
         }
-
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+        if (!empty($templatesHasNoProcedure)) {
             if ($diff[$key] == 1 || $proc->hostHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
                 $rows--;
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($searchHasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -197,7 +217,6 @@ try {
     $tpl->assign("content", $diff);
     $tpl->assign("status", $status);
     $tpl->assign("selection", 0);
-    $tpl->assign("icone", $proc->getIconeList());
 
     /*
      * Send template in order to open
@@ -213,7 +232,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderby', $orderBy);
     $tpl->assign('defaultOrderby', 'host_name');
 
     // Apply a template definition

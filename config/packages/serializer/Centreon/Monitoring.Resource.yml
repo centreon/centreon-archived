@@ -1,5 +1,12 @@
 Centreon\Domain\Monitoring\Resource:
     virtual_properties:
+        getUuid:
+            name: getUuid
+            serialized_name: uuid
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         getDuration:
             name: getDuration
             serialized_name: duration
@@ -18,23 +25,33 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+                - 'resource_parent'
     properties:
         id:
             type: int
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
         type:
             type: string
             groups:
                 - 'resource_main'
+                - 'resource_parent'
         name:
             type: string
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
+        alias:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        fqdn:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
@@ -49,7 +66,10 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
+        flapping:
+            type: bool
+            groups:
+                - 'resource_main'
         inDowntime:
             type: bool
             groups:
@@ -58,37 +78,21 @@ Centreon\Domain\Monitoring\Resource:
             type: bool
             groups:
                 - 'resource_main'
-        downtimeEndpoint:
-            type: string
+        activeChecks:
+            type: bool
             groups:
                 - 'resource_main'
-        detailsEndpoint:
-            type: string
+        passiveChecks:
+            type: bool
+            groups:
+                - 'resource_main'
+        links:
+            type:  Centreon\Domain\Monitoring\ResourceLinks
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        acknowledgementEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        statusGraphEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        performanceGraphEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        severity:
-            type: Centreon\Domain\Monitoring\ResourceSeverity
-            groups:
-                - 'resource_main'
-        impactedResourcesCount:
+        severityLevel:
             type: int
-            groups:
-                - 'resource_main'
-        actionUrl:
-            type: string
             groups:
                 - 'resource_main'
         chartUrl:
@@ -105,5 +109,17 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
         information:
             type: string
+            groups:
+                - 'resource_main'
+        performanceData:
+            type: string
+            groups:
+                - 'resource_main'
+        monitoringServerName:
+            type: string
+            groups:
+                - 'resource_main'
+        notificationEnabled:
+            type: bool
             groups:
                 - 'resource_main'

@@ -6,250 +6,206 @@ Centreon\Domain\Monitoring\Host:
                 - 'host_min'
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         pollerId:
             type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         name:
             type: string
             groups:
                 - 'host_min'
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         acknowledged:
             type: bool
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         activeChecks:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         addressIp:
             type: string
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         alias:
             type: string
             groups:
                 - 'host_min'
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         checkAttempt:
             type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         checkCommand:
             type: string
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         checkInterval:
             type: double
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         checkPeriod:
             type: string
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         checkType:
             type: int
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         checked:
             type: bool
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         displayName:
             type: string
             groups:
                 - 'host_min'
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         executionTime:
             type: double
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         iconImage:
             type: string
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         iconImageAlt:
             type: string
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastCheck:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastHardState:
             type: int
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         lastHardStateChange:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastNotification:
             type: DateTime
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         lastStateChange:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastTimeDown:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastTimeUnreachable:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastTimeUp:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         lastUpdate:
             type: DateTime
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         latency:
             type: double
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         maxCheckAttempts:
             type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         nextCheck:
             type: DateTime
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         nextHostNotification:
             type: int
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notificationInterval:
             type: double
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notificationNumber:
             type: int
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notificationPeriod:
             type: string
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notify:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notifyOnDown:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notifyOnDowntime:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notifyOnFlapping:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notifyOnRecovery:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         notifyOnUnreachable:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         output:
             type: string
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         passiveChecks:
             type: bool
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         services:
             type: array<Centreon\Domain\Monitoring\Service>
             groups:
                 - 'host_full'
                 - 'host_with_services'
-                - 'resource_details_host'
         state:
             type: int
             groups:
                 - 'host_min'
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         stateType:
             type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         timezone:
             type: string
             access_type: public_method
@@ -259,36 +215,33 @@ Centreon\Domain\Monitoring\Host:
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         scheduledDowntimeDepth:
             type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         criticality:
-            type: string
+            type: int
             groups:
                 - 'host_main'
                 - 'host_full'
-                - 'resource_details_host'
         downtimes:
             type: array<Centreon\Domain\Downtime\Downtime>
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         flapping:
             type: bool
             groups:
                 - 'host_full'
-                - 'resource_details_host'
         percentStateChange:
             type: double
             groups:
                 - 'host_full'
-                - 'resource_details_host'
+        pollerName:
+            type: string
+            groups:
+                - 'host_full'

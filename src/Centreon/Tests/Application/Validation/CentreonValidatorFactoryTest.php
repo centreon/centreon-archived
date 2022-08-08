@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -49,9 +50,9 @@ class CentreonValidatorFactoryTest extends TestCase
 {
     public function testGetInstance()
     {
-        $factory = new CentreonValidatorFactory(new Container);
+        $factory = new CentreonValidatorFactory(new Container());
 
-        $this->assertInstanceOf(NotBlankValidator::class, $factory->getInstance(new NotBlank));
+        $this->assertInstanceOf(NotBlankValidator::class, $factory->getInstance(new NotBlank()));
     }
 
     public function testGetInstanceWithService()
@@ -63,15 +64,12 @@ class CentreonValidatorFactoryTest extends TestCase
             ->willReturn($service);
 
         $factory = new CentreonValidatorFactory(new Container([
-            $service => new \stdClass,
+            $service => new \stdClass(),
         ]));
 
         $this->assertInstanceOf(\stdClass::class, $factory->getInstance($constraint));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetInstanceWithoutValidator()
     {
         $service = 'service.constraint';
@@ -80,7 +78,9 @@ class CentreonValidatorFactoryTest extends TestCase
         $constraint->method('validatedBy')
             ->willReturn($service);
 
-        $factory = new CentreonValidatorFactory(new Container);
+        $factory = new CentreonValidatorFactory(new Container());
+
+        $this->expectException(\RuntimeException::class);
 
         $factory->getInstance($constraint);
     }

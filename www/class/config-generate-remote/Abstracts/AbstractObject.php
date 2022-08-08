@@ -123,6 +123,7 @@ abstract class AbstractObject
         if (!($this->fp = @fopen($fullFile, 'a+'))) {
             throw new Exception("Cannot open file (writing permission) '" . $fullFile . "'");
         }
+        chmod($fullFile, 0660);
 
         if ($this->type == 'infile') {
             Manifest::getInstance($this->dependencyInjector)->addFile(

@@ -1,8 +1,16 @@
-import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
 
-import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  Alert,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { Dialog, TextField, Loader } from '@centreon/ui';
+import { Dialog, TextField } from '@centreon/ui';
 
 import {
   labelCancel,
@@ -11,20 +19,29 @@ import {
   labelNotify,
   labelNotifyHelpCaption,
   labelAcknowledgeServices,
+  labelSticky,
+  labelPersistent,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
+import useAclQuery from '../aclQuery';
 
-interface Props {
-  resources: Array<Resource>;
+import { AcknowledgeFormValues } from '.';
+
+interface Props extends Pick<FormikHandlers, 'handleChange'> {
   canConfirm: boolean;
-  onCancel;
-  onConfirm;
-  errors?;
-  values;
-  handleChange;
+  errors?: FormikErrors<AcknowledgeFormValues>;
+  onCancel: () => void;
+  onConfirm: () => Promise<unknown>;
+  resources: Array<Resource>;
   submitting: boolean;
-  loading: boolean;
+  values: FormikValues;
 }
+
+const useStyles = makeStyles((theme) => ({
+  notify: {
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 const DialogAcknowledge = ({
   resources,
@@ -35,74 +52,114 @@ const DialogAcknowledge = ({
   values,
   submitting,
   handleChange,
-  loading,
 }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  const { t } = useTranslation();
+
+  const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =
+    useAclQuery();
+
+  const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
+
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
 
   return (
     <Dialog
-      labelCancel={labelCancel}
-      labelConfirm={labelAcknowledge}
-      labelTitle={labelAcknowledge}
-      open={open}
-      onClose={onCancel}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
       confirmDisabled={!canConfirm}
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelAcknowledge)}
+      labelTitle={t(labelAcknowledge)}
+      open={open}
       submitting={submitting}
+      onCancel={onCancel}
+      onClose={onCancel}
+      onConfirm={onConfirm}
     >
-      {loading && <Loader fullContent />}
-      <Grid direction="column" container spacing={1}>
+      <Grid container direction="column">
+        {deniedTypeAlert && (
+          <Grid item>
+            <Alert severity="warning">{deniedTypeAlert}</Alert>
+          </Grid>
+        )}
         <Grid item>
           <TextField
+            fullWidth
+            multiline
+            error={errors?.comment}
+            label={t(labelComment)}
+            rows={3}
             value={values.comment}
             onChange={handleChange('comment')}
-            multiline
-            label={labelComment}
-            fullWidth
-            rows={3}
-            error={errors?.comment !== undefined}
-            helperText={errors?.comment}
           />
         </Grid>
-        <Grid container item direction="column">
-          <Grid item container xs alignItems="center">
-            <Grid item xs={1}>
-              <Checkbox
-                inputProps={{ 'aria-label': labelNotify }}
-                color="primary"
-                value={values.notify}
-                onChange={handleChange('notify')}
-              />
-            </Grid>
-            <Grid item xs>
-              <Typography>{labelNotify}</Typography>
-            </Grid>
+        <Grid container item className={classes.notify}>
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.notify}
+                  color="primary"
+                  inputProps={{ 'aria-label': t(labelNotify) }}
+                  size="small"
+                  onChange={handleChange('notify')}
+                />
+              }
+              label={t(labelNotify) as string}
+            />
           </Grid>
-          <Grid item container xs>
-            <Grid item xs={1} />
-            <Grid item xs>
-              <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
-            </Grid>
+          <Grid container item rowSpacing={1}>
+            <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
           </Grid>
         </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.isSticky}
+                color="primary"
+                inputProps={{ 'aria-label': t(labelSticky) }}
+                size="small"
+                onChange={handleChange('isSticky')}
+              />
+            }
+            label={t(labelSticky) as string}
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.persistent}
+                color="primary"
+                inputProps={{ 'aria-label': t(labelPersistent) }}
+                size="small"
+                onChange={handleChange('persistent')}
+              />
+            }
+            label={t(labelPersistent) as string}
+          />
+        </Grid>
         {hasHosts && (
-          <Grid container item direction="column">
-            <Grid item container xs alignItems="center">
-              <Grid item xs={1}>
+          <Grid item>
+            <FormControlLabel
+              control={
                 <Checkbox
-                  checked={values.acknowledgeAttachedResources}
-                  inputProps={{ 'aria-label': labelAcknowledgeServices }}
+                  checked={
+                    canAcknowledgeServices() &&
+                    values.acknowledgeAttachedResources
+                  }
                   color="primary"
+                  disabled={!canAcknowledgeServices()}
+                  inputProps={{ 'aria-label': t(labelAcknowledgeServices) }}
+                  size="small"
                   onChange={handleChange('acknowledgeAttachedResources')}
                 />
-              </Grid>
-              <Grid item xs>
-                <Typography>{labelAcknowledgeServices}</Typography>
-              </Grid>
-            </Grid>
+              }
+              label={t(labelAcknowledgeServices) as string}
+            />
           </Grid>
         )}
       </Grid>

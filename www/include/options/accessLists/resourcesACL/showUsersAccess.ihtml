@@ -3,7 +3,7 @@
 	<br>
 	<table class="ajaxOption">
 		<tr>
-			<td>{$form.contact.label}&nbsp;&nbsp;&nbsp;{$form.contact.html}<input name="p" value="{$p}" type="hidden"><input name="o" value="t" type="hidden"></td>
+			<td>{$form.contact.label}&nbsp;&nbsp;&nbsp;{$form.contact.html}<input name="o" value="t" type="hidden"></td>
 		</tr>
 	</table>
 	<br>

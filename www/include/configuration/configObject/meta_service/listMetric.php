@@ -56,7 +56,9 @@ $tpl->assign('mode_access', $lvl_access);
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
-$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $meta_id . "'");
+$DBRESULT = $pearDB->prepare('SELECT * FROM meta_service WHERE meta_id = :meta_id');
+$DBRESULT->bindValue(':meta_id', $meta_id, PDO::PARAM_INT);
+$DBRESULT->execute();
 
 $meta = $DBRESULT->fetchRow();
 $tpl->assign("meta", array(
@@ -83,12 +85,16 @@ if (!$oreon->user->admin) {
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT DISTINCT msr.*
-       FROM `meta_service_relation` msr $aclFrom
-       WHERE msr.meta_id = '" . $meta_id . "'
-       $aclCond
-       ORDER BY host_id";
-$results = $pearDB->query($rq);
+$statement = $pearDB->prepare(
+    "SELECT DISTINCT msr.*
+    FROM `meta_service_relation` msr $aclFrom
+    WHERE msr.meta_id = :meta_id
+    $aclCond
+    ORDER BY host_id"
+);
+$statement->bindValue(':meta_id', $meta_id, PDO::PARAM_INT);
+$statement->execute();
+
 $ar_relations = array();
 
 $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
@@ -99,7 +105,7 @@ $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
 $metrics = array();
 
-while ($row = $results->fetchRow()) {
+while ($row = $statement->fetchRow()) {
     $ar_relations[$row['metric_id']][] = array("activate" => $row['activate'], "msr_id" => $row['msr_id']);
     $metrics[] = $row['metric_id'];
 }
@@ -111,14 +117,16 @@ if ($in_statement != "") {
         "AND m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name";
     $DBRESULTO = $pearDBO->query($query);
     /*
-	 * Different style between each lines
-	 */
+     * Different style between each lines
+     */
     $style = "one";
     /*
-	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */
+     * Fill a tab with a mutlidimensionnal Array we put in $tpl
+     */
     $elemArr1 = array();
     $i = 0;
+    $centreonToken = createCSRFToken();
+
     while ($metric = $DBRESULTO->fetchRow()) {
         foreach ($ar_relations[$metric['metric_id']] as $relation) {
             $moptions = "";
@@ -126,11 +134,13 @@ if ($in_statement != "") {
             if ($relation["activate"]) {
                 $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=us&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
+                    "&centreon_token=" . $centreonToken .
                     "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Disabled") . "'></a>&nbsp;&nbsp;";
             } else {
                 $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=ss&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
+                    "&centreon_token=" . $centreonToken .
                     "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Enabled") . "'></a>&nbsp;&nbsp;";
             }

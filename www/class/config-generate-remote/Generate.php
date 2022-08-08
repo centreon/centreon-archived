@@ -52,6 +52,8 @@ require_once __DIR__ . '/Manifest.php';
 require_once __DIR__ . '/HostCategory.php';
 require_once __DIR__ . '/Curves.php';
 require_once __DIR__ . '/Trap.php';
+require_once __DIR__ . '/PlatformTopology.php';
+require_once __DIR__ . '/Relations/BrokerInfo.php';
 require_once __DIR__ . '/Relations/ViewImgDirRelation.php';
 require_once __DIR__ . '/Relations/ViewImageDir.php';
 require_once __DIR__ . '/Relations/ExtendedServiceInformation.php';
@@ -210,6 +212,8 @@ class Generate
             $this->backendInstance->setUserName($username);
             $this->backendInstance->initPath($remoteServerId);
             $this->backendInstance->setPollerId($remoteServerId);
+            Manifest::getInstance($this->dependencyInjector)->clean();
+            $this->createFiles();
             Manifest::getInstance($this->dependencyInjector)->addRemoteServer($remoteServerId);
 
             $this->getPollerFromId($remoteServerId);
@@ -218,6 +222,7 @@ class Generate
             $this->currentPoller['remote_server_use_as_proxy'] = 0;
             $this->configPoller($username);
             Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
+            PlatformTopology::getInstance($this->dependencyInjector)->generateFromRemoteServerId($remoteServerId);
 
             $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
@@ -321,6 +326,66 @@ class Generate
     }
 
     /**
+     * Force to create a manifest and empty file
+     *
+     * @return void
+     */
+    private function createFiles()
+    {
+        Host::getInstance($this->dependencyInjector)->reset(true, true);
+        Service::getInstance($this->dependencyInjector)->reset(true, true);
+        HostTemplate::getInstance($this->dependencyInjector)->reset(true);
+        ServiceGroup::getInstance($this->dependencyInjector)->reset(true);
+        HostTemplate::getInstance($this->dependencyInjector)->reset(true);
+        if ($this->backendInstance->isExportContact()) {
+            Contact::getInstance($this->dependencyInjector)->reset(true);
+        }
+        Command::getInstance($this->dependencyInjector)->reset(true);
+        Curves::getInstance($this->dependencyInjector)->reset(true);
+        Engine::getInstance($this->dependencyInjector)->reset(true);
+        Broker::getInstance($this->dependencyInjector)->reset(true);
+        Graph::getInstance($this->dependencyInjector)->reset(true);
+        HostCategory::getInstance($this->dependencyInjector)->reset(true);
+        HostGroup::getInstance($this->dependencyInjector)->reset(true);
+        MacroService::getInstance($this->dependencyInjector)->reset(true);
+        Media::getInstance($this->dependencyInjector)->reset(true);
+        Resource::getInstance($this->dependencyInjector)->reset(true);
+        ServiceCategory::getInstance($this->dependencyInjector)->reset(true);
+        ServiceTemplate::getInstance($this->dependencyInjector)->reset(true);
+        TimePeriod::getInstance($this->dependencyInjector)->reset(true);
+        Trap::getInstance($this->dependencyInjector)->reset(true);
+        PlatformTopology::getInstance($this->dependencyInjector)->reset(true);
+        Relations\BrokerInfo::getInstance($this->dependencyInjector)->reset(true);
+        Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactGroupHostRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactGroupServiceRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactHostcommandsRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactHostRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactServicecommandsRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ContactServiceRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ExtendedHostInformation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\HostCategoriesRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\HostGroupRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\HostServiceRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\HostTemplateRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\HostPollerRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\MacroHost::getInstance($this->dependencyInjector)->reset(true);
+        Relations\NagiosServer::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ServiceGroupRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TimePeriodExceptions::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsGroup::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsGroupRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsMatching::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsPreexec::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsServiceRelation::getInstance($this->dependencyInjector)->reset(true);
+        Relations\TrapsVendor::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ViewImageDir::getInstance($this->dependencyInjector)->reset(true);
+        Relations\ViewImgDirRelation::getInstance($this->dependencyInjector)->reset(true);
+    }
+
+    /**
      * Reset objects
      *
      * @return void
@@ -348,6 +413,8 @@ class Generate
         ServiceTemplate::getInstance($this->dependencyInjector)->reset();
         TimePeriod::getInstance($this->dependencyInjector)->reset();
         Trap::getInstance($this->dependencyInjector)->reset();
+        PlatformTopology::getInstance($this->dependencyInjector)->reset();
+        Relations\BrokerInfo::getInstance($this->dependencyInjector)->reset();
         Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupHostRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupServiceRelation::getInstance($this->dependencyInjector)->reset();

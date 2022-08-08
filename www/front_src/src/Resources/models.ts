@@ -1,73 +1,57 @@
+import { ListingModel } from '@centreon/ui';
+
+export enum ResourceType {
+  host = 'host',
+  metaservice = 'metaservice',
+  service = 'service',
+}
+
+export type ResourceShortType = 'h' | 's' | 'm';
+
+export interface NamedEntity {
+  id: number;
+  name: string;
+  uuid: string;
+}
+
 export interface Icon {
+  name: string;
   url: string;
-  name: string;
 }
 
-export interface Parent {
-  id: number;
-  name: string;
-  icon: Icon | null;
-  status: Status;
-}
-
+export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
+  name: string;
   severity_code: number;
-  code: number;
-  name: string;
 }
 
-export interface Severity {
-  level: number;
-}
-
-export interface Resource {
-  id: number;
-  name: string;
+export interface Resource extends NamedEntity {
+  acknowledged?: boolean;
+  active_checks?: boolean;
+  duration?: string;
   icon?: Icon;
+  in_downtime?: boolean;
+  information?: string;
+  last_check?: string;
+  links?: ResourceLinks;
+  notification_enabled?: boolean;
   parent?: Parent;
-  status: Status;
-  downtime_endpoint?: string;
-  acknowledged: boolean;
-  acknowledgement_endpoint?: string;
-  in_downtime: boolean;
-  duration: string;
-  tries: string;
-  last_check: string;
-  information: string;
-  severity?: Severity;
-  short_type: 'h' | 's';
-  performance_graph_endpoint?: string;
-  type: 'host' | 'service';
-  details_endpoint: string;
+  passive_checks?: boolean;
+  severity_level?: number;
+  short_type: ResourceShortType;
+  status?: Status;
+  tries?: string;
+  type: ResourceType;
 }
 
-interface ListingMeta {
-  page: number;
-  limit: number;
-  search: {};
-  sort_by: {};
-  total: number;
-}
-
-export interface Listing<TEntity> {
-  result: Array<TEntity>;
-  meta: ListingMeta;
-}
-
-export type ResourceListing = Listing<Resource>;
-
-export interface User {
-  username: string;
-  locale: string | null;
-  timezone: string | null;
-}
+export type ResourceListing = ListingModel<Resource>;
 
 export interface Downtime {
   author_name: string;
   comment: string;
+  end_time: string;
   entry_time: string;
   start_time: string;
-  end_time: string;
 }
 
 export interface Acknowledgement {
@@ -79,7 +63,40 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
-  details: string;
-  statusGraph?: string;
-  performanceGraph?: string;
+  acknowledgement?: string;
+  details?: string;
+  downtime?: string;
+  metrics?: string;
+  performance_graph?: string;
+  status_graph?: string;
+  timeline?: string;
+}
+
+export interface ResourceUris {
+  configuration?: string;
+  logs?: string;
+  reporting?: string;
+}
+
+export interface Notes {
+  label?: string;
+  url: string;
+}
+
+export interface ResourceExternals {
+  action_url?: string;
+  notes?: Notes;
+}
+
+export interface ResourceLinks {
+  endpoints: ResourceEndpoints;
+  externals: ResourceExternals;
+  uris: ResourceUris;
+}
+
+export type TranslationType = (label: string) => string;
+
+export enum SortOrder {
+  asc = 'asc',
+  desc = 'desc',
 }

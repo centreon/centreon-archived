@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -351,11 +352,32 @@ function disableServiceInDB($service_id = null, $service_arr = array())
     }
 }
 
+/**
+ * @param int $serviceId
+ */
+function removeRelationLastServiceDependency(int $serviceId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_serviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation 
+                                         WHERE service_service_id =  ' . $serviceId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
 function deleteServiceInDB($services = array())
 {
     global $pearDB, $centreon;
 
     foreach ($services as $key => $value) {
+        removeRelationLastServiceDependency((int)$key);
         $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
         $dbResult = $pearDB->query($query);
         while ($row = $dbResult->fetch()) {
@@ -425,8 +447,8 @@ function divideHostGroupsToHostGroup($service_id)
 
     $query = "SELECT hostgroup_hg_id FROM host_service_relation " .
         "WHERE service_service_id = '" . $service_id . "' AND hostgroup_hg_id IS NOT NULL";
-    $dbResult3 = $pearDB->query();
-    while ($data = $dbResult3->fetch($query)) {
+    $dbResult3 = $pearDB->query($query);
+    while ($data = $dbResult3->fetch()) {
         $sv_id = multipleServiceInDB(
             array($service_id => "1"),
             array($service_id => "1"),
@@ -549,8 +571,9 @@ function multipleServiceInDB(
                 $hgPars = getMyServiceHostGroups($key);
             }
 
-            if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
-                (!$row["service_register"] && testServiceTemplateExistence($service_description))
+            if (
+                ($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params))
+                || (!$row["service_register"] && testServiceTemplateExistence($service_description))
             ) {
                 $hPars = array();
                 $hgPars = array();
@@ -685,7 +708,8 @@ function multipleServiceInDB(
                             $esi["esi_id"] = null;
                             foreach ($esi as $key2 => $value2) {
                                 $val ? $val .=
-                                    ($value2 != null
+                                    (
+                                        $value2 != null
                                         ? (", '" . $pearDB->escape($value2) . "'")
                                         : ", NULL"
                                     ) : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
@@ -773,6 +797,8 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
         $ret = $form->getSubmitValues();
     }
 
+    $isServiceTemplate = isset($ret['service_register']) && $ret['service_register'] === '0';
+
     if ($from_MC) {
         updateService_MC($service_id);
     } else {
@@ -809,11 +835,13 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     // 1 - MC with deletion of existing options (Replacement)
     // 2 - MC with addition of new options (incremental)
     // 3 - Normal update
-    if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
+    if (
+        isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
     ) {
         updateServiceNotifOptionInterval($service_id);
-    } elseif (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && !$ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
     ) {
         updateServiceNotifOptionInterval_MC($service_id);
@@ -825,11 +853,13 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     // 1 - MC with deletion of existing options (Replacement)
     // 2 - MC with addition of new options (incremental)
     // 3 - Normal update, default behavior
-    if (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
+    if (
+        isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
     ) {
         updateServiceNotifOptionFirstNotificationDelay($service_id);
-    } elseif (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && !$ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
     ) {
         updateServiceNotifOptionFirstNotificationDelay_MC($service_id);
@@ -842,11 +872,13 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     // 1 - MC with deletion of existing options (Replacement)
     // 2 - MC with addition of new options (incremental)
     // 3 - Normal update
-    if (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
+    if (
+        isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
     ) {
         updateServiceNotifOptionTimeperiod($service_id);
-    } elseif (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && !$ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
     ) {
         updateServiceNotifOptionTimeperiod_MC($service_id);
@@ -871,12 +903,14 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     // 1 - MC with deletion of existing sg
     // 2 - MC with addition of new sg
     // 3 - Normal update
-    if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && $ret["mc_mod_sgs"]["mc_mod_sgs"]) {
-        updateServiceServiceGroup($service_id);
-    } elseif (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && !$ret["mc_mod_sgs"]["mc_mod_sgs"]) {
-        updateServiceServiceGroup_MC($service_id);
-    } else {
-        updateServiceServiceGroup($service_id);
+    if (!$isServiceTemplate) {
+        if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && $ret["mc_mod_sgs"]["mc_mod_sgs"]) {
+            updateServiceServiceGroup($service_id);
+        } elseif (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && !$ret["mc_mod_sgs"]["mc_mod_sgs"]) {
+            updateServiceServiceGroup_MC($service_id);
+        } else {
+            updateServiceServiceGroup($service_id);
+        }
     }
 
     if ($from_MC) {
@@ -1098,7 +1132,8 @@ function insertService($ret = array(), $macro_on_demand = null)
             for ($i = 0; $i <= $my_tab['nbOfMacro']; $i++) {
                 $macInput = "macroInput_" . $i;
                 $macValue = "macroValue_" . $i;
-                if (isset($my_tab[$macInput])
+                if (
+                    isset($my_tab[$macInput])
                     && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]
                 ) {
                     $my_tab[$macInput] = str_replace("\$_SERVICE", "", $my_tab[$macInput]);
@@ -1151,7 +1186,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 }
 
-function insertServiceExtInfos($service_id = null, $ret)
+function insertServiceExtInfos($service_id = null, $ret = array())
 {
     if (!$service_id) {
         return;
@@ -1474,7 +1509,8 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_alias"]) && $ret["service_alias"] != null) {
         $rq .= "service_alias = '" . $ret["service_alias"] . "', ";
     }
-    if (isset($ret["service_is_volatile"]["service_is_volatile"])
+    if (
+        isset($ret["service_is_volatile"]["service_is_volatile"])
         && $ret["service_is_volatile"]["service_is_volatile"] != 2
     ) {
         $rq .= "service_is_volatile = '" . $ret["service_is_volatile"]["service_is_volatile"] . "', ";
@@ -1538,13 +1574,15 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_recovery_notification_delay"]) && $ret["service_recovery_notification_delay"] != null) {
         $rq .= "service_recovery_notification_delay = '" . $ret["service_recovery_notification_delay"] . "', ";
     }
-    if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
+    if (
+        isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
         && in_array($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"], array('0', '1'))
     ) {
         $rq .= "contact_additive_inheritance = '" .
             $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
     }
-    if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
+    if (
+        isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
         && in_array($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"], array('0', '1'))
     ) {
         $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
@@ -1599,7 +1637,7 @@ function updateService_MC($service_id = null, $params = array())
             $service_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true,
             false,
@@ -1615,7 +1653,7 @@ function updateService_MC($service_id = null, $params = array())
     $centreon->CentreonLogAction->insertLog(
         "service",
         $service_id,
-        CentreonDB::escape($ret["service_description"]),
+        CentreonDB::escape($ret["service_description"] ?? ""),
         "mc",
         $fields
     );
@@ -1669,26 +1707,24 @@ function updateServiceContactGroup($service_id = null, $ret = array())
     }
 
     $cg = new CentreonContactgroup($pearDB);
-    
-    if (!$ret) {
-        return;
-    }
-    
-    for ($i = 0; $i < count($ret); $i++) {
-        if (!is_numeric($ret[$i])) {
-            $res = $cg->insertLdapGroup($ret[$i]);
-            if ($res != 0) {
-                $ret[$i] = $res;
-            } else {
-                continue;
+
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            if (!is_numeric($ret[$i])) {
+                $res = $cg->insertLdapGroup($ret[$i]);
+                if ($res != 0) {
+                    $ret[$i] = $res;
+                } else {
+                    continue;
+                }
             }
-        }
-        if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
-            $rq = "INSERT INTO contactgroup_service_relation ";
-            $rq .= "(contactgroup_cg_id, service_service_id) ";
-            $rq .= "VALUES ";
-            $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-            $dbResult = $pearDB->query($rq);
+            if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+                $rq = "INSERT INTO contactgroup_service_relation ";
+                $rq .= "(contactgroup_cg_id, service_service_id) ";
+                $rq .= "VALUES ";
+                $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+                $dbResult = $pearDB->query($rq);
+            }
         }
     }
 }
@@ -1728,7 +1764,8 @@ function updateServiceNotifs_MC($service_id = null)
     $rq .= "WHERE service_id = '" . $service_id . "' LIMIT 1";
     $dbResult = $pearDB->query($rq);
     $service = array();
-    $service = array_map("myDecodeService", $dbResult->fetch());
+    $service = array_map("db2str", $dbResult->fetch());
+    $service = array_map("myDecode", $service);
 
     $ret = $form->getSubmitValue("service_notifOpts");
 
@@ -1886,22 +1923,24 @@ function updateServiceContactGroup_MC($service_id = null)
     }
     $ret = $form->getSubmitValue("service_cgs");
     $cg = new CentreonContactgroup($pearDB);
-    for ($i = 0; $i < count($ret); $i++) {
-        if (!isset($cgs[$ret[$i]])) {
-            if (!is_numeric($ret[$i])) {
-                $res = $cg->insertLdapGroup($ret[$i]);
-                if ($res != 0) {
-                    $ret[$i] = $res;
-                } else {
-                    continue;
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            if (!isset($cgs[$ret[$i]])) {
+                if (!is_numeric($ret[$i])) {
+                    $res = $cg->insertLdapGroup($ret[$i]);
+                    if ($res != 0) {
+                        $ret[$i] = $res;
+                    } else {
+                        continue;
+                    }
                 }
-            }
-            if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
-                $rq = "INSERT INTO contactgroup_service_relation ";
-                $rq .= "(contactgroup_cg_id, service_service_id) ";
-                $rq .= "VALUES ";
-                $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-                $dbResult = $pearDB->query($rq);
+                if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+                    $rq = "INSERT INTO contactgroup_service_relation ";
+                    $rq .= "(contactgroup_cg_id, service_service_id) ";
+                    $rq .= "VALUES ";
+                    $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+                    $dbResult = $pearDB->query($rq);
+                }
             }
         }
     }
@@ -1924,13 +1963,15 @@ function updateServiceContact_MC($service_id = null)
         $cs[$arr["contact_id"]] = $arr["contact_id"];
     }
     $ret = $form->getSubmitValue("service_cs");
-    for ($i = 0; $i < count($ret); $i++) {
-        if (!isset($cs[$ret[$i]])) {
-            $rq = "INSERT INTO contact_service_relation ";
-            $rq .= "(contact_id, service_service_id) ";
-            $rq .= "VALUES ";
-            $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-            $dbResult = $pearDB->query($rq);
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            if (!isset($cs[$ret[$i]])) {
+                $rq = "INSERT INTO contact_service_relation ";
+                $rq .= "(contact_id, service_service_id) ";
+                $rq .= "VALUES ";
+                $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+                $dbResult = $pearDB->query($rq);
+            }
         }
     }
 }
@@ -1945,7 +1986,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
 
     $rq = "DELETE FROM servicegroup_relation ";
     $rq .= "WHERE service_service_id = '" . $service_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 
     if (isset($ret["service_sgs"])) {
         $ret = $ret["service_sgs"];
@@ -1970,7 +2011,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
                 $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                 $rq .= "VALUES ";
                 $rq .= "(NULL, '" . $value . "', '" . $service_id . "', '" . $ret[$i] . "')";
-                $dbResult = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         } elseif (count($ret1)) {
             foreach ($ret1 as $key => $value) {
@@ -1978,7 +2019,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
                 $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                 $rq .= "VALUES ";
                 $rq .= "('" . $value . "', NULL, '" . $service_id . "', '" . $ret[$i] . "')";
-                $dbResult = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         }
     }
@@ -2004,29 +2045,30 @@ function updateServiceServiceGroup_MC($service_id = null)
         }
     }
     $ret = $form->getSubmitValue("service_sgs");
-
-    for ($i = 0; $i < count($ret); $i++) {
-        /* We need to record each relation for host / hostgroup selected */
-        $ret1 = getMyServiceHosts($service_id);
-        $ret2 = getMyServiceHostGroups($service_id);
-        if (count($ret2)) {
-            foreach ($ret2 as $hg) {
-                if (!in_array($ret[$i], $hgsgs[$hg])) {
-                    $rq = "INSERT INTO servicegroup_relation ";
-                    $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
-                    $rq .= "VALUES ";
-                    $rq .= "(NULL, '" . $hg . "', '" . $service_id . "', '" . $ret[$i] . "')";
-                    $dbResult = $pearDB->query($rq);
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            /* We need to record each relation for host / hostgroup selected */
+            $ret1 = getMyServiceHosts($service_id);
+            $ret2 = getMyServiceHostGroups($service_id);
+            if (count($ret2)) {
+                foreach ($ret2 as $hg) {
+                    if (!in_array($ret[$i], $hgsgs[$hg])) {
+                        $rq = "INSERT INTO servicegroup_relation ";
+                        $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
+                        $rq .= "VALUES ";
+                        $rq .= "(NULL, '" . $hg . "', '" . $service_id . "', '" . $ret[$i] . "')";
+                        $dbResult = $pearDB->query($rq);
+                    }
                 }
-            }
-        } elseif (count($ret1)) {
-            foreach ($ret1 as $h) {
-                if (!in_array($ret[$i], $hsgs[$h])) {
-                    $rq = "INSERT INTO servicegroup_relation ";
-                    $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
-                    $rq .= "VALUES ";
-                    $rq .= "('" . $h . "', NULL, '" . $service_id . "', '" . $ret[$i] . "')";
-                    $dbResult = $pearDB->query($rq);
+            } elseif (count($ret1)) {
+                foreach ($ret1 as $h) {
+                    if (!isset($hsgs[$h]) || !in_array($ret[$i], $hsgs[$h])) {
+                        $rq = "INSERT INTO servicegroup_relation ";
+                        $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
+                        $rq .= "VALUES ";
+                        $rq .= "('" . $h . "', NULL, '" . $service_id . "', '" . $ret[$i] . "')";
+                        $dbResult = $pearDB->query($rq);
+                    }
                 }
             }
         }
@@ -2049,17 +2091,15 @@ function updateServiceTrap($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_traps");
     }
-    
-    if (!$ret) {
-        return;
-    }
-    
-    for ($i = 0; $i < count($ret); $i++) {
-        $rq = "INSERT INTO traps_service_relation ";
-        $rq .= "(traps_id, service_id) ";
-        $rq .= "VALUES ";
-        $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-        $dbResult = $pearDB->query($rq);
+
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            $rq = "INSERT INTO traps_service_relation ";
+            $rq .= "(traps_id, service_id) ";
+            $rq .= "VALUES ";
+            $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+            $dbResult = $pearDB->query($rq);
+        }
     }
 }
 
@@ -2080,13 +2120,15 @@ function updateServiceTrap_MC($service_id = null)
         $traps[$arr["traps_id"]] = $arr["traps_id"];
     }
     $ret = $form->getSubmitValue("service_traps");
-    for ($i = 0; $i < count($ret); $i++) {
-        if (!isset($traps[$ret[$i]])) {
-            $rq = "INSERT INTO traps_service_relation ";
-            $rq .= "(traps_id, service_id) ";
-            $rq .= "VALUES ";
-            $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-            $dbResult = $pearDB->query($rq);
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            if (!isset($traps[$ret[$i]])) {
+                $rq = "INSERT INTO traps_service_relation ";
+                $rq .= "(traps_id, service_id) ";
+                $rq .= "VALUES ";
+                $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+                $dbResult = $pearDB->query($rq);
+            }
         }
     }
 }
@@ -2220,7 +2262,7 @@ function updateServiceHost_MC($service_id = null)
     $ret2 = array();
     $ret1 = $form->getSubmitValue("service_hPars");
     $ret2 = $form->getSubmitValue("service_hgPars");
-    if (count($ret2)) {
+    if (is_array($ret2)) {
         for ($i = 0; $i < count($ret2); $i++) {
             if (!isset($hgsvs[$ret2[$i]])) {
                 $rq = "DELETE FROM host_service_relation ";
@@ -2234,7 +2276,7 @@ function updateServiceHost_MC($service_id = null)
                 setHostChangeFlag($pearDB, null, $ret2[$i]);
             }
         }
-    } elseif (count($ret1)) {
+    } elseif (is_array($ret1)) {
         for ($i = 0; $i < count($ret1); $i++) {
             if (!isset($hsvs[$ret1[$i]])) {
                 $rq = "DELETE FROM host_service_relation ";
@@ -2365,12 +2407,14 @@ function updateServiceCategories_MC($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_categories");
     }
-    for ($i = 0; $i < count($ret); $i++) {
-        $rq = "INSERT INTO service_categories_relation ";
-        $rq .= "(sc_id, service_service_id) ";
-        $rq .= "VALUES ";
-        $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
-        $dbResult = $pearDB->query($rq);
+    if (is_array($ret)) {
+        for ($i = 0; $i < count($ret); $i++) {
+            $rq = "INSERT INTO service_categories_relation ";
+            $rq .= "(sc_id, service_service_id) ";
+            $rq .= "VALUES ";
+            $rq .= "('" . $ret[$i] . "', '" . $service_id . "')";
+            $dbResult = $pearDB->query($rq);
+        }
     }
 }
 

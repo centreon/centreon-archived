@@ -50,8 +50,19 @@ function getXhrM() {
     return xhrM;
 }
 
-function LdapSearch() {
+jQuery(() => {
+    jQuery('#Form').submit(() => {
+        const selectedContacts = jQuery('input[type="checkbox"][name^="contact"]:not(:checked)');
+        selectedContacts.each((_, element) => {
+            const contactId = jQuery(element).val();
+            jQuery('input[type="hidden"][name$="[' + contactId + ']"]').remove();
+        });
+        return true;
+    });
+});
 
+
+function LdapSearch() {
     var confList = [];
     var ldap_search_filters = '';
     jQuery('input[name^=ldapConf]:checked').each(function () {

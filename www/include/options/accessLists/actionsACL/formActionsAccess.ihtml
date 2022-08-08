@@ -2,9 +2,15 @@
 <form {$form.attributes}>
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+			{if isset($form.submitC)}
+				{$form.submitC.html}
+			{else}
+				{$form.submitA.html}
+			{/if}
+			&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
@@ -13,7 +19,7 @@
           <td class="FormHeader" colspan="2">
             <h3>| {$form.header.title}</h3>
           </td>
-        </tr>	 	
+        </tr>
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.information}</h4>
@@ -28,7 +34,7 @@
           </td>
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_groups">{$form.acl_groups.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.acl_groups.html}</p></td></tr>
-	 	
+
 	 	<!-- Global -->
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
@@ -42,12 +48,29 @@
 		<!-- Config -->
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
-            <h4>{t}Configuration Actions{/t}</h4>
+            <h4>{$form.header.poller_cfg_access}</h4>
           </td>
         </tr>
-	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_generate_cfg">{$form.generate_cfg.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.generate_cfg.html}</p></td></tr>
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="create_edit_pollers">{$form.create_edit_poller_cfg.label}</td>
+			<td class="FormRowValue">
+				<p class="oreonbutton">{$form.create_edit_poller_cfg.html}</p>
+			</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField"><img class="helpTooltip" name="delete_pollers">{$form.delete_poller_cfg.label}</td>
+			<td class="FormRowValue">
+				<p class="oreonbutton">{$form.delete_poller_cfg.html}</p>
+			</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="deploy_pollers">{$form.generate_cfg.label}</td>
+			<td class="FormRowValue">
+				<p class="oreonbutton">{$form.generate_cfg.html}</p>
+			</td>
+		</tr>
 	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_generate_trap">{$form.generate_trap.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.generate_trap.html}</p></td></tr>
-	 	
+
 		<!-- Global External Command -->
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="1">
@@ -69,7 +92,7 @@
 	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_service_checks">{$form.global_service_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_service_obsess.html}</p></td></tr>
 	 	<tr class="list_one engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_obsessive_host_checks">{$form.global_host_obsess.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_host_obsess.html}</p></td></tr>
 	 	<tr class="list_two engineCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_performance_data">{$form.global_perf_data.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.global_perf_data.html}</p></td></tr>
-	 	
+
 	 	<!-- Services -->
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="1">
@@ -96,7 +119,7 @@
 		{/if}
 		<tr class="list_two serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_submit_result_for_a_service">{$form.service_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_submit_result.html}</p></td></tr>
         <tr class="list_one serviceCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_display_command_for_a_service">{$form.service_display_command.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.service_display_command.html}</p></td></tr>
-		 
+
 		<!-- Hosts -->
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="1">
@@ -111,9 +134,9 @@
 			<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_disable_notifications_for_a_host">{$form.host_notifications.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications.html}</p></td></tr>
 	 	{/if}
 		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_a_host">{$form.host_acknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_acknowledgement.html}</p></td></tr>
-        <tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_disacknowledge_a_host">{$form.host_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_disacknowledgement.html}</p></td></tr>	
-		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>	
-		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host_forced">{$form.host_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_forced_check.html}</p></td></tr>	
+        <tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_disacknowledge_a_host">{$form.host_disacknowledgement.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_disacknowledgement.html}</p></td></tr>
+		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host">{$form.host_schedule_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_check.html}</p></td></tr>
+		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_the_check_for_a_host_forced">{$form.host_schedule_forced_check.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_forced_check.html}</p></td></tr>
 		<tr class="list_one hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_schedule_downtime_for_a_host">{$form.host_schedule_downtime.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_schedule_downtime.html}</p></td></tr>
 		<tr class="list_two hostCheckbox"><td class="FormRowField"><img class="helpTooltip" name="tip_add_delete_a_comment_for_a_host">{$form.host_comment.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_comment.html}</p></td></tr>
 	 	{if $serverIsMaster}
@@ -130,17 +153,27 @@
           </td>
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>
-		
+
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
 		{/if}
 	</table>
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+			{if isset($form.submitC)}
+				{$form.submitC.html}
+			{else}
+				{$form.submitA.html}
+			{/if}
+			&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	{$form.hidden}

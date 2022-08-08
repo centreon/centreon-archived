@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class OnDemandMacroHostRepository extends ServiceEntityRepository
 {
-
     /**
      * Export host's macros
      *

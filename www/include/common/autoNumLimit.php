@@ -43,9 +43,9 @@ $sessionLimitKey = "results_limit_{$url}";
 
 // Setting the limit filter
 if (isset($_POST['limit']) && $_POST['limit']) {
-    $limit = $_POST['limit'];
+    $limit = filter_input(INPUT_POST, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 } elseif (isset($_GET['limit'])) {
-    $limit = $_GET['limit'];
+    $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 } elseif ($limitNotInRequestParameter && $historyLimitNotDefault) {
     $limit = $centreon->historyLimit[$url];
 } elseif (isset($_SESSION[$sessionLimitKey])) {

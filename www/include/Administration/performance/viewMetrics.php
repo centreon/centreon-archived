@@ -39,67 +39,80 @@ if (!isset($centreon)) {
 
 require_once './class/centreonBroker.class.php';
 
+const DELETE_GRAPH = "ed";
+const RRD_ABSOLUTE = "dst_a";
+const RRD_COUNTER = "dst_c";
+const RRD_DERIVE = "dst_d";
+const RRD_GAUGE = "dst_g";
+const HIDE_GRAPH = "hg";
+const SHOW_GRAPH = "nhg";
+const LOCK_SERVICE = "lk";
+const UNLOCK_SERVICE = "nlk";
+
+$indexId = filter_var($_GET["index_id"], FILTER_VALIDATE_INT);
+
 if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])) {
-    if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed") {
-        $selected = $_POST["select"];
+    //filter integer keys
+    $selected = array_filter(
+        $_POST["select"],
+        function ($k) {
+            if (is_int($k)) {
+                return $k;
+            }
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+
+    if ($_POST["o1"] == DELETE_GRAPH || $_POST["o2"] == DELETE_GRAPH) {
         $listMetricsId = array_keys($selected);
         if (count($listMetricsId) > 0) {
             $brk = new CentreonBroker($pearDB);
-            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" .
+                implode(', ', $listMetricsId) . ")");
             $brk->reload();
-            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" .
+                implode(', ', $listMetricsId) . ")");
         }
-    } elseif ($_POST["o1"] == "hg" || $_POST["o2"] == "hg") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == HIDE_GRAPH || $_POST["o2"] == HIDE_GRAPH) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "nhg" || $_POST["o2"] == "nhg") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == SHOW_GRAPH || $_POST["o2"] == SHOW_GRAPH) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "lk" || $_POST["o2"] == "lk") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == LOCK_SERVICE || $_POST["o2"] == LOCK_SERVICE) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "nlk" || $_POST["o2"] == "nlk") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == UNLOCK_SERVICE || $_POST["o2"] == UNLOCK_SERVICE) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "dst_g" || $_POST["o2"] == "dst_g") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == RRD_GAUGE || $_POST["o2"] == RRD_GAUGE) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "dst_c" || $_POST["o2"] == "dst_c") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == RRD_COUNTER || $_POST["o2"] == RRD_COUNTER) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "dst_d" || $_POST["o2"] == "dst_d") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == RRD_DERIVE || $_POST["o2"] == RRD_DERIVE) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = " . (int)$id);
         }
-    } elseif ($_POST["o1"] == "dst_a" || $_POST["o2"] == "dst_a") {
-        $selected = $_POST["select"];
-        foreach ($selected as $key => $value) {
-            $pearDBO->query("UPDATE metrics SET `data_source_type` = '3' WHERE `metric_id` = '" . $key . "'");
+    } elseif ($_POST["o1"] == RRD_ABSOLUTE || $_POST["o2"] == RRD_ABSOLUTE) {
+        foreach (array_keys($selected) as $id) {
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '3' WHERE `metric_id` = " . (int)$id);
         }
     }
 }
 
-$search_string = "";
-if (isset($search) && $search) {
-    $search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
-}
-
-$query = "SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = '" . $_GET["index_id"] . "'";
-$DBRESULT = $pearDBO->query($query);
-$tmp = $DBRESULT->fetchRow();
+$query = "SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = :indexId";
+$stmt = $pearDBO->prepare($query);
+$stmt->bindParam(':indexId', $indexId, PDO::PARAM_INT);
+$stmt->execute();
+$tmp = $stmt->fetch(\PDO::FETCH_ASSOC);
 $rows = $tmp["COUNT(*)"];
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
@@ -107,15 +120,16 @@ $storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");
 $yesOrNo = array(null => "No", 0 => "No", 1 => "Yes", 2 => "Rebuilding");
 $rrd_dst = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 
-$query = "SELECT * FROM metrics WHERE to_delete = 0 AND index_id = '" . $_GET["index_id"] . "' ORDER BY metric_name";
-$DBRESULT2 = $pearDBO->query($query);
+$query = "SELECT * FROM metrics WHERE to_delete = 0 AND index_id = :indexId ORDER BY metric_name";
+$stmt2 = $pearDBO->prepare($query);
+$stmt2->bindParam(':indexId', $indexId, PDO::PARAM_INT);
+$stmt2->execute();
 unset($data);
-for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
+for ($im = 0; $metrics = $stmt2->fetch(\PDO::FETCH_ASSOC); $im++) {
     $metric = array();
     $metric["metric_id"] = $metrics["metric_id"];
     $metric["class"] = $tab_class[$im % 2];
-    $metric["metric_name"] = $metrics["metric_name"];
-    $metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
+    $metric["metric_name"] = str_replace("#S#", "/", $metrics["metric_name"]);
     $metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
     $metric["unit_name"] = $metrics["unit_name"];
     if (!isset($metrics["data_source_type"]) ||

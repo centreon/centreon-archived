@@ -37,6 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+if (!$centreon->user->admin && $centreon->user->access->checkAction('generate_trap') === 0) {
+    require_once _CENTREON_PATH_ . 'www/include/core/errors/alt_error.php';
+    return null;
+}
+
 /*
  * Init Centcore Pipe
  */
@@ -125,7 +130,7 @@ if ($form->validate()) {
     $ret = $form->getSubmitValues();
     $host_list = array();
     foreach ($tab_nagios_server as $key => $value) {
-        if ($key && ($res["host"] == 0 || $res["host"] == $key)) {
+        if ($key && ($ret["host"] == 0 || $ret["host"] == $key)) {
             $host_list[$key] = $value;
         }
     }

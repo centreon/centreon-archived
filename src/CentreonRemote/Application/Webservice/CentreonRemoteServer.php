@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Application\Webservice;
 
 /**
@@ -83,46 +102,68 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
     {
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
+        /**
+         * Check mandatory parameters and request arguments
+         */
         if (!$ip) {
             throw new \RestBadRequestException('Can not access your address.');
         }
 
-        if (!isset($_POST['app_key']) || !$_POST['app_key']) {
+        if (
+            !isset($_POST['app_key'])
+            || !$_POST['app_key']
+            || empty($appKey = filter_var($_POST['app_key'], FILTER_SANITIZE_STRING))
+        ) {
             throw new \RestBadRequestException('Please send \'app_key\' in the request.');
         }
 
-        if (!isset($_POST['version']) || !$_POST['version']) {
+        if (
+            !isset($_POST['version'])
+            || !$_POST['version']
+            || empty($version = filter_var($_POST['version'], FILTER_SANITIZE_STRING))
+        ) {
             throw new \RestBadRequestException('Please send \'version\' in the request.');
         }
 
+        $filterOptions = ['options' => ['min_range' => 1, 'max_range' => 65535]];
+        if (
+            !isset($_POST['http_port'])
+            || !$_POST['http_port']
+            || false === ($httpPort = filter_var($_POST['http_port'], FILTER_VALIDATE_INT, $filterOptions))
+        ) {
+            throw new \RestBadRequestException('Inconsistent \'http port\' in the request.');
+        }
+
+        $noCheckCertificate = ($_POST['no_check_certificate'] === '1' ? '1' : '0');
+        $httpScheme = ($_POST['http_method'] === 'https' ? 'https' : 'http');
+
         $statement = $this->pearDB->prepare('SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = :ip');
-        $statement->execute([':ip' => $ip]);
+        $statement->bindValue(':ip', $ip, \PDO::PARAM_STR);
+        $statement->execute();
         $result = $statement->fetch();
 
-        if ((bool) $result['count']) {
+        if ((bool)$result['count']) {
             throw new \RestConflictException('Address already in wait list.');
         }
 
         $createdAt = date('Y-m-d H:i:s');
-        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`, '
-            . '`created_at`, `http_method`, `http_port`, `no_check_certificate`) ';
-        $insertQuery .= "VALUES (:ip, :app_key, :version, 0, '{$createdAt}', "
-        . ":http_method, :http_port, :no_check_certificate)";
+        $insertQuery = "INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`,
+            `created_at`, `http_method`, `http_port`, `no_check_certificate`)
+            VALUES (:ip, :app_key, :version, 0, '{$createdAt}',
+                :http_method, :http_port, :no_check_certificate
+            )";
 
         $insert = $this->pearDB->prepare($insertQuery);
-        $bindings = [
-            ':ip'                   => $ip,
-            ':app_key'              => $_POST['app_key'],
-            ':version'              => $_POST['version'],
-            ':http_method'          => $_POST['http_method'] ?? 'http',
-            ':http_port'            => $_POST['http_port'] ?? null,
-            ':no_check_certificate' => $_POST['no_check_certificate'] ?? 0,
-        ];
-
+        $insert->bindValue(':ip', $ip, \PDO::PARAM_STR);
+        $insert->bindValue(':app_key', $appKey, \PDO::PARAM_STR);
+        $insert->bindValue(':version', $version, \PDO::PARAM_STR);
+        $insert->bindValue(':http_method', $httpScheme, \PDO::PARAM_STR);
+        $insert->bindValue(':http_port', $httpPort, \PDO::PARAM_INT);
+        $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);
         try {
-            $insert->execute($bindings);
+            $insert->execute();
         } catch (\Exception $e) {
-            throw new \RestBadRequestException('There was an error saving the data.');
+            throw new \RestBadRequestException('There was an error while saving the data.');
         }
 
         return '';
@@ -133,9 +174,9 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
      *
      * @param string $action The action name
      * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
+     * @param bool $isInternal If the api is call in internal
      *
-     * @return boolean If the user has access to the action
+     * @return bool If the user has access to the action
      */
     public function authorize($action, $user, $isInternal = false)
     {

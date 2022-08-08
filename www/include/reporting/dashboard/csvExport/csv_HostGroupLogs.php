@@ -76,10 +76,17 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 $centreon = $oreon;
 
 // Getting hostgroup id
-$hostgroupId = filter_var(
-    $_GET["hostgroup"] ?? $_POST['hostgroup'] ?? null,
-    FILTER_VALIDATE_INT
-);
+$hostgroupId = null;
+if (!empty($_POST['hostgroup']) || !empty($_GET['hostgroup'])) {
+    $hostgroupId = filter_var(
+        $_GET["hostgroup"] ?? $_POST['hostgroup'],
+        FILTER_VALIDATE_INT
+    );
+}
+
+if ($hostgroupId === false) {
+    throw new \InvalidArgumentException('Bad parameters');
+}
 
 // finding the user's allowed hostgroups
 $allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
@@ -96,8 +103,22 @@ if (!$centreon->user->admin
 
 // Getting time interval to report
 $dates = getPeriodToReport();
-$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+
+$startDate = null;
+$endDate = null;
+
+if (!empty($_GET['start'])) {
+    $startDate = filter_var($_GET['start'], FILTER_VALIDATE_INT);
+}
+
+if (!empty($_GET['end'])) {
+    $endDate = filter_var($_GET['end'], FILTER_VALIDATE_INT);
+}
+
+if ($startDate === false || $endDate === false) {
+    throw new \InvalidArgumentException('Bad parameters');
+}
+
 $hostgroupName = getHostgroupNameFromId($hostgroupId);
 
 // file type setting

@@ -50,9 +50,9 @@ final class MetricRepositoryLegacy implements MetricRepositoryInterface
     public function __construct()
     {
         global $pearDB;
-        $pearDB = new \CentreonDB('centreon', 3, true);
+        $pearDB = new \CentreonDB('centreon', 3);
 
-        $this->dbStorage = new \CentreonDB('centstorage', 3, true);
+        $this->dbStorage = new \CentreonDB('centstorage', 3);
     }
 
     /**

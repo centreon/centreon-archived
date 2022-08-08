@@ -54,6 +54,7 @@ class CentreonLDAP extends CentreonObject
     const AR_NOT_EXIST = "LDAP configuration ID not found";
 
     public $aDepends = array(
+        'CG',
         'CONTACTTPL'
     );
 
@@ -76,6 +77,7 @@ class CentreonLDAP extends CentreonObject
             'group_name' => '',
             'ldap_auto_import' => '',
             'ldap_contact_tmpl' => '',
+            'ldap_default_cg' => '',
             'ldap_dns_use_domain' => '',
             'ldap_search_limit' => '',
             'ldap_search_timeout' => '',
@@ -342,8 +344,15 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
+                if (empty($params[2])) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
                 $contactObj = new CentreonContact($this->dependencyInjector);
                 $params[2] = $contactObj->getContactID($params[2]);
+            }
+            if (strtolower($params[1]) === 'ldap_default_cg' && !empty($params[2])) {
+                $contactGroupObj = new CentreonContactGroup($this->dependencyInjector);
+                $params[2] = $contactGroupObj->getContactGroupID($params[2]);
             }
             $this->db->query(
                 "DELETE FROM auth_ressource_info WHERE ari_name = ? AND ar_id = ?",
@@ -467,7 +476,13 @@ class CentreonLDAP extends CentreonObject
                         $contactName = $contactObj->getParameters($configuration['ari_value'], 'contact_name');
                         $configuration['ari_value'] = $contactName['contact_name'];
                     }
-
+                    if ($configuration['ari_name'] === 'ldap_default_cg') {
+                        $contactGroupObj = new \Centreon_Object_Contact_Group($this->dependencyInjector);
+                        $contactGroupName = $contactGroupObj->getParameters($configuration['ari_value'], 'cg_name');
+                        $configuration['ari_value'] = !empty($contactGroupName['cg_name'])
+                            ? $contactGroupName['cg_name']
+                            : null;
+                    }
                     echo $this->action . $this->delim . "SETPARAM" . $this->delim
                         . $ldap['ar_name'] . $this->delim
                         . $configuration['ari_name'] . $this->delim

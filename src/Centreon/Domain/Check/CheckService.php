@@ -22,15 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Check;
 
-use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
+use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 class CheckService extends AbstractCentreonService implements CheckServiceInterface
 {
@@ -50,20 +52,20 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * CheckService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator
@@ -79,7 +81,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
      * @param Contact $contact
      * @return CheckServiceInterface
      */
-    public function filterByContact($contact): self
+    public function filterByContact($contact): CheckServiceInterface
     {
         parent::filterByContact($contact);
         $this->engineService->filterByContact($contact);
@@ -145,5 +147,93 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
         $service->setHost($host);
 
         $this->engineService->scheduleServiceCheck($check, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkMetaService(Check $check): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_META_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $metaServiceDescription = 'meta_' . $check->getResourceId();
+
+        $service = $this->monitoringRepository->findOneServiceByDescription($metaServiceDescription);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Meta service not found'));
+        }
+
+        $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+        $service->setHost($host);
+
+        $this->engineService->scheduleServiceCheck($check, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkResource(Check $check, ResourceEntity $resource): void
+    {
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Host %d not found'),
+                            $resource->getId()
+                        )
+                    );
+                }
+                $this->engineService->scheduleHostCheck($check, $host);
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                $service = $this->monitoringRepository->findOneService(
+                    $resource->getParent()->getId(),
+                    $resource->getId()
+                );
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Service %d (parent: %d) not found'),
+                            $resource->getId(),
+                            $resource->getParent()->getId()
+                        )
+                    );
+                }
+                $service->setHost($host);
+                $this->engineService->scheduleServiceCheck($check, $service);
+                break;
+            case ResourceEntity::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Service %d (parent: %d) not found'),
+                            $resource->getId(),
+                            $resource->getParent()->getId()
+                        )
+                    );
+                }
+                $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+                $service->setHost($host);
+                $this->engineService->scheduleServiceCheck($check, $service);
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
+        }
     }
 }

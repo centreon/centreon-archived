@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,10 +32,9 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
+use enshrined\svgSanitize\Sanitizer;
 
 if (!isset($oreon)) {
     exit();
@@ -215,7 +215,7 @@ function moveImg($img_id, $dir_alias)
         . "AND dir_dir_parent_id = dir_id"
     );
     $prepare->bindValue(':image_id', $img_id, \PDO::PARAM_INT);
-    
+
     if (!$prepare->execute()) {
         return;
     }
@@ -227,9 +227,9 @@ function moveImg($img_id, $dir_alias)
         $dir_alias = $img_info["dir_alias"];
     }
     if ($dir_alias != $img_info["dir_alias"]) {
-        $oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
-        $newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
-        
+        $oldpath = $mediadir . $img_info["dir_alias"] . "/" . $img_info["img_path"];
+        $newpath = $mediadir . $dir_alias . "/" . $img_info["img_path"];
+
         if (!file_exists($newpath)) {
             /**
              * Only if file doesn't already exist in the destination
@@ -337,7 +337,7 @@ function deleteDirectory($directoryId)
 {
     global $pearDB;
     $mediadir = "./img/media/";
-    
+
     $directoryId = (int) $directoryId;
     /*
      * Purge images of the directory
@@ -420,4 +420,205 @@ function getListDirectory($filter = null)
     }
     $dbresult->closeCursor();
     return $list_dir;
+}
+
+/**
+ * Check MIME Type of file
+ *
+ * @param array $file
+ * @return boolean
+ */
+function isCorrectMIMEType(array $file): bool
+{
+    $mimeTypeFileExtensionConcordance = [
+        "svg" => "image/svg+xml",
+        "jpg" => "image/jpeg",
+        "jpeg" => "image/jpeg",
+        "gif" => "image/gif",
+        "png" => "image/png",
+        "zip" => "application/zip",
+        "gzip" => "application/x-gzip"
+    ];
+    $fileExtension = end(explode(".", $file["name"]));
+    if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
+        return false;
+    }
+
+    $mimeType = mime_content_type($file['tmp_name']);
+    if (
+        !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)
+        || (preg_match('/^image\//', $mimeType) && $mimeType !== $mimeTypeFileExtensionConcordance[$fileExtension])
+    ) {
+        return false;
+    }
+    $dir = sys_get_temp_dir() . '/pendingMedia';
+    switch ($mimeType) {
+        /*
+        * .zip archive
+        */
+        case 'application/zip':
+            $zip = new ZipArchive();
+            if (isValidMIMETypeFromArchive($dir, $file['tmp_name'], $zip) === true) {
+                return true;
+            } else {
+                // remove the pending images from tmp
+                removeRecursiveTempDirectory($dir);
+                return false;
+            }
+            break;
+        /*
+        *.tgz archive
+        */
+        case 'application/x-gzip':
+            /*
+            * Append an extension to temp file to be able to instanciate a PharData object
+            */
+            $archiveNewName = $file['tmp_name'] . '.tgz';
+            rename($file['tmp_name'], $archiveNewName);
+            $tar = new PharData($archiveNewName);
+            if (isValidMIMETypeFromArchive($dir, null, null, $tar) === true) {
+                //remove the .tgz from tmp
+                unlink($archiveNewName);
+                return true;
+            } else {
+                //remove the .tgz and the pending images from tmp
+                unlink($archiveNewName);
+                removeRecursiveTempDirectory($dir);
+                return false;
+            }
+            break;
+        /*
+        * single image
+        */
+        case 'image/svg+xml':
+            $sanitizer = new Sanitizer();
+            $uploadedSVG = file_get_contents($file['tmp_name']);
+            $cleanSVG = $sanitizer->sanitize($uploadedSVG);
+            file_put_contents($file['tmp_name'], $cleanSVG);
+            return true;
+            break;
+        default:
+            return true;
+    }
+}
+
+
+/**
+ * Remove a directory and its content
+ *
+ * @param string $dir
+ * @return void
+ */
+function removeRecursiveTempDirectory(string $dir): void
+{
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object !== "." && $object !== "..") {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . DIRECTORY_SEPARATOR . $object)) {
+                    removeRecursiveTempDirectory($dir . DIRECTORY_SEPARATOR . $object);
+                } else {
+                    unlink($dir . DIRECTORY_SEPARATOR . $object);
+                }
+            }
+        }
+        rmdir($dir);
+    }
+}
+
+/**
+ * Extract an archive and check the MIME Type of every files
+ *
+ * @param string $dir
+ * @param string $filename
+ * @param ZipArchive $zip
+ * @param PharData $tar
+ * @return boolean
+ */
+function isValidMIMETypeFromArchive(
+    string $dir,
+    string $filename = null,
+    ZipArchive $zip = null,
+    PharData $tar = null
+): bool {
+    $files = [];
+
+    /**
+     * Remove Pending images directory to avoid images duplication problems.
+     */
+    if (file_exists($dir)) {
+        removeRecursiveTempDirectory($dir);
+    }
+
+    $files = [];
+    if (isset($zip)) {
+        if ($zip->open($filename) === true && $zip->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    } elseif (isset($tar)) {
+        if ($tar->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    }
+
+    $mimeTypeFileExtensionConcordance = [
+        "svg" => "image/svg+xml",
+        "jpg" => "image/jpeg",
+        "jpeg" => "image/jpeg",
+        "gif" => "image/gif",
+        "png" => "image/png",
+        "zip" => "application/zip",
+        "gzip" => "application/x-gzip"
+    ];
+
+    foreach ($files as $file) {
+        $fileExtension = end(explode(".", $file));
+        if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
+            return false;
+        }
+
+        $mimeType = mime_content_type($dir . '/' . $file);
+        if (
+            !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)/', $mimeType)
+            || (preg_match('/^image\//', $mimeType) && $mimeType !== $mimeTypeFileExtensionConcordance[$fileExtension])
+        ) {
+            return false;
+        }
+        if ($mimeType === "image/svg+xml") {
+            $sanitizer = new Sanitizer();
+            $uploadedSVG = file_get_contents($dir . '/' . $file);
+            $cleanSVG = $sanitizer->sanitize($uploadedSVG);
+            file_put_contents($dir . '/' . $file, $cleanSVG);
+        }
+    }
+    return true;
+}
+
+/**
+ * Format all the pending images as an array usable by CentreonImageManager
+ *
+ * @param string $tempDirectory
+ * @return array
+ */
+function getFilesFromTempDirectory(string $tempDirectory): array
+{
+    $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
+    $filesInfo = [];
+    if (is_dir($directory)) {
+        $files = array_diff(scandir($directory), ['..', '.']);
+        foreach ($files as $file) {
+            $filesInfo[] = [
+                'filename' => [
+                    'name' => $file,
+                    'tmp_name' => $file,
+                    'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
+                ]
+            ];
+        }
+    }
+    return $filesInfo;
 }

@@ -41,6 +41,19 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 type: boolean
                 groups: [add_host_acks, add_host_ack, ack_resource]
 
+# Used to validate the Comment entity
+Centreon\Domain\Monitoring\Comment:
+    properties:
+        date:
+            - Type:
+                type: DateTime
+                groups: [add_host_comment, add_service_comment]
+        comment:
+            - Type:
+                type: string
+                groups: [add_host_comment, add_service_comment]
+            - NotNull: ~
+
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
     properties:
@@ -95,15 +108,15 @@ Centreon\Domain\Check\Check:
         checkTime:
             - Type:
                 type: DateTime
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         isForced:
             - Type:
                 type: boolean
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         resourceId:
             - Type:
                 type: int
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
             - GreaterThan: 0
             - NotNull: ~
         parentResourceId:
@@ -114,6 +127,36 @@ Centreon\Domain\Check\Check:
         withServices:
             - Type:
                 type: boolean
+
+# Used to validate the SubmitResult entity
+Centreon\Domain\Monitoring\SubmitResult\SubmitResult:
+    properties:
+        performanceData:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        output:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        status:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - LessThanOrEqual: 3
+            - NotNull: ~
+        resourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - NotNull: ~
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_service]
+            - GreaterThan: 0
 
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:
@@ -148,6 +191,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 choices:
                     - service
                     - host
+                    - metaservice
                 multiple: true
                 groups: [Default]
         states:
@@ -179,22 +223,42 @@ Centreon\Domain\Monitoring\ResourceFilter:
                     - PENDING
                 multiple: true
                 groups: [Default]
-        hostgroupIds:
+        hostgroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
-        servicegroupIds:
+        servicegroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
+        monitoringServerNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        statusTypes:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        onlyWithPerformanceData:
+            - Type:
+                type: boolean
+                groups: [Default]
 
 # Used to validate the Resource Entity
 Centreon\Domain\Monitoring\Resource:
@@ -202,17 +266,18 @@ Centreon\Domain\Monitoring\Resource:
         id:
             - Type:
                 type: int
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
         type:
             - Type:
                 type: string
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
             - Choice:
                 choices:
                     - service
                     - host
+                    - metaservice
                 multiple: false
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
         parent:
             - NotNull:
-                groups: [disack_service]
+                groups: [ack_service, downtime_service]

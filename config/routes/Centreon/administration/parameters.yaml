@@ -1,0 +1,5 @@
+centreon_application_administration_parameters_getparameters:
+  methods: GET
+  path: /administration/parameters
+  controller: 'Centreon\Application\Controller\Administration\ParametersController::getParameters'
+  condition: "request.attributes.get('version') >= 21.10"

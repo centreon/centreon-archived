@@ -24,7 +24,9 @@ namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use CentreonDuration;
 
 /**
  * Class representing a record of a service in the repository.
@@ -33,8 +35,6 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Service implements EntityDescriptorMetadataInterface
 {
-    use Model\ImportTrait;
-
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'service_min';
     public const SERIALIZER_GROUP_MAIN = 'service_main';
@@ -42,7 +42,7 @@ class Service implements EntityDescriptorMetadataInterface
     public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
 
     /**
-     * @var int Unique index
+     * @var int|null Unique index
      */
     protected $id;
 
@@ -207,7 +207,7 @@ class Service implements EntityDescriptorMetadataInterface
     protected $stateType;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $criticality;
 
@@ -227,6 +227,11 @@ class Service implements EntityDescriptorMetadataInterface
     protected $flapping;
 
     /**
+     * @var \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    private $status;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -241,9 +246,9 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -911,5 +916,38 @@ class Service implements EntityDescriptorMetadataInterface
     {
         $this->flapping = $flapping;
         return $this;
+    }
+
+    /**
+     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    public function getStatus(): ?ResourceStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setStatus(?ResourceStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuration(): ?string
+    {
+        $duration = null;
+
+        if ($this->getLastStateChange()) {
+            $duration = CentreonDuration::toString(time() - $this->getLastStateChange()->getTimestamp());
+        }
+
+        return $duration;
     }
 }

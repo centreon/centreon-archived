@@ -1,125 +1,313 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
-import { Button, ButtonProps, Grid } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
+import { all, head, pathEq } from 'ramda';
+import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import makeStyles from '@mui/styles/makeStyles';
+import IconAcknowledge from '@mui/icons-material/Person';
+import IconCheck from '@mui/icons-material/Sync';
+import IconMore from '@mui/icons-material/MoreHoriz';
+
+import {
+  useCancelTokenSource,
+  useSnackbar,
+  SeverityCode,
+  PopoverMenu,
+} from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
-  labelDowntime,
+  labelSetDowntime,
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
+  labelDisacknowledge,
+  labelSubmitStatus,
+  labelAddComment,
+  labelMoreActions,
 } from '../../translatedLabels';
+import { checkResources } from '../api';
 import { Resource } from '../../models';
-import AcknowledgeForm from './Acknowledge';
+import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
+import {
+  resourcesToAcknowledgeAtom,
+  resourcesToCheckAtom,
+  resourcesToDisacknowledgeAtom,
+  resourcesToSetDowntimeAtom,
+  selectedResourcesAtom,
+} from '../actionsAtoms';
+
+import useAclQuery from './aclQuery';
 import DowntimeForm from './Downtime';
-import { checkResources } from '../../api';
+import AcknowledgeForm from './Acknowledge';
+import DisacknowledgeForm from './Disacknowledge';
+import SubmitStatusForm from './SubmitStatus';
+import ResourceActionButton from './ResourceActionButton';
+import ActionMenuItem from './ActionMenuItem';
 
-interface Props {
-  disabled: boolean;
-  resourcesToAcknowledge: Array<Resource>;
-  onPrepareToAcknowledge;
-  onCancelAcknowledge;
-  resourcesToSetDowntime: Array<Resource>;
-  onPrepareToSetDowntime;
-  onCancelSetDowntime;
-  resourcesToCheck: Array<Resource>;
-  onPrepareToCheck;
-  onSuccess;
-}
+const useStyles = makeStyles((theme) => ({
+  action: {
+    marginRight: theme.spacing(1),
+  },
+  flex: {
+    alignItems: 'center',
+    display: 'flex',
+  },
+}));
 
-const ActionButton = (props: ButtonProps): JSX.Element => (
-  <Button variant="contained" color="primary" size="small" {...props} />
-);
-
-const ResourceActions = ({
-  disabled,
-  resourcesToAcknowledge,
-  onPrepareToAcknowledge,
-  onCancelAcknowledge,
-  resourcesToSetDowntime,
-  onPrepareToSetDowntime,
-  onCancelSetDowntime,
-  resourcesToCheck,
-  onPrepareToCheck,
-  onSuccess,
-}: Props & Omit<ButtonProps, 'disabled'>): JSX.Element => {
+const ResourceActions = (): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
-  const { showMessage } = useSnackbar();
+  const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
+  const [resourceToSubmitStatus, setResourceToSubmitStatus] =
+    useState<Resource | null>();
+  const [resourceToComment, setResourceToComment] = useState<Resource | null>();
+
+  const [selectedResources, setSelectedResources] = useAtom(
+    selectedResourcesAtom,
+  );
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = useAtom(
+    resourcesToAcknowledgeAtom,
+  );
+  const [resourcesToSetDowntime, setResourcesToSetDowntime] = useAtom(
+    resourcesToSetDowntimeAtom,
+  );
+  const [resourcesToCheck, setResourcesToCheck] = useAtom(resourcesToCheckAtom);
+  const [resourcesToDisacknowledge, setResourcesToDisacknowledge] = useAtom(
+    resourcesToDisacknowledgeAtom,
+  );
+
+  const {
+    canAcknowledge,
+    canDowntime,
+    canCheck,
+    canDisacknowledge,
+    canSubmitStatus,
+    canComment,
+  } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
 
-  React.useEffect(() => {
+  const confirmAction = (): void => {
+    setSelectedResources([]);
+    setResourcesToAcknowledge([]);
+    setResourcesToSetDowntime([]);
+    setResourcesToCheck([]);
+    setResourceToSubmitStatus(null);
+    setResourcesToDisacknowledge([]);
+    setResourceToComment(null);
+  };
+
+  useEffect(() => {
     if (!hasResourcesToCheck) {
       return;
     }
 
     checkResources({
-      resources: resourcesToCheck,
       cancelToken: token,
+      resources: resourcesToCheck,
     })
       .then(() => {
-        showSuccess(labelCheckCommandSent);
-        onSuccess();
+        confirmAction();
+        showSuccessMessage(t(labelCheckCommandSent));
       })
-      .catch(() => showError(labelSomethingWentWrong));
+      .catch(() => showErrorMessage(t(labelSomethingWentWrong)));
   }, [resourcesToCheck]);
 
-  React.useEffect(() => (): void => cancel(), []);
+  useEffect(() => (): void => cancel(), []);
+
+  const prepareToAcknowledge = (): void => {
+    setResourcesToAcknowledge(selectedResources);
+  };
+
+  const prepareToSetDowntime = (): void => {
+    setResourcesToSetDowntime(selectedResources);
+  };
+
+  const prepareToCheck = (): void => {
+    setResourcesToCheck(selectedResources);
+  };
+
+  const cancelAcknowledge = (): void => {
+    setResourcesToAcknowledge([]);
+  };
+
+  const cancelSetDowntime = (): void => {
+    setResourcesToSetDowntime([]);
+  };
+
+  const prepareToDisacknowledge = (): void => {
+    setResourcesToDisacknowledge(selectedResources);
+  };
+
+  const cancelDisacknowledge = (): void => {
+    setResourcesToDisacknowledge([]);
+  };
+
+  const prepareToSubmitStatus = (): void => {
+    const [selectedResource] = selectedResources;
+
+    setResourceToSubmitStatus(selectedResource);
+  };
+
+  const cancelSubmitStatus = (): void => {
+    setResourceToSubmitStatus(null);
+  };
+
+  const prepareToAddComment = (): void => {
+    const [selectedResource] = selectedResources;
+
+    setResourceToComment(selectedResource);
+  };
+
+  const cancelComment = (): void => {
+    setResourceToComment(null);
+  };
+
+  const areSelectedResourcesOk = all(
+    pathEq(['status', 'severity_code'], SeverityCode.Ok),
+    selectedResources,
+  );
+
+  const disableAcknowledge =
+    !canAcknowledge(selectedResources) || areSelectedResourcesOk;
+  const disableDowntime = !canDowntime(selectedResources);
+  const disableCheck = !canCheck(selectedResources);
+  const disableDisacknowledge = !canDisacknowledge(selectedResources);
+
+  const hasSelectedResources = selectedResources.length > 0;
+  const hasOneResourceSelected = selectedResources.length === 1;
+
+  const disableSubmitStatus =
+    !hasOneResourceSelected ||
+    !canSubmitStatus(selectedResources) ||
+    !head(selectedResources)?.passive_checks;
+
+  const disableAddComment =
+    !hasOneResourceSelected || !canComment(selectedResources);
+
+  const isAcknowledgePermitted =
+    canAcknowledge(selectedResources) || !hasSelectedResources;
+  const isDowntimePermitted =
+    canDowntime(selectedResources) || !hasSelectedResources;
+  const isCheckPermitted = canCheck(selectedResources) || !hasSelectedResources;
+  const isDisacknowledgePermitted =
+    canDisacknowledge(selectedResources) || !hasSelectedResources;
+  const isSubmitStatusPermitted =
+    canSubmitStatus(selectedResources) || !hasSelectedResources;
+  const isAddCommentPermitted =
+    canComment(selectedResources) || !hasSelectedResources;
 
   return (
-    <Grid container spacing={1}>
-      <Grid item>
-        <ActionButton
-          disabled={disabled}
-          startIcon={<IconAcknowledge />}
-          onClick={onPrepareToAcknowledge}
-        >
-          {labelAcknowledge}
-        </ActionButton>
-      </Grid>
-      <Grid item>
-        <ActionButton
-          disabled={disabled}
-          startIcon={<IconDowntime />}
-          onClick={onPrepareToSetDowntime}
-        >
-          {labelDowntime}
-        </ActionButton>
-      </Grid>
-      <Grid item>
-        <ActionButton
-          disabled={disabled}
-          startIcon={<IconCheck />}
-          onClick={onPrepareToCheck}
-        >
-          {labelCheck}
-        </ActionButton>
-      </Grid>
-      {resourcesToAcknowledge.length > 0 && (
-        <AcknowledgeForm
-          resources={resourcesToAcknowledge}
-          onClose={onCancelAcknowledge}
-          onSuccess={onSuccess}
-        />
-      )}
-      {resourcesToSetDowntime.length > 0 && (
-        <DowntimeForm
-          resources={resourcesToSetDowntime}
-          onClose={onCancelSetDowntime}
-          onSuccess={onSuccess}
-        />
-      )}
-    </Grid>
+    <div className={classes.flex}>
+      <div className={classes.flex}>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableAcknowledge}
+            icon={<IconAcknowledge />}
+            label={t(labelAcknowledge)}
+            permitted={isAcknowledgePermitted}
+            onClick={prepareToAcknowledge}
+          />
+        </div>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableDowntime}
+            icon={<IconDowntime />}
+            label={t(labelSetDowntime)}
+            permitted={isDowntimePermitted}
+            onClick={prepareToSetDowntime}
+          />
+        </div>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableCheck}
+            icon={<IconCheck />}
+            label={t(labelCheck)}
+            permitted={isCheckPermitted}
+            onClick={prepareToCheck}
+          />
+        </div>
+        {resourcesToAcknowledge.length > 0 && (
+          <AcknowledgeForm
+            resources={resourcesToAcknowledge}
+            onClose={cancelAcknowledge}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourcesToSetDowntime.length > 0 && (
+          <DowntimeForm
+            resources={resourcesToSetDowntime}
+            onClose={cancelSetDowntime}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourcesToDisacknowledge.length > 0 && (
+          <DisacknowledgeForm
+            resources={resourcesToDisacknowledge}
+            onClose={cancelDisacknowledge}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourceToSubmitStatus && (
+          <SubmitStatusForm
+            resource={resourceToSubmitStatus}
+            onClose={cancelSubmitStatus}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourceToComment && (
+          <AddCommentForm
+            date={new Date()}
+            resource={resourceToComment as Resource}
+            onClose={cancelComment}
+            onSuccess={confirmAction}
+          />
+        )}
+      </div>
+
+      <PopoverMenu
+        icon={<IconMore color="primary" fontSize="small" />}
+        title={t(labelMoreActions) as string}
+      >
+        {({ close }): JSX.Element => (
+          <>
+            <ActionMenuItem
+              disabled={disableDisacknowledge}
+              label={labelDisacknowledge}
+              permitted={isDisacknowledgePermitted}
+              onClick={(): void => {
+                close();
+                prepareToDisacknowledge();
+              }}
+            />
+            <ActionMenuItem
+              disabled={disableSubmitStatus}
+              label={labelSubmitStatus}
+              permitted={isSubmitStatusPermitted}
+              onClick={(): void => {
+                close();
+                prepareToSubmitStatus();
+              }}
+            />
+
+            <ActionMenuItem
+              disabled={disableAddComment}
+              label={labelAddComment}
+              permitted={isAddCommentPermitted}
+              onClick={(): void => {
+                close();
+                prepareToAddComment();
+              }}
+            />
+          </>
+        )}
+      </PopoverMenu>
+    </div>
   );
 };
 

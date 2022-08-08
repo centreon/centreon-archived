@@ -34,6 +34,51 @@
  *
  */
 
+/**
+ * Displays the SVG file in HTML.
+ *
+ * @param string $svgPath SVG file path from _CENTREON_PATH_
+ * @param string $color Color to be used in SVG image
+ * @param float $height Height of image
+ * @param float $width Width of image
+ * @example <?php displaySvg('www/img/centreon.svg', '#000', 50, 50); ?>
+ */
+function displaySvg(string $svgPath, string $color, float $height, float $width): void
+{
+    $path = pathinfo($svgPath);
+    $svgPath = str_replace('.', '', $path['dirname']) . DIRECTORY_SEPARATOR . $path['basename'];
+    $path = _CENTREON_PATH_ . DIRECTORY_SEPARATOR . $svgPath;
+    if (file_exists($path)) {
+        $data = file_get_contents($path);
+        $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
+        echo "<span style='fill:$color; vertical-align: middle'>" . $data . '</span>';
+    } else {
+        echo 'SVG file not found: ' . $svgPath;
+    }
+}
+
+/**
+ * Return the SVG file.
+ *
+ * @param string $svgPath SVG file path from _CENTREON_PATH_
+ * @param string $color Color to be used in SVG image
+ * @param float $height Height of image
+ * @param float $width Width of image
+ * @example <?php returnSvg('www/img/centreon.svg', '#000', 50, 50); ?>
+ */
+function returnSvg(string $svgPath, string $color, float $height, float $width): string
+{
+    $path = pathinfo($svgPath);
+    $svgPath = str_replace('.', '', $path['dirname']) . DIRECTORY_SEPARATOR . $path['basename'];
+    $path = _CENTREON_PATH_ . DIRECTORY_SEPARATOR . $svgPath;
+    if (file_exists($path)) {
+        $data = file_get_contents($path);
+        $data = str_replace('<svg ', "<svg height='$height' width='$width' ", $data);
+        return "<span style='fill:$color ; vertical-align: middle'>" . $data . '</span>';
+    } else {
+        return 'SVG file not found: ' . $svgPath;
+    }
+}
 
 /*
  * Form Rules
@@ -62,7 +107,7 @@ function isUserAdmin($sid = null)
     }
 
 
-    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact 
+    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact
 WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     $DBRESULT->closeCursor();
@@ -82,7 +127,7 @@ WHERE session.session_id = ? AND contact.contact_id = session.user_id", Centreon
  * </code>
  *
  * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
- * @param{TAB}string{TAB}$argument2{TAB}Mon deuxi�me argument
+ * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
  * @return{TAB}int{TAB}Ma valeur de retour
  */
 
@@ -92,7 +137,7 @@ function getUserIdFromSID($sid = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact 
+    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact
 WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     unset($DBRESULT);
@@ -171,19 +216,20 @@ function tidySearchKey($search, $advanced_search)
  *
  * @return {empty|object} A Smarty instance with configuration parameters
  */
-function initSmartyTpl($path = null, $tpl = null, $subDir = null)
+function initSmartyTpl($path = null, &$tpl = null, $subDir = null)
 {
-    if (!$tpl) {
-        return;
-    }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
+    $tpl = new \SmartyBC();
+
+    $tpl->setTemplateDir($path . $subDir);
+    $tpl->setCompileDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/compile');
+    $tpl->setConfigDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/config');
+    $tpl->setCacheDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/cache');
+    $tpl->addPluginsDir(__DIR__ . '/../../../GPL_LIB/smarty-plugins');
+    $tpl->loadPlugin('smarty_function_eval');
+    $tpl->setForceCompile(true);
+    $tpl->setAutoLiteral(false);
+    $tpl->allow_ambiguous_resources = true;
+
     return $tpl;
 }
 
@@ -742,7 +788,7 @@ function getMyHostTemplateModels($host_id = null)
 function getMyHostMultipleTemplateModels($host_id = null)
 {
     if (!$host_id) {
-        return;
+        return [];
     }
 
     global $pearDB;
@@ -755,7 +801,7 @@ function getMyHostMultipleTemplateModels($host_id = null)
         $hTpl = $DBRESULT2->fetchRow();
         $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES, "UTF-8");
     }
-    return ($tplArr);
+    return $tplArr;
 }
 
 #
@@ -943,14 +989,14 @@ function getMyServiceGroupActivateServices($sg_id = null, $access = null)
 				      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
                                       AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id
                                       AND service.service_id = servicegroup_relation.service_service_id
-                                      AND servicegroup_relation.host_host_id = host.host_id 
+                                      AND servicegroup_relation.host_host_id = host.host_id
                                       AND servicegroup_relation.host_host_id IS NOT NULL
                                       AND service.service_activate = '1'
                                       UNION
                                       SELECT service_description, service_id, h.host_id as host_host_id, host_name
-                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h 
-                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' 
-                                      AND service.service_id = servicegroup_relation.service_service_id 
+                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h
+                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
+                                      AND service.service_id = servicegroup_relation.service_service_id
                                       AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id
                                       AND servicegroup_relation.hostgroup_hg_id IS NOT NULL
                                       AND service.service_activate = '1'
@@ -1018,16 +1064,19 @@ function getMyServiceExtendedInfoField($service_id, $field)
             "WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) .
             "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
-        $field_result = $row[$field];
-        if ($row[$field]) {
-            return $row[$field];
-        } elseif ($row["service_template_model_stm_id"]) {
-            if (isset($tab[$row['service_template_model_stm_id']])) {
+
+        if ($row = $DBRESULT->fetch()) {
+            if ($row[$field]) {
+                return $row[$field];
+            } elseif ($row["service_template_model_stm_id"]) {
+                if (isset($tab[$row['service_template_model_stm_id']])) {
+                    break;
+                }
+                $service_id = $row["service_template_model_stm_id"];
+                $tab[$service_id] = 1;
+            } else {
                 break;
             }
-            $service_id = $row["service_template_model_stm_id"];
-            $tab[$service_id] = 1;
         } else {
             break;
         }
@@ -1595,7 +1644,7 @@ function getMyHostID($host_name = null)
     }
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "' 
+    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "'
 			OR host_name = '" . $pearDB->escape(utf8_encode($host_name)) . "'LIMIT 1");
     if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
@@ -1898,7 +1947,7 @@ function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca)
             }
             if ($hostIdString) {
                 $DBRESULT2 = $pearDBO->query("SELECT host_id, service_id
-                                                          FROM index_data 
+                                                          FROM index_data
                                                           WHERE host_id IN ($hostIdString)");
                 $result = false;
                 while ($row = $DBRESULT2->fetchRow()) {
@@ -2109,40 +2158,6 @@ function str2db($string)
 }
 
 /**
- * Execute a command to the Centreon Broker socket
- *
- * @param string $command The command to execute
- * @param string $socket The socket file or tcp information
- * @return bool
- */
-function sendCommandBySocket($command, $socket)
-{
-    ob_start();
-    $stream = stream_socket_client($socket, $errno, $errstr, 10);
-    ob_end_clean();
-    if (false === $stream) {
-        throw new Exception("Error to connect to the socket.");
-    }
-    fwrite($stream, $command . "\n");
-    $rStream = array($stream);
-    $nbStream = stream_select($rStream, $wStream = null, $eStream = null, 5);
-    if (false === $nbStream || 0 === $nbStream) {
-        fclose($stream);
-        throw new Exception("Error to read the socket.");
-    }
-    $ret = explode(' ', fgets($stream), 3);
-    fclose($stream);
-    if ($ret[1] !== '0x1' && $ret[1] !== '0x0') {
-        throw new Exception("Error when execute command : " . $ret[2]);
-    }
-    $running = true;
-    if ($ret[1] === '0x0') {
-        $running = false;
-    }
-    return $running;
-}
-
-/**
  * Return the list of template
  *
  * @param int $svcId The service ID
@@ -2216,34 +2231,42 @@ function cleanString($str)
  * get first menu entry allowed to a given user
  *
  * @param string $lcaTStr Allowed topology pages separated by comma
- * @param int $defautPage User default page
+ * @param int $defaultPage User default page
  * @return array The topology information (url, options, name...)
  */
-function getFirstAllowedMenu($lcaTStr, $defautPage = null)
+function getFirstAllowedMenu($lcaTStr, $defaultPage)
 {
     global $pearDB;
 
-    $eventsViewPage = 104;
-    $orderedFields = [$eventsViewPage];
+    $defaultPageOptions = null;
 
-    if ($defautPage !== null) {
-        array_unshift($orderedFields, $defautPage);
+    // manage default page with option (eg: 50110&o=general)
+    if (preg_match('/(\d+)(\D+)/', $defaultPage, $matches)) {
+        $defaultPage = $matches[1];
+        $defaultPageOptions = $matches[2];
     }
 
-    $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
+    $statement = $pearDB->prepare(
+        "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
         . "FROM topology "
         . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
-        . "topology_page IS NOT NULL AND topology_show = '1' "
-        . "ORDER BY FIELD(topology_page, " . implode(',', $orderedFields) . ") DESC, topology_id ASC "
-        . "LIMIT 1";
+        . "topology_page IS NOT NULL AND topology_show = '1' AND topology_url IS NOT NULL "
+        . "ORDER BY FIELD(topology_page, :default_page) DESC, "
+        . "FIELD(topology_url_opt, :default_page_options) DESC, "
+        . "topology_page ASC, topology_id ASC "
+        . "LIMIT 1"
+    );
 
-    $dbResult = $pearDB->query($query);
+    $statement->bindValue(':default_page', $defaultPage, \PDO::PARAM_INT);
+    $statement->bindValue(':default_page_options', $defaultPageOptions, \PDO::PARAM_STR);
 
-    if (!$dbResult->rowCount()) {
+    $statement->execute();
+
+    if (!$statement->rowCount()) {
         return [];
     }
 
-    return $dbResult->fetch();
+    return $statement->fetch();
 }
 
 function reset_search_page($url)
@@ -2277,19 +2300,172 @@ function get_child($id_page, $lcaTStr)
     global $pearDB;
 
     if ($lcaTStr != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE  topology_page IN ($lcaTStr) 
-                AND topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+                FROM topology
+                WHERE topology_page IN ($lcaTStr)
+                AND topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1'
                 ORDER BY topology_order, topology_group ";
     } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE  topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+                FROM topology
+                WHERE topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1'
                 ORDER BY topology_order, topology_group ";
     }
 
     $DBRESULT = $pearDB->query($rq);
     $redirect = $DBRESULT->fetch();
     return $redirect;
+}
+
+/**
+ * Quickform rule that validate geo_coords
+ *
+ * @return bool
+ * @throws HTML_QuickForm_Error
+ */
+function validateGeoCoords()
+{
+    global $form;
+    $coords = $form->getElementValue('geo_coords');
+    if (
+        preg_match(
+            '/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/',
+            $coords
+        )
+    ) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Get the select option.
+ *
+ * @return array<int, int>
+ */
+function getSelectOption()
+{
+    $stringToArray = function (string $value): array {
+        if (strpos($value, ',') !== false) {
+            $value = explode(',', rtrim($value, ','));
+            return array_flip($value);
+        }
+        return [$value => '1'];
+    };
+    if (isset($_GET["select"])) {
+        return is_array($_GET["select"])
+            ? $_GET["select"]
+            : $stringToArray($_GET["select"]);
+    } elseif (isset($_POST["select"])) {
+        return is_array($_POST["select"])
+            ? $_POST["select"]
+            : $stringToArray($_POST["select"]);
+    } else {
+        return [];
+    }
+}
+
+
+/**
+ * Get the duplicate number option.
+ *
+ * @return array<int, int>
+ */
+function getDuplicateNumberOption()
+{
+    if (isset($_GET["dupNbr"])) {
+        return is_array($_GET["dupNbr"])
+            ? $_GET["dupNbr"]
+            : [];
+    } elseif (isset($_POST["dupNbr"])) {
+        return is_array($_POST["dupNbr"])
+            ? $_POST["dupNbr"]
+            : [];
+    } else {
+        return [];
+    }
+}
+
+function isNotEmptyAfterStringSanitize($test): bool
+{
+    if (empty(filter_var($test, FILTER_SANITIZE_STRING))) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * Create a CSRF token
+ *
+ * @return string
+ */
+function createCSRFToken(): string
+{
+    $token = bin2hex(openssl_random_pseudo_bytes(16));
+
+    if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
+        $_SESSION['x-centreon-token'] = [];
+        $_SESSION['x-centreon-token-generated-at'] = [];
+    }
+
+    $_SESSION['x-centreon-token'][] = $token;
+    $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
+
+    return $token;
+}
+
+/**
+ * Remove CSRF tokens older than 15min form session
+ */
+function purgeOutdatedCSRFTokens()
+{
+    foreach ($_SESSION['x-centreon-token-generated-at'] as $key => $value) {
+        $elapsedTime = time() - $value;
+
+        if ($elapsedTime > (15 * 60)) {
+            $tokenKey = array_search((string) $key, $_SESSION['x-centreon-token']);
+            unset($_SESSION['x-centreon-token'][$tokenKey]);
+            unset($_SESSION['x-centreon-token-generated-at'][(string) $key]);
+        }
+    }
+}
+
+/**
+ * Remove CSRF Token from session
+ */
+function purgeCSRFToken()
+{
+    $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
+
+    $key = array_search((string) $token, $_SESSION['x-centreon-token']);
+    unset($_SESSION['x-centreon-token'][$key]);
+    unset($_SESSION['x-centreon-token-generated-at'][(string) $token]);
+}
+
+/**
+ * Check CRSF token validity
+ *
+ * @return boolean
+ */
+function isCSRFTokenValid()
+{
+    $isValid = false;
+
+    $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
+    if ($token !== null && in_array($token, $_SESSION['x-centreon-token'])) {
+        $isValid = true;
+    }
+
+    return $isValid;
+}
+
+/**
+ * Display error message for unvalid form (CSRF token unvalid or too old)
+ */
+function unvalidFormMessage()
+{
+    echo "<div class='msg' align='center'>" .
+        _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
+        "</div>";
 }

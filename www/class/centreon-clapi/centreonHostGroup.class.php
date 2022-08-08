@@ -46,6 +46,7 @@ require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Host.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Group.php";
+require_once "Centreon/Object/Dependency/DependencyHostgroupParent.php";
 
 /**
  * Class for managing host groups
@@ -56,6 +57,7 @@ class CentreonHostGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'HOST'
@@ -132,11 +134,85 @@ class CentreonHostGroup extends CentreonObject
      */
     public function del($objectName)
     {
+        $hostgroupId = $this->getObjectId($objectName);
+        $parentDependency = new \Centreon_Object_DependencyHostgroupParent($this->dependencyInjector);
+        $parentDependency->removeRelationLastHostgroupDependency($hostgroupId);
         parent::del($objectName);
         $this->db->query(
             "DELETE FROM service WHERE service_register = '1' "
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
+    }
+
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'alias',
+            'comment',
+            'name',
+            'activate',
+            'notes',
+            'notes_url',
+            'action_url',
+            'icon_image',
+            'map_icon_image',
+            'geo_coords'
+        );
+        $unknownParam = array();
+
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
+            foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "geo_coords":
+                            break;
+                        default:
+                            if (!preg_match("/^hg_/", $paramSearch)) {
+                                $field = "hg_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+                    
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
+                    }
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
     }
 
 
@@ -160,6 +236,10 @@ class CentreonHostGroup extends CentreonObject
             }
             if (!preg_match("/^hg_/", $params[1]) && $params[1] != "geo_coords") {
                 $params[1] = "hg_" . $params[1];
+            } elseif ($params[1] === "geo_coords") {
+                if (!CentreonUtils::validateGeoCoords($params[2])) {
+                    throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                }
             }
 
             $updateParams = array($params[1] => $params[2]);

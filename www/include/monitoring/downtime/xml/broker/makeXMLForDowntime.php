@@ -66,10 +66,14 @@ if (isset($sid)) {
     get_error('need session id !');
 }
 
-//check that $_GET['id'] is set, if not assign 0.
-// If a string is sent to host_id, return id 0 instead of false;
-$hostId = filter_var($_GET['hid'] ?? 0, FILTER_VALIDATE_INT) ?: 0;
-$svcId = filter_var($_GET['svc_id'] ?? 0, FILTER_VALIDATE_INT);
+// sanitize host and service id from request;
+$hostId = filter_var($_GET['hid'] ?? false, FILTER_VALIDATE_INT);
+$svcId = filter_var($_GET['svc_id'] ?? false, FILTER_VALIDATE_INT);
+
+// check if a mandatory valid hostId is given
+if (false === $hostId) {
+    get_error('bad host Id');
+}
 
 // Init GMT class
 $centreonGMT = new CentreonGMT($db);
@@ -87,13 +91,14 @@ $xml->writeElement('comment', _('Comment'));
 $xml->endElement();
 
 // Retrieve info
-if (!$service_id) {
+if (false === $svcId) {
     $res = $dbb->prepare(
         'SELECT author, actual_start_time , end_time, comment_data, duration, fixed
         FROM downtimes
         WHERE host_id = :hostId
         AND type = 2
         AND cancelled = 0
+        AND UNIX_TIMESTAMP(NOW()) >= actual_start_time
         AND end_time > UNIX_TIMESTAMP(NOW())
         ORDER BY actual_start_time'
     );
@@ -107,6 +112,7 @@ if (!$service_id) {
         AND service_id = :svcId
         AND type = 1
         AND cancelled = 0
+        AND UNIX_TIMESTAMP(NOW()) >= actual_start_time
         AND end_time > UNIX_TIMESTAMP(NOW())
         ORDER BY actual_start_time'
     );
@@ -116,7 +122,7 @@ if (!$service_id) {
 }
 
 $rowClass = "list_one";
-while ($row = $stmt->fetch()) {
+while ($row = $res->fetch()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);

@@ -1,65 +1,80 @@
-import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
-import { Grid } from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
-import IconPlay from '@material-ui/icons/PlayArrow';
-import IconPause from '@material-ui/icons/Pause';
+import { Grid } from '@mui/material';
+import IconRefresh from '@mui/icons-material/Refresh';
+import IconPlay from '@mui/icons-material/PlayArrow';
+import IconPause from '@mui/icons-material/Pause';
+
+import { IconButton } from '@centreon/ui';
 
 import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import ActionButton from '../../ActionButton';
+import {
+  enabledAutorefreshAtom,
+  sendingAtom,
+} from '../../Listing/listingAtoms';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
-  toggleAutorefresh;
-}
-
-interface Props extends AutorefreshProps {
-  disabledRefresh: boolean;
-  onRefresh;
+  toggleAutorefresh: () => void;
 }
 
 const AutorefreshButton = ({
   enabledAutorefresh,
   toggleAutorefresh,
 }: AutorefreshProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const label = enabledAutorefresh
     ? labelDisableAutorefresh
     : labelEnableAutorefresh;
 
   return (
-    <ActionButton
-      ariaLabel={label}
-      title={label}
-      onClick={toggleAutorefresh}
+    <IconButton
+      ariaLabel={t(label)}
       size="small"
+      title={t(label)}
+      onClick={toggleAutorefresh}
     >
       {enabledAutorefresh ? <IconPause /> : <IconPlay />}
-    </ActionButton>
+    </IconButton>
   );
 };
 
-const RefreshActions = ({
-  disabledRefresh,
-  enabledAutorefresh,
-  onRefresh,
-  toggleAutorefresh,
-}: Props): JSX.Element => {
+export interface Props {
+  onRefresh: () => void;
+}
+
+const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  const [enabledAutorefresh, setEnabledAutorefresh] = useAtom(
+    enabledAutorefreshAtom,
+  );
+  const sending = useAtomValue(sendingAtom);
+
+  const toggleAutorefresh = (): void => {
+    setEnabledAutorefresh(!enabledAutorefresh);
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <ActionButton
-          title={labelRefresh}
-          ariaLabel={labelRefresh}
-          disabled={disabledRefresh}
-          onClick={onRefresh}
+        <IconButton
+          ariaLabel={t(labelRefresh)}
+          data-testid={labelRefresh}
+          disabled={sending}
           size="small"
+          title={t(labelRefresh)}
+          onClick={onRefresh}
         >
           <IconRefresh />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
         <AutorefreshButton

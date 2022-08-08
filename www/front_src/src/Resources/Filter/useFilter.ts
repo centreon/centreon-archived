@@ -1,113 +1,111 @@
-import * as React from 'react';
+import { useEffect } from 'react';
+
+import { omit } from 'ramda';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
-  getStoredOrDefaultFilter,
-  clearCachedFilter,
-  storeFilter,
-} from '../storedFilter';
-import { Filter, FilterGroup, Criterias } from './models';
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
-const getDefaultFilter = (): FilterGroup => getStoredOrDefaultFilter();
-const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
-const getDefaultSearch = (): string | undefined => getDefaultFilter().search;
-const getDefaultResourceTypes = (): Array<Filter> =>
-  getDefaultCriterias().resourceTypes;
-const getDefaultStates = (): Array<Filter> => getDefaultCriterias().states;
-const getDefaultStatuses = (): Array<Filter> => getDefaultCriterias().statuses;
-const getDefaultHostGroups = (): Array<Filter> =>
-  getDefaultCriterias().hostGroups;
-const getDefaultServiceGroups = (): Array<Filter> =>
-  getDefaultCriterias().serviceGroups;
+import { listCustomFilters } from './api';
+import { listCustomFiltersDecoder } from './api/decoders';
+import { Filter } from './models';
+import { build } from './Criterias/searchQueryLanguage';
+import {
+  applyFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  filterWithParsedSearchDerivedAtom,
+  getDefaultFilterDerivedAtom,
+  searchAtom,
+  sendingFilterAtom,
+  storedFilterAtom,
+} from './filterAtoms';
+import { CriteriaValue } from './Criterias/models';
 
-type FilterGroupDispatch = React.Dispatch<React.SetStateAction<FilterGroup>>;
-type FiltersDispatch = React.Dispatch<React.SetStateAction<Array<Filter>>>;
-type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
-
-interface FilterState {
-  filter: FilterGroup;
-  setFilter: FilterGroupDispatch;
-  currentSearch?: string;
-  setCurrentSearch: SearchDispatch;
-  nextSearch?: string;
-  setNextSearch: SearchDispatch;
-  resourceTypes: Array<Filter>;
-  setResourceTypes: FiltersDispatch;
-  states: Array<Filter>;
-  setStates: FiltersDispatch;
-  statuses: Array<Filter>;
-  setStatuses: FiltersDispatch;
-  hostGroups: Array<Filter>;
-  setHostGroups: FiltersDispatch;
-  serviceGroups: Array<Filter>;
-  setServiceGroups: FiltersDispatch;
+export interface FilterState {
+  applyCurrentFilter?: () => void;
+  currentFilter?: Filter;
+  customFilters?: Array<Filter>;
+  customFiltersLoading: boolean;
+  getCriteriaValue?: (name: string) => CriteriaValue | undefined;
+  loadCustomFilters: () => Promise<Array<Filter>>;
+  setCriteria?: ({ name, value }: { name: string; value }) => void;
+  setCurrentFilter?: (filter: Filter) => void;
+  setEditPanelOpen?: (update: boolean) => void;
 }
 
-const useFilter = (): FilterState => {
-  const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
-  const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
-    getDefaultSearch(),
-  );
-  const [nextSearch, setNextSearch] = React.useState<string | undefined>(
-    getDefaultSearch(),
-  );
-  const [resourceTypes, setResourceTypes] = React.useState<Array<Filter>>(
-    getDefaultResourceTypes(),
-  );
-  const [states, setStates] = React.useState<Array<Filter>>(getDefaultStates());
-  const [statuses, setStatuses] = React.useState<Array<Filter>>(
-    getDefaultStatuses(),
-  );
-  const [hostGroups, setHostGroups] = React.useState<Array<Filter>>(
-    getDefaultHostGroups(),
-  );
-  const [serviceGroups, setServiceGroups] = React.useState<Array<Filter>>(
-    getDefaultServiceGroups(),
-  );
-
-  React.useEffect(() => {
-    storeFilter({
-      ...filter,
-      search: nextSearch,
-      criterias: {
-        resourceTypes,
-        states,
-        statuses,
-        hostGroups,
-        serviceGroups,
-      },
-    });
-  }, [
-    filter,
-    nextSearch,
-    resourceTypes,
-    states,
-    statuses,
-    hostGroups,
-    serviceGroups,
-  ]);
-
-  React.useEffect(() => (): void => {
-    clearCachedFilter();
+const useFilter = (): void => {
+  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
+    decoder: listCustomFiltersDecoder,
+    request: listCustomFilters,
   });
 
-  return {
-    filter,
-    setFilter,
-    currentSearch,
-    setCurrentSearch,
-    nextSearch,
-    setNextSearch,
-    resourceTypes,
-    setResourceTypes,
-    states,
-    setStates,
-    statuses,
-    setStatuses,
-    hostGroups,
-    setHostGroups,
-    serviceGroups,
-    setServiceGroups,
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
+  const getDefaultFilter = useAtomValue(getDefaultFilterDerivedAtom);
+  const setCustomFilters = useUpdateAtom(customFiltersAtom);
+  const setSearch = useUpdateAtom(searchAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const storeFilter = useUpdateAtom(storedFilterAtom);
+  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
+
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      setCustomFilters(result.map(omit(['order'])));
+
+      return result;
+    });
   };
+
+  useEffect(() => {
+    loadCustomFilters();
+  }, []);
+
+  useDeepCompareEffect(() => {
+    setSearch(build(currentFilter.criterias));
+  }, [currentFilter.criterias]);
+
+  useEffect(() => {
+    if (getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    storeFilter(filterWithParsedSearch);
+
+    const queryParameters = [
+      {
+        name: 'filter',
+        value: filterWithParsedSearch,
+      },
+    ];
+
+    setUrlQueryParameters(queryParameters);
+  }, [filterWithParsedSearch]);
+
+  useEffect(() => {
+    if (!getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    setUrlQueryParameters([
+      {
+        name: 'fromTopCounter',
+        value: false,
+      },
+    ]);
+
+    applyFilter(getDefaultFilter());
+  }, [getUrlQueryParameters().fromTopCounter]);
+
+  useEffect(() => {
+    setSendingFilter(sending);
+  }, [sending]);
 };
 
 export default useFilter;

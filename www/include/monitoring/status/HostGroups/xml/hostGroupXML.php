@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -44,14 +45,26 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
+$centreon = $_SESSION['centreon'];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
+
 // Set Default Poller
 $obj->getDefaultFilters();
+
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
 
 // Alias / Name conversion table
 $convertTable = [];
@@ -212,17 +225,52 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
+$buildParameter = function ($id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildHostgroupUri = function (array $hostgroups, array $types, array $statuses) use ($resourceController) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'hostGroups' => $hostgroups,
+                'resourceTypes' => $types,
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$hostType = $buildParameter('host', 'Host');
+$serviceType = $buildParameter('service', 'Service');
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+$upStatus = $buildParameter('UP', 'Up');
+$downStatus = $buildParameter('DOWN', 'Down');
+$unreachableStatus = $buildParameter('UNREACHABLE', 'Unreachable');
+
 $i = 0;
 $ct = 0;
 
 if (isset($stats)) {
     foreach ($stats as $name => $stat) {
-        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
+        if (
+            ($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
             && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl)))
             && $name != "meta_hostgroup"
         ) {
             $class = $obj->getNextLineClass();
             if (isset($stat["h"]) && count($stat["h"])) {
+                $hostgroup = $buildParameter(
+                    (int) $convertID[$convertTable[$name]],
+                    $convertTable[$name]
+                );
                 $obj->XML->startElement("l");
                 $obj->XML->writeAttribute("class", $class);
                 $obj->XML->writeElement("o", $ct++);
@@ -247,13 +295,62 @@ if (isset($stats)) {
                 $obj->XML->writeElement("skc", $obj->colorService[0]);
                 $obj->XML->writeElement("sp", $stat["s"][4]);
                 $obj->XML->writeElement("spc", $obj->colorService[4]);
+                $hostgroupDeprecatedUri = CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $hostgroup['id']);
                 $obj->XML->writeElement(
-                    "hgurl",
-                    CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
+                    'hg_listing_uri',
+                    $useDeprecatedPages ? $hostgroupDeprecatedUri : $buildHostgroupUri([$hostgroup], [], [])
                 );
                 $obj->XML->writeElement(
-                    "hgurlhost",
-                    "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
+                    "hg_listing_h_up",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=h_up'
+                        : $buildHostgroupUri([$hostgroup], [$hostType], [$upStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_down",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=h_down'
+                        : $buildHostgroupUri([$hostgroup], [$hostType], [$downStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_unreachable",
+                    $buildHostgroupUri([$hostgroup], [$hostType], [$unreachableStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_pending",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=h_pending'
+                        : $buildHostgroupUri([$hostgroup], [$hostType], [$pendingStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_ok",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=svc&amp;statusFilter=ok'
+                        : $buildHostgroupUri([$hostgroup], [$serviceType], [$okStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_warning",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=svc&amp;statusFilter=warning'
+                        : $buildHostgroupUri([$hostgroup], [$serviceType], [$warningStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_critical",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=svc&amp;statusFilter=critical'
+                        : $buildHostgroupUri([$hostgroup], [$serviceType], [$criticalStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_unknown",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=svc&amp;statusFilter=unknown'
+                        : $buildHostgroupUri([$hostgroup], [$serviceType], [$unknownStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_pending",
+                    $useDeprecatedPages
+                        ? $hostgroupDeprecatedUri . '&amp;o=svc&amp;statusFilter=pending'
+                        : $buildHostgroupUri([$hostgroup], [$serviceType], [$pendingStatus])
                 );
                 $obj->XML->endElement();
             }

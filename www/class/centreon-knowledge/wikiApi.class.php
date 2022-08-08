@@ -48,8 +48,9 @@ class WikiApi
     private $curl;
     private $loggedIn;
     private $tokens;
-    private $cookies;
     private $noSslCertificate;
+
+    public const PROXY_URL = './include/configuration/configKnowledge/proxy/proxy.php';
 
     /**
      * WikiApi constructor.
@@ -251,7 +252,7 @@ class WikiApi
             'format' => 'json',
             'action' => 'query',
             'list' => 'allpages',
-            'aplimit' => '10'
+            'aplimit' => '200'
         );
 
         $pages = array();
@@ -409,14 +410,20 @@ class WikiApi
         $resHost = $this->db->query(
             "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'"
         );
-        $tuple = $resHost->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
-        $this->db->query(
-            "UPDATE extended_host_information "
-            . "SET ehi_notes_url = '" . $valueToAdd . "' "
-            . "WHERE host_host_id = '" . $tuple['host_id'] . "'"
-        );
+        $hostRow = $resHost->fetch();
+
+        if ($hostRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_host_information " .
+                "SET ehi_notes_url = :url " .
+                "WHERE host_host_id = :hostId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':hostId', $hostRow['host_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
@@ -433,15 +440,19 @@ class WikiApi
             "AND host_service_relation.host_host_id = host.host_id " .
             "AND host_service_relation.service_service_id = service.service_id "
         );
-        $tuple = $resService->fetch();
+        $serviceRow = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
@@ -453,21 +464,25 @@ class WikiApi
             "SELECT service_id FROM service " .
             "WHERE service_description LIKE '" . $serviceName . "' "
         );
-        $tuple = $resService->fetch();
+        $serviceTemplateRow = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceTemplateRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceTemplateRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
      * make a call to mediawiki api to delete a page
      * @param string $title
-     * @return array
+     * @return object
      */
     private function deleteMWPage($title = '')
     {

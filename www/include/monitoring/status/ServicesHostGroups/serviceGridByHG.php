@@ -47,7 +47,9 @@ $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['d
 
 // Check search value in Host search field
 $centreon->historySearch[$url] = $search;
-$centreon->historySearch[$hostgroup] = $hgSearch;
+if (isset($hostgroup)) {
+    $centreon->historySearch[$hostgroup] = $hgSearch;
+}
 
 $tab_class = ["0" => "list_one", "1" => "list_two"];
 $rows = 10;

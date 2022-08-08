@@ -123,7 +123,11 @@ class CentreonRestHttp
         }
 
         if (!is_null($data)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            if (isset($this->contentType) && $this->contentType == 'application/json') {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            } else {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            }
         }
 
         $result = curl_exec($ch);
@@ -202,8 +206,7 @@ class CentreonRestHttp
     public function setProxy($url, $port)
     {
         if (isset($url) && !empty($url)) {
-            $this->proxy = 'tcp://' . $url;
-            
+            $this->proxy = $url;
             if ($port) {
                 $this->proxy .= ':' . $port;
             }
@@ -228,8 +231,7 @@ class CentreonRestHttp
         }
 
         if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
-            $this->proxy = 'tcp://' . $dataProxy['proxy_url'];
-
+            $this->proxy = $dataProxy['proxy_url'];
             if ($dataProxy['proxy_port']) {
                 $this->proxy .= ':' . $dataProxy['proxy_port'];
             }

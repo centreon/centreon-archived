@@ -62,29 +62,21 @@
     {if $nb_downtime_svc}
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
-		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_name_link};{$tds.internal_downtime_id}]'></td>
+		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_id};{$tds.internal_downtime_id}]'></td>
 		<td class="ListColLeft" width="130">
-                    {if $tds.service_name_link}
-                    <a href='./main.php?{$tds.host_name_link}'>
-                    {else}
-                    <a href='./main.php?p=20202&o=hd&host_name={$tds.host_name_link}'>
-                    {/if}
-                    {$tds.host_name}
-                    </a>
+                    <a href='{$tds.h_details_uri}' isreact="true">{$tds.host_name}</a>
                 </td>
 		<td class="ListColLeft" width="130">
-                    {if $tds.service_name_link}
-                    <a href='./main.php?{$tds.host_name_link}'>
+                    {if isset($tds.s_details_uri)}
+                    <a href='{$tds.s_details_uri}' isreact="true">{$tds.service_description}</a>
                     {else}
-                    <a href='./main.php?p=202&o=svcd&host_name={$tds.host_name_link}&service_description={$tds.service_description}'>
-                    {/if}
                     {$tds.service_description}
-                    </a>
+                    {/if}
                 </td>
         <!-- using a class to format the timestamp -->
 		<td width="160" class="ListColRight{if ($tds.scheduled_start_time == 0)}"> {else} isTimestamp">{$tds.scheduled_start_time}{/if}</td>
 		<td width="160" class="ListColRight{if ($tds.scheduled_end_time == 0)}"> {else} isTimestamp">{$tds.scheduled_end_time}{/if}
-		<td class="ListColRight" width="100">{$tds.duration}{if $tds.service_name_link} {$secondes}{/if}</td>
+		<td class="ListColRight" width="100">{$tds.duration}{$secondes}</td>
 		<td class="ListColCenter" width="150">{$tds.author_name}</td>
 		<td class="ListColLeft containsURI">{$tds.comment_data}</td>
 		<td class="ListColCenter" width="50">{$tds.was_started}</td>

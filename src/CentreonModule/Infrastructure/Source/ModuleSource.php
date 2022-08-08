@@ -44,32 +44,16 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class ModuleSource extends SourceAbstract
 {
-
-    const TYPE = 'module';
-    const PATH = 'www/modules/';
-    const PATH_WEB = 'modules/';
-    const CONFIG_FILE = 'conf.php';
-    const LICENSE_FILE = 'license/merethis_lic.zl';
+    public const TYPE = 'module';
+    public const PATH = 'www/modules/';
+    public const PATH_WEB = 'modules/';
+    public const CONFIG_FILE = 'conf.php';
+    public const LICENSE_FILE = 'license/merethis_lic.zl';
 
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     protected $info;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\Installer
-     */
-    protected $installer;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\Upgrader
-     */
-    protected $upgrader;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\License
-     */
-    protected $license;
 
     /**
      * Construct
@@ -86,7 +70,7 @@ class ModuleSource extends SourceAbstract
         parent::__construct($services);
     }
 
-    public function initInfo()
+    public function initInfo(): void
     {
         $this->info = $this->db
             ->getRepository(ModulesInformationsRepository::class)
@@ -94,7 +78,10 @@ class ModuleSource extends SourceAbstract
         ;
     }
 
-    public function remove(string $id)
+    /**
+     * @param string $id
+     */
+    public function remove(string $id): void
     {
         $recordId = $this->db
             ->getRepository(ModulesInformationsRepository::class)
@@ -104,6 +91,9 @@ class ModuleSource extends SourceAbstract
         ($this->remover)($id, $recordId)->remove();
     }
 
+    /**
+     * @param string $id
+     */
     public function update(string $id): ?Module
     {
         $recordId = $this->db
@@ -118,7 +108,13 @@ class ModuleSource extends SourceAbstract
         return $this->getDetail($id);
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
+    /**
+     * @param string|null $search
+     * @param boolean|null $installed
+     * @param boolean|null $updated
+     * @return array<int,\CentreonModule\Infrastructure\Entity\Module>
+     */
+    public function getList(string $search = null, bool $installed = null, bool $updated = null): array
     {
         $files = $this->finder
             ->files()
@@ -142,6 +138,10 @@ class ModuleSource extends SourceAbstract
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @return Module|null
+     */
     public function getDetail(string $id): ?Module
     {
         $result = null;
@@ -166,6 +166,10 @@ class ModuleSource extends SourceAbstract
         return $result;
     }
 
+    /**
+     * @param string $configFile
+     * @return Module
+     */
     public function createEntityFromConfig(string $configFile): Module
     {
         $module_conf = [];
@@ -174,7 +178,7 @@ class ModuleSource extends SourceAbstract
 
         $info = current($module_conf);
 
-        $entity = new Module;
+        $entity = new Module();
         $entity->setId(basename(dirname($configFile)));
         $entity->setPath(dirname($configFile));
         $entity->setType(static::TYPE);
@@ -225,7 +229,8 @@ class ModuleSource extends SourceAbstract
 
     /**
      * @codeCoverageIgnore
-     * @return array
+     * @param string $configFile
+     * @return array<mixed>
      */
     protected function getModuleConf(string $configFile): array
     {
@@ -239,10 +244,10 @@ class ModuleSource extends SourceAbstract
     /**
      * Process license check and return license information
      * @param string $moduleId the module id (slug)
-     * @param array $info the info of the module from conf.php
-     * @return array the license information (required, expiration_date)
+     * @param array<string,mixed> $info the info of the module from conf.php
+     * @return array<string,string|bool> the license information (required, expiration_date)
      */
-    protected function processLicense(string $moduleId, array $info) : array
+    protected function processLicense(string $moduleId, array $info): array
     {
         $license = [
             'required' => false

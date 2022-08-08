@@ -113,10 +113,10 @@ while ($row = $DBRESULT->fetchRow()) {
 ##########################################################
 # Var information to format the element
 #
-$attrsText = array("size"=>"30");
-$attrsSelect = array("size"=>"5", "multiple"=>"1", "cols"=>"40");
+$attrsText = array("size" => "30");
+$attrsSelect = array("size" => "5", "multiple" => "1", "cols" => "40", "required" => "true");
 $attrsAdvSelect = array("style" => "width: 250px; height: 250px;");
-$attrsTextarea = array("rows"=>"5", "cols"=>"40");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 
 #
 ## Form begin

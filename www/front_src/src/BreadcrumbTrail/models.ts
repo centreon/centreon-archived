@@ -1,7 +1,7 @@
 export interface Breadcrumb {
   index?: number;
-  link: string;
   label: string;
+  link: string;
 }
 
 export interface BreadcrumbsByPath {

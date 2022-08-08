@@ -135,9 +135,19 @@ sub insert_into_centreon {
     my ($status, $sth);
 
     if (!$self->existsInDB()) {
-        ($status, $sth) = $self->{centreon_dbc}->query("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES (" . $self->{centreon_dbc}->quote($self->{trap_name}) . ", " . $self->{centreon_dbc}->quote($self->{trap_oid}) . ", " . $self->getStatus() . ", " . $self->{centreon_dbc}->quote($self->{opt_m}) . ", '1')");
+        ($status, $sth) = $self->{centreon_dbc}->query(
+            "INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES ("
+            . $self->{centreon_dbc}->quote($self->{trap_name}) . ", " 
+            . $self->{centreon_dbc}->quote($self->{trap_oid}) . ", " 
+            . $self->{centreon_dbc}->quote($self->getStatus()) . ", " 
+            . $self->{centreon_dbc}->quote($self->{opt_m}) . ", '1')"
+        );
     }
-    ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` SET `traps_args` = " . $self->{centreon_dbc}->quote($self->{trap_format}) . ", `traps_comments` = " . $self->{centreon_dbc}->quote($self->{trap_description}) . " WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($self->{trap_oid}));
+    ($status, $sth) = $self->{centreon_dbc}->query(
+        "UPDATE `traps` SET `traps_args` = " . $self->{centreon_dbc}->quote($self->{trap_format})
+        . ", `traps_comments` = " . $self->{centreon_dbc}->quote($self->{trap_description})
+        . " WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($self->{trap_oid})
+    );
 }
 
 ################
@@ -527,7 +537,7 @@ sub main {
             }
 
             my $trap_lookup;
-            if ($mib_name eq '') {
+            if ($mib_name eq '' || $mib_name !~ m/(^[A-Za-z0-9_-]+$)/) {
                 $trap_lookup = $trapname;
             } else {
                 $trap_lookup = "$mib_name\:\:$trapname";

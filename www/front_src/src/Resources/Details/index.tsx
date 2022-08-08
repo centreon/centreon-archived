@@ -1,88 +1,116 @@
-import * as React from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
-import { omit } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { Paper, makeStyles, Divider } from '@material-ui/core';
+import { useTheme, alpha, Skeleton } from '@mui/material';
 
-import { getData, useRequest } from '@centreon/ui';
+import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
+
+import { rowColorConditions } from '../colors';
 
 import Header from './Header';
-import Body from './Body';
 import { ResourceDetails } from './models';
-import { ResourceEndpoints } from '../models';
-
-const useStyles = makeStyles(() => {
-  return {
-    details: {
-      height: '100%',
-      display: 'grid',
-      gridTemplate: 'auto auto 1fr / 1fr',
-    },
-    header: {
-      gridArea: '1 / 1 / 2 / 1',
-      padding: 8,
-    },
-    divider: {
-      gridArea: '2 / 1 / 3 / 1',
-    },
-    body: {
-      gridArea: '3 / 1 / 4 / 1',
-    },
-  };
-});
-
-interface Props {
-  onClose: () => void;
-  endpoints: ResourceEndpoints;
-  openTabId: number;
-  onSelectTab: (id) => void;
-}
+import { TabById, detailsTabId, tabs } from './tabs';
+import { Tab as TabModel, TabId } from './tabs/models';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  openDetailsTabIdAtom,
+  panelWidthStorageAtom,
+  selectResourceDerivedAtom,
+} from './detailsAtoms';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({
-  endpoints,
-  onClose,
-  openTabId,
-  onSelectTab,
-}: Props): JSX.Element | null => {
-  const classes = useStyles();
+const Details = (): JSX.Element | null => {
+  const { t } = useTranslation();
+  const theme = useTheme();
 
-  const [details, setDetails] = React.useState<ResourceDetails>();
+  const panelRef = useRef<HTMLDivElement>();
 
-  const { details: detailsEndpoint } = endpoints;
+  const [panelWidth, setPanelWidth] = useAtom(panelWidthStorageAtom);
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const details = useAtomValue(detailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
-  const { sendRequest } = useRequest<ResourceDetails>({
-    request: getData,
-  });
-
-  React.useEffect(() => {
-    if (details !== undefined) {
-      setDetails(undefined);
+  useEffect(() => {
+    if (isNil(details)) {
+      return;
     }
 
-    sendRequest(detailsEndpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails),
+    const isOpenTabActive = tabs
+      .find(propEq('id', openDetailsTabId))
+      ?.getIsActive(details);
+
+    if (!isOpenTabActive) {
+      setOpenDetailsTabId(detailsTabId);
+    }
+  }, [details]);
+
+  const getVisibleTabs = (): Array<TabModel> => {
+    if (isNil(details)) {
+      return tabs;
+    }
+
+    return tabs.filter(({ getIsActive }) => getIsActive(details));
+  };
+
+  const getTabIndex = (tabId: TabId): number => {
+    const index = findIndex(propEq('id', tabId), getVisibleTabs());
+
+    return index > 0 ? index : 0;
+  };
+
+  const changeSelectedTabId = (tabId: TabId) => (): void => {
+    setOpenDetailsTabId(tabId);
+  };
+
+  const getHeaderBackgroundColor = (): string | undefined => {
+    const { downtimes, acknowledgement } = details || {};
+
+    const foundColorCondition = rowColorConditions(theme).find(
+      ({ condition }) =>
+        condition({
+          acknowledged: !isNil(acknowledgement),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
+        }),
     );
-  }, [detailsEndpoint]);
+
+    if (isNil(foundColorCondition)) {
+      return theme.palette.background.paper;
+    }
+
+    return alpha(foundColorCondition.color, 0.8);
+  };
 
   return (
-    <Paper elevation={5} className={classes.details}>
-      <div className={classes.header}>
-        <Header details={details} onClickClose={onClose} />
-      </div>
-      <Divider className={classes.divider} />
-      <div className={classes.body}>
-        <Body
-          details={details}
-          endpoints={omit(['details'], endpoints)}
-          openTabId={openTabId}
-          onSelectTab={onSelectTab}
+    <Panel
+      header={<Header details={details} onSelectParent={selectResource} />}
+      headerBackgroundColor={getHeaderBackgroundColor()}
+      memoProps={[openDetailsTabId, details, panelWidth]}
+      ref={panelRef as RefObject<HTMLDivElement>}
+      selectedTab={<TabById details={details} id={openDetailsTabId} />}
+      selectedTabId={getTabIndex(openDetailsTabId)}
+      tabs={getVisibleTabs().map(({ id, title }) => (
+        <Tab
+          aria-label={t(title)}
+          data-testid={id}
+          disabled={isNil(details)}
+          key={id}
+          label={isNil(details) ? <Skeleton width={60} /> : t(title)}
+          onClick={changeSelectedTabId(id)}
         />
-      </div>
-    </Paper>
+      ))}
+      width={panelWidth}
+      onClose={clearSelectedResource}
+      onResize={setPanelWidth}
+    />
   );
 };
 

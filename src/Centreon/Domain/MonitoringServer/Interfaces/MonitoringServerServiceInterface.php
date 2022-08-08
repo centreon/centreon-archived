@@ -23,13 +23,14 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
 use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
 
+/**
+ * @package Centreon\Domain\MonitoringServer\Interfaces
+ */
 interface MonitoringServerServiceInterface
 {
-
     /**
      * Find pollers.
      *
@@ -63,4 +64,30 @@ interface MonitoringServerServiceInterface
      * @throws MonitoringServerException
      */
     public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found.
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
+
+    /**
+     * Find a monitoring server by its name.
+     *
+     * @param string $monitoringServerName Name to find
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServerByName(string $monitoringServerName): ?MonitoringServer;
+
+    /**
+     * Delete a monitoring server.
+     *
+     * @param int $monitoringServerId
+     * @throws MonitoringServerException
+     */
+    public function deleteServer(int $monitoringServerId): void;
 }

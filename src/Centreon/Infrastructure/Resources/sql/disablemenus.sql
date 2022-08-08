@@ -37,3 +37,5 @@ UPDATE topology SET topology_show = '0' WHERE topology_page = '50111';
 UPDATE topology SET topology_show = '0' WHERE topology_page = '50102';
 -- Administration > Extensions > Subscription
 UPDATE topology SET topology_show = '0' WHERE topology_page = '50707';
+-- Administration > Parameters > Remote access // Show the menu on the Remote
+UPDATE topology SET topology_show = '1' WHERE topology_page = '50120';

@@ -26,8 +26,9 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Check\CheckService;
 use Centreon\Domain\Check\Check;
+use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -44,16 +45,21 @@ class CheckServiceTest extends TestCase
     protected $host;
     protected $service;
 
+    protected $check;
     protected $hostCheck;
     protected $serviceCheck;
+
+    protected $hostResource;
+    protected $serviceResource;
 
     protected $monitoringRepository;
     protected $engineService;
     protected $entityValidator;
 
     protected $violationList;
+    protected $accessGroupRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)
@@ -71,6 +77,17 @@ class CheckServiceTest extends TestCase
         $this->service = (new Service())
             ->setId(1);
 
+        $this->hostResource = (new Resource())
+            ->setType('host')
+            ->setId(1);
+        $this->serviceResource = (new Resource())
+            ->setType('service')
+            ->setId(1)
+            ->setParent($this->hostResource);
+
+        $this->check = (new Check())
+            ->setCheckTime(new \DateTime());
+
         $this->hostCheck = (new Check())
             ->setResourceId(1);
 
@@ -78,7 +95,7 @@ class CheckServiceTest extends TestCase
             ->setResourceId(1)
             ->setParentResourceId(1);
 
-        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
         $this->engineService = $this->createMock(EngineServiceInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
@@ -281,5 +298,105 @@ class CheckServiceTest extends TestCase
         $checkService->filterByContact($this->adminContact);
 
         $this->assertNull($checkService->checkService($this->serviceCheck));
+    }
+
+    /**
+     * test checkResource with host not found
+     */
+    public function testCheckResourceHostNotFound()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn(null);
+
+        $checkService = new CheckService(
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+        $checkService->filterByContact($this->adminContact);
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Host 1 not found');
+
+        $this->assertNull($checkService->checkResource($this->check, $this->hostResource));
+    }
+
+    /**
+     * test checkResource with service not found
+     */
+    public function testCheckResourceServiceNotFound()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn(null);
+
+        $checkService = new CheckService(
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+        $checkService->filterByContact($this->adminContact);
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Service 1 (parent: 1) not found');
+
+        $this->assertNull($checkService->checkResource($this->check, $this->serviceResource));
+    }
+
+    /**
+     * test checkResource on host which succeed
+     */
+    public function testCheckResourceHostSucceed()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+
+        $this->engineService->expects($this->once())
+            ->method('scheduleHostCheck');
+
+        $checkService = new CheckService(
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+        $checkService->filterByContact($this->adminContact);
+
+        $this->assertNull($checkService->checkResource($this->check, $this->hostResource));
+    }
+
+    /**
+     * test checkResource on service which succeed
+     */
+    public function testCheckResourceServiceSucceed()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+
+        $this->engineService->expects($this->once())
+            ->method('scheduleServiceCheck');
+
+        $checkService = new CheckService(
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+        $checkService->filterByContact($this->adminContact);
+
+        $this->assertNull($checkService->checkResource($this->check, $this->serviceResource));
     }
 }

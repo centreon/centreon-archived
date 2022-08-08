@@ -144,7 +144,8 @@ The ***type*** can refer to
 - **test**: adding new tests or fixing old ones
 - **chore** : updating project construction files (Jenkins files, CMakefile, gulp, webpack ...)
 
-The ***scope*** is defined by project. Scopes for Centreon Open Source project can be found [here](scopes/centreon.md).
+The ***scope*** is defined by project. Scopes for Centreon Open Source project are related to the modifications.
+For example: fix(***security***) or feat(***hostgroup***)
 
 #### Coding style
 
