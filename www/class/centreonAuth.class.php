@@ -69,7 +69,12 @@ class CentreonAuth
     protected $cryptEngine;
     protected $autologin;
     protected $cryptPossibilities;
+
+    /**
+     * @var CentreonDB
+     */
     protected $pearDB;
+
     protected $debug;
     protected $dependencyInjector;
 
@@ -270,6 +275,7 @@ class CentreonAuth
                         }
                     }
                 }
+                break;
             }
         }
 
@@ -372,7 +378,7 @@ class CentreonAuth
              */
             $this->getCryptFunction();
             $this->checkPassword($password, $token);
-            if ($this->passwdOk == 1) {
+            if ($this->passwdOk == self::PASSWORD_VALID) {
                 $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
@@ -380,20 +386,18 @@ class CentreonAuth
                         . "Authentication succeeded for '" . $username . "'"
                 );
             } else {
-                //  Take care before modifying this message pattern as it may break tools such as fail2ban
-                $this->CentreonLog->insertLog(
-                    CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::AUTH_TYPE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
-                        . "Authentication failed for '" . $username . "'"
+                $this->setAuthenticationError(
+                    $this->userInfos['contact_auth_type'],
+                    $username,
+                    'invalid credentials'
                 );
-                $this->error = _('Your credentials are incorrect.');
             }
         } elseif (count($this->ldap_auto_import)) {
             /*
              * Add temporary userinfo auth_type
              */
             $this->userInfos['contact_alias'] = $username;
-            $this->userInfos['contact_auth_type'] = "ldap";
+            $this->userInfos['contact_auth_type'] = self::AUTH_TYPE_LDAP;
             $this->userInfos['contact_email'] = '';
             $this->userInfos['contact_pager'] = '';
             $this->checkPassword($password, "", true);
@@ -420,17 +424,11 @@ class CentreonAuth
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
                 }
+            } else {
+                $this->setAuthenticationError(self::AUTH_TYPE_LDAP, $username, 'not found');
             }
         } else {
-            if (strlen($username) > 0) {
-                //  Take care before modifying this message pattern as it may break tools such as fail2ban
-                $this->CentreonLog->insertLog(
-                    CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::AUTH_TYPE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
-                        . "Authentication failed for '" . $username . "' : not found"
-                );
-            }
-            $this->error = _('Your credentials are incorrect.');
+            $this->setAuthenticationError(self::AUTH_TYPE_LOCAL, $username, 'not found');
         }
     }
 
@@ -502,5 +500,26 @@ class CentreonAuth
     protected function getAuthType()
     {
         return $this->authType;
+    }
+
+    /**
+     * Set authentication error and log it
+     *
+     * @param string $authenticationType
+     * @param string|bool $username
+     * @param string $reason
+     */
+    private function setAuthenticationError(string $authenticationType, $username, string $reason): void
+    {
+        if (is_string($username) && strlen($username) > 0) {
+            //  Take care before modifying this message pattern as it may break tools such as fail2ban
+            $this->CentreonLog->insertLog(
+                CentreonUserLog::TYPE_LOGIN,
+                "[" . $authenticationType . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    . "Authentication failed for '" . $username . "' : " . $reason
+            );
+        }
+
+        $this->error = _('Your credentials are incorrect.');
     }
 }
