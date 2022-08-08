@@ -66,6 +66,12 @@ class UpdateEventSubscriber implements EventSubscriberInterface
      */
     public function validateCentreonWebVersionOrFail(RequestEvent $event): void
     {
+        $this->debug('Checking if database configuration file exists to know if centreon is already installed');
+        if (! file_exists(_CENTREON_ETC_ . DIRECTORY_SEPARATOR . 'centreon.conf.php')) {
+            $this->debug('Centreon database configuration file not found');
+            return;
+        }
+
         $this->debug('Checking if route matches updates endpoint');
         if (
             $event->getRequest()->getMethod() === Request::METHOD_PATCH
