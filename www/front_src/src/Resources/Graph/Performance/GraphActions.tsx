@@ -27,7 +27,8 @@ import {
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
-import { ResourceType } from '../../models';
+import { ResourceType, Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
 
 import ModalAD from './Lines/TresholdAD/ModalAD';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
@@ -35,7 +36,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 interface Props {
   customTimePeriod?: CustomTimePeriod;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
-  resource: any;
+  resource: ResourceDetails | Resource;
   resourceName: string;
   resourceParentName?: string;
   resourceType?: string;
@@ -113,7 +114,7 @@ const GraphActions = ({
     });
   };
 
-  const openModalAD = (): void => setIsOpenModalAD(!isOpenModalAD);
+  const openModalAD = (): void => setIsOpenModalAD(true);
 
   return (
     <div className={classes.buttonGroup}>
@@ -146,7 +147,6 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
-
           {isResourceAD && (
             <IconButton
               disableTouchRipple

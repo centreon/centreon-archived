@@ -2,10 +2,11 @@ import { memo } from 'react';
 
 import { Shape, Curve } from '@visx/visx';
 import { equals, isNil, prop } from 'ramda';
-import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { getTime } from '../timeSeries';
 import { TimeValue } from '../models';
+import { ResourceType } from '../../../models';
 
 import { getFillColor } from '.';
 
@@ -14,8 +15,10 @@ interface Props {
   filled: boolean;
   graphHeight: number;
   highlight?: boolean;
+  isTabDetails: boolean;
   lineColor: string;
   metric: string;
+  resourceType: string;
   timeSeries: Array<TimeValue>;
   transparency: number;
   unit: string;
@@ -35,6 +38,8 @@ const RegularLine = ({
   areaColor,
   transparency,
   graphHeight,
+  resourceType,
+  isTabDetails,
 }: Props): JSX.Element => {
   const strockWidth =
     equals(metric, 'connection_lower_thresholds') ||
@@ -43,6 +48,39 @@ const RegularLine = ({
       : 0.8;
 
   const isHighlight = highlight ? 2 : strockWidth;
+
+  interface PropsIsOnline {
+    maxDistance: number;
+    pointX: number;
+    pointX1: number;
+    pointX2: number;
+    pointY: number;
+    pointY1: number;
+    pointY2: number;
+  }
+
+  const isOnLine = ({
+    pointX,
+    pointY,
+    pointX1,
+    pointY1,
+    pointX2,
+    pointY2,
+    maxDistance,
+  }: PropsIsOnline): boolean => {
+    const dxL = pointX2 - pointX1;
+    const dyL = pointY2 - pointY1;
+    const dxP = pointX - pointX1;
+    const dyP = pointY - pointY1;
+
+    const squareLen = dxL * dxL + dyL * dyL;
+    const dotProd = dxP * dxL + dyP * dyL;
+    const crossProd = dyP * dxL - dxP * dyL;
+
+    const distance = Math.abs(crossProd) / Math.sqrt(squareLen);
+
+    return distance <= maxDistance && dotProd >= 0 && dotProd <= squareLen;
+  };
 
   const props = {
     curve: Curve.curveLinear,
@@ -53,8 +91,12 @@ const RegularLine = ({
     strokeWidth: isHighlight,
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
+
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
   };
+
+  const showCircle =
+    equals(resourceType, ResourceType.anomalydetection) && !isTabDetails;
 
   if (filled) {
     return (
@@ -69,7 +111,45 @@ const RegularLine = ({
     );
   }
 
-  return <Shape.LinePath<TimeValue> {...props} />;
+  return (
+    <>
+      {showCircle &&
+        timeSeries.map((item) => {
+          const metricPoint = 'connection';
+          const metricPoint1 = 'connection_lower_thresholds';
+          const metricPoint2 = 'connection_upper_thresholds';
+          const pointX = xScale(getTime(item));
+          const pointX1 = xScale(getTime(item));
+          const pointX2 = xScale(getTime(item));
+          const pointY = yScale(prop(metricPoint, item) as NumberValue);
+          const pointY1 = yScale(prop(metricPoint1, item) as NumberValue);
+          const pointY2 = yScale(prop(metricPoint2, item) as NumberValue);
+          const isShowCircleRed = isOnLine({
+            maxDistance: 0,
+            pointX,
+            pointX1,
+            pointX2,
+            pointY,
+            pointY1,
+            pointY2,
+          });
+          if (!isShowCircleRed) {
+            return (
+              <Shape.Circle
+                cx={pointX}
+                cy={pointY}
+                fill="red"
+                key={Math.random()}
+                r={2}
+              />
+            );
+          }
+
+          return null;
+        })}
+      <Shape.LinePath<TimeValue> {...props} />;
+    </>
+  );
 };
 
 export default memo(RegularLine, (prevProps, nextProps) => {

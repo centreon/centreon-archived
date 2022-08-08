@@ -1,14 +1,18 @@
+import { Dispatch, SetStateAction } from 'react';
+
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 import TimePeriodButtonGroup from '../../TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../ExportableGraphWithTimeline';
+import { Resource } from '../../../../models';
+import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
-  details: any;
+  details: Resource | ResourceDetails;
   isOpen: boolean;
-  setIsOpen: any;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const style = {
@@ -17,7 +21,7 @@ const style = {
   boxShadow: 24,
   left: '50%',
   p: 4,
-  position: 'absolute' as const,
+  position: 'absolute',
   top: '50%',
   transform: 'translate(-50%, -50%)',
   width: '80%',
@@ -31,7 +35,6 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
       aria-describedby="modal-modal-description"
       aria-labelledby="modal-modal-title"
       open={isOpen}
-      onClose={handleClose}
     >
       <Box sx={style}>
         <div>
@@ -40,6 +43,7 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
         <div>
           <ExportablePerformanceGraphWithTimeline
             graphHeight={200}
+            isTabDetails={false}
             resource={details}
           />
         </div>

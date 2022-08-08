@@ -26,12 +26,13 @@ import TresholdAD from './TresholdAD/TresholdAD';
 interface Props {
   displayTimeValues: boolean;
   graphHeight: number;
+  isTabDetails: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
-  type?: string;
+  type: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -84,6 +85,7 @@ const Lines = ({
   timeTick,
   displayTimeValues,
   type,
+  isTabDetails,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -179,8 +181,10 @@ const Lines = ({
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
+                  isTabDetails={isTabDetails}
                   lineColor={lineColor}
                   metric={metric}
+                  resourceType={type}
                   timeSeries={timeSeries}
                   transparency={transparency}
                   unit={unit}

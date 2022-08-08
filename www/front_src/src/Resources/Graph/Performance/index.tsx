@@ -71,6 +71,7 @@ interface Props {
   endpoint?: string;
   graphHeight: number;
   isInViewport?: boolean;
+  isTabDetails: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -148,6 +149,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
+  isTabDetails,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -181,8 +183,6 @@ const PerformanceGraph = ({
     if (isNil(endpoint)) {
       return;
     }
-
-    console.log({ endpoint });
 
     sendGetGraphDataRequest({
       endpoint,
@@ -392,15 +392,18 @@ const PerformanceGraph = ({
           >
             {title}
           </Typography>
-          <MemoizedGraphActions
-            customTimePeriod={customTimePeriod}
-            performanceGraphRef={performanceGraphRef}
-            resource={resource}
-            resourceName={resource.name}
-            resourceParentName={resource.parent?.name}
-            resourceType={resource.type}
-            timeline={timeline}
-          />
+
+          {isTabDetails && (
+            <MemoizedGraphActions
+              customTimePeriod={customTimePeriod}
+              performanceGraphRef={performanceGraphRef}
+              resource={resource}
+              resourceName={resource.name}
+              resourceParentName={resource.parent?.name}
+              resourceType={resource.type}
+              timeline={timeline}
+            />
+          )}
         </div>
       )}
 
@@ -422,6 +425,7 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
+              isTabDetails={isTabDetails}
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
