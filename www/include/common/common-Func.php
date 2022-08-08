@@ -735,10 +735,9 @@ function getMyServiceField($service_id, $field)
     $tab = array();
 
     while (1) {
-        $statement = $pearDB->prepare("SELECT :field , service_template_model_stm_id " .
+        $statement = $pearDB->prepare("SELECT `" . $field . "` , service_template_model_stm_id " .
             "FROM service WHERE service_id = :service_id LIMIT 1") ;
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
-        $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
         $statement->execute();
         $row = $statement->fetchRow();
         $field_result = $row[$field];
@@ -765,14 +764,13 @@ function getMyServiceExtendedInfoField($service_id, $field)
 
     $tab = array();
     while (1) {
-        $statement = $pearDB->prepare("SELECT `extended_service_information`. :field ," .
+        $statement = $pearDB->prepare("SELECT `extended_service_information`.`" . $field . "` ," .
             " `service`.`service_template_model_stm_id` " .
             "FROM `service`, `extended_service_information` " .
             "WHERE `extended_service_information`.`service_service_id` =:service_id " .
             "AND `service`.`service_id` = :service_id LIMIT 1");
 
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
-        $statement->bindColumn(':field', $field, \PDO::PARAM_STR);
         $statement->execute();
 
         if ($row = $statement->fetch()) {
@@ -911,7 +909,7 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
             "WHERE hsr.host_host_id = :host_host_id AND hsr.service_service_id = service_id " .
             "AND (service_description = :service_description OR" .
             " service_description = :utf8_encoded_service_description ) LIMIT 1");
-        $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
+        $statement->bindValue(':host_host_id', (int) $host_id, \PDO::PARAM_INT);
         $statement->bindValue(':utf8_encoded_service_description', utf8_encode($service_description), \PDO::PARAM_STR);
         $statement->bindValue(':service_description', $service_description, \PDO::PARAM_STR);
         $statement->execute();
