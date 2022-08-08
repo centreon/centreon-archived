@@ -420,15 +420,6 @@ if (!is_null($host_id)) {
             str_replace(' \'', "\n'", $service_status['performance_data'])
         );
         if ($service_status['current_state'] !== "") {
-            $serviceStateColors = array(
-                0 => "#13EB3A",
-                1 => "#F8C706",
-                2 => "#F91D05",
-                3 => "#DCDADA",
-                4 => "#2AD1D4"
-            );
-
-            $service_status["status_color"] = $serviceStateColors[$service_status["current_state"]];
             $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
         }
         !$service_status["check_latency"]
