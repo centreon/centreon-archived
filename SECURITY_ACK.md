@@ -14,6 +14,7 @@ Centreon reserves the right to make final decisions regarding publishing acknowl
 
 <h3> 2022 </h3>
 
+* 2022/05/23 - Lucas Carmo and Daniel França Lima from [Hakaï Security](https://www.hakaioffensivesecurity.com/)
 * 2022/02/16 - Anonymous working with Trend Micro Zero Day Initiative
 
 <h3> 2021 </h3>
