@@ -36,20 +36,4 @@ class HostResourceType extends AbstractResourceType
      * @var integer $id
      */
     protected int $id = self::TYPE_ID;
-
-    /**
-     * @inheritDoc
-     */
-    public function hasParent(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasInternalId(): bool
-    {
-        return false;
-    }
 }

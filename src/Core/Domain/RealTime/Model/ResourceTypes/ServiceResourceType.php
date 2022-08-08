@@ -43,12 +43,4 @@ class ServiceResourceType extends AbstractResourceType
     {
         return true;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasInternalId(): bool
-    {
-        return false;
-    }
 }

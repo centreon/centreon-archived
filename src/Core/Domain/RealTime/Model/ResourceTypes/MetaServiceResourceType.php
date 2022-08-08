@@ -40,14 +40,6 @@ class MetaServiceResourceType extends AbstractResourceType
     /**
      * @inheritDoc
      */
-    public function hasParent(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function hasInternalId(): bool
     {
         return true;

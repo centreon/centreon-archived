@@ -61,4 +61,20 @@ abstract class AbstractResourceType implements ResourceTypeInterface
     {
         return $typeId === $this->id;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasInternalId(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasParent(): bool
+    {
+        return false;
+    }
 }
