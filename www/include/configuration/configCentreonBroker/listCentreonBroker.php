@@ -124,16 +124,10 @@ $style = "one";
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
-$statementOutput = $pearDB->prepare(
+$statementBrokerInfo = $pearDB->prepare(
     "SELECT COUNT(DISTINCT(config_group_id)) as num " .
     "FROM cfg_centreonbroker_info " .
-    "WHERE config_group = 'output' " .
-    "AND config_id = :config_id"
-);
-$statementInput = $pearDB->prepare(
-    "SELECT COUNT(DISTINCT(config_group_id)) as num " .
-    "FROM cfg_centreonbroker_info " .
-    "WHERE config_group = 'input' " .
+    "WHERE config_group = :config_group " .
     "AND config_id = :config_id"
 );
 
@@ -159,15 +153,16 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         . "style=\"margin-bottom:0px;\" name='dupNbr[" . $config['config_id'] . "]'></input>";
 
     // Number of output
-    $statementOutput->bindValue(':config_id', (int) $config['config_id'], \PDO::PARAM_INT);
-    $statementOutput->execute();
-    $row = $statementOutput->fetch(\PDO::FETCH_ASSOC);
+    $statementBrokerInfo->bindValue(':config_id', (int) $config['config_id'], \PDO::PARAM_INT);
+    $statementBrokerInfo->bindValue(':config_group', 'output', \PDO::PARAM_STR);
+    $statementBrokerInfo->execute();
+    $row = $statementBrokerInfo->fetch(\PDO::FETCH_ASSOC);
     $outputNumber = $row["num"];
 
     // Number of input
-    $statementInput->bindValue(':config_id', (int) $config['config_id'], \PDO::PARAM_INT);
-    $statementInput->execute();
-    $row = $statementInput->fetch(\PDO::FETCH_ASSOC);
+    $statementBrokerInfo->bindValue(':config_group', 'input', \PDO::PARAM_STR);
+    $statementBrokerInfo->execute();
+    $row = $statementBrokerInfo->fetch(\PDO::FETCH_ASSOC);
     $inputNumber = $row["num"];
 
     $elemArr[$i] = array(
