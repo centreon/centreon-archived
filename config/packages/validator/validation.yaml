@@ -239,6 +239,22 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: string
                     groups: [Default]
+        hostCategoryNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        serviceCategoryNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
         monitoringServerNames:
             - Type:
                 type: array
@@ -246,6 +262,38 @@ Centreon\Domain\Monitoring\ResourceFilter:
             - All:
                 - Type:
                     type: string
+                    groups: [Default]
+        serviceSeverityNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        hostSeverityNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        serviceSeverityLevels:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: integer
+                    groups: [Default]
+        hostSeverityLevels:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: integer
                     groups: [Default]
         statusTypes:
             - Type:

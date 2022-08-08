@@ -459,7 +459,7 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
             "attempts" => 5,
             "blocking_duration" => 900,
             "password_expiration_delay" => 15552000,
-            "delay_before_new_password" => 3600,
+            "delay_before_new_password" => null,
             "can_reuse_passwords" => false,
         ],
     ]);

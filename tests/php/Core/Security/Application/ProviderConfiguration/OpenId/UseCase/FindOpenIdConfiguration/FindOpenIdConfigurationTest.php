@@ -25,13 +25,14 @@ namespace Tests\Core\Security\Application\ProviderConfiguration\OpenId\UseCase\F
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Contact\Domain\Model\ContactGroup;
 use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
 };
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 beforeEach(function () {
@@ -40,14 +41,10 @@ beforeEach(function () {
 });
 
 it('should present a provider configuration', function () {
-        $configuration = new OpenIdConfiguration(
-            false,
-            new ContactTemplate(1, 'contact_template'),
-        );
-
-        $configuration
+        $configuration = (new Configuration())
             ->setActive(true)
             ->setForced(true)
+            ->setVerifyPeer(false)
             ->setTrustedClientAddresses([])
             ->setBlacklistClientAddresses([])
             ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
@@ -61,7 +58,9 @@ it('should present a provider configuration', function () {
             ->setClientId('MyCl1ientId')
             ->setClientSecret('MyCl1ientSuperSecr3tKey')
             ->setAuthenticationType('client_secret_post')
-            ->setVerifyPeer(false);
+            ->setContactTemplate(new ContactTemplate(1, 'contact_template'))
+            ->setAutoImportEnabled(false)
+            ->setContactGroup(new ContactGroup(1, 'contact_group'));
 
         $useCase = new FindOpenIdConfiguration($this->repository);
         $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
@@ -96,8 +95,8 @@ it('should present a provider configuration', function () {
         expect($presenter->response->contactTemplate)->toBe(['id' => 1, 'name' => 'contact_template']);
         expect($presenter->response->isAutoImportEnabled)->toBeFalse();
         expect($presenter->response->emailBindAttribute)->toBeNull();
-        expect($presenter->response->userAliasBindAttribute)->toBeNull();
         expect($presenter->response->userNameBindAttribute)->toBeNull();
+        expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
 });
 
 it('should present a NotFoundReponse when no configuration is found', function () {

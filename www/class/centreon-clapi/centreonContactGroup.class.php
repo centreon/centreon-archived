@@ -37,9 +37,9 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonACL.class.php";
-require_once "Centreon/Object/Contact/Contact.php";
-require_once "Centreon/Object/Contact/Group.php";
-require_once "Centreon/Object/Relation/Contact/Group/Contact.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Contact/Contact.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Contact/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Contact/Group/Contact.php";
 
 /**
  * Class for managing contact groups

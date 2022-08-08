@@ -26,7 +26,6 @@ namespace Tests\Core\Application\Platform\UseCase\FindInstallationStatus;
 use PHPUnit\Framework\TestCase;
 use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
-use Tests\Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterStub;
 
 class FindInstallationStatusTest extends TestCase
 {

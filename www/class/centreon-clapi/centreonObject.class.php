@@ -37,7 +37,7 @@
 namespace CentreonClapi;
 
 require_once "centreonAPI.class.php";
-require_once _CLAPI_LIB_ . "/Centreon/Object/Contact/Contact.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 

@@ -15,7 +15,8 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DELIVERY_STAGE = 'Delivery to testing'
 } else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
-  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DELIVERY_STAGE = 'Deliver rpm to canary and debian to testing'
+  env.REPO = 'testing'
 } else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
   env.REPO = 'unstable'
@@ -208,7 +209,9 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-fe.xml'
+          junit 'cypress-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'cypress-fe.xml', includes: 'cypress-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
           publishHTML([
             allowMissing: false,
@@ -400,29 +403,20 @@ try {
       }
     },
     'E2E tests': {
-      def parallelSteps = [:]
-      for (x in e2eFeatureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild()
-            unstash 'tar-sources'
-            unstash 'cypress-node-modules'
-            timeout(time: 10, unit: 'MINUTES') {
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}",
-                returnStatus: true
-              )
-              junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
-                currentBuild.result = 'FAILURE'
-              }
-            }
-          }
+      node {
+        checkoutCentreonBuild();
+        unstash 'tar-sources'
+        unstash 'cypress-node-modules'
+        def acceptanceStatus = sh(
+          script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7",
+          returnStatus: true
+        )
+        junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+        if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+          currentBuild.result = 'FAILURE'
         }
       }
-      parallel parallelSteps
     },
     'Lighthouse CI': {
       if (hasFrontendChanges) {

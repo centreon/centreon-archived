@@ -7,11 +7,16 @@ import {
   ResourceLinks,
   NamedEntity,
   ResourceType,
+  Severity,
 } from '../models';
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
 export interface Group extends NamedEntity {
+  configuration_uri: string | null;
+}
+
+export interface Category extends NamedEntity {
   configuration_uri: string | null;
 }
 
@@ -21,6 +26,7 @@ export interface ResourceDetails extends NamedEntity {
   active_checks: boolean;
   alias?: string;
   calculation_type?: string;
+  categories?: Array<Category>;
   command_line?: string;
   downtimes: Array<Downtime>;
   duration: string;
@@ -42,6 +48,7 @@ export interface ResourceDetails extends NamedEntity {
   passive_checks?: boolean;
   percent_state_change: number;
   performance_data?: string;
+  severity: Severity;
   severity_level: number;
   status: Status;
   timezone?: string;

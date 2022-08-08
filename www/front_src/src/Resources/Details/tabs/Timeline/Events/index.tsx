@@ -5,11 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { Dayjs } from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
 
-import { Typography, Paper } from '@mui/material';
+import { Typography, Paper, Divider } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {
   Timeline,
-  TimelineConnector,
   TimelineContent,
   TimelineDot,
   TimelineItem,
@@ -29,6 +28,18 @@ import {
 } from '../Event';
 
 const useStyles = makeStyles((theme) => ({
+  contentContainer: {
+    paddingBottom: 0,
+    paddingTop: 0,
+  },
+  divider: {
+    backgroundColor: theme.palette.action.disabled,
+  },
+  dividerContainer: {
+    display: 'flex',
+    height: 12,
+    paddingLeft: 18,
+  },
   divisionSubtitle: {
     marginLeft: theme.spacing(4),
   },
@@ -37,12 +48,16 @@ const useStyles = makeStyles((theme) => ({
       flex: 0,
       padding: 0,
     },
+    alignItems: 'center',
     minHeight: theme.spacing(7),
   },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
     width: '100%',
+  },
+  header: {
+    paddingBottom: theme.spacing(1),
   },
   timeline: {
     margin: 0,
@@ -114,25 +129,27 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
             not(isEmpty(formattedDivisionDates)) &&
             equals(formattedDivisionDates[1], formattedDivisionDates[3]);
 
+          const eventDate = areStartAndEndDateEqual
+            ? format({
+                date: (startDate?.(formattedLocale) as Dayjs)?.toISOString(),
+                formatString: 'LL',
+              })
+            : formattedDivisionDates.join(' ');
+
           return (
             <div key={label}>
               <div className={classes.events}>
-                <Typography display="inline" variant="h6">
-                  {t(label)}
-                  <span className={classes.divisionSubtitle}>
-                    <Typography display="inline">
-                      {areStartAndEndDateEqual
-                        ? format({
-                            date: (
-                              startDate?.(formattedLocale) as Dayjs
-                            )?.toISOString(),
-                            formatString: 'LL',
-                          })
-                        : formattedDivisionDates.join(' ')}
-                    </Typography>
-                  </span>
-                </Typography>
                 <Timeline className={classes.timeline}>
+                  <Typography
+                    className={classes.header}
+                    display="inline"
+                    variant="h6"
+                  >
+                    {t(label)}
+                    <span className={classes.divisionSubtitle}>
+                      <Typography display="inline">{eventDate}</Typography>
+                    </span>
+                  </Typography>
                   {eventsByDate.map((event) => {
                     const { id, type } = event;
 
@@ -145,28 +162,38 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                     );
 
                     return (
-                      <TimelineItem
-                        className={classes.event}
-                        key={`${id}-${type}`}
-                      >
-                        <TimelineSeparator>
-                          <TimelineDot
-                            className={classes.timelineDot}
-                            variant="outlined"
-                          >
-                            {icon(t)}
-                          </TimelineDot>
-                          {isNotLastEvent && <TimelineConnector />}
-                        </TimelineSeparator>
-                        <TimelineContent>
-                          <Paper>
-                            <Event event={event} />
-                          </Paper>
-                          {equals(lastEvent, event) && (
-                            <div ref={infiniteScrollTriggerRef} />
-                          )}
-                        </TimelineContent>
-                      </TimelineItem>
+                      <>
+                        <TimelineItem
+                          className={classes.event}
+                          key={`${id}-${type}`}
+                        >
+                          <TimelineSeparator>
+                            <TimelineDot
+                              className={classes.timelineDot}
+                              variant="outlined"
+                            >
+                              {icon(t)}
+                            </TimelineDot>
+                          </TimelineSeparator>
+                          <TimelineContent className={classes.contentContainer}>
+                            <Paper>
+                              <Event event={event} />
+                            </Paper>
+                            {equals(lastEvent, event) && (
+                              <div ref={infiniteScrollTriggerRef} />
+                            )}
+                          </TimelineContent>
+                        </TimelineItem>
+                        {isNotLastEvent && (
+                          <div className={classes.dividerContainer}>
+                            <Divider
+                              flexItem
+                              className={classes.divider}
+                              orientation="vertical"
+                            />
+                          </div>
+                        )}
+                      </>
                     );
                   })}
                 </Timeline>

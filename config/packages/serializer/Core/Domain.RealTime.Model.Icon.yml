@@ -1,0 +1,14 @@
+Core\Domain\RealTime\Model\Icon:
+    properties:
+        id:
+            type: integer
+            groups:
+                - 'core_icon_main'
+        name:
+            type: string
+            groups:
+                - 'core_icon_main'
+        url:
+            type: string
+            groups:
+                - 'core_icon_main'

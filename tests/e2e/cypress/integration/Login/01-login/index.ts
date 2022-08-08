@@ -5,6 +5,9 @@ import { insertContactFixture, removeContact } from '../common';
 
 before(() => {
   insertContactFixture();
+  cy.intercept(
+    '/centreon/api/internal.php?object=centreon_topcounter&action=user',
+  ).as('userTopCounterEndpoint');
 });
 
 When('I enter my credentials on the login page', () => {
@@ -15,6 +18,7 @@ When('I enter my credentials on the login page', () => {
 
 Then('I am redirected to the default page', () => {
   cy.url().should('include', '/monitoring/resources');
+  cy.wait('@userTopCounterEndpoint');
   logout().then(() => cy.reload());
 });
 

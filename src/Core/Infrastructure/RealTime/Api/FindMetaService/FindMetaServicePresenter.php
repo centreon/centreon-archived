@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindMetaService;
 
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\AbstractPresenter;

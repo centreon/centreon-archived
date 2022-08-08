@@ -712,7 +712,6 @@ CREATE TABLE `contact` (
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
-  `enable_one_click_export` enum('0','1') DEFAULT '0',
   `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
   `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`contact_id`),
@@ -2271,7 +2270,6 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `ip` VARCHAR(255) NOT NULL,
-  `app_key` VARCHAR(40) NOT NULL,
   `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,
@@ -2418,6 +2416,18 @@ CREATE TABLE `cfg_nagios_logger` (
     REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `security_provider_access_group_relation` (
+  `claim_value` VARCHAR(255) NOT NULL,
+  `access_group_id` int(11) NOT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  PRIMARY KEY (`claim_value`, `access_group_id`, `provider_configuration_id`),
+  CONSTRAINT `security_provider_access_group_id`
+    FOREIGN KEY (`access_group_id`)
+    REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
+  CONSTRAINT `security_provider_provider_configuration_id`
+    FOREIGN KEY (`provider_configuration_id`)
+    REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

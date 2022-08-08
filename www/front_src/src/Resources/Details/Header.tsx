@@ -18,8 +18,7 @@ import {
   StatusChip,
   SeverityCode,
   IconButton,
-  useSnackbar,
-  copyToClipboard,
+  useCopyToClipboard,
 } from '@centreon/ui';
 
 import {
@@ -106,19 +105,16 @@ type Props = {
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const classes = useStyles({
-    displaySeverity: not(isNil(details?.severity_level)),
+    displaySeverity: not(isNil(details?.severity)),
   });
   const { t } = useTranslation();
-  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
-  const copyResourceLink = (): void => {
-    try {
-      copyToClipboard(window.location.href);
-      showSuccessMessage(t(labelLinkCopied));
-    } catch (_) {
-      showErrorMessage(t(labelSomethingWentWrong));
-    }
-  };
+  const { copy } = useCopyToClipboard({
+    errorMessage: t(labelSomethingWentWrong),
+    successMessage: t(labelLinkCopied),
+  });
+
+  const copyLink = (): Promise<void> => copy(window.location.href);
 
   if (details === undefined) {
     return <LoadingSkeleton />;
@@ -141,10 +137,12 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   return (
     <div className={classes.header}>
-      {details?.severity_level && (
-        <StatusChip
-          label={details?.severity_level.toString()}
-          severityCode={SeverityCode.None}
+      {details.severity && (
+        <img
+          alt="severity"
+          height={24}
+          src={details?.severity?.icon?.url}
+          width={24}
         />
       )}
       <StatusChip
@@ -205,7 +203,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
-        onClick={copyResourceLink}
+        onClick={copyLink}
       >
         <CopyIcon fontSize="small" />
       </IconButton>

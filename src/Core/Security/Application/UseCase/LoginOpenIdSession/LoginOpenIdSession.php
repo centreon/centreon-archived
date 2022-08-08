@@ -28,20 +28,23 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Security\Domain\Authentication\AuthenticationException;
+use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
+use Core\Security\Application\Repository\WriteAccessGroupRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
-use Core\Security\Domain\Authentication\SSOAuthenticationException;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 class LoginOpenIdSession
 {
@@ -57,6 +60,8 @@ class LoginOpenIdSession
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param SessionRepositoryInterface $sessionRepository
      * @param DataStorageEngineInterface $dataStorageEngine
+     * @param WriteContactGroupRepositoryInterface $contactGroupRepository
+     * @param WriteAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         private string $redirectDefaultPage,
@@ -68,6 +73,8 @@ class LoginOpenIdSession
         private AuthenticationRepositoryInterface $authenticationRepository,
         private SessionRepositoryInterface $sessionRepository,
         private DataStorageEngineInterface $dataStorageEngine,
+        private WriteContactGroupRepositoryInterface $contactGroupRepository,
+        private WriteAccessGroupRepositoryInterface $accessGroupRepository,
     ) {
     }
 
@@ -87,17 +94,8 @@ class LoginOpenIdSession
             }
             $this->provider->setConfiguration($openIdProviderConfiguration);
             $this->provider->authenticateOrFail($request->authorizationCode, $request->clientIp);
-            $user = $this->provider->getUser();
-            if ($user === null) {
-                if (!$this->provider->canCreateUser()) {
-                    throw new NotFoundException('User not found');
-                }
-                $this->provider->createUser();
-                $user = $this->provider->getUser();
-                if ($user === null) {
-                    throw new NotFoundException('User not found');
-                }
-            }
+            $user = $this->findUserOrFail();
+            $this->updateUserACL($user);
             $sessionUserInfos = [
                 'contact_id' => $user->getId(),
                 'contact_name' => $user->getName(),
@@ -137,12 +135,20 @@ class LoginOpenIdSession
                 }
             }
         } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
+            $this->error('An unexpected error occurred while authenticating with OpenID', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $presenter->present($this->createResponse(null, $e->getMessage()));
             return;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            $this->error('An unexpected error occurred while authenticating with OpenID', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $presenter->present($this->createResponse(
                 null,
-                'An unexpected error occured while authenticating with OpenID'
+                'An unexpected error occurred while authenticating with OpenID'
             ));
             return;
         }
@@ -150,7 +156,7 @@ class LoginOpenIdSession
         $this->debug(
             "[AUTHENTICATE] Authentication success",
             [
-                "provider_name" => OpenIdConfiguration::NAME,
+                "provider_name" => Configuration::NAME,
                 "contact_id" => $user->getId(),
                 "contact_alias" => $user->getAlias()
             ]
@@ -269,5 +275,162 @@ class LoginOpenIdSession
         $response->error = $error;
 
         return $response;
+    }
+
+    /**
+     * Find User in Centreon or throw an exception
+     *
+     * @return ContactInterface
+     * @throws NotFoundException
+     */
+    private function findUserOrFail(): ContactInterface
+    {
+        $user = $this->provider->getUser();
+        if ($user === null) {
+            $this->info("User not found");
+            if (! $this->provider->canCreateUser()) {
+                throw new NotFoundException('User could not be created');
+            }
+            $this->info("Start auto import");
+            $this->provider->createUser();
+            $user = $this->provider->getUser();
+            if ($user === null) {
+                throw new NotFoundException('User not found');
+            }
+            $this->info("User imported: " . $user->getName());
+        }
+
+        return $user;
+    }
+
+    /**
+     * Update User ACL On authentication
+     *
+     * @param ContactInterface $user
+     */
+    private function updateUserACL(ContactInterface $user): void
+    {
+        $userClaims = $this->getUserClaimsFromIdTokenOrUserInformation();
+        $userAccessGroups = $this->getUserAccessGroupsFromClaims($userClaims);
+        $this->updateAccessGroupsForUser($user, $userAccessGroups);
+        $this->updateContactGroupsForUser($user);
+    }
+
+    /**
+     * Parse Id Token and User Information to get claims
+     *
+     * @return string[]
+     */
+    private function getUserClaimsFromIdTokenOrUserInformation(): array
+    {
+        $userClaims = [];
+        $configuration = $this->provider->getConfiguration();
+        $idTokenPayload = $this->provider->getIdTokenPayload();
+        $userInformation = $this->provider->getUserInformation();
+        if (array_key_exists($configuration->getClaimName(), $idTokenPayload)) {
+            $userClaims = $idTokenPayload[$configuration->getClaimName()];
+        } elseif (array_key_exists($configuration->getClaimName(), $userInformation)) {
+            $userClaims = $userInformation[$configuration->getClaimName()];
+        } else {
+            $this->info(
+                "configured claim name not found in user information or id_token, " .
+                "default contact group ACL will be apply",
+                ["claim_name" => $configuration->getClaimName()]
+            );
+        }
+
+        /**
+         * Claims can sometime be listed as a string e.g: "claim1,claim2,claim3" so we explode
+         * them to handle only one format
+         */
+        if (is_string($userClaims)) {
+            $userClaims = explode(",", $userClaims);
+        }
+
+        $this->info("Claims found", [
+            "claims_value" => implode(", ", $userClaims),
+            "claim_name" => $configuration->getClaimName()
+        ]);
+
+        return $userClaims;
+    }
+
+    /**
+     * Get Access Group linked to user claims
+     *
+     * @param string[] $claims
+     * @return AccessGroup[]
+     */
+    private function getUserAccessGroupsFromClaims(array $claims): array
+    {
+        $userAccessGroups = [];
+        $configuration = $this->provider->getConfiguration();
+        foreach ($configuration->getAuthorizationRules() as $authorizationRule) {
+            if (! in_array($authorizationRule->getClaimValue(), $claims)) {
+                $this->info(
+                    "Configured Claim Value not found in user claims",
+                    ["claim_value" => $authorizationRule->getClaimValue()]
+                );
+
+                continue;
+            }
+            // We ensure here to not duplicate access group while using their id as index
+            $userAccessGroups[$authorizationRule->getAccessGroup()->getId()] = $authorizationRule->getAccessGroup();
+        }
+        return $userAccessGroups;
+    }
+
+    /**
+     * Delete and Insert Access Groups for authenticated user
+     *
+     * @param ContactInterface $user
+     * @param AccessGroup[] $userAccessGroups
+     */
+    private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
+    {
+        try {
+            $this->info("Updating User Access Groups", [
+                "user_id" => $user->getId(),
+                "access_groups" => $userAccessGroups
+            ]);
+            $this->dataStorageEngine->startTransaction();
+            $this->accessGroupRepository->deleteAccessGroupsForUser($user);
+            $this->accessGroupRepository->insertAccessGroupsForUser($user, $userAccessGroups);
+            $this->dataStorageEngine->commitTransaction();
+        } catch (\Exception $ex) {
+            $this->dataStorageEngine->rollbackTransaction();
+            $this->error('Error during ACL update', [
+                "user_id" => $user->getId(),
+                "access_groups" => $userAccessGroups,
+                "trace" => $ex->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * Delete and Insert Contact Group for authenticated user
+     *
+     * @param ContactInterface $user
+     */
+    private function updateContactGroupsForUser(ContactInterface $user): void
+    {
+        $contactGroup = $this->provider->getConfiguration()->getContactGroup();
+        try {
+            $this->info('Updating User Contact Group', [
+                "user_id" => $user->getId(),
+                "contact_group_id" => $contactGroup->getId(),
+            ]);
+            $this->dataStorageEngine->startTransaction();
+            $this->contactGroupRepository->deleteContactGroupsForUser($user);
+            $this->contactGroupRepository->insertContactGroupForUser($user, $contactGroup);
+            $this->dataStorageEngine->commitTransaction();
+        } catch (\Exception $ex) {
+            $this->dataStorageEngine->rollbackTransaction();
+            $this->error('Error during contact group update', [
+                "user_id" => $user->getId(),
+                "contact_group_id" => $contactGroup->getId(),
+                "trace" => $ex->getTraceAsString()
+            ]);
+        }
     }
 }

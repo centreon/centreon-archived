@@ -153,4 +153,28 @@ class SSOAuthenticationException extends \Exception
     {
         return new self(_('Can\'t resolve username from login claim using configured regular expression'));
     }
+
+    /**
+     * Exception thrown when bind attributes for auto import are not found in user informations from external provider
+     *
+     * @param array<string> $missingAttributes
+     * @return self
+     */
+    public static function autoImportBindAttributeNotFound(array $missingAttributes): self
+    {
+        return new self(sprintf(
+            _('The following bound attributes are missing: %s'),
+            implode(", ", $missingAttributes)
+        ));
+    }
+
+    /**
+     * Exception thrown when the id_token couldn't be decoded
+     *
+     * @return self
+     */
+    public static function unableToDecodeIdToken(): self
+    {
+        return new self(_("An error occured while decoding Identity Provider ID Token"));
+    }
 }

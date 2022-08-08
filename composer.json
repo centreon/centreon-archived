@@ -65,6 +65,7 @@
         "symfony/framework-bundle": "5.4.*",
         "symfony/http-client": "5.4.*",
         "symfony/http-kernel": "5.4.*",
+        "symfony/lock": "5.4.*",
         "symfony/maker-bundle": "^1.11",
         "symfony/monolog-bundle": "^3.7",
         "symfony/options-resolver": "5.4.*",
@@ -85,7 +86,7 @@
             "Tests\\": "tests/php/",
             "Centreon\\Test\\Api\\": "tests/api/"
         },
-        "classmap": ["www/class/"],
+        "classmap": ["www/class/", "lib/Centreon"],
         "files" : [
             "GPL_LIB/smarty-plugins/function.eval.php",
             "www/api/exceptions.php",

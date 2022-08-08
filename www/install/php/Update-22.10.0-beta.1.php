@@ -36,7 +36,17 @@ try {
         (SELECT ar_id, 'ldap_connection_timeout', '' FROM auth_ressource)"
     );
 
+    $errorMessage = "Unable to delete 'oreon_web_path' option from database";
+    $pearDB->query("DELETE FROM `options` WHERE `key` = 'oreon_web_path'");
+
+    $errorMessage = "Unable to delete 'appKey' information from database";
+    $pearDB->query("DELETE FROM `informations` WHERE `key` = 'appKey'");
     $pearDB->commit();
+
+    if ($pearDB->isColumnExist('remote_servers', 'app_key') === 1) {
+        $errorMessage = "Unable to drop 'app_key' from remote_servers table";
+        $pearDB->query("ALTER TABLE remote_servers DROP COLUMN `app_key`");
+    }
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -50,5 +60,5 @@ try {
         " - Trace : " . $e->getTraceAsString()
     );
 
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int) $e->getCode(), $e);
 }
