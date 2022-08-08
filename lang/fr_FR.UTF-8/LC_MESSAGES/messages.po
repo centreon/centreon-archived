@@ -16965,15 +16965,6 @@ msgstr "Criticité d'hôte"
 msgid "Host severity level"
 msgstr "Niveau de criticité d'hôte"
 
-msgid "Following modules need to be removed first: %s"
-msgstr "Les modules suivants doivent être supprimés : %s"
-
-msgid "Module \"%s\" is missing"
-msgstr "Le module \"%s\" est manquant"
-
-msgid "An error occured while retrieving details of module \"%s\""
-msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
-
 msgid "Centreon database schema does not seem to be installed."
 msgstr "Le schema de base de données de Centreon ne semble pas installé."
 
