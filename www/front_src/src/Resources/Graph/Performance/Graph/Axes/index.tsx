@@ -16,6 +16,7 @@ interface Props {
   base: number;
   graphHeight: number;
   graphWidth: number;
+  isTabDetails: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -32,6 +33,7 @@ const Axes = ({
   xScale,
   xAxisTickFormat,
   base,
+  isTabDetails,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
 
@@ -43,7 +45,7 @@ const Axes = ({
   return (
     <>
       <Axis.AxisBottom
-        numTicks={xTickCount}
+        numTicks={isTabDetails ? xTickCount : 10}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({

@@ -521,6 +521,7 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
+              isTabDetails={isTabDetails}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
