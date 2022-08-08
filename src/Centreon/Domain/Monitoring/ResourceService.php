@@ -22,12 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
@@ -54,26 +56,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * @inheritDoc
-     */
-    public function filterByContact($contact): self
-    {
-        parent::filterByContact($contact);
-
-        $accessGroups = $this->accessGroupRepository->findByContact($contact);
-
-        $this->resourceRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        $this->monitoringRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        return $this;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function extractResourcesWithGraphData(array $resources): array
@@ -88,7 +70,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
-            $list = $this->resourceRepository->findResources($filter);
+            $list = $this->getResources($filter);
             // replace macros in external links
             foreach ($list as $resource) {
                 $this->replaceMacrosInExternalLinks($resource);
@@ -100,6 +82,26 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $list;
+    }
+
+    private function getResources(ResourceFilter $filter): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->resourceRepository->findResources($filter);
+        }
+
+        $accessGroupIds = array_map(
+            function (AccessGroup $accessGroup) {
+                return $accessGroup->getId();
+            },
+            $this->accessGroupRepository->findByContact($this->contact)
+        );
+
+        if (!empty($accessGroupIds)) {
+            return $this->resourceRepository->findResourcesByAccessGroupIds($filter, $accessGroupIds);
+        }
+
+        return [];
     }
 
     /**

@@ -146,19 +146,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function findResources(ResourceFilter $filter): array
+    private function generateFindResourcesRequest(ResourceFilter $filter, StatementCollector $collector, string $accessGroupRequest = ''): string
     {
-        $this->resources = [];
-
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $this->resources;
-        }
-
-        $collector = new StatementCollector();
-
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
 
         $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -229,34 +218,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
             AND resources.enabled = 1 AND resources.type != 3";
 
-        /**
-         * Handle ACL
-         */
-        // @todo split in a dedicated method to remove contact notion
-        // findResources & findResourcesByAccessGroupIds
-        if (! $this->contact->isAdmin()) {
-            $accessGroupIds = array_map(
-                function (AccessGroup $accessGroup) {
-                    return $accessGroup->getId();
-                },
-                $this->accessGroups
-            );
-            // @todo resource type 4 must be managed using an iterator
-            $request .= ' AND EXISTS (
-              SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
-                  (
-                    (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                    OR
-                    (resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                    OR
-                    (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
-                    OR
-                    (resources.type = 4 AND resources.id = acl.service_id)
-                  )
-                  AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
-              LIMIT 1
-            )';
-        }
+        $request .= $accessGroupRequest;
 
         /**
          * Resource Type filter
@@ -312,6 +274,50 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
          */
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
+        return $request;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findResources(ResourceFilter $filter): array
+    {
+        $this->resources = [];
+        $collector = new StatementCollector();
+        $request = $this->generateFindResourcesRequest($filter, $collector);
+
+        $this->fetchResources($request, $collector);
+
+        return $this->resources;
+    }
+
+    public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array
+    {
+        $accessGroupRequest = ' AND EXISTS (
+          SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
+              (
+                (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
+                OR
+                (resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
+                OR
+                (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
+                OR
+                (resources.type = 4 AND resources.id = acl.service_id)
+              )
+              AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
+          LIMIT 1
+        )';
+
+        $this->resources = [];
+        $collector = new StatementCollector();
+        $request = $this->generateFindResourcesRequest($filter, $collector, $accessGroupRequest);
+        $this->fetchResources($request, $collector);
+
+        return $this->resources;
+    }
+
+    private function fetchResources(string $request, StatementCollector $collector): void
+    {
         $statement = $this->db->prepare(
             $this->translateDbName($request)
         );
@@ -336,8 +342,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         $iconIds = $this->getIconIdsFromResources();
         $icons = $this->getIconsDataForResources($iconIds);
         $this->completeResourcesWithIcons($icons);
-
-        return $this->resources;
     }
 
     /**
