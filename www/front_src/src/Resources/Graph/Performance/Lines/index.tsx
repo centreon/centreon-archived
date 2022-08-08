@@ -183,6 +183,7 @@ const Lines = ({
                   highlight={highlight}
                   isTabDetails={isTabDetails}
                   lineColor={lineColor}
+                  lines={lines}
                   metric={metric}
                   resourceType={type}
                   timeSeries={timeSeries}

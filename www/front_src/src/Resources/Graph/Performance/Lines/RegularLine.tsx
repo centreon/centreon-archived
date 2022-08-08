@@ -5,7 +5,7 @@ import { equals, isNil, prop } from 'ramda';
 import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { getTime } from '../timeSeries';
-import { TimeValue } from '../models';
+import { Line, TimeValue } from '../models';
 import { ResourceType } from '../../../models';
 
 import { getFillColor } from '.';
@@ -17,6 +17,7 @@ interface Props {
   highlight?: boolean;
   isTabDetails: boolean;
   lineColor: string;
+  lines: Array<Line>;
   metric: string;
   resourceType: string;
   timeSeries: Array<TimeValue>;
@@ -33,6 +34,7 @@ const RegularLine = ({
   metric,
   lineColor,
   unit,
+  lines,
   yScale,
   xScale,
   areaColor,
@@ -47,7 +49,8 @@ const RegularLine = ({
       ? 0.1
       : 0.8;
 
-  const isHighlight = highlight ? 2 : strockWidth;
+  const isLegendClicked = lines?.length <= 1;
+  const isHighlight = highlight || isLegendClicked ? 2 : strockWidth;
 
   interface PropsIsOnline {
     maxDistance: number;
@@ -96,7 +99,9 @@ const RegularLine = ({
   };
 
   const showCircle =
-    equals(resourceType, ResourceType.anomalydetection) && !isTabDetails;
+    equals(resourceType, ResourceType.anomalydetection) &&
+    !isTabDetails &&
+    !isLegendClicked;
 
   if (filled) {
     return (
