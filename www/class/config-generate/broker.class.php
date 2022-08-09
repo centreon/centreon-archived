@@ -357,33 +357,37 @@ class Broker extends AbstractObjectJSON
 
     private function cleanBbdoStreams(array $object): array
     {
-        foreach ($object['input'] as $key => $inputCfg) {
-            if ($inputCfg['type'] === 'bbdo_server') {
-                unset($object['input'][$key]['compression']);
-                unset($object['input'][$key]['retention']);
+        if (isset($object['input'])) {
+            foreach ($object['input'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === 'bbdo_server') {
+                    unset($object['input'][$key]['compression']);
+                    unset($object['input'][$key]['retention']);
 
-                if ($object['input']['encrypt'] === 'no') {
-                    unset($object['input'][$key]['private_key']);
-                    unset($object['input'][$key]['certificate']);
+                    if ($object['input']['encrypt'] === 'no') {
+                        unset($object['input'][$key]['private_key']);
+                        unset($object['input'][$key]['certificate']);
+                    }
                 }
-            }
-            if ($inputCfg['type'] === 'bbdo_client') {
-                unset($object['input'][$key]['compression']);
+                if ($inputCfg['type'] === 'bbdo_client') {
+                    unset($object['input'][$key]['compression']);
 
-                if ($object['input'][$key]['encrypt'] === 'no') {
-                    unset($object['input'][$key]['ca_certificate']);
-                    unset($object['input'][$key]['ca_name']);
+                    if ($object['input'][$key]['encrypt'] === 'no') {
+                        unset($object['input'][$key]['ca_certificate']);
+                        unset($object['input'][$key]['ca_name']);
+                    }
                 }
             }
         }
-        foreach ($object['output'] as $key => $inputCfg) {
-            if ($inputCfg['type'] === 'bbdo_server' && $object['output'][$key]['encrypt'] === 'no') {
-                unset($object['output'][$key]['private_key']);
-                unset($object['output'][$key]['certificate']);
-            }
-            if ($inputCfg['type'] === 'bbdo_client' && $object['output'][$key]['encrypt'] === 'no') {
-                unset($object['output'][$key]['ca_certificate']);
-                unset($object['output'][$key]['ca_name']);
+        if (isset($object['output'])) {
+            foreach ($object['output'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === 'bbdo_server' && $object['output'][$key]['encrypt'] === 'no') {
+                    unset($object['output'][$key]['private_key']);
+                    unset($object['output'][$key]['certificate']);
+                }
+                if ($inputCfg['type'] === 'bbdo_client' && $object['output'][$key]['encrypt'] === 'no') {
+                    unset($object['output'][$key]['ca_certificate']);
+                    unset($object['output'][$key]['ca_name']);
+                }
             }
         }
 
