@@ -973,8 +973,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (35, 86, 1, 8, 'bbdoStreams', '{"tag": "output"}'),
 (36, 91, 1, 3, 'bbdoStreams', '{"target": "authorization", "value": "gRPC"}'),
 (36, 93, 1, 5, 'bbdoStreams', '{"target": ["ca_certificate", "ca_name"], "value": "yes"}'),
-(36, 96, 1, 8, 'bbdoStreams', '{"tag": "output"}'),
-;
+(36, 96, 1, 8, 'bbdoStreams', '{"tag": "output"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
