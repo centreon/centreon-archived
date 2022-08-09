@@ -37,6 +37,15 @@ interface ReadResourceRepositoryInterface
     public function findResources(ResourceFilter $filter): array;
 
     /**
+     * Find all resources with filter on access group IDs
+     *
+     * @param ResourceFilter $filter
+     * @param int[] $accessGroupIds
+     * @return \Centreon\Domain\Monitoring\Resource[]
+     */
+    public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array;
+
+    /**
      * @param ContactInterface $contact
      * @return self
      */
