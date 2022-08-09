@@ -594,7 +594,7 @@ class CentreonAPI
                     $row,
                     $row['ar_id']
                 );
-                if ($centreonAuth->checkPassword() == 1) {
+                if ($centreonAuth->checkPassword() == \CentreonAuth::PASSWORD_VALID) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 }
