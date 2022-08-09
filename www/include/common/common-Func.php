@@ -330,10 +330,10 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
         "ORDER BY `order`");
     $statement->bindValue(':host_host_id', (int)$host_id, \PDO::PARAM_INT);
     $statement->execute();
+    $statement2 = $pearDB->prepare("SELECT macro.host_macro_value " .
+        "FROM on_demand_macro_host macro " .
+        "WHERE macro.host_host_id = :host_host_id  AND macro.host_macro_name = :field LIMIT 1");
     while ($row = $statement->fetchRow()) {
-        $statement2 = $pearDB->prepare("SELECT macro.host_macro_value " .
-            "FROM on_demand_macro_host macro " .
-            "WHERE macro.host_host_id = :host_host_id  AND macro.host_macro_name = :field LIMIT 1");
         $statement2->bindValue(':host_host_id', (int) $row["host_tpl_id"], \PDO::PARAM_INT);
         $statement2->bindValue(':field', "\$_HOST" . $field . "\$", \PDO::PARAM_STR);
         $statement2->execute();
