@@ -63,11 +63,12 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     container: {
       display: 'flex',
       gap: theme.spacing(0.5),
-      marginLeft: theme.spacing(-0.5),
+      position: 'relative',
+      right: theme.spacing(0.5),
       [theme.breakpoints.down(768)]: {
         gap: theme.spacing(0.4),
-        marginLeft: theme.spacing(-1.2),
-        marginTop: theme.spacing(0.4),
+        right: theme.spacing(1),
+        top: theme.spacing(0.4),
       },
     },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>

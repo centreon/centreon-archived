@@ -22,10 +22,11 @@ export const useStyles = makeStyles((theme) => ({
       gridTemplateColumns: 'auto auto',
     },
   },
-  subMenuCounters_marginLeft: {
-    marginLeft: theme.spacing(-1),
+  subMenuCountersTranslateToLeft: {
+    position: 'relative',
+    right: theme.spacing(1),
     [theme.breakpoints.down(768)]: {
-      marginLeft: 0,
+      position: 'static',
     },
   },
   subMenuRight: {
@@ -45,7 +46,7 @@ export const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
-    padding: '8px 8px 0 8px',
+    padding: `${theme.spacing(1)} ${theme.spacing(1)} 0 ${theme.spacing(1)}`,
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
@@ -55,14 +56,14 @@ export const useStyles = makeStyles((theme) => ({
     },
     zIndex: theme.zIndex.mobileStepper,
   },
-  subMenuToggle_extraWidth: {
+  subMenuToggleActive: {
+    display: 'block',
+  },
+  subMenuToggleExtraWidth: {
     width: '170%',
     [theme.breakpoints.down(768)]: {
       width: '190%',
     },
-  },
-  subMenuToggleActive: {
-    display: 'block',
   },
   wrapMiddleIcon: {
     display: 'flex',

@@ -31,13 +31,13 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   exportButton: {
     '&:hover': {
-      background: '#969faf',
+      background: theme.palette.grey[500],
     },
     background: theme.palette.common.black,
     border: '1px solid white',
     color: theme.palette.common.white,
     display: 'flex',
-    fontSize: theme.spacing(1.4),
+    fontSize: theme.typography.body2.fontSize,
     marginTop: theme.spacing(1),
   },
   pollerText: {

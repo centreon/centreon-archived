@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     justifyContent: 'space-between',
   },
+  lineHeight1: {
+    lineHeight: '1',
+  },
 }));
 
 const Clock = (): JSX.Element => {
@@ -53,11 +56,11 @@ const Clock = (): JSX.Element => {
 
   return (
     <div className={classes.dateTime} data-cy="clock">
-      <Typography style={{ lineHeight: '1' }} variant="body2">
+      <Typography className={classes.lineHeigh1} variant="body2">
         {date}
       </Typography>
 
-      <Typography style={{ lineHeight: '1' }} variant="body1">
+      <Typography className={classes.lineHeigh1} variant="body1">
         {time}
       </Typography>
     </div>

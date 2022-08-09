@@ -50,25 +50,21 @@ interface PollerData {
 const useStyles = makeStyles((theme) => ({
   confButton: {
     '&:hover': {
-      background: '#969faf',
+      background: theme.palette.grey[500],
     },
     background: theme.palette.common.black,
     border: '1px solid white',
     color: theme.palette.common.white,
     display: 'flex',
-    fontSize: theme.spacing(1.4),
+    fontSize: theme.typography.body2.fontSize,
     marginTop: theme.spacing(1),
   },
   container: {
     borderRight: '1px solid white',
     display: 'flex',
     paddingRight: theme.spacing(3),
-    // [theme.breakpoints.down(1200)]: {
-    //   paddingRight: theme.spacing(1.5),
-    // },
     [theme.breakpoints.down(768)]: {
-      // paddingRight: theme.spacing(0.8),
-      paddingRight: '10px',
+      paddingRight: theme.spacing(1.25),
     },
   },
   iconToggleMenu: {
@@ -77,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(768)]: {
       alignItems: 'center',
       justifyContent: 'center',
-      marginLeft: '-5px',
+      position: 'relative',
+      right: theme.spacing(0.6),
     },
   },
   label: {

@@ -162,7 +162,7 @@ const ServiceStatusCounter = (): JSX.Element => {
             />
             <div className={classes.subMenuRight}>
               <div
-                className={`${classes.subMenuCounters} ${classes.subMenuCounters_marginLeft}`}
+                className={`${classes.subMenuCounters} ${classes.subMenuCountersTranslateToLeft}`}
               >
                 <Link
                   className={clsx(classes.link, classes.wrapMiddleIcon)}

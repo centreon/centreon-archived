@@ -215,7 +215,7 @@ const HostStatusCounter = (): JSX.Element => {
             <div
               className={clsx(
                 classes.subMenuToggle,
-                classes.subMenuToggle_extraWidth,
+                classes.subMenuToggleExtraWidth,
                 {
                   [classes.subMenuToggleActive]: toggled,
                 },
