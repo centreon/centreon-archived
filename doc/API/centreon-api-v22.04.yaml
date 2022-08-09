@@ -3543,7 +3543,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ["installed_version", "has_upgrade_available"]
+                required: ["is_installed", "has_upgrade_available"]
                 properties:
                   is_installed:
                     type: boolean
