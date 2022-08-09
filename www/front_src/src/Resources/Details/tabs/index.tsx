@@ -64,10 +64,7 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      if (
-        equals(details.type, 'host') ||
-        equals(details.type, 'anomalydetection')
-      ) {
+      if (equals(details.type, 'host')) {
         return true;
       }
 
