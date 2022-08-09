@@ -115,7 +115,7 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $statement = $pearDB->prepare("INSERT INTO dependency_metaserviceParent_relation " .
-                        "VALUES ( :maxId, :metaId)");
+                        "VALUES (:maxId, :metaId)");
                     while ($ms = $dbResult->fetch()) {
                         $statement->bindValue(':maxId', (int) $maxId["MAX(dep_id)"], \PDO::PARAM_INT);
                         $statement->bindValue(':metaId', (int) $ms["meta_service_meta_id"], \PDO::PARAM_INT);
