@@ -22,15 +22,19 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Infrastructure\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class WriteSessionRepository implements WriteSessionRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param SessionInterface $session
      */
-    public function __construct(private SessionInterface $session)
+    public function __construct(private SessionInterface $session, private RequestStack $requestStack)
     {
     }
 
@@ -40,5 +44,33 @@ class WriteSessionRepository implements WriteSessionRepositoryInterface
     public function invalidate(): void
     {
         $this->session->invalidate();
+        $cookies = $this->requestStack->getCurrentRequest()->cookies;
+        $cookies->remove('PHPSESSID');
+        if ($cookies->has('mod_auth_openidc_session')) {
+            $cookies->remove('mod_auth_openidc_session');
+        }
+    }
+
+    /**
+     * @param \Centreon $legacySession
+     * @return bool
+     */
+    public function start(\Centreon $legacySession): bool
+    {
+        if ($this->session->isStarted()) {
+            return true;
+        }
+
+        $this->info('[AUTHENTICATE] Starting Centreon Session');
+        $this->session->start();
+        $this->session->set('centreon', $legacySession);
+        $_SESSION['centreon'] = $legacySession;
+
+        $isSessionStarted = $this->session->isStarted();
+        if ($isSessionStarted === false) {
+            $this->invalidate();
+        }
+
+        return $isSessionStarted;
     }
 }

@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
+use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
+
 interface LoginInterface
 {
     /**

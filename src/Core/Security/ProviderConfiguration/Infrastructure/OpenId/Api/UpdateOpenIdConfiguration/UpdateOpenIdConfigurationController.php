@@ -58,7 +58,8 @@ class UpdateOpenIdConfigurationController extends AbstractController
      */
     private function createUpdateOpenIdConfigurationRequest(Request $request): UpdateOpenIdConfigurationRequest
     {
-        $requestData  = json_decode((string) $request->getContent(), true);
+        $json = (string)$request->getContent();
+        $requestData  = json_decode($json, true);
         $updateOpenIdConfigurationRequest = new UpdateOpenIdConfigurationRequest();
         $updateOpenIdConfigurationRequest->isActive = $requestData['is_active'];
         $updateOpenIdConfigurationRequest->isForced = $requestData['is_forced'];
@@ -83,6 +84,7 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->claimName = $requestData['claim_name'];
         $updateOpenIdConfigurationRequest->authorizationRules = $requestData['authorization_rules'];
         $updateOpenIdConfigurationRequest->contactGroupId = $requestData["contact_group_id"];
+        $updateOpenIdConfigurationRequest->jsonConfiguration = $json;
 
         return $updateOpenIdConfigurationRequest;
     }

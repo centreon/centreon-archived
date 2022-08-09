@@ -26,7 +26,12 @@ namespace Tests\Core\Security\ProviderConfiguration\Application\OpenId\UseCase\F
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Contact\Domain\Model\ContactGroup;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
@@ -34,97 +39,98 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdCon
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
     $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+    $this->readConfiguration = $this->createMock(ReadConfigurationRepositoryInterface::class);
+    $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+    $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
 });
 
 it('should present a provider configuration', function () {
-        $configuration = (new Configuration())
-            ->setActive(true)
-            ->setForced(true)
-            ->setVerifyPeer(false)
-            ->setTrustedClientAddresses([])
-            ->setBlacklistClientAddresses([])
-            ->setBaseUrl('http://127.0.0.1/auth/openid-connect')
-            ->setAuthorizationEndpoint('/authorization')
-            ->setTokenEndpoint('/token')
-            ->setIntrospectionTokenEndpoint('/introspect')
-            ->setUserInformationEndpoint('/userinfo')
-            ->setEndSessionEndpoint('/logout')
-            ->setConnectionScopes([])
-            ->setLoginClaim('preferred_username')
-            ->setClientId('MyCl1ientId')
-            ->setClientSecret('MyCl1ientSuperSecr3tKey')
-            ->setAuthenticationType('client_secret_post')
-            ->setContactTemplate(new ContactTemplate(1, 'contact_template'))
-            ->setAutoImportEnabled(false)
-            ->setContactGroup(new ContactGroup(1, 'contact_group'));
+    $configuration = new Configuration(1, 'openid', 'openid', '{}', true, true);
+    $customConfiguration = new CustomConfiguration([
+        'is_active' => true,
+        'client_id' => 'MyCl1ientId',
+        'client_secret' => 'MyCl1ientSuperSecr3tKey',
+        'base_url' => 'http://127.0.0.1/auth/openid-connect',
+        'auto_import' => false,
+        'authorization_endpoint' => '/authorization',
+        'token_endpoint' => '/token',
+        'introspection_token_endpoint' => '/introspect',
+        'userinfo_endpoint' => '/userinfo',
+        'contact_template' => new ContactTemplate(1, 'contact_template'),
+        'email_bind_attribute' => null,
+        'fullname_bind_attribute' => null,
+        'trusted_client_addresses' => [],
+        'blacklist_client_addresses' => [],
+        'endsession_endpoint' => '/logout',
+        'connection_scopes' => [],
+        'login_claim' => 'preferred_username',
+        'authentication_type' => 'client_secret_post',
+        'verify_peer' => false,
+        'contact_group' => new ContactGroup(1, 'contact_group'),
+        'claim_name' => 'groups',
+        'authorization_rules' => [],
+    ]);
+    $configuration->setCustomConfiguration($customConfiguration);
 
-        $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
+    $this->provider
+        ->method('getConfiguration')
+        ->willReturn($configuration);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willReturn($configuration);
-
-        $useCase($presenter);
-
-        expect($presenter->response)->toBeInstanceOf(FindOpenIdConfigurationResponse::class);
-        expect($presenter->response->isActive)->toBeTrue();
-        expect($presenter->response->isForced)->toBeTrue();
-        expect($presenter->response->verifyPeer)->toBeFalse();
-        expect($presenter->response->trustedClientAddresses)->toBeEmpty();
-        expect($presenter->response->trustedClientAddresses)->toBeArray();
-        expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
-        expect($presenter->response->blacklistClientAddresses)->toBeArray();
-        expect($presenter->response->baseUrl)->toBe('http://127.0.0.1/auth/openid-connect');
-        expect($presenter->response->authorizationEndpoint)->toBe('/authorization');
-        expect($presenter->response->tokenEndpoint)->toBe('/token');
-        expect($presenter->response->introspectionTokenEndpoint)->toBe('/introspect');
-        expect($presenter->response->userInformationEndpoint)->toBe('/userinfo');
-        expect($presenter->response->endSessionEndpoint)->toBe('/logout');
-        expect($presenter->response->connectionScopes)->toBeEmpty();
-        expect($presenter->response->connectionScopes)->toBeArray();
-        expect($presenter->response->loginClaim)->toBe('preferred_username');
-        expect($presenter->response->clientId)->toBe('MyCl1ientId');
-        expect($presenter->response->clientSecret)->toBe('MyCl1ientSuperSecr3tKey');
-        expect($presenter->response->authenticationType)->toBe('client_secret_post');
-        expect($presenter->response->contactTemplate)->toBe(['id' => 1, 'name' => 'contact_template']);
-        expect($presenter->response->isAutoImportEnabled)->toBeFalse();
-        expect($presenter->response->emailBindAttribute)->toBeNull();
-        expect($presenter->response->userNameBindAttribute)->toBeNull();
-        expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
-});
-
-it('should present a NotFoundReponse when no configuration is found', function () {
-    $useCase = new FindOpenIdConfiguration($this->repository);
-    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
-
-    $this->repository
+    $this->providerFactory
         ->expects($this->once())
-        ->method('findConfiguration')
-        ->willReturn(null);
+        ->method('create')
+        ->with(Provider::OPENID)
+        ->willReturn($this->provider);
+
+    $useCase = new FindOpenIdConfiguration($this->providerFactory);
+    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
     $useCase($presenter);
 
-    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe('OpenIdConfiguration not found');
+    expect($presenter->response)->toBeInstanceOf(FindOpenIdConfigurationResponse::class);
+    expect($presenter->response->isActive)->toBeTrue();
+    expect($presenter->response->isForced)->toBeTrue();
+    expect($presenter->response->verifyPeer)->toBeFalse();
+    expect($presenter->response->trustedClientAddresses)->toBeEmpty();
+    expect($presenter->response->trustedClientAddresses)->toBeArray();
+    expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
+    expect($presenter->response->blacklistClientAddresses)->toBeArray();
+    expect($presenter->response->baseUrl)->toBe('http://127.0.0.1/auth/openid-connect');
+    expect($presenter->response->authorizationEndpoint)->toBe('/authorization');
+    expect($presenter->response->tokenEndpoint)->toBe('/token');
+    expect($presenter->response->introspectionTokenEndpoint)->toBe('/introspect');
+    expect($presenter->response->userInformationEndpoint)->toBe('/userinfo');
+    expect($presenter->response->endSessionEndpoint)->toBe('/logout');
+    expect($presenter->response->connectionScopes)->toBeEmpty();
+    expect($presenter->response->connectionScopes)->toBeArray();
+    expect($presenter->response->loginClaim)->toBe('preferred_username');
+    expect($presenter->response->clientId)->toBe('MyCl1ientId');
+    expect($presenter->response->clientSecret)->toBe('MyCl1ientSuperSecr3tKey');
+    expect($presenter->response->authenticationType)->toBe('client_secret_post');
+    expect($presenter->response->contactTemplate)->toBe(['id' => 1, 'name' => 'contact_template']);
+    expect($presenter->response->isAutoImportEnabled)->toBeFalse();
+    expect($presenter->response->emailBindAttribute)->toBeNull();
+    expect($presenter->response->userNameBindAttribute)->toBeNull();
+    expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
 });
 
 it('should present an ErrorResponse when an error occured during the process', function () {
-    $useCase = new FindOpenIdConfiguration($this->repository);
-    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
-
-    $this->repository
+    $this->providerFactory
         ->expects($this->once())
-        ->method('findConfiguration')
-        ->willThrowException(new \Exception('An error occured'));
+        ->method('create')
+        ->with(Provider::OPENID)
+        ->willThrowException(ProviderException::providerConfigurationNotFound(Provider::OPENID));
+
+    $useCase = new FindOpenIdConfiguration($this->providerFactory);
+    $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
     $useCase($presenter);
 
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
-    expect($presenter->getResponseStatus()?->getMessage())->toBe('An error occured');
+    expect($presenter->getResponseStatus()?->getMessage())->toBe('Provider configuration (openid) not found');
 });

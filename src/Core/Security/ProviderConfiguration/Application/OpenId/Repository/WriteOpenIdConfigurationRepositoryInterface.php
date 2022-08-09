@@ -23,13 +23,13 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\OpenId\Repository;
 
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
 interface WriteOpenIdConfigurationRepositoryInterface
 {
     /**
-     * Update the OpenId Configuration.
+     * Update the OpenId Provider.
      *
      * @param Configuration $configuration
      * @throws \Throwable

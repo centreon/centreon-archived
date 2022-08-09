@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -17,32 +18,29 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Provider;
+namespace Core\Security\Authentication\Application\Repository;
 
-use Core\Security\Authentication\Application\Provider\ProviderFactoryInterface;
-use Core\Security\Authentication\Application\Provider\ProviderInterface;
-use Security\Domain\Authentication\Model\LocalProvider;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 
-final class ProviderFactory implements ProviderFactoryInterface
+interface ReadTokenRepositoryInterface
 {
     /**
-     * @param Local $local
+     * Find the authentication token using the session token.
+     *
+     * @param string $token Session token
+     * @return AuthenticationTokens|null
      */
-    public function __construct(private Local $local)
-    {
-    }
+    public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
 
     /**
-     * @param string $providerName
-     * @return ProviderInterface
+     * Find the authentication token using the session token.
+     *
+     * @param string $token Session token
+     * @return bool
      */
-    public function create(string $providerName): ProviderInterface
-    {
-        return match ($providerName) {
-            LocalProvider::NAME => $this->local,
-        };
-    }
+    public function hasAuthenticationTokensByToken(string $token): bool;
+
+
 }

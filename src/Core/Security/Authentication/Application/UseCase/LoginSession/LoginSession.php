@@ -39,12 +39,14 @@ use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
+/**
+ * @deprecated
+ */
 class LoginSession
 {
     use LoggerTrait;
@@ -52,7 +54,6 @@ class LoginSession
     /**
      * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
-     * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
      * @param RequestStack $requestStack
      * @param MenuServiceInterface $menuService
@@ -63,7 +64,6 @@ class LoginSession
     public function __construct(
         private string $redirectDefaultPage,
         private AuthenticationServiceInterface $authenticationService,
-        private ProviderServiceInterface $providerService,
         private ContactServiceInterface $contactService,
         private RequestStack $requestStack,
         private MenuServiceInterface $menuService,
@@ -408,10 +408,11 @@ class LoginSession
         ?ProviderToken $providerRefreshToken,
         ?string $clientIp,
     ): void {
-        $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
+        /*$providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
-        );
+        );*/
 
+        $providerConfiguration = null;
         $providerConfigurationId = null;
         if ($providerConfiguration !== null && $providerConfiguration->getId() !== null) {
             $providerConfigurationId = $providerConfiguration->getId();

@@ -22,10 +22,52 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\Repository;
 
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
+
 interface WriteTokenRepositoryInterface
 {
     /**
      * Delete all expired tokens registered.
      */
     public function deleteExpiredSecurityTokens(): void;
+
+    /**
+     * @param string $token
+     * @param int $providerConfigurationId
+     * @param int $contactId
+     * @param ProviderToken $providerToken
+     * @param ProviderToken|null $providerRefreshToken
+     * @return void
+     */
+    public function createAuthenticationTokens(
+        string $token,
+        int $providerConfigurationId,
+        int $contactId,
+        NewProviderToken $providerToken,
+        ?NewProviderToken $providerRefreshToken): void;
+
+    /**
+     * Updates the provider authentication tokens.
+     *
+     * @param AuthenticationTokens $authenticationTokens Provider tokens
+     */
+    public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void;
+
+    /**
+     * Updates the provider token.
+     *
+     * @param ProviderToken $providerToken
+     * @return void
+     */
+    public function updateProviderToken(ProviderToken $providerToken): void;
+
+    /**
+     * Delete a security token.
+     *
+     * @param string $token
+     * @return void
+     */
+    public function deleteSecurityToken(string $token): void;
 }

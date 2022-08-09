@@ -24,6 +24,7 @@ namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\AbstractRepositoryDRB;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface;
 use Security\Infrastructure\Repository\Model\ProviderConfigurationFactoryRdb;
@@ -41,9 +42,10 @@ class ProviderRepository extends AbstractRepositoryDRB implements ProviderReposi
 
     /**
      * {@inheritDoc}
-     * @throws \Assert\AssertionFailedException
+     * @param int $id
+     * @return Configuration|null
      */
-    public function findProviderConfiguration(int $id): ?ProviderConfiguration
+    public function findProviderConfiguration(int $id): ?Configuration
     {
         $statement = $this->db->prepare($this->translateDbName(
             "SELECT * FROM `:db`.provider_configuration

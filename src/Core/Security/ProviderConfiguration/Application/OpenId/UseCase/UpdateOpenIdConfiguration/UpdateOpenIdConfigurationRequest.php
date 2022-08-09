@@ -139,4 +139,36 @@ class UpdateOpenIdConfigurationRequest
      * @var array<array{claim_value: string, access_group_id: int}>
      */
     public array $authorizationRules = [];
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'is_forced' => $this->isForced,
+            'is_active' => $this->isActive,
+            'contact_group_id' => $this->contactGroupId,
+            'contact_template' => $this->contactTemplate,
+            'authorization_rules' => $this->authorizationRules,
+            'auto_import' => $this->isAutoImportEnabled,
+            'client_id' => $this->clientId,
+            'authentication_type' => $this->authenticationType,
+            'authorization_endpoint' => $this->authorizationEndpoint,
+            'base_url' => $this->baseUrl,
+            'blacklist_client_addresses' => $this->blacklistClientAddresses,
+            'claim_name' => $this->claimName,
+            'client_secret' => $this->clientSecret,
+            'connection_scopes' => $this->connectionScopes,
+            'email_bind_attribute' => $this->emailBindAttribute,
+            'endsession_endpoint' => $this->endSessionEndpoint,
+            'introspection_token_endpoint' => $this->introspectionTokenEndpoint,
+            'login_claim' => $this->loginClaim,
+            'token_endpoint' => $this->tokenEndpoint,
+            'trusted_client_addresses' => $this->trustedClientAddresses,
+            'userinfo_endpoint' => $this->userInformationEndpoint,
+            'fullname_bind_attribute' => $this->userNameBindAttribute,
+            'verify_peer' => $this->verifyPeer
+        ];
+    }
 }

@@ -22,21 +22,23 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Authentication\UseCase;
 
-use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Contact\Contact;
-use Security\Domain\Authentication\Model\LocalProvider;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use PHPUnit\Framework\TestCase;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -49,43 +51,39 @@ class AuthenticateApiTest extends TestCase
     private $authenticationService;
 
     /**
-     * @var ProviderServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $providerService;
+    private ProviderAuthenticationFactoryInterface $providerFactory;
 
     /**
-     * @var AuthenticationRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var WriteTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $authenticationRepository;
+    private WriteTokenRepositoryInterface $writeTokenRepository;
 
     /**
-     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var NewProviderToken
      */
-    private $provider;
+    private NewProviderToken $providerToken;
 
     /**
-     * @var ProviderConfiguration|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $providerConfiguration;
+    private ContactInterface $contact;
 
     /**
-     * @var ProviderToken|\PHPUnit\Framework\MockObject\MockObject
+     * @var Configuration|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $providerToken;
-
-    /**
-     * @var Contact|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $contact;
+    private Configuration $configuration;
 
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
-        $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
-        $this->provider = $this->createMock(LocalProviderInterface::class);
-        $this->providerConfiguration = $this->createMock(ProviderConfiguration::class);
-        $this->providerToken = $this->createMock(ProviderToken::class);
+        $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+        $this->providerAuthentication = $this->createMock(ProviderAuthenticationInterface::class);
+        $this->configuration = $this->createMock(Configuration::class);
+        $this->providerToken = $this->createMock(NewProviderToken::class);
+        $this->writeTokenRepository = $this->createMock(WriteTokenRepositoryInterface::class);
         $this->contact = (new Contact())
             ->setId(1)
             ->setName('contact_name1')
@@ -99,25 +97,19 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteLocalProviderNotFound(): void
     {
-        $authenticateApi = new AuthenticateApi(
-            $this->authenticationService,
-            $this->providerService,
-            $this->authenticationRepository
-        );
-
+        $authenticateApi = $this->createAuthenticationAPI();
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
-
         $authenticateApiResponse = new AuthenticateApiResponse();
 
         $this->authenticationService
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationName')
-            ->with(LocalProvider::NAME)
-            ->willReturn(null);
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willThrowException(ProviderException::providerConfigurationNotFound(Provider::LOCAL));
 
         $this->expectException(ProviderException::class);
         $this->expectExceptionMessage('Provider configuration (local) not found');
@@ -130,33 +122,24 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteUserNotAuthenticated(): void
     {
-        $authenticateApi = new AuthenticateApi(
-            $this->authenticationService,
-            $this->providerService,
-            $this->authenticationRepository
-        );
-
+        $authenticateApi = $this->createAuthenticationAPI();
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
-
         $authenticateApiResponse = new AuthenticateApiResponse();
 
         $this->authenticationService
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationName')
-            ->with(LocalProvider::NAME)
-            ->willReturn($this->provider);
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->providerAuthentication);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with([
-                'login' => 'admin',
-                'password' => 'centreon',
-            ])
+            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'))
             ->willThrowException(AuthenticationException::invalidCredentials());
 
         $this->expectException(AuthenticationException::class);
@@ -170,37 +153,28 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteUserNotFound(): void
     {
-        $authenticateApi = new AuthenticateApi(
-            $this->authenticationService,
-            $this->providerService,
-            $this->authenticationRepository
-        );
-
+        $authenticateApi = $this->createAuthenticationAPI();
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
-
         $authenticateApiResponse = new AuthenticateApiResponse();
 
         $this->authenticationService
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationName')
-            ->with(LocalProvider::NAME)
-            ->willReturn($this->provider);
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->providerAuthentication);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with([
-                'login' => 'admin',
-                'password' => 'centreon',
-            ]);
+            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
-            ->method('getUser')
+            ->method('getAuthenticatedUser')
             ->willReturn(null);
 
         $this->expectException(AuthenticationException::class);
@@ -214,56 +188,39 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteCannotCreateTokens(): void
     {
-        $authenticateApi = new AuthenticateApi(
-            $this->authenticationService,
-            $this->providerService,
-            $this->authenticationRepository
-        );
-
+        $authenticateApi = $this->createAuthenticationAPI();
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
-
         $authenticateApiResponse = new AuthenticateApiResponse();
 
         $this->authenticationService
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationName')
-            ->with(LocalProvider::NAME)
-            ->willReturn($this->provider);
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->providerAuthentication);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with([
-                'login' => 'admin',
-                'password' => 'centreon',
-            ]);
+            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
-            ->method('getUser')
+            ->method('getAuthenticatedUser')
             ->willReturn($this->contact);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('getConfiguration')
-            ->willReturn($this->providerConfiguration);
+            ->willReturn($this->configuration);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('getProviderToken')
             ->willReturn($this->providerToken);
-
-        $this->providerConfiguration
-            ->expects($this->once())
-            ->method('getId')
-            ->willReturn(null);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Provider configuration can't be null");
 
         $authenticateApi->execute($authenticateApiRequest, $authenticateApiResponse);
     }
@@ -273,53 +230,39 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteSucceed(): void
     {
-        $authenticateApi = new AuthenticateApi(
-            $this->authenticationService,
-            $this->providerService,
-            $this->authenticationRepository
-        );
-
+        $authenticateApi = $this->createAuthenticationAPI();
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
-
         $authenticateApiResponse = new AuthenticateApiResponse();
 
         $this->authenticationService
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationName')
-            ->with(LocalProvider::NAME)
-            ->willReturn($this->provider);
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->providerAuthentication);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with([
-                'login' => 'admin',
-                'password' => 'centreon',
-            ]);
+            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
-            ->method('getUser')
+            ->method('getAuthenticatedUser')
             ->willReturn($this->contact);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('getConfiguration')
-            ->willReturn($this->providerConfiguration);
+            ->willReturn($this->configuration);
 
-        $this->provider
+        $this->providerAuthentication
             ->expects($this->once())
             ->method('getProviderToken')
             ->willReturn($this->providerToken);
-
-        $this->providerConfiguration
-            ->expects($this->exactly(2))
-            ->method('getId')
-            ->willReturn(1);
 
         $authenticateApi->execute($authenticateApiRequest, $authenticateApiResponse);
 
@@ -335,5 +278,17 @@ class AuthenticateApiTest extends TestCase
         );
 
         $this->assertIsString($authenticateApiResponse->getApiAuthentication()['security']['token']);
+    }
+
+    /**
+     * @return AuthenticateApi
+     */
+    private function createAuthenticationAPI(): AuthenticateApi
+    {
+        return new AuthenticateApi(
+            $this->authenticationService,
+            $this->writeTokenRepository,
+            $this->providerFactory
+        );
     }
 }

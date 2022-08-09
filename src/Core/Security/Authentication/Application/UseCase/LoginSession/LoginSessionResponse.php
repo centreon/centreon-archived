@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\LoginSession;
 
+/**
+ * @deprecated
+ */
 class LoginSessionResponse
 {
     /**

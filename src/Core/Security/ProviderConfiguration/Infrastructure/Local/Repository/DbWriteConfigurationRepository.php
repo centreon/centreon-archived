@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\Local\Repository;
 
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration as LocalProviderConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
 class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements WriteConfigurationRepositoryInterface
 {
@@ -41,7 +41,7 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
      * @inheritDoc
      */
     public function updateConfiguration(
-        LocalProviderConfiguration $localConfiguration,
+        Configuration $configuration,
         array $excludedUserIds
     ): void {
         $beginInTransaction = $this->db->inTransaction();
@@ -51,8 +51,7 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
                 $this->db->beginTransaction();
             }
 
-            $this->updateCustomConfiguration($localConfiguration);
-
+            $this->updateCustomConfiguration($configuration);
             $this->updateExcludedUsers($excludedUserIds);
 
             if ($beginInTransaction === false && $this->db->inTransaction()) {
@@ -69,22 +68,24 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
     /**
      * Update custom configuration
      *
-     * @param LocalProviderConfiguration $localConfiguration
+     * @param Configuration $configuration
      */
-    private function updateCustomConfiguration(LocalProviderConfiguration $localConfiguration): void
+    private function updateCustomConfiguration(Configuration $configuration): void
     {
+        $securityPolicy = $configuration->getCustomConfiguration()->getSecurityPolicy();
+
         $configuration = json_encode([
             "password_security_policy" => [
-                "password_length" => $localConfiguration->getSecurityPolicy()->getPasswordMinimumLength(),
-                "has_uppercase_characters" => $localConfiguration->getSecurityPolicy()->hasUppercase(),
-                "has_lowercase_characters" => $localConfiguration->getSecurityPolicy()->hasLowercase(),
-                "has_numbers" => $localConfiguration->getSecurityPolicy()->hasNumber(),
-                "has_special_characters" => $localConfiguration->getSecurityPolicy()->hasSpecialCharacter(),
-                "attempts" => $localConfiguration->getSecurityPolicy()->getAttempts(),
-                "blocking_duration" => $localConfiguration->getSecurityPolicy()->getBlockingDuration(),
-                "password_expiration_delay" => $localConfiguration->getSecurityPolicy()->getPasswordExpirationDelay(),
-                "delay_before_new_password" => $localConfiguration->getSecurityPolicy()->getDelayBeforeNewPassword(),
-                "can_reuse_passwords" => $localConfiguration->getSecurityPolicy()->canReusePasswords(),
+                "password_length" => $securityPolicy->getPasswordMinimumLength(),
+                "has_uppercase_characters" => $securityPolicy->hasUppercase(),
+                "has_lowercase_characters" =>$securityPolicy->hasLowercase(),
+                "has_numbers" => $securityPolicy->hasNumber(),
+                "has_special_characters" => $securityPolicy->hasSpecialCharacter(),
+                "attempts" => $securityPolicy->getAttempts(),
+                "blocking_duration" => $securityPolicy->getBlockingDuration(),
+                "password_expiration_delay" => $securityPolicy->getPasswordExpirationDelay(),
+                "delay_before_new_password" => $securityPolicy->getDelayBeforeNewPassword(),
+                "can_reuse_passwords" => $securityPolicy->canReusePasswords(),
             ],
         ]);
 
@@ -95,7 +96,7 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
                 WHERE `name` = 'local'"
             )
         );
-        $statement->bindValue(':localProviderConfiguration', $configuration, \PDO::PARAM_STR);
+        $statement->bindValue(':localProviderConfiguration', $configuration);
         $statement->execute();
     }
 

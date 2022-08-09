@@ -65,6 +65,14 @@ class AuthenticationException extends CoreAuthenticationException
     }
 
     /**
+     * @return self
+     */
+    public static function userInformationCannotBeUpdated(): self
+    {
+        return new self(_('User information cannot be updated'));
+    }
+
+    /**
      * @param \Throwable $ex
      * @return self
      */

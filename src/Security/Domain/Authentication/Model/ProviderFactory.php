@@ -22,12 +22,13 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration as OpenIdConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdConfiguration;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
 /**
  * @package Security\Domain\Authentication\Model
@@ -35,12 +36,12 @@ use Security\Domain\Authentication\Interfaces\ProviderInterface;
 class ProviderFactory
 {
     /**
-     * @var ProviderInterface[]
+     * @var ProviderAuthenticationInterface[]
      */
     private $providers;
 
     /**
-     * @param \Traversable<ProviderInterface> $providers
+     * @param \Traversable<ProviderAuthenticationInterface> $providers
      * @throws ProviderException
      */
     public function __construct(
@@ -55,10 +56,11 @@ class ProviderFactory
     }
 
     /**
-     * @param ProviderConfiguration $configuration
-     * @return ?ProviderInterface
+     * @param Configuration $configuration
+     * @return ?ProviderAuthenticationInterface
+     * @throws \Throwable
      */
-    public function create(ProviderConfiguration $configuration): ?ProviderInterface
+    public function create(Configuration $configuration): ?ProviderAuthenticationInterface
     {
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getName()) {

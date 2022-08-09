@@ -20,11 +20,23 @@
  */
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login;
+namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
 
-final class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
 {
+    /**
+     * @param mixed $response
+     * @return void
+     */
+    public function present(mixed $response): void
+    {
+        $presenterResponse = [
+            'redirect_uri' => $response->getRedirectUri()
+        ];
+
+        parent::present($presenterResponse);
+    }
 }

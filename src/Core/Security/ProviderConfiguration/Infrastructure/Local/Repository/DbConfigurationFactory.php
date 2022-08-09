@@ -22,7 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\Local\Repository;
 
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 
 class DbConfigurationFactory
@@ -57,13 +58,14 @@ class DbConfigurationFactory
             $customConfiguration['password_security_policy']['delay_before_new_password'],
         );
 
-        $localConfiguration = (new Configuration($securityPolicy))
-            ->setId((int) $configuration['id'])
-            ->setName($configuration['name'])
-            ->setType($configuration['type'])
-            ->setActive((int) $configuration['is_active'] === 1)
-            ->setForced((int) $configuration['is_forced'] === 1);
+        $configuration = new Configuration((int) $configuration['id'],
+            $configuration['type'],
+            $configuration['name'],
+            json_encode($customConfiguration),
+            (int) $configuration['is_active'] === 1,
+            (int) $configuration['is_forced'] === 1);
+        $configuration->setCustomConfiguration(CustomConfiguration::createFromSecurityPolicy($securityPolicy));
 
-        return $localConfiguration;
+        return $configuration;
     }
 }

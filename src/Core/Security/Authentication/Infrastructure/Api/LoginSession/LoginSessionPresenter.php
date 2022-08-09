@@ -26,6 +26,9 @@ use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Security\Authentication\Application\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Security\Authentication\Application\UseCase\LoginSession\LoginSessionResponse;
 
+/**
+ * @deprecated
+ */
 class LoginSessionPresenter extends AbstractPresenter implements LoginSessionPresenterInterface
 {
     /**

@@ -22,45 +22,73 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
-final class LoginRequest
+class LoginRequest
 {
     /**
-     * @param string $username
-     * @param string $password
      * @param string $providerName
      * @param string|null $clientIp
+     * @param string|null $username
+     * @param string|null $password
+     * @param string|null $code
      */
-    public function __construct(
-                                private string $providerName,
-                                private ?string $username,
-                                private ?string $password,
-                                private ?string $clientIp = null,
-                                private ?string $authorizationCode = null)
+    private function __construct(
+        private string $providerName,
+        private ?string $clientIp = null,
+        private ?string $username = null,
+        private ?string $password = null,
+        private ?string $code = null)
     {
     }
 
     /**
-     * @return string|null
+     * @param string $providerName
+     * @param string $username
+     * @param string $password
+     * @param string|null $clientIp
+     * @return LoginRequest
      */
-    public function getUsername(): ?string
+    public static function createForLocal(
+        string $providerName,
+        string $username,
+        string $password,
+        ?string $clientIp = null): self {
+
+        return new self($providerName, $clientIp, $username, $password);
+    }
+
+    /**
+     * @param string $providerName
+     * @param string $clientIp
+     * @param string $code
+     * @return LoginRequest
+     */
+    public static function createForOpenId(string $providerName, string $clientIp, string $code): self {
+        return new self($providerName, $clientIp, null, null, $code);
+    }
+
+    /**
+     * @param string $providerName
+     * @param string $clientIp
+     * @return LoginRequest
+     */
+    public static function createForSSO(string $providerName, string $clientIp): self {
+        return new self($providerName, $clientIp);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername(): string
     {
         return $this->username;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAuthorizationCode(): ?string
-    {
-        return $this->payload["code"] ?? null;
     }
 
     /**
@@ -74,8 +102,16 @@ final class LoginRequest
     /**
      * @return string
      */
-    public function getClientIp(): ?string
+    public function getClientIp(): string
     {
         return $this->clientIp;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
     }
 }

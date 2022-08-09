@@ -25,6 +25,9 @@ namespace Core\Security\Authentication\Application\UseCase\LoginOpenIdSession;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
+/**
+ * @deprecated
+ */
 interface LoginOpenIdSessionPresenterInterface extends PresenterInterface
 {
 }

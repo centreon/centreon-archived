@@ -33,6 +33,9 @@ use Core\Security\Authentication\Application\UseCase\LoginOpenIdSession\LoginOpe
 use Core\Security\Authentication\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
+/**
+ * @deprecated
+ */
 class LoginOpenIdSessionController extends AbstractController
 {
     use HttpUrlTrait;

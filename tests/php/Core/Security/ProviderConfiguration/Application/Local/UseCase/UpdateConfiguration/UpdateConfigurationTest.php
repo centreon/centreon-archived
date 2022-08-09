@@ -23,16 +23,19 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration;
 
-use PHPUnit\Framework\TestCase;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\{
+    UpdateConfigurationPresenterInterface};
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
-use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\{
-    UpdateConfigurationPresenterInterface
-};
+use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use PHPUnit\Framework\TestCase;
 
 class UpdateConfigurationTest extends TestCase
 {
@@ -51,11 +54,19 @@ class UpdateConfigurationTest extends TestCase
      */
     private $presenter;
 
+    /**
+     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory;
+
+
     public function setUp(): void
     {
         $this->writeConfigurationRepository = $this->createMock(WriteConfigurationRepositoryInterface::class);
         $this->readUserRepository = $this->createMock(ReadUserRepositoryInterface::class);
         $this->presenter = $this->createMock(UpdateConfigurationPresenterInterface::class);
+        $this->providerAuthenticationFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+        $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
     }
 
     /**
@@ -77,12 +88,26 @@ class UpdateConfigurationTest extends TestCase
             $excludedUserAliases,
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
-        $configuration = new Configuration($securityPolicy);
+
+        $customConfiguration = CustomConfiguration::createFromSecurityPolicy($securityPolicy);
+        $configuration = new Configuration(1, 'local', 'local', '{}', true, true);
+        $configuration->setCustomConfiguration($customConfiguration);
+
+        $this->provider
+            ->expects($this->once())
+            ->method('getConfiguration')
+            ->willReturn($configuration);
+
+        $this->providerAuthenticationFactory
+            ->expects($this->once())
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->provider);
 
         $request = new UpdateConfigurationRequest();
         $request->passwordMinimumLength = SecurityPolicy::MIN_PASSWORD_LENGTH;
         $request->hasUppercase = true;
-        $request->hasLowercase = true;
+        $request->hasLowercase = false;
         $request->hasNumber = true;
         $request->hasSpecialCharacter = true;
         $request->canReusePasswords = true;
@@ -91,7 +116,6 @@ class UpdateConfigurationTest extends TestCase
         $request->passwordExpirationDelay = SecurityPolicy::MIN_PASSWORD_EXPIRATION_DELAY;
         $request->passwordExpirationExcludedUserAliases = $excludedUserAliases;
         $request->delayBeforeNewPassword = SecurityPolicy::MIN_NEW_PASSWORD_DELAY;
-
 
         $this->readUserRepository
             ->expects($this->once())
@@ -108,7 +132,8 @@ class UpdateConfigurationTest extends TestCase
             ->expects($this->once())
             ->method('setResponseStatus');
 
-        $useCase = new UpdateConfiguration($this->writeConfigurationRepository, $this->readUserRepository);
+        $useCase = new UpdateConfiguration($this->writeConfigurationRepository, $this->readUserRepository, $this->providerAuthenticationFactory);
         $useCase($this->presenter, $request);
+        $this->assertNotEquals($securityPolicy->hasLowercase(), $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase());
     }
 }

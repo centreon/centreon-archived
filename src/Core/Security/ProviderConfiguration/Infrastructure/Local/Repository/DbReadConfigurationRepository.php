@@ -24,16 +24,16 @@ declare(strict_types=1);
 namespace Core\Security\ProviderConfiguration\Infrastructure\Local\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\ProviderConfiguration\Infrastructure\Local\Repository\DbConfigurationFactory;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
+/**
+ * @deprecated
+ */
 class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
-    ReadProviderConfigurationsRepositoryInterface,
-    ReadConfigurationRepositoryInterface
+    ReadProviderConfigurationsRepositoryInterface
 {
     use LoggerTrait;
 
@@ -65,8 +65,6 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
      */
     public function findConfiguration(): ?Configuration
     {
-        $configuration = null;
-
         $statement = $this->db->query(
             $this->translateDbName(
                 "SELECT *
@@ -100,7 +98,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
      *
      * @return array<string,mixed>
      */
-    private function findExcludedUsers(): array
+    public function findExcludedUsers(): array
     {
         $statement = $this->db->query(
             $this->translateDbName(

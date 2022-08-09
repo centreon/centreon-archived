@@ -24,18 +24,20 @@ declare(strict_types=1);
 namespace Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Symfony\Component\Translation\Provider\ProviderFactoryInterface;
 
 class FindConfiguration
 {
     use LoggerTrait;
 
     /**
-     * @param ReadConfigurationRepositoryInterface $repository
+     * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
-    public function __construct(private ReadConfigurationRepositoryInterface $repository)
+    public function __construct(private ProviderAuthenticationFactoryInterface $providerFactory)
     {
     }
 
@@ -47,7 +49,8 @@ class FindConfiguration
         $this->debug('Searching for local provider configuration');
 
         try {
-            $configuration = $this->repository->findConfiguration();
+            $provider = $this->providerFactory->create(Provider::LOCAL);
+            $configuration = $provider->getConfiguration();
         } catch (\Throwable $e) {
             $this->critical($e->getMessage());
             $presenter->setResponseStatus(
@@ -78,21 +81,22 @@ class FindConfiguration
      */
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
+        $customConfiguration = $configuration->getCustomConfiguration();
         $response = new FindConfigurationResponse();
-        $response->passwordMinimumLength = $configuration->getSecurityPolicy()->getPasswordMinimumLength();
-        $response->hasUppercase = $configuration->getSecurityPolicy()->hasUppercase();
-        $response->hasLowercase = $configuration->getSecurityPolicy()->hasLowercase();
-        $response->hasNumber = $configuration->getSecurityPolicy()->hasNumber();
-        $response->hasSpecialCharacter = $configuration->getSecurityPolicy()->hasSpecialCharacter();
-        $response->canReusePasswords = $configuration->getSecurityPolicy()->canReusePasswords();
-        $response->attempts = $configuration->getSecurityPolicy()->getAttempts();
-        $response->blockingDuration = $configuration->getSecurityPolicy()->getBlockingDuration();
-        $response->passwordExpirationDelay = $configuration->getSecurityPolicy()->getPasswordExpirationDelay();
+        $response->passwordMinimumLength = $customConfiguration->getSecurityPolicy()->getPasswordMinimumLength();
+        $response->hasUppercase = $customConfiguration->getSecurityPolicy()->hasUppercase();
+        $response->hasLowercase = $customConfiguration->getSecurityPolicy()->hasLowercase();
+        $response->hasNumber = $customConfiguration->getSecurityPolicy()->hasNumber();
+        $response->hasSpecialCharacter = $customConfiguration->getSecurityPolicy()->hasSpecialCharacter();
+        $response->canReusePasswords = $customConfiguration->getSecurityPolicy()->canReusePasswords();
+        $response->attempts = $customConfiguration->getSecurityPolicy()->getAttempts();
+        $response->blockingDuration = $customConfiguration->getSecurityPolicy()->getBlockingDuration();
+        $response->passwordExpirationDelay = $customConfiguration->getSecurityPolicy()->getPasswordExpirationDelay();
         $response->passwordExpirationExcludedUserAliases =
-            $configuration
+            $customConfiguration
                 ->getSecurityPolicy()
                 ->getPasswordExpirationExcludedUserAliases();
-        $response->delayBeforeNewPassword = $configuration->getSecurityPolicy()->getDelayBeforeNewPassword();
+        $response->delayBeforeNewPassword = $customConfiguration->getSecurityPolicy()->getDelayBeforeNewPassword();
 
         return $response;
     }

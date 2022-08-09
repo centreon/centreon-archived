@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\Repository;
 
+use Security\Domain\Authentication\Model\Session;
+
 interface WriteSessionTokenRepositoryInterface
 {
     /**
@@ -30,4 +32,10 @@ interface WriteSessionTokenRepositoryInterface
      * @param string $token
      */
     public function deleteSession(string $token): void;
+
+    /**
+     * @param Session $session
+     * @return void
+     */
+    public function createSession(Session $session): void;
 }

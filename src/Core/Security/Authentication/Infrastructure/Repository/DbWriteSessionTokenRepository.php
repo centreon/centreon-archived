@@ -25,6 +25,7 @@ namespace Core\Security\Authentication\Infrastructure\Repository;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
+use Security\Domain\Authentication\Model\Session;
 
 class DbWriteSessionTokenRepository extends AbstractRepositoryDRB implements WriteSessionTokenRepositoryInterface
 {
@@ -56,5 +57,23 @@ class DbWriteSessionTokenRepository extends AbstractRepositoryDRB implements Wri
         );
         $deleteTokenStatement->bindValue(':token', $token, \PDO::PARAM_STR);
         $deleteTokenStatement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createSession(Session $session): void
+    {
+        $insertSessionStatement = $this->db->prepare(
+            $this->translateDbName(
+                "INSERT INTO `:db`.session (`session_id` , `user_id` , `last_reload`, `ip_address`) " .
+                "VALUES (:sessionId, :userId, :lastReload, :ipAddress)"
+            )
+        );
+        $insertSessionStatement->bindValue(':sessionId', $session->getToken(), \PDO::PARAM_STR);
+        $insertSessionStatement->bindValue(':userId', $session->getContactId(), \PDO::PARAM_INT);
+        $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
+        $insertSessionStatement->bindValue(':ipAddress', $session->getClientIp(), \PDO::PARAM_STR);
+        $insertSessionStatement->execute();
     }
 }

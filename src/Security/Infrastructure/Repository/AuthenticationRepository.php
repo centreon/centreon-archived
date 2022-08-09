@@ -23,10 +23,10 @@ declare(strict_types=1);
 namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenRepositoryInterface;
 

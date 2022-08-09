@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\Local\Repository;
 
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
 interface WriteConfigurationRepositoryInterface
 {

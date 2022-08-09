@@ -29,6 +29,6 @@ class UpdateOpenIdConfigurationErrorResponse extends ErrorResponse
 {
     public function __construct()
     {
-        parent::__construct('Error during Opend ID Configuration Update');
+        parent::__construct('Error during Opend ID Provider Update');
     }
 }

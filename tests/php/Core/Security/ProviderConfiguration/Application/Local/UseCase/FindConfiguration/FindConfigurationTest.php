@@ -23,12 +23,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration;
 
-use PHPUnit\Framework\TestCase;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfiguration;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfigurationErrorResponse;
 use Core\Security\ProviderConfiguration\Infrastructure\Local\Api\FindConfiguration\FindConfigurationPresenter;
 use Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\{
@@ -38,19 +43,28 @@ use Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConf
 class FindConfigurationTest extends TestCase
 {
     /**
-     * @var ReadConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $repository;
-
-    /**
-     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var PresenterFormatterInterface&MockObject
      */
     private $presenterFormatter;
 
+    /**
+     * @var ProviderAuthenticationFactoryInterface
+     */
+    private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory;
+
+    /**
+     * @var ProviderAuthenticationInterface
+     */
+    private ProviderAuthenticationInterface $providerAuthentication;
+
+    /**
+     * @return void
+     */
     public function setUp(): void
     {
-        $this->repository = $this->createMock(ReadConfigurationRepositoryInterface::class);
         $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+        $this->providerAuthenticationFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+        $this->providerAuthentication = $this->createMock(ProviderAuthenticationInterface::class);
     }
 
     /**
@@ -71,68 +85,84 @@ class FindConfigurationTest extends TestCase
             [],
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
-        $configuration = new Configuration($securityPolicy);
 
-        $useCase = new FindConfiguration($this->repository);
-
-        $presenter = new FindConfigurationPresenterFake();
-
-        $this->repository
+        $customConfiguration = CustomConfiguration::createFromSecurityPolicy($securityPolicy);
+        $configuration = new Configuration(1, 'local', 'local', '{}', true, true);
+        $configuration->setCustomConfiguration($customConfiguration);
+        $this->providerAuthenticationFactory
             ->expects($this->once())
-            ->method('findConfiguration')
+            ->method('create')
+            ->with(Provider::LOCAL)
+            ->willReturn($this->providerAuthentication);
+
+        $this->providerAuthentication
+            ->expects($this->once())
+            ->method('getConfiguration')
             ->willReturn($configuration);
+
+        $useCase = new FindConfiguration($this->providerAuthenticationFactory);
+        $presenter = new FindConfigurationPresenterFake();
 
         $useCase($presenter);
 
         $this->assertEquals(
             $presenter->response->passwordMinimumLength,
-            $configuration->getSecurityPolicy()->getPasswordMinimumLength()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getPasswordMinimumLength()
         );
-        $this->assertEquals($presenter->response->hasUppercase, $configuration->getSecurityPolicy()->hasUppercase());
-        $this->assertEquals($presenter->response->hasLowercase, $configuration->getSecurityPolicy()->hasLowercase());
-        $this->assertEquals($presenter->response->hasNumber, $configuration->getSecurityPolicy()->hasNumber());
+        $this->assertEquals($presenter->response->hasUppercase, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasUppercase());
+        $this->assertEquals($presenter->response->hasLowercase, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase());
+        $this->assertEquals($presenter->response->hasNumber, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasNumber());
         $this->assertEquals(
             $presenter->response->hasSpecialCharacter,
-            $configuration->getSecurityPolicy()->hasSpecialCharacter()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasSpecialCharacter()
         );
         $this->assertEquals(
             $presenter->response->canReusePasswords,
-            $configuration->getSecurityPolicy()->canReusePasswords()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->canReusePasswords()
         );
-        $this->assertEquals($presenter->response->attempts, $configuration->getSecurityPolicy()->getAttempts());
+        $this->assertEquals($presenter->response->attempts, $configuration->getCustomConfiguration()->getSecurityPolicy()->getAttempts());
         $this->assertEquals(
             $presenter->response->blockingDuration,
-            $configuration->getSecurityPolicy()->getBlockingDuration()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getBlockingDuration()
         );
         $this->assertEquals(
             $presenter->response->passwordExpirationDelay,
-            $configuration->getSecurityPolicy()->getPasswordExpirationDelay()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getPasswordExpirationDelay()
         );
         $this->assertEquals(
             $presenter->response->delayBeforeNewPassword,
-            $configuration->getSecurityPolicy()->getDelayBeforeNewPassword()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getDelayBeforeNewPassword()
         );
     }
 
     /**
      * Test that an error message is returned by the API when no security policy was found.
+     * todo
      */
-    public function testFindConfigurationError(): void
-    {
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willReturn(null);
-        $useCase = new FindConfiguration($this->repository);
-        $presenter = new FindConfigurationPresenter($this->presenterFormatter);
-
-        $useCase($presenter);
-
-        $this->assertEquals(
-            $presenter->getResponseStatus(),
-            new FindConfigurationErrorResponse(
-                'Local provider configuration not found. Please verify that your installation is valid'
-            )
-        );
-    }
+//    public function testFindConfigurationError(): void
+//    {
+//        $this->providerAuthenticationFactory
+//            ->expects($this->once())
+//            ->method('create')
+//            ->with(Provider::LOCAL)
+//            ->willReturn($this->providerAuthentication);
+//
+//        $this->providerAuthentication
+//            ->expects($this->once())
+//            ->method('getConfiguration')
+//            ->willReturn($configuration)
+//            ->willThrowException(new Exception("unknown configuration name, can't load custom config"));
+//
+//        $useCase = new FindConfiguration($this->readConfigurationFactory);
+//        $presenter = new FindConfigurationPresenter($this->presenterFormatter);
+//
+//        $useCase($presenter);
+//
+//        $this->assertEquals(
+//            $presenter->getResponseStatus(),
+//            new FindConfigurationErrorResponse(
+//                "unknown configuration name, can't load custom config"
+//            )
+//        );
+//    }
 }

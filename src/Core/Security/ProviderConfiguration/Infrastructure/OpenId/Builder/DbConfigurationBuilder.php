@@ -32,7 +32,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 class DbConfigurationBuilder
 {
     /**
-     * Create OpenId Configuration from data storage record
+     * Create OpenId Provider from data storage record
      *
      * @param array<string, mixed> $record
      * @param array<string, mixed> $customConfiguration
@@ -46,12 +46,12 @@ class DbConfigurationBuilder
          * provider configuration
          */
         if ($record['is_active'] === true) {
-            Assertion::notEmpty($customConfiguration['client_id'], "Configuration::clientId");
-            Assertion::notEmpty($customConfiguration['client_secret'], "Configuration::clientSecret");
-            Assertion::notEmpty($customConfiguration['base_url'], "Configuration::baseUrl");
-            Assertion::notEmpty($customConfiguration['authorization_endpoint'], "Configuration::authorizationEndpoint");
-            Assertion::notEmpty($customConfiguration['token_endpoint'], "Configuration::tokenEndpoint");
-            Assertion::notNull($customConfiguration['contact_group'], "Configuration::contactGroup");
+            Assertion::notEmpty($customConfiguration['client_id'], "Provider::clientId");
+            Assertion::notEmpty($customConfiguration['client_secret'], "Provider::clientSecret");
+            Assertion::notEmpty($customConfiguration['base_url'], "Provider::baseUrl");
+            Assertion::notEmpty($customConfiguration['authorization_endpoint'], "Provider::authorizationEndpoint");
+            Assertion::notEmpty($customConfiguration['token_endpoint'], "Provider::tokenEndpoint");
+            Assertion::notNull($customConfiguration['contact_group'], "Provider::contactGroup");
             if (
                 empty($customConfiguration['introspection_token_endpoint'])
                 && empty($customConfiguration['userinfo_endpoint'])

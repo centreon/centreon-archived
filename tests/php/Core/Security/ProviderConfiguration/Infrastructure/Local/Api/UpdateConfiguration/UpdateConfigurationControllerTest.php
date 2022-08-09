@@ -119,10 +119,6 @@ class UpdateConfigurationControllerTest extends TestCase
                 'has_uppercase' => true,
             ],
         ]);
-        $this->request
-            ->expects($this->once())
-            ->method('getContent')
-            ->willReturn($invalidPayload);
 
         $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter);

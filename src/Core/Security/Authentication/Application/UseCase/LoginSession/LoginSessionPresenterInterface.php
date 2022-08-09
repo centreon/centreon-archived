@@ -25,6 +25,9 @@ namespace Core\Security\Authentication\Application\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
+/**
+ * @deprecated
+ */
 interface LoginSessionPresenterInterface extends PresenterInterface
 {
 }

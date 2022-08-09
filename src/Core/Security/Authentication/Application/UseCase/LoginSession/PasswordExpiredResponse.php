@@ -27,6 +27,10 @@ use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\BodyResponseInterface;
 
+/**
+ * @deprecated
+ * Todo move to Login
+ */
 class PasswordExpiredResponse extends UnauthorizedResponse implements ResponseStatusInterface, BodyResponseInterface
 {
     /**

@@ -51,7 +51,7 @@ class DbConfigurationFactoryTest extends TestCase
         ];
     }
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid password length.
+     * Test that an exception is thrown when creating a Provider with invalid password length.
      */
     public function testPasswordMinimumLengthTooSmallException(): void
     {
@@ -77,7 +77,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid password length.
+     * Test that an exception is thrown when creating a Provider with invalid password length.
      */
     public function testPasswordMinimumLengthTooHighException(): void
     {
@@ -103,7 +103,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid attempts number.
+     * Test that an exception is thrown when creating a Provider with invalid attempts number.
      */
     public function testAttemptsTooSmallException(): void
     {
@@ -129,7 +129,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid attempts number.
+     * Test that an exception is thrown when creating a Provider with invalid attempts number.
      */
     public function testAttemptsTooHighException(): void
     {
@@ -155,7 +155,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid blocking duration.
+     * Test that an exception is thrown when creating a Provider with invalid blocking duration.
      */
     public function testBlockingDurationTooSmallException(): void
     {
@@ -181,7 +181,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid blocking duration.
+     * Test that an exception is thrown when creating a Provider with invalid blocking duration.
      */
     public function testBlockingDurationTooHighException(): void
     {
@@ -207,7 +207,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid password expiration.
+     * Test that an exception is thrown when creating a Provider with invalid password expiration.
      */
     public function testPasswordExpirationTooSmallException(): void
     {
@@ -233,7 +233,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid password expiration.
+     * Test that an exception is thrown when creating a Provider with invalid password expiration.
      */
     public function testPasswordExpirationTooHighException(): void
     {
@@ -259,7 +259,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid delay before new password.
+     * Test that an exception is thrown when creating a Provider with invalid delay before new password.
      */
     public function testDelayBeforeNewPasswordTooSmallException(): void
     {
@@ -285,7 +285,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown when creating a Configuration with invalid delay before new password.
+     * Test that an exception is thrown when creating a Provider with invalid delay before new password.
      */
     public function testDelayBeforeNewPasswordTooHighException(): void
     {
@@ -311,7 +311,7 @@ class DbConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * Test that the Configuration is correctly created when valid data are sent.
+     * Test that the Provider is correctly created when valid data are sent.
      */
     public function testConfigurationCorrectlyCreated(): void
     {
@@ -329,43 +329,43 @@ class DbConfigurationFactoryTest extends TestCase
 
         $this->assertEquals(
             $this->securityPolicyData['password_length'],
-            $configuration->getSecurityPolicy()->getPasswordMinimumLength()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getPasswordMinimumLength()
         );
         $this->assertEquals(
             $this->securityPolicyData['has_uppercase_characters'],
-            $configuration->getSecurityPolicy()->hasUppercase()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasUppercase()
         );
         $this->assertEquals(
             $this->securityPolicyData['has_lowercase_characters'],
-            $configuration->getSecurityPolicy()->hasLowercase()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase()
         );
         $this->assertEquals(
             $this->securityPolicyData['has_numbers'],
-            $configuration->getSecurityPolicy()->hasNumber()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasNumber()
         );
         $this->assertEquals(
             $this->securityPolicyData['has_special_characters'],
-            $configuration->getSecurityPolicy()->hasSpecialCharacter()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasSpecialCharacter()
         );
         $this->assertEquals(
             $this->securityPolicyData['can_reuse_passwords'],
-            $configuration->getSecurityPolicy()->canReusePasswords()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->canReusePasswords()
         );
         $this->assertEquals(
             $this->securityPolicyData['attempts'],
-            $configuration->getSecurityPolicy()->getAttempts()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getAttempts()
         );
         $this->assertEquals(
             $this->securityPolicyData['blocking_duration'],
-            $configuration->getSecurityPolicy()->getBlockingDuration()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getBlockingDuration()
         );
         $this->assertEquals(
             $this->securityPolicyData['password_expiration_delay'],
-            $configuration->getSecurityPolicy()->getPasswordExpirationDelay()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getPasswordExpirationDelay()
         );
         $this->assertEquals(
             $this->securityPolicyData['delay_before_new_password'],
-            $configuration->getSecurityPolicy()->getDelayBeforeNewPassword()
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->getDelayBeforeNewPassword()
         );
     }
 }

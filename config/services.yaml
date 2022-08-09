@@ -86,10 +86,6 @@ services:
     Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
         class: Security\Infrastructure\Repository\SessionRepository
 
-    Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
-        class: Security\Domain\Authentication\ProviderService
-        public: true
-
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ "%session_expiration_delay%" ]
 

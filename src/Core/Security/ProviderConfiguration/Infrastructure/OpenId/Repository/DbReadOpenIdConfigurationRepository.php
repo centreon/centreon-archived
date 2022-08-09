@@ -36,6 +36,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenId
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\AccessGroup\Infrastructure\Repository\DbAccessGroupFactory;
+use Throwable;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
     ReadProviderConfigurationsRepositoryInterface,
@@ -86,7 +87,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
             $customConfiguration['contact_group'] = $customConfiguration['contact_group_id'] !== null
                 ? $this->getContactGroup($customConfiguration['contact_group_id'])
                 : null;
-            $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByProviderId((int) $result["id"]);
+            $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByConfigurationId((int) $result["id"]);
             $configuration = DbConfigurationBuilder::create($result, $customConfiguration);
         }
 
@@ -98,9 +99,9 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param int $contactTemplateId
      * @return ContactTemplate|null
-     * @throws \Throwable
+     * @throws Throwable
      */
-    private function getContactTemplate(int $contactTemplateId): ?ContactTemplate
+    public function getContactTemplate(int $contactTemplateId): ?ContactTemplate
     {
         $statement = $this->db->prepare(
             "SELECT
@@ -127,9 +128,9 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param int $contactGroupId
      * @return ContactGroup|null
-     * @throws \Throwable
+     * @throws Throwable
      */
-    private function getContactGroup(int $contactGroupId): ?ContactGroup
+    public function getContactGroup(int $contactGroupId): ?ContactGroup
     {
         $statement = $this->db->prepare(
             "SELECT
@@ -155,9 +156,9 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
      *
      * @param integer $providerConfigurationId
      * @return AuthorizationRule[]
-     * @throws \Throwable
+     * @throws Throwable
      */
-    private function getAuthorizationRulesByProviderId(int $providerConfigurationId): array
+    public function getAuthorizationRulesByConfigurationId(int $providerConfigurationId): array
     {
         $statement = $this->db->prepare(
             "SELECT * from security_provider_access_group_relation spagn

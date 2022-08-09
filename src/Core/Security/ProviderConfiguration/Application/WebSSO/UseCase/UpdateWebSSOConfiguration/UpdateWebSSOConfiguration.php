@@ -49,11 +49,11 @@ class UpdateWebSSOConfiguration
         UpdateWebSSOConfigurationPresenterInterface $presenter,
         UpdateWebSSOConfigurationRequest $request
     ): void {
-        $this->info('Updating WebSSO Configuration ...');
+        $this->info('Updating WebSSO Provider ...');
         try {
             $configuration = WebSSOConfigurationFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
-            $this->error('Unable to create WebSSO Configuration');
+            $this->error('Unable to create WebSSO Provider');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

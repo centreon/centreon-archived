@@ -22,14 +22,17 @@ declare(strict_types=1);
 
 namespace Tests\Security\Domain\Authentication;
 
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use Security\Domain\Authentication\AuthenticationService;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderToken;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 
@@ -44,11 +47,6 @@ class AuthenticationServiceTest extends TestCase
     private $authenticationRepository;
 
     /**
-     * @var ProviderServiceInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $providerService;
-
-    /**
      * @var SessionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sessionRepository;
@@ -59,7 +57,7 @@ class AuthenticationServiceTest extends TestCase
     private $writeTokenRepository;
 
     /**
-     * @var LocalProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderAuthenticationInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $provider;
 
@@ -78,16 +76,33 @@ class AuthenticationServiceTest extends TestCase
      */
     private $refreshToken;
 
+    /**
+     * @var ReadConfigurationRepositoryInterface
+     */
+    private $readConfigurationFactory;
+
+    /**
+     * @var ProviderAuthenticationFactoryInterface
+     */
+    private $providerFactory;
+
+    /**
+     * @var ReadTokenRepositoryInterface
+     */
+    private $readTokenRepository;
+
     protected function setUp(): void
     {
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
-        $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
         $this->writeTokenRepository = $this->createMock(WriteTokenRepositoryInterface::class);
-        $this->provider = $this->createMock(LocalProviderInterface::class);
+        $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->providerToken = $this->createMock(ProviderToken::class);
         $this->refreshToken = $this->createMock(ProviderToken::class);
+        $this->readConfigurationFactory = $this->createMock(ReadConfigurationRepositoryInterface::class);
+        $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+        $this->readTokenRepository = $this->createMock(ReadTokenRepositoryInterface::class);
     }
 
     /**
@@ -95,20 +110,14 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsValidTokenTokensNotFound(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
-
-        $this->authenticationRepository
+        $authenticationService = $this->createAuthenticationService();
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
             ->willReturn(null);
 
-        $isValid = $providerService->isValidToken('abc123');
+        $isValid = $authenticationService->isValidToken('abc123');
 
         $this->assertEquals(false, $isValid);
     }
@@ -118,25 +127,20 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsValidTokenProviderNotFound(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
             ->willReturn($this->authenticationTokens);
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationId')
-            ->willReturn(null);
+            ->method('create')
+            ->willThrowException(ProviderException::providerNotFound());
 
-        $isValid = $providerService->isValidToken('abc123');
+        $isValid = $authenticationService->isValidToken('abc123');
 
         $this->assertEquals(false, $isValid);
     }
@@ -146,22 +150,17 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsValidTokenSessionExpired(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
             ->willReturn($this->authenticationTokens);
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationId')
+            ->method('create')
             ->willReturn($this->provider);
 
         $this->authenticationTokens
@@ -179,7 +178,7 @@ class AuthenticationServiceTest extends TestCase
             ->method('canRefreshToken')
             ->willReturn(false);
 
-        $isValid = $providerService->isValidToken('abc123');
+        $isValid = $authenticationService->isValidToken('abc123');
 
         $this->assertEquals(false, $isValid);
     }
@@ -189,22 +188,17 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsValidTokenErrorWhileRefreshToken(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
             ->willReturn($this->authenticationTokens);
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationId')
+            ->method('create')
             ->willReturn($this->provider);
 
         $this->authenticationTokens
@@ -237,7 +231,7 @@ class AuthenticationServiceTest extends TestCase
             ->method('refreshToken')
             ->willReturn(null);
 
-        $isValid = $providerService->isValidToken('abc123');
+        $isValid = $authenticationService->isValidToken('abc123');
 
         $this->assertEquals(false, $isValid);
     }
@@ -247,55 +241,30 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsValidTokenValid(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
             ->willReturn($this->authenticationTokens);
 
-        $this->providerService
+        $this->providerFactory
             ->expects($this->once())
-            ->method('findProviderByConfigurationId')
+            ->method('create')
             ->willReturn($this->provider);
+
+        $this->providerToken
+            ->expects($this->once())
+            ->method('isExpired')
+            ->willReturn(false);
 
         $this->authenticationTokens
             ->expects($this->once())
             ->method('getProviderToken')
             ->willReturn($this->providerToken);
 
-        $this->authenticationTokens
-            ->expects($this->any())
-            ->method('getProviderRefreshToken')
-            ->willReturn($this->refreshToken);
-
-        $this->refreshToken
-            ->expects($this->once())
-            ->method('isExpired')
-            ->willReturn(false);
-
-        $this->providerToken
-            ->expects($this->once())
-            ->method('isExpired')
-            ->willReturn(true);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('canRefreshToken')
-            ->willReturn(true);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('refreshToken')
-            ->willReturn($this->authenticationTokens);
-
-        $isValid = $providerService->isValidToken('abc123');
+        $isValid = $authenticationService->isValidToken('abc123');
 
         $this->assertEquals(true, $isValid);
     }
@@ -305,12 +274,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testDeleteSessionFailed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->authenticationRepository
             ->expects($this->once())
@@ -325,7 +289,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Error while deleting session');
 
-        $providerService->deleteSession('abc123');
+        $authenticationService->deleteSession('abc123');
     }
 
     /**
@@ -333,12 +297,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testDeleteSessionSucceed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->authenticationRepository
             ->expects($this->once())
@@ -350,7 +309,7 @@ class AuthenticationServiceTest extends TestCase
             ->method('deleteSession')
             ->with('abc123');
 
-        $providerService->deleteSession('abc123');
+        $authenticationService->deleteSession('abc123');
     }
 
     /**
@@ -358,12 +317,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testDeleteExpiredSecurityTokensFailed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->writeTokenRepository
             ->expects($this->once())
@@ -373,7 +327,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Error while deleting expired token');
 
-        $providerService->deleteExpiredSecurityTokens();
+        $authenticationService->deleteExpiredSecurityTokens();
     }
 
     /**
@@ -381,18 +335,13 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testDeleteExpiredSecurityTokensSucceed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->writeTokenRepository
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
-        $providerService->deleteExpiredSecurityTokens();
+        $authenticationService->deleteExpiredSecurityTokens();
     }
 
     /**
@@ -400,14 +349,9 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testFindAuthenticationTokensByTokenFailed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123')
@@ -416,7 +360,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Error while searching authentication tokens');
 
-        $providerService->findAuthenticationTokensByToken('abc123');
+        $authenticationService->findAuthenticationTokensByToken('abc123');
     }
 
     /**
@@ -424,19 +368,14 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testFindAuthenticationTokensByTokenSucceed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
-        $this->authenticationRepository
+        $this->readTokenRepository
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
             ->with('abc123');
 
-        $providerService->findAuthenticationTokensByToken('abc123');
+        $authenticationService->findAuthenticationTokensByToken('abc123');
     }
 
     /**
@@ -444,12 +383,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testUpdateAuthenticationTokensFailed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->authenticationRepository
             ->expects($this->once())
@@ -460,7 +394,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Error while updating authentication tokens');
 
-        $providerService->updateAuthenticationTokens($this->authenticationTokens);
+        $authenticationService->updateAuthenticationTokens($this->authenticationTokens);
     }
 
     /**
@@ -468,18 +402,28 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testUpdateAuthenticationTokensSucceed(): void
     {
-        $providerService = new AuthenticationService(
-            $this->authenticationRepository,
-            $this->providerService,
-            $this->sessionRepository,
-            $this->writeTokenRepository,
-        );
+        $authenticationService = $this->createAuthenticationService();
 
         $this->authenticationRepository
             ->expects($this->once())
             ->method('updateAuthenticationTokens')
             ->with($this->authenticationTokens);
 
-        $providerService->updateAuthenticationTokens($this->authenticationTokens);
+        $authenticationService->updateAuthenticationTokens($this->authenticationTokens);
+    }
+
+    /**
+     * @return AuthenticationService
+     */
+    private function createAuthenticationService(): AuthenticationService
+    {
+        return new AuthenticationService(
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->writeTokenRepository,
+            $this->readConfigurationFactory,
+            $this->providerFactory,
+            $this->readTokenRepository
+        );
     }
 }

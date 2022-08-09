@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderToken;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Throwable;
 
 /**
  * @package Security\Authentication\Interfaces
@@ -34,7 +34,7 @@ interface LocalProviderInterface extends ProviderInterface
 {
     /**
      * @param array<string, mixed> $data
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function authenticateOrFail(array $data): void;
 
@@ -44,7 +44,7 @@ interface LocalProviderInterface extends ProviderInterface
      * @param string $token
      * @return ProviderToken
      */
-    public function getProviderToken(string $token): ProviderToken;
+    public function getProviderToken(string $token): NewProviderToken;
 
     /**
      * Return the provider refresh token.
@@ -52,12 +52,12 @@ interface LocalProviderInterface extends ProviderInterface
      * @param string $token
      * @return ProviderToken|null
      */
-    public function getProviderRefreshToken(string $token): ?ProviderToken;
+    public function getProviderRefreshToken(string $token): ?NewProviderToken;
 
     /**
      * Get the provider's configuration (ex: client_id, client_secret, grant_type, ...).
      *
-     * @return ProviderConfiguration
+     * @return Configuration
      */
-    public function getConfiguration(): ProviderConfiguration;
+    public function getConfiguration(): Configuration;
 }

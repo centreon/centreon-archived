@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\OpenId\Builder;
 
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\{
     UpdateOpenIdConfiguration\UpdateOpenIdConfigurationRequest
 };
@@ -31,15 +32,12 @@ use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\{
-    Configuration,
-    AuthorizationRule
-};
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 
 class ConfigurationBuilder
 {
     /**
-     * Create OpenId Configuration from Request DTO
+     * Create OpenId Provider from Request DTO
      *
      * @param UpdateOpenIdConfigurationRequest $request
      * @param ContactTemplate|null $contactTemplate
@@ -55,12 +53,12 @@ class ConfigurationBuilder
         array $authorizationRules
     ): Configuration {
         if ($request->isActive === true) {
-            Assertion::notEmpty($request->clientId, "Configuration::clientId");
-            Assertion::notEmpty($request->clientSecret, "Configuration::clientSecret");
-            Assertion::notEmpty($request->baseUrl, "Configuration::baseUrl");
-            Assertion::notEmpty($request->authorizationEndpoint, "Configuration::authorizationEndpoint");
-            Assertion::notEmpty($request->tokenEndpoint, "Configuration::tokenEndpoint");
-            Assertion::notNull($contactGroup, "Configuration::contactGroup");
+            Assertion::notEmpty($request->clientId, "Provider::clientId");
+            Assertion::notEmpty($request->clientSecret, "Provider::clientSecret");
+            Assertion::notEmpty($request->baseUrl, "Provider::baseUrl");
+            Assertion::notEmpty($request->authorizationEndpoint, "Provider::authorizationEndpoint");
+            Assertion::notEmpty($request->tokenEndpoint, "Provider::tokenEndpoint");
+            Assertion::notNull($contactGroup, "Provider::contactGroup");
             if (empty($request->introspectionTokenEndpoint) && empty($request->userInformationEndpoint)) {
                 throw OpenIdConfigurationException::missingInformationEndpoint();
             }

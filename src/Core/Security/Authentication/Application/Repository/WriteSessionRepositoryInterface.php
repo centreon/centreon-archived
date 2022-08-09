@@ -28,4 +28,10 @@ interface WriteSessionRepositoryInterface
      * Invalidate a session.
      */
     public function invalidate(): void;
+
+    /**
+     * @param \Centreon $legacySession
+     * @return bool
+     */
+    public function start(\Centreon $legacySession): bool;
 }

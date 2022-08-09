@@ -30,6 +30,9 @@ use Core\Security\Authentication\Application\UseCase\LoginSession\LoginSessionRe
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 
+/**
+ * @deprecated
+ */
 class LoginSessionController extends AbstractController
 {
     /**

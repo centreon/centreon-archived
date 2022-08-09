@@ -86,4 +86,18 @@ class OpenIdConfigurationException extends \Exception
             $contactGroupId
         )));
     }
+
+    /**
+     * Exception thrown when mandatory parameters are missing
+     *
+     * @param array $missingParameters
+     * @return self
+     */
+    public static function missingMandatoryParameters(array $missingParameters): self
+    {
+        return new self(_(sprintf(
+            'Missing mandatory parameters: %s',
+            implode(', ', $missingParameters)
+        )));
+    }
 }

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Application\Provider;
+namespace Core\Security\ProviderConfiguration\Domain\Local\Model;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
+use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
 
-interface ProviderInterface
+interface LocalCustomConfigurationInterface extends CustomConfigurationInterface
 {
     /**
-     * @param LoginRequest $request
-     * @return void
+     * @return SecurityPolicy
      */
-    public function authenticateOrFail(LoginRequest $request): void;
-
-    /**
-     * @param LoginRequest $request
-     * @return ContactInterface
-     */
-    public function findUserOrFail(LoginRequest $request): ContactInterface;
+    public function getSecurityPolicy(): SecurityPolicy;
 }

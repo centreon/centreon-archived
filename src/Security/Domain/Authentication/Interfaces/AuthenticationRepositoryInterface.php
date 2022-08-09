@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
 
 /**
  * @package Security\Authentication\Interfaces

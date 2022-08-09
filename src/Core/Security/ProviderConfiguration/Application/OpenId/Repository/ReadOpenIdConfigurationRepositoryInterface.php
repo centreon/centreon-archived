@@ -28,10 +28,16 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 interface ReadOpenIdConfigurationRepositoryInterface
 {
     /**
-     * Find the OpenId Configuration
+     * Find the OpenId Provider
      *
      * @return Configuration|null
      * @throws \Throwable
      */
     public function findConfiguration(): ?Configuration;
+
+    /**
+     * @param int $providerConfigurationId
+     * @return array
+     */
+    public function getAuthorizationRulesByConfigurationId(int $providerConfigurationId): array;
 }

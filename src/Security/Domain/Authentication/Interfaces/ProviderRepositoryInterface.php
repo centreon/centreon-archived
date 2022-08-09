@@ -21,6 +21,7 @@
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 interface ProviderRepositoryInterface
@@ -32,7 +33,7 @@ interface ProviderRepositoryInterface
      * @return ProviderConfiguration|null
      * @throws \Exception
      */
-    public function findProviderConfiguration(int $id): ?ProviderConfiguration;
+    public function findProviderConfiguration(int $id): ?Configuration;
 
     /**
      * Find the provider configuration by name

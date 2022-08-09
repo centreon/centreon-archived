@@ -35,7 +35,7 @@ class ConfigurationFactory
      * @return Configuration
      * @throws AssertionException
      */
-    public static function createFromRequest(UpdateConfigurationRequest $request): Configuration
+    public static function createFromRequest(UpdateConfigurationRequest $request): CustomConfiguration
     {
         $securityPolicy = new SecurityPolicy(
             $request->passwordMinimumLength,
@@ -51,6 +51,6 @@ class ConfigurationFactory
             $request->delayBeforeNewPassword
         );
 
-        return new Configuration($securityPolicy);
+        return CustomConfiguration::createFromSecurityPolicy($securityPolicy);
     }
 }

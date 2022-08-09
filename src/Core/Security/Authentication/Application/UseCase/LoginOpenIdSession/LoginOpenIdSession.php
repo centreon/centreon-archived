@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\LoginOpenIdSession;
 
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
@@ -46,6 +47,9 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
+/**
+ * @deprecated
+ */
 class LoginOpenIdSession
 {
     use LoggerTrait;
@@ -156,7 +160,7 @@ class LoginOpenIdSession
         $this->debug(
             "[AUTHENTICATE] Authentication success",
             [
-                "provider_name" => Configuration::NAME,
+                "provider_name" => Provider::OPENID,
                 "contact_id" => $user->getId(),
                 "contact_alias" => $user->getAlias()
             ]

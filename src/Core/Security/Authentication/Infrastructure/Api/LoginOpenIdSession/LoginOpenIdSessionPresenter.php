@@ -25,6 +25,9 @@ namespace Core\Security\Authentication\Infrastructure\Api\LoginOpenIdSession;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Security\Authentication\Application\UseCase\LoginOpenIdSession\LoginOpenIdSessionPresenterInterface;
 
+/**
+ * @deprecated
+ */
 class LoginOpenIdSessionPresenter extends AbstractPresenter implements LoginOpenIdSessionPresenterInterface
 {
 }

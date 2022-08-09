@@ -22,22 +22,29 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Pimple\Container;
-use Centreon\Domain\Log\LoggerTrait;
-use Core\Security\User\Domain\Model\User;
+use Centreon;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use CentreonAuth;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
-use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
-use Core\Security\User\Application\Repository\ReadUserRepositoryInterface;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\User\Application\Repository\ReadUserRepositoryInterface;
 use Core\Security\User\Application\Repository\WriteUserRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Local\ConfigurationException;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+use Core\Security\User\Domain\Model\User;
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use Exception;
+use Pimple\Container;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 
 /**
  * @package Security\Authentication\Model
@@ -54,12 +61,12 @@ class LocalProvider implements LocalProviderInterface
     private $contactId;
 
     /**
-     * @var ProviderConfiguration
+     * @var Configuration
      */
     private $configuration;
 
     /**
-     * @var \Centreon
+     * @var Centreon
      */
     private $legacySession;
 
@@ -82,6 +89,7 @@ class LocalProvider implements LocalProviderInterface
         private ReadConfigurationRepositoryInterface $readProviderConfigurationRepository,
         private ReadUserRepositoryInterface $readUserRepository,
         private WriteUserRepositoryInterface $writeUserRepository,
+        private ReadConfigurationRepositoryInterface $readConfigurationRepository
     ) {
     }
 
@@ -127,18 +135,14 @@ class LocalProvider implements LocalProviderInterface
 
         $doesPasswordMatch = $auth->passwdOk === 1;
 
-        if ($auth->userInfos["contact_auth_type"] === \CentreonAuth::AUTH_TYPE_LOCAL) {
+        if ($auth->userInfos["contact_auth_type"] === CentreonAuth::AUTH_TYPE_LOCAL) {
             $user = $this->readUserRepository->findUserByAlias($auth->userInfos['contact_alias']);
             if ($user === null) {
-                throw new \Exception('user not found');
+                throw new Exception('user not found');
             }
 
-            $providerConfiguration = $this->readProviderConfigurationRepository->findConfiguration();
-            if ($providerConfiguration === null) {
-                throw ConfigurationException::notFound();
-            }
-
-            $securityPolicy = $providerConfiguration->getSecurityPolicy();
+            $providerConfiguration = $this->readConfigurationRepository->getConfigurationByName(Provider::LOCAL);
+            $securityPolicy = $providerConfiguration->getCustomConfiguration()->getSecurityPolicy();
 
             $this->respectLocalSecurityPolicyOrFail($user, $securityPolicy, $doesPasswordMatch);
         }
@@ -162,7 +166,7 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function getLegacySession(): \Centreon
+    public function getLegacySession(): Centreon
     {
         return $this->legacySession;
     }
@@ -170,7 +174,7 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function setLegacySession(\Centreon $legacySession): void
+    public function setLegacySession(Centreon $legacySession): void
     {
         $this->legacySession = $legacySession;
     }
@@ -207,7 +211,7 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function getConfiguration(): ProviderConfiguration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
@@ -215,11 +219,11 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function setConfiguration(ProviderConfigurationInterface $configuration): void
+    public function setConfiguration(Configuration $configuration): void
     {
-        if (!is_a($configuration, ProviderConfiguration::class)) {
+        /*if (!is_a($configuration, ProviderProvider::class)) {
             throw new \InvalidArgumentException('Bad provider configuration');
-        }
+        }*/
         $this->configuration = $configuration;
     }
 
@@ -234,24 +238,23 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderToken(string $token): ProviderToken
+    public function getProviderToken(string $token): NewProviderToken
     {
         $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
         if (!empty($sessionExpireOption)) {
             $this->sessionExpirationDelay = (int) $sessionExpireOption[0]->getValue();
         }
-        return new ProviderToken(
-            null,
+        return new NewProviderToken(
             $token,
-            new \DateTime(),
-            (new \DateTime())->add(new \DateInterval('PT' . $this->sessionExpirationDelay . 'M'))
+            new DateTimeImmutable(),
+            (new DateTimeImmutable())->add(new DateInterval('PT' . $this->sessionExpirationDelay . 'M'))
         );
     }
 
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(string $token): ?ProviderToken
+    public function getProviderRefreshToken(string $token): ?\Core\Security\Authentication\Domain\Model\ProviderToken
     {
         return null;
     }
@@ -342,7 +345,7 @@ class LocalProvider implements LocalProviderInterface
             $user->setLoginAttempts($user->getLoginAttempts() + 1);
 
             if ($user->getLoginAttempts() >= $securityPolicy->getAttempts()) {
-                $user->setBlockingTime(new \DateTimeImmutable());
+                $user->setBlockingTime(new DateTimeImmutable());
             }
         }
 
@@ -376,7 +379,7 @@ class LocalProvider implements LocalProviderInterface
                 'password is expired',
                 [
                     'contact_alias' => $user->getAlias(),
-                    'creation_date' => $passwordCreationDate->format(\DateTime::ISO8601),
+                    'creation_date' => $passwordCreationDate->format(DateTime::ISO8601),
                     'expiration_delay' => $expirationDelay,
                 ],
             );

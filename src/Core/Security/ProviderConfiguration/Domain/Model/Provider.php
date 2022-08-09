@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,11 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\ProviderConfiguration\Application\Local\Repository;
+namespace Core\Security\ProviderConfiguration\Domain\Model;
 
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
-
-interface ReadConfigurationRepositoryInterface
+final class Provider
 {
-    /**
-     * Find the provider configuration.
-     *
-     * @return Configuration|null
-     */
-    public function findConfiguration(): ?Configuration;
+    public const LOCAL = 'local';
+    public const OPENID = 'openid';
+    public const WEB_SSO = 'web-sso';
 }

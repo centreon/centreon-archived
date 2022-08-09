@@ -1,24 +1,17 @@
-centreon_security_authentication_login_tmp:
+centreon_security_authentication_login:
     methods: POST
-    path: /providers/configurations/{providerName}
-    requirements:
-        providerName: '\w+'
-    controller: 'Core\Security\Authentication\Infrastructure\Api\Login\LoginController'
+    path: /providers/configurations/local
+    controller: 'Core\Security\Authentication\Infrastructure\Api\Login\Local\LoginController'
 
-#centreon_security_authentication_login:
-#    methods: POST
-#    path: /providers/configurations/local
-#    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginSession\LoginSessionController'
+centreon_security_authentication_login_openid:
+    methods: GET
+    path: /providers/configurations/openid
+    controller: 'Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginController'
 
 centreon_security_authentication_logout:
     methods: POST
     path: /logout
     controller: 'Core\Security\Authentication\Infrastructure\Api\LogoutSession\LogoutSessionController'
-
-centreon_security_authentication_openid_login:
-    methods: GET
-    path: /providers/configurations/openid
-    controller: 'Core\Security\Authentication\Infrastructure\Api\LoginOpenIdSession\LoginOpenIdSessionController'
 
 centreon_security__renew_user_password:
     methods: PUT

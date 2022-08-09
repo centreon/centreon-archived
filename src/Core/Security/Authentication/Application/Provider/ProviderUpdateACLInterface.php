@@ -22,11 +22,16 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\Provider;
 
-interface ProviderFactoryInterface
+interface ProviderUpdateACLInterface
 {
     /**
-     * @param string $providerName
-     * @return ProviderInterface
+     * @return array
      */
-    public function create(string $providerName): ProviderInterface;
+    public function getUserClaims(): array;
+
+    /**
+     * @param array $claims
+     * @return array
+     */
+    public function getUserAccessGroupsFromClaims(array $claims): array;
 }
