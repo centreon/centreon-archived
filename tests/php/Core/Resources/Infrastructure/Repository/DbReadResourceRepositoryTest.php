@@ -34,7 +34,7 @@ use Core\Resources\Infrastructure\Repository\DbReadResourceRepository;
 function generateAccessGroupSubQuery(array $accessGroupIds): string
 {
     return 'AND EXISTS (
-          SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
+          SELECT 1 FROM `centreon-monitoring`.centreon_acl acl WHERE
               (
                 (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
                 OR
@@ -94,20 +94,20 @@ function generateExpectedSQLQuery(array $accessGroupIds): string
             resources.enabled,
             resources.icon_id,
             resources.severity_id
-        FROM `:dbstg`.`resources`
-        LEFT JOIN `:dbstg`.`resources` parent_resource
+        FROM `centreon-monitoring`.`resources`
+        LEFT JOIN `centreon-monitoring`.`resources` parent_resource
             ON parent_resource.id = resources.parent_id
-        LEFT JOIN `:dbstg`.`severities`
+        LEFT JOIN `centreon-monitoring`.`severities`
             ON `severities`.severity_id = `resources`.severity_id
-        LEFT JOIN `:dbstg`.`resources_tags` AS rtags
+        LEFT JOIN `centreon-monitoring`.`resources_tags` AS rtags
             ON `rtags`.resource_id = `resources`.resource_id
-        INNER JOIN `:dbstg`.`instances`
+        INNER JOIN `centreon-monitoring`.`instances`
             ON `instances`.instance_id = `resources`.poller_id WHERE ' .
         " resources.name NOT LIKE '\_Module\_%'
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
             AND resources.enabled = 1 AND resources.type != 3 " .
         $accessGroupRequest .
-            'ORDER BY resources.status_ordered DESC, resources.name ASC';
+        'ORDER BY resources.status_ordered DESC, resources.name ASC';
 
     return $request;
 }
@@ -117,8 +117,8 @@ it('findResources method should fetch resources', function () {
     $statement->method('fetchColumn')->willReturn(10);
 
     $dbConnection = $this->createMock(DatabaseConnection::class);
-    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn(':dbstg');
-    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn(':db');
+    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
+    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
     $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery([]))
         ->willReturn($statement);
     $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
@@ -153,9 +153,9 @@ it('findResourcesByAccessGroupIds method should fetch resources', function () {
     $statement->method('fetchColumn')->willReturn(10);
 
     $dbConnection = $this->createMock(DatabaseConnection::class);
-    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn(':dbstg');
-    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn(':db');
-    $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery(['1', '4']))
+    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
+    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
+    $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery([1, 4]))
         ->willReturn($statement);
     $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
         ->willReturn($statement);
@@ -179,7 +179,7 @@ it('findResourcesByAccessGroupIds method should fetch resources', function () {
         new \ArrayObject([$serviceResourceType])
     );
 
-    $resources = $repository->findResourcesByAccessGroupIds(new ResourceFilter(), ['1', '4']);
+    $resources = $repository->findResourcesByAccessGroupIds(new ResourceFilter(), [1, 4]);
 
     expect($resources)->toBe([]);
 });
