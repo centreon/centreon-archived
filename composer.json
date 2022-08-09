@@ -62,7 +62,7 @@
         "symfony/error-handler": "5.4.*",
         "symfony/expression-language": "5.4.*",
         "symfony/event-dispatcher": "5.4.*",
-        "symfony/event-dispatcher-contracts": "3.0.2",
+        "symfony/event-dispatcher-contracts": "2.5.*",
         "symfony/filesystem": "5.4.*",
         "symfony/finder": "5.4.*",
         "symfony/flex": "^1.17",
