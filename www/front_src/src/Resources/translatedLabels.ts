@@ -214,7 +214,6 @@ export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
 export const labelMaxDuration1Year = 'The duration must be less than a year';
-export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
 export const labelSearchOptions = 'Filter options';
@@ -257,3 +256,8 @@ export const labelServiceSeverity = 'Service severity';
 export const labelHostSeverity = 'Host severity';
 export const labelHostSeverityLevel = 'Host severity level';
 export const labelServiceSeverityLevel = 'Service severity level';
+export const labelExportToCSV = 'CSV';
+export const labelExport = 'Export';
+export const labelAsDisplayed = 'PNG as displayed';
+export const labelAsMediumSize = 'PNG as Medium size';
+export const labelAsSmallSize = 'PNG as Small size';

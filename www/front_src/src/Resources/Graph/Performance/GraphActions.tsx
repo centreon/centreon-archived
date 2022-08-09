@@ -2,13 +2,13 @@ import { MouseEvent, MutableRefObject, useState } from 'react';
 
 import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 
-import { Menu, MenuItem } from '@mui/material';
+import { Divider, Menu, MenuItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { useTheme } from '@mui/material/styles';
 
 import {
   ContentWithCircularLoading,
@@ -17,15 +17,17 @@ import {
 } from '@centreon/ui';
 
 import {
+  labelExport,
+  labelExportToCSV,
   labelAsDisplayed,
-  labelExportToPng,
-  labelMediumSize,
+  labelAsMediumSize,
+  labelAsSmallSize,
   labelPerformancePage,
-  labelSmallSize,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
+import { detailsAtom } from '../../Details/detailsAtoms';
 
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
@@ -40,12 +42,15 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
     columnGap: theme.spacing(1),
-    display: 'flex',
+    display: 'inline',
     flexDirection: 'row',
   },
   buttonLink: {
     background: 'transparent',
     border: 'none',
+  },
+  labelButton: {
+    fontWeight: 'bold',
   },
 }));
 
@@ -58,7 +63,6 @@ const GraphActions = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
-
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
   const [exporting, setExporting] = useState<boolean>(false);
@@ -71,6 +75,14 @@ const GraphActions = ({
   const closeSizeExportMenu = (): void => {
     setMenuAnchor(null);
   };
+
+  const details = useAtomValue(detailsAtom);
+  const downloadGraphFile = `${details?.links.endpoints.metrics}/download?start_date=2022-08-01T00:00:22Z&end_date=2022-08-08T18:00:22Z`;
+
+  const exportToCsv = (): void => {
+    window.open(downloadGraphFile, 'noopener', 'noreferrer');
+  };
+
   const goToPerformancePage = (): void => {
     const startTimestamp = format({
       date: customTimePeriod?.start as Date,
@@ -130,11 +142,11 @@ const GraphActions = ({
           </IconButton>
           <IconButton
             disableTouchRipple
-            ariaLabel={t(labelExportToPng)}
-            data-testid={labelExportToPng}
+            ariaLabel={t(labelExport)}
+            data-testid={labelExport}
             disabled={isNil(timeline)}
             size="large"
-            title={t(labelExportToPng)}
+            title={t(labelExport)}
             onClick={openSizeExportMenu}
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
@@ -146,22 +158,39 @@ const GraphActions = ({
             onClose={closeSizeExportMenu}
           >
             <MenuItem
+              className={classes.labelButton}
+              data-testid={labelExport}
+              sx={{ cursor: 'auto' }}
+            >
+              {t(labelExport)}
+            </MenuItem>
+            <Divider />
+
+            <MenuItem
               data-testid={labelAsDisplayed}
               onClick={(): void => convertToPng(1)}
             >
               {t(labelAsDisplayed)}
             </MenuItem>
             <MenuItem
-              data-testid={labelMediumSize}
+              data-testid={labelAsMediumSize}
               onClick={(): void => convertToPng(0.75)}
             >
-              {t(labelMediumSize)}
+              {t(labelAsMediumSize)}
             </MenuItem>
             <MenuItem
-              data-testid={labelSmallSize}
+              data-testid={labelAsSmallSize}
               onClick={(): void => convertToPng(0.5)}
             >
-              {t(labelSmallSize)}
+              {t(labelAsSmallSize)}
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              className={classes.labelButton}
+              data-testid={labelExportToCSV}
+              onClick={exportToCsv}
+            >
+              {t(labelExportToCSV)}
             </MenuItem>
           </Menu>
         </>
