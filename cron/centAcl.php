@@ -172,15 +172,15 @@ try {
      * Remove data from old groups (deleted groups)
      */
     $aclGroupToDelete = "SELECT DISTINCT acl_group_id
-        FROM " . $centreonDbName . ".acl_groups WHERE acl_group_activate = '1'";
-    $aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM " . $centreonDbName . ".acl_res_group_relations";
-    $pearDB->beginTransaction();
+        FROM `" . $centreonDbName . "`.acl_groups WHERE acl_group_activate = '1'";
+    $aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM `" . $centreonDbName . "`.acl_res_group_relations";
+    $pearDBO->beginTransaction();
     try {
         $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete . ")");
         $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete2 . ")");
-        $pearDB->commit();
+        $pearDBO->commit();
     } catch (\PDOException $e) {
-        $pearDB->rollBack();
+        $pearDBO->rollBack();
         $centreonLog->insertLog(
             2,
             "CentACL CRON: failed to delete old groups relations"
