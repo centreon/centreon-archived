@@ -81,9 +81,9 @@ default:
       contexts:
         - Centreon\Test\Api\Context\PlatformInformationContext
     platform_fresh_install:
-      paths: [ "%paths.base%/features/PlatformFreshInstall.feature" ]
+      paths: [ "%paths.base%/features/PlatformInstallationStatus.feature" ]
       contexts:
-        - Centreon\Test\Api\Context\PlatformFreshInstallContext
+        - Centreon\Test\Api\Context\PlatformInstallationStatusContext
     platform_update:
       paths: [ "%paths.base%/features/PlatformUpdate.feature" ]
       contexts:
