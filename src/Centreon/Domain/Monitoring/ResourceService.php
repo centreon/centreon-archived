@@ -24,8 +24,6 @@ namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
@@ -75,8 +73,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             foreach ($list as $resource) {
                 $this->replaceMacrosInExternalLinks($resource);
             }
-        } catch (RepositoryException $ex) {
-            throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         }
@@ -86,6 +82,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
 
     private function getResources(ResourceFilter $filter): array
     {
+        if (!$this->contact instanceof ContactInterface) {
+            return [];
+        }
+
         if ($this->contact->isAdmin()) {
             return $this->resourceRepository->findResources($filter);
         }
