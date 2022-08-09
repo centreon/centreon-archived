@@ -112,7 +112,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         if (
             !isset($_POST['version'])
             || !$_POST['version']
-            || empty($version = filter_var($_POST['version'], FILTER_SANITIZE_STRING))
+            || empty($version = filter_var($_POST['version'], FILTER_SANITIZE_FULL_SPECIAL_CHARS))
         ) {
             throw new \RestBadRequestException('Please send \'version\' in the request.');
         }
@@ -138,20 +138,21 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
             throw new \RestConflictException('Address already in wait list.');
         }
 
-        $createdAt = date('Y-m-d H:i:s');
-        $insertQuery = "INSERT INTO `remote_servers` (`ip`, `version`, `is_connected`,
-            `created_at`, `http_method`, `http_port`, `no_check_certificate`)
-            VALUES (:ip, :version, 0, '{$createdAt}',
-                :http_method, :http_port, :no_check_certificate
-            )";
-
-        $insert = $this->pearDB->prepare($insertQuery);
-        $insert->bindValue(':ip', $ip, \PDO::PARAM_STR);
-        $insert->bindValue(':version', $version, \PDO::PARAM_STR);
-        $insert->bindValue(':http_method', $httpScheme, \PDO::PARAM_STR);
-        $insert->bindValue(':http_port', $httpPort, \PDO::PARAM_INT);
-        $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);
         try {
+            $createdAt = time();
+            $insertQuery = "INSERT INTO `remote_servers` (`ip`, `version`, `is_connected`,
+                `created_at`, `http_method`, `http_port`, `no_check_certificate`)
+                VALUES (:ip, :version, 0, :created_at,
+                    :http_method, :http_port, :no_check_certificate
+                )";
+
+            $insert = $this->pearDB->prepare($insertQuery);
+            $insert->bindValue(':ip', $ip, \PDO::PARAM_STR);
+            $insert->bindValue(':version', $version, \PDO::PARAM_STR);
+            $insert->bindValue(':created_at', $createdAt, \PDO::PARAM_INT);
+            $insert->bindValue(':http_method', $httpScheme, \PDO::PARAM_STR);
+            $insert->bindValue(':http_port', $httpPort, \PDO::PARAM_INT);
+            $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);
             $insert->execute();
         } catch (\Exception $e) {
             throw new \RestBadRequestException('There was an error while saving the data.');

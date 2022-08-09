@@ -354,16 +354,25 @@ class LinkedPollerConfigurationService
             $alreadyExportedRemotes[] = $remoteID;
 
             // Get all linked pollers of the remote
-            $queryPollersOfRemote = "SELECT id FROM nagios_server WHERE remote_id = {$remoteID}";
-            $linkedStatement = $this->db->query($queryPollersOfRemote);
+            $linkedStatement = $this->db->prepare(
+                "SELECT id
+                FROM nagios_server
+                WHERE remote_id = :remote_id"
+            );
+            $linkedStatement->bindValue(':remote_id', $remoteID, \PDO::PARAM_INT);
+            $linkedStatement->execute();
             $linkedResults = $linkedStatement->fetchAll(\PDO::FETCH_ASSOC);
             $linkedPollersOfRemote = array_column($linkedResults, 'id');
 
             // Get information of remote
-            $remoteDataStatement = $this->db->query("SELECT ns.ns_ip_address as ip, rs.centreon_path,
-                rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
-                FROM nagios_server as ns JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
-                WHERE ns.id = {$remoteID}");
+            $remoteDataStatement = $this->db->prepare(
+                "SELECT ns.ns_ip_address as ip, rs.centreon_path,
+                  rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+                FROM nagios_server as ns
+                JOIN remote_servers as rs ON rs.server_id = ns.id
+                WHERE ns.id = :server_id");
+            $remoteDataStatement->bindValue(':server_id', $remoteID, \PDO::PARAM_INT);
+            $remoteDataStatement->execute();
             $remoteDataResults = $remoteDataStatement->fetchAll(\PDO::FETCH_ASSOC);
 
             // Exclude the selected pollers which are going to another remote
