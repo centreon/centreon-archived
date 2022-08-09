@@ -125,6 +125,12 @@ $style = "one";
 $elemArr = array();
 $centreonToken = createCSRFToken();
 
+$statementBrokerInfo = $pearDB->prepare(
+    "SELECT COUNT(DISTINCT(config_group_id)) as num " .
+    "FROM cfg_centreonbroker_info " .
+    "WHERE config_group = :config_group " .
+    "AND config_id = :config_id"
+);
 
 for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
@@ -148,23 +154,16 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         . "style=\"margin-bottom:0px;\" name='dupNbr[" . $config['config_id'] . "]'></input>";
 
     // Number of output
-    $res = $pearDB->query(
-        "SELECT COUNT(DISTINCT(config_group_id)) as num " .
-        "FROM cfg_centreonbroker_info " .
-        "WHERE config_group = 'output' " .
-        "AND config_id = " . $config['config_id']
-    );
-    $row = $res->fetch();
+    $statementBrokerInfo->bindValue(':config_id', (int) $config['config_id'], \PDO::PARAM_INT);
+    $statementBrokerInfo->bindValue(':config_group', 'output', \PDO::PARAM_STR);
+    $statementBrokerInfo->execute();
+    $row = $statementBrokerInfo->fetch(\PDO::FETCH_ASSOC);
     $outputNumber = $row["num"];
 
     // Number of input
-    $res = $pearDB->query(
-        "SELECT COUNT(DISTINCT(config_group_id)) as num " .
-        "FROM cfg_centreonbroker_info " .
-        "WHERE config_group = 'input' " .
-        "AND config_id = " . $config['config_id']
-    );
-    $row = $res->fetch();
+    $statementBrokerInfo->bindValue(':config_group', 'input', \PDO::PARAM_STR);
+    $statementBrokerInfo->execute();
+    $row = $statementBrokerInfo->fetch(\PDO::FETCH_ASSOC);
     $inputNumber = $row["num"];
 
     // Number of logger
