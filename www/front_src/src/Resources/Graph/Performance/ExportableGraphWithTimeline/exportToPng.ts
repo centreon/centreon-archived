@@ -2,12 +2,18 @@ import { saveAs } from 'file-saver';
 import dom2image from 'dom-to-image';
 
 interface Props {
+  backgroundColor: string;
   element: HTMLElement;
   ratio: number;
   title: string;
 }
 
-const exportToPng = async ({ element, title, ratio }: Props): Promise<void> => {
+const exportToPng = async ({
+  element,
+  title,
+  ratio,
+  backgroundColor,
+}: Props): Promise<void> => {
   const dateTime = new Date().toISOString().substring(0, 19);
 
   const getTranslation = (size: number): number => {
@@ -19,7 +25,7 @@ const exportToPng = async ({ element, title, ratio }: Props): Promise<void> => {
 
   return dom2image
     .toBlob(element, {
-      bgcolor: '#FFFFFF',
+      bgcolor: backgroundColor,
       height: element.offsetHeight * ratio,
       style: {
         transform: `translate(-${translateX}px, -${translateY}px) scale(${ratio})`,
