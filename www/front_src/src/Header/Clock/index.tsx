@@ -6,15 +6,15 @@ import makeStyles from '@mui/styles/makeStyles';
 import { centreonUi } from '../helpers/index';
 
 const useStyles = makeStyles((theme) => ({
+  date: {
+    whiteSpace: 'nowrap',
+  },
   dateTime: {
     color: theme.palette.common.white,
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
     justifyContent: 'space-between',
-  },
-  lineHeight1: {
-    lineHeight: '1',
   },
 }));
 
@@ -56,11 +56,11 @@ const Clock = (): JSX.Element => {
 
   return (
     <div className={classes.dateTime} data-cy="clock">
-      <Typography className={classes.lineHeigh1} variant="body2">
+      <Typography className={classes.date} variant="body2">
         {date}
       </Typography>
 
-      <Typography className={classes.lineHeigh1} variant="body1">
+      <Typography className={classes.date} variant="body1">
         {time}
       </Typography>
     </div>

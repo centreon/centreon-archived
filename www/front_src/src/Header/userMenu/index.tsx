@@ -211,6 +211,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(1200)]: {
       gap: theme.spacing(2.5),
     },
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(1.5),
+    },
   },
 }));
 interface Props {
