@@ -126,12 +126,12 @@ class MonitoringResourceControllerTest extends TestCase
             ->setStatus($resourceStatus);
 
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
-        $this->urlGenerator = $kernel->getContainer()->get('router');
+        $this->urlGenerator = $kernel->getContainer()->get('router'); //@phpstan-ignore-line
         $this->request = $this->createMock(Request::class);
         $this->request->server = new ServerBag([]);
         $requestStack = new RequestStack();
         $requestStack->push($this->request);
-        $this->urlGenerator->setHttpServerBag($requestStack);
+        $this->urlGenerator->setHttpServerBag($requestStack); //@phpstan-ignore-line
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);

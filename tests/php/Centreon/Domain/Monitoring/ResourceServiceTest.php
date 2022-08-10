@@ -46,14 +46,9 @@ it('find resources and build uuids', function () {
         ->method('findResources')
         ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
 
-    $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
     $accessGroup = $this->createMock(ReadAccessGroupRepositoryInterface::class);
 
-    $resourceService = new ResourceService(
-        $monitoringRepository,
-        $accessGroup,
-        $resourceRepository
-    );
+    $resourceService = new ResourceService($accessGroup, $resourceRepository);
     $contact = $this->createMock(ContactInterface::class);
     $contact->method('isAdmin')->willReturn(true);
     $resourceService->filterByContact($contact);
@@ -85,15 +80,10 @@ it('find resources by access group if client is not an admin', function () {
         ->with($filter, [1])
         ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
 
-    $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
     $accessGroup = $this->createMock(ReadAccessGroupRepositoryInterface::class);
     $accessGroup->method('findByContact')->willReturn([new AccessGroup(1, 'access_group_1', 'acc_1')]);
 
-    $resourceService = new ResourceService(
-        $monitoringRepository,
-        $accessGroup,
-        $resourceRepository
-    );
+    $resourceService = new ResourceService($accessGroup, $resourceRepository);
     $contact = $this->createMock(ContactInterface::class);
     $contact->method('isAdmin')->willReturn(false);
     $resourceService->filterByContact($contact);
