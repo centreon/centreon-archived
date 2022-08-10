@@ -46,7 +46,7 @@ import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 import ModalAD from './AnomalyDetection/ModalAD';
 import { openModalADAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
-import { mockedeResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
+import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
@@ -208,10 +208,10 @@ const PerformanceGraph = ({
           newLineData = getLineData(mockedResultGraph);
 
           if (isModalAD) {
-            setTimeSeries(getTimeSeries(mockedeResultModalGraph));
-            setBase(mockedeResultModalGraph.global.base);
-            setTitle(mockedeResultModalGraph.global.title);
-            newLineData = getLineData(mockedeResultModalGraph);
+            setTimeSeries(getTimeSeries(mockedResultModalGraph));
+            setBase(mockedResultModalGraph.global.base);
+            setTitle(mockedResultModalGraph.global.title);
+            newLineData = getLineData(mockedResultModalGraph);
           }
         }
 

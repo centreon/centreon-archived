@@ -1,4 +1,4 @@
-export const mockedeResultModalGraph: any = {
+export const mockedResultModalGraph: any = {
   global: {
     base: '1000',
     end: '2022-08-05T14:37:17+02:00',
