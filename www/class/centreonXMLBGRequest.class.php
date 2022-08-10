@@ -221,11 +221,11 @@ class CentreonXMLBGRequest
 
     private function isUserAdmin()
     {
-        $query = "SELECT contact_admin, contact_id FROM contact " .
-            "WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1";
-        $dbResult = $this->DB->query($query);
-        $admin = $dbResult->fetchRow();
-        $dbResult->closeCursor();
+        $statement = $this->DB->prepare("SELECT contact_admin, contact_id FROM contact " .
+            "WHERE contact.contact_id = :userId LIMIT 1");
+        $statement->bindValue(":userId", (int) $this->user_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $admin = $statement->fetchRow();
         if ($admin !== false && $admin["contact_admin"]) {
             $this->is_admin = 1;
         } else {
