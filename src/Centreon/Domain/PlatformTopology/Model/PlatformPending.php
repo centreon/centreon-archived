@@ -211,20 +211,6 @@ class PlatformPending implements PlatformInterface
         }
 
         return $address;
-
-        // check for DNS to be resolved
-        $addressResolved = filter_var(gethostbyname($address), FILTER_VALIDATE_IP);
-        if (false === $addressResolved) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The address '%s' of '%s' is not valid or not resolvable"),
-                    $address,
-                    $this->getName()
-                )
-            );
-        }
-
-        return $addressResolved;
     }
 
     /**

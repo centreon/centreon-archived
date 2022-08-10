@@ -489,8 +489,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $platform->getParentAddress()
             );
         }
-        error_log(var_export($platform, true));
-        //throw new \Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException(var_export($registeredParentInTopology, true));
+
         if (null === $registeredParentInTopology) {
             throw new EntityNotFoundException(
                 sprintf(

@@ -209,25 +209,6 @@ class PlatformRegistered implements PlatformInterface
         }
 
         return $address;
-
-        // Check for valid IPv4 or IPv6 IP
-        // or not sent address (in the case of Central's "parent_address")
-        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The address '%s' of '%s' is not valid or not resolvable"),
-                    $address,
-                    $this->getName()
-                )
-            );
-        }
-
-        return $address;
     }
 
     /**

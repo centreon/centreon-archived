@@ -99,20 +99,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement = $this->db->prepare(
             $this->translateDbName('
                 SELECT * FROM `:db`.platform_topology
-            ')
-        );
-        $statement->execute();
-        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            error_log(var_export($result, true));
-        }
-
-        $statement = $this->db->prepare(
-            $this->translateDbName('
-                SELECT * FROM `:db`.platform_topology
                 WHERE `address` = :address
             ')
         );
-
         $statement->bindValue(':address', $serverAddress, \PDO::PARAM_STR);
         $statement->execute();
 
