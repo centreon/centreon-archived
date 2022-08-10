@@ -370,7 +370,8 @@ class LinkedPollerConfigurationService
                   rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
                 FROM nagios_server as ns
                 JOIN remote_servers as rs ON rs.server_id = ns.id
-                WHERE ns.id = :server_id");
+                WHERE ns.id = :server_id"
+            );
             $remoteDataStatement->bindValue(':server_id', $remoteID, \PDO::PARAM_INT);
             $remoteDataStatement->execute();
             $remoteDataResults = $remoteDataStatement->fetchAll(\PDO::FETCH_ASSOC);

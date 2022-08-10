@@ -1397,7 +1397,7 @@ function getRemoteServerInformation(int $serverId): array
     $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE server_id = :id LIMIT 1");
     $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
     $statement->execute();
-    if(($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         return $result;
     }
 
@@ -1440,7 +1440,7 @@ function duplicateRemoteServerInformation(int $duplicatedId, int $newId): void
         );
         $insertRemoteServerStatement->bindValue(
             ":httpPort",
-            $remoteServerInformation["http_port"] !== null ? (int) $remoteServerInformation["http_port"] : null ,
+            $remoteServerInformation["http_port"] !== null ? (int) $remoteServerInformation["http_port"] : null,
             \PDO::PARAM_INT
         );
         $insertRemoteServerStatement->bindValue(
