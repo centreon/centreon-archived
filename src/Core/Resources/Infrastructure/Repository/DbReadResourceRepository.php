@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Resources\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -105,11 +106,13 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
      * @param \Traversable<ResourceTypeInterface> $resourceTypes
+     * @param \Traversable<ResourceACLProviderInterface> $resourceTypes
      */
     public function __construct(
         DatabaseConnection $db,
         SqlRequestParametersTranslator $sqlRequestTranslator,
-        \Traversable $resourceTypes
+        \Traversable $resourceTypes,
+        private \Traversable $resourceACLProviders
     ) {
         $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
@@ -293,27 +296,29 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
 
     public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array
     {
-        $accessGroupRequest = ' AND EXISTS (
-          SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
-              (
-                (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                OR
-                (resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                OR
-                (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
-                OR
-                (resources.type = 4 AND resources.id = acl.service_id)
-              )
-              AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
-          LIMIT 1
-        )';
-
         $this->resources = [];
         $collector = new StatementCollector();
+        $accessGroupRequest = $this->addResourceAclSubRequest($accessGroupIds);
         $request = $this->generateFindResourcesRequest($filter, $collector, $accessGroupRequest);
         $this->fetchResources($request, $collector);
 
         return $this->resources;
+    }
+
+    private function addResourceAclSubRequest(array $accessGroupIds): string
+    {
+        $orConditions = array_map(
+            fn(ResourceACLProviderInterface $provider) => '(' . $provider->getACLSubRequest() . ')',
+            iterator_to_array($this->resourceACLProviders)
+        );
+
+        if (empty($orConditions)) {
+            throw new \InvalidArgumentException(_('You must provide at least one acl provider'));
+        }
+
+        $pattern = ' AND EXISTS (SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE (%s) AND acl.group_id IN (%s) LIMIT 1)';
+
+        return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
     }
 
     private function fetchResources(string $request, StatementCollector $collector): void
@@ -546,16 +551,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
             $resources,
             fn (ResourceEntity $resource) => $resource->hasGraph(),
         );
-    }
-
-    /**
-     * @return bool Return FALSE if the contact is an admin or has at least one access group.
-     */
-    private function hasNotEnoughRightsToContinue(): bool
-    {
-        return ($this->contact !== null)
-            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
-            : count($this->accessGroups) == 0;
     }
 
     /**

@@ -100,6 +100,7 @@ services:
         arguments:
             $resourceTypes: !tagged_iterator 'monitoring.resource.type'
             $sqlRequestTranslator: '@sqlRequestTranslator'
+            $resourceACLProviders: !tagged_iterator 'monitoring.resource.acl'
 
     Centreon\Application\Controller\MonitoringResourceController:
         arguments:
