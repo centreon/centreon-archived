@@ -76,6 +76,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -1805,24 +1806,35 @@ describe(Details, () => {
       expect(getByText(email)).toBeInTheDocument();
     });
   });
-  // it.('Export Timeline events to CSV file when download button is clicked ', async () => {
-  //   mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-  //   const { getByTestId } = renderDetails();
 
-  //   await waitFor(() => {
-  //     expect(getByTestId(labelExportToCSV)).toBeInTheDocument();
-  //   });
-  //   act(() => {
-  //     fireEvent.click(
-  //       getByTestId(labelExportToCSV).firstElementChild as HTMLElement,
-  //     );
-  //   });
+  it('calls the download timeline endpoint when the Timeline tab is selected and the "Export to CSV button" is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-  //   await waitFor(() => {
-  //     expect(mockedAxios.get).toHaveBeenCalledWith(
-  //       `${retrievedDetails.links.endpoints.timeline}/download`,
-  //       expect.anything(),
-  //     );
-  //   });
-  // });
+    const mockedOpen = jest.fn();
+    window.open = mockedOpen;
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: serviceDetailsTimelineUrlParameters,
+      },
+    ]);
+
+    const { getByTestId } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+    });
+
+    act(() => {
+      fireEvent.click(getByTestId(labelExportToCSV));
+    });
+
+    expect(mockedOpen).toHaveBeenCalledWith(
+      `${retrievedDetails.links.endpoints.timeline}/download`,
+      'noopener',
+      'noreferrer',
+    );
+  });
 });
