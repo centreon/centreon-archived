@@ -30,29 +30,42 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 use Core\Resources\Infrastructure\Repository\DbReadResourceRepository;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\HostACLProvider;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\MetaServiceACLProvider;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ServiceACLProvider;
 
-function generateAccessGroupSubQuery(array $accessGroupIds): string
+/**
+ * @param \Traversable<ResourceACLProviderInterface> $providers
+ * @param int[]                                      $accessGroupIds
+ */
+function generateAccessGroupSubQuery($providers, array $accessGroupIds): string
 {
-    return 'AND EXISTS (
-          SELECT 1 FROM `centreon-monitoring`.centreon_acl acl WHERE
-              (
-                (resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                OR
-                (resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                OR
-                (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
-                OR
-                (resources.type = 4 AND resources.id = acl.service_id)
-              )
-              AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
-          LIMIT 1
-        ) ';
+    $orConditions = array_map(
+        fn(ResourceACLProviderInterface $provider) => '(' . getSubQueryByACLProvider($provider) . ')',
+        iterator_to_array($providers)
+    );
+    $pattern = 'AND EXISTS (SELECT 1 FROM `centreon-monitoring`.centreon_acl acl ' .
+        'WHERE (%s) AND acl.group_id IN (%s) LIMIT 1) ';
+
+    return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
 }
 
-function generateExpectedSQLQuery(array $accessGroupIds): string
+function getSubQueryByACLProvider(ResourceACLProviderInterface $provider): string
 {
-    $accessGroupRequest = empty($accessGroupIds) ? '' :  generateAccessGroupSubQuery($accessGroupIds);
+    $serviceSubQuery = 'resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
+    $metaServiceSubQuery = 'resources.type = 2 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
 
+    return match ($provider::class) {
+        ServiceACLProvider::class => $serviceSubQuery,
+        HostACLProvider::class => 'resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL',
+        MetaServiceACLProvider::class => $metaServiceSubQuery,
+        default => throw new \Exception('Unexpected match value'),
+    };
+}
+
+function generateExpectedSQLQuery(string $accessGroupRequest): string
+{
     $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
             resources.resource_id,
             resources.name,
@@ -112,74 +125,92 @@ function generateExpectedSQLQuery(array $accessGroupIds): string
     return $request;
 }
 
-it('findResources method should fetch resources', function () {
-    $statement = $this->createMock(\PDOStatement::class);
-    $statement->method('fetchColumn')->willReturn(10);
+it(
+    'findResources method should fetch resources',
+    function () {
+        $statement = $this->createMock(\PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn(10);
 
-    $dbConnection = $this->createMock(DatabaseConnection::class);
-    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
-    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
-    $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery([]))
-        ->willReturn($statement);
-    $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
-        ->willReturn($statement);
-    $serviceResourceType = $this->createMock(ServiceResourceType::class);
-    $requestParams = $this->createMock(RequestParametersInterface::class);
-    $requestParams
-        ->expects($this->once())
-        ->method('setConcordanceStrictMode')
-        ->with(RequestParameters::CONCORDANCE_MODE_STRICT)
-        ->willReturn($requestParams);
-    $requestParams
-        ->expects($this->once())
-        ->method('setConcordanceErrorMode')
-        ->with(RequestParameters::CONCORDANCE_ERRMODE_SILENT)
-        ->willReturn($requestParams);
-    $paramsTranslator = $this->createMock(SqlRequestParametersTranslator::class);
-    $paramsTranslator->method('getRequestParameters')->willReturn($requestParams);
-    $repository = new DbReadResourceRepository(
-        $dbConnection,
-        $paramsTranslator,
-        new \ArrayObject([$serviceResourceType])
-    );
+        $dbConnection = $this->createMock(DatabaseConnection::class);
+        $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
+        $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
+        $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery(''))
+            ->willReturn($statement);
+        $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
+            ->willReturn($statement);
+        $serviceResourceType = $this->createMock(ServiceResourceType::class);
+        $requestParams = $this->createMock(RequestParametersInterface::class);
+        $requestParams
+            ->expects($this->once())
+            ->method('setConcordanceStrictMode')
+            ->with(RequestParameters::CONCORDANCE_MODE_STRICT)
+            ->willReturn($requestParams);
+        $requestParams
+            ->expects($this->once())
+            ->method('setConcordanceErrorMode')
+            ->with(RequestParameters::CONCORDANCE_ERRMODE_SILENT)
+            ->willReturn($requestParams);
+        $paramsTranslator = $this->createMock(SqlRequestParametersTranslator::class);
+        $paramsTranslator->method('getRequestParameters')->willReturn($requestParams);
+        $repository = new DbReadResourceRepository(
+            $dbConnection,
+            $paramsTranslator,
+            new \ArrayIterator([$serviceResourceType]),
+            new \ArrayIterator([new ServiceACLProvider()])
+        );
 
-    $resources = $repository->findResources(new ResourceFilter());
+        $resources = $repository->findResources(new ResourceFilter());
 
-    expect($resources)->toBe([]);
-});
+        expect($resources)->toBe([]);
+    }
+);
 
-it('findResourcesByAccessGroupIds method should fetch resources', function () {
-    $statement = $this->createMock(\PDOStatement::class);
-    $statement->method('fetchColumn')->willReturn(10);
+it(
+    'findResourcesByAccessGroupIds method should fetch resources',
+    function (\Traversable $resourceACLProviders, array $accessGroupIDs) {
+        $statement = $this->createMock(\PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn(10);
 
-    $dbConnection = $this->createMock(DatabaseConnection::class);
-    $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
-    $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
-    $dbConnection->expects($this->once())->method('prepare')->with(generateExpectedSQLQuery([1, 4]))
-        ->willReturn($statement);
-    $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
-        ->willReturn($statement);
-    $serviceResourceType = $this->createMock(ServiceResourceType::class);
-    $requestParams = $this->createMock(RequestParametersInterface::class);
-    $requestParams
-        ->expects($this->once())
-        ->method('setConcordanceStrictMode')
-        ->with(RequestParameters::CONCORDANCE_MODE_STRICT)
-        ->willReturn($requestParams);
-    $requestParams
-        ->expects($this->once())
-        ->method('setConcordanceErrorMode')
-        ->with(RequestParameters::CONCORDANCE_ERRMODE_SILENT)
-        ->willReturn($requestParams);
-    $paramsTranslator = $this->createMock(SqlRequestParametersTranslator::class);
-    $paramsTranslator->method('getRequestParameters')->willReturn($requestParams);
-    $repository = new DbReadResourceRepository(
-        $dbConnection,
-        $paramsTranslator,
-        new \ArrayObject([$serviceResourceType])
-    );
+        $dbConnection = $this->createMock(DatabaseConnection::class);
+        $dbConnection->expects($this->once())->method('getStorageDbName')->willReturn('centreon-monitoring');
+        $dbConnection->expects($this->once())->method('getCentreonDbName')->willReturn('centreon');
+        $accessGroupSubQuery = generateAccessGroupSubQuery($resourceACLProviders, $accessGroupIDs);
+        $dbConnection
+            ->expects($this->once())
+            ->method('prepare')
+            ->with(generateExpectedSQLQuery($accessGroupSubQuery))
+            ->willReturn($statement);
+        $dbConnection->expects($this->once())->method('query')->with('SELECT FOUND_ROWS()')
+            ->willReturn($statement);
+        $serviceResourceType = $this->createMock(ServiceResourceType::class);
+        $requestParams = $this->createMock(RequestParametersInterface::class);
+        $requestParams
+            ->expects($this->once())
+            ->method('setConcordanceStrictMode')
+            ->with(RequestParameters::CONCORDANCE_MODE_STRICT)
+            ->willReturn($requestParams);
+        $requestParams
+            ->expects($this->once())
+            ->method('setConcordanceErrorMode')
+            ->with(RequestParameters::CONCORDANCE_ERRMODE_SILENT)
+            ->willReturn($requestParams);
+        $paramsTranslator = $this->createMock(SqlRequestParametersTranslator::class);
+        $paramsTranslator->method('getRequestParameters')->willReturn($requestParams);
+        $repository = new DbReadResourceRepository(
+            $dbConnection,
+            $paramsTranslator,
+            new \ArrayIterator([$serviceResourceType]),
+            $resourceACLProviders
+        );
 
-    $resources = $repository->findResourcesByAccessGroupIds(new ResourceFilter(), [1, 4]);
+        $resources = $repository->findResourcesByAccessGroupIds(new ResourceFilter(), $accessGroupIDs);
 
-    expect($resources)->toBe([]);
-});
+        expect($resources)->toBe([]);
+    }
+)->with(
+    function () {
+        yield [new \ArrayIterator([new ServiceACLProvider()]), [1, 4]];
+        yield [new \ArrayIterator([new HostACLProvider()]), [1, 4]];
+        yield [new \ArrayIterator([new MetaServiceACLProvider(), new HostACLProvider()]), [1]];
+    }
+);
