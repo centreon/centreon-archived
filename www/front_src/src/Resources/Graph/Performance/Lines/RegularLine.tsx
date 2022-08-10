@@ -147,7 +147,7 @@ const RegularLine = ({
                 cy={pointY}
                 fill="red"
                 fillOpacity="50%"
-                key={Math.random()}
+                key={undefined}
                 r={2}
               />
             );
