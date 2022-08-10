@@ -47,13 +47,6 @@ $mediaObj = new CentreonMedia($pearDB);
 
 include "./include/common/autoNumLimit.php";
 
-function encodeServiceAlias(array $service): array
-{
-    $service['service_alias'] = htmlentities($service['service_alias']);
-
-    return $service;
-}
-
 $o = "";
 
 $search =  htmlspecialchars($_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '');
