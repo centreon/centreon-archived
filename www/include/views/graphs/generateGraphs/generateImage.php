@@ -196,10 +196,11 @@ if (!$isAdmin) {
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
     $aclGroupsExploded = explode(',', $aclGroups);
-    $aclGroupsQueryBinds = [];
     if (empty($aclGroupsExploded)) {
         throw new \Exception('Access denied');
     }
+
+    $aclGroupsQueryBinds = [];
     foreach ($aclGroupsExploded as $key => $value) {
         $aclGroupsQueryBinds[':acl_group_' . $key] = $value;
     }
