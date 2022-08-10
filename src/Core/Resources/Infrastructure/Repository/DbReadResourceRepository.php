@@ -64,16 +64,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     private $sqlRequestTranslator;
 
     /**
-     * @var ContactInterface
-     */
-    private $contact;
-
-    /**
-     * @var AccessGroup[]
-     */
-    private $accessGroups = [];
-
-    /**
      * @var array<string, string>
      */
     private $resourceConcordances = [
@@ -106,7 +96,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
      * @param \Traversable<ResourceTypeInterface> $resourceTypes
-     * @param \Traversable<ResourceACLProviderInterface> $resourceTypes
+     * @param \Traversable<ResourceACLProviderInterface> $resourceACLProviders
      */
     public function __construct(
         DatabaseConnection $db,
@@ -128,25 +118,6 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         }
 
         $this->resourceTypes = iterator_to_array($resourceTypes);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setContact(ContactInterface $contact): ReadResourceRepositoryInterface
-    {
-        $this->contact = $contact;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function filterByAccessGroups(?array $accessGroups): ReadResourceRepositoryInterface
-    {
-        $this->accessGroups = $accessGroups ?? [];
-
-        return $this;
     }
 
     private function generateFindResourcesRequest(ResourceFilter $filter, StatementCollector $collector, string $accessGroupRequest = ''): string
@@ -305,6 +276,9 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         return $this->resources;
     }
 
+    /**
+     * @param int[] $accessGroupIds
+     */
     private function addResourceAclSubRequest(array $accessGroupIds): string
     {
         $orConditions = array_map(

@@ -41,13 +41,7 @@ use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
  */
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
-    /**
-     * @param MonitoringRepositoryInterface $monitoringRepository ,
-     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
-     * @param ReadResourceRepositoryInterface $resourceRepository
-     */
     public function __construct(
-        private MonitoringRepositoryInterface $monitoringRepository,
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadResourceRepositoryInterface $resourceRepository
     ) {
@@ -80,6 +74,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         return $list;
     }
 
+    /**
+     * @return \Centreon\Domain\Monitoring\Resource[]
+     */
     private function getResources(ResourceFilter $filter): array
     {
         if (!$this->contact instanceof ContactInterface) {
