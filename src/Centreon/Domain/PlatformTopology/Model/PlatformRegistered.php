@@ -197,7 +197,7 @@ class PlatformRegistered implements PlatformInterface
         if (
             $address !== null
             && ! filter_var($address, FILTER_VALIDATE_IP)
-            && ! filter_var($address, FILTER_VALIDATE_DOMAIN)
+            && ! filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
         ) {
             throw new \InvalidArgumentException(
                 sprintf(
