@@ -58,6 +58,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
+import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -254,6 +255,7 @@ const GraphContent = ({
   const graphSvgRef = useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
   const mousePosition = useAtomValue(mousePositionAtom);
+  const isOpenedModalAD = useAtomValue(openModalADAtom);
   const changeMousePositionAndTimeValue = useUpdateAtom(
     changeMousePositionAndTimeValueDerivedAtom,
   );
@@ -554,7 +556,10 @@ const GraphContent = ({
             />
             {useMemoComponent({
               Component:
-                displayTimeValues && containsMetrics && position ? (
+                displayTimeValues &&
+                containsMetrics &&
+                position &&
+                !isOpenedModalAD ? (
                   <g>
                     <Shape.Line
                       from={{ x: mousePositionX, y: 0 }}

@@ -424,11 +424,14 @@ const PerformanceGraph = ({
       )}
 
       <div>
-        {displayTimeValues && timeTick && containsMetrics && (
-          <Typography align="center" variant="body1">
-            {toDateTime(timeTick)}
-          </Typography>
-        )}
+        {displayTimeValues &&
+          timeTick &&
+          containsMetrics &&
+          !isOpenedModalADAtom && (
+            <Typography align="center" variant="body1">
+              {toDateTime(timeTick)}
+            </Typography>
+          )}
       </div>
       <div>
         <Responsive.ParentSize>

@@ -1,9 +1,11 @@
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { difference, equals, isNil, max, min } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { alpha } from '@mui/material';
 
+import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 import { ResourceType } from '../../../models';
 import { Line, TimeValue } from '../models';
 import {
@@ -85,6 +87,8 @@ const Lines = ({
   displayTimeValues,
   type,
 }: Props): JSX.Element => {
+  const isOpenedModalAD = useAtomValue(openModalADAtom);
+
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
   const stackedLines = getSortedStackedLines(lines);
@@ -165,17 +169,19 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                <RegularAnchorPoint
-                  areaColor={areaColor}
-                  displayTimeValues={displayTimeValues}
-                  lineColor={lineColor}
-                  metric={metric}
-                  timeSeries={timeSeries}
-                  timeTick={timeTick}
-                  transparency={transparency}
-                  xScale={xScale}
-                  yScale={yScale}
-                />
+                {!isOpenedModalAD && (
+                  <RegularAnchorPoint
+                    areaColor={areaColor}
+                    displayTimeValues={displayTimeValues}
+                    lineColor={lineColor}
+                    metric={metric}
+                    timeSeries={timeSeries}
+                    timeTick={timeTick}
+                    transparency={transparency}
+                    xScale={xScale}
+                    yScale={yScale}
+                  />
+                )}
                 <RegularLine
                   areaColor={areaColor}
                   filled={filled}
