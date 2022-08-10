@@ -6,10 +6,10 @@ import Box from '@mui/material/Box';
 import makeStyles from '@mui/styles/makeStyles';
 import Paper from '@mui/material/Paper';
 
-import TimePeriodButtonGroup from '../../TimePeriods';
-import ExportablePerformanceGraphWithTimeline from '../../ExportableGraphWithTimeline';
-import { Resource } from '../../../../models';
-import { ResourceDetails } from '../../../../Details/models';
+import TimePeriodButtonGroup from '../TimePeriods';
+import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline';
+import { Resource } from '../../../models';
+import { ResourceDetails } from '../../../Details/models';
 
 interface Props {
   details: Resource | ResourceDetails;
@@ -43,11 +43,7 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
   const handleClose = (): void => setIsOpen(false);
 
   return (
-    <Modal
-      aria-describedby="modal-modal-description"
-      aria-labelledby="modal-modal-title"
-      open={isOpen}
-    >
+    <Modal open={isOpen}>
       <Box className={classes.container}>
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />

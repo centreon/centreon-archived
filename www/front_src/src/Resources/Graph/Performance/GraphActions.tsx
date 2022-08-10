@@ -22,7 +22,7 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
-  labelPerformanceGraphAD,
+  labelConfigureAnomalyDetectionData,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -30,7 +30,7 @@ import memoizeComponent from '../../memoizedComponent';
 import { ResourceType, Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 
-import ModalAD from './Lines/TresholdAD/ModalAD';
+import ModalAD from './AnomalyDetection/ModalAD';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
@@ -150,11 +150,11 @@ const GraphActions = ({
           {isResourceAD && (
             <IconButton
               disableTouchRipple
-              ariaLabel={t(labelPerformanceGraphAD)}
-              data-testid={labelPerformanceGraphAD}
+              ariaLabel={t(labelConfigureAnomalyDetectionData)}
+              data-testid={labelConfigureAnomalyDetectionData}
               disabled={isNil(timeline)}
               size="large"
-              title={t(labelPerformanceGraphAD)}
+              title={t(labelConfigureAnomalyDetectionData)}
               onClick={openModalAD}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
