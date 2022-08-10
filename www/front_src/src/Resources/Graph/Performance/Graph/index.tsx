@@ -184,7 +184,6 @@ interface GraphContentProps {
   height: number;
   hideAddCommentTooltip: () => void;
   isInViewport?: boolean;
-  isTabDetails: boolean;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -239,7 +238,6 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
-  isTabDetails,
   displayTimeValues,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
@@ -521,7 +519,6 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
-              isTabDetails={isTabDetails}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -531,7 +528,6 @@ const GraphContent = ({
             <MemoizedLines
               displayTimeValues={displayTimeValues}
               graphHeight={graphHeight}
-              isTabDetails={isTabDetails}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}

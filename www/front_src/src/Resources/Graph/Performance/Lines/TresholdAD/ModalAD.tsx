@@ -55,7 +55,6 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
         <div className={classes.spacing}>
           <ExportablePerformanceGraphWithTimeline
             graphHeight={180}
-            isTabDetails={false}
             resource={details}
           />
         </div>

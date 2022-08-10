@@ -41,7 +41,12 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import {
+  openDetailsTabIdAtom,
+  selectedResourceIdAtom,
+} from '../../Details/detailsAtoms';
+import { Tab, TabId } from '../../Details/tabs/models';
+import { tabs } from '../../Details/tabs';
 
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedeResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
@@ -71,7 +76,6 @@ interface Props {
   endpoint?: string;
   graphHeight: number;
   isInViewport?: boolean;
-  isTabDetails: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -149,7 +153,6 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-  isTabDetails,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -171,6 +174,7 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
+  const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
 
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
@@ -377,6 +381,10 @@ const PerformanceGraph = ({
 
   const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
 
+  const { id } = find(propEq('id', openDetailsTabId), tabs) as Tab;
+
+  const isTabDetails = id in TabId;
+
   return (
     <div
       className={classes.container}
@@ -425,7 +433,6 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
-              isTabDetails={isTabDetails}
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest

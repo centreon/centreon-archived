@@ -26,7 +26,6 @@ import TresholdAD from './TresholdAD/TresholdAD';
 interface Props {
   displayTimeValues: boolean;
   graphHeight: number;
-  isTabDetails: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -85,7 +84,6 @@ const Lines = ({
   timeTick,
   displayTimeValues,
   type,
-  isTabDetails,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -107,8 +105,10 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
+  const isLegendClicked = lines?.length <= 1;
+
   const isDisplayedTreshold =
-    equals(type, ResourceType.anomalydetection) && lines?.length > 1;
+    equals(type, ResourceType.anomalydetection) && !isLegendClicked;
 
   const propsTresholdAD = {
     getTime,
@@ -181,7 +181,6 @@ const Lines = ({
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
-                  isTabDetails={isTabDetails}
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}

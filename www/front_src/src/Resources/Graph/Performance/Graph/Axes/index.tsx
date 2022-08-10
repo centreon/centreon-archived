@@ -1,8 +1,13 @@
 import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { propEq, find } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
+import { openDetailsTabIdAtom } from '../../../../Details/detailsAtoms';
+import { Tab, TabId } from '../../../../Details/tabs/models';
+import { tabs } from '../../../../Details/tabs';
 import { Line } from '../../models';
 
 import YAxes from './Y';
@@ -16,7 +21,6 @@ interface Props {
   base: number;
   graphHeight: number;
   graphWidth: number;
-  isTabDetails: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -33,9 +37,13 @@ const Axes = ({
   xScale,
   xAxisTickFormat,
   base,
-  isTabDetails,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
+  const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
+
+  const { id } = find(propEq('id', openDetailsTabId), tabs) as Tab;
+
+  const isTabDetails = id in TabId;
 
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
