@@ -47,14 +47,14 @@ const RegularLine = ({
 }: Props): JSX.Element => {
   const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
 
-  const strockWidth =
+  const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
     equals(metric, 'connection_upper_thresholds')
       ? 0.1
       : 0.8;
 
   const isLegendClicked = lines?.length <= 1;
-  const isHighlight = highlight || isLegendClicked ? 2 : strockWidth;
+  const isHighlight = highlight || isLegendClicked ? 2 : strokeWidth;
 
   interface PropsIsOnline {
     maxDistance: number;
