@@ -22,16 +22,30 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
+  close: {
+    alignItems: 'flex-end',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
   container: {
     backgroundColor: theme.palette.background.default,
     left: '50%',
     padding: theme.spacing(2),
     position: 'absolute',
-    top: '40%',
+    top: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
+    width: '90%',
   },
-
+  envelop: {
+    flex: 1,
+    height: theme.spacing(15),
+    marginRight: theme.spacing(1),
+  },
+  exclusionPeriod: {
+    flex: 2,
+    height: theme.spacing(20),
+    marginLeft: theme.spacing(1),
+  },
   footer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -64,9 +78,11 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
           />
         </div>
         <div className={classes.footer}>
-          <Paper>Manage envelope size</Paper>
-          <Paper>Exclusion of periods</Paper>
-          <div>
+          <Paper className={classes.envelop}>Manage envelope size</Paper>
+          <Paper className={classes.exclusionPeriod}>
+            Exclusion of periods
+          </Paper>
+          <div className={classes.close}>
             <Button onClick={handleClose}>Close</Button>
           </div>
         </div>
