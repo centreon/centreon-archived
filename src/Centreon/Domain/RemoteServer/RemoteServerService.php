@@ -137,16 +137,20 @@ class RemoteServerService implements RemoteServerServiceInterface
         if ($platformInformation->getPlatformName() !== null) {
             $topLevelPlatform->setName($platformInformation->getPlatformName());
         }
+        $topLevelPlatform->setAddress($platformInformation->getAddress());
+
         /**
          * Find any children platform and forward them to Central Parent.
          */
         $platforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
             $topLevelPlatform->getId()
         );
+
         /**
          * Insert the Top Level Platform at the beginning of array, as it need to be registered first.
          */
         array_unshift($platforms, $topLevelPlatform);
+
         /**
          * Register the platforms on the Parent Central
          */
@@ -170,6 +174,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
             throw $ex;
         } catch (\Exception $ex) {
+            throw new MenuException($ex->getMessage());
             $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
             throw new MenuException(_('An error occurred while disabling the central menus'));
         }

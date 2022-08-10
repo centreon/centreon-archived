@@ -365,7 +365,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         // Check IPv6, IPv4 and FQDN format
         if (
-            !filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+            !filter_var($serverIP, FILTER_VALIDATE_DOMAIN)
             && !filter_var($serverIP, FILTER_VALIDATE_IP)
         ) {
             return ['error' => true, 'message' => "Invalid IP address"];
@@ -550,7 +550,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         bool $noCheckCertificate,
         bool $noProxy
     ): void {
-        $currentTimestamp = time();
+        $currentDate = date('Y-m-d H:i:s');
 
         $statement = $this->pearDB->prepare('SELECT 1 FROM `remote_servers` WHERE `server_id` = :server_id');
         $statement->bindValue(':server_id', $serverId, \PDO::PARAM_INT);
@@ -564,7 +564,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 `no_check_certificate` = :no_check_certificate, `no_proxy` = :no_proxy, `ip_address` = :ip_address
                 WHERE `server_id` = :server_id'
             );
-            $updateStatement->bindValue(':connected_at', $currentTimestamp, \PDO::PARAM_INT);
+            $updateStatement->bindValue(':connected_at', $currentDate, \PDO::PARAM_STR);
             $updateStatement->bindValue(':centreon_path', $centreonPath, \PDO::PARAM_STR);
             $updateStatement->bindValue(':no_check_certificate', $noCheckCertificate ? '1' : '0', \PDO::PARAM_STR);
             $updateStatement->bindValue(':no_proxy', $noProxy ? '1' : '0', \PDO::PARAM_STR);
@@ -574,15 +574,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         } else {
             $insertStatement = $this->pearDB->prepare(
                 'INSERT INTO `remote_servers`
-                (`ip`, `version`, `is_connected`, `connected_at`, `centreon_path`, `http_method`, `http_port`,
-                `no_check_certificate`, `no_proxy`, `server_id`)
+                (`ip`, `version`, `is_connected`, `created_at`, `connected_at`, `centreon_path`,
+                `http_method`, `http_port`, `no_check_certificate`, `no_proxy`, `server_id`)
                 VALUES
                 (:ip_address, "", 1, :created_at, :connected_at, :centreon_path, :http_method, :http_port,
                 :no_check_certificate, :no_proxy, :server_id)'
             );
             $insertStatement->bindValue(':ip_address', $serverIP, \PDO::PARAM_STR);
-            $insertStatement->bindValue(':created_at', $currentTimestamp, \PDO::PARAM_INT);
-            $insertStatement->bindValue(':connected_at', $currentTimestamp, \PDO::PARAM_INT);
+            $insertStatement->bindValue(':created_at', $currentDate, \PDO::PARAM_STR);
+            $insertStatement->bindValue(':connected_at', $currentDate, \PDO::PARAM_STR);
             $insertStatement->bindValue(':centreon_path', $centreonPath, \PDO::PARAM_STR);
             $insertStatement->bindValue(':http_method', $httpMethod, \PDO::PARAM_STR);
             $insertStatement->bindValue(':http_port', $httpPort ?: null, \PDO::PARAM_INT);

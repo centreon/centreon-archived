@@ -194,6 +194,22 @@ class PlatformRegistered implements PlatformInterface
      */
     private function checkIpAddress(?string $address): ?string
     {
+        if (
+            $address !== null
+            && ! filter_var($address, FILTER_VALIDATE_IP)
+            && ! filter_var($address, FILTER_VALIDATE_DOMAIN)
+        ) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    _("The address '%s' of '%s' is not valid or not resolvable"),
+                    $address,
+                    $this->getName()
+                )
+            );
+        }
+
+        return $address;
+
         // Check for valid IPv4 or IPv6 IP
         // or not sent address (in the case of Central's "parent_address")
         if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {

@@ -139,7 +139,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         }
 
         try {
-            $createdAt = time();
+            $createdAt = date('Y-m-d H:i:s');
             $insertQuery = "INSERT INTO `remote_servers` (`ip`, `version`, `is_connected`,
                 `created_at`, `http_method`, `http_port`, `no_check_certificate`)
                 VALUES (:ip, :version, 0, :created_at,
@@ -149,7 +149,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
             $insert = $this->pearDB->prepare($insertQuery);
             $insert->bindValue(':ip', $ip, \PDO::PARAM_STR);
             $insert->bindValue(':version', $version, \PDO::PARAM_STR);
-            $insert->bindValue(':created_at', $createdAt, \PDO::PARAM_INT);
+            $insert->bindValue(':created_at', $createdAt, \PDO::PARAM_STR);
             $insert->bindValue(':http_method', $httpScheme, \PDO::PARAM_STR);
             $insert->bindValue(':http_port', $httpPort, \PDO::PARAM_INT);
             $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);

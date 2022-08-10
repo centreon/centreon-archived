@@ -482,9 +482,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             return null;
         }
 
-        $registeredParentInTopology = $this->platformTopologyRepository->findPlatformByAddress(
-            $platform->getParentAddress()
-        );
+        if ($platform->getType() === PlatformPending::TYPE_REMOTE) {
+            $registeredParentInTopology = $this->platformTopologyRepository->findTopLevelPlatform();
+        } else {
+            $registeredParentInTopology = $this->platformTopologyRepository->findPlatformByAddress(
+                $platform->getParentAddress()
+            );
+        }
+        error_log(var_export($platform, true));
+        //throw new \Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException(var_export($registeredParentInTopology, true));
         if (null === $registeredParentInTopology) {
             throw new EntityNotFoundException(
                 sprintf(
@@ -553,6 +559,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
                 if (null !== $platformParent) {
                     $platform->setParentAddress($platformParent->getAddress());
+                    $platform->setParentId($platformParent->getId());
                 }
             }
 
