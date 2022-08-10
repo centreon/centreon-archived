@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
+import { useUpdateAtom } from 'jotai/utils';
+
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -10,6 +12,8 @@ import TimePeriodButtonGroup from '../TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
+
+import { openModalADAtom } from './anomalyDetectionAtom';
 
 interface Props {
   details: Resource | ResourceDetails;
@@ -40,7 +44,12 @@ const useStyles = makeStyles((theme) => ({
 const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const handleClose = (): void => setIsOpen(false);
+  const setIsOpenedModalAD = useUpdateAtom(openModalADAtom);
+
+  const handleClose = (): void => {
+    setIsOpenedModalAD(false);
+    setIsOpen(false);
+  };
 
   return (
     <Modal open={isOpen}>

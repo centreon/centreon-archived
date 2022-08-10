@@ -3,6 +3,7 @@ import { MouseEvent, MutableRefObject, useState } from 'react';
 import { isNil, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -27,16 +28,15 @@ import {
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
-import { ResourceType, Resource } from '../../models';
-import { ResourceDetails } from '../../Details/models';
+import { ResourceType } from '../../models';
 
-import ModalAD from './AnomalyDetection/ModalAD';
+import { openModalADAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
+  getIsModalOpened: (value: boolean) => void;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
-  resource: ResourceDetails | Resource;
   resourceName: string;
   resourceParentName?: string;
   resourceType?: string;
@@ -62,13 +62,13 @@ const GraphActions = ({
   resourceType,
   timeline,
   performanceGraphRef,
-  resource,
+  getIsModalOpened,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
   const [exporting, setExporting] = useState<boolean>(false);
-  const [isOpenModalAD, setIsOpenModalAD] = useState(false);
+  const setIsOpenedModalAtom = useUpdateAtom(openModalADAtom);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
   const isResourceAD = equals(resourceType, ResourceType.anomalydetection);
@@ -114,7 +114,10 @@ const GraphActions = ({
     });
   };
 
-  const openModalAD = (): void => setIsOpenModalAD(true);
+  const openModalAD = (): void => {
+    setIsOpenedModalAtom(true);
+    getIsModalOpened(true);
+  };
 
   return (
     <div className={classes.buttonGroup}>
@@ -159,13 +162,6 @@ const GraphActions = ({
             >
               <WrenchIcon style={{ fontSize: 18 }} />
             </IconButton>
-          )}
-          {isOpenModalAD && (
-            <ModalAD
-              details={resource}
-              isOpen={isOpenModalAD}
-              setIsOpen={setIsOpenModalAD}
-            />
           )}
           <Menu
             keepMounted

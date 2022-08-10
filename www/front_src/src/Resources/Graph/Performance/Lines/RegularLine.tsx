@@ -1,16 +1,14 @@
 import { memo } from 'react';
 
 import { Shape, Curve } from '@visx/visx';
-import { equals, isNil, prop, propEq, find } from 'ramda';
+import { equals, isNil, prop } from 'ramda';
 import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
 import { useAtomValue } from 'jotai/utils';
 
 import { getTime } from '../timeSeries';
 import { Line, TimeValue } from '../models';
 import { ResourceType } from '../../../models';
-import { openDetailsTabIdAtom } from '../../../Details/detailsAtoms';
-import { Tab, TabId } from '../../../Details/tabs/models';
-import { tabs } from '../../../Details/tabs';
+import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 
 import { getFillColor } from '.';
 
@@ -45,7 +43,7 @@ const RegularLine = ({
   graphHeight,
   resourceType,
 }: Props): JSX.Element => {
-  const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
+  const openModalAD = useAtomValue(openModalADAtom);
 
   const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
@@ -102,13 +100,9 @@ const RegularLine = ({
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
   };
 
-  const { id } = find(propEq('id', openDetailsTabId), tabs) as Tab;
-
-  const isTabDetails = id in TabId;
-
   const showCircle =
     equals(resourceType, ResourceType.anomalydetection) &&
-    !isTabDetails &&
+    openModalAD &&
     !isLegendClicked;
 
   if (filled) {

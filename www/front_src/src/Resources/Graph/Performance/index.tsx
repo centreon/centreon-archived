@@ -41,13 +41,10 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import {
-  openDetailsTabIdAtom,
-  selectedResourceIdAtom,
-} from '../../Details/detailsAtoms';
-import { Tab, TabId } from '../../Details/tabs/models';
-import { tabs } from '../../Details/tabs';
+import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
+import ModalAD from './AnomalyDetection/ModalAD';
+import { openModalADAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedeResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import Graph from './Graph';
@@ -165,6 +162,8 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = useState<Array<LineModel>>();
   const [title, setTitle] = useState<string>();
   const [base, setBase] = useState<number>();
+  const [isOpenModalAD, setIsOpenModalAD] = useState(false);
+
   const performanceGraphRef = useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = useRef<number>(0);
 
@@ -174,7 +173,8 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-  const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
+
+  const isOpenedModalADAtom = useAtomValue(openModalADAtom);
 
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
@@ -381,9 +381,9 @@ const PerformanceGraph = ({
 
   const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
 
-  const { id } = find(propEq('id', openDetailsTabId), tabs) as Tab;
-
-  const isTabDetails = id in TabId;
+  const getIsModalOpened = (value: boolean): void => {
+    setIsOpenModalAD(value);
+  };
 
   return (
     <div
@@ -401,15 +401,23 @@ const PerformanceGraph = ({
             {title}
           </Typography>
 
-          {isTabDetails && (
+          {!isOpenedModalADAtom && (
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
+              getIsModalOpened={getIsModalOpened}
               performanceGraphRef={performanceGraphRef}
-              resource={resource}
               resourceName={resource.name}
               resourceParentName={resource.parent?.name}
               resourceType={resource.type}
               timeline={timeline}
+            />
+          )}
+
+          {isOpenModalAD && (
+            <ModalAD
+              details={resource}
+              isOpen={isOpenModalAD}
+              setIsOpen={setIsOpenModalAD}
             />
           )}
         </div>

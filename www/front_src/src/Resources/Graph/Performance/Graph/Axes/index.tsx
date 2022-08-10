@@ -1,13 +1,10 @@
 import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { propEq, find } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { openDetailsTabIdAtom } from '../../../../Details/detailsAtoms';
-import { Tab, TabId } from '../../../../Details/tabs/models';
-import { tabs } from '../../../../Details/tabs';
+import { openModalADAtom } from '../../AnomalyDetection/anomalyDetectionAtom';
 import { Line } from '../../models';
 
 import YAxes from './Y';
@@ -39,11 +36,7 @@ const Axes = ({
   base,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
-  const openDetailsTabId = useAtomValue(openDetailsTabIdAtom);
-
-  const { id } = find(propEq('id', openDetailsTabId), tabs) as Tab;
-
-  const isTabDetails = id in TabId;
+  const isOpenModalAD = useAtomValue(openModalADAtom);
 
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
@@ -53,7 +46,7 @@ const Axes = ({
   return (
     <>
       <Axis.AxisBottom
-        numTicks={isTabDetails ? xTickCount : 10}
+        numTicks={isOpenModalAD ? 10 : xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({
