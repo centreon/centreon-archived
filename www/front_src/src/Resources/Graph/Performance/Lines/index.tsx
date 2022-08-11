@@ -1,11 +1,9 @@
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { difference, equals, isNil, max, min } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
 
 import { alpha } from '@mui/material';
 
-import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 import { ResourceType } from '../../../models';
 import { Line, TimeValue } from '../models';
 import {
@@ -28,6 +26,7 @@ import StackedLines from './StackedLines';
 interface Props {
   displayTimeValues: boolean;
   graphHeight: number;
+  isModalADOpened: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -85,10 +84,9 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
+  isModalADOpened,
   type,
 }: Props): JSX.Element => {
-  const isOpenedModalAD = useAtomValue(openModalADAtom);
-
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
   const stackedLines = getSortedStackedLines(lines);
@@ -169,7 +167,7 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                {!isOpenedModalAD && (
+                {!isModalADOpened && (
                   <RegularAnchorPoint
                     areaColor={areaColor}
                     displayTimeValues={displayTimeValues}
@@ -187,6 +185,7 @@ const Lines = ({
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
+                  isModalADOpened={isModalADOpened}
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}

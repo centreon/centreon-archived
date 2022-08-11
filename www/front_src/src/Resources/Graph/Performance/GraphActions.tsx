@@ -3,7 +3,6 @@ import { MouseEvent, MutableRefObject, useState } from 'react';
 import { isNil, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useUpdateAtom } from 'jotai/utils';
 
 import { Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -31,7 +30,6 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import memoizeComponent from '../../memoizedComponent';
 import { ResourceType } from '../../models';
 
-import { openModalADAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
@@ -71,7 +69,6 @@ const GraphActions = ({
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<Element | null>(null);
   const [exporting, setExporting] = useState<boolean>(false);
-  const setIsOpenedModalAtom = useUpdateAtom(openModalADAtom);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
   const isResourceAD = equals(resourceType, ResourceType.anomalydetection);
@@ -119,7 +116,6 @@ const GraphActions = ({
   };
 
   const openModalAD = (): void => {
-    setIsOpenedModalAtom(true);
     getIsModalOpened(true);
   };
 

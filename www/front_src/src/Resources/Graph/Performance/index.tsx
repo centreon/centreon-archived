@@ -44,7 +44,6 @@ import {
 import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
 import ModalAD from './AnomalyDetection/ModalAD';
-import { openModalADAtom } from './AnomalyDetection/anomalyDetectionAtom';
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import Graph from './Graph';
@@ -73,6 +72,7 @@ interface Props {
   endpoint?: string;
   graphHeight: number;
   isInViewport?: boolean;
+  isModalADOpened: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -150,6 +150,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
+  isModalADOpened,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -173,8 +174,6 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-
-  const isOpenedModalADAtom = useAtomValue(openModalADAtom);
 
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
@@ -401,7 +400,7 @@ const PerformanceGraph = ({
             {title}
           </Typography>
 
-          {!isOpenedModalADAtom && (
+          {!isModalADOpened && (
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
               getIsModalOpened={getIsModalOpened}
@@ -424,14 +423,11 @@ const PerformanceGraph = ({
       )}
 
       <div>
-        {displayTimeValues &&
-          timeTick &&
-          containsMetrics &&
-          !isOpenedModalADAtom && (
-            <Typography align="center" variant="body1">
-              {toDateTime(timeTick)}
-            </Typography>
-          )}
+        {displayTimeValues && timeTick && containsMetrics && !isModalADOpened && (
+          <Typography align="center" variant="body1">
+            {toDateTime(timeTick)}
+          </Typography>
+        )}
       </div>
       <div>
         <Responsive.ParentSize>
@@ -444,6 +440,7 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
+              isModalADOpened={isModalADOpened}
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
@@ -463,6 +460,7 @@ const PerformanceGraph = ({
         base={base as number}
         displayCompleteGraph={displayCompleteGraph}
         displayTimeValues={displayTimeValues}
+        isModalADOpened={isModalADOpened}
         limitLegendRows={limitLegendRows}
         lines={sortedLines}
         timeSeries={timeSeries}

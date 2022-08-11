@@ -58,7 +58,6 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
-import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -185,6 +184,7 @@ interface GraphContentProps {
   height: number;
   hideAddCommentTooltip: () => void;
   isInViewport?: boolean;
+  isModalADOpened: boolean;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -239,6 +239,7 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
+  isModalADOpened,
   displayTimeValues,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
@@ -255,7 +256,6 @@ const GraphContent = ({
   const graphSvgRef = useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
   const mousePosition = useAtomValue(mousePositionAtom);
-  const isOpenedModalAD = useAtomValue(openModalADAtom);
   const changeMousePositionAndTimeValue = useUpdateAtom(
     changeMousePositionAndTimeValueDerivedAtom,
   );
@@ -521,6 +521,7 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
+              isModalADOpened={isModalADOpened}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -530,6 +531,7 @@ const GraphContent = ({
             <MemoizedLines
               displayTimeValues={displayTimeValues}
               graphHeight={graphHeight}
+              isModalADOpened={isModalADOpened}
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -559,7 +561,7 @@ const GraphContent = ({
                 displayTimeValues &&
                 containsMetrics &&
                 position &&
-                !isOpenedModalAD ? (
+                !isModalADOpened ? (
                   <g>
                     <Shape.Line
                       from={{ x: mousePositionX, y: 0 }}
@@ -581,18 +583,20 @@ const GraphContent = ({
                 ),
               memoProps: [mousePosition],
             })}
-            <MemoizedBar
-              className={classes.overlay}
-              fill="transparent"
-              height={graphHeight}
-              width={graphWidth}
-              x={0}
-              y={0}
-              onMouseDown={displayZoomPreview}
-              onMouseLeave={closeTooltip}
-              onMouseMove={displayTooltip}
-              onMouseUp={displayAddCommentTooltip}
-            />
+            {!isModalADOpened && (
+              <MemoizedBar
+                className={classes.overlay}
+                fill="transparent"
+                height={graphHeight}
+                width={graphWidth}
+                x={0}
+                y={0}
+                onMouseDown={displayZoomPreview}
+                onMouseLeave={closeTooltip}
+                onMouseMove={displayTooltip}
+                onMouseUp={displayAddCommentTooltip}
+              />
+            )}
           </Group.Group>
           <TimeShiftContext.Provider
             value={useMemo(
@@ -618,7 +622,7 @@ const GraphContent = ({
             <TimeShiftZones />
           </TimeShiftContext.Provider>
         </svg>
-        {addCommentTooltipOpen && (
+        {addCommentTooltipOpen && !isModalADOpened && (
           <Paper
             className={classes.addCommentTooltip}
             style={{
@@ -648,7 +652,7 @@ const GraphContent = ({
             </Tooltip>
           </Paper>
         )}
-        {addingComment && (
+        {addingComment && !isModalADOpened && (
           <AddCommentForm
             date={commentDate as Date}
             resource={resource}

@@ -29,7 +29,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { CreateCSSProperties } from '@mui/styles';
 
-import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 import { Line, TimeValue } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
 import formatMetricValue from '../formatMetricValue/index';
@@ -132,6 +131,7 @@ interface Props {
   base: number;
   displayCompleteGraph?: () => void;
   displayTimeValues: boolean;
+  isModalADOpened: boolean;
   limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
@@ -159,9 +159,9 @@ const LegendContent = ({
   displayCompleteGraph,
   timeSeries,
   displayTimeValues,
+  isModalADOpened,
 }: Props): JSX.Element => {
   const panelWidth = useAtomValue(panelWidthStorageAtom);
-  const isOpenedModalAD = useAtomValue(openModalADAtom);
   const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
   const { t } = useTranslation();
@@ -270,7 +270,7 @@ const LegendContent = ({
             const metric = find(equals(line.metric), metrics);
 
             const formattedValue =
-              !isOpenedModalAD &&
+              !isModalADOpened &&
               displayTimeValues &&
               metric &&
               getFormattedMetricData(metric)?.formattedValue;

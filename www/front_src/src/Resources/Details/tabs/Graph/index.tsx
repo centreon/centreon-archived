@@ -1,4 +1,4 @@
-import { equals, or } from 'ramda';
+import { equals } from 'ramda';
 
 import { Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -52,6 +52,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
             graphHeight={280}
+            isModalADOpened={false}
             resource={details}
           />
         </>

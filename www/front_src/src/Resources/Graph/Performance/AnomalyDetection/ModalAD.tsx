@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import { useUpdateAtom } from 'jotai/utils';
-
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
 import Paper from '@mui/material/Paper';
@@ -11,8 +9,6 @@ import TimePeriodButtonGroup from '../TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-
-import { openModalADAtom } from './anomalyDetectionAtom';
 
 interface Props {
   details: Resource | ResourceDetails;
@@ -55,10 +51,7 @@ const useStyles = makeStyles((theme) => ({
 const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const setIsOpenedModalAD = useUpdateAtom(openModalADAtom);
-
   const handleClose = (): void => {
-    setIsOpenedModalAD(false);
     setIsOpen(false);
   };
 
@@ -70,6 +63,7 @@ const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
         </div>
         <div className={classes.spacing}>
           <ExportablePerformanceGraphWithTimeline
+            isModalADOpened
             graphHeight={180}
             resource={details}
           />

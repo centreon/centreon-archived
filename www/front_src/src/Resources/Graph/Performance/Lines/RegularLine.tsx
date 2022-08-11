@@ -3,12 +3,10 @@ import { memo } from 'react';
 import { Shape, Curve } from '@visx/visx';
 import { equals, isNil, prop } from 'ramda';
 import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
-import { useAtomValue } from 'jotai/utils';
 
 import { getTime } from '../timeSeries';
 import { Line, TimeValue } from '../models';
 import { ResourceType } from '../../../models';
-import { openModalADAtom } from '../AnomalyDetection/anomalyDetectionAtom';
 
 import { getFillColor } from '.';
 
@@ -17,6 +15,7 @@ interface Props {
   filled: boolean;
   graphHeight: number;
   highlight?: boolean;
+  isModalADOpened: boolean;
   lineColor: string;
   lines: Array<Line>;
   metric: string;
@@ -42,9 +41,8 @@ const RegularLine = ({
   transparency,
   graphHeight,
   resourceType,
+  isModalADOpened,
 }: Props): JSX.Element => {
-  const openModalAD = useAtomValue(openModalADAtom);
-
   const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
     equals(metric, 'connection_upper_thresholds')
@@ -101,7 +99,7 @@ const RegularLine = ({
 
   const showCircle =
     equals(resourceType, ResourceType.anomalydetection) &&
-    openModalAD &&
+    isModalADOpened &&
     !isLegendClicked;
 
   if (filled) {

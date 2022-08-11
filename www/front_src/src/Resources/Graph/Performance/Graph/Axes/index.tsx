@@ -1,10 +1,8 @@
 import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { useAtomValue } from 'jotai/utils';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { openModalADAtom } from '../../AnomalyDetection/anomalyDetectionAtom';
 import { Line } from '../../models';
 
 import YAxes from './Y';
@@ -18,6 +16,7 @@ interface Props {
   base: number;
   graphHeight: number;
   graphWidth: number;
+  isModalADOpened: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -33,10 +32,10 @@ const Axes = ({
   rightScale,
   xScale,
   xAxisTickFormat,
+  isModalADOpened,
   base,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
-  const isOpenModalAD = useAtomValue(openModalADAtom);
 
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
@@ -46,7 +45,7 @@ const Axes = ({
   return (
     <>
       <Axis.AxisBottom
-        numTicks={isOpenModalAD ? 10 : xTickCount}
+        numTicks={isModalADOpened ? 10 : xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({

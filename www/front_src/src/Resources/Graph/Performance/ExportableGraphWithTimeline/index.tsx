@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   graphHeight: number;
+  isModalADOpened: boolean;
   limitLegendRows?: boolean;
   resource?: Resource | ResourceDetails;
 }
@@ -53,6 +54,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
+  isModalADOpened,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -180,6 +182,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           endpoint={graphEndpoint}
           graphHeight={graphHeight}
           isInViewport={isInViewport}
+          isModalADOpened={isModalADOpened}
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
