@@ -269,7 +269,7 @@ function getFieldsDetails(): array
             "description" => 'The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)',
             "isRequired" => 1,
             "defaultValue" => 'gRPC',
-            "optionListId" => 13,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"target": "authorization", "value": "gRPC"}',
         ],
