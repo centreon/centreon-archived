@@ -35,22 +35,6 @@ use Core\Resources\Infrastructure\Repository\ResourceACLProviders\MetaServiceACL
 use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface;
 use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ServiceACLProvider;
 
-/**
- * @param \Traversable<ResourceACLProviderInterface> $providers
- * @param int[]                                      $accessGroupIds
- */
-function generateAccessGroupSubQuery($providers, array $accessGroupIds): string
-{
-    $orConditions = array_map(
-        fn(ResourceACLProviderInterface $provider) => '(' . getSubQueryByACLProvider($provider) . ')',
-        iterator_to_array($providers)
-    );
-    $pattern = 'AND EXISTS (SELECT 1 FROM `centreon-monitoring`.centreon_acl acl ' .
-        'WHERE (%s) AND acl.group_id IN (%s) LIMIT 1) ';
-
-    return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
-}
-
 function getSubQueryByACLProvider(ResourceACLProviderInterface $provider): string
 {
     $serviceSubQuery = 'resources.type = 0 AND resources.parent_id = acl.host_id AND resources.id = acl.service_id';
@@ -62,6 +46,22 @@ function getSubQueryByACLProvider(ResourceACLProviderInterface $provider): strin
         MetaServiceACLProvider::class => $metaServiceSubQuery,
         default => throw new \Exception('Unexpected match value'),
     };
+}
+
+/**
+ * @param \Traversable<ResourceACLProviderInterface> $providers
+ * @param int[]                                      $accessGroupIds
+ */
+function generateAccessGroupSubQuery(\Traversable $providers, array $accessGroupIds): string
+{
+    $orConditions = array_map(
+        fn(ResourceACLProviderInterface $provider) => '(' . getSubQueryByACLProvider($provider) . ')',
+        iterator_to_array($providers)
+    );
+    $pattern = 'AND EXISTS (SELECT 1 FROM `centreon-monitoring`.centreon_acl acl ' .
+        'WHERE (%s) AND acl.group_id IN (%s) LIMIT 1) ';
+
+    return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
 }
 
 function generateExpectedSQLQuery(string $accessGroupRequest): string

@@ -120,8 +120,11 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         $this->resourceTypes = iterator_to_array($resourceTypes);
     }
 
-    private function generateFindResourcesRequest(ResourceFilter $filter, StatementCollector $collector, string $accessGroupRequest = ''): string
-    {
+    private function generateFindResourcesRequest(
+        ResourceFilter $filter,
+        StatementCollector $collector,
+        string $accessGroupRequest = ''
+    ): string {
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
 
         $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
