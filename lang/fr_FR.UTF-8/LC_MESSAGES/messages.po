@@ -17005,11 +17005,11 @@ msgstr "Adresse du serveur"
 msgid "Server port"
 msgstr "Port de connexion"
 
-msgid "Retry interval (seconds)"
-msgstr "Intervalle entre deux tentatives"
+msgid "Retry interval (en seconds)"
+msgstr "Intervalle entre deux tentatives (en secondes)"
 
 msgid "Trusted CA's certificate path (optional)"
-msgstr "Chemin du certificat de l’autorité de certification"
+msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
 
 msgid "Certificate Common Name (optional)"
-msgstr "\"Common Name\" du certificat du serveur"
+msgstr "\"Common Name\" du certificat du serveur (optionnel)"

@@ -15213,7 +15213,7 @@ msgstr "Nivel de criticidad del host"
 #  msgid "Server port"
 #  msgstr ""
 
-#  msgid "Retry interval (seconds)"
+#  msgid "Retry interval (in seconds)"
 #  msgstr ""
 
 #  msgid "Trusted CA's certificate path (optional)"

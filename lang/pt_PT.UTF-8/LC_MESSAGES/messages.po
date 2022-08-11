@@ -15652,7 +15652,7 @@ msgstr "Nível de Severidade de host"
 #  msgid "Server port"
 #  msgstr ""
 
-#  msgid "Retry interval (seconds)"
+#  msgid "Retry interval (in seconds)"
 #  msgstr ""
 
 #  msgid "Trusted CA's certificate path (optional)"

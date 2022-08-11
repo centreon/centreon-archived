@@ -80,8 +80,6 @@ function createBbdoStreamConfigurationForms(CentreonDb $pearDB): void
         $fields[$name] = insertFields($pearDB, $fields[$name]);
         linkFieldsToStreamType($pearDB, $id, $fields[$name]);
     }
-
-    $pearDB->query("INSERT INTO cb_list_values VALUES (13, 'gRPC', 'gRPC'), (13, 'TCP', 'TCP')");
 }
 
 /**
@@ -164,9 +162,16 @@ function insertFields(CentreonDB $pearDB, array $fields): array
 /**
  * @param CentreonDB $pearDB
  * @param array<string,string|int|null> $field
+ * @throws \Exception
  */
 function insertFieldOptions(CentreonDB $pearDB, array $field): void
 {
+    if (in_array($field['fieldname'], ['encryption', 'compression', 'retention'])) {
+        $field['optionListId'] = findListIdByFieldname($pearDB, 'config');
+    } else {
+        $field['optionListId'] = findListIdByFieldname($pearDB, $field['fieldname']);
+    }
+
     $fieldOptionsStmt = $pearDB->prepare(
         "INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES (:listId, :fieldId, :defaultValue)"
     );
@@ -174,6 +179,66 @@ function insertFieldOptions(CentreonDB $pearDB, array $field): void
     $fieldOptionsStmt->bindValue(':fieldId', $field['id'], \PDO::PARAM_INT);
     $fieldOptionsStmt->bindValue(':defaultValue', $field['defaultValue'], \PDO::PARAM_STR);
     $fieldOptionsStmt->execute();
+
+    if ($field['fieldname'] === 'transport_protocol') {
+        insertGrpcListOptions($pearDB, $field['optionListId']);
+    }
+}
+
+/**
+ * Retrieve a list id based on an existing field name already attached to it
+ *
+ * @param CentreonDB $pearDB
+ * @param string $fieldname
+ * @return int
+ * @throws \Exception
+ */
+function findListIdByFieldname(CentreonDB $pearDB, string $fieldname): int
+{
+    $stmt = $pearDB->prepare(
+        "SELECT l.cb_list_id FROM cb_list l, cb_field f
+        WHERE l.cb_field_id = f.cb_field_id AND f.fieldname = :fieldname"
+    );
+    $stmt->bindValue(':fieldname', $fieldname, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    $listId  = $stmt->fetchColumn();
+
+    if ($listId === false) {
+        if ($fieldname === 'transport_protocol') {
+            $stmt = $pearDB->query("SELECT MAX(cb_list_id) FROM cb_list_values");
+            $maxId = $stmt->fetchColumn();
+            if ($maxId === false) {
+                throw new Exception("Cannot find biggest cb_list_id in cb_list_values table");
+            }
+            $listId = $maxId + 1;
+        } else {
+            throw new Exception("Cannot find cb_list_id in cb_list_values table");
+        }
+    }
+    return $listId;
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $listId
+ * @return int id of the newly created list
+ * @throws \Exception
+ */
+function insertGrpcListOptions(CentreonDB $pearDB, int $listId): void
+{
+    $stmt = $pearDB->prepare("SELECT 1 FROM cb_list_values where cb_list_id = :listId");
+    $stmt->bindValue(':listId', $listId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $doesListExist = $stmt->fetchColumn();
+    if ($doesListExist) {
+        return;
+    }
+
+    $insertStmt = $pearDB->prepare("INSERT INTO cb_list_values VALUES (:listId, 'gRPC', 'gRPC'), (:listId, 'TCP', 'TCP')");
+    $insertStmt->bindValue(':listId', $listId, \PDO::PARAM_INT);
+    $insertStmt->execute();
 }
 
 /**
@@ -223,7 +288,7 @@ function getFieldsDetails(): array
             "description" => 'Enable TLS 1.3 encryption',
             "isRequired" => 1,
             "defaultValue" => 'no',
-            "optionListId" => 1,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"target": ["private_key", "certificate"], "value": "yes"}',
         ],
@@ -248,7 +313,7 @@ function getFieldsDetails(): array
             "description" => 'Enable data compression',
             "isRequired" => 1,
             "defaultValue" => 'no',
-            "optionListId" => 1,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"tag": "output"}',
         ],
@@ -259,7 +324,7 @@ function getFieldsDetails(): array
             "description" => 'Enable data retention until the client is connected',
             "isRequired" => 1,
             "defaultValue" => 'no',
-            "optionListId" => 1,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"tag": "output"}',
         ],
@@ -271,7 +336,7 @@ function getFieldsDetails(): array
                 . 'be processed',
             "isRequired" => 0,
             "defaultValue" => null,
-            "optionListId" => 6,
+            "optionListId" => null,
         ],
     ];
 
@@ -304,7 +369,7 @@ function getFieldsDetails(): array
             "description" => 'The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)',
             "isRequired" => 1,
             "defaultValue" => 'gRPC',
-            "optionListId" => 13,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"target": "authorization", "value": "gRPC"}',
         ],
@@ -322,7 +387,7 @@ function getFieldsDetails(): array
             "description" => 'Enable TLS 1.3 encryption',
             "isRequired" => 1,
             "defaultValue" => 'no',
-            "optionListId" => 1,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"target": ["ca_certificate", "ca_name"], "value": "yes"}',
         ],
@@ -351,7 +416,7 @@ function getFieldsDetails(): array
             "description" => 'Enable data compression',
             "isRequired" => 1,
             "defaultValue" => 'no',
-            "optionListId" => 1,
+            "optionListId" => null,
             "jsHook" => 'bbdoStreams',
             "jsArguments" => '{"tag": "output"}',
         ],
