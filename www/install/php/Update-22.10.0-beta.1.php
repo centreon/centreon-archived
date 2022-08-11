@@ -236,7 +236,9 @@ function insertGrpcListOptions(CentreonDB $pearDB, int $listId): void
         return;
     }
 
-    $insertStmt = $pearDB->prepare("INSERT INTO cb_list_values VALUES (:listId, 'gRPC', 'gRPC'), (:listId, 'TCP', 'TCP')");
+    $insertStmt = $pearDB->prepare(
+        "INSERT INTO cb_list_values VALUES (:listId, 'gRPC', 'gRPC'), (:listId, 'TCP', 'TCP')"
+    );
     $insertStmt->bindValue(':listId', $listId, \PDO::PARAM_INT);
     $insertStmt->execute();
 }
