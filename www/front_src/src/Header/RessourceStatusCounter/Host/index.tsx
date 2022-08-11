@@ -193,8 +193,8 @@ const HostStatusCounter = (): JSX.Element => {
               onClick: toggleDetailedView,
             }}
             iconToggleSubmenu={{
-              OnClick: toggleDetailedView,
-              Rotate: toggled,
+              onClick: toggleDetailedView,
+              rotate: toggled,
               testid: 'submenu-hosts',
             }}
             submenuItems={[

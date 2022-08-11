@@ -55,10 +55,6 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
       height: theme.spacing(2),
       position: 'relative',
       width: theme.spacing(2),
-      [theme.breakpoints.down(768)]: {
-        height: theme.spacing(1.8),
-        width: theme.spacing(1.8),
-      },
     },
     container: {
       display: 'flex',
@@ -66,9 +62,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
       position: 'relative',
       right: theme.spacing(0.5),
       [theme.breakpoints.down(768)]: {
-        gap: theme.spacing(0.4),
         right: theme.spacing(1),
-        top: theme.spacing(0.4),
+        top: theme.spacing(0.5),
       },
     },
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
@@ -76,10 +71,6 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     icon: {
       height: theme.spacing(1.5),
       width: theme.spacing(1.5),
-      [theme.breakpoints.down(768)]: {
-        height: theme.spacing(1.3),
-        width: theme.spacing(1.3),
-      },
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),

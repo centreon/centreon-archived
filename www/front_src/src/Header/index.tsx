@@ -14,14 +14,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
-    margin: '0 34px 0 24px',
+    margin: `0 ${theme.spacing(4)} 0 ${theme.spacing(3)}`,
     width: '100%',
   },
   header: {
     alignItems: 'center',
     background: theme.palette.common.black,
     display: 'flex',
-    height: '70px',
+    height: theme.spacing(9),
     width: '100%',
   },
   leftContainer: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     gap: theme.spacing(3),
     [theme.breakpoints.down(600)]: {
-      gap: '10px',
+      gap: theme.spacing(1),
     },
   },
   userMenu: {

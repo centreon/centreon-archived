@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     paddingRight: theme.spacing(3),
     [theme.breakpoints.down(768)]: {
-      paddingRight: theme.spacing(1.25),
+      paddingRight: theme.spacing(1),
     },
     position: 'relative',
   },
@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
-      right: theme.spacing(0.6),
+      right: theme.spacing(0.5),
     },
   },
   label: {
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     [theme.breakpoints.down(768)]: {
       flexDirection: 'row',
-      gap: theme.spacing(0.6),
+      gap: theme.spacing(0.5),
     },
   },
   pollerDetailRow: {

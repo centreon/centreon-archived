@@ -206,8 +206,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick: toggleDetailedView,
             }}
             iconToggleSubmenu={{
-              OnClick: toggleDetailedView,
-              Rotate: toggled,
+              onClick: toggleDetailedView,
+              rotate: toggled,
               testid: 'submenu-service',
             }}
             submenuItems={[
