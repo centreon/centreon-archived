@@ -226,6 +226,7 @@ class CentreonXMLBGRequest
         $statement->bindValue(":userId", (int) $this->user_id, \PDO::PARAM_INT);
         $statement->execute();
         $admin = $statement->fetchRow();
+        $statement->closeCursor();
         if ($admin !== false && $admin["contact_admin"]) {
             $this->is_admin = 1;
         } else {
