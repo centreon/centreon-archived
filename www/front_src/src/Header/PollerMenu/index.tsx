@@ -15,7 +15,6 @@ import {
   getData,
   useRequest,
   IconHeader,
-  SubmenuHeader,
   IconToggleSubmenu,
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
@@ -66,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(768)]: {
       paddingRight: theme.spacing(1.25),
     },
+    position: 'relative',
   },
   iconToggleMenu: {
     alignItems: 'flex-end',
@@ -112,10 +112,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
-    width: '180%',
-    [theme.breakpoints.down(768)]: {
-      width: '200%',
-    },
+    width: theme.spacing(20),
     zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {
@@ -213,78 +210,73 @@ const PollerMenu = (): JSX.Element | null => {
       }}
     >
       <div className={classes.container}>
-        <SubmenuHeader active={toggled}>
-          <IconHeader
-            Icon={PollerIcon}
-            iconName={t(labelPoller)}
-            onClick={toggleDetailedView}
-          />
+        <IconHeader
+          Icon={PollerIcon}
+          iconName={t(labelPoller)}
+          onClick={toggleDetailedView}
+        />
 
-          <div className={classes.pollarHeaderRight}>
-            <PollerStatusIcon issues={issues} />
-            <div className={classes.iconToggleMenu}>
-              <IconToggleSubmenu
-                data-testid="submenu-poller"
-                iconType="arrow"
-                rotate={toggled}
-                onClick={toggleDetailedView}
-              />
-            </div>
-          </div>
-
-          <div
-            className={clsx(classes.subMenuToggle, {
-              [classes.subMenuToggleActive]: toggled,
-            })}
-          >
-            {!isEmpty(issues) ? (
-              Object.entries(issues).map(([key, issue]) => {
-                return (
-                  <div className={classes.pollerDetailRow} key={key}>
-                    <Typography
-                      className={clsx([
-                        classes.label,
-                        classes.pollerDetailTitle,
-                      ])}
-                      variant="body2"
-                    >
-                      <li>{t(pollerIssueKeyToMessage[key])}</li>
-                    </Typography>
-                    <Typography className={classes.label} variant="body2">
-                      {issue.total ? issue.total : ''}
-                    </Typography>
-                  </div>
-                );
-              })
-            ) : (
-              <div className={classes.pollerDetailRow}>
-                <Typography className={classes.label} variant="body2">
-                  {t(labelAllPollers)}
-                </Typography>
-                <Typography className={classes.label} variant="body2">
-                  {pollerCount as number}
-                </Typography>
-              </div>
-            )}
-            {allowPollerConfiguration && (
-              <Paper>
-                <Button
-                  fullWidth
-                  className={classes.confButton}
-                  data-testid={labelConfigurePollers}
-                  size="small"
-                  onClick={redirectToPollerConfiguration}
-                >
-                  {t(labelConfigurePollers)}
-                </Button>
-              </Paper>
-            )}
-            <ExportConfiguration
-              setIsExportingConfiguration={newExporting}
-              toggleDetailedView={toggleDetailedView}
+        <div className={classes.pollarHeaderRight}>
+          <PollerStatusIcon issues={issues} />
+          <div className={classes.iconToggleMenu}>
+            <IconToggleSubmenu
+              data-testid="submenu-poller"
+              iconType="arrow"
+              rotate={toggled}
+              onClick={toggleDetailedView}
             />
           </div>
-        </SubmenuHeader>
+        </div>
+
+        <div
+          className={clsx(classes.subMenuToggle, {
+            [classes.subMenuToggleActive]: toggled,
+          })}
+        >
+          {!isEmpty(issues) ? (
+            Object.entries(issues).map(([key, issue]) => {
+              return (
+                <div className={classes.pollerDetailRow} key={key}>
+                  <Typography
+                    className={clsx([classes.label, classes.pollerDetailTitle])}
+                    variant="body2"
+                  >
+                    <li>{t(pollerIssueKeyToMessage[key])}</li>
+                  </Typography>
+                  <Typography className={classes.label} variant="body2">
+                    {issue.total ? issue.total : ''}
+                  </Typography>
+                </div>
+              );
+            })
+          ) : (
+            <div className={classes.pollerDetailRow}>
+              <Typography className={classes.label} variant="body2">
+                {t(labelAllPollers)}
+              </Typography>
+              <Typography className={classes.label} variant="body2">
+                {pollerCount as number}
+              </Typography>
+            </div>
+          )}
+          {allowPollerConfiguration && (
+            <Paper>
+              <Button
+                fullWidth
+                className={classes.confButton}
+                data-testid={labelConfigurePollers}
+                size="small"
+                onClick={redirectToPollerConfiguration}
+              >
+                {t(labelConfigurePollers)}
+              </Button>
+            </Paper>
+          )}
+          <ExportConfiguration
+            setIsExportingConfiguration={newExporting}
+            toggleDetailedView={toggleDetailedView}
+          />
+        </div>
       </div>
     </ClickAwayListener>
   );
