@@ -42,10 +42,12 @@ const Axes = ({
 
   const xTickCount = Math.ceil(graphWidth / 82);
 
+  const xTickCountModalAD = xTickCount > 10 ? 10 : xTickCount;
+
   return (
     <>
       <Axis.AxisBottom
-        numTicks={isModalADOpened ? 10 : xTickCount}
+        numTicks={isModalADOpened ? xTickCountModalAD : xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({
