@@ -114,19 +114,23 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
                     $query = "SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
+                    $statement = $pearDB->prepare("INSERT INTO dependency_metaserviceParent_relation " .
+                        "VALUES (:maxId, :metaId)");
                     while ($ms = $dbResult->fetch()) {
-                        $query = "INSERT INTO dependency_metaserviceParent_relation " .
-                            "VALUES ('" . $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
-                        $pearDB->query($query);
+                        $statement->bindValue(':maxId', (int) $maxId["MAX(dep_id)"], \PDO::PARAM_INT);
+                        $statement->bindValue(':metaId', (int) $ms["meta_service_meta_id"], \PDO::PARAM_INT);
+                        $statement->execute();
                     }
                     $dbResult->closeCursor();
                     $query = "SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
+                    $childStatement = $pearDB->prepare("INSERT INTO dependency_metaserviceChild_relation " .
+                        "VALUES (:maxId, :metaId)");
                     while ($ms = $dbResult->fetch()) {
-                        $query = "INSERT INTO dependency_metaserviceChild_relation VALUES ('" .
-                            $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
-                        $pearDB->query($query);
+                        $childStatement->bindValue(':maxId', (int) $maxId["MAX(dep_id)"], \PDO::PARAM_INT);
+                        $childStatement->bindValue(':metaId', (int) $ms["meta_service_meta_id"], \PDO::PARAM_INT);
+                        $childStatement->execute();
                     }
                     $dbResult->closeCursor();
                 }
