@@ -118,7 +118,7 @@ const RegularLine = ({
   return (
     <>
       {showCircle &&
-        timeSeries.map((item) => {
+        timeSeries.map((item, index) => {
           const metricPoint = 'connection';
           const metricPoint1 = 'connection_lower_thresholds';
           const metricPoint2 = 'connection_upper_thresholds';
@@ -144,7 +144,7 @@ const RegularLine = ({
                 cy={pointY}
                 fill="red"
                 fillOpacity="50%"
-                key={undefined}
+                key={index.toString()}
                 r={2}
               />
             );
