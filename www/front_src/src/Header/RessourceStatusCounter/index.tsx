@@ -5,70 +5,9 @@ import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
 
 import { ClickAwayListener } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { MenuSkeleton } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
-
-export const useStyles = makeStyles((theme) => ({
-  link: {
-    textDecoration: 'none',
-  },
-  subMenuCounters: {
-    display: 'flex',
-    gap: theme.spacing(0.5),
-    [theme.breakpoints.down(768)]: {
-      display: 'grid',
-      gridTemplateColumns: 'auto auto',
-    },
-  },
-  subMenuCountersTranslateToLeft: {
-    position: 'relative',
-    right: theme.spacing(1),
-    [theme.breakpoints.down(768)]: {
-      position: 'static',
-    },
-  },
-  subMenuRight: {
-    alignItem: 'flex-start',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(0.8),
-    justifyContent: 'space-between',
-    [theme.breakpoints.down(768)]: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      gap: theme.spacing(0.1),
-    },
-  },
-  subMenuToggle: {
-    backgroundColor: theme.palette.common.black,
-    boxSizing: 'border-box',
-    display: 'none',
-    left: theme.spacing(0),
-    padding: `${theme.spacing(1)} ${theme.spacing(1)} 0 ${theme.spacing(1)}`,
-    position: 'absolute',
-    textAlign: 'left',
-    top: '100%',
-    width: '135%',
-    [theme.breakpoints.down(768)]: {
-      width: '170%',
-    },
-    zIndex: theme.zIndex.mobileStepper,
-  },
-  subMenuToggleActive: {
-    display: 'block',
-  },
-  subMenuToggleExtraWidth: {
-    width: '170%',
-    [theme.breakpoints.down(768)]: {
-      width: '190%',
-    },
-  },
-  wrapMiddleIcon: {
-    display: 'flex',
-  },
-}));
 
 interface Props {
   children: (props) => JSX.Element;

@@ -22,21 +22,13 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.common.black,
     display: 'flex',
     height: '70px',
-    // paddingInline: theme.spacing(1.5),
     width: '100%',
   },
   leftContainer: {
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(3),
-    // [theme.breakpoints.down(1200)]: {
-    //   gap: theme.spacing(2.5),
-    // },
-    // [theme.breakpoints.down(900)]: {
-    //   gap: theme.spacing(1.5),
-    // },
     [theme.breakpoints.down(600)]: {
-      // gap: theme.spacing(1),
       gap: '10px',
     },
   },
