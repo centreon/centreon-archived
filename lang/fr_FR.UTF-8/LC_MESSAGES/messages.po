@@ -17005,7 +17005,7 @@ msgstr "Adresse du serveur"
 msgid "Server port"
 msgstr "Port de connexion"
 
-msgid "Retry interval (en seconds)"
+msgid "Retry interval (in seconds)"
 msgstr "Intervalle entre deux tentatives (en secondes)"
 
 msgid "Trusted CA's certificate path (optional)"
