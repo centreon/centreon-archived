@@ -95,6 +95,8 @@ if (!empty($userName) && !empty($token)) {
     } else {
         die('Invalid token');
     }
+} else {
+    throw new \Exception('Username and token query strings must be set.');
 }
 
 $index = filter_var(
@@ -182,19 +184,37 @@ if (!$isAdmin) {
     $dbstorage = new CentreonDB('centstorage');
 
     $aclGroups = $acl->getAccessGroupsString();
-    $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
-    $res = $dbstorage->query($sql);
-    if (!$res->rowCount()) {
+    $sql = "SELECT host_id, service_id FROM index_data WHERE id = :index_data_id";
+    $statement = $dbstorage->prepare($sql);
+    $statement->bindValue(':index_data_id', (int) $index, \PDO::PARAM_INT);
+    $statement->execute();
+    if (!$statement->rowCount()) {
         die('Graph not found');
     }
-    $row = $res->fetch();
-    unset($res);
+    $row = $statement->fetch(\PDO::FETCH_ASSOC);
+    unset($statement);
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
-    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = $hostId AND service_id = $serviceId
-        AND group_id IN ($aclGroups)";
-    $res = $pearDBO->query($sql);
-    if (!$res->rowCount()) {
+    $aclGroupsExploded = explode(',', $aclGroups);
+    if (empty($aclGroupsExploded)) {
+        throw new \Exception('Access denied');
+    }
+
+    $aclGroupsQueryBinds = [];
+    foreach ($aclGroupsExploded as $key => $value) {
+        $aclGroupsQueryBinds[':acl_group_' . $key] = $value;
+    }
+    $aclGroupBinds = implode(',', array_keys($aclGroupsQueryBinds));
+    $sql = "SELECT service_id FROM centreon_acl WHERE host_id = :host_id AND service_id = :service_id
+        AND group_id IN ($aclGroupBinds)";
+    $statement = $pearDBO->prepare($sql);
+    $statement->bindValue(':host_id', (int) $hostId, \PDO::PARAM_INT);
+    $statement->bindValue(':service_id', (int) $serviceId, \PDO::PARAM_INT);
+    foreach ($aclGroupsQueryBinds as $key => $value) {
+        $statement->bindValue($key, (int) $value, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    if (!$statement->rowCount()) {
         die('Access denied');
     }
 }
