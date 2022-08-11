@@ -48,6 +48,7 @@ import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
 } from '../../Navigation/Sidebar/sideBarAtoms';
+import { isDarkMode } from '..';
 
 import { userEndpoint } from './api/endpoint';
 import {
@@ -155,7 +156,9 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapRightUser: {
     alignItems: 'center',
-    background: theme.palette.common.black,
+    background: isDarkMode(theme)
+      ? theme.palette.common.black
+      : theme.palette.primary.main,
     display: 'flex',
     flexWrap: 'wrap',
     marginLeft: theme.spacing(0.5),

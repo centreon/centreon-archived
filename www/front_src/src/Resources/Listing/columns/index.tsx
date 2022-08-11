@@ -1,6 +1,8 @@
 import { pipe, split, head, propOr, T } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
+import { Theme } from '@mui/material';
 
 import { ColumnType, Column } from '@centreon/ui';
 
@@ -38,7 +40,11 @@ import NotificationColumn from './Notification';
 import ChecksColumn from './Checks';
 import ParentAliasColumn from './ParentAlias';
 
-const useStyles = makeStyles((theme) => ({
+interface StyleProps {
+  isHovered: boolean;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   resourceDetailsCell: {
     alignItems: 'center',
     display: 'flex',
@@ -49,6 +55,14 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     whiteSpace: 'nowrap',
   },
+  resourceNameText: ({ isHovered }): CreateCSSProperties => ({
+    color: isHovered
+      ? theme.palette.text.primary
+      : theme.palette.text.secondary,
+    fontWeight: isHovered
+      ? theme.typography.fontWeightMedium
+      : theme.typography.fontWeightRegular,
+  }),
 }));
 
 export interface ColumnProps {

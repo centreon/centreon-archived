@@ -7,6 +7,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 
 import { Page } from '../models';
+import { isDarkMode } from '../../Header';
 
 import Logo from './Logo';
 import MiniLogo from './Logo/LogoMini';
@@ -48,7 +49,10 @@ const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => !equals(prop, 'open'),
 })(({ theme, open }) => ({
   '& .MuiPaper-root': {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: isDarkMode(theme)
+      ? theme.palette.common.black
+      : theme.palette.primary.main,
+    border: 'none',
   },
   boxSizing: 'border-box',
   flexShrink: 0,

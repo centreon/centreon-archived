@@ -18,10 +18,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { isDarkMode } from '../../../Header';
 import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
@@ -48,28 +50,41 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
-  activated: {
+  activated: ({ isRoot }): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color: theme.palette.background.paper,
+        color:
+          isDarkMode(theme) && isRoot
+            ? theme.palette.primary.main
+            : theme.palette.common.white,
       },
     },
     '& .MuiSvgIcon-root': {
-      color: theme.palette.background.paper,
+      color:
+        isDarkMode(theme) && isRoot
+          ? theme.palette.primary.main
+          : theme.palette.common.white,
     },
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor:
+        isDarkMode(theme) && isRoot
+          ? theme.palette.common.black
+          : theme.palette.primary.dark,
+      color: theme.palette.common.white,
     },
 
-    backgroundColor: theme.palette.primary.main,
-  },
+    backgroundColor:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.black
+        : theme.palette.primary.dark,
+  }),
   containerIcon: {
     alignItems: 'center',
-    color: theme.palette.text.primary,
+    color: theme.palette.common.white,
     minWidth: theme.spacing(5.75),
   },
   icon: {
-    color: theme.palette.text.primary,
+    color: theme.palette.common.white,
   },
   label: {
     '& .MuiTypography-root': {

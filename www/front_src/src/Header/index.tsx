@@ -1,6 +1,11 @@
 import { useRef } from 'react';
 
+import { equals } from 'ramda';
+
 import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+
+import { ThemeMode } from '@centreon/ui-context';
 
 import FederatedComponent from '../components/FederatedComponents';
 
@@ -9,13 +14,18 @@ import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
 
+export const isDarkMode = (theme: Theme): boolean =>
+  equals(theme.palette.mode, ThemeMode.dark);
+
 const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
   },
   header: {
-    background: theme.palette.common.black,
+    background: isDarkMode(theme)
+      ? theme.palette.common.black
+      : theme.palette.primary.main,
     width: '100%',
   },
   hookComponent: {
