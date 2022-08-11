@@ -96,7 +96,6 @@ const RegularLine = ({
     strokeWidth: isHighlight,
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
-
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
   };
 
