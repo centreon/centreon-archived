@@ -221,12 +221,13 @@ class CentreonXMLBGRequest
 
     private function isUserAdmin()
     {
-        $query = "SELECT contact_admin, contact_id FROM contact " .
-            "WHERE contact.contact_id = '" . CentreonDB::escape($this->user_id) . "' LIMIT 1";
-        $dbResult = $this->DB->query($query);
-        $admin = $dbResult->fetchRow();
-        $dbResult->closeCursor();
-        if ($admin["contact_admin"]) {
+        $statement = $this->DB->prepare("SELECT contact_admin, contact_id FROM contact " .
+            "WHERE contact.contact_id = :userId LIMIT 1");
+        $statement->bindValue(":userId", (int) $this->user_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $admin = $statement->fetchRow();
+        $statement->closeCursor();
+        if ($admin !== false && $admin["contact_admin"]) {
             $this->is_admin = 1;
         } else {
             $this->is_admin = 0;
@@ -330,7 +331,7 @@ class CentreonXMLBGRequest
 
     public function setServiceGroupsHistory($sg)
     {
-        $_SESSION['monitoring_default_servicegroups'] = sg;
+        $_SESSION['monitoring_default_servicegroups'] = $sg;
     }
 
     public function setCriticality($criticality)
