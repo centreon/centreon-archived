@@ -131,7 +131,7 @@ const RegularLine = ({
           const pointY = yScale(prop(metricPoint, item) as NumberValue);
           const pointY1 = yScale(prop(metricPoint1, item) as NumberValue);
           const pointY2 = yScale(prop(metricPoint2, item) as NumberValue);
-          const isShowCircleRed = isOnLine({
+          const isPointBetweenPoint1Point2 = isOnLine({
             maxDistance: 0,
             pointX,
             pointX1,
@@ -140,7 +140,7 @@ const RegularLine = ({
             pointY1,
             pointY2,
           });
-          if (!isShowCircleRed) {
+          if (!isPointBetweenPoint1Point2) {
             return (
               <Shape.Circle
                 cx={pointX}
