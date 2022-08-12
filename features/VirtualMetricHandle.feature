@@ -5,16 +5,16 @@ Feature: Virtual Metric Handle
 
     Background:
         Given I am logged in a Centreon server with configured metrics
-   
+
     Scenario: Create a virtual metric
         When I add a virtual metric
         Then all properties are saved
-        
+
     Scenario: Duplicate a virtual metric
         Given an existing virtual metric
         When I duplicate a virtual metric
         Then all properties are copied except the name
-        
+
     Scenario: Delete a virtual metric
         Given an existing virtual metric
         When I delete a virtual metric

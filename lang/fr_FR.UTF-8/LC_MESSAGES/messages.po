@@ -9550,10 +9550,6 @@ msgstr "Contrôle si le service est en plage de maintenance"
 msgid "Preexec definition"
 msgstr "Définition de la commande PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "Le même OID existe déjà"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Règles de correspondance avancées"
@@ -16966,3 +16962,57 @@ msgstr "Le module \"%s\" est manquant"
 
 msgid "An error occured while retrieving details of module \"%s\""
 msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
+
+msgid "Centreon database schema does not seem to be installed."
+msgstr "Le schema de base de données de Centreon ne semble pas installé."
+
+msgid "Centreon database schema version is \"%s\" (\"%s\" required)."
+msgstr "La version du schema de base de données de Centreon est \"%s\" (\"%s\" requise)."
+
+msgid "Please use Web UI to install Centreon."
+msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
+
+msgid "Please use Web UI to update Centreon."
+msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
+
+msgid "Listening address (optional)"
+msgstr "Adresse d'écoute (optionnel)"
+
+msgid "Listening port"
+msgstr "Port d'écoute"
+
+msgid "Transport protocol"
+msgstr "Protocole de transport"
+
+msgid "Authorization token (optional)"
+msgstr "Jeton d’autorisation (optionnel)"
+
+msgid "Private key path"
+msgstr "Chemin de la clé privée"
+
+msgid "Certificate path"
+msgstr "Chemin du certificat serveur"
+
+msgid "Compression"
+msgstr "Compression"
+
+msgid "Enable retention"
+msgstr "Activer la rétention"
+
+msgid "Filter on event categories"
+msgstr "Filtrage des évènements par catégories"
+
+msgid "Server address"
+msgstr "Adresse du serveur"
+
+msgid "Server port"
+msgstr "Port de connexion"
+
+msgid "Retry interval (in seconds)"
+msgstr "Intervalle entre deux tentatives (en secondes)"
+
+msgid "Trusted CA's certificate path (optional)"
+msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
+
+msgid "Certificate Common Name (optional)"
+msgstr "\"Common Name\" du certificat du serveur (optionnel)"
