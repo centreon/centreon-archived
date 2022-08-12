@@ -16976,7 +16976,7 @@ msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
 
 msgid "Please use Web UI to update Centreon."
 msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
-# msgid "Parent alias
-# msgstr "Alias parent"
 
+msgid "Parent alias
+msgstr "Alias parent"
 
