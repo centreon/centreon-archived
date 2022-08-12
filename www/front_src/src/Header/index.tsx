@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(3),
-    [theme.breakpoints.down(600)]: {
-      gap: theme.spacing(1),
+    [theme.breakpoints.down(768)]: {
+      gap: theme.spacing(2),
     },
   },
   userMenu: {

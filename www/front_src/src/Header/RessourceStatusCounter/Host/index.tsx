@@ -212,12 +212,12 @@ const HostStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu hosts count down',
-                dotColored: 'red',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledDownHostsCriterias,
                   link: unhandledDownHostsLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.High,
                 submenuCount: `${numeral(data.down.unhandled).format(
                   '0a',
                 )}/${numeral(data.down.total).format('0a')}`,
@@ -227,12 +227,12 @@ const HostStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu hosts count unreachable',
-                dotColored: 'gray',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledUnreachableHostsCriterias,
                   link: unhandledUnreachableHostsLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Low,
                 submenuCount: `${numeral(data.unreachable.unhandled).format(
                   '0a',
                 )}/${numeral(data.unreachable.total).format('0a')}`,
@@ -242,12 +242,12 @@ const HostStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu hosts count ok',
-                dotColored: 'green',
                 onClick: changeFilterAndNavigate({
                   criterias: upHostsCriterias,
                   link: upHostsLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Ok,
                 submenuCount: numeral(data.ok).format(),
                 submenuTitle: t('Up'),
                 titleTestId: 'submenu hosts title ok',
@@ -255,12 +255,12 @@ const HostStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu hosts count pending',
-                dotColored: 'blue',
                 onClick: changeFilterAndNavigate({
                   criterias: pendingHostsCriterias,
                   link: pendingHostsLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Pending,
                 submenuCount: numeral(data.pending).format(),
                 submenuTitle: t('Pending'),
                 titleTestId: 'submenu hosts title pending',

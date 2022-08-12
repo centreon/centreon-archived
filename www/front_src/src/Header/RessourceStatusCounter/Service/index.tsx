@@ -225,12 +225,12 @@ const ServiceStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu services count critical',
-                dotColored: 'red',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledCriticalServicesCriterias,
                   link: unhandledCriticalServicesLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.High,
                 submenuCount: `${numeral(
                   data.critical.unhandled,
                 ).format()}/${numeral(data.critical.total).format()}`,
@@ -240,12 +240,12 @@ const ServiceStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu services count warning',
-                dotColored: 'orange',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledWarningServicesCriterias,
                   link: unhandledWarningServicesLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Medium,
                 submenuCount: `${numeral(
                   data.warning.unhandled,
                 ).format()}/${numeral(data.warning.total).format()}`,
@@ -255,12 +255,12 @@ const ServiceStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu services count unknown',
-                dotColored: 'gray',
                 onClick: changeFilterAndNavigate({
                   criterias: unhandledUnknownServicesCriterias,
                   link: unhandledUnknownServicesLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Low,
                 submenuCount: `${numeral(
                   data.unknown.unhandled,
                 ).format()}/${numeral(data.unknown.total).format()}`,
@@ -270,24 +270,24 @@ const ServiceStatusCounter = (): JSX.Element => {
               },
               {
                 countTestId: 'submenu services count ok',
-                dotColored: 'green',
                 onClick: changeFilterAndNavigate({
                   criterias: okServicesCriterias,
                   link: okServicesLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Ok,
                 submenuCount: numeral(data.ok).format(),
                 submenuTitle: t('Ok'),
                 titleTestId: 'submenu services title ok',
                 to: okServicesLink,
               },
               {
-                dotColored: 'blue',
                 onClick: changeFilterAndNavigate({
                   criterias: pendingServicesCriterias,
                   link: pendingServicesLink,
                   toggle: toggleDetailedView,
                 }),
+                severityCode: SeverityCode.Pending,
                 submenuCount: numeral(data.pending).format(),
                 submenuTitle: t('Pending'),
                 to: pendingServicesLink,
