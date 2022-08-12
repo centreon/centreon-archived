@@ -21,6 +21,8 @@
 
 namespace Tests\Centreon\Application\Controller;
 
+use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
+use Core\Infrastructure\RealTime\Hypermedia\ServiceHypermediaProvider;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use FOS\RestBundle\Context\Context;
@@ -28,6 +30,7 @@ use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
 use JMS\Serializer\SerializerInterface;
 use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
@@ -170,8 +173,29 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test getHostTimeline
      */
-   /*  public function testList(): void
+    public function testList(): void
     {
+        $serviceHypermediaProvider = $this->createMock(ServiceHypermediaProvider::class);
+        $serviceHypermediaProvider->method('isValidFor')->willReturn(true);
+        $serviceHypermediaProvider->method('createEndpoints')->willReturn(
+            [
+               'details' => 'details',
+               'performance_graph' => 'performance_graph',
+               'status_graph' => 'status_graph',
+               'downtime' => 'downtime',
+               'acknowledgement' => 'acknowledgement',
+               'timeline' => 'timeline',
+            ]
+        );
+        $serviceHypermediaProvider->method('createInternalUris')->willReturn(
+            [
+               'configuration' => 'configuration',
+               'reporting' => 'reporting',
+               'logs' => 'logs',
+            ]
+        );
+        $serviceResourceType = $this->createMock(ServiceResourceType::class);
+
         $this->resourceService->expects($this->once())
             ->method('filterByContact')
             ->willReturn($this->resourceService);
@@ -182,17 +206,13 @@ class MonitoringResourceControllerTest extends TestCase
 
         $resourceController = new MonitoringResourceController(
             $this->resourceService,
-            $this->urlGenerator,
-            $this->iconUrlNormalizer
+            $this->iconUrlNormalizer,
+            new \ArrayIterator([$serviceResourceType]),
+            new \ArrayIterator([$serviceHypermediaProvider])
         );
         $resourceController->setContainer($this->container);
 
-        $this->request->query = new class () {
-            public function all()
-            {
-                return [];
-            }
-        };
+        $this->request->query = new InputBag();
 
         $this->serializer->expects($this->once())
             ->method('deserialize')
@@ -212,16 +232,19 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             $view,
-            View::create([
+            View::create(
+                [
                 'result' => [$this->resource],
                 'meta' => []
-            ])->setContext($context)
-        ); */
+                ]
+            )->setContext($context)
+        );
+    }
 
         /**
          * @var ResourceEntity $resource
          */
-/*         $resource = $view->getData()['result'][0];
+    /*         $resource = $view->getData()['result'][0];
 
         $this->assertEquals($resource->getLinks()->getUris()->getConfiguration(), '/main.php?p=60101&o=c&host_id=1');
         $this->assertEquals($resource->getLinks()->getUris()->getLogs(), '/main.php?p=20301&h=1');
@@ -252,7 +275,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostDetailsUri
      */
-/*     public function testBuildHostDetailsUri(): void
+    /*     public function testBuildHostDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->resourceService,
@@ -269,7 +292,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostUri
      */
-/*     public function testBuildHostUri(): void
+    /*     public function testBuildHostUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->resourceService,
@@ -304,7 +327,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceUri
      */
-   /*  public function testBuildServiceUri(): void
+    /*  public function testBuildServiceUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->resourceService,
