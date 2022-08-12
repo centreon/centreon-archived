@@ -113,7 +113,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
 
         if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
             throw new \InvalidArgumentException(
-                _('You must at least add one resource provider')
+                _('You must add at least one resource provider')
             );
         }
 
