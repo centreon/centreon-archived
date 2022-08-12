@@ -15076,7 +15076,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
-#  msgid "Edit performance AD"
+#  msgid "Edit anomaly detection data"
 #  msgstr ""
 
 #  msgid "Go to performance page"

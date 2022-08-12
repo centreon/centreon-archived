@@ -18,7 +18,7 @@ interface Props {
   xScale: ScaleTime<number, number>;
 }
 
-const TresholdGraph = ({
+const ThresholdAD = ({
   secondUnit,
   regularLines,
   xScale,
@@ -77,17 +77,17 @@ const TresholdGraph = ({
     <Threshold
       aboveAreaProps={{
         fill: lineColorY1,
-        fillOpacity: 0.2,
+        fillOpacity: 0.1,
       }}
       belowAreaProps={{
         fill: lineColorY0,
-        fillOpacity: 0.2,
+        fillOpacity: 0.1,
       }}
       clipAboveTo={0}
       clipBelowTo={graphHeight}
       curve={curveBasis}
       data={timeSeries}
-      id={`${Math.random()}`}
+      id={`${Y0.toString()}${Y1.toString()}`}
       x={X}
       y0={Y0}
       y1={Y1}
@@ -95,4 +95,4 @@ const TresholdGraph = ({
   );
 };
 
-export default TresholdGraph;
+export default ThresholdAD;

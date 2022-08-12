@@ -17,11 +17,11 @@ import {
   getUnits,
   getYScale,
 } from '../timeSeries';
+import ThresholdAD from '../AnomalyDetection/ThresholdAD';
 
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
-import TresholdGraph from './TresholdGraph';
 
 interface Props {
   displayTimeValues: boolean;
@@ -31,7 +31,7 @@ interface Props {
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
-  type?: string;
+  type: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -105,10 +105,12 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
-  const isDisplayedTreshold =
-    equals(type, ResourceType.anomalydetection) && lines?.length > 1;
+  const isLegendClicked = lines?.length <= 1;
 
-  const propsTresholdGraph = {
+  const isDisplayedThreshold =
+    equals(type, ResourceType.anomalydetection) && !isLegendClicked;
+
+  const propsThresholdAD = {
     getTime,
     getYScale,
     graphHeight,
@@ -140,7 +142,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isDisplayedTreshold && <TresholdGraph {...propsTresholdGraph} />}
+        {isDisplayedThreshold && <ThresholdAD {...propsThresholdAD} />}
         {regularLines.map(
           ({
             metric,

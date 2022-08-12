@@ -144,7 +144,6 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
-
           {isResourceAD && (
             <IconButton
               disableTouchRipple
@@ -158,7 +157,6 @@ const GraphActions = ({
               <WrenchIcon style={{ fontSize: 18 }} />
             </IconButton>
           )}
-
           <Menu
             keepMounted
             anchorEl={menuAnchor}

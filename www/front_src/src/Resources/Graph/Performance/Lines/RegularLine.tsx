@@ -36,13 +36,13 @@ const RegularLine = ({
   transparency,
   graphHeight,
 }: Props): JSX.Element => {
-  const strockWidth =
+  const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
     equals(metric, 'connection_upper_thresholds')
       ? 0.1
       : 0.8;
 
-  const isHighlight = highlight ? 2 : strockWidth;
+  const isHighlight = highlight ? 2 : strokeWidth;
 
   const props = {
     curve: Curve.curveLinear,
