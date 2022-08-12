@@ -21,7 +21,6 @@ import {
   ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
-// import UserIcon from '@mui/icons-material/AccountCircle';
 import UserIcon from '@mui/icons-material/Person';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
@@ -156,25 +155,12 @@ const useStyles = makeStyles((theme) => ({
   nameContainer: {
     padding: theme.spacing(0, 2, 0.25, 2.25),
   },
-  notificationIcon: {
-    color: theme.palette.common.white,
-    cursor: 'pointer',
-    fontSize: theme.spacing(3.3),
-  },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
   popper: {
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
-  },
-  searchIcon: {
-    color: theme.palette.common.white,
-    cursor: 'pointer',
-    fontSize: theme.spacing(3.3),
-    [theme.breakpoints.down(600)]: {
-      display: 'none',
-    },
   },
   switchItem: {
     padding: theme.spacing(0, 2, 0.25, 11 / 8),
@@ -189,12 +175,6 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     fontSize: theme.spacing(3.7),
   },
-  // userIconBadge: {
-  //   border: '1.5px solid white',
-  //   borderRadius: '100%',
-  //   cursor: 'pointer',
-  //   padding: theme.spacing(0.4),
-  // },
   wrapRightUser: {
     alignItems: 'center',
     background: theme.palette.common.black,
@@ -398,17 +378,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
           <Clock />
         </div>
         <div className={classes.icons}>
-          {/* <Badge>
-            <SearchIcon className={classes.searchIcon} />
-          </Badge> */}
-          {/* 
-          <Badge
-            badgeContent={4}
-            classes={{ badge: classes.badge }}
-            color="error"
-          >
-            <NotificationsNoneIcon className={classes.notificationIcon} />
-          </Badge> */}
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire
@@ -419,7 +388,6 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
             }
           >
             <Badge
-              className={classes.userIconBadge}
               color="warning"
               invisible={passwordIsNotYetAboutToExpire}
               variant="dot"
