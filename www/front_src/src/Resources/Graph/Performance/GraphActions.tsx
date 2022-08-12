@@ -8,8 +8,8 @@ import { Menu, MenuItem } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
-import WrenchIcon from '@mui/icons-material/Build';
 import { useTheme } from '@mui/material/styles';
+import WrenchIcon from '@mui/icons-material/Build';
 
 import {
   ContentWithCircularLoading,
@@ -23,7 +23,7 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
-  labelPerformanceGraphAD,
+  labelConfigureAnomalyDetectionData,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -144,21 +144,19 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
-
           {isResourceAD && (
             <IconButton
               disableTouchRipple
-              ariaLabel={t(labelPerformanceGraphAD)}
-              data-testid={labelPerformanceGraphAD}
+              ariaLabel={t(labelConfigureAnomalyDetectionData)}
+              data-testid={labelConfigureAnomalyDetectionData}
               disabled={isNil(timeline)}
               size="large"
-              title={t(labelPerformanceGraphAD)}
+              title={t(labelConfigureAnomalyDetectionData)}
               onClick={(): void => undefined}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
             </IconButton>
           )}
-
           <Menu
             keepMounted
             anchorEl={menuAnchor}

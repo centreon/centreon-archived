@@ -1,4 +1,4 @@
-import { equals, or } from 'ramda';
+import { equals } from 'ramda';
 
 import { Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -37,13 +37,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
-  const type = details?.type as string;
-  const equalsService = equals('service');
-  const equalsMetaService = equals('metaservice');
+  const type = details?.type as ResourceType;
+  const equalsService = equals(ResourceType.service);
+  const equalsMetaService = equals(ResourceType.metaservice);
+  const equalsAD = equals(ResourceType.anomalydetection);
 
   const isService =
-    or(equalsService(type), equalsMetaService(type)) ||
-    equals(type, ResourceType.anomalydetection);
+    equalsService(type) || equalsMetaService(type) || equalsAD(type);
 
   return (
     <div className={classes.container}>
