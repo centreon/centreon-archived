@@ -140,7 +140,7 @@ class MonitoringResourceController extends AbstractController
     {
         if ($providers instanceof \Countable && count($providers) === 0) {
             throw new \InvalidArgumentException(
-                _('You must at least add one provider')
+                _('You must add at least one provider')
             );
         }
     }
