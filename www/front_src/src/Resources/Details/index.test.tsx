@@ -76,6 +76,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -1800,5 +1801,35 @@ describe(Details, () => {
       expect(getByText(alias)).toBeInTheDocument();
       expect(getByText(email)).toBeInTheDocument();
     });
+  });
+
+  it.only('calls the download graph endpoint when the Graph tab is selected and the "CSV label" is clicked', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+
+    const mockedOpen = jest.fn();
+    window.open = mockedOpen;
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: serviceDetailsGraphUrlParameters,
+      },
+    ]);
+
+    const { getByLabelText, getByText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() =>
+      expect(getByLabelText(labelExportToCSV)).toBeInTheDocument(),
+    );
+    userEvent.click(getByText(labelExportToCSV) as HTMLElement);
   });
 });
