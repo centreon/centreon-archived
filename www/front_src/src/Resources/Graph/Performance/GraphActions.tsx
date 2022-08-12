@@ -23,7 +23,7 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
-  labelConfigureAnomalyDetectionData,
+  labelEditAnomalyDetectionData,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -146,11 +146,11 @@ const GraphActions = ({
           </IconButton>
           {isResourceAD && (
             <IconButton
-              ariaLabel={t(labelConfigureAnomalyDetectionData)}
-              data-testid={labelConfigureAnomalyDetectionData}
+              ariaLabel={t(labelEditAnomalyDetectionData)}
+              data-testid={labelEditAnomalyDetectionData}
               disabled={isNil(timeline)}
               size="large"
-              title={t(labelConfigureAnomalyDetectionData)}
+              title={t(labelEditAnomalyDetectionData)}
               onClick={(): void => undefined}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
