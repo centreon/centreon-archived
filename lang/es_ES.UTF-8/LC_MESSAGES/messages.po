@@ -15163,6 +15163,6 @@ msgstr ""
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
-# msgid "Parent alias
+# msgid "Parent alias"
 # msgstr ""
 
