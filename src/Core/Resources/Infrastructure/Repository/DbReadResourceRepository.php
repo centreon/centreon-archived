@@ -290,7 +290,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         );
 
         if (empty($orConditions)) {
-            throw new \InvalidArgumentException(_('You must provide at least one acl provider'));
+            throw new \InvalidArgumentException(_('You must provide at least one ACL provider'));
         }
 
         $pattern = ' AND EXISTS (SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE (%s) AND acl.group_id IN (%s) LIMIT 1)';
