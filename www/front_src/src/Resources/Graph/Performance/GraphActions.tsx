@@ -146,7 +146,6 @@ const GraphActions = ({
           </IconButton>
           {isResourceAD && (
             <IconButton
-              disableTouchRipple
               ariaLabel={t(labelConfigureAnomalyDetectionData)}
               data-testid={labelConfigureAnomalyDetectionData}
               disabled={isNil(timeline)}
