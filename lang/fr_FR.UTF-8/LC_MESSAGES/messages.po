@@ -16953,7 +16953,7 @@ msgid "Host severity"
 msgstr "Criticité d'hôte"
 
 msgid "Host severity level"
-msgstr "Niveau de criticité d'hôte"
+msgstr "Niveau de criticité de l'hôte"
 
 msgid "Resource type \"%s\" provided not supported"
 msgstr "Type de ressource \"%s\" fourni non supporté"
