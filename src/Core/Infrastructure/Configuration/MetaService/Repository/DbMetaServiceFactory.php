@@ -30,7 +30,7 @@ class DbMetaServiceFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string, string|int> $data
      * @return MetaService
      */
     public static function createFromRecord(array $data): MetaService

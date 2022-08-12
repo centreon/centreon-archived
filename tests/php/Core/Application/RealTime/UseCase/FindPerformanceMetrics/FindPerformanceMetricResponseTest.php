@@ -28,10 +28,10 @@ use Core\Domain\RealTime\Model\PerformanceMetric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 
-function createPerformanceMetric(string $date, float $rta, float $pl, float $rtmax, float $rtmin): PerformanceMetric
+function createPerformanceMetric(string $date, float $rta, float $packetLoss, float $rtmax, float $rtmin): PerformanceMetric
 {
     $metricValues = [];
-    $metrics = ['rta' => $rta, 'pl' => $pl, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
+    $metrics = ['rta' => $rta, 'pl' => $packetLoss, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
     foreach ($metrics as $columnName => $columnValue) {
         $metricValues[] = new MetricValue($columnName, $columnValue);
     }
@@ -42,7 +42,7 @@ function createPerformanceMetric(string $date, float $rta, float $pl, float $rtm
 /**
  * @return array<string, int|string>
  */
-function generateExpectedResponseData(string $date, float $rta, float $pl, float $rtmax, float $rtmin): array
+function generateExpectedResponseData(string $date, float $rta, float $packetLoss, float $rtmax, float $rtmin): array
 {
     $dateTime = new DateTimeImmutable($date);
 
@@ -50,7 +50,7 @@ function generateExpectedResponseData(string $date, float $rta, float $pl, float
         'time' => $dateTime->getTimestamp(),
         'humantime' => $dateTime->format('Y-m-d H:i:s'),
         'rta' => sprintf('%f', $rta),
-        'pl' => sprintf('%f', $pl),
+        'pl' => sprintf('%f', $packetLoss),
         'rtmax' => sprintf('%f', $rtmax),
         'rtmin' => sprintf('%f', $rtmin),
     ];

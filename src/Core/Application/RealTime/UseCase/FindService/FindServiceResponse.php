@@ -132,7 +132,7 @@ class FindServiceResponse
     public $maxCheckAttempts;
 
     /**
-     * @var array<string, string|null>
+     * @var array<string, int|string|null>
      */
     public $icon;
 
