@@ -34,7 +34,7 @@ const usePendo = (): void => {
     sendRequest({
       endpoint: './api/internal.php?object=centreon_ceip&action=ceipInfo',
     }).then((data) => {
-      if (not(data.ceip)) {
+      if (not(data?.ceip)) {
         setCentreonPlatformData({ ceip: false });
 
         return;
