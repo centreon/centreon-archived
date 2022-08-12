@@ -23,7 +23,7 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
-  labelConfigureAnomalyDetectionData,
+  labelPerformanceGraphAD,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -153,11 +153,11 @@ const GraphActions = ({
           {isResourceAD && (
             <IconButton
               disableTouchRipple
-              ariaLabel={t(labelConfigureAnomalyDetectionData)}
-              data-testid={labelConfigureAnomalyDetectionData}
+              ariaLabel={t(labelPerformanceGraphAD)}
+              data-testid={labelPerformanceGraphAD}
               disabled={isNil(timeline)}
               size="large"
-              title={t(labelConfigureAnomalyDetectionData)}
+              title={t(labelPerformanceGraphAD)}
               onClick={openModalAD}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
