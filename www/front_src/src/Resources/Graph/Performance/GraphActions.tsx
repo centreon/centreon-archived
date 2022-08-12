@@ -77,10 +77,10 @@ const GraphActions = ({
   };
 
   const details = useAtomValue(detailsAtom);
-  const downloadGraphFile = `${details?.links.endpoints.metrics}/download?start_date=2022-08-01T00:00:22Z&end_date=2022-08-08T18:00:22Z`;
+  const graphToCsvEndpoint = `${details?.links.endpoints.performance_graph}/download?start_date=2022-08-01T00:00:22Z&end_date=2022-08-08T18:00:22Z`;
 
   const exportToCsv = (): void => {
-    window.open(downloadGraphFile, 'noopener', 'noreferrer');
+    window.open(graphToCsvEndpoint, 'noopener', 'noreferrer');
   };
 
   const goToPerformancePage = (): void => {
