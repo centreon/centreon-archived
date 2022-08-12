@@ -1200,6 +1200,8 @@ describe(Details, () => {
       buildResourcesEndpoint({
         hostCategories: [],
         hostGroups: [],
+        hostSeverities: [],
+        hostSeverityLevels: [],
         limit: 30,
         monitoringServers: [],
         page: 1,
@@ -1216,6 +1218,8 @@ describe(Details, () => {
         },
         serviceCategories: [],
         serviceGroups: [],
+        serviceSeverities: [],
+        serviceSeverityLevels: [],
         states: [],
         statusTypes: [],
         statuses: [],
@@ -1803,7 +1807,7 @@ describe(Details, () => {
     });
   });
 
-  it.only('calls the download graph endpoint when the Graph tab is selected and the "CSV label" is clicked', async () => {
+  it('calls the download graph endpoint when the Graph tab is selected and the "CSV label" is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
@@ -1818,7 +1822,7 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByLabelText, getByText } = renderDetails();
+    const { getByText } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1827,9 +1831,10 @@ describe(Details, () => {
       );
     });
 
-    await waitFor(() =>
-      expect(getByLabelText(labelExportToCSV)).toBeInTheDocument(),
-    );
-    userEvent.click(getByText(labelExportToCSV) as HTMLElement);
+    await waitFor(() => {
+      expect(getByText(labelExportToCSV)).toBeInTheDocument();
+    });
+
+    userEvent.click(getByText('Export') as HTMLElement);
   });
 });
