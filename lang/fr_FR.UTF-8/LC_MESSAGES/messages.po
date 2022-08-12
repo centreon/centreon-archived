@@ -9550,10 +9550,6 @@ msgstr "Contrôle si le service est en plage de maintenance"
 msgid "Preexec definition"
 msgstr "Définition de la commande PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "Le même OID existe déjà"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Règles de correspondance avancées"
@@ -16966,3 +16962,15 @@ msgstr "Le module \"%s\" est manquant"
 
 msgid "An error occured while retrieving details of module \"%s\""
 msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
+
+msgid "Centreon database schema does not seem to be installed."
+msgstr "Le schema de base de données de Centreon ne semble pas installé."
+
+msgid "Centreon database schema version is \"%s\" (\"%s\" required)."
+msgstr "La version du schema de base de données de Centreon est \"%s\" (\"%s\" requise)."
+
+msgid "Please use Web UI to install Centreon."
+msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
+
+msgid "Please use Web UI to update Centreon."
+msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
