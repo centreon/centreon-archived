@@ -1,22 +1,13 @@
 import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import ServiceIcon from '@mui/icons-material/Grain';
 
-import {
-  IconHeader,
-  IconToggleSubmenu,
-  SubmenuHeader,
-  SubmenuItem,
-  SubmenuItems,
-  SeverityCode,
-  StatusCounter,
-  SelectEntry,
-} from '@centreon/ui';
+import { SubmenuHeader, SeverityCode, SelectEntry } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import getDefaultCriterias from '../../../Resources/Filter/Criterias/default';
@@ -153,6 +144,7 @@ const ServiceStatusCounter = (): JSX.Element => {
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
         <div>
           <SubmenuHeader
+            CounterRightTranslation={1}
             active={toggled}
             counters={[
               {

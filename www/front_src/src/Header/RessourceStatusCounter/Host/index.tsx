@@ -1,22 +1,13 @@
 import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import HostIcon from '@mui/icons-material/Dns';
 
-import {
-  IconHeader,
-  IconToggleSubmenu,
-  SubmenuHeader,
-  SubmenuItem,
-  SubmenuItems,
-  SeverityCode,
-  StatusCounter,
-  SelectEntry,
-} from '@centreon/ui';
+import { SubmenuHeader, SeverityCode, SelectEntry } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { Criteria } from '../../../Resources/Filter/Criterias/models';
