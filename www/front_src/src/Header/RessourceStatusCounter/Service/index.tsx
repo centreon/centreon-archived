@@ -144,8 +144,8 @@ const ServiceStatusCounter = (): JSX.Element => {
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
         <div>
           <SubmenuHeader
-            CounterRightTranslation={1}
             active={toggled}
+            counterRightTranslation={1}
             counters={[
               {
                 count: data.critical.unhandled,
