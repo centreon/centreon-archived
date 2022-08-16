@@ -144,20 +144,24 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
                         "WHERE `cg_cg_id` = " . (int)$key;
                     $dbResult = $pearDB->query($query);
                     $fields["cg_aclRelation"] = "";
+                    $aclContactStatement = $pearDB->prepare("INSERT INTO `acl_group_contactgroups_relations` " .
+                        "VALUES (:maxId, :cgAcl)");
                     while ($cgAcl = $dbResult->fetch()) {
-                        $query = "INSERT INTO `acl_group_contactgroups_relations` VALUES ('" .
-                            $maxId["MAX(cg_id)"] . "', '" . $cgAcl['acl_group_id'] . "')";
-                        $pearDB->query($query);
+                        $aclContactStatement->bindValue(":maxId", (int) $maxId["MAX(cg_id)"], PDO::PARAM_INT);
+                        $aclContactStatement->bindValue(":cgAcl", (int) $cgAcl['acl_group_id'], PDO::PARAM_INT);
+                        $aclContactStatement->execute();
                         $fields["cg_aclRelation"] .= $cgAcl["acl_group_id"] . ",";
                     }
                     $query = "SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr`" .
                         " WHERE `cgcr`.`contactgroup_cg_id` = '" . (int)$key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["cg_contacts"] = "";
+                    $contactStatement = $pearDB->prepare("INSERT INTO `contactgroup_contact_relation` " .
+                        "VALUES (:cct, :maxId)");
                     while ($cct = $dbResult->fetch()) {
-                        $query = "INSERT INTO `contactgroup_contact_relation` " .
-                            "VALUES ('" . $cct["contact_contact_id"] . "', '" . $maxId["MAX(cg_id)"] . "')";
-                        $pearDB->query($query);
+                        $contactStatement->bindValue(":cct", (int) $cct["contact_contact_id"], \PDO::PARAM_INT);
+                        $contactStatement->bindValue(":maxId", (int) $maxId["MAX(cg_id)"], \PDO::PARAM_INT);
+                        $contactStatement->execute();
                         $fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
                     }
                     $fields["cg_contacts"] = trim($fields["cg_contacts"], ",");
