@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
-import { IconButton } from '@centreon/ui';
 
 import { Box } from '@mui/material';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
+
+import { IconButton } from '@centreon/ui';
 
 import { labelExportToCSV } from '../../../translatedLabels';
 import { detailsAtom } from '../../detailsAtoms';
