@@ -291,7 +291,9 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         );
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $collector->addValue($key, current($data), key($data));
+            /** @var int */
+            $data_type = key($data);
+            $collector->addValue($key, current($data), $data_type);
         }
 
         $collector->bind($statement);

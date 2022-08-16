@@ -86,6 +86,7 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /** @var int */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -180,6 +181,9 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);

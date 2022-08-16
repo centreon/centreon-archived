@@ -30,24 +30,40 @@ class DbMetaServiceFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, string|int> $data
+     * @param array<string,int|string|null> $data
      * @return MetaService
      */
     public static function createFromRecord(array $data): MetaService
     {
+        /** @var string */
+        $name = $data['name'];
+
+        /** @var string|null */
+        $calculationType = $data['calculation_type'];
+        $calculationType = self::normalizeCalculationType($calculationType);
+
+        /** @var string|null */
+        $output = $data['output'];
+
+        /** @var string|null */
+        $metric = $data['metric'];
+
+        /** @var string|null */
+        $regexSearchServices = $data['regexp_str'];
+
         return (new MetaService(
             (int) $data['id'],
-            $data['name'],
-            self::normalizeCalculationType($data['calculation_type']),
+            $name,
+            $calculationType,
             (int) $data['meta_selection_mode'],
             self::normalizeDataSourceType((int) $data['data_source_type'])
         ))
         ->setWarningThreshold(self::getIntOrNull($data['warning']))
         ->setCriticalThreshold(self::getIntOrNull($data['critical']))
-        ->setOutput($data['output'])
-        ->setMetric($data['metric'])
+        ->setOutput($output)
+        ->setMetric($metric)
         ->setActivated((int) $data['is_activated'] === 1)
-        ->setRegexpSearchServices($data['regexp_str']);
+        ->setRegexpSearchServices($regexSearchServices);
     }
 
     /**
