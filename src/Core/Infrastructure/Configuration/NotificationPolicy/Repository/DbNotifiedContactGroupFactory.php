@@ -27,15 +27,21 @@ use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 class DbNotifiedContactGroupFactory
 {
     /**
-     * @param array<string,mixed> $contactGroup
+     * @param array<string,int|string|null> $contactGroup
      * @return NotifiedContactGroup
      */
     public static function createFromRecord(array $contactGroup): NotifiedContactGroup
     {
+        /** @var string */
+        $name = $contactGroup['name'];
+
+        /** @var string */
+        $alias = $contactGroup['alias'];
+
         return new NotifiedContactGroup(
             (int) $contactGroup['id'],
-            $contactGroup['name'],
-            $contactGroup['alias'],
+            $name,
+            $alias,
         );
     }
 }

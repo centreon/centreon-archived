@@ -35,7 +35,7 @@ class DbResourceFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $record
+     * @param array<string,int|string|null> $record
      * @return ResourceEntity
      */
     public static function createFromRecord(array $record): ResourceEntity

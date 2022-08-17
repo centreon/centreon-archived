@@ -28,17 +28,21 @@ use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 class DbUserGroupFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return UserGroup
      */
     public static function createFromRecord(array $data): UserGroup
     {
-        $userGroup = new UserGroup(
-            (int) $data['id'],
-            $data['name'],
-            $data['alias']
-        );
+        /** @var string */
+        $name = $data['name'];
 
-        return $userGroup;
+        /** @var string */
+        $alias = $data['alias'];
+
+        return new UserGroup(
+            (int) $data['id'],
+            $name,
+            $alias
+        );
     }
 }

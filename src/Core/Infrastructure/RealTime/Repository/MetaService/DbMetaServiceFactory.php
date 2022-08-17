@@ -31,23 +31,38 @@ class DbMetaServiceFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return MetaService
      */
     public static function createFromRecord(array $data): MetaService
     {
+        /** @var string */
+        $name = $data['name'];
+
+        /** @var string */
+        $monitoringServerName = $data['monitoring_server_name'];
+
         $metaService = new MetaService(
             (int) $data['id'],
             (int) $data['host_id'],
             (int) $data['service_id'],
-            $data['name'],
-            $data['monitoring_server_name'],
+            $name,
+            $monitoringServerName,
             DbServiceStatusFactory::createFromRecord($data)
         );
 
-        $metaService->setPerformanceData($data['performance_data'])
-            ->setOutput($data['output'])
-            ->setCommandLine($data['command_line'])
+        /** @var string|null */
+        $performanceData = $data['performance_data'];
+
+        /** @var string|null */
+        $output = $data['output'];
+
+        /** @var string|null */
+        $commandLine = $data['command_line'];
+
+        $metaService->setPerformanceData($performanceData)
+            ->setOutput($output)
+            ->setCommandLine($commandLine)
             ->setIsFlapping((int) $data['flapping'] === 1)
             ->setIsAcknowledged((int) $data['acknowledged'] === 1)
             ->setIsInDowntime((int) $data['in_downtime'] === 1)

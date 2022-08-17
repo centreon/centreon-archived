@@ -28,22 +28,29 @@ use Core\Domain\Configuration\Notification\Model\HostNotification;
 class DbContactHostNotificationFactory
 {
     /**
-     * @param array<string,mixed> $notification
+     * @param array<string,int|string|null> $notification
      * @return HostNotification
      */
     public static function createFromRecord(array $notification): HostNotification
     {
+        /** @var string */
+        $name = $notification['host_timeperiod_name'];
+
+        /** @var string */
+        $alias = $notification['host_timeperiod_alias'];
+
         $timePeriod = new TimePeriod(
             (int) $notification['host_timeperiod_id'],
-            $notification['host_timeperiod_name'],
-            $notification['host_timeperiod_alias']
+            $name,
+            $alias
         );
 
         $hostNotification = new HostNotification($timePeriod);
 
-        $events = $notification['contact_host_notification_options'] !== null
-            ? explode(',', $notification['contact_host_notification_options'])
-            : [];
+        /** @var string|null */
+        $notificationOptions = $notification['contact_host_notification_options'];
+
+        $events = $notificationOptions !== null ? explode(',', $notificationOptions) : [];
 
         foreach ($events as $event) {
             $normalizedEvent = self::normalizeHostEvent($event);

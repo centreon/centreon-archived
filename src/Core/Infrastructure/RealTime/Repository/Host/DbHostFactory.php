@@ -32,23 +32,44 @@ class DbHostFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Host
      */
     public static function createFromRecord(array $data): Host
     {
+        /** @var string */
+        $name = $data['name'];
+
+        /** @var string */
+        $address = $data['address'];
+
+        /** @var string */
+        $monitoringServerName = $data['monitoring_server_name'];
+
         $host = new Host(
             (int) $data['host_id'],
-            $data['name'],
-            $data['address'],
-            $data['monitoring_server_name'],
+            $name,
+            $address,
+            $monitoringServerName,
             DbHostStatusFactory::createFromRecord($data)
         );
 
-        $host->setTimezone($data['timezone'])
-            ->setPerformanceData($data['performance_data'])
-            ->setOutput($data['output'])
-            ->setCommandLine($data['command_line'])
+        /** @var string|null */
+        $timezone = $data['timezone'];
+
+        /** @var string|null */
+        $performanceData = $data['performance_data'];
+
+        /** @var string|null */
+        $output = $data['output'];
+
+        /** @var string|null */
+        $commandLine = $data['command_line'];
+
+        $host->setTimezone($timezone)
+            ->setPerformanceData($performanceData)
+            ->setOutput($output)
+            ->setCommandLine($commandLine)
             ->setIsFlapping((int) $data['flapping'] === 1)
             ->setIsAcknowledged((int) $data['acknowledged'] === 1)
             ->setIsInDowntime((int) $data['in_downtime'] === 1)
