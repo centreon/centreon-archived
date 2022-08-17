@@ -17,7 +17,6 @@ on the market; it is absolutely free and Open Source.
 
 * Using the [**sources**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-sources.html)
 * Using the [**packages**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-packages.html)
-* Using the [**ISO**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html)
 * Using the [**VM**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-virtual-machines.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
 
 <h2> Supported versions </h2>
