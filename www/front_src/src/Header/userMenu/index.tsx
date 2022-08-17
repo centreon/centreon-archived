@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-import { gt, isNil, not, __ } from 'ramda';
+import { equals, gt, isNil, not, __ } from 'ramda';
 
 import { grey } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
@@ -36,6 +36,7 @@ import {
   useSnackbar,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
+import { ThemeMode } from '@centreon/ui-context';
 
 import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
@@ -144,7 +145,9 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(22 / 8),
   },
   menu: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
     borderRadius: 0,
     color: theme.palette.common.white,
     minWidth: 190,
@@ -177,7 +180,6 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapRightUser: {
     alignItems: 'center',
-    background: theme.palette.common.black,
     display: 'flex',
     flexWrap: 'wrap',
     position: 'relative',

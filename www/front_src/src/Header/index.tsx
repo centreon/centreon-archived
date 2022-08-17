@@ -1,6 +1,10 @@
 import { useRef } from 'react';
 
+import { equals } from 'ramda';
+
 import { makeStyles } from '@mui/styles';
+
+import { ThemeMode } from '@centreon/ui-context';
 
 import FederatedComponent from '../components/FederatedComponents';
 
@@ -19,7 +23,9 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     alignItems: 'center',
-    background: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(9),
     width: '100%',

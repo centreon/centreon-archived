@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isEmpty, isNil } from 'ramda';
+import { equals, isEmpty, isNil } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useNavigate } from 'react-router-dom';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
-import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
+import { Button, ClickAwayListener, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import {
@@ -17,7 +17,7 @@ import {
   IconHeader,
   IconToggleSubmenu,
 } from '@centreon/ui';
-import { refreshIntervalAtom } from '@centreon/ui-context';
+import { refreshIntervalAtom, ThemeMode } from '@centreon/ui-context';
 
 import useNavigation from '../../Navigation/useNavigation';
 
@@ -51,7 +51,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       background: theme.palette.grey[500],
     },
-    background: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
     border: '1px solid white',
     color: theme.palette.common.white,
     display: 'flex',
@@ -104,7 +106,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
@@ -260,17 +264,15 @@ const PollerMenu = (): JSX.Element | null => {
             </div>
           )}
           {allowPollerConfiguration && (
-            <Paper>
-              <Button
-                fullWidth
-                className={classes.confButton}
-                data-testid={labelConfigurePollers}
-                size="small"
-                onClick={redirectToPollerConfiguration}
-              >
-                {t(labelConfigurePollers)}
-              </Button>
-            </Paper>
+            <Button
+              fullWidth
+              className={classes.confButton}
+              data-testid={labelConfigurePollers}
+              size="small"
+              onClick={redirectToPollerConfiguration}
+            >
+              {t(labelConfigurePollers)}
+            </Button>
           )}
           <ExportConfiguration
             setIsExportingConfiguration={newExporting}
