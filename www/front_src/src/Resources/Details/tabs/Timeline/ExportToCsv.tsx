@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
-
-import { IconButton } from '@centreon/ui';
 
 import { labelExportToCSV } from '../../../translatedLabels';
 import { detailsAtom } from '../../detailsAtoms';
+import ResourceActionButton from '../../../Actions/Resource/ResourceActionButton';
 
 const ExportToCsv = (): JSX.Element => {
   const { t } = useTranslation();
@@ -20,15 +19,20 @@ const ExportToCsv = (): JSX.Element => {
   };
 
   return (
-    <Box>
-      <IconButton
+    <Stack
+      alignItems="center"
+      direction="row"
+      justifyContent="flex-end"
+      spacing={0.5}
+    >
+      <ResourceActionButton
         data-testid={labelExportToCSV}
-        title={t(labelExportToCSV)}
+        disabled={false}
+        icon={<SaveAsImageIcon />}
+        label={t(labelExportToCSV)}
         onClick={exportToCsv}
-      >
-        <SaveAsImageIcon style={{ fontSize: 18 }} />
-      </IconButton>
-    </Box>
+      />
+    </Stack>
   );
 };
 

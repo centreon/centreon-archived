@@ -35,9 +35,10 @@ import ExportToCsv from './ExportToCsv';
 type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
-  filter: {
-    padding: theme.spacing(2),
-    paddingTop: 0,
+  filterHeader: {
+    alignItems: 'center',
+    display: 'grid',
+    padding: theme.spacing(1, 1, 1, 1),
   },
 }));
 
@@ -115,28 +116,21 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     <InfiniteScroll
       details={details}
       filter={
-        <Paper className={classes.filter}>
-          <TimePeriodButtonGroup disableGraphOptions disablePaper />
-          <Stack
-            alignItems="center"
-            direction="row"
-            justifyContent="center"
-            paddingLeft={3}
-            paddingRight={1}
-            spacing={1}
-          >
+        <Stack spacing={0.5}>
+          <Paper className={classes.filterHeader}>
+            <TimePeriodButtonGroup disableGraphOptions disablePaper />
             <MultiAutocompleteField
-              fullWidth
               label={t(labelEvent)}
               limitTags={3}
               options={translatedTypes}
-              placeholder=""
               value={selectedTypes}
               onChange={changeSelectedTypes}
             />
+          </Paper>
+          <Stack spacing={0.5}>
             <ExportToCsv />
           </Stack>
-        </Paper>
+        </Stack>
       }
       limit={limit}
       loading={sending}
