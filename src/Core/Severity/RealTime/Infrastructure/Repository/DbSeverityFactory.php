@@ -28,19 +28,25 @@ use Core\Severity\RealTime\Domain\Model\Severity;
 class DbSeverityFactory
 {
     /**
-     * @param array<string, mixed> $record
+     * @param array<string,int|string|null> $record
      * @return Severity
      */
     public static function createFromRecord(array $record): Severity
     {
+        /** @var string|null */
+        $iconName = $record['icon_name'];
+
         $icon = (new Icon())
             ->setId((int) $record['icon_id'])
-            ->setName($record['icon_name'])
+            ->setName($iconName)
             ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
+
+            /** @var string */
+        $name = $record['name'];
 
         return new Severity(
             (int) $record['id'],
-            $record['name'],
+            $name,
             (int) $record['level'],
             (int) $record['type'],
             $icon
