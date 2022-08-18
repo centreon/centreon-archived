@@ -1798,7 +1798,7 @@ describe(Details, () => {
     });
   });
 
-  it('calls the download graph endpoint when the Graph tab is selected and the "CSV label" is clicked', async () => {
+  it('calls the download graph endpoint when the Graph tab is selected and the "Export CSV Button" is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
