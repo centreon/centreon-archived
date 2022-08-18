@@ -17013,3 +17013,12 @@ msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
 
 msgid "Certificate Common Name (optional)"
 msgstr "\"Common Name\" du certificat du serveur (optionnel)"
+
+msgid "Image as displayed"
+msgstr "Image affichée"
+
+msgid "Image as Medium size"
+msgstr "Image en taille moyenne"
+
+msgid "Image as Small size"
+msgstr "Image en petite taille"
