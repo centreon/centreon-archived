@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 
 import { Button, Stack } from '@mui/material';
-import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
+import SaveIcon from '@mui/icons-material/SaveAlt';
 
 import { labelExportToCSV } from '../../../translatedLabels';
 import { detailsAtom } from '../../detailsAtoms';
