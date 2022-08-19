@@ -16,10 +16,12 @@
     --ui-state-active-border-color: var(--ui-background-color);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
-    --bt-success-background-color: var(--color-primary-light);
+    --btc-color: var(--color-white);
+    --bt-action-hover-background-color: var(--color-primary-hover-dark);
+    --bt-success-background-color: var(--color-primary-dark);
     --bt-default-background-color: var(--bt-success-background-color);
     --bt-danger-background-color: var(--bt-success-background-color);
-    --bt-info-background-color: var(--bt-success-background-color);
+    --bt-info-background-color: var(--color-primary-dark);
     --bt-warning-background-color: var(--bt-success-background-color);
     --toggle-wrapper-background-color: var(--body-background);
     --toggle-wrapper-border-color: var(--color-pablo);
@@ -190,7 +192,6 @@
     --list-ack-hover-background-color: var(--list-one-hover-background-color);
     --md-checkbox--disabled-border-color-before: var(--color-black-rgba-6);
     --md-checkbox--disabled-checked-background-color-before: var(--color-black-rgba-54);
-    --btc-color: var(--color-black);
     --ui-button-focus-font-color: var(--btc-color);
     --input-submit-color: var(--btc-color);
     --a-btc-color: var(--btc-color);

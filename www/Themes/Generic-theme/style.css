@@ -32,9 +32,6 @@
  *
  */
 
-body {
-    background-color:var(--body-background);
-}
 * {
     margin:0;
     padding:0;
@@ -43,9 +40,11 @@ html {
     height: 100%;
 }
 body {
-    font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
+    background-color:var(--body-background);
+    /* font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif; */
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
     color:var(--body-color);
-    font-size:11px;
+    font-size:12px;
     height: 100%;
 }
 .link a {
@@ -56,9 +55,9 @@ body {
 a {
     text-decoration:none;
 }
-a:hover {
+/* a:hover {
     text-decoration:underline;
-}
+} */
 img, hr {
     border:0;
     padding:0;
@@ -87,7 +86,6 @@ input, textarea {
 input, select {
     border-radius: 0px;
     padding: 4px;
-    font-size: 11px !important;
     border: 1px solid var(--select-border-color);
     line-height: 18px;
     background-color: var(--input-select-background-color);
@@ -654,18 +652,21 @@ p.description a, p.description a:visited {
 /* ------ START : Buttons -----*/
 .btc {
     border-radius: 4px !important;
-    padding: 4px 10px;
+    padding: 4px 10px ;
     border: none !important;
     outline: none !important;
     color: var(--btc-color);
     cursor: pointer;
+
 }
+
 a.btc {
     color: var(--a-btc-color) !important;
     padding: 4px 10px;
     margin : 0px 4px;
     cursor: pointer;
 }
+
 
 .bt_default {
     background: var(--bt-default-background-color) !important;
@@ -674,6 +675,9 @@ a.btc {
 .bt_success {
     background: var(--bt-success-background-color) !important;
 }
+.bt_success:hover {
+    background: var(--bt-action-hover-background-color) !important;
+}
 
 .bt_danger {
     background: var(--bt-danger-background-color) !important;
@@ -681,6 +685,9 @@ a.btc {
 
 .bt_info {
     background: var(--bt-info-background-color) !important;
+}
+.bt_info:hover {
+    background: var(--bt-action-hover-background-color) !important;
 }
 
 .bt_warning {
@@ -1341,7 +1348,17 @@ table-form-header-h3 {
 }
 .help       {position:absolute;right:15px;top:15px;}
 
-.pathWay    {padding:0px;margin:0px;color:var(--path-way-font-color);}
+.pathWay {
+    padding:0px;
+    margin:0px;
+    color:var(--path-way-font-color);
+    font-size: small;
+}
+
+.pathWay :hover {
+    text-decoration: underline;
+}
+
 .imgPathWay {border:0;margin:0 0 -2px;padding:0;}
 
 .separator      {color:var(--separator-font-color);font-style:italic;font-weight:700;}

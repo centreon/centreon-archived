@@ -199,14 +199,14 @@
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
     --bt-default-background-color : var(--color-primary-dark);
-    --bt-success-background-color : var(--color-primary-dark);
+    --bt-success-background-color : var(--color-primary-light);
     --bt-danger-background-color: var(--color-primary-dark);
-    --bt-info-background-color : var(--color-primary-dark);
+    --bt-info-background-color : var(--color-primary-light);
     --bt-warning-background-color :var(--color-primary-dark);
     --bt-action-color-background-color : var(--color-primary-dark);
     --bt-action-color :var(--color-white);
     --bt-action-border-color: var(--color-primary-dark);
-    --bt-action-hover-background-color: var(--color-primary-dark);
+    --bt-action-hover-background-color: var(--color-primary-hover);
     --bt-action-hover-border-color: var(--color-primary-dark);
     --bt-default-ui-state-hover-background-color : var(--color-oslo-gray);
     --bt-default-ui-state-hover-color : var(--color-white);
