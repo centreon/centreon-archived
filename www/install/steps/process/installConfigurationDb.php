@@ -82,7 +82,7 @@ if ($open_files_limit < 32000) {
 }
 
 try {
-    $link->exec("CREATE DATABASE " . $parameters['db_configuration']);
+    $link->exec("CREATE DATABASE `" . $parameters['db_configuration'] . "`");
 } catch (\PDOException $e) {
     if (!is_file('../../tmp/createTables')) {
         $return['msg'] = $e->getMessage();
@@ -94,7 +94,7 @@ try {
 /**
  * Create tables
  */
-$link->exec('use ' . $parameters['db_configuration']);
+$link->exec("use `" . $parameters['db_configuration'] . "`");
 $result = splitQueries('../../createTables.sql', ';', $link, '../../tmp/createTables');
 if ("0" != $result) {
     $return['msg'] = $result;
