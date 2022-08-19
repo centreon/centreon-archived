@@ -15223,10 +15223,10 @@ msgstr "Nivel de criticidad del host"
 #  msgstr ""
 
 # msgid "Image as displayed"
-# msgstr "Image as displayed"
+# msgstr ""
 
-# msgid "Image as Medium size"
-# msgstr "Image as Medium size"
+# msgid "Image as medium size"
+# msgstr ""
 
-# msgid "Image as Small size"
-# msgstr "Image as Small size"
+# msgid "Image as small size"
+# msgstr ""
