@@ -1,15 +1,18 @@
 :root {
     /** Main colors **/
-    --color-primary-light: #64B5F6;
+    --color-primary-light: #2E68AA;
+    --color-primary-dark: #6EAFF8;
     --color-primary-body-dark : #b2aca2;
-    --color-primary-body-background-dark:#212121;
+    --color-primary-body-background-dark:#000000;
     --color-primary-success-dark : #84bd00;
-    --color-primary-dark: #10069F;
-    --color-success : #88b917 ;
-    --color-warning : #ff9a13 ;
-    --color-danger : #e00b3d ;
-    --color-pending : #2AD1D4 ;
-    --color-info : #00bdb0 ;
+    --color-primary-hover: #255891;
+    --color-primary-hover-dark: #4974A5;
+    --color-success : #88B922 ; 
+    --color-warning : #FD9B27 ;
+    --color-danger : #FF4A4A ;
+    --color-pending : #1EBEB3 ; 
+    --color-info :  #1588D1 ;
+    --color-info-dark : #1CA9F4 ; 
     --color-ack : #AA9C24;
     --color-white : #fff ;
     --color-black: #000000;
