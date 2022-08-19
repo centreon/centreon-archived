@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { equals } from 'ramda';
 
 import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 
 import { ThemeMode } from '@centreon/ui-context';
 
@@ -12,6 +13,9 @@ import PollerMenu from './PollerMenu';
 import HostStatusCounter from './RessourceStatusCounter/Host';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
+
+export const isDarkMode = (theme: Theme): boolean =>
+  equals(theme.palette.mode, ThemeMode.dark);
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+    backgroundColor: isDarkMode(theme)
       ? theme.palette.background.default
       : theme.palette.primary.main,
     display: 'flex',

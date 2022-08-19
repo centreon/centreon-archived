@@ -59,6 +59,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.4.7",
     "jest-environment-jsdom": "^27.4.6",
+    "jest-fetch-mock": "^3.0.3",
     "jest-junit": "^13.0.0",
     "jsdom": "^19.0.0",
     "mockdate": "^3.0.5",

@@ -6,8 +6,11 @@ import ShortTypeChip from '../../ShortTypeChip';
 
 import { useColumnStyles } from '.';
 
-const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
-  const classes = useColumnStyles();
+const ResourceColumn = ({
+  row,
+  isHovered,
+}: ComponentColumnProps): JSX.Element => {
+  const classes = useColumnStyles({ isHovered });
 
   return (
     <div className={classes.resourceDetailsCell}>
@@ -17,7 +20,9 @@ const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
         <ShortTypeChip label={row.short_type} />
       )}
       <div className={classes.resourceNameItem}>
-        <Typography variant="body2">{row.name}</Typography>
+        <Typography className={classes.resourceNameText} variant="body2">
+          {row.name}
+        </Typography>
       </div>
     </div>
   );

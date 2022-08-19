@@ -103,9 +103,6 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     padding: 0,
   },
-  paper: {
-    boxShadow: theme.shadows[3],
-  },
   tabList: {
     boxShadow: theme.shadows[2],
   },
@@ -180,7 +177,7 @@ const Authentication = (): JSX.Element => {
     <Box className={classes.box}>
       <TabContext value={appliedTab}>
         <Container className={classes.container}>
-          <Paper square className={classes.paper}>
+          <Paper square>
             <TabList
               className={classes.tabList}
               variant="fullWidth"

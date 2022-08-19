@@ -15618,3 +15618,45 @@ msgstr "Severidade de host"
 
 msgid "Host severity level"
 msgstr "Nível de Severidade de host"
+
+#  msgid "Listening address (optional)"
+#  msgstr ""
+
+#  msgid "Listening port"
+#  msgstr ""
+
+#  msgid "Transport protocol"
+#  msgstr ""
+
+#  msgid "Authorization token (optional)"
+#  msgstr ""
+
+#  msgid "Private key path"
+#  msgstr ""
+
+#  msgid "Certificate path"
+#  msgstr ""
+
+#  msgid "Compression"
+#  msgstr ""
+
+#  msgid "Enable retention"
+#  msgstr ""
+
+#  msgid "Filter on event categories"
+#  msgstr ""
+
+#  msgid "Server address"
+#  msgstr ""
+
+#  msgid "Server port"
+#  msgstr ""
+
+#  msgid "Retry interval (in seconds)"
+#  msgstr ""
+
+#  msgid "Trusted CA's certificate path (optional)"
+#  msgstr ""
+
+#  msgid "Certificate Common Name (optional)"
+#  msgstr ""

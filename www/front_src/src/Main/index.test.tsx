@@ -179,7 +179,7 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: retrievedActionsAcl,
     })
-    .mockResolvedValueOnce({
+    .mockResolvedValue({
       data: null,
     });
 };
