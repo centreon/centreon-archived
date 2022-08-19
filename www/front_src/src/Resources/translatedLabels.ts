@@ -259,5 +259,5 @@ export const labelServiceSeverityLevel = 'Service severity level';
 export const labelExportToCSV = 'CSV';
 export const labelExport = 'Export';
 export const labelAsDisplayed = 'Image as displayed';
-export const labelAsMediumSize = 'Image as Medium size';
-export const labelAsSmallSize = 'Image as Small size';
+export const labelAsMediumSize = 'Image as medium size';
+export const labelAsSmallSize = 'Image as small size';
