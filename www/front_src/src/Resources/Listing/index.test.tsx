@@ -302,6 +302,8 @@ describe(Listing, () => {
   });
 
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
+    jest.setTimeout(30000);
+
     const { getByLabelText } = renderListing();
 
     await waitFor(() => {
@@ -411,7 +413,7 @@ describe(Listing, () => {
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
     const chip = await findByLabelText(chipLabel, undefined, {
-      timeout: 10000,
+      timeout: 30000,
     });
 
     fireEvent.mouseEnter(chip);
