@@ -49,7 +49,6 @@ import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
 } from '../../Navigation/Sidebar/sideBarAtoms';
-import { isDarkMode } from '..';
 
 import { userEndpoint } from './api/endpoint';
 import {
