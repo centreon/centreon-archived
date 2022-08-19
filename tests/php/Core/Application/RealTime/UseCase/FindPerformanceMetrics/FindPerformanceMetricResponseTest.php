@@ -34,8 +34,7 @@ function createPerformanceMetric(
     float $packetLoss,
     float $rtmax,
     float $rtmin
-): PerformanceMetric
-{
+): PerformanceMetric {
     $metricValues = [];
     $metrics = ['rta' => $rta, 'pl' => $packetLoss, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
     foreach ($metrics as $columnName => $columnValue) {
