@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   filterHeader: {
     alignItems: 'center',
     display: 'grid',
-    padding: theme.spacing(1, 1, 1, 1),
+    padding: theme.spacing(1),
   },
 }));
 

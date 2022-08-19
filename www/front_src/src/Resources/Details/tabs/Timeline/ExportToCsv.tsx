@@ -21,10 +21,10 @@ const ExportToCsv = (): JSX.Element => {
 
   const [start, end] = getIntervalDates(selectedTimePeriod);
 
-  const timelineFileCsv = `${details?.links.endpoints.timeline}/download?start_date=${start}&end_date=${end}`;
+  const exportToCSVEndpoint = `${details?.links.endpoints.timeline}/download?start_date=${start}&end_date=${end}`;
 
   const exportToCsv = (): void => {
-    window.open(timelineFileCsv, 'noopener', 'noreferrer');
+    window.open(exportToCSVEndpoint, 'noopener', 'noreferrer');
   };
 
   return (
