@@ -20,8 +20,8 @@ import {
   labelExport,
   labelExportToCSV,
   labelAsDisplayed,
-  labelAsMediumSize,
-  labelAsSmallSize,
+  labelMediumSize,
+  labelSmallSize,
   labelPerformancePage,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
@@ -30,6 +30,10 @@ import memoizeComponent from '../../memoizedComponent';
 import { detailsAtom } from '../../Details/detailsAtoms';
 
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
+import {
+  getDatesDerivedAtom,
+  selectedTimePeriodAtom,
+} from './TimePeriods/timePeriodAtoms';
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
@@ -75,9 +79,12 @@ const GraphActions = ({
   const closeSizeExportMenu = (): void => {
     setMenuAnchor(null);
   };
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
 
+  const [start, end] = getIntervalDates(selectedTimePeriod);
   const details = useAtomValue(detailsAtom);
-  const graphToCsvEndpoint = `${details?.links.endpoints.performance_graph}/download?start_date=2022-08-01T00:00:22Z&end_date=2022-08-08T18:00:22Z`;
+  const graphToCsvEndpoint = `${details?.links.endpoints.performance_graph}/download?start_date=${start}&end_date=${end}`;
 
   const exportToCsv = (): void => {
     window.open(graphToCsvEndpoint, 'noopener', 'noreferrer');
@@ -173,16 +180,16 @@ const GraphActions = ({
               {t(labelAsDisplayed)}
             </MenuItem>
             <MenuItem
-              data-testid={labelAsMediumSize}
+              data-testid={labelMediumSize}
               onClick={(): void => convertToPng(0.75)}
             >
-              {t(labelAsMediumSize)}
+              {t(labelMediumSize)}
             </MenuItem>
             <MenuItem
-              data-testid={labelAsSmallSize}
+              data-testid={labelSmallSize}
               onClick={(): void => convertToPng(0.5)}
             >
-              {t(labelAsSmallSize)}
+              {t(labelSmallSize)}
             </MenuItem>
             <Divider />
             <MenuItem
