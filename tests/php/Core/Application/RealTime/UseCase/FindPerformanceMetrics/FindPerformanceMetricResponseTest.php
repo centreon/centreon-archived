@@ -28,7 +28,13 @@ use Core\Domain\RealTime\Model\PerformanceMetric;
 use Core\Domain\RealTime\Model\MetricValue;
 use Core\Application\RealTime\UseCase\FindPerformanceMetrics\FindPerformanceMetricResponse;
 
-function createPerformanceMetric(string $date, float $rta, float $packetLoss, float $rtmax, float $rtmin): PerformanceMetric
+function createPerformanceMetric(
+    string $date,
+    float $rta,
+    float $packetLoss,
+    float $rtmax,
+    float $rtmin
+): PerformanceMetric
 {
     $metricValues = [];
     $metrics = ['rta' => $rta, 'pl' => $packetLoss, 'rtmax' => $rtmax, 'rtmin' => $rtmin];
