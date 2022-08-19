@@ -17017,8 +17017,8 @@ msgstr "\"Common Name\" du certificat du serveur (optionnel)"
 msgid "Image as displayed"
 msgstr "Image affichée"
 
-msgid "Image as Medium size"
+msgid "Image as medium size"
 msgstr "Image en taille moyenne"
 
-msgid "Image as Small size"
+msgid "Image as small size"
 msgstr "Image en petite taille"
