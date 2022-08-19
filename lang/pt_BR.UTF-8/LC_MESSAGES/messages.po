@@ -15676,8 +15676,8 @@ msgstr "Nível de Severidade de host"
 # msgid "Image as displayed"
 # msgstr "Image as displayed"
 
-# msgid "Image as Medium size"
-# msgstr "Image as Medium size"
+# msgid "Image as medium size"
+# msgstr ""
 
-# msgid "Image as Small size"
-# msgstr "Image as Small size"
+# msgid "Image as small size"
+# msgstr ""
