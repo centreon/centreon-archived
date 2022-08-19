@@ -71,7 +71,14 @@ $select = is_array($select) ? sanitize_input_array($select) : [];
 $acl_group_id = filter_var($_GET['acl_group_id'] ?? $_POST['acl_group_id'] ?? null, FILTER_VALIDATE_INT) ?? null;
 
 // Caution $o may already be set from the GET or from the POST.
-$postO = filter_var($_POST['o1'] ?? $_POST['o2'] ?? $o ?? null, FILTER_SANITIZE_STRING);
+if (isset($_POST['o1']) && !empty($_POST['o1'])) {
+    $postO = filter_var($_POST['o1'], FILTER_SANITIZE_STRING);
+} elseif (isset($_POST['o2']) && !empty($_POST['o2'])) {
+    $postO = filter_var($_POST['o2'], FILTER_SANITIZE_STRING);
+} elseif (isset($o) && !empty($o)) {
+    $postO = filter_var($o, FILTER_SANITIZE_STRING);
+}
+
 $o = ("" !== $postO) ? $postO : null;
 
 switch ($o) {
