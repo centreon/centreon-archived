@@ -32,7 +32,7 @@ const ExportToCsv = (): JSX.Element => {
       <Button
         data-testid={labelExportToCSV}
         size="small"
-        startIcon={<SaveAsImageIcon />}
+        startIcon={<SaveIcon />}
         variant="contained"
         onClick={exportToCsv}
       >
