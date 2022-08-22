@@ -35,9 +35,6 @@ class DbMetaServiceFactory
      */
     public static function createFromRecord(array $data): MetaService
     {
-        /** @var string */
-        $name = $data['name'];
-
         /** @var string|null */
         $calculationType = $data['calculation_type'];
         $calculationType = self::normalizeCalculationType($calculationType);
@@ -53,7 +50,7 @@ class DbMetaServiceFactory
 
         return (new MetaService(
             (int) $data['id'],
-            $name,
+            (string) $data['name'],
             $calculationType,
             (int) $data['meta_selection_mode'],
             self::normalizeDataSourceType((int) $data['data_source_type'])
