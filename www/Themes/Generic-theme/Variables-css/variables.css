@@ -237,6 +237,9 @@
     --list-table-small-border-color : var(--color-white-lilac);
     /*******************/
 
+    /** table font color **/
+    --table-font-color : var(--color-secondary) ; 
+
     /** START : Indicators **/
     --resume-light : var(--color-athens-gray);
     --resume-light-table-th-border-right : var(--color-white-lilac);
@@ -266,7 +269,6 @@
     --div-menu-left-background-color :  var(--color-white);
     /************/
     --list-table-anchors-font-color: var(--color-dove-gray);
-    --list-table-border-color: var(--color-periwinkle);
     --list-lvl-1-background-color: var(--color-botticeli);
     --list-lvl-2-background-color: var(--color-periwinkle-gray);
     --list-lvl-2-font-color: var(--color-black);
@@ -276,7 +278,9 @@
     --list-one-background-color: var(--color-twilight-blue);
     --list-one-font-color: none;
     --list-one-fix-background-color: var(--list-one-background-color);
-    --list-one-hover-background-color: var(--list-header-background);
+    --list-hover-background-color: var(--color-listing-hover);
+    --listing-border-botom-color : var(--color-divider) ; 
+    --list-table-border-color: var(--color-divider);
     --list-one-hover-font-color: none;
     --list-two-background-color: var(--color-twilight-blue-2);
     --list-two-font-color: none;
@@ -315,7 +319,7 @@
     --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
     --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
-    --list-header-font-color: var(--body-color);
+    --list-header-font-color: var(--color-primary-body-background-dark);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
     --input-button-hover-background-color: var(--color-primary-dark);

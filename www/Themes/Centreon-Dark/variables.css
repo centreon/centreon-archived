@@ -35,7 +35,8 @@
     --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-pablo);
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     --list-one-background-color: var(--color-sherpa-blue);
-    --list-one-hover-background-color: var(--color-cod-grey);
+    --list-hover-background-color: var(--color-listing-hover-dark);
+    --listing-border-botom-color : var(--color-divider-dark) ; 
     --list-two-background-color: var(--color-sherpa-blue-light);
     --list-two-hover-background-color: var(--list-one-hover-background-color);
     --select-background: var(--body-background);
@@ -89,14 +90,15 @@
     --ajax-option-border-bottom-color:var(--info-box-background-color);
     --ajax-option-border-top-color:var(--info-box-background-color);
     --ajax-option-tr-first-child-background-color: var(--body-background);
+    --table-font-color : var(--color-secondary-dark) ; 
     --ajax-option-tr-first-child-font-color:var(--path-way-font-color);
     --list-header-background:var(--info-box-background-color);
     --list-table-anchors-font-color:var(--select-color);
     --list-header-border-top-color:var(--list-table-anchors-font-color);
     --list-header-border-left-color: var(--list-table-anchors-font-color);
-    --list-header-font-color: var(--list-table-anchors-font-color);
-    --list-table-border-color:var(--info-box-background-color);
-    --service-ok-host-up-success-background-color:var(--color-primary-success-dark);
+    --list-header-font-color: var( --color-primary-body-background-light);
+    --list-table-border-color:var(--color-divider-dark);
+    --service-ok-host-up-success-background-color:var(--color-success-dark);
     --arbo-a-bg-grey-background-color:var(--select-background);
     --arbo-a-bg-grey-mid-background-color:var(--arbo-a-bg-grey-background-color);
     --arbo-a-bg-grey-light-background-color:var(--arbo-a-bg-grey-background-color);
