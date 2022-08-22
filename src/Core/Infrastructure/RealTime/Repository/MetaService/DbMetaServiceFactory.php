@@ -36,18 +36,12 @@ class DbMetaServiceFactory
      */
     public static function createFromRecord(array $data): MetaService
     {
-        /** @var string */
-        $name = $data['name'];
-
-        /** @var string */
-        $monitoringServerName = $data['monitoring_server_name'];
-
         $metaService = new MetaService(
             (int) $data['id'],
             (int) $data['host_id'],
             (int) $data['service_id'],
-            $name,
-            $monitoringServerName,
+            (string) $data['name'],
+            (string) $data['monitoring_server_name'],
             DbServiceStatusFactory::createFromRecord($data)
         );
 

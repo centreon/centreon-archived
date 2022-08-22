@@ -33,16 +33,10 @@ class DbUserGroupFactory
      */
     public static function createFromRecord(array $data): UserGroup
     {
-        /** @var string */
-        $name = $data['name'];
-
-        /** @var string */
-        $alias = $data['alias'];
-
         return new UserGroup(
             (int) $data['id'],
-            $name,
-            $alias
+            (string) $data['name'],
+            (string) $data['alias']
         );
     }
 }

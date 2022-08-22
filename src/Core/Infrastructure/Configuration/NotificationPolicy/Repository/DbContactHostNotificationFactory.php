@@ -33,16 +33,10 @@ class DbContactHostNotificationFactory
      */
     public static function createFromRecord(array $notification): HostNotification
     {
-        /** @var string */
-        $name = $notification['host_timeperiod_name'];
-
-        /** @var string */
-        $alias = $notification['host_timeperiod_alias'];
-
         $timePeriod = new TimePeriod(
             (int) $notification['host_timeperiod_id'],
-            $name,
-            $alias
+            (string) $notification['host_timeperiod_name'],
+            (string) $notification['host_timeperiod_alias']
         );
 
         $hostNotification = new HostNotification($timePeriod);

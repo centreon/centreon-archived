@@ -32,9 +32,6 @@ class DbHostgroupFactory
      */
     public static function createFromRecord(array $data): Hostgroup
     {
-        /** @var string */
-        $name = $data['hostgroup_name'];
-
-        return new Hostgroup((int) $data['hostgroup_id'], $name);
+        return new Hostgroup((int) $data['hostgroup_id'], (string) $data['hostgroup_name']);
     }
 }

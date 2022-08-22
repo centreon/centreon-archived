@@ -41,12 +41,9 @@ class DbSeverityFactory
             ->setName($iconName)
             ->setUrl($record['icon_directory'] . DIRECTORY_SEPARATOR . $record['icon_path']);
 
-            /** @var string */
-        $name = $record['name'];
-
         return new Severity(
             (int) $record['id'],
-            $name,
+            (string) $record['name'],
             (int) $record['level'],
             (int) $record['type'],
             $icon

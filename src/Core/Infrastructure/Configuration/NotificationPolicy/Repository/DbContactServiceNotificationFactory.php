@@ -33,16 +33,10 @@ class DbContactServiceNotificationFactory
      */
     public static function createFromRecord(array $notification): ServiceNotification
     {
-        /** @var string */
-        $name = $notification['service_timeperiod_name'];
-
-        /** @var string */
-        $alias = $notification['service_timeperiod_alias'];
-
         $timePeriod = new TimePeriod(
             (int) $notification['service_timeperiod_id'],
-            $name,
-            $alias
+            (string) $notification['service_timeperiod_name'],
+            (string) $notification['service_timeperiod_alias']
         );
 
         $serviceNotification = new ServiceNotification($timePeriod);

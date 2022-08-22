@@ -36,13 +36,10 @@ class DbServiceFactory
      */
     public static function createFromRecord(array $data): Service
     {
-        /** @var string */
-        $name = $data['description'];
-
         $service = new Service(
             (int) $data['service_id'],
             (int) $data['host_id'],
-            $name,
+            (string) $data['description'],
             DbServiceStatusFactory::createFromRecord($data)
         );
 

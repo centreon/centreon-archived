@@ -32,24 +32,15 @@ class DbNotifiedContactFactory
      */
     public static function createFromRecord(array $contact): NotifiedContact
     {
-        /** @var string */
-        $name = $contact['contact_name'];
-
-        /** @var string */
-        $alias = $contact['contact_alias'];
-
-        /** @var string */
-        $email = $contact['contact_email'];
-
         $hostNotification = DbContactHostNotificationFactory::createFromRecord($contact);
 
         $serviceNotification = DbContactServiceNotificationFactory::createFromRecord($contact);
 
         return new NotifiedContact(
             (int) $contact['contact_id'],
-            $name,
-            $alias,
-            $email,
+            (string) $contact['contact_name'],
+            (string) $contact['contact_alias'],
+            (string) $contact['contact_email'],
             $hostNotification,
             $serviceNotification,
         );

@@ -37,20 +37,11 @@ class DbHostFactory
      */
     public static function createFromRecord(array $data): Host
     {
-        /** @var string */
-        $name = $data['name'];
-
-        /** @var string */
-        $address = $data['address'];
-
-        /** @var string */
-        $monitoringServerName = $data['monitoring_server_name'];
-
         $host = new Host(
             (int) $data['host_id'],
-            $name,
-            $address,
-            $monitoringServerName,
+            (string) $data['name'],
+            (string) $data['address'],
+            (string) $data['monitoring_server_name'],
             DbHostStatusFactory::createFromRecord($data)
         );
 

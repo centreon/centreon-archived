@@ -93,12 +93,9 @@ class DbResourceFactory
             $severityIcon = (new Icon())
                 ->setId((int) $record['severity_icon_id']);
 
-            /** @var string */
-            $name = $record['severity_name'];
-
             $severity = new Severity(
                 (int) $record['severity_id'],
-                $name,
+                (string) $record['severity_name'],
                 (int) $record['severity_level'],
                 (int) $record['severity_type'],
                 $severityIcon
@@ -116,9 +113,6 @@ class DbResourceFactory
 
         /** @var string|null */
         $information = $record['output'];
-
-        /** @var string */
-        $monitoringServerName = $record['monitoring_server_name'];
 
         $resource = (new ResourceEntity())
             ->setType($resourceType)
@@ -140,7 +134,7 @@ class DbResourceFactory
             ->setNotificationEnabled((int) $record['notifications_enabled'] === 1)
             ->setLastCheck(self::createDateTimeFromTimestamp((int) $record['last_check']))
             ->setInformation($information)
-            ->setMonitoringServerName($monitoringServerName)
+            ->setMonitoringServerName((string) $record['monitoring_server_name'])
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $record['last_status_change']))
             ->setHasGraph((int) $record['has_graph'] === 1)
             ->setSeverity($severity);

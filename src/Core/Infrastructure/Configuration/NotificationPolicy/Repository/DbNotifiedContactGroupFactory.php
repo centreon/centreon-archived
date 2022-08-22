@@ -32,16 +32,10 @@ class DbNotifiedContactGroupFactory
      */
     public static function createFromRecord(array $contactGroup): NotifiedContactGroup
     {
-        /** @var string */
-        $name = $contactGroup['name'];
-
-        /** @var string */
-        $alias = $contactGroup['alias'];
-
         return new NotifiedContactGroup(
             (int) $contactGroup['id'],
-            $name,
-            $alias,
+            (string) $contactGroup['name'],
+            (string) $contactGroup['alias'],
         );
     }
 }
