@@ -192,11 +192,7 @@ const GraphActions = ({
               {t(labelSmallSize)}
             </MenuItem>
             <Divider />
-            <MenuItem
-              className={classes.labelButton}
-              data-testid={labelExportToCSV}
-              onClick={exportToCsv}
-            >
+            <MenuItem data-testid={labelExportToCSV} onClick={exportToCsv}>
               {t(labelExportToCSV)}
             </MenuItem>
           </Menu>
