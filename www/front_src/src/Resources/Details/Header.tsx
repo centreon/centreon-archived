@@ -16,6 +16,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogsIcon from '@mui/icons-material/Assignment';
 import ReportIcon from '@mui/icons-material/Assessment';
 import { CreateCSSProperties } from '@mui/styles';
+import Divider from '@mui/material/Divider';
 
 import {
   StatusChip,
@@ -45,15 +46,13 @@ interface MakeStylesProps {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
-  border: {
-    borderLeft: `${theme.spacing(1.5 / 8)} dashed`,
-    color: theme.palette.text.secondary,
-    height: theme.spacing(2.75),
-    margin: theme.spacing(0, 1, 0, 1),
-  },
   containerIcons: {
     alignItems: 'center',
     display: 'flex',
+  },
+  divider: {
+    borderColor: theme.palette.text.secondary,
+    margin: theme.spacing(0.75, 0.5),
   },
   header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
@@ -245,7 +244,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         >
           <ReportIcon fontSize="small" />
         </IconButton>
-        <div className={classes.border} />
+        <Divider flexItem className={classes.divider} orientation="vertical" />
         <IconButton
           ariaLabel={t(labelCopyLink)}
           data-testid={labelCopyLink}
