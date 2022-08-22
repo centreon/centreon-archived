@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
       ? theme.palette.background.default
       : theme.palette.primary.main,
     display: 'flex',
-    height: theme.spacing(9),
+    height: theme.spacing(8),
     width: '100%',
   },
   leftContainer: {
