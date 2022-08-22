@@ -44,6 +44,8 @@ import {
   labelComment,
   labelConfigure,
   labelDetails,
+  labelViewLogs,
+  labelViewReport,
   labelCopyLink,
   labelServices,
   labelFqdn,
@@ -572,6 +574,12 @@ const renderDetails = (): RenderResult => render(<DetailsWithJotai />);
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: (): jest.Mock => mockedNavigate,
+}));
 
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
@@ -989,6 +997,45 @@ describe(Details, () => {
         expect.anything(),
       ),
     );
+  });
+
+  it('check link redirection for logs and report icons when are clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedDetails,
+        links: {
+          ...retrievedDetails.links,
+          uris: {
+            logs: 'logs',
+            reporting: 'reporting',
+          },
+        },
+      },
+    });
+
+    setUrlQueryParameters([
+      { name: 'details', value: serviceDetailsUrlParameters },
+    ]);
+
+    const { getByLabelText, getByTestId } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    await waitFor(() =>
+      expect(getByLabelText(labelViewLogs)).toBeInTheDocument(),
+    );
+
+    expect(getByLabelText(labelViewReport)).toBeInTheDocument();
+
+    userEvent.click(getByTestId(labelViewLogs));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/logs');
+
+    userEvent.click(getByTestId(labelViewReport));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/reporting');
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
