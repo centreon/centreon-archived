@@ -149,6 +149,7 @@ input[type="checkbox"]  {
     font-size: inherit;
 }
 .md-checkbox input[type="checkbox"]:checked + label:before {
+    color : var(--color-white) ; 
     background: var(--md-checkbox-checked-label-before-background-color);
     border: none;
 }

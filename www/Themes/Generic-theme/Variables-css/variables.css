@@ -39,7 +39,7 @@
     --md-checkbox--disabled-border-color-before : var(--color-black-rgba-1);
     --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba-26);
     --md-check-input-disabled-checked-before:  var(--color-success);
-    --md-checkbox-checked-label-before-background-color: var(--color-primary-dark);
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-light);
     --md-checkbox-border-color-after: var(--color-white);
     /*********************/
 

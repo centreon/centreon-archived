@@ -43,7 +43,7 @@
     --input-select-background-color: var(--body-background);
     --select-border-color: var(--body-color);
     --included-checkbox-checked-before-font-color: var(--input-select-background-color);
-    --md-checkbox-checked-label-before-background-color: var(--color-primary-light);
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-dark);
     --md-checkbox-background: var(--input-select-background-color);
     --option-color: var(--select-color);
     --form-table-list-header-h3-font-color: var(--color-white-rgba-8);
