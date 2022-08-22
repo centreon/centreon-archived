@@ -45,21 +45,34 @@ interface MakeStylesProps {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  border: {
+    borderLeft: `${theme.spacing(1)} dashed`,
+    color: theme.palette.text.secondary,
+    height: theme.spacing(2.75),
+    margin: theme.spacing(0, 1, 0, 1),
+  },
+  containerIcons: {
+    alignItems: 'center',
+    display: 'flex',
+  },
   header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
     gridTemplateColumns: `${
       displaySeverity ? 'auto' : ''
-    } auto minmax(0, 1fr) repeat(3, auto)`,
+    } auto minmax(0, 1fr) auto`,
     height: 43,
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(0, 2.5, 0, 1),
   }),
   parent: {
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'auto minmax(0, 1fr)',
+  },
+  report: {
+    marginLeft: theme.spacing(0.5),
   },
   resourceName: {
     alignItems: 'center',
@@ -212,33 +225,37 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <IconButton
-        ariaLabel={t(labelViewLogs)}
-        data-testid={labelViewLogs}
-        size="small"
-        title={t(labelViewLogs)}
-        onClick={navigateToResourceUris('logs')}
-      >
-        <LogsIcon fontSize="small" />
-      </IconButton>
-      <IconButton
-        ariaLabel={t(labelViewReport)}
-        data-testid={labelViewReport}
-        size="small"
-        title={t(labelViewReport)}
-        onClick={navigateToResourceUris('reporting')}
-      >
-        <ReportIcon fontSize="small" />
-      </IconButton>
-      <IconButton
-        ariaLabel={t(labelCopyLink)}
-        data-testid={labelCopyLink}
-        size="small"
-        title={t(labelCopyLink)}
-        onClick={copyLink}
-      >
-        <CopyIcon fontSize="small" />
-      </IconButton>
+      <div className={classes.containerIcons}>
+        <IconButton
+          ariaLabel={t(labelViewLogs)}
+          data-testid={labelViewLogs}
+          size="small"
+          title={t(labelViewLogs)}
+          onClick={navigateToResourceUris('logs')}
+        >
+          <LogsIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          ariaLabel={t(labelViewReport)}
+          className={classes.report}
+          data-testid={labelViewReport}
+          size="small"
+          title={t(labelViewReport)}
+          onClick={navigateToResourceUris('reporting')}
+        >
+          <ReportIcon fontSize="small" />
+        </IconButton>
+        <div className={classes.border} />
+        <IconButton
+          ariaLabel={t(labelCopyLink)}
+          data-testid={labelCopyLink}
+          size="small"
+          title={t(labelCopyLink)}
+          onClick={copyLink}
+        >
+          <CopyIcon fontSize="small" />
+        </IconButton>
+      </div>
     </div>
   );
 };
