@@ -46,7 +46,7 @@ interface MakeStylesProps {
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   border: {
-    borderLeft: `${theme.spacing(1)} dashed`,
+    borderLeft: `${theme.spacing(1.5 / 8)} dashed`,
     color: theme.palette.text.secondary,
     height: theme.spacing(2.75),
     margin: theme.spacing(0, 1, 0, 1),
