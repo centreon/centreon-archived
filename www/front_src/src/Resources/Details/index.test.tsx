@@ -1821,6 +1821,8 @@ describe(Details, () => {
       },
     ]);
 
+    const start = '2020-01-20T06:00:00.000Z';
+
     const { getByTestId } = renderDetails();
 
     await waitFor(() => {
@@ -1832,7 +1834,7 @@ describe(Details, () => {
     });
 
     expect(mockedOpen).toHaveBeenCalledWith(
-      `${retrievedDetails.links.endpoints.timeline}/download`,
+      `${retrievedDetails.links.endpoints.timeline}/download?start_date=${start}&end_date=${currentDateIsoString}`,
       'noopener',
       'noreferrer',
     );
