@@ -127,9 +127,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
               onChange={changeSelectedTypes}
             />
           </Paper>
-          <Stack padding={1}>
-            <ExportToCsv />
-          </Stack>
+          <ExportToCsv />
         </Stack>
       }
       limit={limit}

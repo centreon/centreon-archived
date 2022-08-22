@@ -28,7 +28,7 @@ const ExportToCsv = (): JSX.Element => {
   };
 
   return (
-    <Stack direction="row" justifyContent="flex-end" spacing={1}>
+    <Stack direction="row" justifyContent="flex-end">
       <Button
         data-testid={labelExportToCSV}
         size="small"
