@@ -16,7 +16,7 @@
     --ui-state-active-border-color: var(--ui-background-color);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
-    --btc-color: var(--color-white);
+    --btc-color: var(--color-black);
     --bt-action-hover-background-color: var(--color-primary-hover-dark);
     --bt-success-background-color: var(--color-primary-dark);
     --bt-default-background-color: var(--bt-success-background-color);
