@@ -15222,11 +15222,12 @@ msgstr "Nivel de criticidad del host"
 #  msgid "Certificate Common Name (optional)"
 #  msgstr ""
 
-# msgid "Image as displayed"
+# msgid "As displayed"
 # msgstr ""
 
-# msgid "Image as medium size"
+# msgid "Medium size"
 # msgstr ""
 
-# msgid "Image as small size"
+# msgid "Small size"
 # msgstr ""
+
