@@ -52,7 +52,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   },
   divider: {
     borderColor: theme.palette.text.secondary,
-    margin: theme.spacing(0.75, 0.5),
+    margin: theme.spacing(1, 0.5),
   },
   header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
