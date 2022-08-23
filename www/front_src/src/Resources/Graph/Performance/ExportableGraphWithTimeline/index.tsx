@@ -54,7 +54,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
