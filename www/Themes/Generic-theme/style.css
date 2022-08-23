@@ -221,7 +221,7 @@ input[type="checkbox"]  {
     top: 0;
     width: 15px;
     height: 15px;
-    border: 2px solid var(--md-radio-label-before-border-color);
+    border: 2px solid var(--bt-success-background-color);
 }
 .md-radio label:after, .md-radio-modified label:after {
     top: 4px;
@@ -229,7 +229,7 @@ input[type="checkbox"]  {
     width: 7px;
     height: 7px;
     transform: scale(0);
-    background: var(--md-radio-label-after-background);
+    background: var(--bt-success-background-color);
 }
 .md-radio-modified label {
     padding: 4px 0px 0 18px;
@@ -317,7 +317,7 @@ p.description {
 }
 
 p.description a, p.description a:visited {
-    color: var(--p-description-a-visited-color);
+    color: var(--bt-success-background-color);
 }
 
 /* -------- wrappers ----------*/
@@ -681,9 +681,12 @@ p.description a, p.description a:visited {
     padding: 4px 10px ;
     border: none !important;
     outline: none !important;
-    color: var(--btc-color);
+    color: var(--btc-color) ;
     cursor: pointer;
+}
 
+.btc svg {
+    fill: var(--btc-color) !important;
 }
 
 a.btc {
@@ -2944,7 +2947,7 @@ ul.module_list {
 }
 .add-new-entry {
     cursor: pointer;
-    color: var(--add-new-entry-font-color);
+    color: var(--bt-success-background-color);
 }
 
 .gorgone_config_file {
