@@ -42,7 +42,7 @@ const Axes = ({
 
   const xTickCount = Math.ceil(graphWidth / 82);
 
-  const xTickCountModalAD = xTickCount > 10 ? 10 : xTickCount;
+  const xTickCountEditAnomalyDetectionDataDialog= xTickCount > 10 ? 10 : xTickCount;
 
   return (
     <>
