@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'hidden',
   },
   container: {
-    height: '100%',
+    maxHeight: `calc(100vh - ${theme.spacing(12)})`,
     maxWidth: theme.spacing(125),
     overflowY: 'hidden',
   },
@@ -90,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: '1.2fr 0.6fr',
     justifyItems: 'center',
+    overflowY: 'hidden',
     padding: theme.spacing(3),
   },
   image: {
@@ -101,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
     width: '200px',
   },
   panel: {
+    overflowY: 'auto',
     padding: 0,
   },
   tabList: {
