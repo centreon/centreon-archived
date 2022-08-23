@@ -107,7 +107,7 @@ const Lines = ({
 
   const isLegendClicked = lines?.length <= 1;
 
-  const isDisplayedThreshold =
+  const isThresholdDisplayed =
     equals(type, ResourceType.anomalydetection) && !isLegendClicked;
 
   const propsThresholdAD = {
