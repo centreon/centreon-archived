@@ -144,7 +144,7 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
-          {isResourceAD && (
+          {isResourceAnomalyDetection && (
             <IconButton
               ariaLabel={t(labelEditAnomalyDetectionData)}
               data-testid={labelEditAnomalyDetectionData}
