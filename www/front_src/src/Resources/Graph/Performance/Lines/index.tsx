@@ -110,7 +110,7 @@ const Lines = ({
   const isDisplayedThreshold =
     equals(type, ResourceType.anomalydetection) && !isLegendClicked;
 
-  const propsThresholdAD = {
+  const thresholdProps = {
     getTime,
     getYScale,
     graphHeight,
@@ -143,7 +143,7 @@ const Lines = ({
       />
       <g>
         {isDisplayedThreshold && (
-          <AnomalyDetectionEnvelopeThreshold {...propsThresholdAD} />
+          <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
         )}
         {regularLines.map(
           ({
