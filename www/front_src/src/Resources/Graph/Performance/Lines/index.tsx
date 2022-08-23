@@ -110,7 +110,7 @@ const Lines = ({
   const isThresholdDisplayed =
     equals(type, ResourceType.anomalydetection) && !isLegendClicked;
 
-  const propsThresholdAD = {
+  const thresholdProps = {
     getTime,
     getYScale,
     graphHeight,
