@@ -15672,3 +15672,12 @@ msgstr "Nível de Severidade de host"
 
 #  msgid "Certificate Common Name (optional)"
 #  msgstr ""
+
+# msgid "As Displayed"
+# msgstr ""
+
+# msgid "Medium size"
+# msgstr ""
+
+# msgid "Small size"
+# msgstr ""
