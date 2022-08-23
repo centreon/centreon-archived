@@ -57,7 +57,6 @@ import {
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
-  labelGraphOptions,
   labelMin,
   labelMax,
   labelAvg,
@@ -76,7 +75,6 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
-  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -725,7 +723,7 @@ describe(Details, () => {
         },
       ]);
 
-      const { getByText, getByLabelText, findByText } = renderDetails();
+      const { getByText, findByText } = renderDetails();
 
       await waitFor(() => {
         expect(getByText(period) as HTMLElement).toBeEnabled();
@@ -740,7 +738,6 @@ describe(Details, () => {
         );
       });
 
-      userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
       await findByText(labelDisplayEvents);
       userEvent.click(getByText(labelDisplayEvents));
 
@@ -784,13 +781,8 @@ describe(Details, () => {
       },
     ]);
 
-    const {
-      findAllByLabelText,
-      queryByLabelText,
-      getByLabelText,
-      getByText,
-      findByText,
-    } = renderDetails();
+    const { findAllByLabelText, queryByLabelText, getByText, findByText } =
+      renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
@@ -799,8 +791,6 @@ describe(Details, () => {
     expect(queryByLabelText(labelComment)).toBeNull();
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
-
-    userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
 
     await findByText(labelDisplayEvents);
 

@@ -16174,17 +16174,8 @@ msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identif
 msgid "Unable to start Centreon legacy session"
 msgstr "Impossible de démarrer la session Centreon legacy"
 
-msgid "As displayed"
-msgstr "Comme affiché"
-
-msgid "Medium size"
-msgstr "Taille moyenne"
-
 msgid "Display the complete graph"
 msgstr "Afficher le graphe complet"
-
-msgid "Small size"
-msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
@@ -17016,3 +17007,12 @@ msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
 
 msgid "Certificate Common Name (optional)"
 msgstr "\"Common Name\" du certificat du serveur (optionnel)"
+
+msgid "As displayed"
+msgstr "Image affichée"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Small size"
+msgstr "Petite taille"
