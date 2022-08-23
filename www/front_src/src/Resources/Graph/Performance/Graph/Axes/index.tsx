@@ -47,7 +47,7 @@ const Axes = ({
   return (
     <>
       <Axis.AxisBottom
-        numTicks={isModalADOpened ? xTickCountModalAD : xTickCount}
+        numTicks={isEditAnomalyDetectionDataDialogOpen ? xTickCountEditAnomalyDetectionDataDialog: xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({
