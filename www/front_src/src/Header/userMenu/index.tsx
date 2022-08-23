@@ -148,6 +148,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
       ? theme.palette.background.default
       : theme.palette.primary.main,
+    border: 'none',
     borderRadius: 0,
     color: theme.palette.common.white,
     minWidth: 190,
@@ -162,6 +163,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.warning.main,
   },
   popper: {
+    border: 'none',
+    outline: 'none',
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
   },
