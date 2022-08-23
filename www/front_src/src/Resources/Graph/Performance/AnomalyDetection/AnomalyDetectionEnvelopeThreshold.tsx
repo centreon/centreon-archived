@@ -18,7 +18,7 @@ interface Props {
   xScale: ScaleTime<number, number>;
 }
 
-const ThresholdAD = ({
+const AnomalyDetectionEnvelopeThreshold = ({
   secondUnit,
   regularLines,
   xScale,
@@ -95,4 +95,4 @@ const ThresholdAD = ({
   );
 };
 
-export default ThresholdAD;
+export default AnomalyDetectionEnvelopeThreshold;

@@ -17,7 +17,7 @@ import {
   getUnits,
   getYScale,
 } from '../timeSeries';
-import ThresholdAD from '../AnomalyDetection/ThresholdAD';
+import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
@@ -142,7 +142,9 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isDisplayedThreshold && <ThresholdAD {...propsThresholdAD} />}
+        {isDisplayedThreshold && (
+          <AnomalyDetectionEnvelopeThreshold {...propsThresholdAD} />
+        )}
         {regularLines.map(
           ({
             metric,
