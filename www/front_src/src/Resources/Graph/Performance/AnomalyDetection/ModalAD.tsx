@@ -68,7 +68,7 @@ const EditAnomalyDetectionDataDialog = ({ isOpen, setIsOpen, details }: Props): 
             resource={details}
           />
         </div>
-        <div className={classes.editEnvelop}>
+        <div className={classes.editEnvelopsize}>
           <Paper className={classes.envelop}>Manage envelope size</Paper>
           <Paper className={classes.exclusionPeriod}>
             Exclusion of periods
