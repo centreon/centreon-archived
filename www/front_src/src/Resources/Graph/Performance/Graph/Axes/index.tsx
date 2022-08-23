@@ -32,7 +32,7 @@ const Axes = ({
   rightScale,
   xScale,
   xAxisTickFormat,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
   base,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
