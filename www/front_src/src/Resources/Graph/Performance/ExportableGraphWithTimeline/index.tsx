@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   graphHeight: number;
-  isModalADOpened: boolean;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
   resource?: Resource | ResourceDetails;
 }
