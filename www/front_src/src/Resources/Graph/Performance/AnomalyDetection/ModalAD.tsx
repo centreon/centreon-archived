@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  envelop: {
+  envelopeSize: {
     flex: 1,
     height: theme.spacing(15),
     marginRight: theme.spacing(1),
