@@ -3,14 +3,13 @@ import { Threshold } from '@visx/threshold';
 import { curveBasis } from '@visx/curve';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { TimeValue } from '../models';
-import { getTime } from '../timeSeries';
+import { TimeValue, Line } from '../models';
+import { getTime, getYScale } from '../timeSeries';
 
 interface Props {
-  getYScale;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
-  regularLines;
+  regularLines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
   secondUnit: string;
   thirdUnit: string;
@@ -22,7 +21,6 @@ const AnomalyDetectionEnvelopeThreshold = ({
   secondUnit,
   regularLines,
   xScale,
-  getYScale,
   leftScale,
   rightScale,
   thirdUnit,

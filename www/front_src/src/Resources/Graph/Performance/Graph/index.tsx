@@ -1,6 +1,16 @@
 import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 
-import { equals, isNil, identity, min, max, not, lt, gte } from 'ramda';
+import {
+  equals,
+  isNil,
+  identity,
+  min,
+  max,
+  not,
+  lt,
+  gte,
+  difference,
+} from 'ramda';
 import {
   Shape,
   Grid,
@@ -34,6 +44,7 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
+import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
 import {
   getTime,
@@ -53,7 +64,7 @@ import {
   labelAddComment,
 } from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
-import { Resource } from '../../../models';
+import { Resource, ResourceType } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
@@ -490,6 +501,27 @@ const GraphContent = ({
 
   const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
+  const stackedLines = getSortedStackedLines(lines);
+
+  const regularLines = difference(lines, stackedLines);
+
+  const isLegendClicked = lines?.length <= 1;
+
+  const isDisplayedThreshold =
+    equals(resource?.type, ResourceType.anomalydetection) && !isLegendClicked;
+
+  const thresholdProps = {
+    getTime,
+    graphHeight,
+    leftScale,
+    regularLines,
+    rightScale,
+    secondUnit,
+    thirdUnit,
+    timeSeries,
+    xScale,
+  };
+
   return (
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
       <div className={classes.container}>
@@ -526,6 +558,11 @@ const GraphContent = ({
               xScale={xScale}
             />
             <MemoizedLines
+              AnomalyDetectionEnvelope={
+                isDisplayedThreshold && (
+                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
+                )
+              }
               displayTimeValues={displayTimeValues}
               graphHeight={graphHeight}
               leftScale={leftScale}
@@ -533,7 +570,6 @@ const GraphContent = ({
               rightScale={rightScale}
               timeSeries={timeSeries}
               timeTick={timeTick}
-              type={resource?.type}
               xScale={xScale}
             />
             {displayEventAnnotations && (

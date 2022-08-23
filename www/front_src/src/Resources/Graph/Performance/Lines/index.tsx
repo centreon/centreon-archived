@@ -1,10 +1,11 @@
+import { ReactNode } from 'react';
+
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { difference, equals, isNil, max, min } from 'ramda';
+import { difference, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
-import { ResourceType } from '../../../models';
 import { Line, TimeValue } from '../models';
 import {
   getInvertedStackedLines,
@@ -12,18 +13,17 @@ import {
   getMin,
   getNotInvertedStackedLines,
   getSortedStackedLines,
-  getTime,
   getTimeSeriesForLines,
   getUnits,
   getYScale,
 } from '../timeSeries';
-import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
+  AnomalyDetectionEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
@@ -31,7 +31,6 @@ interface Props {
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
-  type: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -83,7 +82,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  type,
+  AnomalyDetectionEnvelope,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -105,24 +104,6 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
-  const isLegendClicked = lines?.length <= 1;
-
-  const isDisplayedThreshold =
-    equals(type, ResourceType.anomalydetection) && !isLegendClicked;
-
-  const thresholdProps = {
-    getTime,
-    getYScale,
-    graphHeight,
-    leftScale,
-    regularLines,
-    rightScale,
-    secondUnit,
-    thirdUnit,
-    timeSeries,
-    xScale,
-  };
-
   return (
     <g>
       <StackedLines
@@ -142,9 +123,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isDisplayedThreshold && (
-          <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-        )}
+        {AnomalyDetectionEnvelope}
         {regularLines.map(
           ({
             metric,
