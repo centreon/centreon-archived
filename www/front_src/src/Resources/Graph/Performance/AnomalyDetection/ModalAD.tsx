@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
-  editEnvelop: {
+  editEnvelopeSize: {
     display: 'flex',
     justifyContent: 'space-between',
   },
