@@ -195,7 +195,7 @@ interface GraphContentProps {
   height: number;
   hideAddCommentTooltip: () => void;
   isInViewport?: boolean;
-  isModalADOpened: boolean;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
