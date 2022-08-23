@@ -296,7 +296,7 @@ class PartEngine
 
         $lastPart = 0;
         // dont care of MAXVALUE
-        if (preg_match_all('/PARTITION `(.*?)` VALUES LESS THAN \(([0-9]+?)\)/', $row['Create Table'], $matches)) {
+        if (preg_match_all('/PARTITION (.*?) VALUES LESS THAN \(([0-9]+?)\)/', $row['Create Table'], $matches)) {
             for ($i = 0; isset($matches[2][$i]); $i++) {
                 if ($matches[2][$i] > $lastPart) {
                     $lastPart = $matches[2][$i];
