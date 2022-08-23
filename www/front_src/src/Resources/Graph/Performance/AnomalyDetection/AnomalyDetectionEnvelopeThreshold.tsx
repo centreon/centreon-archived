@@ -3,14 +3,13 @@ import { Threshold } from '@visx/threshold';
 import { curveBasis } from '@visx/curve';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { TimeValue } from '../models';
-import { getTime } from '../timeSeries';
+import { TimeValue, Line } from '../models';
+import { getTime, getYScale } from '../timeSeries';
 
 interface Props {
-  getYScale;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
-  regularLines;
+  regularLines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
   secondUnit: string;
   thirdUnit: string;
@@ -18,11 +17,10 @@ interface Props {
   xScale: ScaleTime<number, number>;
 }
 
-const ThresholdAD = ({
+const AnomalyDetectionEnvelopeThreshold = ({
   secondUnit,
   regularLines,
   xScale,
-  getYScale,
   leftScale,
   rightScale,
   thirdUnit,
@@ -69,9 +67,9 @@ const ThresholdAD = ({
     unit: unitY0,
   });
 
-  const X = (timeValue): number => xScale(getTime(timeValue)) as number;
-  const Y1 = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
-  const Y0 = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
+  const x = (timeValue): number => xScale(getTime(timeValue)) as number;
+  const y1 = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
+  const y0 = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
 
   return (
     <Threshold
@@ -87,12 +85,12 @@ const ThresholdAD = ({
       clipBelowTo={graphHeight}
       curve={curveBasis}
       data={timeSeries}
-      id={`${Y0.toString()}${Y1.toString()}`}
-      x={X}
-      y0={Y0}
-      y1={Y1}
+      id={`${y0.toString()}${y1.toString()}`}
+      x={x}
+      y0={y0}
+      y1={y1}
     />
   );
 };
 
-export default ThresholdAD;
+export default AnomalyDetectionEnvelopeThreshold;
