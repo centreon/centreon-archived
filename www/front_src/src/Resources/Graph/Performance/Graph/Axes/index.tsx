@@ -16,7 +16,7 @@ interface Props {
   base: number;
   graphHeight: number;
   graphWidth: number;
-  isModalADOpened: boolean;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
