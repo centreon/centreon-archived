@@ -63,4 +63,17 @@ if [ -n "$2" ]; then
   su - www-data -s /bin/bash -c "/usr/share/centreon/bin/console cache:clear --no-warmup"
 fi
 
+# Try auto configure timezone for php
+timezone=$(/usr/bin/php -r '
+  $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
+  if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
+    $timezoneName = $matches[1];
+  }
+  if (date_default_timezone_set($timezoneName) === false) {
+    $timezoneName = "UTC";
+  }
+  echo $timezoneName;
+' 2>/dev/null)
+sed -i "s#^date.timezone = .*#date.timezone = ${timezone}#" /etc/php/8.0/mods-available/centreon.ini
+
 exit 0
