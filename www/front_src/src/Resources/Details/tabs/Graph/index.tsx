@@ -40,10 +40,12 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const type = details?.type as ResourceType;
   const equalsService = equals(ResourceType.service);
   const equalsMetaService = equals(ResourceType.metaservice);
-  const equalsAD = equals(ResourceType.anomalydetection);
+  const equalsAnomalyDetection = equals(ResourceType.anomalydetection);
 
   const isService =
-    equalsService(type) || equalsMetaService(type) || equalsAD(type);
+    equalsService(type) ||
+    equalsMetaService(type) ||
+    equalsAnomalyDetection(type);
 
   return (
     <div className={classes.container}>
