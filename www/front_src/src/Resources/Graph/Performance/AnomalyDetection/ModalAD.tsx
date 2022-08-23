@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ModalAD = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
+const EditAnomalyDetectionDataDialog = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
   const classes = useStyles();
 
   const handleClose = (): void => {
