@@ -1,12 +1,13 @@
 import { memo } from 'react';
 
-import { Shape, Curve } from '@visx/visx';
+import { Curve, Shape } from '@visx/visx';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { equals, isNil, prop } from 'ramda';
-import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { getTime } from '../timeSeries';
-import { Line, TimeValue } from '../models';
 import { ResourceType } from '../../../models';
+import ShapeCircleAnomalyDetection from '../AnomalyDetection/ShapeCircleAnomalyDetection';
+import { Line, TimeValue } from '../models';
+import { getTime } from '../timeSeries';
 
 import { getFillColor } from '.';
 
@@ -15,7 +16,7 @@ interface Props {
   filled: boolean;
   graphHeight: number;
   highlight?: boolean;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   lineColor: string;
   lines: Array<Line>;
   metric: string;
@@ -50,40 +51,11 @@ const RegularLine = ({
       : 0.8;
 
   const isLegendClicked = lines?.length <= 1;
-  const isHighlight = highlight || isLegendClicked ? 2 : strokeWidth;
-
-  interface PropsIsOnline {
-    maxDistance: number;
-    pointX: number;
-    pointX1: number;
-    pointX2: number;
-    pointY: number;
-    pointY1: number;
-    pointY2: number;
-  }
-
-  const isOnLine = ({
-    pointX,
-    pointY,
-    pointX1,
-    pointY1,
-    pointX2,
-    pointY2,
-    maxDistance,
-  }: PropsIsOnline): boolean => {
-    const dxL = pointX2 - pointX1;
-    const dyL = pointY2 - pointY1;
-    const dxP = pointX - pointX1;
-    const dyP = pointY - pointY1;
-
-    const squareLen = dxL * dxL + dyL * dyL;
-    const dotProd = dxP * dxL + dyP * dyL;
-    const crossProd = dyP * dxL - dxP * dyL;
-
-    const distance = Math.abs(crossProd) / Math.sqrt(squareLen);
-
-    return distance <= maxDistance && dotProd >= 0 && dotProd <= squareLen;
-  };
+  const isHighlighted = highlight || isLegendClicked ? 2 : strokeWidth;
+  const showCircle =
+    equals(resourceType, ResourceType.anomalydetection) &&
+    isEditAnomalyDetectionDataDialogOpen &&
+    !isLegendClicked;
 
   const props = {
     curve: Curve.curveLinear,
@@ -91,16 +63,18 @@ const RegularLine = ({
     defined: (value): boolean => !isNil(value[metric]),
     opacity: highlight === false ? 0.3 : 1,
     stroke: lineColor,
-    strokeWidth: isHighlight,
+    strokeWidth: isHighlighted,
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
   };
 
-  const showCircle =
-    equals(resourceType, ResourceType.anomalydetection) &&
-    isEditAnomalyDetectionDataDialogOpen &&
-    !isLegendClicked;
+  const propsShapeCircle = {
+    getTime,
+    timeSeries,
+    xScale,
+    yScale,
+  };
 
   if (filled) {
     return (
@@ -117,41 +91,7 @@ const RegularLine = ({
 
   return (
     <>
-      {showCircle &&
-        timeSeries.map((item, index) => {
-          const metricPoint = 'connection';
-          const metricPoint1 = 'connection_lower_thresholds';
-          const metricPoint2 = 'connection_upper_thresholds';
-          const pointX = xScale(getTime(item));
-          const pointX1 = xScale(getTime(item));
-          const pointX2 = xScale(getTime(item));
-          const pointY = yScale(prop(metricPoint, item) as NumberValue);
-          const pointY1 = yScale(prop(metricPoint1, item) as NumberValue);
-          const pointY2 = yScale(prop(metricPoint2, item) as NumberValue);
-          const isPointBetweenPoint1Point2 = isOnLine({
-            maxDistance: 0,
-            pointX,
-            pointX1,
-            pointX2,
-            pointY,
-            pointY1,
-            pointY2,
-          });
-          if (!isPointBetweenPoint1Point2) {
-            return (
-              <Shape.Circle
-                cx={pointX}
-                cy={pointY}
-                fill="red"
-                fillOpacity="50%"
-                key={index.toString()}
-                r={2}
-              />
-            );
-          }
-
-          return null;
-        })}
+      {showCircle && <ShapeCircleAnomalyDetection {...propsShapeCircle} />}
       <Shape.LinePath<TimeValue> {...props} />;
     </>
   );

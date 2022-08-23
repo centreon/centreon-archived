@@ -26,7 +26,7 @@ interface Props {
   AnomalyDetectionEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
