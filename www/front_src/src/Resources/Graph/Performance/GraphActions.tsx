@@ -69,7 +69,10 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-  const isResourceAD = equals(resourceType, ResourceType.anomalydetection);
+  const isResourceAnomalyDetection = equals(
+    resourceType,
+    ResourceType.anomalydetection,
+  );
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
@@ -144,7 +147,7 @@ const GraphActions = ({
           >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
-          {isResourceAD && (
+          {isResourceAnomalyDetection && (
             <IconButton
               disableTouchRipple
               ariaLabel={t(labelPerformanceGraphAD)}
