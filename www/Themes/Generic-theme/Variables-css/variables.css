@@ -178,8 +178,8 @@
 
     /** States **/
     --default-badge-background-color: var(--color-primary-dark);
-    --host-down-danger-service-critical-background-color : var(--color-torch-red);
-    --host-unreachable-unknown-background-color: var(--color-aluminium);
+    --host-down-danger-service-critical-background-color : var(--color-danger);
+    --host-unreachable-unknown-background-color: var(--color-unknown);
     --host-downtime-background-color : var(--color-mauve);
     --service-ok-host-up-success-background-color: var(--color-success);
     --service-warning-background-color: var(--color-warning);

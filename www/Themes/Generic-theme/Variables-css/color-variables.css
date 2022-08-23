@@ -16,9 +16,14 @@
     --color-divider-dark: #666666 ;
     --color-success : #88B922 ;
     --color-success-dark : #759F1D ;
-    --color-warning : #FD9B27 ;
+    --color-warning : #C49B27 ;
+    --color-warning-dark : #FC7E00 ;
     --color-danger : #FF4A4A ;
+    --color-danger-dark : #D60101 ;
     --color-pending : #1EBEB3 ;
+    --color-pending-dark : #118077 ; 
+    --color-unknown : #757575 ;
+    --color-unknown-dark : #4A4343 ;
     --color-info :  #1588D1 ;
     --color-info-dark : #1CA9F4 ;
     --color-ack : #AA9C24;

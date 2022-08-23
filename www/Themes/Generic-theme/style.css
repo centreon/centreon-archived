@@ -584,6 +584,7 @@ p.description a, p.description a:visited {
 }
 .host_downtime      {
     background-color: var(--host-downtime-background-color);
+
 }
 
 .service_ok,.host_up, .success  {
@@ -600,7 +601,7 @@ p.description a, p.description a:visited {
 }
 .service_unknown    {
     background-color: var(--service-unknown-background-color);
-    color: var(--service-unknown-font-color)
+    color: var(--color-white)
 }
 .info {
     background-color: var(--info-background-color)

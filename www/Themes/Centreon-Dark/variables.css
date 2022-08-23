@@ -99,6 +99,11 @@
     --list-header-font-color: var( --color-primary-body-background-light);
     --list-table-border-color:var(--color-divider-dark);
     --service-ok-host-up-success-background-color:var(--color-success-dark);
+    --service-warning-background-color : var(--color-warning-dark) ; 
+    --pending-background-color :var(--color-pending-dark);
+    --host-unreachable-unknown-background-color : var(--color-unknown-dark);
+    --host-down-danger-service-critical-background-color : var(--color-danger-dark);
+    
     --arbo-a-bg-grey-background-color:var(--select-background);
     --arbo-a-bg-grey-mid-background-color:var(--arbo-a-bg-grey-background-color);
     --arbo-a-bg-grey-light-background-color:var(--arbo-a-bg-grey-background-color);
