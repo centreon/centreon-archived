@@ -408,7 +408,7 @@ function getMyServiceMacro($service_id, $field)
     if (!$service_id) {
         return;
     }
-    global $pearDB, $oreon;
+    global $pearDB;
     $query = "SELECT macro.svc_macro_value " .
         "FROM on_demand_macro_service macro " .
         "WHERE macro.svc_svc_id = :svc_svc_id 
@@ -740,7 +740,6 @@ function getMyServiceField($service_id, $field)
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetchRow();
-        $field_result = $row[$field];
         if ($row[$field]) {
             return $row[$field];
         } elseif ($row["service_template_model_stm_id"]) {
@@ -1224,33 +1223,6 @@ function getMyHostID($host_name = null)
 
 #
 
-function getDefaultGraph($service_id = null, $rrdType = null)
-{
-    global $pearDB;
-
-    $gt["graph_id"] = getMyServiceGraphID($service_id);
-    if ($gt["graph_id"]) {
-        return $gt["graph_id"];
-    } else {
-        $command_id = getMyServiceField($service_id, "command_command_id");
-        $statement = $pearDB->prepare("SELECT graph_id FROM command WHERE `command_id` = :command_id");
-        $statement->bindValue(':command_id', (int) $command_id, \PDO::PARAM_INT);
-        $statement->execute();
-        if ($statement->rowCount()) {
-            $gt = $statement->fetch(\PDO::FETCH_ASSOC);
-            if ($gt["graph_id"] != null) {
-                return $gt["graph_id"];
-            }
-        }
-    }
-    $DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-    if ($DBRESULT->rowCount()) {
-        $gt = $DBRESULT->fetchRow();
-        return $gt["graph_id"];
-    }
-    return null;
-}
-
 # Nagios Images
 
 function return_image_list($mode = 0, $rep = null, $full = true, $origin_path = null)
@@ -1347,13 +1319,6 @@ function service_has_graph($host, $service, $dbo = null)
     }
     return false;
 }
-/*
- * function getNDOPrefix()
- * - This function return NDOPrefix tables.
- *
- * @return	string	$conf_ndo["db_prefix"]	(string contains prefix like "nagios_")
- */
-
 
 /**
  * Send a well formatted error.
