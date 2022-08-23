@@ -1829,7 +1829,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
-      fireEvent.click(getByTestId(labelExportToCSV));
+    fireEvent.click(getByTestId(labelExportToCSV));
 
     expect(mockedOpen).toHaveBeenCalledWith(
       `${retrievedDetails.links.endpoints.timeline}/download?start_date=${start}&end_date=${currentDateIsoString}`,
