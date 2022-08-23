@@ -999,7 +999,7 @@ describe(Details, () => {
     );
   });
 
-  it('check link redirection for logs and report icons when are clicked', async () => {
+  it('navigates to logs and report pages when the corresponding icons are clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
