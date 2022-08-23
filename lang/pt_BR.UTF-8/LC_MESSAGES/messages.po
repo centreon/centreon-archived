@@ -15090,7 +15090,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Edit anomaly detection data"
-# msgstr ""
+#  msgstr ""
 
 #  msgid "Go to performance page"
 #  msgstr ""
