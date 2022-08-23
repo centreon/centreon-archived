@@ -142,7 +142,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {isDisplayedThreshold && <ThresholdAD {...propsThresholdAD} />}
+        {isThresholdDisplayed && <ThresholdAD {...thresholdProps} />}
         {regularLines.map(
           ({
             metric,
