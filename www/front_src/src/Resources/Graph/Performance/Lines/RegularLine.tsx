@@ -42,7 +42,7 @@ const RegularLine = ({
       ? 0.1
       : 0.8;
 
-  const isHighlight = highlight ? 2 : strokeWidth;
+  const isHighlighted = highlight ? 2 : strokeWidth;
 
   const props = {
     curve: Curve.curveLinear,
