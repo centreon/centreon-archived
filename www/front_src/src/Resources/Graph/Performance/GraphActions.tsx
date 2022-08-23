@@ -118,7 +118,7 @@ const GraphActions = ({
     });
   };
 
-  const openModalAD = (): void => {
+  const openModalAnomalyDetection = (): void => {
     getIsModalOpened(true);
   };
 
@@ -161,7 +161,7 @@ const GraphActions = ({
               disabled={isNil(timeline)}
               size="large"
               title={t(labelPerformanceGraphAD)}
-              onClick={openModalAD}
+              onClick={openModalAnomalyDetection}
             >
               <WrenchIcon style={{ fontSize: 18 }} />
             </IconButton>

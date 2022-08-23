@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, ReactNode } from 'react';
 
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
@@ -6,12 +6,9 @@ import Paper from '@mui/material/Paper';
 import Dialog from '@mui/material/Dialog';
 
 import TimePeriodButtonGroup from '../TimePeriods';
-import ExportablePerformanceGraphWithTimeline from '../ExportableGraphWithTimeline';
-import { Resource } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
 
 interface Props {
-  details: Resource | ResourceDetails;
+  children?: ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -51,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const EditAnomalyDetectionDataDialog = ({
   isOpen,
   setIsOpen,
-  details,
+  children,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -65,13 +62,7 @@ const EditAnomalyDetectionDataDialog = ({
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div className={classes.spacing}>
-          <ExportablePerformanceGraphWithTimeline
-            isEditAnomalyDetectionDataDialogOpen
-            graphHeight={180}
-            resource={details}
-          />
-        </div>
+        <div className={classes.spacing}>{children}</div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>Manage envelope size</Paper>
           <Paper className={classes.exclusionPeriod}>

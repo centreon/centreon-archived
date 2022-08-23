@@ -62,6 +62,7 @@ import {
   isListingGraphOpenAtom,
   timeValueAtom,
 } from './Graph/mouseTimeValueAtoms';
+import ExportablePerformanceGraphWithTimeline from './ExportableGraphWithTimeline';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -71,7 +72,7 @@ interface Props {
   displayTitle?: boolean;
   endpoint?: string;
   graphHeight: number;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -414,10 +415,15 @@ const PerformanceGraph = ({
 
           {isOpenModalAD && (
             <EditAnomalyDetectionDataDialog
-              details={resource}
               isOpen={isOpenModalAD}
               setIsOpen={setIsOpenModalAD}
-            />
+            >
+              <ExportablePerformanceGraphWithTimeline
+                isEditAnomalyDetectionDataDialogOpen
+                graphHeight={180}
+                resource={resource}
+              />
+            </EditAnomalyDetectionDataDialog>
           )}
         </div>
       )}

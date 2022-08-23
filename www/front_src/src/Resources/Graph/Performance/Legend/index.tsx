@@ -131,7 +131,7 @@ interface Props {
   base: number;
   displayCompleteGraph?: () => void;
   displayTimeValues: boolean;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;

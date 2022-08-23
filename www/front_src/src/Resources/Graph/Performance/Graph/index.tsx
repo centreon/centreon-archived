@@ -194,7 +194,7 @@ interface GraphContentProps {
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
-  isEditAnomalyDetectionDataDialogOpen: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
