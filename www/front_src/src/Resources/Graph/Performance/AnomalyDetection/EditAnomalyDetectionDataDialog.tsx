@@ -48,7 +48,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditAnomalyDetectionDataDialog = ({ isOpen, setIsOpen, details }: Props): JSX.Element => {
+const EditAnomalyDetectionDataDialog = ({
+  isOpen,
+  setIsOpen,
+  details,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   const handleClose = (): void => {
@@ -63,12 +67,12 @@ const EditAnomalyDetectionDataDialog = ({ isOpen, setIsOpen, details }: Props): 
         </div>
         <div className={classes.spacing}>
           <ExportablePerformanceGraphWithTimeline
-            isModalADOpened
+            isEditAnomalyDetectionDataDialogOpen
             graphHeight={180}
             resource={details}
           />
         </div>
-        <div className={classes.editEnvelopsize}>
+        <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>Manage envelope size</Paper>
           <Paper className={classes.exclusionPeriod}>
             Exclusion of periods
@@ -82,4 +86,4 @@ const EditAnomalyDetectionDataDialog = ({ isOpen, setIsOpen, details }: Props): 
   );
 };
 
-export default ModalAD;
+export default EditAnomalyDetectionDataDialog;

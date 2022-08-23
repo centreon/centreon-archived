@@ -43,7 +43,7 @@ import {
 } from '../../Details/tabs/Graph/models';
 import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
-import ModalAD from './AnomalyDetection/ModalAD';
+import EditAnomalyDetectionDataDialog from './AnomalyDetection/EditAnomalyDetectionDataDialog';
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import Graph from './Graph';
@@ -71,8 +71,8 @@ interface Props {
   displayTitle?: boolean;
   endpoint?: string;
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   isInViewport?: boolean;
-  isModalADOpened: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -150,7 +150,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -400,7 +400,7 @@ const PerformanceGraph = ({
             {title}
           </Typography>
 
-          {!isModalADOpened && (
+          {!isEditAnomalyDetectionDataDialogOpen && (
             <MemoizedGraphActions
               customTimePeriod={customTimePeriod}
               getIsModalOpened={getIsModalOpened}
@@ -413,7 +413,7 @@ const PerformanceGraph = ({
           )}
 
           {isOpenModalAD && (
-            <ModalAD
+            <EditAnomalyDetectionDataDialog
               details={resource}
               isOpen={isOpenModalAD}
               setIsOpen={setIsOpenModalAD}
@@ -423,11 +423,14 @@ const PerformanceGraph = ({
       )}
 
       <div>
-        {displayTimeValues && timeTick && containsMetrics && !isModalADOpened && (
-          <Typography align="center" variant="body1">
-            {toDateTime(timeTick)}
-          </Typography>
-        )}
+        {displayTimeValues &&
+          timeTick &&
+          containsMetrics &&
+          !isEditAnomalyDetectionDataDialogOpen && (
+            <Typography align="center" variant="body1">
+              {toDateTime(timeTick)}
+            </Typography>
+          )}
       </div>
       <div>
         <Responsive.ParentSize>
@@ -440,7 +443,9 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
-              isModalADOpened={isModalADOpened}
+              isEditAnomalyDetectionDataDialogOpen={
+                isEditAnomalyDetectionDataDialogOpen
+              }
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
@@ -460,7 +465,9 @@ const PerformanceGraph = ({
         base={base as number}
         displayCompleteGraph={displayCompleteGraph}
         displayTimeValues={displayTimeValues}
-        isModalADOpened={isModalADOpened}
+        isEditAnomalyDetectionDataDialogOpen={
+          isEditAnomalyDetectionDataDialogOpen
+        }
         limitLegendRows={limitLegendRows}
         lines={sortedLines}
         timeSeries={timeSeries}

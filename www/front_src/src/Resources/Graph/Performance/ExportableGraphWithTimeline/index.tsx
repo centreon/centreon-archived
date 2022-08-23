@@ -181,8 +181,10 @@ const ExportablePerformanceGraphWithTimeline = ({
           displayEventAnnotations={displayEventAnnotations}
           endpoint={graphEndpoint}
           graphHeight={graphHeight}
+          isEditAnomalyDetectionDataDialogOpen={
+            isEditAnomalyDetectionDataDialogOpen
+          }
           isInViewport={isInViewport}
-          isEditAnomalyDetectionDataDialogOpen ={isEditAnomalyDetectionDataDialogOpen}
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}

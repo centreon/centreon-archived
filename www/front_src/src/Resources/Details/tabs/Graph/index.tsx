@@ -54,7 +54,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
             graphHeight={280}
-            isModalADOpened={false}
+            isEditAnomalyDetectionDataDialogOpen={false}
             resource={details}
           />
         </>

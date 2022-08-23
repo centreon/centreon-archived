@@ -26,7 +26,7 @@ interface Props {
   AnomalyDetectionEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
-  isModalADOpened: boolean;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
@@ -84,7 +84,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
   AnomalyDetectionEnvelope,
   type,
 }: Props): JSX.Element => {
@@ -150,7 +150,7 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                {!isModalADOpened && (
+                {!isEditAnomalyDetectionDataDialogOpen && (
                   <RegularAnchorPoint
                     areaColor={areaColor}
                     displayTimeValues={displayTimeValues}
@@ -168,7 +168,9 @@ const Lines = ({
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
-                  isModalADOpened={isModalADOpened}
+                  isEditAnomalyDetectionDataDialogOpen={
+                    isEditAnomalyDetectionDataDialogOpen
+                  }
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}

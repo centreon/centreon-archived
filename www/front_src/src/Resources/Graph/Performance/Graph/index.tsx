@@ -194,8 +194,8 @@ interface GraphContentProps {
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
-  isInViewport?: boolean;
   isEditAnomalyDetectionDataDialogOpen: boolean;
+  isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -250,7 +250,7 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   isInViewport,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
   displayTimeValues,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
@@ -553,7 +553,9 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
-              isEditAnomalyDetectionDataDialog={isEditAnomalyDetectionDataDialogOpen}
+              isEditAnomalyDetectionDataDialog={
+                isEditAnomalyDetectionDataDialogOpen
+              }
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -568,7 +570,9 @@ const GraphContent = ({
               }
               displayTimeValues={displayTimeValues}
               graphHeight={graphHeight}
-              isModalADOpened={isModalADOpened}
+              isEditAnomalyDetectionDataDialogOpen={
+                isEditAnomalyDetectionDataDialogOpen
+              }
               leftScale={leftScale}
               lines={lines}
               rightScale={rightScale}
@@ -598,7 +602,7 @@ const GraphContent = ({
                 displayTimeValues &&
                 containsMetrics &&
                 position &&
-                !isModalADOpened ? (
+                !isEditAnomalyDetectionDataDialogOpen ? (
                   <g>
                     <Shape.Line
                       from={{ x: mousePositionX, y: 0 }}
@@ -620,7 +624,7 @@ const GraphContent = ({
                 ),
               memoProps: [mousePosition],
             })}
-            {!isModalADOpened && (
+            {!isEditAnomalyDetectionDataDialogOpen && (
               <MemoizedBar
                 className={classes.overlay}
                 fill="transparent"
@@ -659,7 +663,7 @@ const GraphContent = ({
             <TimeShiftZones />
           </TimeShiftContext.Provider>
         </svg>
-        {addCommentTooltipOpen && !isModalADOpened && (
+        {addCommentTooltipOpen && !isEditAnomalyDetectionDataDialogOpen && (
           <Paper
             className={classes.addCommentTooltip}
             style={{
@@ -689,7 +693,7 @@ const GraphContent = ({
             </Tooltip>
           </Paper>
         )}
-        {addingComment && !isModalADOpened && (
+        {addingComment && !isEditAnomalyDetectionDataDialogOpen && (
           <AddCommentForm
             date={commentDate as Date}
             resource={resource}

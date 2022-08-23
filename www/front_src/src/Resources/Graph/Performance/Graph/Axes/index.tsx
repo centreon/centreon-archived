@@ -42,12 +42,17 @@ const Axes = ({
 
   const xTickCount = Math.ceil(graphWidth / 82);
 
-  const xTickCountEditAnomalyDetectionDataDialog= xTickCount > 10 ? 10 : xTickCount;
+  const xTickCountEditAnomalyDetectionDataDialog =
+    xTickCount > 10 ? 10 : xTickCount;
 
   return (
     <>
       <Axis.AxisBottom
-        numTicks={isEditAnomalyDetectionDataDialogOpen ? xTickCountEditAnomalyDetectionDataDialog: xTickCount}
+        numTicks={
+          isEditAnomalyDetectionDataDialogOpen
+            ? xTickCountEditAnomalyDetectionDataDialog
+            : xTickCount
+        }
         scale={xScale}
         tickFormat={formatXAxisTick}
         tickLabelProps={(): Record<string, unknown> => ({

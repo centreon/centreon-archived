@@ -15,7 +15,7 @@ interface Props {
   filled: boolean;
   graphHeight: number;
   highlight?: boolean;
-  isModalADOpened: boolean;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   lineColor: string;
   lines: Array<Line>;
   metric: string;
@@ -41,7 +41,7 @@ const RegularLine = ({
   transparency,
   graphHeight,
   resourceType,
-  isModalADOpened,
+  isEditAnomalyDetectionDataDialogOpen,
 }: Props): JSX.Element => {
   const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
@@ -99,7 +99,7 @@ const RegularLine = ({
 
   const showCircle =
     equals(resourceType, ResourceType.anomalydetection) &&
-    isModalADOpened &&
+    isEditAnomalyDetectionDataDialogOpen &&
     !isLegendClicked;
 
   if (filled) {
