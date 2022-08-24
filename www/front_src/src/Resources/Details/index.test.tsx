@@ -1798,10 +1798,9 @@ describe(Details, () => {
     });
   });
 
-  it('calls the download graph endpoint when the Graph tab is selected and the "Export CSV Button" is clicked', async () => {
-    mockedAxios.get
-      .mockResolvedValueOnce({ data: retrievedDetails })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+  it('calls the download timeline endpoint when the Timeline tab is selected and the "Export to CSV button" is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
     const mockedOpen = jest.fn();
     window.open = mockedOpen;
@@ -1809,23 +1808,24 @@ describe(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: serviceDetailsGraphUrlParameters,
+        value: serviceDetailsTimelineUrlParameters,
       },
     ]);
 
-    const { getByText } = renderDetails();
+    const start = '2020-01-20T06:00:00.000Z';
+
+    const { getByTestId } = renderDetails();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
-      );
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
-    await waitFor(() => {
-      expect(getByText(labelExportToCSV)).toBeInTheDocument();
-    });
+    fireEvent.click(getByTestId(labelExportToCSV));
 
-    userEvent.click(getByText('Export') as HTMLElement);
+    expect(mockedOpen).toHaveBeenCalledWith(
+      `${retrievedDetails.links.endpoints.timeline}/download?start_date=${start}&end_date=${currentDateIsoString}`,
+      'noopener',
+      'noreferrer',
+    );
   });
 });

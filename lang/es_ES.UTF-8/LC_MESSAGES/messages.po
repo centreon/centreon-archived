@@ -15168,6 +15168,9 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Criticidad del servicio"
 
@@ -15222,12 +15225,5 @@ msgstr "Nivel de criticidad del host"
 #  msgid "Certificate Common Name (optional)"
 #  msgstr ""
 
-# msgid "As displayed"
+# msgid "CSV"
 # msgstr ""
-
-# msgid "Medium size"
-# msgstr ""
-
-# msgid "Small size"
-# msgstr ""
-
