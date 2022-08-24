@@ -17,8 +17,7 @@ Package: centreon
 Architecture: all
 Depends:
     centreon-central (>= ${centreon:version}~),
-    centreon-database (>= ${centreon:version}~),
-    sudo
+    centreon-database (>= ${centreon:version}~)
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
  it is based upon the most effective Open Source monitoring engine : Nagios.
  Centreon provides a new frontend and new functionnalities to Nagios.
@@ -128,11 +127,9 @@ Depends:
     php8.1-grpc,
     php8.1-protobuf,
     php-pear,
-    ntp,
-    rrdtool,
-    bsd-mailx,
-    sudo,
-    nagios-images
+    rrdtool
+Recommends: ntp | bsd-mailx
+Suggests: nagios-images
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
