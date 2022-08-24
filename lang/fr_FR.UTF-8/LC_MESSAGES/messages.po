@@ -17016,3 +17016,6 @@ msgstr "Taille moyenne"
 
 msgid "Small size"
 msgstr "Petite taille"
+
+msgid "CSV"
+msgstr "CSV"

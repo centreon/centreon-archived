@@ -75,6 +75,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';

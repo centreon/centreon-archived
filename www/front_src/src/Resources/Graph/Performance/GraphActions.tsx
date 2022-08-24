@@ -18,11 +18,11 @@ import {
 
 import {
   labelExport,
-  labelExportToCSV,
   labelAsDisplayed,
   labelMediumSize,
   labelSmallSize,
   labelPerformancePage,
+  labelCSV,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -192,8 +192,8 @@ const GraphActions = ({
               {t(labelSmallSize)}
             </MenuItem>
             <Divider />
-            <MenuItem data-testid={labelExportToCSV} onClick={exportToCsv}>
-              {t(labelExportToCSV)}
+            <MenuItem data-testid={labelCSV} onClick={exportToCsv}>
+              {t(labelCSV)}
             </MenuItem>
           </Menu>
         </>
