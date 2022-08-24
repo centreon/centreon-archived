@@ -202,6 +202,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         try {
             $searchSubRequest .= $this->sqlRequestTranslator->translateSearchParameterToSql();
         } catch (RequestParametersTranslatorException $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
@@ -290,7 +291,9 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         );
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $collector->addValue($key, current($data), key($data));
+            /** @var int */
+            $data_type = key($data);
+            $collector->addValue($key, current($data), $data_type);
         }
 
         $collector->bind($statement);

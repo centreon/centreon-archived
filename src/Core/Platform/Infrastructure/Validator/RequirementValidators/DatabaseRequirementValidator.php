@@ -109,15 +109,15 @@ class DatabaseRequirementValidator extends AbstractRepositoryDRB implements Requ
                     $this->versionComment = $row['Value'];
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $ex) {
             $this->error(
                 'Error when getting DBMS version from database',
                 [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
+                    'message' => $ex->getMessage(),
+                    'trace' => $ex->getTraceAsString(),
                 ],
             );
-            throw DatabaseRequirementException::errorWhenGettingDatabaseVersion($e);
+            throw DatabaseRequirementException::errorWhenGettingDatabaseVersion($ex);
         }
 
         if (empty($this->version) || empty($this->versionComment)) {

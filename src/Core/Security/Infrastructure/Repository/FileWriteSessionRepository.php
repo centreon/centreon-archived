@@ -25,7 +25,7 @@ namespace Core\Security\Infrastructure\Repository;
 use Core\Security\Application\Repository\WriteSessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class WriteSessionRepository implements WriteSessionRepositoryInterface
+class FileWriteSessionRepository implements WriteSessionRepositoryInterface
 {
     /**
      * @param SessionInterface $session

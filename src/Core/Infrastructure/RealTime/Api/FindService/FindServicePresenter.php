@@ -22,14 +22,15 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
+use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 
 class FindServicePresenter extends AbstractPresenter implements FindServicePresenterInterface
 {
@@ -52,7 +53,8 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param FindServiceResponse $response
      */
     public function present(mixed $response): void
     {
