@@ -7,6 +7,8 @@ import Dialog from '@mui/material/Dialog';
 
 import TimePeriodButtonGroup from '../TimePeriods';
 
+import AnomalyDetectionSlider from './AnomalyDetectionSlider';
+
 interface Props {
   children?: ReactNode;
   isOpen: boolean;
@@ -64,7 +66,9 @@ const EditAnomalyDetectionDataDialog = ({
         </div>
         <div className={classes.spacing}>{children}</div>
         <div className={classes.editEnvelopeSize}>
-          <Paper className={classes.envelopeSize}>Manage envelope size</Paper>
+          <Paper className={classes.envelopeSize}>
+            <AnomalyDetectionSlider />
+          </Paper>
           <Paper className={classes.exclusionPeriod}>
             Exclusion of periods
           </Paper>
