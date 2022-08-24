@@ -57,7 +57,6 @@ import {
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
-  labelGraphOptions,
   labelMin,
   labelMax,
   labelAvg,
@@ -76,6 +75,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -724,7 +724,7 @@ describe(Details, () => {
         },
       ]);
 
-      const { getByText, getByLabelText, findByText } = renderDetails();
+      const { getByText, findByText } = renderDetails();
 
       await waitFor(() => {
         expect(getByText(period) as HTMLElement).toBeEnabled();
@@ -739,7 +739,6 @@ describe(Details, () => {
         );
       });
 
-      userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
       await findByText(labelDisplayEvents);
       userEvent.click(getByText(labelDisplayEvents));
 
@@ -783,13 +782,8 @@ describe(Details, () => {
       },
     ]);
 
-    const {
-      findAllByLabelText,
-      queryByLabelText,
-      getByLabelText,
-      getByText,
-      findByText,
-    } = renderDetails();
+    const { findAllByLabelText, queryByLabelText, getByText, findByText } =
+      renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
@@ -798,8 +792,6 @@ describe(Details, () => {
     expect(queryByLabelText(labelComment)).toBeNull();
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
-
-    userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
 
     await findByText(labelDisplayEvents);
 
@@ -1199,6 +1191,8 @@ describe(Details, () => {
       buildResourcesEndpoint({
         hostCategories: [],
         hostGroups: [],
+        hostSeverities: [],
+        hostSeverityLevels: [],
         limit: 30,
         monitoringServers: [],
         page: 1,
@@ -1215,6 +1209,8 @@ describe(Details, () => {
         },
         serviceCategories: [],
         serviceGroups: [],
+        serviceSeverities: [],
+        serviceSeverityLevels: [],
         states: [],
         statusTypes: [],
         statuses: [],
@@ -1800,5 +1796,36 @@ describe(Details, () => {
       expect(getByText(alias)).toBeInTheDocument();
       expect(getByText(email)).toBeInTheDocument();
     });
+  });
+
+  it('calls the download graph endpoint when the Graph tab is selected and the "Export CSV Button" is clicked', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+
+    const mockedOpen = jest.fn();
+    window.open = mockedOpen;
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: serviceDetailsGraphUrlParameters,
+      },
+    ]);
+
+    const { getByText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelExportToCSV)).toBeInTheDocument();
+    });
+
+    userEvent.click(getByText('Export') as HTMLElement);
   });
 });

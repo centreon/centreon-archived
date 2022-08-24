@@ -299,7 +299,7 @@ CREATE TABLE `cb_field` (
   `cb_field_id` int(11) NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(100) NOT NULL,
   `displayname` varchar(100) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(510) DEFAULT NULL,
   `fieldtype` varchar(255) NOT NULL DEFAULT 'text',
   `external` varchar(255) DEFAULT NULL,
   `cb_fieldgroup_id` INT DEFAULT NULL,
@@ -2270,7 +2270,6 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `ip` VARCHAR(255) NOT NULL,
-  `app_key` VARCHAR(40) NOT NULL,
   `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,

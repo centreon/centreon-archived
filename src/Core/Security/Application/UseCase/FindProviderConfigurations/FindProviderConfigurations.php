@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\UseCase\FindProviderConfigurations;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface;
@@ -29,6 +30,8 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class FindProviderConfigurations
 {
+    use LoggerTrait;
+
     /**
      * @var ReadProviderConfigurationsRepositoryInterface[]
      */
@@ -73,6 +76,7 @@ class FindProviderConfigurations
                 ];
             }
         } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

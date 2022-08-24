@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,34 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Security\Infrastructure\Repository;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Security\Application\Repository\WriteSessionRepositoryInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
-class WriteSessionRepository implements WriteSessionRepositoryInterface
+class MetricValue
 {
     /**
-     * @param SessionInterface $session
+     * @param string $name
+     * @param float $value
      */
-    public function __construct(private SessionInterface $session)
+    public function __construct(private string $name, private float $value)
     {
     }
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function invalidate(): void
+    public function getName(): string
     {
-        $this->session->invalidate();
+        return $this->name;
+    }
+
+    /**
+     * @return float
+     */
+    public function getValue(): float
+    {
+        return $this->value;
     }
 }

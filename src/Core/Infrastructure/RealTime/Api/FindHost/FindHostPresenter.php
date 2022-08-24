@@ -23,14 +23,15 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\FindHost;
 
 use CentreonDuration;
-use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
+use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 
 class FindHostPresenter extends AbstractPresenter implements FindHostPresenterInterface
 {
@@ -53,7 +54,9 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param FindHostResponse $response
      */
     public function present(mixed $response): void
     {

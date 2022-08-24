@@ -53,7 +53,7 @@ try {
 $current = $next;
 
 $updateReadRepository = $kernel->getContainer()->get(ReadUpdateRepositoryInterface::class);
-$availableUpdates = $updateReadRepository->getOrderedAvailableUpdates($current);
+$availableUpdates = $updateReadRepository->findOrderedAvailableUpdates($current);
 $next = empty($availableUpdates) ? '' : array_shift($availableUpdates);
 
 $_SESSION['CURRENT_VERSION'] = $current;

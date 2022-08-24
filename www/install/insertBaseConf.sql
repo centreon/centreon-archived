@@ -531,7 +531,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
 (19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
 (20, 'Correlation', 'correlation.so', 30, 0, 1),
-(21, 'Generic', 'lua.so', 40, 0, 1);
+(21, 'Generic', 'lua.so', 40, 0, 1),
+(23, 'BBDO', NULL, NULL, 0, 1);
 
 
 --
@@ -556,7 +557,9 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
 (33, 'Stream connector', 'lua', 21),
-(34, 'Unified SQL', 'unified_sql', 8);
+(34, 'Unified SQL', 'unified_sql', 8),
+(35, 'BBDO Server', 'bbdo_server', 23),
+(36, 'BBDO Client', 'bbdo_client', 23);
 
 --
 -- Contenu de la table `cb_field`
@@ -622,7 +625,27 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
 (75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL),
 (76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL),
-(77, 'db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type');
+(77, 'db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type'),
+(78, 'host','Listening address (optional)','Fill in this field only if you want to specify the address on which Broker should listen','text', NULL),
+(79, 'port','Listening port','TCP port on which Broker should listen','text', NULL),
+(80, 'transport_protocol','Transport protocol','The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)','radio', NULL),
+(81, 'authorization','Authorization token (optional)','Authorization token to be requested from the client (must be the same for both client and server)','password', NULL),
+(82, 'encryption','Enable TLS encryption','Enable TLS 1.3 encryption','radio', NULL),
+(83, 'private_key','Private key path','Full path to the file containing the private key in PEM format (required for encryption)','text', NULL),
+(84, 'certificate','Certificate path','Full path to the file containing the certificate in PEM format (required for encryption)','text', NULL),
+(85, 'compression','Compression','Enable data compression','radio', NULL),
+(86, 'retention','Enable retention','Enable data retention until the client is connected','radio', NULL),
+(87, 'category','Filter on event categories','Broker event categories to filter. If none is selected, all categories of events will be processed','multiselect', NULL),
+(88, 'host','Server address','Address of the server to which the client should connect','text', NULL),
+(89, 'port','Server port','TCP port of the server to which the client should connect','int', NULL),
+(90, 'retry_interval','Retry interval (seconds)','Number of seconds between a lost or failed connection and the next try','int', NULL),
+(91, 'transport_protocol','Transport protocol','The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)','radio', NULL),
+(92, 'authorization','Authorization token (optional)','Authorization token expected by the server (must be the same for both client and server)','password', NULL),
+(93, 'encryption','Enable TLS encryption','Enable TLS 1.3 encryption','radio', NULL),
+(94, 'ca_certificate',"Trusted CA's certificate path (optional)","If the server's certificate is signed by an untrusted Certification Authority (CA), then specify the certificate's path.\nIf the server\s certificate is self-signed, then specify its path.\nYou can also add the certificate to the store of certificates trusted by the operating system.\nThe file must be in PEM format.",'text', NULL),
+(95, 'ca_name','Certificate Common Name (optional)','If the Common Name (CN) of the certificate is different from the value in the "Server address" field, the CN must be provided here','text', NULL),
+(96, 'compression','Compression','Enable data compression','radio', NULL),
+(97, 'category','Filter on event categories','Broker event categories to filter. If none is selected, all categories of events will be processed','multiselect', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -674,7 +697,16 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (10, 62, 'false'),
 (1, 63, 'yes'),
 (11, 73, 'string'),
-(12, 36, 'disable');
+(12, 36, 'disable'),
+(13, 80, 'gRPC'),
+(1, 82, 'no'),
+(1, 85, 'no'),
+(1, 86, 'no'),
+(6, 87, NULL),
+(13, 91, 'gRPC'),
+(1, 93, 'no'),
+(1, 96, 'no'),
+(6, 97, NULL);
 
 --
 -- Contenu de la table `cb_list_values`
@@ -715,7 +747,9 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (11, 'Password', 'password'),
 (12, 'Disable', 'disable'),
 (12, 'TCP Port', 'tcp'),
-(12, 'UNIX Socket', 'unix');
+(12, 'UNIX Socket', 'unix'),
+(13, 'gRPC', 'gRPC'),
+(13, 'TCP', 'TCP');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -753,7 +787,11 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 30, 0),
 (1, 31, 0),
 (1, 33, 0),
-(1, 34, 0);
+(1, 34, 0),
+(1, 35, 1),
+(2, 35, 1),
+(1, 36, 1),
+(2, 36, 1);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -906,7 +944,20 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (34, 47, 0, 15),
 (34, 49, 0, 16),
 (34, 50, 0, 17),
-(34, 77, 1, 18);
+(34, 77, 1, 18),
+(35, 78, 0, 0),
+(35, 79, 1, 1),
+(35, 81, 0, 3),
+(35, 83, 0, 5),
+(35, 84, 0, 6),
+(35, 87, 0, 9),
+(36, 88, 1, 0),
+(36, 89, 1, 1),
+(36, 90, 0, 2),
+(36, 92, 0, 4),
+(36, 94, 0, 6),
+(36, 95, 0, 7),
+(36, 97, 0, 9);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -915,7 +966,14 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
 (13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
 (16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
-(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
+(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
+(35, 80, 1, 2, 'bbdoStreams', '{"target": "authorization", "value": "gRPC"}'),
+(35, 82, 1, 4, 'bbdoStreams', '{"target": ["private_key", "certificate"], "value": "yes"}'),
+(35, 85, 1, 7, 'bbdoStreams', '{"tag": "output"}'),
+(35, 86, 1, 8, 'bbdoStreams', '{"tag": "output"}'),
+(36, 91, 1, 3, 'bbdoStreams', '{"target": "authorization", "value": "gRPC"}'),
+(36, 93, 1, 5, 'bbdoStreams', '{"target": ["ca_certificate", "ca_name"], "value": "yes"}'),
+(36, 96, 1, 8, 'bbdoStreams', '{"tag": "output"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
