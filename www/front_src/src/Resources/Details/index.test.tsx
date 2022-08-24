@@ -43,9 +43,9 @@ import {
   labelCommand,
   labelComment,
   labelConfigure,
+  labelDetails,
   labelViewLogs,
   labelViewReport,
-  labelDetails,
   labelCopyLink,
   labelServices,
   labelFqdn,
@@ -62,7 +62,6 @@ import {
   labelAvg,
   labelCompactTimePeriod,
   labelCheck,
-  labelShortcuts,
   labelMonitoringServer,
   labelToday,
   labelYesterday,
@@ -575,6 +574,12 @@ const renderDetails = (): RenderResult => render(<DetailsWithJotai />);
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: (): jest.Mock => mockedNavigate,
+}));
 
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
@@ -986,15 +991,15 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the More icon is clicked', async () => {
+  it('navigates to logs and report pages when the corresponding icons are clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
         links: {
           ...retrievedDetails.links,
           uris: {
-            logs: '/logs',
-            reporting: '/reporting',
+            logs: 'logs',
+            reporting: 'reporting',
           },
         },
       },
@@ -1004,26 +1009,25 @@ describe(Details, () => {
       { name: 'details', value: serviceDetailsUrlParameters },
     ]);
 
-    const { getByLabelText, getAllByLabelText } = renderDetails();
+    const { getByLabelText, getByTestId } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
     await waitFor(() =>
-      expect(getByLabelText(labelShortcuts)).toBeInTheDocument(),
+      expect(getByLabelText(labelViewLogs)).toBeInTheDocument(),
     );
 
-    userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
+    expect(getByLabelText(labelViewReport)).toBeInTheDocument();
 
-    expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
-      'href',
-      '/logs',
-    );
-    expect(getAllByLabelText(labelViewReport)[0]).toHaveAttribute(
-      'href',
-      '/reporting',
-    );
+    userEvent.click(getByTestId(labelViewLogs));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/logs');
+
+    userEvent.click(getByTestId(labelViewReport));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/reporting');
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
