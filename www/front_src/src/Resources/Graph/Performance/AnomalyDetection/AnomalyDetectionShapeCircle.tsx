@@ -5,17 +5,17 @@ import { prop } from 'ramda';
 import { TimeValue } from '../models';
 import { getTime } from '../timeSeries';
 
-interface ShapeCircleAnomalyDetectionProps {
+interface AnomalyDetectionShapeCircleProps {
   timeSeries: Array<TimeValue>;
   xScale: ScaleTime<number, number>;
   yScale: ScaleLinear<number, number>;
 }
 
-const ShapeCircleAnomalyDetection = ({
+const AnomalyDetectionShapeCircle = ({
   timeSeries,
   xScale,
   yScale,
-}: ShapeCircleAnomalyDetectionProps): JSX.Element => {
+}: AnomalyDetectionShapeCircleProps): JSX.Element => {
   const metricPoint = 'connection';
   const metricPoint1 = 'connection_lower_thresholds';
   const metricPoint2 = 'connection_upper_thresholds';
@@ -90,4 +90,4 @@ const ShapeCircleAnomalyDetection = ({
   );
 };
 
-export default ShapeCircleAnomalyDetection;
+export default AnomalyDetectionShapeCircle;

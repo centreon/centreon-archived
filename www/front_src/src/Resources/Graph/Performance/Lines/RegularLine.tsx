@@ -5,7 +5,7 @@ import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { equals, isNil, prop } from 'ramda';
 
 import { ResourceType } from '../../../models';
-import ShapeCircleAnomalyDetection from '../AnomalyDetection/ShapeCircleAnomalyDetection';
+import ShapeCircleAnomalyDetection from '../AnomalyDetection/AnomalyDetectionShapeCircle';
 import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
 
