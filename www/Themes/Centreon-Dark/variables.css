@@ -148,7 +148,7 @@
     --pp-can-be-installed-border-color: var(--body-color);
     --pp-bottom-border-top-color: var(--pp-can-be-installed-border-color);
     --pp-bottom-name-font-color: var(--color-white);
-    --default-badge-background-color: var(--color-primary-light);
+    --default-badge-background-color: var(--color-primary-dark);
     --pp-deny-after-background-color: var(--color-black-rgba-6);
     --actionbar-background-color: var(--color-dark-gray-rgba-6);
     --ppm-orange-button-background-color: var(--color-primary-light);
@@ -222,4 +222,6 @@
     --custom-macros-template-border-color: var(--color-rayola-2);
     --custom-macros-command-background-color: var(--color-menthol);
     --custom-macros-template-background-color: var(--color-rayola);
+    --badge-color: var(--color-black);
+    --badge-a-color : var(--color-black);
 }

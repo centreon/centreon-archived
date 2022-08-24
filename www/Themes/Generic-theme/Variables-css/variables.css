@@ -177,7 +177,7 @@
     /***********/
 
     /** States **/
-    --default-badge-background-color: var(--color-primary-dark);
+    --default-badge-background-color: var(--color-primary-light);
     --host-down-danger-service-critical-background-color : var(--color-danger);
     --host-unreachable-unknown-background-color: var(--color-unknown);
     --host-downtime-background-color : var(--color-mauve);
