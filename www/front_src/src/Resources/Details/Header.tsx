@@ -134,7 +134,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
 
   const copyLink = (): Promise<void> => copy(window.location.href);
   const selectResourceDetails = (): void =>
-  onSelectParent(details as ResourceDetails);
+    onSelectParent(details as ResourceDetails);
 
   const navigateToResourceUris = (
     category: keyof ResourceUris,
@@ -148,7 +148,6 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       navigate(`${url}`);
     };
   };
-
 
   if (details === undefined) {
     return <LoadingSkeleton />;
