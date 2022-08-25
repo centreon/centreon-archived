@@ -13645,11 +13645,11 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
-#~ msgid "Host category"
-#~ msgstr "Catégorie d'hôtes"
+ msgid "Host category"
+ msgstr "Catégorie d'hôtes"
 
-#~ msgid "Service category"
-#~ msgstr "Catégories de service"
+ msgid "Service category"
+ msgstr "Catégorie de service"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusion"

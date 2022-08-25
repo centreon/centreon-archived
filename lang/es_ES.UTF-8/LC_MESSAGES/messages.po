@@ -13121,11 +13121,11 @@ msgstr "cubo de basura"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "No hay tiempo de inactividad planificado para los servicios"
 
-#~ msgid "Host category"
-#~ msgstr "Categoría de anfitriones"
+msgid "Host category"
+msgstr "Categoría de anfitriones"
 
-#~ msgid "Service category"
-#~ msgstr "Categorias de servicio"
+msgid "Service category"
+msgstr "Categoria de servicio"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusión"
