@@ -528,8 +528,8 @@
     /* ------ END : Reporting 2015 variables -----*/
 
     /* ------ START : popin variables -----*/
-    --centreon-popin-background-color: var(--color-gallery-2);
-    --centreon-popin-border-color: var(--color-aluminium-2);
+    --centreon-popin-background-color: var(--body-background);
+    --centreon-popin-border-color: var(--body-background);
     --centreon-popin-overlay-background-color: var(--color-black);
     --popin-wrapper-font-color: var(--color-martar);
     --cbox-content-border-color: var(--color-aluminium-2);
