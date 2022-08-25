@@ -13648,8 +13648,8 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "Host category"
 #~ msgstr "Catégorie d'hôtes"
 
-#~ msgid "Service category"
-#~ msgstr "Catégories de service"
+ msgid "Service category"
+ msgstr "Catégories de service"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusion"

@@ -13124,8 +13124,8 @@ msgstr "cubo de basura"
 #~ msgid "Host category"
 #~ msgstr "Categoría de anfitriones"
 
-#~ msgid "Service category"
-#~ msgstr "Categorias de servicio"
+ msgid "Service category"
+ msgstr "Categorias de servicio"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusión"
