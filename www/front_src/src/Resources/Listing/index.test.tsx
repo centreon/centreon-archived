@@ -411,7 +411,7 @@ describe(Listing, () => {
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
     const chip = await findByLabelText(chipLabel, undefined, {
-      timeout: 30000,
+      timeout: 10000,
     });
 
     fireEvent.mouseEnter(chip);
