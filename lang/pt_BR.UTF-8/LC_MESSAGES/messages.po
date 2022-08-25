@@ -11796,7 +11796,7 @@ msgstr "Escala"
 
 #: centreon-web/www/install/smarty_translate.php:414
 msgid "Service category"
-msgstr "Categoria do Serviço"
+msgstr "Categoria de Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:438
 msgid "Service Scheduling Options"
