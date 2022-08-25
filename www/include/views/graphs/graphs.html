@@ -94,7 +94,7 @@ var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}
 {literal}
 
 var charts = [];
-const templateGraph = ({ graphId, graphType, graphTitle }) => {
+const templateGraph = ({ graphId, graphType, graphTitle, hostId, serviceId }) => {
     var closeIcon = "{/literal}{$removeIcon}{literal}";
     var csvIcon = "{/literal}{$csvIcon}{literal}";
     var pictureIcon = "{/literal}{$pictureIcon}{literal}";
@@ -117,12 +117,12 @@ const templateGraph = ({ graphId, graphType, graphTitle }) => {
                 </a>
                 {/if}
                 {literal}
-                <a class="actions" data-href="./include/views/graphs/generateGraphs/generateImage.php">
+                <a class="actions" data-href="./centreon/api/latest/monitoring/">
                     <span class="ico-18 margin_right">
                         ${pictureIcon}
                     </span>
                 </a>
-                <a class="actions" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+                <a class="actions" data-hostid="${hostId}" data-serviceid="${serviceId}" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
                     <span class="ico-18 margin_right">
                         ${csvIcon}
                     </span>
@@ -211,7 +211,7 @@ function initRefresh() {
   });
 }
 
-function addChart(id, name, times) {
+function addChart(id, name, times, hostId, serviceId) {
     var refreshInterval;
     var parseInterval;
     var datepickerFormat = jQuery("#StartDate").datepicker("option", "dateFormat");
@@ -255,7 +255,9 @@ function addChart(id, name, times) {
             graphId: id,
             graphType: 'service',
             graphTitle: name,
-            status: true
+            status: true,
+            hostId: hostId,
+            serviceId: serviceId,
         })
     );
     jQuery('#graph-' + id).centreonGraph(times);
@@ -299,7 +301,7 @@ function loadChart(chart, callback) {
                     alert(tooManyChartMsg);
                     break;
                 }
-                addChart(data[i].id, data[i].title, times);
+                addChart(data[i].id, data[i].title, times, data[i].host, data[i].service);
             }
             displayNav(end);
             if (typeof callback == 'function') {
@@ -398,11 +400,11 @@ jQuery(function () {
 
     /* Add events on click on action download image/CSV */
     jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
-        var $a = jQuery(this);
-        var baseUrl = $a.data('href');
-        var chartId = $a.parents('.graph').data('graphId');
-        var start;
-        var end;
+        const $a = jQuery(this);
+        const hostId = $a.data('hostid');
+        const serviceId = $a.data('serviceid');
+        let start;
+        let end;
 
         /* Get the period */
         if (jQuery('select[name="period"]').val() === '') {
@@ -427,14 +429,15 @@ jQuery(function () {
         }
 
         e.preventDefault();
-        if (baseUrl.indexOf('?') !== -1) {
-            baseUrl += '&';
-        } else {
-            baseUrl += '?';
-        }
 
-        baseUrl += 'chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
-        window.location = baseUrl;
+        const startDate = start.toISOString();
+        const endDate = end.toISOString();
+
+        const location = window.location;
+        const baseUrl = location .protocol + "//" + location.host + "/" + location.pathname.split('/')[1];
+        const url = baseUrl + '/api/latest/monitoring/hosts/' + hostId + '/services/' + serviceId + '/metrics/performance/download?start_date=' + startDate + '&end_date=' + endDate;
+
+        window.location = url;
     });
 
     /* Remove a chart */

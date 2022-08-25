@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2005-2018 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -73,7 +74,8 @@ $servicesReturn = array();
 function getServiceGraphByHost($host, $isAdmin, $lca)
 {
     $listGraph = array();
-    if ($isAdmin ||
+    if (
+        $isAdmin ||
         (!$isAdmin && isset($lca[$host]))
     ) {
         $services =  getMyHostServices($host);
@@ -100,11 +102,14 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
  */
 function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
 {
-    if (service_has_graph($host, $svcId) &&
+    if (
+        service_has_graph($host, $svcId) &&
         ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))
     ) {
         return array(
             'type' => 'service',
+            'host' => $host,
+            'service' => $svcId,
             'id' => $host . '_' . $svcId,
             'title' => $title
         );
