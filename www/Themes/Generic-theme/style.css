@@ -130,7 +130,7 @@ input[type="checkbox"]  {
     width: 1.25em;
     height: 1.25em;
     background: var(--md-checkbox-background);
-    border: 2px solid var(--md-checkbox-border-color);
+    border: 2px solid var(--table-font-color);
     border-radius: 0.125em;
     cursor: pointer;
     transition: background .3s;
@@ -146,8 +146,7 @@ input[type="checkbox"]  {
     font-size: inherit;
 }
 .md-checkbox input[type="checkbox"]:checked + label:before {
-    color : var(--color-white) ; 
-    background: var(--md-checkbox-checked-label-before-background-color);
+    background: var(--bt-success-background-color);
     border: none;
 }
 .md-checkbox input[type="checkbox"]:checked + label:after {
