@@ -165,7 +165,7 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = 19;
+  const loaderWidth = 16;
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 

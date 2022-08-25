@@ -137,7 +137,7 @@ const ServiceStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter
       endpoint={serviceStatusEndpoint}
-      loaderWidth={29.5}
+      loaderWidth={20}
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
