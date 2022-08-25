@@ -41,7 +41,6 @@ html {
 }
 body {
     background-color:var(--body-background);
-    /* font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif; */
     font-family: "Roboto","Helvetica","Arial",sans-serif;
     color:var(--body-color);
     font-size:12px;
@@ -55,9 +54,7 @@ body {
 a {
     text-decoration:none;
 }
-/* a:hover {
-    text-decoration:underline;
-} */
+
 img, hr {
     border:0;
     padding:0;
@@ -241,7 +238,7 @@ input[type="radio"] {
 }
 
 select {
-    background-color: var(--select-background);
+    background-color: var(--select-background) ;
     background-image: url('../../img/icones/7x7/sort_desc.gif');
     background-repeat: no-repeat, repeat;
     background-position: right 5px top 50%, 0 0;
@@ -253,8 +250,9 @@ select {
     -webkit-appearance: none;
     appearance: none;
     padding: 4px 20px 4px 6px;
-    color: var(--select-color);
+    color: var(--select-color) ;
 }
+
 select::-ms-expand {
     display: none;
 }
@@ -402,7 +400,7 @@ p.description a, p.description a:visited {
 
 .select2-container--default .select2-selection--single {
     background-color: var(--select2-container-selection-background-color);
-    border: 1px solid var(--select2-container-selection-border-color) !important;
+    border: 1px solid var(--bt-success-background-color);
     border-radius: 0 !important;
 }
 
@@ -687,13 +685,6 @@ p.description a, p.description a:visited {
 
 .btc svg {
     fill: var(--btc-color) !important;
-}
-
-a.btc {
-    color: var(--a-btc-color) !important;
-    padding: 4px 10px;
-    margin : 0px 4px;
-    cursor: pointer;
 }
 
 
@@ -2955,3 +2946,4 @@ ul.module_list {
     color: var(--gorgone-config-file-font-color);
     background-color: var(--gorgone-config-file-background-color);
 }
+
