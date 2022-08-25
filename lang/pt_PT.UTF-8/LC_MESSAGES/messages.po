@@ -11777,7 +11777,7 @@ msgstr "Grupo de traps SNMP"
 
 #: centreon-web/www/install/smarty_translate.php:387
 msgid "Host category"
-msgstr "Categoria do Host"
+msgstr "Categoria de Host"
 
 #: centreon-web/www/install/smarty_translate.php:393
 msgid "Informations"
