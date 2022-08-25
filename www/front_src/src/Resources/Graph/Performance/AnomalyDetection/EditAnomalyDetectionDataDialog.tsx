@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
   },
   envelopeSize: {
     flex: 1,
-    height: theme.spacing(15),
     marginRight: theme.spacing(1),
   },
   exclusionPeriod: {
