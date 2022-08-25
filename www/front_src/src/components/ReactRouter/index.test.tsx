@@ -51,8 +51,6 @@ describe('React Router', () => {
   });
 
   it('displays the page when the page exists and the user is allowed', async () => {
-    jest.setTimeout(30000);
-
     window.history.pushState({}, '', '/monitoring/resources');
 
     renderReactRouter();

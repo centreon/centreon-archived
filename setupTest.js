@@ -17,7 +17,7 @@ import fetchMock from 'jest-fetch-mock';
 
 window.ResizeObserver = ResizeObserver;
 
-jest.setTimeout(30000);
+jest.setTimeout(10000);
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
