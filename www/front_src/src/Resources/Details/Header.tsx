@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Grid,
@@ -13,6 +14,9 @@ import makeStyles from '@mui/styles/makeStyles';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { CreateCSSProperties } from '@mui/styles';
+import LogsIcon from '@mui/icons-material/Assignment';
+import ReportIcon from '@mui/icons-material/Assessment';
+import Divider from '@mui/material/Divider';
 
 import {
   StatusChip,
@@ -27,13 +31,14 @@ import {
   labelConfigure,
   labelCopyLink,
   labelLinkCopied,
-  labelShortcuts,
+  labelViewLogs,
+  labelViewReport,
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import { Parent, ResourceUris } from '../models';
+import { replaceBasename } from '../helpers';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
-import ShortcutsTooltip from './ShortcutsTooltip';
 
 import { DetailsSectionProps } from '.';
 
@@ -42,21 +47,32 @@ interface MakeStylesProps {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  containerIcons: {
+    alignItems: 'center',
+    display: 'flex',
+  },
+  divider: {
+    borderColor: theme.palette.text.secondary,
+    margin: theme.spacing(1, 0.5),
+  },
   header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
     gridTemplateColumns: `${
       displaySeverity ? 'auto' : ''
-    } auto minmax(0, 1fr) auto auto`,
+    } auto minmax(0, 1fr) auto`,
     height: 43,
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(0, 2.5, 0, 1),
   }),
   parent: {
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'auto minmax(0, 1fr)',
+  },
+  report: {
+    marginLeft: theme.spacing(0.5),
   },
   resourceName: {
     alignItems: 'center',
@@ -109,6 +125,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     displaySeverity: not(isNil(details?.severity_level)),
   });
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
   const copyResourceLink = (): void => {
@@ -118,6 +135,19 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     } catch (_) {
       showErrorMessage(t(labelSomethingWentWrong));
     }
+  };
+
+  const navigateToResourceUris = (
+    category: keyof ResourceUris,
+  ): (() => void) => {
+    return (): void => {
+      const url = replaceBasename({
+        endpoint: prop(category, resourceUris) || '',
+        newWord: '/',
+      });
+
+      navigate(`${url}`);
+    };
   };
 
   if (details === undefined) {
@@ -196,19 +226,37 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip
-        data-testid={labelShortcuts}
-        resourceUris={resourceUris}
-      />
-      <IconButton
-        ariaLabel={t(labelCopyLink)}
-        data-testid={labelCopyLink}
-        size="small"
-        title={t(labelCopyLink)}
-        onClick={copyResourceLink}
-      >
-        <CopyIcon fontSize="small" />
-      </IconButton>
+      <div className={classes.containerIcons}>
+        <IconButton
+          ariaLabel={t(labelViewLogs)}
+          data-testid={labelViewLogs}
+          size="small"
+          title={t(labelViewLogs)}
+          onClick={navigateToResourceUris('logs')}
+        >
+          <LogsIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          ariaLabel={t(labelViewReport)}
+          className={classes.report}
+          data-testid={labelViewReport}
+          size="small"
+          title={t(labelViewReport)}
+          onClick={navigateToResourceUris('reporting')}
+        >
+          <ReportIcon fontSize="small" />
+        </IconButton>
+        <Divider flexItem className={classes.divider} orientation="vertical" />
+        <IconButton
+          ariaLabel={t(labelCopyLink)}
+          data-testid={labelCopyLink}
+          size="small"
+          title={t(labelCopyLink)}
+          onClick={copyResourceLink}
+        >
+          <CopyIcon fontSize="small" />
+        </IconButton>
+      </div>
     </div>
   );
 };
