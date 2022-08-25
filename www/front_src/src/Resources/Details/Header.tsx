@@ -149,6 +149,19 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     };
   };
 
+  const navigateToResourceUris = (
+    category: keyof ResourceUris,
+  ): (() => void) => {
+    return (): void => {
+      const url = replaceBasename({
+        endpoint: prop(category, resourceUris) || '',
+        newWord: '/',
+      });
+
+      navigate(`${url}`);
+    };
+  };
+
   if (details === undefined) {
     return <LoadingSkeleton />;
   }

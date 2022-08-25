@@ -97,7 +97,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   graphHeader: {
     display: 'grid',
     gridTemplateColumns: '0.4fr 1fr 0.4fr',
-    justifyItems: 'center',
+    justifyItems: 'end',
     width: '100%',
   },
   graphTranslation: {
@@ -123,6 +123,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   title: {
     maxWidth: '100%',
     overflow: 'hidden',
+    placeSelf: 'center',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },

@@ -43,9 +43,9 @@ import {
   labelCommand,
   labelComment,
   labelConfigure,
+  labelDetails,
   labelViewLogs,
   labelViewReport,
-  labelDetails,
   labelCopyLink,
   labelServices,
   labelFqdn,
@@ -57,13 +57,11 @@ import {
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
-  labelGraphOptions,
   labelMin,
   labelMax,
   labelAvg,
   labelCompactTimePeriod,
   labelCheck,
-  labelShortcuts,
   labelMonitoringServer,
   labelToday,
   labelYesterday,
@@ -76,6 +74,7 @@ import {
   labelGraph,
   labelNotificationStatus,
   labelCategories,
+  labelExportToCSV,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -577,6 +576,12 @@ const renderDetails = (): RenderResult => render(<DetailsWithJotai />);
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: (): jest.Mock => mockedNavigate,
+}));
 
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
@@ -726,7 +731,7 @@ describe(Details, () => {
         },
       ]);
 
-      const { getByText, getByLabelText, findByText } = renderDetails();
+      const { getByText, findByText } = renderDetails();
 
       await waitFor(() => {
         expect(getByText(period) as HTMLElement).toBeEnabled();
@@ -741,7 +746,6 @@ describe(Details, () => {
         );
       });
 
-      userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
       await findByText(labelDisplayEvents);
       userEvent.click(getByText(labelDisplayEvents));
 
@@ -785,13 +789,8 @@ describe(Details, () => {
       },
     ]);
 
-    const {
-      findAllByLabelText,
-      queryByLabelText,
-      getByLabelText,
-      getByText,
-      findByText,
-    } = renderDetails();
+    const { findAllByLabelText, queryByLabelText, getByText, findByText } =
+      renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
@@ -800,8 +799,6 @@ describe(Details, () => {
     expect(queryByLabelText(labelComment)).toBeNull();
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
-
-    userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
 
     await findByText(labelDisplayEvents);
 
@@ -996,15 +993,15 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the More icon is clicked', async () => {
+  it('navigates to logs and report pages when the corresponding icons are clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
         links: {
           ...retrievedDetails.links,
           uris: {
-            logs: '/logs',
-            reporting: '/reporting',
+            logs: 'logs',
+            reporting: 'reporting',
           },
         },
       },
@@ -1014,26 +1011,25 @@ describe(Details, () => {
       { name: 'details', value: serviceDetailsUrlParameters },
     ]);
 
-    const { getByLabelText, getAllByLabelText } = renderDetails();
+    const { getByLabelText, getByTestId } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
     await waitFor(() =>
-      expect(getByLabelText(labelShortcuts)).toBeInTheDocument(),
+      expect(getByLabelText(labelViewLogs)).toBeInTheDocument(),
     );
 
-    userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
+    expect(getByLabelText(labelViewReport)).toBeInTheDocument();
 
-    expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
-      'href',
-      '/logs',
-    );
-    expect(getAllByLabelText(labelViewReport)[0]).toHaveAttribute(
-      'href',
-      '/reporting',
-    );
+    userEvent.click(getByTestId(labelViewLogs));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/logs');
+
+    userEvent.click(getByTestId(labelViewReport));
+
+    expect(mockedNavigate).toHaveBeenCalledWith('/reporting');
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
@@ -1805,5 +1801,36 @@ describe(Details, () => {
       expect(getByText(alias)).toBeInTheDocument();
       expect(getByText(email)).toBeInTheDocument();
     });
+  });
+
+  it('calls the download timeline endpoint when the Timeline tab is selected and the "Export to CSV button" is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const mockedOpen = jest.fn();
+    window.open = mockedOpen;
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: serviceDetailsTimelineUrlParameters,
+      },
+    ]);
+
+    const start = '2020-01-20T06:00:00.000Z';
+
+    const { getByTestId } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+    });
+
+    fireEvent.click(getByTestId(labelExportToCSV));
+
+    expect(mockedOpen).toHaveBeenCalledWith(
+      `${retrievedDetails.links.endpoints.timeline}/download?start_date=${start}&end_date=${currentDateIsoString}`,
+      'noopener',
+      'noreferrer',
+    );
   });
 });

@@ -9075,10 +9075,6 @@ msgstr "Compruebe si el servicio está parado"
 msgid "Preexec definition"
 msgstr "Definiendo el comando PREEXEC"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "El mismo OID ya existe."
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
 msgstr "Reglas de correspondencia avanzadas"
@@ -15172,6 +15168,9 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Criticidad del servicio"
 
@@ -15183,3 +15182,48 @@ msgstr "Criticidad del host"
 
 msgid "Host severity level"
 msgstr "Nivel de criticidad del host"
+
+#  msgid "Listening address (optional)"
+#  msgstr ""
+
+#  msgid "Listening port"
+#  msgstr ""
+
+#  msgid "Transport protocol"
+#  msgstr ""
+
+#  msgid "Authorization token (optional)"
+#  msgstr ""
+
+#  msgid "Private key path"
+#  msgstr ""
+
+#  msgid "Certificate path"
+#  msgstr ""
+
+#  msgid "Compression"
+#  msgstr ""
+
+#  msgid "Enable retention"
+#  msgstr ""
+
+#  msgid "Filter on event categories"
+#  msgstr ""
+
+#  msgid "Server address"
+#  msgstr ""
+
+#  msgid "Server port"
+#  msgstr ""
+
+#  msgid "Retry interval (in seconds)"
+#  msgstr ""
+
+#  msgid "Trusted CA's certificate path (optional)"
+#  msgstr ""
+
+#  msgid "Certificate Common Name (optional)"
+#  msgstr ""
+
+# msgid "CSV"
+# msgstr ""

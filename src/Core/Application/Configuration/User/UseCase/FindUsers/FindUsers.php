@@ -48,10 +48,10 @@ class FindUsers
 
         try {
             $users = $this->usersRepository->findAllUsers();
-        } catch (\Throwable $e) {
-            $this->critical($e->getMessage());
+        } catch (\Throwable $ex) {
+            $this->critical($ex->getMessage());
             $presenter->setResponseStatus(
-                new FindUsersErrorResponse($e->getMessage())
+                new FindUsersErrorResponse($ex->getMessage())
             );
             return;
         }

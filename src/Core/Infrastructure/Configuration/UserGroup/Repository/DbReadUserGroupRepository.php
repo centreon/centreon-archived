@@ -75,6 +75,7 @@ class DbReadUserGroupRepository extends AbstractRepositoryDRB implements ReadUse
 
         $userGroups = [];
         while (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            /** @var array<string,int|string|null> $row */
             $userGroups[] = DbUserGroupFactory::createFromRecord($row);
         }
 

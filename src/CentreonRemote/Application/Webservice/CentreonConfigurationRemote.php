@@ -564,7 +564,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         } else {
             $data = [
                 'ip' => $serverIP,
-                'app_key' => '',
                 'version' => '',
                 'is_connected' => '1',
                 'created_at' => $date,
