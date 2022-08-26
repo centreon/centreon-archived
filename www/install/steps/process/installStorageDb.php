@@ -61,7 +61,7 @@ try {
 }
 
 try {
-    $link->exec("CREATE DATABASE " . $parameters['db_storage']);
+    $link->exec(sprintf('CREATE DATABASE `%s`', $parameters['db_storage']));
 } catch (\PDOException $e) {
     if (!is_file('../../tmp/createTablesCentstorage')) {
         $return['msg'] = $e->getMessage();
@@ -79,7 +79,7 @@ $macros = array_merge(
 );
 
 try {
-    $result = $link->query('use ' . $parameters['db_storage']);
+    $result = $link->query(sprintf('use `%s`', $parameters['db_storage']));
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
     }

@@ -46,7 +46,6 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-
 $id = filter_var($_GET['item'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*

@@ -118,7 +118,7 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
 
     // Set Host Category Parents
     $statement = $pearDB->prepare(
-        'SELECT DISTINCT hostcategories_hc_id 
+        'SELECT DISTINCT hostcategories_hc_id
         FROM hostcategories_relation hcr
         INNER JOIN hostcategories hc
             ON hcr.hostcategories_hc_id = hc.hc_id
@@ -146,7 +146,7 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
 
     // Set critically
     $statement = $pearDB->prepare(
-        'SELECT hc.hc_id 
+        'SELECT hc.hc_id
         FROM hostcategories hc
         INNER JOIN hostcategories_relation hcr
             ON hcr.hostcategories_hc_id = hc.hc_id
@@ -1050,6 +1050,11 @@ function myReplace()
 }
 
 $form->applyFilter('__ALL__', 'myTrim');
+
+$form->applyFilter('ehi_notes', 'limitNotesLength');
+$form->applyFilter('ehi_notes_url', 'limitUrlLength');
+$form->applyFilter('ehi_action_url', 'limitUrlLength');
+
 $from_list_menu = false;
 if ($o !== HOST_MASSIVE_CHANGE) {
     $form->applyFilter('host_name', 'myReplace');
@@ -1111,6 +1116,11 @@ $tpl->assign(
     'alert_check_interval',
     _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h,"
         . " if needed, pair this configuration with the use of timeperiods")
+);
+
+$tpl->assign(
+    'alert_max_length_exceeded',
+    _("Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving")
 );
 
 if ($o === HOST_WATCH) {

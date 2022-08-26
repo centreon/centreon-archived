@@ -120,9 +120,7 @@ class CentreonCeip extends CentreonWebService
      */
     private function getVisitorInformation(): array
     {
-        $locale = $this->user->lang === 'browser'
-            ? null
-            : $this->user->lang;
+        $locale = $this->user->get_lang();
 
         $role = $this->user->admin
             ? "admin"
@@ -228,7 +226,7 @@ class CentreonCeip extends CentreonWebService
                 }
             }
         } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage, ['context' => $exception]);
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
 
         return [

@@ -137,7 +137,8 @@ $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 $templates = array();
 if ($handle = @opendir($oreon->optGen["oreon_path"] . "www/Themes/")) {
     while ($file = @readdir($handle)) {
-        if (!is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
+        if (
+            !is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
             && $file != "."
             && $file != ".."
             && $file != ".svn"
