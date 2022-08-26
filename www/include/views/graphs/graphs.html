@@ -301,7 +301,7 @@ function loadChart(chart, callback) {
                     alert(tooManyChartMsg);
                     break;
                 }
-                addChart(data[i].id, data[i].title, times, data[i].host, data[i].service);
+                addChart(data[i].id, data[i].title, times, data[i].hostId, data[i].serviceId);
             }
             displayNav(end);
             if (typeof callback == 'function') {

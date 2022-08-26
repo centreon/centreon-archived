@@ -108,8 +108,8 @@ function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
     ) {
         return array(
             'type' => 'service',
-            'host' => $host,
-            'service' => $svcId,
+            'hostId' => $host,
+            'serviceId' => $svcId,
             'id' => $host . '_' . $svcId,
             'title' => $title
         );
