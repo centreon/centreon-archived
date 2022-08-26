@@ -406,7 +406,7 @@ class CentreonAuth
              */
             $statement = $this->pearDB->prepare(
                 "SELECT * FROM `contact` " .
-                "WHERE `contact_alias` = :contact_alias" .
+                "WHERE `contact_alias` = :contact_alias " .
                 "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
             $statement->bindValue(':contact_alias', $this->pearDB->escape($username, true), \PDO::PARAM_STR);
