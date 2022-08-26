@@ -1,11 +1,9 @@
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 
 import { Curve, Shape } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { equals, isNil, prop } from 'ramda';
 
-import { ResourceType } from '../../../models';
-import ShapeCircleAnomalyDetection from '../AnomalyDetection/AnomalyDetectionShapeCircle';
 import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
 
@@ -20,7 +18,7 @@ interface Props {
   lineColor: string;
   lines: Array<Line>;
   metric: string;
-  resourceType: string;
+  shapeCircleAnomalyDetection?: ReactNode;
   timeSeries: Array<TimeValue>;
   transparency: number;
   unit: string;
@@ -41,8 +39,7 @@ const RegularLine = ({
   areaColor,
   transparency,
   graphHeight,
-  resourceType,
-  isEditAnomalyDetectionDataDialogOpen,
+  shapeCircleAnomalyDetection,
 }: Props): JSX.Element => {
   const strokeWidth =
     equals(metric, 'connection_lower_thresholds') ||
@@ -52,10 +49,6 @@ const RegularLine = ({
 
   const isLegendClicked = lines?.length <= 1;
   const isHighlighted = highlight || isLegendClicked ? 2 : strokeWidth;
-  const showCircle =
-    equals(resourceType, ResourceType.anomalydetection) &&
-    isEditAnomalyDetectionDataDialogOpen &&
-    !isLegendClicked;
 
   const props = {
     curve: Curve.curveLinear,
@@ -67,13 +60,6 @@ const RegularLine = ({
     unit,
     x: (timeValue): number => xScale(getTime(timeValue)) as number,
     y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
-  };
-
-  const propsShapeCircle = {
-    getTime,
-    timeSeries,
-    xScale,
-    yScale,
   };
 
   if (filled) {
@@ -91,7 +77,7 @@ const RegularLine = ({
 
   return (
     <>
-      {showCircle && <ShapeCircleAnomalyDetection {...propsShapeCircle} />}
+      {shapeCircleAnomalyDetection}
       <Shape.LinePath<TimeValue> {...props} />;
     </>
   );

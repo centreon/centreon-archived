@@ -2,12 +2,13 @@ import { ReactNode } from 'react';
 
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
-import { difference, isNil, max, min } from 'ramda';
+import { difference, equals, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
-import { Line, TimeValue } from '../models';
+import ShapeCircleAnomalyDetection from '../AnomalyDetection/AnomalyDetectionShapeCircle';
 import {
+  getTime,
   getInvertedStackedLines,
   getMax,
   getMin,
@@ -17,6 +18,8 @@ import {
   getUnits,
   getYScale,
 } from '../timeSeries';
+import { Line, TimeValue } from '../models';
+import { ResourceType } from '../../../models';
 
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import RegularLine from './RegularLine';
@@ -108,6 +111,19 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
+  const isLegendClicked = lines?.length <= 1;
+
+  const showCircle =
+    equals(type, ResourceType.anomalydetection) &&
+    isEditAnomalyDetectionDataDialogOpen &&
+    !isLegendClicked;
+
+  const propsShapeCircle = {
+    getTime,
+    timeSeries,
+    xScale,
+  };
+
   return (
     <g>
       <StackedLines
@@ -168,13 +184,17 @@ const Lines = ({
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
-                  isEditAnomalyDetectionDataDialogOpen={
-                    isEditAnomalyDetectionDataDialogOpen
-                  }
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}
-                  resourceType={type}
+                  shapeCircleAnomalyDetection={
+                    showCircle && (
+                      <ShapeCircleAnomalyDetection
+                        {...propsShapeCircle}
+                        yScale={yScale}
+                      />
+                    )
+                  }
                   timeSeries={timeSeries}
                   transparency={transparency}
                   unit={unit}
