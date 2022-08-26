@@ -1066,7 +1066,7 @@ WHERE log_action.object_type = 'host' AND action_log_date > $lastRestart GROUP B
 UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT nagios_server_id as instance_id, host_host_id as host_id FROM {$conf_centreon['db']}.ns_host_relation
+        SELECT nagios_server_id as instance_id, host_host_id as host_id FROM `{$conf_centreon['db']}`.ns_host_relation
          WHERE nagios_server_id IN ($pollersSearch)
     ) AS subtable ON log_action.object_id = subtable.host_id
 WHERE log_action.object_type = 'host' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
@@ -1082,7 +1082,7 @@ UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
         SELECT nagios_server_id as instance_id, service_service_id as service_id
-        FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
+        FROM `{$conf_centreon['db']}`.ns_host_relation nhr, `{$conf_centreon['db']}`.host_service_relation hsr
         WHERE nagios_server_id IN ($pollersSearch)
             AND hsr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.service_id
@@ -1099,7 +1099,7 @@ UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
         SELECT nhr.nagios_server_id as instance_id, servicegroup_sg_id as servicegroup_id
-        FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.servicegroup_relation sgr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE nhr.nagios_server_id IN ($pollersSearch)
             AND sgr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.servicegroup_id
@@ -1116,7 +1116,7 @@ UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
         SELECT nhr.nagios_server_id as instance_id, hostgroup_hg_id as hostgroup_id
-        FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.hostgroup_relation hr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE nhr.nagios_server_id IN ($pollersSearch)
             AND hr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.hostgroup_id
@@ -1176,7 +1176,7 @@ AND (
       )
       OR object_id IN (
         SELECT host_host_id
-        FROM {$conf_centreon['db']}.ns_host_relation
+        FROM `{$conf_centreon['db']}`.ns_host_relation`
         WHERE nagios_server_id = $poller_id
       )
     )
@@ -1194,7 +1194,7 @@ AND (
       )
       OR object_id IN (
         SELECT service_service_id
-        FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
+        FROM `{$conf_centreon['db']}`.ns_host_relation nhr, `{$conf_centreon['db']}`.host_service_relation hsr
         WHERE nagios_server_id = $poller_id
         AND hsr.host_host_id = nhr.host_host_id
       )
@@ -1214,7 +1214,7 @@ AND (
       )
       OR object_id IN (
         SELECT DISTINCT servicegroup_sg_id
-        FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.servicegroup_relation sgr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE sgr.host_host_id = nhr.host_host_id
         AND nhr.nagios_server_id = $poller_id
       )
@@ -1234,7 +1234,7 @@ AND (
       )
       OR object_id IN (
         SELECT DISTINCT hr.hostgroup_hg_id
-        FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.hostgroup_relation hr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE hr.host_host_id = nhr.host_host_id
         AND nhr.nagios_server_id = $poller_id
       )
