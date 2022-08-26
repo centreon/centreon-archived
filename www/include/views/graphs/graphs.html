@@ -117,12 +117,12 @@ const templateGraph = ({ graphId, graphType, graphTitle, hostId, serviceId }) =>
                 </a>
                 {/if}
                 {literal}
-                <a class="actions" data-href="">
+                <a class="actions" data-href="./include/views/graphs/generateGraphs/generateImage.php">
                     <span class="ico-18 margin_right">
                         ${pictureIcon}
                     </span>
                 </a>
-                <a class="actions" data-hostid="${hostId}" data-serviceid="${serviceId}" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+                <a class="actions download_graph_csv" data-hostid="${hostId}" data-serviceid="${serviceId}">
                     <span class="ico-18 margin_right">
                         ${csvIcon}
                     </span>
@@ -398,46 +398,71 @@ jQuery(function () {
         }
     });
 
-    /* Add events on click on action download image/CSV */
-    jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
-        const $a = jQuery(this);
-        const hostId = $a.data('hostid');
-        const serviceId = $a.data('serviceid');
+    function getGraphDates(periodValue, startDateValue, endDateValue) {
         let start;
         let end;
 
-        /* Get the period */
-        if (jQuery('select[name="period"]').val() === '') {
-            start = moment.tz(
-                jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val(),
-                timezone
-            );
-            end = moment.tz(
-                jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val(),
-                timezone
-            );
+        if (periodValue === '') {
+            start = moment.tz(startDateValue, timezone);
+            end = moment.tz(endDateValue, timezone);
             duration = moment.duration(end.diff(start));
         } else {
-            parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
-            duration = moment.duration(
-                parseInt(parseInterval[1], 10),
-                parseInterval[2]
-            );
+            parseInterval = periodValue.match(/(\d+)([a-z]+)/i);
+            duration = moment.duration(parseInt(parseInterval[1], 10), parseInterval[2]);
             start = moment().tz(timezone);
             end = moment().tz(timezone);
             start.subtract(parseInterval[1], parseInterval[2]);
         }
 
-        e.preventDefault();
+        return {'start': start, 'end': end};
+    }
 
-        const startDate = start.toISOString();
-        const endDate = end.toISOString();
-
+    function generateGraphCSVDownloadUrl(hostId, serviceId, startDate, endDate) {
         const location = window.location;
         const baseUrl = location .protocol + "//" + location.host + "/" + location.pathname.split('/')[1];
-        const url = baseUrl + '/api/latest/monitoring/hosts/' + hostId + '/services/' + serviceId + '/metrics/performance/download?start_date=' + startDate + '&end_date=' + endDate;
+        let url = baseUrl + '/api/latest/monitoring';
+            url+= '/hosts/' + hostId;
+            url+= '/services/' + serviceId + '/metrics/performance/download?';
+            url+= 'start_date=' + startDate;
+            url+= '&end_date=' + endDate;
 
-        window.location = url;
+        return url;
+    }
+
+    function generateChartActionURL(baseUrl, chartId, startDate, endDate) {
+        if (baseUrl.indexOf('?') !== -1) {
+            baseUrl += '&';
+        } else {
+            baseUrl += '?';
+        }
+
+        return baseUrl + 'chartId=' + chartId + '&start=' + startDate + '&end=' + endDate;
+    }
+
+    function generateActionURL(elmnt) {
+        const period = jQuery('select[name="period"]').val();
+        const startDate = jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val();
+        const endDate = jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val();
+
+        const dates = getGraphDates(period, startDate, endDate);
+
+        if (elmnt.hasClass('download_graph_csv')) {
+            const hostId = elmnt.data('hostid');
+            const serviceId = elmnt.data('serviceid');
+
+            return generateGraphCSVDownloadUrl(hostId, serviceId, dates.start.toISOString(), dates.end.toISOString())
+        }
+
+        const baseUrl = elmnt.data('href');
+        const chartId = elmnt.parents('.graph').data('graphId');
+
+        return generateChartActionURL(baseUrl, chartId, dates.start.unix(), dates.end.unix());
+    }
+
+    /* Add events on click on action download image/CSV */
+    jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
+        e.preventDefault();
+        window.location = generateActionURL(jQuery(this));
     });
 
     /* Remove a chart */
