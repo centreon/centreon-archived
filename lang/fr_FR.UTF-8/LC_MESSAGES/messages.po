@@ -4408,7 +4408,7 @@ msgstr "Sauvegarde du mot de passe LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:78
 msgid "Auto import users"
-msgstr "Import automatiques des utilisateurs"
+msgstr "Import automatique des utilisateurs"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:96
 msgid "Use service DNS"
