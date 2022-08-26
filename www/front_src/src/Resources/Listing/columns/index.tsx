@@ -59,9 +59,6 @@ const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
     color: isHovered
       ? theme.palette.text.primary
       : theme.palette.text.secondary,
-    fontWeight: isHovered
-      ? theme.typography.fontWeightMedium
-      : theme.typography.fontWeightRegular,
   }),
 }));
 
