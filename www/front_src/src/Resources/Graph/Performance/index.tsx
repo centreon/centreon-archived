@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  memo,
 } from 'react';
 
 import { Responsive } from '@visx/visx';
@@ -49,6 +50,8 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
+import AnomalyDetectionEnvelopeThreshold from './AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
+import AnomalyDetectionEnvelopeResizeThreshold from './AnomalyDetection/AnomalyDetectionEnvelopeResizeThreshold';
 import Graph from './Graph';
 import {
   isListingGraphOpenAtom,
@@ -66,6 +69,7 @@ import {
   TimeValue,
 } from './models';
 import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
+import Lines from './Lines';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -79,6 +83,7 @@ interface Props {
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
+  isResizeEnvelope?: boolean;
   limitLegendRows?: boolean;
   modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -161,6 +166,7 @@ const PerformanceGraph = ({
   modal,
   graphActions,
   getPerformanceGraphRef,
+  isResizeEnvelope,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -393,6 +399,11 @@ const PerformanceGraph = ({
 
   const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
 
+  const propsAreEqual = (prevProps, nextProps): boolean =>
+    equals(prevProps, nextProps);
+
+  const MemoizedLines = memo(Lines, propsAreEqual);
+
   return (
     <div
       className={classes.container}
@@ -448,7 +459,56 @@ const PerformanceGraph = ({
               width={width}
               xAxisTickFormat={xAxisTickFormat}
               onAddComment={onAddComment}
-            />
+            >
+              {({
+                graphLinesHeight,
+                leftScale,
+                rightScale,
+                timeTickLines,
+                xScale,
+                isDisplayedThreshold,
+                regularLines,
+                secondUnit,
+                thirdUnit,
+              }): JSX.Element => {
+                const props = {
+                  graphHeight: graphLinesHeight,
+                  leftScale,
+                  rightScale,
+                  xScale,
+                };
+
+                return (
+                  <MemoizedLines
+                    anomalyDetectionEnvelope={
+                      isDisplayedThreshold && (
+                        <AnomalyDetectionEnvelopeThreshold
+                          regularLines={regularLines}
+                          secondUnit={secondUnit}
+                          thirdUnit={thirdUnit}
+                          timeSeries={timeSeries}
+                          {...props}
+                        />
+                      )
+                    }
+                    anomalyDetectionResizeEnvelope={
+                      isResizeEnvelope && (
+                        <AnomalyDetectionEnvelopeResizeThreshold />
+                      )
+                    }
+                    displayTimeValues={displayTimeValues}
+                    isEditAnomalyDetectionDataDialogOpen={
+                      isEditAnomalyDetectionDataDialogOpen
+                    }
+                    lines={displayedLines}
+                    timeSeries={timeSeries}
+                    timeTick={timeTickLines}
+                    type={resource?.type}
+                    {...props}
+                  />
+                );
+              }}
+            </Graph>
           )}
         </Responsive.ParentSize>
       </div>

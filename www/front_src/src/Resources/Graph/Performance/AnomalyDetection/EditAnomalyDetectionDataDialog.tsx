@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, ReactNode } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+  useState,
+  cloneElement,
+} from 'react';
 
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
@@ -10,7 +16,7 @@ import TimePeriodButtonGroup from '../TimePeriods';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 
 interface Props {
-  children?: ReactNode;
+  children?: (args: { isResizeEnvelope: boolean }) => ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -52,9 +58,14 @@ const EditAnomalyDetectionDataDialog = ({
   children,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
 
   const handleClose = (): void => {
     setIsOpen(false);
+  };
+
+  const getIsResizeEnvelope = (value: boolean): void => {
+    setIsResizeEnvelope(value);
   };
 
   return (
@@ -63,10 +74,13 @@ const EditAnomalyDetectionDataDialog = ({
         <div className={classes.spacing}>
           <TimePeriodButtonGroup />
         </div>
-        <div className={classes.spacing}>{children}</div>
+        <div className={classes.spacing}>
+          {children && children({ isResizeEnvelope })}
+        </div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            <AnomalyDetectionSlider />
+            {/* send action of resize */}
+            <AnomalyDetectionSlider getIsResizeEnvelope={getIsResizeEnvelope} />
           </Paper>
           <Paper className={classes.exclusionPeriod}>
             Exclusion of periods

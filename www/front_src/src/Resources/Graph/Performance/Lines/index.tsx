@@ -26,7 +26,8 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  AnomalyDetectionEnvelope: ReactNode;
+  anomalyDetectionEnvelope: ReactNode;
+  anomalyDetectionResizeEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen?: boolean;
@@ -88,7 +89,8 @@ const Lines = ({
   timeTick,
   displayTimeValues,
   isEditAnomalyDetectionDataDialogOpen,
-  AnomalyDetectionEnvelope,
+  anomalyDetectionEnvelope,
+  anomalyDetectionResizeEnvelope,
   type,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
@@ -143,7 +145,8 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {AnomalyDetectionEnvelope}
+        {anomalyDetectionEnvelope}
+        {anomalyDetectionResizeEnvelope}
         {regularLines.map(
           ({
             metric,

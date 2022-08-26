@@ -1,42 +1,50 @@
-import { memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
-  equals,
-  isNil,
-  identity,
-  min,
-  max,
-  not,
-  lt,
-  gte,
-  difference,
-} from 'ramda';
-import {
-  Shape,
-  Grid,
-  Scale,
-  Group,
-  Tooltip as VisxTooltip,
   Event,
+  Grid,
+  Group,
+  Scale,
+  Shape,
+  Tooltip as VisxTooltip,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
-import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import {
+  difference,
+  equals,
+  gte,
+  identity,
+  isNil,
+  lt,
+  max,
+  min,
+  not,
+} from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
+  alpha,
   Button,
+  CircularProgress,
   ClickAwayListener,
   Paper,
-  Typography,
   Theme,
-  alpha,
-  useTheme,
-  CircularProgress,
   Tooltip,
+  Typography,
+  useTheme,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { grey } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   dateTimeFormat,
@@ -44,49 +52,48 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
-import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
-import {
-  getTime,
-  getMin,
-  getMax,
-  getDates,
-  getUnits,
-  getMetricValuesForUnit,
-  getMetricValuesForLines,
-  getSortedStackedLines,
-  getStackedMetricValues,
-  hasUnitStackedLines,
-} from '../timeSeries';
-import Lines from '../Lines';
+import { CommentParameters } from '../../../Actions/api';
+import useAclQuery from '../../../Actions/Resource/aclQuery';
+import { ResourceDetails } from '../../../Details/models';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import memoizeComponent from '../../../memoizedComponent';
+import { Resource, ResourceType } from '../../../models';
 import {
   labelActionNotPermitted,
   labelAddComment,
 } from '../../../translatedLabels';
-import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
-import { Resource, ResourceType } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
-import { CommentParameters } from '../../../Actions/api';
-import useAclQuery from '../../../Actions/Resource/aclQuery';
-import memoizeComponent from '../../../memoizedComponent';
+import Lines from '../Lines';
+import { AdjustTimePeriodProps, Line as LineModel, TimeValue } from '../models';
+import {
+  getDates,
+  getMax,
+  getMetricValuesForLines,
+  getMetricValuesForUnit,
+  getMin,
+  getSortedStackedLines,
+  getStackedMetricValues,
+  getTime,
+  getUnits,
+  hasUnitStackedLines,
+} from '../timeSeries';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
+import {
+  annotationHoveredAtom,
+  changeAnnotationHoveredDerivedAtom,
+} from './annotationsAtoms';
 import Axes from './Axes';
-import TimeShiftZones, {
-  TimeShiftContext,
-  TimeShiftDirection,
-} from './TimeShiftZones';
 import {
   changeMousePositionAndTimeValueDerivedAtom,
   changeTimeValueDerivedAtom,
   MousePosition,
   mousePositionAtom,
 } from './mouseTimeValueAtoms';
-import {
-  annotationHoveredAtom,
-  changeAnnotationHoveredDerivedAtom,
-} from './annotationsAtoms';
+import TimeShiftZones, {
+  TimeShiftContext,
+  TimeShiftDirection,
+} from './TimeShiftZones';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -95,7 +102,6 @@ const MemoizedAxes = memo(Axes, propsAreEqual);
 const MemoizedBar = memo(Shape.Bar, propsAreEqual);
 const MemoizedGridColumns = memo(Grid.GridColumns, propsAreEqual);
 const MemoizedGridRows = memo(Grid.GridRows, propsAreEqual);
-const MemoizedLines = memo(Lines, propsAreEqual);
 const MemoizedAnnotations = memo(Annotations, propsAreEqual);
 
 const margin = { bottom: 30, left: 45, right: 45, top: 30 };
@@ -188,6 +194,7 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
+  children?: (args: any) => ReactNode;
   containsMetrics: boolean;
   displayEventAnnotations: boolean;
   displayTimeValues: boolean;
@@ -252,6 +259,7 @@ const GraphContent = ({
   isInViewport,
   isEditAnomalyDetectionDataDialogOpen,
   displayTimeValues,
+  children,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
@@ -512,18 +520,6 @@ const GraphContent = ({
   const isDisplayedThreshold =
     equals(resource?.type, ResourceType.anomalydetection) && !isLegendClicked;
 
-  const thresholdProps = {
-    getTime,
-    graphHeight,
-    leftScale,
-    regularLines,
-    rightScale,
-    secondUnit,
-    thirdUnit,
-    timeSeries,
-    xScale,
-  };
-
   return (
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
       <div className={classes.container}>
@@ -562,25 +558,18 @@ const GraphContent = ({
               xAxisTickFormat={xAxisTickFormat}
               xScale={xScale}
             />
-            <MemoizedLines
-              AnomalyDetectionEnvelope={
-                isDisplayedThreshold && (
-                  <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
-                )
-              }
-              displayTimeValues={displayTimeValues}
-              graphHeight={graphHeight}
-              isEditAnomalyDetectionDataDialogOpen={
-                isEditAnomalyDetectionDataDialogOpen
-              }
-              leftScale={leftScale}
-              lines={lines}
-              rightScale={rightScale}
-              timeSeries={timeSeries}
-              timeTick={timeTick}
-              type={resource?.type}
-              xScale={xScale}
-            />
+            {children &&
+              children({
+                graphLinesHeight: graphHeight,
+                isDisplayedThreshold,
+                leftScale,
+                regularLines,
+                rightScale,
+                secondUnit,
+                thirdUnit,
+                timeTickLines: timeTick,
+                xScale,
+              })}
             {displayEventAnnotations && (
               <MemoizedAnnotations
                 graphHeight={graphHeight}
@@ -726,6 +715,7 @@ const memoProps = [
   'displayEventAnnotations',
   'containsMetrics',
   'isInViewport',
+  'children',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
