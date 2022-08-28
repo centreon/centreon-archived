@@ -49,7 +49,7 @@
     --option-color: var(--select-color);
     --form-table-list-header-h3-font-color: var(--color-white-rgba-8);
     --info-box-h4-font-color: var(--form-table-list-header-h3-font-color);
-    --md-checkbox-border-color-after: var(--color-primary-dark);
+    --md-checkbox-border-color-after: var(--color-black);
     --md-checkbox-border-color: var(--body-color);
     --centreon-popin-background-color: var(--body-background);
     --centreon-popin-border-color: var(--body-background);
@@ -224,4 +224,5 @@
     --custom-macros-template-background-color: var(--color-rayola);
     --badge-color: var(--color-black);
     --badge-a-color : var(--color-black);
+    --bt-success-hover-font-color: var(--color-white);
 }

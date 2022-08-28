@@ -696,6 +696,7 @@ p.description a, p.description a:visited {
 }
 .bt_success:hover {
     background: var(--bt-action-hover-background-color) !important;
+    color: var(--bt-success-hover-font-color);
 }
 
 .bt_danger {

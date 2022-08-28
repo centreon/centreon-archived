@@ -212,6 +212,7 @@
     --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color: var(--color-christi);
     --bt-success-ui-state-hover-color:var(--color-white);
+    --bt-success-hover-font-color: var(--color-white);
 
     --bt-danger-ui-state-hover-background-color: var(--color-shiraz);
     --bt-danger-ui-state-hover-color:var(--color-white);
