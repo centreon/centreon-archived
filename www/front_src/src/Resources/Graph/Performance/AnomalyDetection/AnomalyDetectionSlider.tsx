@@ -13,10 +13,6 @@ import Button from '@mui/material/Button';
 
 import { IconButton } from '@centreon/ui';
 
-interface Props {
-  getIsResizeEnvelope: (value: boolean) => void;
-}
-
 const useStyles = makeStyles((theme) => ({
   body: {
     display: 'flex',
@@ -75,9 +71,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AnomalyDetectionSlider = ({
-  getIsResizeEnvelope,
-}: Props): JSX.Element => {
+interface Props {
+  getFactors: (data: any) => void;
+}
+
+const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   const classes = useStyles();
   const dataSlider = {
     currentValue: 0.8,
@@ -103,14 +101,12 @@ const AnomalyDetectionSlider = ({
     const newCurrentValue = Number((step + currentValue).toFixed(1));
     setCurrentValue(newCurrentValue);
     setIsDefaultValue(false);
-    getIsResizeEnvelope(true);
   };
 
   const handleRemove = (): void => {
     const newCurrentValue = Number((currentValue - step).toFixed(1));
     setCurrentValue(newCurrentValue);
     setIsDefaultValue(false);
-    getIsResizeEnvelope(true);
   };
 
   const handleChangeCheckBox = (event): void => {
@@ -128,10 +124,18 @@ const AnomalyDetectionSlider = ({
     if (isDefaultValue) {
       setCurrentValue(dataSlider.defaultValue);
     }
+  }, [isDefaultValue]);
+
+  useEffect(() => {
     if (equals(currentValue, dataSlider.defaultValue)) {
       setIsDefaultValue(true);
     }
-  }, [isDefaultValue, currentValue]);
+
+    getFactors({
+      currentFactor: dataSlider.currentValue,
+      simulatedFactor: currentValue,
+    });
+  }, [currentValue]);
 
   return (
     <div className={classes.container}>

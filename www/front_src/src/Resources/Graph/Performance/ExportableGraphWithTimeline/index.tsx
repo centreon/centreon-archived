@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface Props {
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen: boolean;
-  isResizeEnveloped?: boolean;
   limitLegendRows?: boolean;
+  resizeEnvelopeData?: any;
   resource?: Resource | ResourceDetails;
 }
 
@@ -58,7 +58,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   graphHeight,
   limitLegendRows,
   isEditAnomalyDetectionDataDialogOpen,
-  isResizeEnveloped,
+  resizeEnvelopeData,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -217,7 +217,6 @@ const ExportablePerformanceGraphWithTimeline = ({
             isEditAnomalyDetectionDataDialogOpen
           }
           isInViewport={isInViewport}
-          isResizeEnvelope={isResizeEnveloped}
           limitLegendRows={limitLegendRows}
           modal={
             isOpenModalAD && (
@@ -225,17 +224,18 @@ const ExportablePerformanceGraphWithTimeline = ({
                 isOpen={isOpenModalAD}
                 setIsOpen={setIsOpenModalAD}
               >
-                {({ isResizeEnvelope }): JSX.Element => (
+                {({ factorsData }): JSX.Element => (
                   <ExportablePerformanceGraphWithTimeline
                     isEditAnomalyDetectionDataDialogOpen
                     graphHeight={180}
-                    isResizeEnveloped={isResizeEnvelope}
+                    resizeEnvelopeData={factorsData}
                     resource={resource}
                   />
                 )}
               </EditAnomalyDetectionDataDialog>
             )
           }
+          resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

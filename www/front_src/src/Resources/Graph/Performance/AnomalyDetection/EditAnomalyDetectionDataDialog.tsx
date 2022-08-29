@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  ReactNode,
-  useState,
-  cloneElement,
-} from 'react';
+import { Dispatch, SetStateAction, ReactNode, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
@@ -14,12 +8,6 @@ import Dialog from '@mui/material/Dialog';
 import TimePeriodButtonGroup from '../TimePeriods';
 
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
-
-interface Props {
-  children?: (args: { isResizeEnvelope: boolean }) => ReactNode;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-}
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -52,20 +40,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface Props {
+  children?: (args: { factorsData: any }) => ReactNode;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}
+
 const EditAnomalyDetectionDataDialog = ({
   isOpen,
   setIsOpen,
   children,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
+
+  const [factorsData, setFactorsData] = useState(null);
 
   const handleClose = (): void => {
     setIsOpen(false);
   };
 
-  const getIsResizeEnvelope = (value: boolean): void => {
-    setIsResizeEnvelope(value);
+  const getFactors = (data): void => {
+    setFactorsData(data);
   };
 
   return (
@@ -75,12 +70,11 @@ const EditAnomalyDetectionDataDialog = ({
           <TimePeriodButtonGroup />
         </div>
         <div className={classes.spacing}>
-          {children && children({ isResizeEnvelope })}
+          {children && children({ factorsData })}
         </div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            {/* send action of resize */}
-            <AnomalyDetectionSlider getIsResizeEnvelope={getIsResizeEnvelope} />
+            <AnomalyDetectionSlider getFactors={getFactors} />
           </Paper>
           <Paper className={classes.exclusionPeriod}>
             Exclusion of periods
