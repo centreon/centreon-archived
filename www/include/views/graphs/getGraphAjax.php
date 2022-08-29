@@ -75,8 +75,8 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
 {
     $listGraph = array();
     if (
-        $isAdmin ||
-        (!$isAdmin && isset($lca[$host]))
+        $isAdmin
+        || (!$isAdmin && isset($lca[$host]))
     ) {
         $services =  getMyHostServices($host);
         foreach ($services as $svcId => $svcName) {
