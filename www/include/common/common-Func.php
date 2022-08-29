@@ -1138,7 +1138,7 @@ function getMyCheckCmdName($service_id = null)
     $statement = $pearDB->prepare($query);
     while (1) {
         $statement2 = $pearDB->prepare("SELECT command_command_id, service_template_model_stm_id FROM service " .
-            "WHERE service_id = :service_id LIMIT 1") ;
+            "WHERE service_id = :service_id LIMIT 1");
         $statement2->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement2->execute();
         $row = $statement2->fetchRow();
