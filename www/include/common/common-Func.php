@@ -736,7 +736,7 @@ function getMyServiceField($service_id, $field)
 
     while (1) {
         $statement = $pearDB->prepare("SELECT `" . $field . "` , service_template_model_stm_id " .
-            "FROM service WHERE service_id = :service_id LIMIT 1") ;
+            "FROM service WHERE service_id = :service_id LIMIT 1");
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetchRow();
@@ -800,7 +800,7 @@ function getMyServiceName($service_id = null)
 
     while (1) {
         $statement = $pearDB->prepare("SELECT service_description, service_template_model_stm_id FROM service " .
-            " WHERE service_id = :service_id LIMIT 1") ;
+            " WHERE service_id = :service_id LIMIT 1");
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetchRow();
@@ -829,7 +829,7 @@ function getMyServiceAlias($service_id = null)
 
     while (1) {
         $statement = $pearDB->prepare("SELECT service_alias, service_template_model_stm_id FROM service " .
-            "WHERE service_id = :service_id LIMIT 1") ;
+            "WHERE service_id = :service_id LIMIT 1");
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetchRow();
@@ -858,7 +858,7 @@ function getMyServiceGraphID($service_id = null)
     while (1) {
         $statement = $pearDB->prepare("SELECT esi.graph_id, service_template_model_stm_id" .
             " FROM service, extended_service_information esi " .
-            "WHERE service_id = :service_id AND esi.service_service_id = service_id LIMIT 1") ;
+            "WHERE service_id = :service_id AND esi.service_service_id = service_id LIMIT 1");
         $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetchRow();
@@ -883,7 +883,7 @@ function getMyServiceIDStorage($service_description, $host_id)
     $statement = $dbb->prepare("SELECT s.service_id FROM services s " .
         " WHERE (s.description = :service_description
                         OR s.description = :utf8_uncoded_service_description ) "
-        . " AND s.host_id = :host_id LIMIT 1") ;
+        . " AND s.host_id = :host_id LIMIT 1");
     $statement->bindValue(':service_description', $service_description, \PDO::PARAM_STR);
     $statement->bindValue(':utf8_uncoded_service_description', utf8_encode($service_description), \PDO::PARAM_STR);
     $statement->bindValue(':host_id', (int) $host_id, \PDO::PARAM_INT);
