@@ -131,6 +131,7 @@
         "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
         "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
         "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress",
-        "phpstan:core": "phpstan analyse -c phpstan.core.neon --memory-limit=1G"
+        "phpstan:core": "phpstan analyse -c phpstan.core.neon --memory-limit=1G",
+        "php-cs-fixer:core": "php-cs-fixer fix"
     }
 }
