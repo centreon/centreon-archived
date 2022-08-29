@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\Application\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
@@ -30,6 +31,8 @@ use Core\Security\Application\ProviderConfiguration\OpenId\Repository\ReadOpenId
 
 class FindOpenIdConfiguration
 {
+    use LoggerTrait;
+
     /**
      * @param ReadOpenIdConfigurationRepositoryInterface $repository
      */
@@ -45,6 +48,7 @@ class FindOpenIdConfiguration
         try {
             $configuration = $this->repository->findConfiguration();
         } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

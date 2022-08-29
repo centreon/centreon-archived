@@ -274,6 +274,11 @@ class Resource
     private $severity;
 
     /**
+     * @var integer|null
+     */
+    private ?int $internalId = null;
+
+    /**
      * Resource constructor.
      */
     public function __construct()
@@ -1128,5 +1133,24 @@ class Resource
     public function getSeverity(): ?Severity
     {
         return $this->severity;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getInternalId(): ?int
+    {
+        return $this->internalId;
+    }
+
+    /**
+     * @param integer|null $internalId
+     * @return self
+     */
+    public function setInternalId(?int $internalId): self
+    {
+        $this->internalId = $internalId;
+
+        return $this;
     }
 }

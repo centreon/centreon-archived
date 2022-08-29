@@ -13121,11 +13121,11 @@ msgstr "cubo de basura"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "No hay tiempo de inactividad planificado para los servicios"
 
-#~ msgid "Host category"
-#~ msgstr "Categoría de anfitriones"
+msgid "Host category"
+msgstr "Categoría de anfitriones"
 
-#~ msgid "Service category"
-#~ msgstr "Categorias de servicio"
+msgid "Service category"
+msgstr "Categoria de servicio"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusión"
@@ -15168,6 +15168,9 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Criticidad del servicio"
 
@@ -15221,3 +15224,6 @@ msgstr "Nivel de criticidad del host"
 
 #  msgid "Certificate Common Name (optional)"
 #  msgstr ""
+
+# msgid "CSV"
+# msgstr ""

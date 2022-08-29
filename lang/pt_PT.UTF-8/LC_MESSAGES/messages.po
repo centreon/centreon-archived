@@ -11777,7 +11777,7 @@ msgstr "Grupo de traps SNMP"
 
 #: centreon-web/www/install/smarty_translate.php:387
 msgid "Host category"
-msgstr "Categoria do Host"
+msgstr "Categoria de Host"
 
 #: centreon-web/www/install/smarty_translate.php:393
 msgid "Informations"
@@ -15607,6 +15607,9 @@ msgstr "Se ha producido un error al recuperar los categorías de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Severidade de serviço"
 
@@ -15660,3 +15663,15 @@ msgstr "Nível de Severidade de host"
 
 #  msgid "Certificate Common Name (optional)"
 #  msgstr ""
+
+# msgid "As displayed"
+# msgstr ""
+
+# msgid "Medium size"
+# msgstr ""
+
+# msgid "Small size"
+# msgstr ""
+
+# msgid "CSV"
+# msgstr ""

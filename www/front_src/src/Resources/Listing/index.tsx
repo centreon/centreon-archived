@@ -1,4 +1,4 @@
-import { equals, includes, not } from 'ramda';
+import { equals, includes, not, isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
@@ -14,11 +14,8 @@ import { Resource, SortOrder } from '../models';
 import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
 import {
   openDetailsTabIdAtom,
-  selectedResourceIdAtom,
-  selectedResourceParentIdAtom,
-  selectedResourceParentTypeAtom,
-  selectedResourceTypeAtom,
   selectedResourceUuidAtom,
+  selectedResourcesDetailsAtom,
 } from '../Details/detailsAtoms';
 import {
   resourcesToAcknowledgeAtom,
@@ -60,19 +57,15 @@ const ResourceListing = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useAtom(
     selectedResourcesAtom,
   );
+  const [selectedResourceDetails, setSelectedResourceDetails] = useAtom(
+    selectedResourcesDetailsAtom,
+  );
   const listing = useAtomValue(listingAtom);
   const sending = useAtomValue(sendingAtom);
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const search = useAtomValue(searchAtom);
-  const setSelectedResourceParentType = useUpdateAtom(
-    selectedResourceParentTypeAtom,
-  );
-  const setSelectedResourceType = useUpdateAtom(selectedResourceTypeAtom);
-  const setSelectedResourceParentId = useUpdateAtom(
-    selectedResourceParentIdAtom,
-  );
-  const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
+
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
   const setLimit = useUpdateAtom(limitAtom);
   const setResourcesToAcknowledge = useUpdateAtom(resourcesToAcknowledgeAtom);
@@ -100,17 +93,27 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+  const selectResource = ({ id, links, uuid }: Resource): void => {
     setSelectedResourceUuid(uuid);
-    setSelectedResourceId(id);
-    setSelectedResourceParentId(parent?.id);
-    setSelectedResourceType(type);
-    setSelectedResourceParentType(parent?.type);
+    setSelectedResourceDetails({
+      resourceId: id,
+      resourcesDetailsEndpoint: links?.endpoints?.details,
+    });
   };
 
   const resourceDetailsOpenCondition = {
     color: alpha(theme.palette.primary.main, 0.12),
-    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
+    condition: ({ id }): boolean => {
+      if (isEmpty(selectedResourceDetails) || isNil(selectedResourceDetails)) {
+        return false;
+      }
+
+      const { parentResourceId } = selectedResourceDetails;
+
+      return parentResourceId
+        ? equals(id, parentResourceId)
+        : equals(id, selectedResourceDetails?.resourceId);
+    },
     name: 'detailsOpen',
   };
 
@@ -192,6 +195,7 @@ const ResourceListing = (): JSX.Element => {
         selectedResourceUuid,
         sending,
         enabledAutoRefresh,
+        selectedResourceDetails,
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[

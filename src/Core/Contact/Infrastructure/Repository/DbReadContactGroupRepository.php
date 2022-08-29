@@ -83,6 +83,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -131,6 +134,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -165,6 +171,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         $statement->execute();
         $contactGroup = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
             $contactGroup = DbContactGroupFactory::createFromRecord($result);
         }
         $this->debug(
