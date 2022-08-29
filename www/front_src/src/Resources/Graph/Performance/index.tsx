@@ -1,5 +1,4 @@
 import {
-  memo,
   MutableRefObject,
   ReactNode,
   useEffect,
@@ -50,6 +49,7 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
+import { FactorsData, Resizing } from './AnomalyDetection/models';
 import Graph from './Graph';
 import {
   isListingGraphOpenAtom,
@@ -57,7 +57,6 @@ import {
 } from './Graph/mouseTimeValueAtoms';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import Legend from './Legend';
-import Lines from './Lines';
 import LoadingSkeleton from './LoadingSkeleton';
 import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
@@ -76,7 +75,9 @@ interface Props {
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
-  getPerformanceGraphRef: (value: any) => void;
+  getPerformanceGraphRef: (
+    value: MutableRefObject<HTMLDivElement | null>,
+  ) => void;
   graphActions?: ReactNode;
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen?: boolean;
@@ -84,7 +85,7 @@ interface Props {
   limitLegendRows?: boolean;
   modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: any;
+  resizeEnvelopeData?: FactorsData & Resizing;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;

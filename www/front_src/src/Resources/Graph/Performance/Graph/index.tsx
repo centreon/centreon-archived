@@ -44,7 +44,6 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import AnomalyDetectionEnvelopeResizeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeResizeThreshold';
 import AnomalyDetectionEnvelopeThreshold from '../AnomalyDetection/AnomalyDetectionEnvelopeThreshold';
 import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
 import {
@@ -70,6 +69,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
+import { FactorsData, Resizing } from '../AnomalyDetection/models';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -200,7 +200,7 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: any;
+  resizeEnvelopeData?: FactorsData & Resizing;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -572,8 +572,11 @@ const GraphContent = ({
                 )
               }
               anomalyDetectionResizeEnvelope={
-                resizeEnvelopeData && (
-                  <AnomalyDetectionEnvelopeResizeThreshold />
+                resizeEnvelopeData?.isResizing && (
+                  <AnomalyDetectionEnvelopeThreshold
+                    {...thresholdProps}
+                    data={resizeEnvelopeData}
+                  />
                 )
               }
               displayTimeValues={displayTimeValues}

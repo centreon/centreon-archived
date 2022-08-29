@@ -13,6 +13,8 @@ import Button from '@mui/material/Button';
 
 import { IconButton } from '@centreon/ui';
 
+import { FactorsData, Resizing } from './models';
+
 const useStyles = makeStyles((theme) => ({
   body: {
     display: 'flex',
@@ -72,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  getFactors: (data: any) => void;
+  getFactors: (data: FactorsData & Resizing) => void;
 }
 
 const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
@@ -81,9 +83,12 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
     currentValue: 0.8,
     defaultValue: 2,
   };
+  const maxSlider = 5;
+  const minSlider = 0;
   const step = 0.1;
   const [currentValue, setCurrentValue] = useState(dataSlider.currentValue);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
 
   const marks = [
     {
@@ -95,18 +100,21 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   const handleChangeSlider = (event): void => {
     setCurrentValue(event.target.value);
     setIsDefaultValue(false);
+    setIsResizing(true);
   };
 
   const handleAdd = (): void => {
     const newCurrentValue = Number((step + currentValue).toFixed(1));
     setCurrentValue(newCurrentValue);
     setIsDefaultValue(false);
+    setIsResizing(true);
   };
 
   const handleRemove = (): void => {
     const newCurrentValue = Number((currentValue - step).toFixed(1));
     setCurrentValue(newCurrentValue);
     setIsDefaultValue(false);
+    setIsResizing(true);
   };
 
   const handleChangeCheckBox = (event): void => {
@@ -117,7 +125,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
     console.log('confirm');
   };
 
-  const cancelResizingEnvelop = (): void => {
+  const cancelResizingEnvelope = (): void => {
     console.log('cancel');
   };
   useEffect(() => {
@@ -133,6 +141,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
 
     getFactors({
       currentFactor: dataSlider.currentValue,
+      isResizing,
       simulatedFactor: currentValue,
     });
   }, [currentValue]);
@@ -142,7 +151,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
       <div className={classes.header}>
         <Typography variant="h6">Manage envelop size</Typography>
         <Typography variant="caption">
-          Changes to the envelop size will be applied immediately
+          Changes to the envelope size will be applied immediately
         </Typography>
       </div>
 
@@ -151,7 +160,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
           <IconButton data-testid="add" size="small" onClick={handleRemove}>
             <div className={classes.icon}>
               <RemoveIcon fontSize="small" />
-              <Typography variant="subtitle2">0</Typography>
+              <Typography variant="subtitle2">{minSlider}</Typography>
             </div>
           </IconButton>
 
@@ -159,8 +168,8 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
             aria-label="Small"
             className={classes.slider}
             marks={marks}
-            max={5}
-            min={0}
+            max={maxSlider}
+            min={minSlider}
             size="small"
             step={step}
             value={currentValue}
@@ -170,7 +179,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
           <IconButton data-testid="remove" size="small" onClick={handleAdd}>
             <div className={classes.icon}>
               <AddIcon fontSize="small" />
-              <Typography variant="subtitle2">5</Typography>
+              <Typography variant="subtitle2">{maxSlider}</Typography>
             </div>
           </IconButton>
         </div>
@@ -186,7 +195,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
       </div>
 
       <div className={classes.footer}>
-        <Button size="small" variant="text" onClick={cancelResizingEnvelop}>
+        <Button size="small" variant="text" onClick={cancelResizingEnvelope}>
           Cancel
         </Button>
         <Button
