@@ -31,7 +31,8 @@
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^4.0",
-        "pestphp/pest": "^1.21"
+        "pestphp/pest": "^1.21",
+        "friendsofphp/php-cs-fixer": "^3.10"
     },
     "require": {
         "beberlei/assert": "^3.3",
