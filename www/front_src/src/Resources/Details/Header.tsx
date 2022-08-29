@@ -34,9 +34,10 @@ import {
   labelViewReport,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import { Parent, ResourceUris } from '../models';
+import { ResourceUris } from '../models';
 import { replaceBasename } from '../helpers';
 
+import { ResourceDetails } from './models';
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
 
 import { DetailsSectionProps } from '.';
@@ -116,7 +117,7 @@ const LoadingSkeleton = (): JSX.Element => (
 );
 
 type Props = {
-  onSelectParent: (parent: Parent) => void;
+  onSelectParent: (resource: ResourceDetails) => void;
 } & DetailsSectionProps;
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
@@ -132,6 +133,8 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   });
 
   const copyLink = (): Promise<void> => copy(window.location.href);
+  const selectResourceDetails = (): void =>
+    onSelectParent(details as ResourceDetails);
 
   const navigateToResourceUris = (
     category: keyof ResourceUris,
@@ -219,7 +222,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
             <SelectableResourceName
               name={details.parent.name}
               variant="caption"
-              onSelect={(): void => onSelectParent(details.parent)}
+              onSelect={selectResourceDetails}
             />
           </div>
         )}

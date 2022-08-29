@@ -59,8 +59,8 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->hostId . '-s' . $response->id,
-            'id' => $response->id,
+            'uuid' => 'h' . $response->hostId . '-s' . $response->serviceId,
+            'id' => $response->serviceId,
             'name' => $response->name,
             'type' => 'service',
             'short_type' => 's',
@@ -151,10 +151,25 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
         /**
          * Creating Hypermedias
          */
-        $presenterResponse['links'] = [
-            'uris' => $this->hypermediaCreator->createInternalUris($response),
-            'endpoints' => $this->hypermediaCreator->createEndpoints($response)
+        $parameters = [
+            'type' => $response->type,
+            'hostId' => $response->hostId,
+            'serviceId' => $response->serviceId,
+            'hasGraphData' => $response->hasGraphData
         ];
+
+        $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
+
+        $presenterResponse['links']['endpoints'] = [
+            'notification_policy' => $endpoints['notification_policy'],
+            'timeline' => $endpoints['timeline'],
+            'status_graph' => $endpoints['status_graph'],
+            'performance_graph' => $endpoints['performance_graph'],
+            'details' => $endpoints['details']
+        ];
+
+        $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
+
         $this->presenterFormatter->present($presenterResponse);
     }
 

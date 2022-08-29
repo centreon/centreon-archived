@@ -30,6 +30,7 @@ use Core\Domain\RealTime\Model\HostStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 
 class FindHostResponse
 {
@@ -176,7 +177,12 @@ class FindHostResponse
     public ?array $severity = null;
 
     /**
-     * @param int $id
+     * @var string
+     */
+    public string $type = HostResourceType::TYPE_NAME;
+
+    /**
+     * @param int $hostId
      * @param string $name
      * @param string $address
      * @param string $monitoringServerName
@@ -189,7 +195,7 @@ class FindHostResponse
      * @param Severity|null $severity
      */
     public function __construct(
-        public int $id,
+        public int $hostId,
         public string $name,
         public string $address,
         public string $monitoringServerName,

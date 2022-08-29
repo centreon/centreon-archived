@@ -16943,7 +16943,10 @@ msgid "Host severity"
 msgstr "Criticité d'hôte"
 
 msgid "Host severity level"
-msgstr "Niveau de criticité d'hôte"
+msgstr "Niveau de criticité de l'hôte"
+
+msgid "Resource type \"%s\" is not supported"
+msgstr "Type de ressource \"%s\" non supporté"
 
 msgid "Following modules need to be removed first: %s"
 msgstr "Les modules suivants doivent être supprimés : %s"

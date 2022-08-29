@@ -61,8 +61,8 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->id,
-            'id' => $response->id,
+            'uuid' => 'h' . $response->hostId,
+            'id' => $response->hostId,
             'name' => $response->name,
             'monitoring_server_name' => $response->monitoringServerName,
             'type' => 'host',
@@ -162,10 +162,20 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
         /**
          * Creating Hypermedias
          */
-        $presenterResponse['links'] = [
-            'uris' => $this->hypermediaCreator->createInternalUris($response),
-            'endpoints' => $this->hypermediaCreator->createEndpoints($response),
+        $parameters = [
+            'type' => $response->type,
+            'hostId' => $response->hostId
         ];
+
+        $endpoints = $this->hypermediaCreator->createEndpoints($parameters);
+
+        $presenterResponse['links']['endpoints'] = [
+            'notification_policy' => $endpoints['notification_policy'],
+            'timeline' => $endpoints['timeline'],
+            'details' => $endpoints['details']
+        ];
+
+        $presenterResponse['links']['uris'] = $this->hypermediaCreator->createInternalUris($parameters);
 
         $this->presenterFormatter->present($presenterResponse);
     }
