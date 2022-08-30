@@ -48,10 +48,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
   },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
-  },
 }));
 
 const GraphActions = ({
@@ -71,7 +67,7 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-  const isResourceAnomalyDetection = equals(
+  const isAnomalyDetectionResource = equals(
     resourceType,
     ResourceType.anomalydetection,
   );
@@ -133,37 +129,36 @@ const GraphActions = ({
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelPerformancePage)}
-            className={classes.buttonLink}
             color="primary"
             data-testid={labelPerformancePage}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
           >
-            <LaunchIcon style={{ fontSize: 18 }} />
+            <LaunchIcon fontSize="inherit" />
           </IconButton>
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelExportToPng)}
             data-testid={labelExportToPng}
             disabled={isNil(timeline)}
-            size="large"
+            size="small"
             title={t(labelExportToPng)}
             onClick={openSizeExportMenu}
           >
-            <SaveAsImageIcon style={{ fontSize: 18 }} />
+            <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
-          {isResourceAnomalyDetection && (
+          {isAnomalyDetectionResource && (
             <IconButton
               disableTouchRipple
               ariaLabel={t(labelPerformanceGraphAD)}
               data-testid={labelPerformanceGraphAD}
               disabled={isNil(timeline)}
-              size="large"
+              size="small"
               title={t(labelPerformanceGraphAD)}
               onClick={openModalAnomalyDetection}
             >
-              <WrenchIcon style={{ fontSize: 18 }} />
+              <WrenchIcon fontSize="inherit" />
             </IconButton>
           )}
           <Menu
