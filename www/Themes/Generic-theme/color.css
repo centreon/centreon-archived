@@ -36,7 +36,6 @@ svg{
 .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td, .tab .row_disabled td {
     border-top-color: var(--tab-lists-td-top-border-color);
     border-left-color: var(--tab-lists-td-left-border-color);
-    border-bottom-color: var(--tab-lists-td-bottom-border-color);
     border-right-color: var(--tab-lists-td-right-border-color);
 }
 
@@ -49,7 +48,7 @@ svg{
 
 .ListHeader td{
     color: var(--list-header-font-color);
-    border-bottom: 1px solid var(--list-header-font-color);
+    border-bottom: 1px solid var(--list-header-border-bottom-color);
 }
 
 .ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter {

@@ -246,7 +246,7 @@
     /*******************/
 
     /** table font color **/
-    --table-font-color : var(--color-secondary) ; 
+    --table-font-color : var(--color-secondary);
 
     /** START : Indicators **/
     --resume-light : var(--color-athens-gray);
@@ -287,7 +287,7 @@
     --list-one-font-color: none;
     --list-one-fix-background-color: var(--list-one-background-color);
     --list-hover-background-color: var(--color-listing-hover);
-    --listing-border-botom-color : var(--color-divider) ; 
+    --listing-border-botom-color : var(--color-divider);
     --list-table-border-color: var(--color-divider);
     --list-one-hover-font-color: none;
     --list-two-background-color: var(--color-twilight-blue-2);
@@ -302,13 +302,13 @@
     --list-up-background-color: var(--color-success);
     --list-up-hover-background-color: var(--color-gimblet);
     --list-down-background-color: var(--color-carnation-pink);
-    --list-down-hover-background-color: var(--list-one-hover-background-color);
+    --list-down-hover-background-color: none;
     --list-unreachable-background-color: var(--color-aluminium);
-    --list-unreachable-hover-background-color: var(--list-one-hover-background-color);
+    --list-unreachable-hover-background-color: none;
     --list-downtime-background-color: var(--color-blue-chalk);
-    --list-downtime-hover-background-color: var(--list-one-hover-background-color);
+    --list-downtime-hover-background-color: none;
     --list-ack-background-color: var(--color-dolly);
-    --list-ack-hover-background-color: var(--list-one-hover-background-color);
+    --list-ack-hover-background-color: none;
     --list-lvls-td-top-border-color: var(--color-silver-chalice);
     --list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
     --list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
@@ -323,11 +323,11 @@
     --lists-td-right-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-top-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-left-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-bottom-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
     --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
     --list-header-font-color: var(--color-primary-body-background-dark);
+    --list-header-border-bottom-color: var(--color-divider);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
     --input-button-hover-background-color: var(--color-primary-dark);
@@ -382,7 +382,7 @@
     --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
-    --view-body-portlet-border-color: var(--color-iron);
+    --view-body-portlet-border-color: var(--color-divider);
     --view-body-ui-widget-header-font-color: var(--color-black);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
@@ -394,7 +394,7 @@
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
     --form-table-list-lvl-1-background-color: var(--color-white);
     --form-table-list-lvl-1-col-name-background-color: var(--color-wild-sand);
-    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-white-lilac);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-divider);
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     /* ------ END : Forms variables -----*/
 
@@ -469,7 +469,7 @@
     /* ------ START : Log options variables -----*/
     --ajax-option-background-color: var(--color-alabaster);
     --ajax-option-font-color: var(--color-dove-gray);
-    --ajax-option-border-bottom-color: var(--color-white-lilac);
+    --ajax-option-border-bottom-color: var(--color-divider);
     --ajax-option-border-top-color: var(--ajax-option-border-bottom-color);
     --ajax-option-tr-first-child-background-color: var(--color-white);
     --ajax-option-tr-first-child-font-color: var(--color-grey-chateau);
@@ -490,7 +490,7 @@
     /* ------ END : Tactical overview variables -----*/
 
     /* ------ START : Line alternate variables -----*/
-    --row-disabled-background-color: var(--color-athens-gray-4);
+    --row-disabled-background-color: var(--color-alto-5);
     --list-table-small-arg-anchor-font-color: var(--color-dove-gray);
     --list-lvl-3-border-bottom-color: var(--color-white);
     --list-lvl-3-th-font-color: var(--color-aluminium);

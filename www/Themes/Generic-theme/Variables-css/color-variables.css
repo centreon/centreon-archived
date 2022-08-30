@@ -21,7 +21,7 @@
     --color-danger : #FF4A4A ;
     --color-danger-dark : #D60101 ;
     --color-pending : #1EBEB3 ;
-    --color-pending-dark : #118077 ; 
+    --color-pending-dark : #118077;
     --color-unknown : #757575 ;
     --color-unknown-dark : #4A4343 ;
     --color-info :  #1588D1 ;
@@ -190,6 +190,7 @@
     --color-dark-gray-rgba-6: rgba(90, 90, 90, 0.6);
     --color-grey-chateau-rgba-4: rgba(167, 169, 172, 0.4);
     --color-torch-red-rgba-4: rgba(249, 0, 38, 0.4);
+    --color-alto-rgba-5: rgba(153, 153, 153, .5);
     --color-rayola: #ffcb6b;
     --color-rayola-2: #ffa600;
     --color-menthol: #B6FCA7;

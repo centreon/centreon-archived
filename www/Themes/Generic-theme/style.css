@@ -1832,7 +1832,7 @@ span.show-disabled[disabled]::after {
 .ToolbarTR td:first-child {
     width: 50%;
 }
-.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 28px; padding: 0 10px; }
+.ToolbarTR a.btc { display: inline-block; height: 28px; line-height: 31px; padding: 0 10px; }
 
 .Toolbar_TDSelectAction_Top {
     border: 1px solid var(--toolbar-td-select-top-action-border-color);
