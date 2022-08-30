@@ -553,7 +553,7 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
-              isEditAnomalyDetectionDataDialog={
+              isEditAnomalyDetectionDataDialogOpen={
                 isEditAnomalyDetectionDataDialogOpen
               }
               leftScale={leftScale}
