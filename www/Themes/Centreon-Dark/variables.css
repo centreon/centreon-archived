@@ -231,4 +231,5 @@
     --badge-a-color : var(--color-black);
     --bt-success-hover-font-color: var(--color-white);
     --bt-danger-hover-font-color: var(--color-white);
+    --view-body-portlet-border-color: var(--color-divider-dark);
 }

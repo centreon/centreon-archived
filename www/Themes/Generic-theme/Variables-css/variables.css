@@ -382,7 +382,7 @@
     --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
-    --view-body-portlet-border-color: var(--color-iron);
+    --view-body-portlet-border-color: var(--color-divider);
     --view-body-ui-widget-header-font-color: var(--color-black);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
