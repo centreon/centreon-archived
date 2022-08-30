@@ -150,7 +150,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
     };
   };
 
-  if (details === undefined) {
+  if (!details) {
     return <LoadingSkeleton />;
   }
 
