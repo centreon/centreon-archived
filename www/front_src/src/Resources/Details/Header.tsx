@@ -146,7 +146,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
         newWord: '/',
       });
 
-      navigate(`${url}`);
+      navigate(url);
     };
   };
 
