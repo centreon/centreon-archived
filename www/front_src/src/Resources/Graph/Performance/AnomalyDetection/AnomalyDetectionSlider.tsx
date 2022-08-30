@@ -97,24 +97,26 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
     },
   ];
 
-  const handleChangeSlider = (event): void => {
-    setCurrentValue(event.target.value);
+  const enableUpdatingSlider = (): void => {
     setIsDefaultValue(false);
     setIsResizing(true);
+  };
+
+  const handleChangeSlider = (event): void => {
+    setCurrentValue(event.target.value);
+    enableUpdatingSlider();
   };
 
   const handleAdd = (): void => {
     const newCurrentValue = Number((step + currentValue).toFixed(1));
     setCurrentValue(newCurrentValue);
-    setIsDefaultValue(false);
-    setIsResizing(true);
+    enableUpdatingSlider();
   };
 
   const handleRemove = (): void => {
     const newCurrentValue = Number((currentValue - step).toFixed(1));
     setCurrentValue(newCurrentValue);
-    setIsDefaultValue(false);
-    setIsResizing(true);
+    enableUpdatingSlider();
   };
 
   const handleChangeCheckBox = (event): void => {
@@ -130,8 +132,14 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   };
 
   const cancelResizingEnvelope = (): void => {
-    console.log('cancel');
+    setCurrentValue(dataSlider.currentValue);
+    setIsResizing(false);
+    if (equals(dataSlider.currentValue, dataSlider.defaultValue)) {
+      return;
+    }
+    setIsDefaultValue(false);
   };
+
   useEffect(() => {
     if (isDefaultValue) {
       setCurrentValue(dataSlider.defaultValue);
@@ -139,7 +147,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   }, [isDefaultValue]);
 
   useEffect(() => {
-    if (equals(currentValue, dataSlider.defaultValue)) {
+    if (equals(currentValue, dataSlider.defaultValue) && isResizing) {
       setIsDefaultValue(true);
     }
 
@@ -148,7 +156,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
       isResizing,
       simulatedFactor: currentValue,
     });
-  }, [currentValue]);
+  }, [currentValue, isResizing]);
 
   return (
     <div className={classes.container}>
