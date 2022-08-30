@@ -44,6 +44,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
+    alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
