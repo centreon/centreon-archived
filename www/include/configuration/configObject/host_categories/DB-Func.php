@@ -249,10 +249,11 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
                     $statement3->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
                     $statement3->execute();
                     $fields["hc_hosts"] = "";
+                    $hrstatement = $pearDB->prepare("INSERT INTO hostcategories_relation VALUES (:maxId, :hostId)");
                     while ($host = $statement3->fetch()) {
-                        $query = "INSERT INTO hostcategories_relation VALUES ('" . $maxId["MAX(hc_id)"] .
-                            "', '" . $host["host_host_id"] . "')";
-                        $pearDB->query($query);
+                        $hrstatement->bindValue(':maxId', (int) $maxId["MAX(hc_id)"], \PDO::PARAM_INT);
+                        $hrstatement->bindValue(':hostId', (int) $host["host_host_id"], \PDO::PARAM_INT);
+                        $hrstatement->execute();
                         $fields["hc_hosts"] .= $host["host_host_id"] . ",";
                     }
                     $fields["hc_hosts"] = trim($fields["hc_hosts"], ",");
