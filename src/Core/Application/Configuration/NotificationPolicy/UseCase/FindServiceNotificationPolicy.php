@@ -22,22 +22,21 @@ declare(strict_types=1);
 
 namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\ServiceConfiguration\Service;
-use Core\Domain\RealTime\Model\Service as RealtimeService;
-use Centreon\Domain\Engine\EngineConfiguration;
-use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Domain\Configuration\Notification\Model\NotifiedContact;
-use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
+use Centreon\Domain\ServiceConfiguration\Service;
+use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
-use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
-use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
+use Core\Application\RealTime\Repository\{ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface,
+    ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface};
+use Core\Domain\Configuration\Notification\Model\{NotifiedContact, NotifiedContactGroup};
+use Core\Domain\RealTime\Model\Service as RealtimeService;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
 class FindServiceNotificationPolicy
 {

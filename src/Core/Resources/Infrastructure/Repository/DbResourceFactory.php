@@ -22,16 +22,13 @@ declare(strict_types=1);
 
 namespace Core\Resources\Infrastructure\Repository;
 
+use Centreon\Domain\Monitoring\{Icon as LegacyIconModel, Notes, Resource as ResourceEntity, ResourceStatus};
+
 use Core\Domain\RealTime\Model\Icon;
-use Centreon\Domain\Monitoring\Notes;
-use Centreon\Domain\Monitoring\ResourceStatus;
-use Core\Domain\RealTime\ResourceTypeInterface;
-use Core\Severity\RealTime\Domain\Model\Severity;
-use Centreon\Domain\Monitoring\Icon as LegacyIconModel;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
-use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
+use Core\Severity\RealTime\Domain\Model\Severity;
 
 class DbResourceFactory
 {
