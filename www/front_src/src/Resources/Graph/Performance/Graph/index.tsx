@@ -10,6 +10,8 @@ import {
   lt,
   gte,
   difference,
+  lte,
+  length,
 } from 'ramda';
 import {
   Shape,
@@ -510,7 +512,7 @@ const GraphContent = ({
 
   const regularLines = difference(lines, stackedLines);
 
-  const isLegendClicked = lines?.length <= 1;
+  const isLegendClicked = lte(length(lines), 1);
 
   const isDisplayedThreshold =
     equals(resource?.type, ResourceType.anomalydetection) && !isLegendClicked;
@@ -556,7 +558,7 @@ const GraphContent = ({
               base={base}
               graphHeight={graphHeight}
               graphWidth={graphWidth}
-              isEditAnomalyDetectionDataDialog={
+              isEditAnomalyDetectionDataDialogOpen={
                 isEditAnomalyDetectionDataDialogOpen
               }
               leftScale={leftScale}

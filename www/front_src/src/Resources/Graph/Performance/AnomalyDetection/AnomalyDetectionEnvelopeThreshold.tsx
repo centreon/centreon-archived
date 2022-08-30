@@ -83,9 +83,11 @@ const AnomalyDetectionEnvelopeThreshold = ({
     unit: unitY0,
   });
 
-  const x = (timeValue): number => xScale(getTime(timeValue)) as number;
-  const y1 = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
-  const y0 = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
+  const getXPoint = (timeValue): number => xScale(getTime(timeValue)) as number;
+  const getY1Point = (timeValue): number =>
+    y1Scale(prop(metricY1, timeValue)) ?? null;
+  const getY0Point = (timeValue): number =>
+    y0Scale(prop(metricY0, timeValue)) ?? null;
 
   if (data) {
     const getDiff = ({
@@ -129,7 +131,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
       stroke: theme.palette.primary.main,
       strokeDasharray: 5,
       strokeOpacity: 0.8,
-      x,
+      x: getXPoint,
     };
 
     return (
@@ -148,7 +150,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
           curve={curveBasis}
           data={timeSeries}
           id={`${estimatedY0.toString()}${estimatedY1.toString()}`}
-          x={x}
+          x={getXPoint}
           y0={estimatedY0}
           y1={estimatedY1}
         />
@@ -172,10 +174,10 @@ const AnomalyDetectionEnvelopeThreshold = ({
       clipBelowTo={graphHeight}
       curve={curveBasis}
       data={timeSeries}
-      id={`${y0.toString()}${y1.toString()}`}
-      x={x}
-      y0={y0}
-      y1={y1}
+      id={`${getY0Point.toString()}${getY1Point.toString()}`}
+      x={getXPoint}
+      y0={getY0Point}
+      y1={getY1Point}
     />
   );
 };

@@ -26,7 +26,7 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  anomalyDetectionEnvelope: ReactNode;
+  anomalyDetectionEnvelope?: ReactNode;
   anomalyDetectionResizeEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
