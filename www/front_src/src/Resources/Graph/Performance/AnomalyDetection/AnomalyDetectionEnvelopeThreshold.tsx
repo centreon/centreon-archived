@@ -67,9 +67,9 @@ const AnomalyDetectionEnvelopeThreshold = ({
     unit: unitY0,
   });
 
-  const x = (timeValue): number => xScale(getTime(timeValue)) as number;
-  const y1 = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
-  const y0 = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
+  const getXPoint = (timeValue): number => xScale(getTime(timeValue)) as number;
+  const getY1Point = (timeValue): number => y1Scale(prop(metricY1, timeValue)) ?? null;
+  const getY0Point = (timeValue): number => y0Scale(prop(metricY0, timeValue)) ?? null;
 
   return (
     <Threshold
