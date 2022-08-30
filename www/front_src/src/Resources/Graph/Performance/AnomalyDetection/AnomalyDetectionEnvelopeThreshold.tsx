@@ -86,9 +86,9 @@ const AnomalyDetectionEnvelopeThreshold = ({
       curve={curveBasis}
       data={timeSeries}
       id={`${y0.toString()}${y1.toString()}`}
-      x={x}
-      y0={y0}
-      y1={y1}
+      x={getXPoint}
+      y0={getY0Point}
+      y1={getY1Point}
     />
   );
 };
