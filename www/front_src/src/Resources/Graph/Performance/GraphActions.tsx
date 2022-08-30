@@ -66,7 +66,7 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-  const isResourceAnomalyDetection = equals(
+  const isAnomalyDetectionResource = equals(
     resourceType,
     ResourceType.anomalydetection,
   );
@@ -143,7 +143,7 @@ const GraphActions = ({
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
-          {isResourceAnomalyDetection && (
+          {isAnomalyDetectionResource && (
             <IconButton
               ariaLabel={t(labelEditAnomalyDetectionData)}
               data-testid={labelEditAnomalyDetectionData}
