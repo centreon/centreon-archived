@@ -417,10 +417,23 @@ jQuery(function () {
         return {'start': start, 'end': end};
     }
 
+    function extractBaseUrlFromUrl(url) {
+        const scriptNamePos = url.indexOf('main.get.php');
+        if (scriptNamePos === -1) {
+            throw 'Unable to extract base url from URL';
+        }
+
+        const baseUrl = url.substring(0, scriptNamePos);
+        if (baseUrl.charAt(baseUrl.length - 1) !== '/') {
+            return baseUrl + '/';
+        }
+
+        return baseUrl;
+    }
+
     function generateGraphCSVDownloadUrl(hostId, serviceId, startDate, endDate) {
-        const location = window.location;
-        const baseUrl = location .protocol + "//" + location.host + "/" + location.pathname.split('/')[1];
-        let url = baseUrl + '/api/latest/monitoring';
+        const baseUrl = extractBaseUrlFromUrl(window.location.href);
+        let url = baseUrl + 'api/latest/monitoring';
             url+= '/hosts/' + hostId;
             url+= '/services/' + serviceId + '/metrics/performance/download?';
             url+= 'start_date=' + startDate;
