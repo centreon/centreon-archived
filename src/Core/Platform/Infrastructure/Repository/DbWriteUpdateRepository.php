@@ -213,7 +213,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
                 $currentLineNumber = 0;
                 $executedQueriesCount = 0;
                 try {
-                    while (! feof($fileStream)) {i
+                    while (! feof($fileStream)) {
                         $currentLineNumber++;
                         $currentLine = fgets($fileStream);
                         if ($currentLine && ! $this->isSqlComment($currentLine)) {
