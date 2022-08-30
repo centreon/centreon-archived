@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
-    height: ' 100vh',
+    height: ' 100%',
     overflow: 'hidden',
     position: 'relative',
     transition: 'all 0.3s',
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     backgroundColor: theme.palette.background.paper,
-    height: '100%',
+    height: `calc(100vh - ${theme.spacing(9)})`,
     width: '100%',
   },
   wrapper: {
