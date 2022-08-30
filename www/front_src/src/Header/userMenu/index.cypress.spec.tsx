@@ -1,10 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { centreonUi } from '../helpers';
 
-import UserMenu from './index';
+import UserMenu from '.';
 
 before(() => {
   document.getElementsByTagName('body')[0].style = 'margin:0px';
@@ -27,7 +27,9 @@ describe('User Menu', () => {
 
     cy.mount(
       <Router>
-        <UserMenu />
+        <div style={{ backgroundColor: '#000' }}>
+          <UserMenu />
+        </div>
       </Router>,
     );
   });
@@ -65,9 +67,9 @@ describe('User Menu', () => {
     cy.get('[data-cy=userIcon]').click();
     cy.get('[data-cy=themeSwitch]').as('switchMode').should('be.visible');
     cy.get('@switchMode').click();
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot('User Menu -- using the light mode');
     cy.get('@switchMode').click();
 
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot('User Menu -- using the dark mode');
   });
 });

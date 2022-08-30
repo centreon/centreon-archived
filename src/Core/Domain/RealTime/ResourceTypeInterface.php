@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,39 @@
  */
 declare(strict_types=1);
 
-namespace Core\Security\Infrastructure\Repository;
+namespace Core\Domain\RealTime;
 
-use Core\Security\Application\Repository\WriteSessionRepositoryInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
-class WriteSessionRepository implements WriteSessionRepositoryInterface
+interface ResourceTypeInterface
 {
     /**
-     * @param SessionInterface $session
+     * @return integer
      */
-    public function __construct(private SessionInterface $session)
-    {
-    }
+    public function getId(): int;
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function invalidate(): void
-    {
-        $this->session->invalidate();
-    }
+    public function getName(): string;
+
+    /**
+     * @param string $typeName
+     * @return bool
+     */
+    public function isValidForTypeName(string $typeName): bool;
+
+    /**
+     * @param integer $typeId
+     * @return bool
+     */
+    public function isValidForTypeId(int $typeId): bool;
+
+    /**
+     * @return boolean
+     */
+    public function hasParent(): bool;
+
+    /**
+     * @return boolean
+     */
+    public function hasInternalId(): bool;
 }

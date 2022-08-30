@@ -225,8 +225,9 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
                             if ($executedQueriesCount > $alreadyExecutedQueriesCount) {
                                 try {
                                     $this->executeQuery($query);
-                                } catch (RepositoryException $e) {
-                                    throw $e;
+                                } catch (RepositoryException $ex) {
+                                    $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+                                    throw $ex;
                                 }
 
                                 $this->writeExecutedQueriesCountInTemporaryFile($tmpFile, $executedQueriesCount);
@@ -234,9 +235,9 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
                             $query = '';
                         }
                     }
-                } catch (\Throwable $e) {
-                    $this->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-                    throw $e;
+                } catch (\Throwable $ex) {
+                    $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+                    throw $ex;
                 } finally {
                     fclose($fileStream);
                 }
@@ -312,8 +313,9 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
     {
         try {
             $this->db->query($query);
-        } catch (\Exception $e) {
-            throw new RepositoryException('Cannot execute query: ' . $query, 0, $e);
+        } catch (\Exception $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+            throw new RepositoryException('Cannot execute query: ' . $query, 0, $ex);
         }
     }
 }

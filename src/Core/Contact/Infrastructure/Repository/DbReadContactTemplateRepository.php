@@ -80,6 +80,9 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /**
+             * @var int
+             */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
@@ -116,6 +119,9 @@ class DbReadContactTemplateRepository extends AbstractRepositoryDRB implements R
 
         $contactTemplate = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var array<string, string> $result
+             */
             $contactTemplate = DbContactTemplateFactory::createFromRecord($result);
         }
 

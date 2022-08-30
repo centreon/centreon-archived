@@ -1,13 +1,16 @@
-import { lazy } from 'react';
+import { lazy, useEffect } from 'react';
 
 import { isNil } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
 import Details from './Details';
 import EditFiltersPanel from './Filter/Edit';
-import { selectedResourceIdAtom } from './Details/detailsAtoms';
+import {
+  selectedResourcesDetailsAtom,
+  clearSelectedResourceDerivedAtom,
+} from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
@@ -16,8 +19,18 @@ const Filter = lazy(() => import('./Filter'));
 const Listing = lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
   const editPanelOpen = useAtomValue(editPanelOpenAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', clearSelectedResource);
+
+    return () => {
+      window.removeEventListener('beforeunload', clearSelectedResource);
+      clearSelectedResource();
+    };
+  }, []);
 
   return useMemoComponent({
     Component: (
@@ -26,11 +39,11 @@ const ResourcesPage = (): JSX.Element => {
           filter={<Filter />}
           listing={<Listing />}
           panel={<Details />}
-          panelOpen={!isNil(selectedResourceId)}
+          panelOpen={!isNil(selectedResource?.resourceId)}
         />
       </WithPanel>
     ),
-    memoProps: [selectedResourceId, editPanelOpen],
+    memoProps: [selectedResource?.resourceId, editPanelOpen],
   });
 };
 

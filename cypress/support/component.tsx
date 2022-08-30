@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './commands';
-import { mount } from 'cypress/react';
+import { mount } from 'cypress/react18';
 
 import { ThemeProvider } from '@centreon/ui';
 

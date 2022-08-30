@@ -3,13 +3,14 @@ import { atomWithStorage } from 'jotai/utils';
 import { isNil } from 'ramda';
 
 import { resourcesEndpoint } from '../api/endpoint';
-import { Resource } from '../models';
+import { replaceBasename } from '../helpers';
 
 import {
   GraphTabParameters,
   ResourceDetails,
   ServicesTabParameters,
   TabParameters,
+  ResourceDetailsAtom,
 } from './models';
 import { detailsTabId } from './tabs';
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
@@ -19,15 +20,8 @@ export const panelWidthStorageAtom = atomWithStorage(
   'centreon-resource-status-details-21.10',
   550,
 );
-
 export const openDetailsTabIdAtom = atom<TabId>(0);
 export const selectedResourceUuidAtom = atom<string | undefined>(undefined);
-export const selectedResourceIdAtom = atom<number | undefined>(undefined);
-export const selectedResourceParentIdAtom = atom<number | undefined>(undefined);
-export const selectedResourceTypeAtom = atom<string | undefined>(undefined);
-export const selectedResourceParentTypeAtom = atom<string | undefined>(
-  undefined,
-);
 export const detailsAtom = atom<ResourceDetails | undefined>(undefined);
 export const tabParametersAtom = atom<TabParameters>({});
 export const defaultSelectedTimePeriodIdAtom = atom<TimePeriodId | undefined>(
@@ -39,22 +33,21 @@ export const defaultSelectedCustomTimePeriodAtom = atom<
 
 export const selectResourceDerivedAtom = atom(
   null,
-  (_, set, resource: Resource) => {
+  (get, set, resource: ResourceDetails) => {
     set(openDetailsTabIdAtom, detailsTabId);
-    set(selectedResourceUuidAtom, resource.uuid);
-    set(selectedResourceIdAtom, resource.id);
-    set(selectedResourceTypeAtom, resource.type);
-    set(selectedResourceParentTypeAtom, resource.parent?.type);
-    set(selectedResourceParentIdAtom, resource.parent?.id);
+    set(selectedResourceUuidAtom, resource?.uuid);
+    set(selectedResourcesDetailsAtom, {
+      parentResourceId: resource?.parent?.id,
+      parentResourceType: resource?.parent?.type,
+      resourceId: resource?.id,
+      resourcesDetailsEndpoint: resource?.links?.endpoints?.details,
+    });
   },
 );
 
 export const clearSelectedResourceDerivedAtom = atom(null, (_, set) => {
   set(selectedResourceUuidAtom, undefined);
-  set(selectedResourceIdAtom, undefined);
-  set(selectedResourceTypeAtom, undefined);
-  set(selectedResourceParentTypeAtom, undefined);
-  set(selectedResourceParentIdAtom, undefined);
+  set(selectedResourcesDetailsAtom, null);
 });
 
 export const setServicesTabParametersDerivedAtom = atom(
@@ -71,17 +64,22 @@ export const setGraphTabParametersDerivedAtom = atom(
   },
 );
 
-export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
-  const selectedResourceParentId = get(selectedResourceParentIdAtom);
-  const selectedResourceParentType = get(selectedResourceParentTypeAtom);
-  const selectedResourceType = get(selectedResourceTypeAtom);
-  const selectedResourceId = get(selectedResourceIdAtom);
+export const selectedResourcesDetailsAtom =
+  atomWithStorage<ResourceDetailsAtom | null>('resource_details', null);
 
-  if (!isNil(selectedResourceParentId)) {
-    return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
+export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
+  const selectedResourceDetails = get(selectedResourcesDetailsAtom);
+
+  const resourceDetailsEndPoint = replaceBasename({
+    endpoint: selectedResourceDetails?.resourcesDetailsEndpoint || '',
+    newWord: './',
+  });
+
+  if (!isNil(selectedResourceDetails?.parentResourceId)) {
+    return `${resourcesEndpoint}/${selectedResourceDetails?.parentResourceType}s/${selectedResourceDetails?.parentResourceId}`;
   }
 
-  return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
+  return resourceDetailsEndPoint;
 });
 
 export const sendingDetailsAtom = atom(false);

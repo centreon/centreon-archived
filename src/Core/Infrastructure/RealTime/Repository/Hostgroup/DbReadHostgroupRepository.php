@@ -90,6 +90,7 @@ class DbReadHostgroupRepository extends AbstractRepositoryDRB implements ReadHos
         $hostgroups = [];
 
         while (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            /** @var array<string,int|string|null> $row */
             $hostgroups[] = DbHostgroupFactory::createFromRecord($row);
         }
 

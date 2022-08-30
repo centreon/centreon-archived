@@ -106,7 +106,7 @@ class LoginOpenIdSession
                 'contact_autologin_key' => '',
                 'contact_admin' => $user->isAdmin() ? '1' : '0',
                 'default_page' => $user->getDefaultPage(),
-                'contact_location' => $user->getLocale(),
+                'contact_location' => (string) $user->getTimezoneId(),
                 'show_deprecated_pages' => $user->isUsingDeprecatedPages(),
                 'reach_api' => $user->hasAccessToApiConfiguration() ? 1 : 0,
                 'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0
@@ -134,17 +134,17 @@ class LoginOpenIdSession
                     );
                 }
             }
-        } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
+        } catch (SSOAuthenticationException | NotFoundException | OpenIdConfigurationException $ex) {
             $this->error('An unexpected error occurred while authenticating with OpenID', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'message' => $ex->getMessage(),
+                'trace' => $ex->getTraceAsString()
             ]);
-            $presenter->present($this->createResponse(null, $e->getMessage()));
+            $presenter->present($this->createResponse(null, $ex->getMessage()));
             return;
-        } catch (\Throwable $e) {
+        } catch (\Throwable $ex) {
             $this->error('An unexpected error occurred while authenticating with OpenID', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'message' => $ex->getMessage(),
+                'trace' => $ex->getTraceAsString()
             ]);
             $presenter->present($this->createResponse(
                 null,
@@ -256,6 +256,7 @@ class LoginOpenIdSession
                 $this->dataStorageEngine->commitTransaction();
             }
         } catch (\Exception $ex) {
+            $this->error($ex->getMessage(), [$ex->getTraceAsString()]);
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }

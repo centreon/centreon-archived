@@ -396,7 +396,7 @@ class SqlRequestParametersTranslator
      * Add a search value
      *
      * @param string $key Key
-     * @param array<int, mixed> $value Array [type_value => value]
+     * @param array<int, array<int, mixed>> $value Array [type_value => value]
      */
     public function addSearchValue(string $key, array $value): void
     {
@@ -404,7 +404,7 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, array<int, mixed>>
      */
     public function getSearchValues(): array
     {
@@ -412,7 +412,7 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @param array<string, mixed> $searchValues
+     * @param array<string, array<int, mixed>> $searchValues
      */
     public function setSearchValues(array $searchValues): void
     {

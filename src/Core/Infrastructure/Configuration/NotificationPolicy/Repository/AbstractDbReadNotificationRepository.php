@@ -89,6 +89,7 @@ abstract class AbstractDbReadNotificationRepository extends AbstractRepositoryDR
         $statement->execute();
 
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             $contacts[] = DbNotifiedContactFactory::createFromRecord($row);
         }
 
@@ -139,6 +140,7 @@ abstract class AbstractDbReadNotificationRepository extends AbstractRepositoryDR
 
         $contactGroups = [];
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             $contactGroups[] = DbNotifiedContactGroupFactory::createFromRecord($row);
         }
 

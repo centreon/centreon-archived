@@ -10,18 +10,23 @@
     --ui-widget-header-border-bottom-color: var(--color-pablo);
     --ui-tabs-nav-li-anchor-background-color: none;
     --ui-anchor-state-default-font-color: var(--color-grey-wan-white);
-    --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
     --global-view-ui-border-color: none;
     --ui-background-color: var(--body-background);
     --ui-state-active-border-color: var(--ui-background-color);
     --global-view-ui-active-tabs-border-color: none;
-    --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
+    --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-dark);
     --btc-color: var(--color-black);
     --bt-action-hover-background-color: var(--color-primary-hover-dark);
+    --bt-danger-hover-background-color: var(--color-primary-hover-dark);
     --bt-success-background-color: var(--color-primary-dark);
     --bt-default-background-color: var(--bt-success-background-color);
+    --bt-default-hover-background-color: var(--color-primary-hover-dark);
+    --btc-hover-color: var(--color-white);
     --bt-danger-background-color: var(--bt-success-background-color);
     --bt-info-background-color: var(--color-primary-dark);
+    --bt-info-hover-background-color: var(--color-primary-hover-dark);
+    --bt-info-hover-font-color: var(--color-white);
     --bt-warning-background-color: var(--bt-success-background-color);
     --toggle-wrapper-background-color: var(--body-background);
     --toggle-wrapper-border-color: var(--color-pablo);
@@ -69,13 +74,13 @@
     --select2-selection-multiple-content-background-color: var(--select2-selection-multiple-border-color);
     --select2-selection-choice-remove-background-color: var(--select2-selection-multiple-border-color);
     --select2-results-option-highlighted-color-aria-selected: var(--color-primary-light);
-    --md-radio-checked-backgroud-color: var(--color-primary-light);
+    --md-radio-checked-backgroud-color: var(--color-primary-dark);
     --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
     --md-radio-label-before-border-color: var(--body-color);
     --select2-selection-single-background-color: var(--body-background);
     --select2-dropdown-background-color: var(--select2-selection-single-background-color);
     --select2-selection-rendered-font-color: var(--select-color);
-    --main-nav-list-a-anchor-font-color: var(--color-primary-light);
+    --main-nav-list-a-anchor-font-color: var(--color-primary-dark);
     --main-nav-li-a-border-bottom: var(--main-nav-list-a-anchor-font-color);
     --header-tab-container-bottom-border-color: var(--ui-widget-header-border-bottom-color);
     --p-description-a-visited-color: var(--color-primary-light);
@@ -197,7 +202,7 @@
     --service-unknown-font-color: var(--color-black);
     --list-ack-background-color: var(--color-horses-neck);
     --list-ack-hover-background-color: var(--list-one-hover-background-color);
-    --md-checkbox--disabled-border-color-before: var(--color-black-rgba-6);
+    --md-checkbox--disabled-border-color-before: var(--color-secondary);
     --md-checkbox--disabled-checked-background-color-before: var(--color-black-rgba-54);
     --ui-button-focus-font-color: var(--btc-color);
     --input-submit-color: var(--btc-color);
@@ -225,4 +230,5 @@
     --badge-color: var(--color-black);
     --badge-a-color : var(--color-black);
     --bt-success-hover-font-color: var(--color-white);
+    --bt-danger-hover-font-color: var(--color-white);
 }

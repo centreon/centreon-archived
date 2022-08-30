@@ -24,6 +24,7 @@ namespace Core\Security\Infrastructure\Api\LoginSession;
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Application\UseCase\LoginSession\LoginSession;
 use Core\Security\Application\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Security\Application\UseCase\LoginSession\LoginSessionRequest;
@@ -32,6 +33,8 @@ use Core\Security\Domain\Authentication\AuthenticationException;
 
 class LoginSessionController extends AbstractController
 {
+    use LoggerTrait;
+
     /**
      * @param Request $request
      * @param LoginSession $loginSession
@@ -51,7 +54,8 @@ class LoginSessionController extends AbstractController
 
         try {
             $loginSession($presenter, $loginSessionRequest);
-        } catch (AuthenticationException) {
+        } catch (AuthenticationException $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             return $presenter->show();
         }
 
