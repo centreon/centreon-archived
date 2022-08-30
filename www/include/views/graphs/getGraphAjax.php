@@ -75,8 +75,8 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
 {
     $listGraph = array();
     if (
-        $isAdmin ||
-        (!$isAdmin && isset($lca[$host]))
+        $isAdmin
+        || (!$isAdmin && isset($lca[$host]))
     ) {
         $services =  getMyHostServices($host);
         foreach ($services as $svcId => $svcName) {
@@ -103,8 +103,8 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
 function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
 {
     if (
-        service_has_graph($host, $svcId) &&
-        ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))
+        service_has_graph($host, $svcId)
+        && ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))
     ) {
         return array(
             'type' => 'service',
