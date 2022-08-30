@@ -3,6 +3,6 @@ export interface FactorsData {
   simulatedFactor: number;
 }
 
-export interface Resizing {
+export interface CustomFactorsData extends FactorsData {
   isResizing: boolean;
 }

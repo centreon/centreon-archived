@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 
 import { IconButton } from '@centreon/ui';
 
-import { FactorsData, Resizing } from './models';
+import { CustomFactorsData } from './models';
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  getFactors: (data: FactorsData & Resizing) => void;
+  getFactors: (data: CustomFactorsData) => void;
 }
 
 const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
@@ -118,6 +118,10 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   };
 
   const handleChangeCheckBox = (event): void => {
+    setIsResizing(true);
+    if (isDefaultValue) {
+      return;
+    }
     setIsDefaultValue(event?.target.checked);
   };
 

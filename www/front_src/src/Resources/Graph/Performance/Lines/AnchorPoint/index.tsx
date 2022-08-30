@@ -17,7 +17,7 @@ const Point = ({
     cx={x}
     cy={y}
     fill={areaColor}
-    fillOpacity={1 - transparency * 0.01}
+    fillOpacity={(1 - transparency * 0.01).toString()}
     r={3}
     stroke={lineColor}
   />

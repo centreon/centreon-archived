@@ -69,7 +69,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
-import { FactorsData, Resizing } from '../AnomalyDetection/models';
+import { CustomFactorsData } from '../AnomalyDetection/models';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -200,7 +200,7 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: FactorsData & Resizing;
+  resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
@@ -572,7 +572,8 @@ const GraphContent = ({
                 )
               }
               anomalyDetectionResizeEnvelope={
-                resizeEnvelopeData?.isResizing && (
+                resizeEnvelopeData?.isResizing &&
+                isDisplayedThreshold && (
                   <AnomalyDetectionEnvelopeThreshold
                     {...thresholdProps}
                     data={resizeEnvelopeData}

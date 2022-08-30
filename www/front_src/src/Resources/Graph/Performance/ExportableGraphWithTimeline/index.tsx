@@ -9,6 +9,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useRequest, ListingModel } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { CustomFactorsData } from '../AnomalyDetection/models';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
@@ -49,7 +50,7 @@ interface Props {
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
-  resizeEnvelopeData?: any;
+  resizeEnvelopeData?: CustomFactorsData;
   resource?: Resource | ResourceDetails;
 }
 

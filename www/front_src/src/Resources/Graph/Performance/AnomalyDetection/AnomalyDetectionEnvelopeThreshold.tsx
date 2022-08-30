@@ -9,10 +9,10 @@ import { useTheme } from '@mui/material/styles';
 import { TimeValue, Line } from '../models';
 import { getTime, getYScale } from '../timeSeries';
 
-import { FactorsData } from './models';
+import { CustomFactorsData } from './models';
 
 interface Props {
-  data?: FactorsData;
+  data?: CustomFactorsData;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
   regularLines: Array<Line>;
@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface ParamsDiff {
-  factors: FactorsData;
+  factors: CustomFactorsData;
   item: TimeValue;
   metricLower: string;
   metricUpper: string;

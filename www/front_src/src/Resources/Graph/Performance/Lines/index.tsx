@@ -6,7 +6,7 @@ import { difference, equals, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
-import ShapeCircleAnomalyDetection from '../AnomalyDetection/AnomalyDetectionShapeCircle';
+import AnomalyDetectionShapeCircle from '../AnomalyDetection/AnomalyDetectionShapeCircle';
 import {
   getTime,
   getInvertedStackedLines,
@@ -192,7 +192,7 @@ const Lines = ({
                   metric={metric}
                   shapeCircleAnomalyDetection={
                     showCircle && (
-                      <ShapeCircleAnomalyDetection
+                      <AnomalyDetectionShapeCircle
                         {...propsShapeCircle}
                         yScale={yScale}
                       />

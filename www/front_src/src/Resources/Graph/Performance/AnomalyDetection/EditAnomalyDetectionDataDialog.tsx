@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 
 import TimePeriodButtonGroup from '../TimePeriods';
 
-import { FactorsData } from './models';
+import { CustomFactorsData } from './models';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  children?: (args: { factorsData: FactorsData }) => ReactNode;
+  children?: (args: { factorsData: CustomFactorsData }) => ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -54,7 +54,9 @@ const EditAnomalyDetectionDataDialog = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [factorsData, setFactorsData] = useState<null | FactorsData>(null);
+  const [factorsData, setFactorsData] = useState<null | CustomFactorsData>(
+    null,
+  );
 
   const handleClose = (): void => {
     setIsOpen(false);

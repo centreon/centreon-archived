@@ -49,7 +49,7 @@ import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
-import { FactorsData, Resizing } from './AnomalyDetection/models';
+import { CustomFactorsData } from './AnomalyDetection/models';
 import Graph from './Graph';
 import {
   isListingGraphOpenAtom,
@@ -85,7 +85,7 @@ interface Props {
   limitLegendRows?: boolean;
   modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  resizeEnvelopeData?: FactorsData & Resizing;
+  resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
