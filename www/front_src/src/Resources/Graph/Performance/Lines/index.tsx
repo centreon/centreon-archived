@@ -82,7 +82,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
-  AnomalyDetectionEnvelope,
+  anomalyDetectionEnvelope,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
