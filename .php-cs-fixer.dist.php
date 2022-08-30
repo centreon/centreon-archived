@@ -20,8 +20,7 @@
  */
 
 use Centreon\PhpCsFixer\PhpCsFixerRuleSet;
-use PhpCsFixer\Config;
-use PhpCsFixer\Finder;
+use PhpCsFixer\{Config, Finder};
 
 $finder = Finder::create()
     ->in(__DIR__ . '/src/Core');
