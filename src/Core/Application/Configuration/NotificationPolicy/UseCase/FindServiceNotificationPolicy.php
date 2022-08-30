@@ -32,8 +32,10 @@ use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationReposito
 use Centreon\Domain\ServiceConfiguration\Service;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
-use Core\Application\RealTime\Repository\{ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface,
-    ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface};
+use Core\Application\RealTime\Repository\{
+    ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface,
+    ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface
+};
 use Core\Domain\Configuration\Notification\Model\{NotifiedContact, NotifiedContactGroup};
 use Core\Domain\RealTime\Model\Service as RealtimeService;
 use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
