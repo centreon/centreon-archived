@@ -44,7 +44,7 @@
     /*********************/
 
     /** Radio button **/
-    --md-radio-checked-backgroud-color:  var(--color-primary-dark);
+    --md-radio-checked-backgroud-color:  var(--color-primary-light);
     --md-radio-kabel-color:  var(--color-astral-rgb);
     --md-radio-input-checked-label-before-border-color: var(--color-curious-blue);
     --md-radio-label-before-border-color : var(--color-black-rgba-54);
@@ -198,21 +198,28 @@
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-primary-dark);
+    --bt-default-background-color : var(--color-primary-light);
+    --bt-default-hover-background-color: var(--color-primary-hover);
+    --bt-default-hover-font-color: var(--color-white);
+    --btc-hover-color: var(--color-white);
     --bt-success-background-color : var(--color-primary-light);
-    --bt-danger-background-color: var(--color-primary-dark);
+    --bt-danger-background-color: var(--color-primary-light);
     --bt-info-background-color : var(--color-primary-light);
-    --bt-warning-background-color :var(--color-primary-dark);
-    --bt-action-color-background-color : var(--color-primary-dark);
+    --bt-info-hover-background-color: var(--color-primary-hover);
+    --bt-info-hover-font-color: var(--color-white);
+    --bt-warning-background-color :var(--color-primary-light);
+    --bt-action-color-background-color : var(--color-primary-light);
     --bt-action-color :var(--color-white);
-    --bt-action-border-color: var(--color-primary-dark);
+    --bt-action-border-color: var(--color-primary-light);
     --bt-action-hover-background-color: var(--color-primary-hover);
-    --bt-action-hover-border-color: var(--color-primary-dark);
+    --bt-action-hover-border-color: var(--color-primary-light);
+    --bt-danger-hover-background-color: var(--color-primary-hover);
     --bt-default-ui-state-hover-background-color : var(--color-oslo-gray);
     --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color: var(--color-christi);
     --bt-success-ui-state-hover-color:var(--color-white);
     --bt-success-hover-font-color: var(--color-white);
+    --bt-danger-hover-font-color: var(--color-white);
 
     --bt-danger-ui-state-hover-background-color: var(--color-shiraz);
     --bt-danger-ui-state-hover-color:var(--color-white);
@@ -249,7 +256,7 @@
     /************************/
 
     /** START : Menu **/
-    --main-nav-li-a-border-bottom: var(--color-primary-dark);
+    --main-nav-li-a-border-bottom: var(--color-primary-light);
     --a-background-color: transparent;
 
     /** Menu 1 **/
@@ -310,7 +317,7 @@
     --tab-list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
     --tab-list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
     --tab-list-lvls-td-right-border-color: var(--list-lvls-td-top-border-color);
-    --lists-td-top-border-color: var(--color-periwinkle-gray-2);
+    --lists-td-top-border-color: var(--color-divider-dark);
     --lists-td-left-border-color: var(--lists-td-top-border-color);
     --lists-td-bottom-border-color: var(--lists-td-top-border-color);
     --lists-td-right-border-color: var(--lists-td-top-border-color);
@@ -337,7 +344,7 @@
     --header-tab-container-bottom-border-color: var(--color-iron);
     --main-nav-list-background-color: transparent;
     --main-nav-list-border-color: var(--main-nav-list-background-color);
-    --main-nav-list-a-anchor-font-color: var(--color-primary-dark);
+    --main-nav-list-a-anchor-font-color: var(--color-primary-light);
     --main-nav-list-b-anchor-font-color: var(--body-color);
     --menu3-anchor-hover-font-color: var(--color-porsche);
     --menu3-background-color: var(--color-white);
@@ -372,7 +379,7 @@
     --ui-background-color: none;
     --ui-state-active-border-color: var(--ui-background-color);
     --ui-anchor-state-default-font-color: var(--color-black-rgba-54);
-    --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-light);
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
     --view-body-portlet-border-color: var(--color-iron);

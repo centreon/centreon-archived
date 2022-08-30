@@ -686,9 +686,13 @@ p.description a, p.description a:visited {
     fill: var(--btc-color) !important;
 }
 
-
 .bt_default {
     background: var(--bt-default-background-color) !important;
+}
+
+.bt_default:hover {
+    background: var(--bt-default-hover-background-color) !important;
+    color: var(--bt-default-hover-font-color) !important;
 }
 
 .bt_success {
@@ -696,18 +700,25 @@ p.description a, p.description a:visited {
 }
 .bt_success:hover {
     background: var(--bt-action-hover-background-color) !important;
-    color: var(--bt-success-hover-font-color);
+    color: var(--bt-success-hover-font-color) !important;
 }
 
 .bt_danger {
     background: var(--bt-danger-background-color) !important;
 }
 
+.bt_danger:hover {
+    background: var(--bt-danger-hover-background-color) !important;
+    color: var(--bt-danger-hover-font-color) !important;
+}
+
 .bt_info {
     background: var(--bt-info-background-color) !important;
 }
+
 .bt_info:hover {
-    background: var(--bt-action-hover-background-color) !important;
+    background: var(--bt-info-hover-background-color) !important;
+    color: var(--bt-info-hover-font-color) !important;
 }
 
 .bt_warning {
@@ -726,6 +737,10 @@ p.description a, p.description a:visited {
 .bt_action:hover {
     background-color: var(--bt-action-hover-background-color) !important;
     border: 1px solid var(--bt-action-hover-border-color) !important;
+}
+
+.bt_default:hover svg, .bt_success:hover svg, .bt_info:hover svg, .bt_danger:hover svg {
+    fill: var(--btc-hover-color) !important;
 }
 
 .bt_default.ui-state-active,
