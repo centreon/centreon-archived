@@ -213,7 +213,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
                 $currentLineNumber = 0;
                 $executedQueriesCount = 0;
                 try {
-                    while (! feof($fileStream)) {
+                    while (! feof($fileStream)) {i
                         $currentLineNumber++;
                         $currentLine = fgets($fileStream);
                         if ($currentLine && ! $this->isSqlComment($currentLine)) {
@@ -288,7 +288,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     private function isSqlComment(string $line): bool
     {
-        return str_starts_with('--', trim($line));
+        return str_starts_with(trim($line), '--');
     }
 
     /**
