@@ -43,13 +43,10 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
+    alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
-  },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
   },
 }));
 
@@ -127,36 +124,35 @@ const GraphActions = ({
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelPerformancePage)}
-            className={classes.buttonLink}
             color="primary"
             data-testid={labelPerformancePage}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
           >
-            <LaunchIcon style={{ fontSize: 18 }} />
+            <LaunchIcon fontSize="inherit" />
           </IconButton>
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelExportToPng)}
             data-testid={labelExportToPng}
             disabled={isNil(timeline)}
-            size="large"
+            size="small"
             title={t(labelExportToPng)}
             onClick={openSizeExportMenu}
           >
-            <SaveAsImageIcon style={{ fontSize: 18 }} />
+            <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
           {isResourceAnomalyDetection && (
             <IconButton
               ariaLabel={t(labelEditAnomalyDetectionData)}
               data-testid={labelEditAnomalyDetectionData}
               disabled={isNil(timeline)}
-              size="large"
+              size="small"
               title={t(labelEditAnomalyDetectionData)}
               onClick={(): void => undefined}
             >
-              <WrenchIcon style={{ fontSize: 18 }} />
+              <WrenchIcon fontSize="inherit" />
             </IconButton>
           )}
           <Menu
