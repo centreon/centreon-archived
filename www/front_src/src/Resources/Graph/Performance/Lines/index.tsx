@@ -23,7 +23,7 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  AnomalyDetectionEnvelope: ReactNode;
+  anomalyDetectionEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
