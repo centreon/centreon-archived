@@ -558,7 +558,7 @@ const GraphContent = ({
               xScale={xScale}
             />
             <MemoizedLines
-              AnomalyDetectionEnvelope={
+              anomalyDetectionEnvelope={
                 isDisplayedThreshold && (
                   <AnomalyDetectionEnvelopeThreshold {...thresholdProps} />
                 )
