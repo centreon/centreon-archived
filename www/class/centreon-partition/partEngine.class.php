@@ -614,8 +614,10 @@ class PartEngine
             $dbResult->closeCursor();
 
             if (
-                (stristr($dbType, "MySQL")
-                || stristr($dbType, "Source distribution"))
+                (
+                    stristr($dbType, "MySQL")
+                    || stristr($dbType, "Source distribution")
+                )
                 && (version_compare($dbVersion, '8.0.0', '>='))
             ) {
                 unset($config, $row);
