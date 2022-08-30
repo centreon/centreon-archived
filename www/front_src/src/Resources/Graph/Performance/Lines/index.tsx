@@ -23,7 +23,7 @@ import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
-  anomalyDetectionEnvelope: ReactNode;
+  anomalyDetectionEnvelope?: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
@@ -123,7 +123,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
-        {AnomalyDetectionEnvelope}
+        {anomalyDetectionEnvelope}
         {regularLines.map(
           ({
             metric,

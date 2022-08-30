@@ -10,6 +10,8 @@ import {
   lt,
   gte,
   difference,
+  length,
+  lte,
 } from 'ramda';
 import {
   Shape,
