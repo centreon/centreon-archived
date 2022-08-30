@@ -132,6 +132,6 @@
         "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
         "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress",
         "phpstan:core": "phpstan analyse -c phpstan.core.neon --memory-limit=1G",
-        "codestyle:core": "php-cs-fixer fix --dry-run -v"
+        "codestyle:core": "php-cs-fixer fix --dry-run --format=checkstyle > checkstyle.core.xml"
     }
 }
