@@ -48,10 +48,10 @@ class FindConfiguration
 
         try {
             $configuration = $this->repository->findConfiguration();
-        } catch (\Throwable $e) {
-            $this->critical($e->getMessage());
+        } catch (\Throwable $ex) {
+            $this->critical($ex->getMessage());
             $presenter->setResponseStatus(
-                new FindConfigurationErrorResponse($e->getMessage())
+                new FindConfigurationErrorResponse($ex->getMessage())
             );
             return;
         }

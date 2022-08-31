@@ -52,6 +52,7 @@ class DbReadSessionRepository extends AbstractRepositoryDRB implements ReadSessi
 
         $sessionIds = [];
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,string> $result */
             $sessionIds[] = $result['session_id'];
         }
         return $sessionIds;

@@ -30,7 +30,7 @@ import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 import NoResultsMessage from '../NoResultsMessage';
 import memoizeComponent from '../../memoizedComponent';
 import { labelScrollToTop } from '../../translatedLabels';
-import { selectedResourceIdAtom } from '../detailsAtoms';
+import { selectedResourcesDetailsAtom } from '../detailsAtoms';
 import { ResourceDetails } from '../models';
 
 const useStyles = makeStyles((theme) => ({
@@ -117,7 +117,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const scrollableContainerRef = useRef<HTMLDivElement | undefined>();
   const preventScrollingRef = useRef(false);
 
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
 
   const listEntities = (
     { atPage } = {
@@ -180,11 +180,11 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   }, reloadDependencies);
 
   useEffect(() => {
-    if (selectedResourceId !== details?.id) {
+    if (selectedResource?.resourceId !== details?.id) {
       setEntities(undefined);
       setPage(1);
     }
-  }, [selectedResourceId]);
+  }, [selectedResource?.resourceId]);
 
   const maxPage = Math.ceil(total / limit);
 

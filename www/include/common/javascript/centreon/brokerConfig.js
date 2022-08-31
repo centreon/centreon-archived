@@ -1,5 +1,5 @@
 // For the multiple type of groups, we have to group fields together in order to clone them.
-function clonifyTableFields(attributeName,displayName){
+function clonifyTableFields(attributeName, displayName) {
     // First, find the fields and group them in one array for each multiple group
     var GroupArray = {};
     var GroupDisplayName = {};
@@ -109,13 +109,15 @@ function openNewElem(id_name) {
     if(othertBodyElem.is(':visible')) {
         othertBodyElem.hide();
     }
-        newtBody.find(".elem-toCollapse").show();
+    newtBody.find(".elem-toCollapse").show();
+    newtBody.find('.list_lvl_1').addClass('open').removeClass('close');
+    newtBody.siblings().find('.list_lvl_1').addClass('close').removeClass('open');
 }
 
 jQuery(function () {
     addCollapse();
 
-   jQuery('body').delegate('.collapse-wrapper .list_lvl_1', 'click', function (e) {
+    jQuery('body').delegate('.collapse-wrapper .list_lvl_1', 'click', function (e) {
        var elem = jQuery(e.currentTarget);
        var tbody = elem.parent('.collapse-wrapper');
 
@@ -125,7 +127,7 @@ jQuery(function () {
 
        var elemChildren = tbody.find('.elem-toCollapse');
 
-       if(elemChildren.is(':visible')) {
+       if (elemChildren.is(':visible')) {
            elemChildren.hide();
            elem.removeClass('open').addClass('close');
            elem.find('.expand').addClass("expand-icon");
@@ -136,6 +138,10 @@ jQuery(function () {
            elem.find('.expand').removeClass("expand-icon");
            nextElemChildren.hide();
            nextElemChildren.siblings(".list_lvl_1").find('.expand').addClass("expand-icon");
+           nextElemChildren.siblings(".list_lvl_1").removeClass('open').addClass('close');
+           jQuery.each(jQuery('[data-ontab-fn]'), function () {
+               window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+           });
        }
    });
 });
@@ -264,4 +270,72 @@ var luaArguments = {
         }
         $elParent.append(newEl);
      }
+}
+
+var bbdoStreams = {
+    // Hook on load tab
+    onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
+        return function () {
+            // if element collapsed then do nothing
+            if ($(element).closest('tbody').find('.list_lvl_1').hasClass('close')) {
+                return ;
+            }
+
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+
+            if (argument.hasOwnProperty("tag")) {
+                bbdoStreams.displayInputDependingOnTag(entry[1], argument.tag, 'input[name="' + entry.input + '"]');
+                return ;
+            }
+
+            var source = 'input[name="' + entry.input + '"]:checked';
+
+            if (Array.isArray(argument.target)) {
+                argument.target.forEach(targetElem => {
+                    var target = entry[1] + entry[2] + '[' + targetElem + ']';
+
+                    bbdoStreams.displayInputDependingOnInput(source, argument.value, target);
+                });
+            } else {
+                var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+                bbdoStreams.displayInputDependingOnInput(source, argument.value, target);
+            }
+        }
+    },
+    // Hook on change the target
+    onChange: function (argument) {
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var source = 'input[name="' + entry.input + '"]:checked';
+
+            if (Array.isArray(argument.target)) {
+                argument.target.forEach(targetElem => {
+                    var target = entry[1] + entry[2] + '[' + targetElem + ']';
+
+                    bbdoStreams.displayInputDependingOnInput(source, argument.value, target);
+                });
+            } else {
+                var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+                bbdoStreams.displayInputDependingOnInput(source, argument.value, target);
+            }
+        }
+    },
+    displayInputDependingOnInput: function (source, expectedSourceValue, target) {
+        if (document.querySelector(source).value === expectedSourceValue) {
+            $(document.getElementsByName(target)[1].closest('tr')).show();
+        } else {
+            document.getElementsByName(target)[1].value = '';
+            $(document.getElementsByName(target)[1].closest('tr')).hide();
+        }
+    },
+    displayInputDependingOnTag: function (tag, expectedTag, target) {
+        if (tag === expectedTag) {
+            $(document.querySelector(target).closest('tr')).show();
+        } else {
+            $(document.querySelector(target).closest('tr')).hide();
+        }
+    }
 }

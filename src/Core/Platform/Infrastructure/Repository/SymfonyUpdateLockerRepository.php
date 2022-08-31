@@ -58,8 +58,9 @@ class SymfonyUpdateLockerRepository implements UpdateLockerRepositoryInterface
 
         try {
             return $this->lock->acquire();
-        } catch (\Throwable $e) {
-            throw UpdateLockerException::errorWhileLockingUpdate($e);
+        } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+            throw UpdateLockerException::errorWhileLockingUpdate($ex);
         }
     }
 
@@ -72,8 +73,9 @@ class SymfonyUpdateLockerRepository implements UpdateLockerRepositoryInterface
 
         try {
             $this->lock->release();
-        } catch (\Throwable $e) {
-            throw UpdateLockerException::errorWhileUnlockingUpdate($e);
+        } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+            throw UpdateLockerException::errorWhileUnlockingUpdate($ex);
         }
     }
 }

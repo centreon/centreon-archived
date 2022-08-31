@@ -28,9 +28,9 @@ import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
   selectedResourceDetailsEndpointDerivedAtom,
-  selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
+  selectedResourcesDetailsAtom,
 } from '../../Details/detailsAtoms';
 import {
   enabledAutorefreshAtom,
@@ -83,13 +83,13 @@ const useLoadResources = (): LoadResources => {
   const [page, setPage] = useAtom(pageAtom);
   const [details, setDetails] = useAtom(detailsAtom);
   const refreshInterval = useAtomValue(refreshIntervalAtom);
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const limit = useAtomValue(limitAtom);
   const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
     selectedResourceDetailsEndpointDerivedAtom,
   );
+  const selectedResourceDetails = useAtomValue(selectedResourcesDetailsAtom);
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
@@ -120,7 +120,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
+    if (isNil(selectedResourceDetails?.resourceId)) {
       return;
     }
 
@@ -234,7 +234,7 @@ const useLoadResources = (): LoadResources => {
 
   useEffect(() => {
     initAutorefresh();
-  }, [enabledAutorefresh, selectedResourceId]);
+  }, [enabledAutorefresh, selectedResourceDetails?.resourceId]);
 
   useEffect(() => {
     return (): void => {
@@ -277,7 +277,11 @@ const useLoadResources = (): LoadResources => {
   useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceUuid]);
+  }, [
+    selectedResourceUuid,
+    selectedResourceDetails?.parentResourceId,
+    selectedResourceDetails?.resourceId,
+  ]);
 
   return { initAutorefreshAndLoad };
 };

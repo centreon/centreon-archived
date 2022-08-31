@@ -28,22 +28,23 @@ use Core\Domain\Configuration\Notification\Model\ServiceNotification;
 class DbContactServiceNotificationFactory
 {
     /**
-     * @param array<string,mixed> $notification
+     * @param array<string,int|string|null> $notification
      * @return ServiceNotification
      */
     public static function createFromRecord(array $notification): ServiceNotification
     {
         $timePeriod = new TimePeriod(
             (int) $notification['service_timeperiod_id'],
-            $notification['service_timeperiod_name'],
-            $notification['service_timeperiod_alias']
+            (string) $notification['service_timeperiod_name'],
+            (string) $notification['service_timeperiod_alias']
         );
 
         $serviceNotification = new ServiceNotification($timePeriod);
 
-        $events = $notification['contact_service_notification_options'] !== null
-            ? explode(',', $notification['contact_service_notification_options'])
-            : [];
+        /** @var string|null */
+        $notificationOptions = $notification['contact_service_notification_options'];
+
+        $events = $notificationOptions !== null ? explode(',', $notificationOptions) : [];
 
         foreach ($events as $event) {
             $normalizedEvent = self::normalizeServiceEvent($event);

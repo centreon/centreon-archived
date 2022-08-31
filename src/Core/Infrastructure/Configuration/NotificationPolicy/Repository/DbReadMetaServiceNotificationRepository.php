@@ -80,6 +80,7 @@ class DbReadMetaServiceNotificationRepository extends AbstractRepositoryDRB impl
         $statement->execute();
 
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             $contacts[] = DbNotifiedContactFactory::createFromRecord($row);
         }
 
@@ -113,6 +114,7 @@ class DbReadMetaServiceNotificationRepository extends AbstractRepositoryDRB impl
         $statement->execute();
 
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             $contactGroups[] = DbNotifiedContactGroupFactory::createFromRecord($row);
         }
 

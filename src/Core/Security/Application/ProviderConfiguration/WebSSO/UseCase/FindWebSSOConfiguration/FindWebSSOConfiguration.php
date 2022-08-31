@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Application\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
@@ -32,6 +33,8 @@ use Core\Security\Application\ProviderConfiguration\WebSSO\Repository\ReadWebSSO
 
 class FindWebSSOConfiguration
 {
+    use LoggerTrait;
+
     /**
      * @param ReadWebSSOConfigurationRepositoryInterface $repository
      */
@@ -47,6 +50,7 @@ class FindWebSSOConfiguration
         try {
             $configuration = $this->repository->findConfiguration();
         } catch (RepositoryException | AssertionException $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
