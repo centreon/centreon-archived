@@ -27,15 +27,15 @@ use Core\Platform\Application\Validator\RequirementException;
 class DatabaseRequirementException extends RequirementException
 {
     /**
-     * @param \Throwable $e
+     * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenGettingDatabaseVersion(\Throwable $e): self
+    public static function errorWhenGettingDatabaseVersion(\Throwable $ex): self
     {
         return new self(
             _('Error when retrieving the database version'),
             0,
-            $e,
+            $ex,
         );
     }
 

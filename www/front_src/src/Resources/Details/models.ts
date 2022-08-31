@@ -57,6 +57,13 @@ export interface ResourceDetails extends NamedEntity {
   uuid: string;
 }
 
+export interface ResourceDetailsAtom {
+  parentResourceId?: number;
+  parentResourceType?: string;
+  resourceId?: number;
+  resourcesDetailsEndpoint?: string;
+}
+
 export interface GraphOption {
   id: GraphOptionId;
   label: string;
@@ -85,9 +92,10 @@ export interface DetailsUrlQueryParameters {
   id: number;
   parentId?: number;
   parentType?: string;
+  resourcesDetailsEndpoint?: string;
   selectedTimePeriodId?: TimePeriodId;
   tab?: string;
   tabParameters?: TabParameters;
-  type: string;
+  type?: string;
   uuid: string;
 }

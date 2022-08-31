@@ -27,6 +27,11 @@ use Centreon\Domain\Menu\Model\Page;
 interface ContactInterface
 {
     /**
+     * @return int Returns the timezone id
+     */
+    public function getTimezoneId(): int;
+
+    /**
      * @return int Returns the contact id
      */
     public function getId(): int;

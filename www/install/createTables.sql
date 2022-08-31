@@ -299,7 +299,7 @@ CREATE TABLE `cb_field` (
   `cb_field_id` int(11) NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(100) NOT NULL,
   `displayname` varchar(100) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(510) DEFAULT NULL,
   `fieldtype` varchar(255) NOT NULL DEFAULT 'text',
   `external` varchar(255) DEFAULT NULL,
   `cb_fieldgroup_id` INT DEFAULT NULL,

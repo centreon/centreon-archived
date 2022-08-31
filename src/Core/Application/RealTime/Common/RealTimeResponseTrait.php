@@ -52,7 +52,7 @@ trait RealTimeResponseTrait
      * Converts an Icon model into an array
      *
      * @param Icon|null $icon
-     * @return array<string, mixed>
+     * @return array<string, int|string|null>
      */
     public function iconToArray(?Icon $icon): array
     {

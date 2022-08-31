@@ -133,12 +133,13 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
         }
     }
 
-    $query3 = "SELECT command_command_id_arg " .
+    $cmdStatement = $db->prepare("SELECT command_command_id_arg " .
         "FROM service " .
-        "WHERE service_id = '" . $svcId . "' LIMIT 1";
-    $res3 = $db->query($query3);
-    if ($res3->rowCount()) {
-        $row3 = $res3->fetchRow();
+        "WHERE service_id = :svcId LIMIT 1");
+    $cmdStatement->bindValue(':svcId', (int) $svcId, PDO::PARAM_INT);
+    $cmdStatement->execute();
+    if ($cmdStatement->rowCount()) {
+        $row3 = $cmdStatement->fetchRow();
         $valueTab = preg_split('/(?<!\\\)\!/', $row3['command_command_id_arg']);
         if (is_array($valueTab)) {
             foreach ($valueTab as $key => $value) {
@@ -151,14 +152,15 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
         }
     }
 
-    $query = "SELECT macro_name, macro_description " .
+    $macroStatement = $db->prepare("SELECT macro_name, macro_description " .
         "FROM command_arg_description " .
-        "WHERE cmd_id = '" . $cmdId . "' ORDER BY macro_name";
-    $res = $db->query($query);
-    while ($row = $res->fetchRow()) {
+        "WHERE cmd_id = :cmdId ORDER BY macro_name");
+    $macroStatement->bindValue(':cmdId', (int) $cmdId, \PDO::PARAM_INT);
+    $macroStatement->execute();
+    while ($row = $macroStatement->fetchRow()) {
         $argTab[$row['macro_name']] = $row['macro_description'];
     }
-    $res->closeCursor();
+    $macroStatement->closeCursor();
 
     /*
      * Write XML

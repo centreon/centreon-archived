@@ -27,7 +27,7 @@ use Core\Domain\RealTime\Model\HostStatus;
 class DbHostStatusFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return HostStatus
      */
     public static function createFromRecord(array $data): HostStatus

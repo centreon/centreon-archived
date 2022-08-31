@@ -31,7 +31,7 @@ monitoring.metric.getServicePerformanceMetrics:
 
 monitoring.metric.downloadPerformanceMetrics:
     methods: GET
-    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/download
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/performance/download
     requirements:
         hostId: '\d+'
         serviceId: '\d+'
