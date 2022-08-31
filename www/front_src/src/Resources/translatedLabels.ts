@@ -258,3 +258,4 @@ export const labelHostSeverity = 'Host severity';
 export const labelHostSeverityLevel = 'Host severity level';
 export const labelServiceSeverityLevel = 'Service severity level';
 export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
+export const labelAnomalyDetection = 'Anomaly detection';

@@ -31,6 +31,7 @@ import {
   labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
+  labelAnomalyDetection,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -61,6 +62,7 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
+  anomalydetection: labelAnomalyDetection,
   hard: labelHard,
   host: labelHost,
   in_downtime: labelInDowntime,
@@ -108,10 +110,17 @@ const metaServiceResourceType = {
   name: criteriaValueNameById[metaServiceResourceTypeId],
 };
 
+const serviceAnomalyDetectionResourceId = 'anomalydetection';
+const serviceAnomalyDetectionType = {
+  id: serviceAnomalyDetectionResourceId,
+  name: criteriaValueNameById[serviceAnomalyDetectionResourceId],
+};
+
 const selectableResourceTypes = [
   hostResourceType,
   serviceResourceType,
   metaServiceResourceType,
+  serviceAnomalyDetectionType,
 ];
 
 const okStatusId = 'OK';
