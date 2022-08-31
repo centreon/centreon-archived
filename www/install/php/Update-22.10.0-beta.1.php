@@ -145,8 +145,7 @@ function updatePollerActionsAcls(CentreonDB $pearDB, int $topologyId): void
          * Do not update ACL action linked to write AND read only / none pollers page access
          * so the most restrictive access wins
          */
-        if (in_array($actionId, $actionIdsToExclude))
-        {
+        if (in_array($actionId, $actionIdsToExclude)) {
             continue;
         }
 
