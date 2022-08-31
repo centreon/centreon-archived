@@ -17,6 +17,8 @@ import UserMenu from './userMenu';
 export const isDarkMode = (theme: Theme): boolean =>
   equals(theme.palette.mode, ThemeMode.dark);
 
+export const headerHeight = 8;
+
 const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
       ? theme.palette.background.default
       : theme.palette.primary.main,
     display: 'flex',
-    height: theme.spacing(8),
+    height: theme.spacing(headerHeight),
     width: '100%',
   },
   leftContainer: {
