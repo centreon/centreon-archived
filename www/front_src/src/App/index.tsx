@@ -10,6 +10,8 @@ import PageLoader from '../components/PageLoader';
 
 import useApp from './useApp';
 
+const headerHeightSpacing = 8;
+
 const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     backgroundColor: theme.palette.background.paper,
-    height: `calc(100vh - ${theme.spacing(9)})`,
+    height: `calc(100vh - ${theme.spacing(headerHeightSpacing)})`,
     width: '100%',
   },
   wrapper: {
