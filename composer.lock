@@ -6634,16 +6634,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "03b59c75ceb775ce5475054117be3a042c1e36ce"
+                "reference": "8bf0e03fda76d6fe8d6a6062256f30d8618259aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/03b59c75ceb775ce5475054117be3a042c1e36ce",
-                "reference": "03b59c75ceb775ce5475054117be3a042c1e36ce",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/8bf0e03fda76d6fe8d6a6062256f30d8618259aa",
+                "reference": "8bf0e03fda76d6fe8d6a6062256f30d8618259aa",
                 "shasum": ""
             },
             "require": {
                 "behat/behat": "^3.0",
+                "friendsofphp/php-cs-fixer": "^3.10",
                 "guzzlehttp/guzzle": "^7.3",
                 "justinrainbow/json-schema": "^5.2",
                 "league/openapi-psr7-validator": "^0.17",
@@ -6665,6 +6666,7 @@
                 "psr-4": {
                     "Centreon\\PHPStan\\": "src/PHPStan",
                     "Centreon\\Test\\Mock\\": "src/mock",
+                    "Centreon\\PhpCsFixer\\": "src/PhpCsFixer",
                     "Centreon\\Test\\Behat\\": "src/behat",
                     "Centreon\\Test\\Traits\\": "src/traits"
                 }
@@ -6684,7 +6686,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-08-22T15:10:06+00:00"
+            "time": "2022-08-30T14:23:00+00:00"
         },
         {
             "name": "composer/pcre",
