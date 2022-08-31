@@ -77,7 +77,7 @@ function updatePollerAcls(CentreonDB $pearDB): void
     );
     $pollersTopologyId = $stmt->fetch();
     if ($pollersTopologyId === false) {
-       return;
+        return;
     }
     $pollersTopologyId = (int) $pollersTopologyId['topology_id'];
 
@@ -131,7 +131,8 @@ function updatePollerActionsAcls(CentreonDB $pearDB, int $topologyId): void
         "SELECT DISTINCT(gar.acl_action_id) FROM acl_group_actions_relations gar
         JOIN acl_group_topology_relations gtr ON gar.acl_group_id = gtr.acl_group_id
         WHERE gtr.acl_topology_id NOT IN (
-            SELECT acl_topo_id FROM acl_topology_relations WHERE topology_topology_id = :topologyId AND access_right = '1'
+            SELECT acl_topo_id FROM acl_topology_relations
+            WHERE topology_topology_id = :topologyId AND access_right = '1'
         )"
     );
     $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
@@ -144,7 +145,8 @@ function updatePollerActionsAcls(CentreonDB $pearDB, int $topologyId): void
          * Do not update ACL action linked to write AND read only / none pollers page access
          * so the most restrictive access wins
          */
-        if (in_array($actionId, $actionIdsToExclude)){
+        if (in_array($actionId, $actionIdsToExclude))
+        {
             continue;
         }
 
