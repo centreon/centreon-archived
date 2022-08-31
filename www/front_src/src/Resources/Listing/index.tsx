@@ -102,7 +102,7 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    color: alpha(theme.palette.primary.main, 0.08),
+    color: alpha(theme.palette.primary.main, 0.12),
     condition: ({ id }): boolean => {
       if (isEmpty(selectedResourceDetails) || isNil(selectedResourceDetails)) {
         return false;

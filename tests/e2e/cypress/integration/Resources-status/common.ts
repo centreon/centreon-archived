@@ -81,8 +81,8 @@ const tearDownResource = (): Cypress.Chainable => {
 };
 
 const actionBackgroundColors = {
-  acknowledge: 'rgb(247, 244, 229)',
-  inDowntime: 'rgb(249, 231, 255)',
+  acknowledge: 'rgb(245, 241, 233)',
+  inDowntime: 'rgb(240, 233, 248)',
 };
 const actions = {
   acknowledge: 'Acknowledge',
