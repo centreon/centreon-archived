@@ -11,8 +11,6 @@ import { headerHeight } from '../Header';
 
 import useApp from './useApp';
 
-const headerHeightSpacing = 8;
-
 const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',

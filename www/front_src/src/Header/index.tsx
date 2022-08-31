@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
-    margin: `0 ${theme.spacing(4)} 0 ${theme.spacing(3)}`,
+    margin: theme.spacing(0, 4, 0, 3),
     width: '100%',
   },
   header: {
