@@ -98,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 0.8,
   },
   rootLabel: {
+    color: theme.palette.common.white,
     margin: theme.spacing(0),
   },
 }));
