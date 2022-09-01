@@ -1,0 +1,1 @@
+UPDATE `index_data` SET `special` = '0' WHERE `special` <> '1';
