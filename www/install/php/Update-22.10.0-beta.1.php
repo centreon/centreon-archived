@@ -41,6 +41,9 @@ try {
     $errorMessage = "Impossible to add new BBDO streams";
     createBbdoStreamConfigurationForms($pearDB);
 
+    $errorMessage = "Impossible to update pollers ACLs";
+    updatePollerAcls($pearDB);
+
     $pearDB->commit();
 
     if ($pearDB->isColumnExist('remote_servers', 'app_key') === 1) {
@@ -123,6 +126,98 @@ function migrateRemoteServerRelations(\CentreonDB $pearDB): void
             $deleteRemoteStatement->bindValue(':id', $remoteId, \PDO::PARAM_INT);
             $deleteRemoteStatement->execute();
         }
+    }
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @throws \Exception
+ */
+function updatePollerAcls(CentreonDB $pearDB): void
+{
+    $stmt = $pearDB->query(
+        "SELECT topology_id FROM topology WHERE topology_page = 60901"
+    );
+    $pollersTopologyId = $stmt->fetch();
+    if ($pollersTopologyId === false) {
+        return;
+    }
+    $pollersTopologyId = (int) $pollersTopologyId['topology_id'];
+
+    updatePollerActionsAcls($pearDB, $pollersTopologyId);
+    updatePollerMenusAcls($pearDB, $pollersTopologyId);
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $topologyId
+ * @throws \Exception
+ */
+function updatePollerMenusAcls(CentreonDB $pearDB, int $topologyId): void
+{
+    $stmt = $pearDB->prepare(
+        "UPDATE acl_topology_relations SET access_right = '1'
+        WHERE access_right = '2' AND topology_topology_id = :topologyId"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $stmt = $pearDB->prepare("UPDATE topology SET readonly = '1' WHERE topology_id = :topologyId");
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+/**
+ * @param CentreonDB $pearDB
+ * @param int $topologyId
+ * @throws \Exception
+ */
+function updatePollerActionsAcls(CentreonDB $pearDB, int $topologyId): void
+{
+    // Get ACL action ids linked to pollers page with read/write access
+    $stmt = $pearDB->prepare(
+        "SELECT DISTINCT(gar.acl_action_id) FROM acl_group_actions_relations gar
+        JOIN acl_group_topology_relations gtr ON gar.acl_group_id = gtr.acl_group_id
+        JOIN acl_topology_relations tr ON tr.acl_topo_id = gtr.acl_topology_id
+        WHERE tr.topology_topology_id = :topologyId AND tr.access_right = '1'"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $actionIdsToUpdate = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+    if (empty($actionIdsToUpdate)) {
+        return;
+    }
+
+    // Get ACL action ids linked to pollers page without read/write access
+    $stmt = $pearDB->prepare(
+        "SELECT DISTINCT(gar.acl_action_id) FROM acl_group_actions_relations gar
+        JOIN acl_group_topology_relations gtr ON gar.acl_group_id = gtr.acl_group_id
+        WHERE gtr.acl_topology_id NOT IN (
+            SELECT acl_topo_id FROM acl_topology_relations
+            WHERE topology_topology_id = :topologyId AND access_right = '1'
+        )"
+    );
+    $stmt->bindValue(':topologyId', $topologyId, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $actionIdsToExclude = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+    foreach ($actionIdsToUpdate as $actionId) {
+        /**
+         * Do not update ACL action linked to write AND read only / none pollers page access
+         * so the most restrictive access wins
+         */
+        if (in_array($actionId, $actionIdsToExclude)) {
+            continue;
+        }
+
+        $stmt = $pearDB->prepare(
+            "INSERT INTO acl_actions_rules (acl_action_rule_id, acl_action_name) VALUES
+            (:actionId, 'create_edit_poller_cfg'), (:actionId, 'delete_poller_cfg')"
+        );
+        $stmt->bindValue(':actionId', $actionId);
+        $stmt->execute();
     }
 }
 

@@ -7,6 +7,10 @@ import {
   screen,
   waitFor,
   buildListingEndpoint,
+  TestQueryProvider,
+  resetMocks,
+  mockResponseOnce,
+  getFetchCall,
 } from '@centreon/ui';
 
 import {
@@ -75,7 +79,11 @@ const cancelTokenPutParams = {
 };
 
 const renderAuthentication = (): RenderResult =>
-  render(<LocalAuthentication />);
+  render(
+    <TestQueryProvider>
+      <LocalAuthentication />
+    </TestQueryProvider>,
+  );
 
 const mockGetPasswordSecurityPolicy = (
   securityPolicy: PasswordSecurityPolicyToAPI,
@@ -372,12 +380,11 @@ const retrievedContacts = {
 
 describe('Password expiration policy', () => {
   beforeEach(() => {
+    resetMocks();
+    mockResponseOnce({ data: retrievedContacts });
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValueOnce({
       data: defaultPasswordSecurityPolicyAPI,
-    });
-    mockedAxios.get.mockResolvedValue({
-      data: retrievedContacts,
     });
   });
 
@@ -547,7 +554,7 @@ describe('Password expiration policy', () => {
     userEvent.click(screen.getByLabelText(labelExcludedUsers));
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(getFetchCall(0)).toEqual(
         buildListingEndpoint({
           baseEndpoint: contactsEndpoint,
           parameters: {

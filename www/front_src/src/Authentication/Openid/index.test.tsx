@@ -2,7 +2,16 @@ import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { omit } from 'ramda';
 
-import { render, RenderResult, screen, waitFor } from '@centreon/ui';
+import {
+  getFetchCall,
+  mockResponseOnce,
+  render,
+  RenderResult,
+  resetMocks,
+  screen,
+  TestQueryProvider,
+  waitFor,
+} from '@centreon/ui';
 
 import { Provider } from '../models';
 import {
@@ -66,7 +75,11 @@ const cancelTokenPutParams = {
 };
 
 const renderOpenidConfigurationForm = (): RenderResult =>
-  render(<OpenidConfigurationForm />);
+  render(
+    <TestQueryProvider>
+      <OpenidConfigurationForm />
+    </TestQueryProvider>,
+  );
 
 const retrievedOpenidConfiguration = {
   authentication_type: 'client_secret_post',
@@ -157,6 +170,7 @@ const retrievedContactGroups = getRetrievedEntities('Contact Group');
 const retrievedAccessGroups = getRetrievedEntities('Access Group');
 
 const mockGetBasicRequests = (): void => {
+  resetMocks();
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
     data: retrievedOpenidConfiguration,
@@ -462,7 +476,7 @@ describe('Openid configuration form', () => {
         );
       });
 
-      mockedAxios.get.mockResolvedValueOnce({
+      mockResponseOnce({
         data: retrievedOptions,
       });
 
@@ -473,11 +487,10 @@ describe('Openid configuration form', () => {
       userEvent.click(screen.getByLabelText(label));
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect(getFetchCall(0)).toEqual(
           `${endpoint}?page=1&sort_by=${encodeURIComponent(
             '{"name":"ASC"}',
           )}&search=${encodeURIComponent('{"$and":[]}')}`,
-          cancelTokenRequestParam,
         );
       });
 

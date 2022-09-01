@@ -118,7 +118,7 @@ const GraphActions = ({
     setMenuAnchor(null);
     setExporting(true);
     exportToPng({
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.background.paper,
       element: performanceGraphRef.current as HTMLElement,
       ratio,
       title: `${resourceName}-performance`,
