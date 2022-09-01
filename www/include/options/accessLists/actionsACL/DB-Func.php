@@ -216,8 +216,8 @@ function insertActionInDB($ret = array())
     $aclActionId = insertAction($ret);
     updateGroupActions($aclActionId, $ret);
     updateRulesActions($aclActionId, $ret);
-
     $ret = $form->getSubmitValues();
+    updateAuthentifiedUsersActions($ret['acl_groups']);
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "a", $fields);
 
@@ -235,7 +235,6 @@ function insertAction($ret)
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-
     $rq = "INSERT INTO acl_actions ";
     $rq .= "(acl_action_name, acl_action_description, acl_action_activate) ";
     $rq .= "VALUES ";
@@ -425,4 +424,63 @@ function listActions()
     $actions[] = "generate_trap";
 
     return $actions;
+}
+
+// Function which get all user id by their acl_groups
+    //get all session_id by user_id
+        //update actions access by user_id
+function updateAuthentifiedUsersActions(array $aclGroupIds): void
+{
+    global $pearDB;
+
+    $queryValues = [];
+    foreach ($aclGroupIds as $index => $aclGroupId) {
+        $sanitizedAclGroupId = filter_var($aclGroupId, FILTER_VALIDATE_INT);
+        if ($sanitizedAclGroupId !== false) {
+            $queryValues[":acl_group_id_" . $index] = $sanitizedAclGroupId;
+        }
+    }
+
+    $aclGroupIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+    $statement = $pearDB->prepare("SELECT DISTINCT `contact_contact_id` FROM `acl_group_contacts_relations` WHERE `acl_group_id` IN $aclGroupIdQueryString");
+    foreach ($queryValues as $bindParameter => $bindValue) {
+        $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    $userIds = [];
+    while($result = $statement->fetch()) {
+        $userIds[] = (int) $result["contact_contact_id"];
+    }
+
+    $kernel = \App\Kernel::createForWeb();
+    /**
+     * @var ReadSessionRepositoryInterface
+     */
+    $readSessionRepository = $kernel->getContainer()->get(
+        \Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface::class
+    );
+
+    /**
+     * @var WriteSessionRepositoryInterface
+     */
+    $writeSessionRepository = $kernel->getContainer()->get(
+        \Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface::class
+    );
+
+    foreach ($userIds as $userId) {
+        try {
+            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+            foreach ($sessionIds as $sessionId) {
+                $centreon = $readSessionRepository->getValueFromSession($sessionId, "centreon");
+                /**
+                 * @var \Centreon
+                 */
+                $centreon->user->access->setActions();
+                $writeSessionRepository->updateSession($sessionId, "centreon", $centreon);
+            }
+        } catch (\Throwable $ex) {
+            var_dump($ex->getMessage(), $ex->getTraceAsString());
+            die();
+        }
+    }
 }
