@@ -6,9 +6,6 @@
 /project/       @centreon/centreon-devops
 *.sh            @centreon/centreon-devops
 
-/.snyk				@centreon/centreon-security
-/sonar-project.properties	@centreon/centreon-security
-
 *.po            @centreon/centreon-documentation
 
 /src/                  @centreon/centreon-php
