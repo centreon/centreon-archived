@@ -69,8 +69,6 @@ const LoginPage = (): JSX.Element => {
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
   const platformVersions = useAtomValue(platformVersionsAtom);
 
-  console.log({ platformVersions });
-
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
     return <MainLoaderWithoutTranslation />;
   }

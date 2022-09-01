@@ -15,6 +15,7 @@ import {
 } from '../filterAtoms';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
+import useFilterByModule from './useFilterByModule';
 
 interface Props {
   name: string;
@@ -23,6 +24,8 @@ interface Props {
 
 const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { newSelectableCriterias } = useFilterByModule();
+
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,
   );
@@ -46,7 +49,7 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   };
 
   const { label, options, buildAutocompleteEndpoint, autocompleteSearch } =
-    selectableCriterias[name];
+    newSelectableCriterias[name];
 
   const commonProps = {
     label: t(label),

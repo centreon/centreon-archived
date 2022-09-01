@@ -57,8 +57,12 @@ const CriteriasContent = (): JSX.Element => {
       filterWithParsedSearch.criterias,
     );
 
+    console.log({ filterWithParsedSearch });
+
     return reject(isNonSelectableCriteria)(criterias);
   };
+
+  console.log({ '--': getSelectableCriterias() });
 
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
@@ -79,6 +83,8 @@ const CriteriasContent = (): JSX.Element => {
           spacing={1}
         >
           {getSelectableCriterias().map(({ name, value }) => {
+            console.log({ name, value });
+
             return (
               <Grid item key={name}>
                 <Criteria name={name} value={value as Array<SelectEntry>} />

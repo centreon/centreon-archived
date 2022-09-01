@@ -22,6 +22,7 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
+import { platformVersionsAtom } from '../../../Main/atoms/platformVersionsAtom';
 import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
@@ -93,6 +94,8 @@ const useLoadResources = (): LoadResources => {
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
+  const platformVersions = useAtomValue(platformVersionsAtom);
+
   const setListing = useUpdateAtom(listingAtom);
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
