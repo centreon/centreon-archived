@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     '&.MuiList-root': {
       padding: theme.spacing(0, 0, 0, 0),
     },
+    marginTop: theme.spacing(0.5),
   },
 }));
 

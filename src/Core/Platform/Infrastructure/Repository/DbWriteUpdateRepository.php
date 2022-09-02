@@ -288,7 +288,7 @@ class DbWriteUpdateRepository extends AbstractRepositoryDRB implements WriteUpda
      */
     private function isSqlComment(string $line): bool
     {
-        return str_starts_with('--', trim($line));
+        return str_starts_with(trim($line), '--');
     }
 
     /**

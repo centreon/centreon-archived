@@ -6993,6 +6993,10 @@ components:
           type: boolean
           example: true
           description: "Platform is a remote server"
+        address:
+          type: string
+          example: "10.0.0.1"
+          description: "The address of the platform"
         centralServerAddress:
           type: string
           example: "192.168.0.1"
