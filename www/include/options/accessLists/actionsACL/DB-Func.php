@@ -33,6 +33,8 @@
  *
  */
 
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -121,15 +123,33 @@ function deleteActionInDB($actions = array())
 {
     global $pearDB, $centreon;
 
+    $aclGroupIds = [];
     foreach ($actions as $key => $value) {
+        $sanitizedAclActionId = filter_var($key, FILTER_VALIDATE_INT);
+        if ($sanitizedAclActionId !== false) {
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
+        }
         $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
+        $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+        $statement = $pearDB->prepare(
+            "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
+                WHERE acl_action_id IN $aclActionIdQueryString"
+        );
+        foreach ($queryValues as $bindParameter => $bindValue) {
+            $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+        while($result = $statement->fetch()) {
+            $aclGroupIds[] = (int) $result["acl_group_id"];
+        }
         $pearDB->query("DELETE FROM acl_actions WHERE acl_action_id = '" . $key . "'");
         $pearDB->query("DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '" . $key . "'");
         $pearDB->query("DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "d");
     }
+    updateAuthentifiedUsersACL($aclGroupIds);
 }
 
 /**
@@ -217,7 +237,7 @@ function insertActionInDB($ret = array())
     updateGroupActions($aclActionId, $ret);
     updateRulesActions($aclActionId, $ret);
     $ret = $form->getSubmitValues();
-    updateAuthentifiedUsersActions($ret['acl_groups']);
+    updateAuthentifiedUsersACL($ret['acl_groups']);
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "a", $fields);
 
@@ -262,6 +282,7 @@ function updateActionInDB($aclActionId = null)
     updateAction($aclActionId);
     updateGroupActions($aclActionId);
     $ret = $form->getSubmitValues();
+    updateAuthentifiedUsersACL($ret['acl_groups']);
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "c", $fields);
 }
@@ -427,9 +448,27 @@ function listActions()
 }
 
 // Function which get all user id by their acl_groups
-    //get all session_id by user_id
-        //update actions access by user_id
-function updateAuthentifiedUsersActions(array $aclGroupIds): void
+//get all session_id by user_id
+//update actions access by user_id
+function updateAuthentifiedUsersACL(array $aclGroupIds): void
+{
+    global $pearDB;
+    $userIds = getUsersIdsByAclGroup($aclGroupIds);
+    $readSessionRepository = getReadSessionRepository();
+    foreach ($userIds as $userId) {
+        try {
+            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+            $statement = $pearDB->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
+            foreach ($sessionIds as $sessionId) {
+                $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $statement->execute();
+            }
+        } catch (\Throwable $ex) {
+        }
+    }
+}
+
+function getUsersIdsByAclGroup(array $aclGroupIds): array
 {
     global $pearDB;
 
@@ -442,7 +481,11 @@ function updateAuthentifiedUsersActions(array $aclGroupIds): void
     }
 
     $aclGroupIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
-    $statement = $pearDB->prepare("SELECT DISTINCT `contact_contact_id` FROM `acl_group_contacts_relations` WHERE `acl_group_id` IN $aclGroupIdQueryString");
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT `contact_contact_id` FROM `acl_group_contacts_relations`
+            WHERE `acl_group_id`
+            IN $aclGroupIdQueryString"
+    );
     foreach ($queryValues as $bindParameter => $bindValue) {
         $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
     }
@@ -452,35 +495,15 @@ function updateAuthentifiedUsersActions(array $aclGroupIds): void
         $userIds[] = (int) $result["contact_contact_id"];
     }
 
+    return $userIds;
+}
+
+function getReadSessionRepository(): ReadSessionRepositoryInterface
+{
     $kernel = \App\Kernel::createForWeb();
-    /**
-     * @var ReadSessionRepositoryInterface
-     */
     $readSessionRepository = $kernel->getContainer()->get(
-        \Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface::class
+        ReadSessionRepositoryInterface::class
     );
 
-    /**
-     * @var WriteSessionRepositoryInterface
-     */
-    $writeSessionRepository = $kernel->getContainer()->get(
-        \Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface::class
-    );
-
-    foreach ($userIds as $userId) {
-        try {
-            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-            foreach ($sessionIds as $sessionId) {
-                $centreon = $readSessionRepository->getValueFromSession($sessionId, "centreon");
-                /**
-                 * @var \Centreon
-                 */
-                $centreon->user->access->setActions();
-                $writeSessionRepository->updateSession($sessionId, "centreon", $centreon);
-            }
-        } catch (\Throwable $ex) {
-            var_dump($ex->getMessage(), $ex->getTraceAsString());
-            die();
-        }
-    }
+    return $readSessionRepository;
 }
