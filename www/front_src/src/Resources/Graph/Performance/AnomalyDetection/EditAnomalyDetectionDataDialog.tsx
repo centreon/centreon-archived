@@ -79,9 +79,7 @@ const EditAnomalyDetectionDataDialog = ({
           <Paper className={classes.envelopeSize}>
             <AnomalyDetectionSlider getFactors={getFactors} />
           </Paper>
-          <Paper className={classes.exclusionPeriod}>
-            Exclusion of periods
-          </Paper>
+          <Paper className={classes.exclusionPeriod}>coming soon</Paper>
         </div>
         <div className={classes.close}>
           <Button onClick={handleClose}>Close</Button>
