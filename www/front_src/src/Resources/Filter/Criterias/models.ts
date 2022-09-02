@@ -62,7 +62,6 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
-  // 'anomaly-detection': labelAnomalyDetection,
   hard: labelHard,
   host: labelHost,
   in_downtime: labelInDowntime,

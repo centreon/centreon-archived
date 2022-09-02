@@ -52,6 +52,8 @@ import {
   getCriteriaValueDerivedAtom,
 } from '../../Filter/filterAtoms';
 
+import { mockedResutListingAD } from './mockedResultAnomalyDetection';
+
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
@@ -94,7 +96,6 @@ const useLoadResources = (): LoadResources => {
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
-  const platformVersions = useAtomValue(platformVersionsAtom);
 
   const setListing = useUpdateAtom(listingAtom);
   const setSending = useUpdateAtom(sendingAtom);
@@ -187,6 +188,8 @@ const useLoadResources = (): LoadResources => {
       return;
     }
 
+    const payloadTypes = getCriteriaIds('resource_types');
+
     sendRequest({
       hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
@@ -205,7 +208,15 @@ const useLoadResources = (): LoadResources => {
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),
       statuses: getCriteriaIds('statuses'),
-    }).then(setListing);
+    }).then((data) => {
+      if (payloadTypes?.includes('anomaly-detection')) {
+        setListing(mockedResutListingAD);
+
+        return;
+      }
+
+      setListing(data);
+    });
 
     if (isNil(details)) {
       return;
