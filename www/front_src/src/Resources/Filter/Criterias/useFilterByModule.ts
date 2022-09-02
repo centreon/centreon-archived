@@ -32,10 +32,12 @@ const useFilterByModule = (): any => {
   });
 
   let newSelectableResourceTypes = [...selectableResourceTypes];
+  let newCriteriaValueNameById = { ...criteriaValueNameById };
+
   const filters = filtersToAdd.map((item): any => {
     if (item) {
-      const newCriteriaValueNameById = {
-        ...criteriaValueNameById,
+      newCriteriaValueNameById = {
+        ...newCriteriaValueNameById,
         [item]: criteriaFilterByModules[item],
       };
 
@@ -48,20 +50,23 @@ const useFilterByModule = (): any => {
       newSelectableResourceTypes = [...newSelectableResourceTypes, serviceType];
     }
 
-    return newSelectableResourceTypes;
+    return { newCriteriaValueNameById, newSelectableResourceTypes };
   });
 
-  const newOptions = filters[filters.length - 1];
+  const result = filters[filters.length - 1];
 
   const newSelectableCriterias = {
     ...selectableCriterias,
     [CriteriaNames.resourceTypes]: {
       ...selectableCriterias[CriteriaNames.resourceTypes],
-      options: newOptions,
+      options: result?.newSelectableResourceTypes,
     },
   };
 
-  return { newSelectableCriterias };
+  return {
+    newCriteriaValueName: result?.newCriteriaValueNameById,
+    newSelectableCriterias,
+  };
 };
 
 export default useFilterByModule;
