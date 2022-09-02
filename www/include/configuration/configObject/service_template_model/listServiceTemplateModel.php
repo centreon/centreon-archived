@@ -176,7 +176,8 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);
-            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
+            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>"
+            . htmlentities($value) . "</a>";
         }
     }
 
@@ -232,7 +233,7 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_desc" => htmlentities($service["service_description"]),
         "RowMenu_alias" => htmlentities($service["service_alias"]),
-        "RowMenu_parent" => htmlentities($tplStr),
+        "RowMenu_parent" => $tplStr,
         "RowMenu_icon" => $svc_icon,
         "RowMenu_retry" => htmlentities(
             "$normal_check_interval $normal_units / $retry_check_interval $retry_units"
