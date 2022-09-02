@@ -48,16 +48,41 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class ModuleSourceTest extends TestCase
 {
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    /**
+     * @var ModuleSource|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $source;
 
+    /**
+     * @var ContainerWrap
+     */
+    private $containerWrap;
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * @var string
+     */
     public static $moduleName = 'test-module';
+
+    /**
+     * @var string
+     */
     public static $moduleNameMissing = 'missing-module';
+
+    /**
+     * @var string[]
+     */
     public static $moduleInfo = [
         'rname' => 'Curabitur congue porta neque',
         'name' => 'test-module',
@@ -70,6 +95,10 @@ class ModuleSourceTest extends TestCase
         'release_note' => 'http://localhost',
         'images' => 'images/image1.png',
     ];
+
+    /**
+     * @var string[][][]
+     */
     public static $sqlQueryVsData = [
         "SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`" => [
             [
@@ -84,7 +113,7 @@ class ModuleSourceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -99,12 +128,12 @@ class ModuleSourceTest extends TestCase
         ;
 
         // provide services
-        $container = new Container;
-        $container['finder'] = new Finder;
+        $container = new Container();
+        $container['finder'] = new Finder();
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
@@ -114,42 +143,41 @@ class ModuleSourceTest extends TestCase
         $this->containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getPath',
                 'getModuleConf',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/';
+                $result = 'vfs://modules/';
 
-                    return $result;
+                return $result;
             }))
         ;
         $this->source
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
-                    $result = [
-                        ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
-                    ];
+                $result = [
+                    ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
+                ];
 
-                    return $result;
+                return $result;
             }))
         ;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
     }
 
-    public function testGetList()
+    public function testGetList(): void
     {
         $result = $this->source->getList();
 
@@ -159,7 +187,7 @@ class ModuleSourceTest extends TestCase
         $this->assertEquals([], $result2);
     }
 
-    public function testGetDetail()
+    public function testGetDetail(): void
     {
         (function () {
             $result = $this->source->getDetail(static::$moduleNameMissing);
@@ -174,7 +202,10 @@ class ModuleSourceTest extends TestCase
         })();
     }
 
-    public function testRemove()
+    /**
+     * @throws \Exception
+     */
+    public function testRemove(): void
     {
         try {
             $this->source->remove(static::$moduleNameMissing);
@@ -186,7 +217,10 @@ class ModuleSourceTest extends TestCase
         $this->source->remove(static::$moduleName);
     }
 
-    public function testUpdate()
+    /**
+    * @throws \Exception
+    */
+    public function testUpdate(): void
     {
         try {
             $this->assertNull($this->source->update(static::$moduleNameMissing));
@@ -198,15 +232,7 @@ class ModuleSourceTest extends TestCase
         $this->source->update(static::$moduleName);
     }
 
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-module' => 'x.y.z',
-            ], 'info', $this->source);
-    }
-
-    public function testCreateEntityFromConfig()
+    public function testCreateEntityFromConfig(): void
     {
         $configFile = static::getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
@@ -235,23 +261,24 @@ class ModuleSourceTest extends TestCase
 //        //'php://filter/read=string.rot13/resource=' .
 //    }
 
+    /**
+     * @return string
+     */
     public static function getConfFilePath(): string
     {
         return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
     }
 
+    /**
+     * @return string
+     */
     public static function buildConfContent(): string
     {
         $result = '<?php';
         $moduleName = static::$moduleName;
 
         foreach (static::$moduleInfo as $key => $data) {
-            if (is_string($data)) {
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
-            } elseif (is_array($data)) {
-                $data = implode("','", $data);
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = ['{$data}']";
-            }
+            $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
         }
 
         return $result;

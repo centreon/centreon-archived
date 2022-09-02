@@ -1,9 +1,16 @@
 <form {$form.attributes}>
     <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
     <div id='tab1' class='tab'>
@@ -51,13 +58,24 @@
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_id"> {$form.command_id.label}</td><td class="FormRowValue">{$form.command_id.html}</td></tr>            
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.connector_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
         </table>
-    </div>              
+    </div>
     <div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p>
+            {if isset($form.action)}
+                {$form.action.html}
+            {/if}
+        </p>
+		<p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	{$form.hidden}

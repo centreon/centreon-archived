@@ -315,9 +315,9 @@ class HostTemplateTest extends TestCase
     public function testBadSnmpVersion(): void
     {
         $snmpVersion = '4';
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(HostTemplateArgumentException::badSnmpVersion($snmpVersion)->getMessage());
-        (new HostTemplate())->setSnmpVersion($snmpVersion);
+        $hostTemplate = new HostTemplate();
+        $hostTemplate->setSnmpVersion($snmpVersion);
+        $this->assertNull($hostTemplate->getSnmpVersion());
     }
 
     /**
@@ -390,6 +390,17 @@ class HostTemplateTest extends TestCase
             )->getMessage()
         );
         (new HostTemplate())->setNotes($notes);
+    }
+
+    /**
+     * Test the parentIds
+     */
+    public function testParentIds(): void
+    {
+        $hostTemplate = new HostTemplate();
+        $hostTemplate->setParentIds(['a', 2, 'c', 7]);
+        $this->assertCount(2, $hostTemplate->getParentIds());
+        $this->assertEquals([2, 7], $hostTemplate->getParentIds());
     }
 
     /**

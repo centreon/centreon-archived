@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -74,12 +75,11 @@ require_once "Centreon/Object/Dependency/DependencyServiceParent.php";
  */
 class CentreonService extends CentreonObject
 {
-
-    const ORDER_HOSTNAME = 0;
-    const ORDER_SVCDESC = 1;
-    const ORDER_SVCTPL = 2;
-    const NB_UPDATE_PARAMS = 4;
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_HOSTNAME = 0;
+    public const ORDER_SVCDESC = 1;
+    public const ORDER_SVCTPL = 2;
+    public const NB_UPDATE_PARAMS = 4;
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
     public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
@@ -145,7 +145,7 @@ class CentreonService extends CentreonObject
      * @param string $name
      * @return int
      */
-    public function getObjectId($name)
+    public function getObjectId($name, int $type = CentreonObject::SINGLE_VALUE)
     {
         if (isset($this->objectIds[$name])) {
             return $this->objectIds[$name];
@@ -158,7 +158,7 @@ class CentreonService extends CentreonObject
                 return $this->objectIds[$name];
             }
         } else {
-            return parent::getObjectId($name);
+            return parent::getObjectId($name, $type);
         }
 
         return 0;
@@ -266,8 +266,7 @@ class CentreonService extends CentreonObject
             if (count($params) == 2) {
                 $filters["host_name"] = "%" . $params[0] . "%";
                 $filters["service_description"] = "%" . $params[1] . "%";
-            }
-            else {
+            } else {
                 $filters["service_description"] = "%" . $parameters . "%";
             }
         }
@@ -427,7 +426,7 @@ class CentreonService extends CentreonObject
     /**
      * @param $serviceId
      */
-    function insertRelations($serviceId)
+    public function insertRelations($serviceId)
     {
         $relObject = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $relObject->insert($this->hostId, $serviceId);
@@ -905,7 +904,7 @@ class CentreonService extends CentreonObject
                 $macroList[0][$macroObj->getPrimaryKey()],
                 array(
                     'svc_macro_value' => $params[3],
-                    'is_password' => $params[4],
+                    'is_password' => (strlen($params[4]) === 0) ? 0 : (int) $params[4],
                     'description' => isset($params[5]) ? $params[5] : ''
                 )
             );
@@ -915,7 +914,7 @@ class CentreonService extends CentreonObject
                     'svc_svc_id' => $elements[0]['service_id'],
                     'svc_macro_name' => $this->wrapMacro($params[2]),
                     'svc_macro_value' => $params[3],
-                    'is_password' => $params[4],
+                    'is_password' => (strlen($params[4]) === 0) ? 0 : (int) $params[4],
                     'description' => isset($params[5]) ? $params[5] : '',
                     'macro_order' => $macroOrder
                 )
@@ -1261,6 +1260,10 @@ class CentreonService extends CentreonObject
                             }
                         }
                     }
+                    if (in_array($matches[2], ["servicegroup", "host"])) {
+                        $aclObj = new CentreonACL($this->dependencyInjector);
+                        $aclObj->reload(true);
+                    }
                 }
             } else {
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
@@ -1385,13 +1388,22 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
+                $description = $macro['description'];
+                if (
+                    strlen($description) > 0
+                    && substr($description, 0, 1) !== "'"
+                    && substr($description, -1, 1) !== "'"
+                ) {
+                    $description = "'" . $description . "'";
+                }
+
                 echo $this->action . $this->delim . "setmacro" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $element['service_description'] . $this->delim
                     . $this->stripMacro($macro['svc_macro_name']) . $this->delim
                     . $macro['svc_macro_value'] . $this->delim
-                    . $macro['is_password'] . $this->delim
-                    . "'" . $macro['description'] . "'" . "\n";
+                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
+                    . $description . "\n";
             }
             $cgRel = new \Centreon_Object_Relation_Contact_Group_Service($this->dependencyInjector);
             $cgelements = $cgRel->getMergedParameters(

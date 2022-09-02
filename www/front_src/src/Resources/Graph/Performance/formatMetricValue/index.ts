@@ -1,10 +1,10 @@
 import numeral from 'numeral';
-import { isNil } from 'ramda';
+import { isNil, lt } from 'ramda';
 
 interface FormatMetricValueProps {
-  value: number | null;
-  unit: string;
   base?: number;
+  unit: string;
+  value: number | null;
 }
 
 const formatMetricValue = ({
@@ -24,15 +24,23 @@ const formatMetricValue = ({
     'B/sec',
     'o',
     'octets',
+    'b/s',
+    'b',
   ];
 
   const base1024 = base2Units.includes(unit) || Number(base) === 1024;
 
   const formatSuffix = base1024 ? ' ib' : 'a';
 
-  return numeral(value)
+  const formattedMetricValue = numeral(Math.abs(value))
     .format(`0.[00]${formatSuffix}`)
     .replace(/\s|i|B/g, '');
+
+  if (lt(value, 0)) {
+    return `-${formattedMetricValue}`;
+  }
+
+  return formattedMetricValue;
 };
 
 export default formatMetricValue;

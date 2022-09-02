@@ -26,7 +26,7 @@ use Centreon\Domain\Entity\ImageDir;
 use Centreon\Domain\Repository\ImagesRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon
@@ -49,7 +49,7 @@ class ImagesRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $db = new CentreonDB;
         $this->datasets = [
@@ -97,7 +97,7 @@ class ImagesRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             ImagesRepository::class,
@@ -110,26 +110,33 @@ class ImagesRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $result = $this->repository->getPaginationList();
+        $expectedImage = new Image();
+        if (
+            array_key_exists('img_id', $result[0])
+            && array_key_exists('img_name', $result[0])
+            && array_key_exists('img_path', $result[0])
+        ) {
+            $expectedImage->setImgId($result[0]['img_id']);
+            $expectedImage->setImgName($result[0]['img_name']);
+            $expectedImage->setImgPath($result[0]['img_path']);
+        }
 
         $data = $this->datasets[0]['data'][0];
-
-        $imgDir = new ImageDir();
         $entity = new Image();
         $entity->setImgId($data['img_id']);
         $entity->setImgName($data['img_name']);
         $entity->setImgPath($data['img_path']);
-        $entity->setImageDir($imgDir);
 
-        $this->assertEquals($entity->getImgName(), $result[0]->getImgName());
+        $this->assertEquals($entity, $expectedImage);
     }
 
     /**
      * Test the method getPaginationList with a different arguments
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $filters = [
             'search' => 'name',
@@ -138,24 +145,31 @@ class ImagesRepositoryTest extends TestCase
         $limit = 1;
         $offset = 0;
 
-        $data = $this->datasets[1]['data'][0];
+        $result = $this->repository->getPaginationList($filters, $limit, $offset);
+        $expectedImage = new Image();
+        if (
+            array_key_exists('img_id', $result[0])
+            && array_key_exists('img_name', $result[0])
+            && array_key_exists('img_path', $result[0])
+        ) {
+            $expectedImage->setImgId($result[0]['img_id']);
+            $expectedImage->setImgName($result[0]['img_name']);
+            $expectedImage->setImgPath($result[0]['img_path']);
+        }
 
-        $imgDir = new ImageDir();
+        $data = $this->datasets[1]['data'][0];
         $entity = new Image();
         $entity->setImgId($data['img_id']);
         $entity->setImgName($data['img_name']);
         $entity->setImgPath($data['img_path']);
-        $entity->setImageDir($imgDir);
 
-        $this->assertEquals([
-                $entity,
-            ], $this->repository->getPaginationList($filters, $limit, $offset));
+        $this->assertEquals($entity, $expectedImage);
     }
 
     /**
      * Test the method getPaginationTotal
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $total = (int)$this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();

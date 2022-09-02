@@ -335,12 +335,12 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         $query .= " AND cv.service_id IS NULL ";
         $query .= " AND cv.name = 'CRITICALITY_LEVEL') ";
 
-        $query .= " WHERE h.name NOT LIKE '_Module_%'";
+        $query .= " WHERE h.name NOT LIKE '\_Module\_%'";
         $query .= " AND h.instance_id = i.instance_id ";
 
         if ($this->criticality) {
             $query .= " AND h.host_id = cvs.host_id ";
-            $query .= " AND cvs.name = 'CRITICALITY_ID' ";
+            $query .= " AND cvs.name = 'CRITICALITY_LEVEL' ";
             $query .= " AND cvs.service_id IS NULL ";
             $query .= " AND cvs.value = :criticality ";
             $queryValues['criticality'] = (string)$this->criticality;

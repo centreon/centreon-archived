@@ -7,7 +7,6 @@ use PDO;
 
 class OptionsRepository extends ServiceEntityRepository
 {
-
     /**
      * Export options
      *

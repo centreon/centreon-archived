@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +32,7 @@ use CentreonRemote\Domain\Service\ConfigurationWizard;
 use CentreonRemote\Infrastructure\Service;
 use CentreonRemote\Domain\Exporter;
 use CentreonACL;
+use CentreonRemote\Application\Clapi\CentreonRemoteServer;
 use CentreonRestHttp;
 
 /**
@@ -39,11 +41,17 @@ use CentreonRestHttp;
  */
 class ServiceProviderTest extends TestCase
 {
-
+    /**
+     * @var Container
+     */
     protected $container;
+
+    /**
+     * @var ServiceProvider
+     */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
         $this->container = new Container();
@@ -66,13 +74,13 @@ class ServiceProviderTest extends TestCase
             new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
         $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
-            public function add($class)
+            public function add(): self
             {
                 return $this;
             }
         };
 
-        $this->container['yml.config'] = function () {
+        $this->container['yml.config'] = function (): array {
             return [];
         };
 
@@ -87,7 +95,7 @@ class ServiceProviderTest extends TestCase
     /**
      * @covers \CentreonRemote\ServiceProvider::register
      */
-    public function testCheckServicesByList()
+    public function testCheckServicesByList(): void
     {
         $services = $this->container->keys();
 
@@ -122,7 +130,7 @@ class ServiceProviderTest extends TestCase
     /**
      * @covers \CentreonRemote\ServiceProvider::register
      */
-    public function testCheckExportersByList()
+    public function testCheckExportersByList(): void
     {
         $checkList = [
             Exporter\ConfigurationExporter::class,
@@ -149,7 +157,7 @@ class ServiceProviderTest extends TestCase
     /**
      * @covers \CentreonRemote\ServiceProvider::order
      */
-    public function testOrder()
+    public function testOrder(): void
     {
         $this->assertGreaterThanOrEqual(1, $this->provider::order());
         $this->assertLessThanOrEqual(20, $this->provider::order());

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -61,7 +62,7 @@ require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -111,37 +112,58 @@ switch ($o) {
         /*
          * Activate a contactgroup
          */
-        enableContactGroupInDB($cg_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableContactGroupInDB($cg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "u":
         /*
          * Desactivate a contactgroup
          */
-        disableContactGroupInDB($cg_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableContactGroupInDB($cg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "m":
         /*
          * Duplicate n contact group
          */
-        multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "d":
         /*
-         *
+         * Delete a contact group
          */
-        deleteContactGroupInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteContactGroupInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "dn":
         require_once $path . 'displayNotification.php';
         break;
     default:
-        /*
-         * Delete n contact group
-         */
         require_once($path . "listContactGroup.php");
         break;
 }

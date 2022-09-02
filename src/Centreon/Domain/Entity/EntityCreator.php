@@ -75,7 +75,7 @@ class EntityCreator
      */
     public static function setContact(Contact $contact): void
     {
-        static::$contact = $contact;
+        self::$contact = $contact;
     }
 
     /**
@@ -132,13 +132,13 @@ class EntityCreator
         }
 
         foreach ($data as $column => $value) {
-            if (array_key_exists($column, static::$entityDescriptors[$this->className])) {
-                $descriptor = static::$entityDescriptors[$this->className][$column];
+            if (array_key_exists($column, self::$entityDescriptors[$this->className])) {
+                $descriptor = self::$entityDescriptors[$this->className][$column];
                 $setterMethod = ($descriptor !== null && $descriptor->modifier !== null)
                     ? $descriptor->modifier
                     : $this->createSetterMethod($column);
-                if (array_key_exists($setterMethod, static::$publicMethods[$this->className])) {
-                    $parameters = static::$publicMethods[$this->className][$setterMethod]->getParameters();
+                if (array_key_exists($setterMethod, self::$publicMethods[$this->className])) {
+                    $parameters = self::$publicMethods[$this->className][$setterMethod]->getParameters();
                     if (empty($parameters)) {
                         throw new \Exception(
                             sprintf(_('The public method %s::%s has no parameters'), $this->className, $setterMethod)
@@ -215,8 +215,8 @@ class EntityCreator
             case 'DateTime':
                 if (is_numeric($value)) {
                     $value = (new \DateTime())->setTimestamp((int) $value);
-                    if (static::$contact !== null) {
-                        $value->setTimezone(static::$contact->getTimezone());
+                    if (self::$contact !== null) {
+                        $value->setTimezone(self::$contact->getTimezone());
                     }
                     return $value;
                 }
@@ -233,15 +233,15 @@ class EntityCreator
      */
     private function readPublicMethod(): void
     {
-        if (isset(static::$publicMethods[$this->className])) {
+        if (isset(self::$publicMethods[$this->className])) {
             return;
         }
 
-        static::$publicMethods[$this->className] = [];
+        self::$publicMethods[$this->className] = [];
         $reflectionClass = new \ReflectionClass($this->className);
         foreach ($reflectionClass->getMethods() as $method) {
             if ($method->isPublic()) {
-                static::$publicMethods[$this->className][$method->getName()] = $method;
+                self::$publicMethods[$this->className][$method->getName()] = $method;
             }
         }
     }
@@ -254,11 +254,11 @@ class EntityCreator
      */
     private function readAnnotations(): void
     {
-        if (isset(static::$entityDescriptors[$this->className])) {
+        if (isset(self::$entityDescriptors[$this->className])) {
             return;
         }
 
-        static::$entityDescriptors[$this->className] = [];
+        self::$entityDescriptors[$this->className] = [];
         $reflectionClass = new ReflectionClass($this->className);
         $properties = $reflectionClass->getProperties();
         $reader = new AnnotationReader();
@@ -273,7 +273,7 @@ class EntityCreator
             $key = ($annotation !== null && $annotation->column !== null)
                 ? $annotation->column
                 : StringConverter::convertCamelCaseToSnakeCase($property->getName());
-            static::$entityDescriptors[$this->className][$key] = $annotation;
+            self::$entityDescriptors[$this->className][$key] = $annotation;
         }
 
         // load entity descriptor data via static method with metadata
@@ -283,7 +283,7 @@ class EntityCreator
                 $descriptor->column = $column;
                 $descriptor->modifier = $modifier;
 
-                static::$entityDescriptors[$this->className][$column] = $descriptor;
+                self::$entityDescriptors[$this->className][$column] = $descriptor;
             }
         }
     }

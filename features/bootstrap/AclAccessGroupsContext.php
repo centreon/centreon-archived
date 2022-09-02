@@ -32,8 +32,8 @@ class AclAccessGroupsContext extends CentreonContext
             'alias' => $this->firstContactAlias,
             'name' => $this->firstContactName,
             'email' => 'test@centreon.com',
-            'password' => 'firstContactPassword',
-            'password2' => 'firstContactPassword',
+            'password' => 'firstContactPassword!1',
+            'password2' => 'firstContactPassword!1',
             'admin' => 0
         ));
         $this->page->save();
@@ -42,8 +42,8 @@ class AclAccessGroupsContext extends CentreonContext
             'alias' => $this->secondContactAlias,
             'name' => $this->secondContactName,
             'email' => 'test2@centreon.com',
-            'password' => 'secondContactPassword',
-            'password2' => 'secondContactPassword',
+            'password' => 'secondContactPassword!2',
+            'password2' => 'secondContactPassword!2',
             'admin' => 0
         ));
         $this->page->save();
@@ -77,15 +77,29 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->firstContactAlias);
-        if ($this->page->getProperty('acl_groups') != $this->accessContactName) {
-            throw new \Exception($this->firstContactAlias . ' have no Access list groups displayed');
-        }
+        $this->spin(
+            function ($context) {
+                if ($context->page->getProperty('acl_groups') !== $context->accessContactName) {
+                    throw new \Exception($context->firstContactAlias . ' has no link access list groups displayed');
+                }
+                return true;
+            },
+            'Timeout',
+            5
+        );
 
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->secondContactAlias);
-        if ($this->page->getProperty('acl_groups') != $this->accessContactName) {
-            throw new \Exception($this->secondContactAlias . ' have no Access list groups displayed');
-        }
+        $this->spin(
+            function ($context) {
+                if ($context->page->getProperty('acl_groups') !== $context->accessContactName) {
+                    throw new \Exception($context->secondContactAlias . ' has no link access list groups displayed');
+                }
+                return true;
+            },
+            'Timeout',
+            5
+        );
     }
 
     /**
@@ -111,15 +125,22 @@ class AclAccessGroupsContext extends CentreonContext
     }
 
     /**
-     * @Then the Contact group has the access list group displayed in Relations informations
+     * @Then the contact group has the access group displayed in Relations informations
      */
     public function theContactGroupHasTheAccessListGroupDisplayedInRelationsInformations()
     {
         $this->page = new ContactGroupConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->contactGroupName);
-        if ($this->page->getProperty('acl') != $this->accessGroupsName) {
-            throw new \Exception($this->contactGroupName . ' have no Linked ACL groups displayed');
-        }
+        $this->spin(
+            function ($context) {
+                if ($context->page->getProperty('acl') !== $context->accessGroupsName) {
+                    throw new \Exception($context->contactGroupName . ' has no Linked ACL groups displayed');
+                }
+                return true;
+            },
+            'Timeout',
+            5
+        );
     }
 
     /**

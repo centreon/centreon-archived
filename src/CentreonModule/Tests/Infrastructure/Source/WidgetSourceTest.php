@@ -48,15 +48,31 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class WidgetSourceTest extends TestCase
 {
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    /**
+     * @var FileSystem
+     */
+    private $fs;
 
+    /**
+     * @var WidgetSource
+     */
+    private $source;
+
+    /**
+     * @var string
+     */
     public static $widgetName = 'test-widget';
+
+    /**
+     * @var string[]
+     */
     public static $widgetInfo = [
         'title' => 'Curabitur congue porta neque',
         'author' => 'Centreon',
@@ -75,6 +91,10 @@ class WidgetSourceTest extends TestCase
         'thumbnail' => './resources/thumbnail.png',
         'url' => './widgets/test-widget/index.php',
     ];
+
+    /**
+     * @var string[][][]
+     */
     public static $sqlQueryVsData = [
         "SELECT `directory` AS `id`, `version` FROM `widget_models`" => [
             [
@@ -84,7 +104,7 @@ class WidgetSourceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -96,12 +116,12 @@ class WidgetSourceTest extends TestCase
         ;
 
         // provide services
-        $container = new Container;
-        $container['finder'] = new Finder;
+        $container = new Container();
+        $container['finder'] = new Finder();
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
@@ -111,7 +131,7 @@ class WidgetSourceTest extends TestCase
         $containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(WidgetSource::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getPath',
             ])
             ->setConstructorArgs([
@@ -129,13 +149,13 @@ class WidgetSourceTest extends TestCase
         ;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
     }
 
-    public function testGetList()
+    public function testGetList(): void
     {
         $result = $this->source->getList();
 
@@ -145,7 +165,7 @@ class WidgetSourceTest extends TestCase
         $this->assertEquals([], $result2);
     }
 
-    public function testGetDetail()
+    public function testGetDetail(): void
     {
         (function () {
             $result = $this->source->getDetail('missing-widget');
@@ -160,7 +180,7 @@ class WidgetSourceTest extends TestCase
         })();
     }
 
-    public function testCreateEntityFromConfig()
+    public function testCreateEntityFromConfig(): void
     {
         $configFile = static::getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
@@ -174,14 +194,6 @@ class WidgetSourceTest extends TestCase
         $this->assertEquals(static::$widgetInfo['keywords'], $result->getKeywords());
         $this->assertTrue($result->isInstalled());
         $this->assertFalse($result->isUpdated());
-    }
-
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-widget' => 'x.y.z',
-            ], 'info', $this->source);
     }
 
     public static function getConfFilePath(): string

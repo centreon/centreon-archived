@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,18 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = null;
-isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = null;
-$tpG ? $tp_id = $tpG : $tp_id = $tpP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 //Path to the configuration dir
 $path = "./include/configuration/configObject/timeperiod/";
 
@@ -56,32 +45,58 @@ $path = "./include/configuration/configObject/timeperiod/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+$tp_id = filter_var(
+    $_GET['tp_id'] ?? $_POST['tp_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
 switch ($o) {
-    case "a":
+    case "a": // Add a Timeperiod
+    case "w": // Watch a Timeperiod
+    case "c": // Modify a Timeperiod
         require_once($path . "formTimeperiod.php");
-        break; //Add a Timeperiod
-    case "w":
-        require_once($path . "formTimeperiod.php");
-        break; //Watch a Timeperiod
-    case "c":
-        require_once($path . "formTimeperiod.php");
-        break; //Modify a Timeperiod
-    case "s":
+        break;
+    case "s": // Show Timeperiod
         require_once($path . "renderTimeperiod.php");
-        break; //Show Timeperiod
-    case "m":
-        multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr);
+        break;
+    case "m": // Duplicate n Timeperiods
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleTimeperiodInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listTimeperiod.php");
-        break; #Duplicate n Timeperiods
-    case "d":
-        deleteTimeperiodInDB(isset($select) ? $select : array());
+        break;
+    case "d": // Delete n Timeperiods
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteTimeperiodInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listTimeperiod.php");
-        break; #Delete n Timeperiods
+        break;
     default:
         require_once($path . "listTimeperiod.php");
         break;

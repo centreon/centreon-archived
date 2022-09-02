@@ -1,0 +1,21 @@
+{
+  "testFiles": "**/*.feature",
+  "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
+  "supportFile": "cypress/support/index.ts",
+  "pluginsFile": "cypress/plugins/index.ts",
+  "video": true,
+  "videosFolder": "cypress/results/dev/videos",
+  "screenshotsFolder": "cypress/results/dev/screenshots",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "cypress/results/dev/reports/junit-report.xml"
+  },
+  "retries": 0,
+  "defaultCommandTimeout": 6000,
+  "requestTimeout": 10000,
+  "execTimeout": 60000,
+  "baseUrl": "http://0.0.0.0:4000",
+  "env": {
+    "dockerName": "centreon-dev"
+  }
+}

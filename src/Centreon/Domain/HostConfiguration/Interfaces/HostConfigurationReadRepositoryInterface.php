@@ -25,6 +25,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This interface gathers all the reading operations on the repository.
@@ -57,6 +58,8 @@ interface HostConfigurationReadRepositoryInterface
      * Find all host templates.
      *
      * @return HostTemplate[]
+     * @throws RepositoryException
+     * @throws \Throwable
      */
     public function findHostTemplates(): array;
 
@@ -76,6 +79,17 @@ interface HostConfigurationReadRepositoryInterface
     public function getNumberOfHosts(): int;
 
     /**
+     * Find the command of a host.
+     *
+     * Recursively search in the inherited templates if no result found.
+     *
+     * @param int $hostId Host id
+     * @return string|null Return the command if found
+     * @throws \Throwable
+     */
+    public function findCommandLine(int $hostId): ?string;
+
+    /**
      * Find all host macros for the host.
      *
      * @param int $hostId Id of the host
@@ -92,4 +106,42 @@ interface HostConfigurationReadRepositoryInterface
      * @return string[] Return the host names found
      */
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
+
+    /**
+     * Find a host regarding user ACL
+     *
+     * @param integer $hostId
+     * @param int[] $accessGroupIds
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+
+    /**
+     * Find host templates linked to a host (non recursive)
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host
+     * @return Host[]
+     */
+    public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find a host by its name.
+     *
+     * @param string $hostName Host Id to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws \Throwable
+     */
+    public function findHostByName(string $hostName): ?Host;
+
+    /**
+     * Find host template by its id
+     *
+     * @param int $hostTemplateId
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostTemplate(int $hostTemplateId): ?Host;
 }

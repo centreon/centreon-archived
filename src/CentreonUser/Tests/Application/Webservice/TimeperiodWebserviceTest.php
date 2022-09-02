@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
 use CentreonUser\Application\Webservice\TimeperiodWebservice;
-use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser
@@ -40,9 +40,15 @@ class TimeperiodWebserviceTest extends TestCase
     protected const METHOD_GET_LIST = 'getList';
 
     /**
+     *
+     * @var TimeperiodWebservice|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $webservice;
+
+    /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container();
@@ -63,7 +69,7 @@ class TimeperiodWebserviceTest extends TestCase
     /**
      * Test the method getList
      */
-    public function testGetList()
+    public function testGetList(): void
     {
         // without applied filters
         $this->mockQuery();
@@ -72,8 +78,9 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getList with different filter
+     *
      */
-    public function testGetList2()
+    public function testGetList2(): void
     {
         // with search, searchByIds, limit, and offset
         $this->mockQuery([
@@ -87,8 +94,9 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getName
+     *
      */
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertEquals('centreon_timeperiod', TimeperiodWebservice::getName());
     }

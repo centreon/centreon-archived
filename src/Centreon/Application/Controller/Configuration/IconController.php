@@ -52,7 +52,7 @@ class IconController extends AbstractController
     /**
      * IconController constructor.
      *
-     * @param IconServiceInterface $proxyService
+     * @param IconServiceInterface $iconService
      */
     public function __construct(IconServiceInterface $iconService, IconUrlNormalizer $iconUrlNormalizer)
     {

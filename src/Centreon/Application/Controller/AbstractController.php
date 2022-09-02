@@ -22,6 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use JsonSchema\Validator;
+use Centreon\Domain\Log\LoggerTrait;
+use JsonSchema\Constraints\Constraint;
+use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 
 /**
@@ -31,6 +35,8 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
  */
 abstract class AbstractController extends AbstractFOSRestController
 {
+    use LoggerTrait;
+
     public const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
     public const ROLE_API_REALTIME_EXCEPTION_MESSAGE = 'You are not authorized to access this resource';
     public const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
@@ -38,16 +44,20 @@ abstract class AbstractController extends AbstractFOSRestController
 
     public function denyAccessUnlessGrantedForApiConfiguration(): void
     {
-        parent::denyAccessUnlessGranted([
+        parent::denyAccessUnlessGranted(
             static::ROLE_API_CONFIGURATION,
-        ], static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE);
+            null,
+            static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE
+        );
     }
 
     public function denyAccessUnlessGrantedForApiRealtime(): void
     {
-        parent::denyAccessUnlessGranted([
+        parent::denyAccessUnlessGranted(
             static::ROLE_API_REALTIME,
-        ], static::ROLE_API_REALTIME_EXCEPTION_MESSAGE);
+            null,
+            static::ROLE_API_REALTIME_EXCEPTION_MESSAGE
+        );
     }
 
     /**
@@ -62,7 +72,7 @@ abstract class AbstractController extends AbstractFOSRestController
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
+                '/^(.+)\/((api|widgets|modules|include|authentication)\/|main(\.get)?\.php).+/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )
@@ -71,5 +81,42 @@ abstract class AbstractController extends AbstractFOSRestController
         }
 
         return $baseUri;
+    }
+
+    /**
+     * Validate the data sent.
+     *
+     * @param Request $request Request sent by client
+     * @param string $jsonValidationFile Json validation file
+     * @throws \InvalidArgumentException
+     */
+    protected function validateDataSent(Request $request, string $jsonValidationFile): void
+    {
+        $receivedData = json_decode((string) $request->getContent(), true);
+        if (!is_array($receivedData)) {
+            throw new \InvalidArgumentException('Error when decoding your sent data');
+        }
+        $receivedData = Validator::arrayToObjectRecursive($receivedData);
+        $validator = new Validator();
+        $validator->validate(
+            $receivedData,
+            (object) [
+                '$ref' => 'file://' . realpath(
+                    $jsonValidationFile
+                )
+            ],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            $this->error('Invalid request body');
+            foreach ($validator->getErrors() as $error) {
+                $message .= ! empty($error['property'])
+                    ? sprintf("[%s] %s\n", $error['property'], $error['message'])
+                    : sprintf("%s\n", $error['message']);
+            }
+            throw new \InvalidArgumentException($message);
+        }
     }
 }

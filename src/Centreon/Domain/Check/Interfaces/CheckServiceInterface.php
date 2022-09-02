@@ -54,6 +54,17 @@ interface CheckServiceInterface extends ContactFilterInterface
     public function checkService(Check $check): void;
 
     /**
+     * Adds a Meta service check.
+     *
+     * @param Check $check Meta Service check to schedule
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     * @throws ValidationFailedException
+     */
+    public function checkMetaService(Check $check): void;
+
+    /**
      * Adds a resource check.
      *
      * @param Check $check

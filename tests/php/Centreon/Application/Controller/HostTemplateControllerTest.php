@@ -24,11 +24,11 @@ namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\HostTemplateController;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplates;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate\FindHostTemplatesResponse;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV2110Factory;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -125,7 +125,7 @@ class HostTemplateControllerTest extends TestCase
         );
         $this->assertEquals(
             View::create([
-                'result' => HostTemplateV21Factory::createFromResponse($findHostTemplateResponse),
+                'result' => HostTemplateV2110Factory::createFromResponse($findHostTemplateResponse),
                 'meta' => (new RequestParameters())->toArray()
             ]),
             $view

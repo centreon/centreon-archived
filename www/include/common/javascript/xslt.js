@@ -101,7 +101,6 @@ function loadXML(url) {
         xmlDoc.async = false;
         xmlDoc.load(url);
       } else if (window.XMLHttpRequest) {
-		// ï¿½ l'aide de lobjet XMLHTTPRequest
       	xmlDoc = new XMLHttpRequest();
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
@@ -378,4 +377,22 @@ function browserSupportsXSLT() {
        }
     }
     return support;
+}
+
+/**
+ * Displaying SVGs on browsers other than chrome.
+ *
+ * @return void
+ */
+function displaySvgOnXSL()
+{
+    if (!browserSupportsXSLT()) {
+        return;
+    }
+    if (navigator.userAgent.indexOf("Chrome") === -1) {
+        let nodes = document.getElementsByClassName("svgs");
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            nodes[i].innerHTML = nodes[i].textContent;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -112,6 +113,7 @@ abstract class AbstractService extends AbstractObject
         'notes_url',
         'action_url',
         'icon_image',
+        'icon_id',
         'icon_image_alt',
         'acknowledgement_timeout'
     );
@@ -128,9 +130,11 @@ abstract class AbstractService extends AbstractObject
         'retain_status_information',
         'retain_nonstatus_information',
     );
-    protected $attributes_array = array(
+    protected $attributes_array = [
         'use',
-    );
+        'category_tags',
+        'group_tags',
+    ];
     protected $attributes_hash = array(
         'macros'
     );
@@ -145,6 +149,7 @@ abstract class AbstractService extends AbstractObject
         $media = Media::getInstance($this->dependencyInjector);
         if (!isset($service['icon_image'])) {
             $service['icon_image'] = $media->getMediaPathFromId($service['icon_image_id']);
+            $service['icon_id'] = $service['icon_image_id'];
         }
     }
 
@@ -265,5 +270,25 @@ abstract class AbstractService extends AbstractObject
             return $this->service_cache[$service_id][$attr];
         }
         return null;
+    }
+
+    /**
+     * @param ServiceCategory $serviceCategory
+     * @param int $serviceId
+     */
+    protected function insertServiceInServiceCategoryMembers(ServiceCategory $serviceCategory, int $serviceId): void
+    {
+        $this->service_cache[$serviceId]['serviceCategories'] =
+            $serviceCategory->getServiceCategoriesByServiceId($serviceId);
+
+        foreach ($this->service_cache[$serviceId]['serviceCategories'] as $serviceCategoryId) {
+            if (! is_null($serviceCategoryId)) {
+                $serviceCategory->insertServiceToServiceCategoryMembers(
+                    $serviceCategoryId,
+                    $serviceId,
+                    $this->service_cache[$serviceId]['service_description']
+                );
+            }
+        }
     }
 }

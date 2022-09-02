@@ -15,14 +15,13 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
                 include('./include/common/pagination.php');
             {/php}
         </tr>
-    </table>    
+    </table>
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
@@ -51,9 +50,8 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
                 include('./include/common/pagination.php');
             {/php}

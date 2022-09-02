@@ -149,7 +149,7 @@ $rq1 .= " `hosts` h
     ON hph.parent_id = h.host_id
     LEFT JOIN `customvariables` cv
     ON (cv.host_id = h.host_id AND cv.service_id = 0 AND cv.name = 'CRITICALITY_LEVEL')
-    WHERE h.name NOT LIKE '_Module_%'
+    WHERE h.name NOT LIKE '\_Module\_%'
     AND h.instance_id = i.instance_id ";
 
 if ($criticalityId) {
@@ -458,7 +458,7 @@ while ($data = $dbResult->fetch()) {
     } else {
         $obj->XML->writeElement("hau", "none");
     }
-
+    $obj->XML->writeElement("chartIcon", returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)", 18, 18));
     $obj->XML->endElement();
 }
 $dbResult->closeCursor();

@@ -38,7 +38,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements MonitoringServerRepositoryInterface
 {
-
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -230,7 +229,7 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
     {
         $request = $this->translateDbName(
-            'SELECT resource.* FROM `:db`.cfg_resource resource 
+            'SELECT resource.* FROM `:db`.cfg_resource resource
             INNER JOIN `:db`.cfg_resource_instance_relations rel
                 ON rel.resource_id = resource.resource_id
             WHERE rel.instance_id = :monitoring_server_id
@@ -272,5 +271,15 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue(':server_name', $monitoringServer->getName(), \PDO::PARAM_STR);
             $statement->execute();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteServer(int $monitoringServerId): void
+    {
+        $statement = $this->db->prepare($this->translateDbName("DELETE FROM `:db`.nagios_server WHERE id = :id"));
+        $statement->bindValue(':id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 }

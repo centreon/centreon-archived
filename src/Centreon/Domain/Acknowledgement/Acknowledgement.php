@@ -96,17 +96,17 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     /**
      * @var bool Indicates if the contacts must to be notify
      */
-    private $isNotifyContacts;
+    private $isNotifyContacts = true;
 
     /**
      * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
      */
-    private $isPersistentComment;
+    private $isPersistentComment = true;
 
     /**
      * @var bool
      */
-    private $isSticky;
+    private $isSticky = true;
 
     /**
      * @var int State of this acknowledgement
@@ -122,6 +122,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
      * @var bool Indicates if this downtime should be applied to linked services
      */
     private $withServices = false;
+
+    /**
+     * @var bool Indicates if after acknowledgement action the resource should be force checked
+     */
+    private $forceActiveChecks = true;
 
     /**
      * {@inheritdoc}
@@ -439,5 +444,21 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public function setWithServices(bool $withServices): void
     {
         $this->withServices = $withServices;
+    }
+
+    /**
+     * @param bool $forceActiveChecks
+     */
+    public function setForceActiveChecks(bool $forceActiveChecks): void
+    {
+        $this->forceActiveChecks = $forceActiveChecks;
+    }
+
+    /**
+     * @return bool
+     */
+    public function doesForceActiveChecks(): bool
+    {
+        return $this->forceActiveChecks;
     }
 }

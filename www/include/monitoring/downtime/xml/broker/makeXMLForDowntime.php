@@ -98,6 +98,7 @@ if (false === $svcId) {
         WHERE host_id = :hostId
         AND type = 2
         AND cancelled = 0
+        AND UNIX_TIMESTAMP(NOW()) >= actual_start_time
         AND end_time > UNIX_TIMESTAMP(NOW())
         ORDER BY actual_start_time'
     );
@@ -111,6 +112,7 @@ if (false === $svcId) {
         AND service_id = :svcId
         AND type = 1
         AND cancelled = 0
+        AND UNIX_TIMESTAMP(NOW()) >= actual_start_time
         AND end_time > UNIX_TIMESTAMP(NOW())
         ORDER BY actual_start_time'
     );

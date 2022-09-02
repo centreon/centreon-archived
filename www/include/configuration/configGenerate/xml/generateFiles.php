@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -33,11 +34,16 @@
  *
  */
 
+use App\Kernel;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+
 ini_set("display_errors", "Off");
 
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/bootstrap.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/common-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
@@ -46,15 +52,65 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
+global $dependencyInjector;
+global $pearDB;
+
 $pearDB = $dependencyInjector["configuration_db"];
 
-/* Check Session */
-CentreonSession::start(1);
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
-    print "Bad Session";
-    exit();
+$xml = new CentreonXML();
+$okMsg = "<b><font color='green'>OK</font></b>";
+$nokMsg = "<b><font color='red'>NOK</font></b>";
+
+if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+    $kernel = new Kernel('prod', false);
+    $kernel->boot();
+
+    $container = $kernel->getContainer();
+    if ($container == null) {
+        throw new Exception(_('Unable to load the Symfony container'));
+    }
+    $contactService = $container->get(ContactServiceInterface::class);
+    $contact = $contactService->findByAuthenticationToken($_SERVER['HTTP_X_AUTH_TOKEN']);
+    if ($contact === null) {
+        $xml->startElement("response");
+        $xml->writeElement("status", $nokMsg);
+        $xml->writeElement("statuscode", 1);
+        $xml->writeElement("error", 'Contact not found');
+        $xml->endElement();
+
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
+
+        $xml->output();
+        exit();
+    }
+    $centreon = new Centreon([
+        'contact_id' => $contact->getId(),
+        'contact_name' => $contact->getName(),
+        'contact_alias' => $contact->getAlias(),
+        'contact_email' => $contact->getEmail(),
+        'contact_admin' => $contact->isAdmin(),
+        'contact_lang' => null,
+        'contact_passwd' => null,
+        'contact_autologin_key' => null,
+        'contact_location' => null,
+        'reach_api' => $contact->hasAccessToApiConfiguration(),
+        'reach_api_rt' => $contact->hasAccessToApiRealTime(),
+        'show_deprecated_pages' => false
+    ]);
+} else {
+    /* Check Session */
+    CentreonSession::start(1);
+    if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+        print "Bad Session";
+        exit();
+    }
+    $centreon = $_SESSION['centreon'];
 }
-$centreon = $_SESSION['centreon'];
 
 if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
@@ -73,7 +129,6 @@ $username = 'unknown';
 if (isset($centreon->user->name)) {
     $username = $centreon->user->name;
 }
-$xml = new CentreonXML();
 $config_generate = new Generate($dependencyInjector);
 
 $pollers = explode(',', $_POST['poller']);
@@ -84,11 +139,34 @@ $ret = array();
 $ret['host'] = $pollers;
 $ret['debug'] = $debug;
 
-// Set new error handler
-set_error_handler('log_error');
+/**
+ * The error handler for get error from PHP
+ *
+ * @see set_error_handler
+ */
+$log_error = function ($errno, $errstr, $errfile, $errline) {
+    global $generatePhpErrors;
+    if (!(error_reporting() && $errno)) {
+        return;
+    }
 
-$okMsg = "<b><font color='green'>OK</font></b>";
-$nokMsg = "<b><font color='red'>NOK</font></b>";
+    switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_CORE_ERROR:
+            $generatePhpErrors[] = array('error', $errstr);
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+        case E_CORE_WARNING:
+            $generatePhpErrors[] = array('warning', $errstr);
+            break;
+    }
+    return true;
+};
+
+// Set new error handler
+set_error_handler($log_error);
 
 $xml->startElement("response");
 try {
@@ -150,146 +228,11 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 $xml->output();
-
-
-/**
- * The error handler for get error from PHP
- *
- * @see set_error_handler
- */
-function log_error($errno, $errstr, $errfile, $errline)
-{
-    global $generatePhpErrors;
-    if (!(error_reporting() && $errno)) {
-        return;
-    }
-
-    switch ($errno) {
-        case E_ERROR:
-        case E_USER_ERROR:
-        case E_CORE_ERROR:
-            $generatePhpErrors[] = array('error', $errstr);
-            break;
-        case E_WARNING:
-        case E_USER_WARNING:
-        case E_CORE_WARNING:
-            $generatePhpErrors[] = array('warning', $errstr);
-            break;
-    }
-    return true;
-}
-
-function printDebug($xml, $tabs)
-{
-    global $pearDB, $ret, $centreon, $nagiosCFGPath;
-
-    $DBRESULT_Servers = $pearDB->query(
-        "SELECT `nagios_bin` FROM `nagios_server`
-        WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1"
-    );
-    $nagios_bin = $DBRESULT_Servers->fetch();
-    $DBRESULT_Servers->closeCursor();
-    $msg_debug = array();
-
-    $tab_server = array();
-    foreach ($tabs as $tab) {
-        if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
-            $tab_server[$tab["id"]] = array(
-                "id" => $tab["id"],
-                "name" => $tab["name"],
-                "localhost" => $tab["localhost"]
-            );
-        }
-    }
-
-    foreach ($tab_server as $host) {
-        $stdout = shell_exec(
-            escapeshellarg($nagios_bin['nagios_bin']) . " -v " . $nagiosCFGPath .
-            escapeshellarg($host['id']) . "/centengine.DEBUG 2>&1"
-        );
-        $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
-        $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
-        $msg_debug[$host['id']] = str_replace(
-            "Warning:",
-            "<font color='orange'>Warning</font>",
-            $msg_debug[$host['id']]
-        );
-        $msg_debug[$host['id']] = str_replace(
-            "warning: ",
-            "<font color='orange'>Warning</font> ",
-            $msg_debug[$host['id']]
-        );
-        $msg_debug[$host['id']] = str_replace("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace("reading", "Reading", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace("running", "Running", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = str_replace(
-            "Total Warnings: 0",
-            "<font color='green'>Total Warnings: 0</font>",
-            $msg_debug[$host['id']]
-        );
-        $msg_debug[$host['id']] = str_replace(
-            "Total Errors:   0",
-            "<font color='green'>Total Errors: 0</font>",
-            $msg_debug[$host['id']]
-        );
-        $msg_debug[$host['id']] = str_replace("<br />License:", " - License:", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
-
-        $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
-        $msg_debug[$host['id']] = "";
-        $i = 0;
-        foreach ($lines as $line) {
-            if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
-                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))
-            ) {
-                $msg_debug[$host['id']] .= $line . "<br>";
-            }
-            $i++;
-        }
-    }
-
-    $xml->startElement("debug");
-    $str = "";
-    $returnCode = 0;
-    foreach ($msg_debug as $pollerId => $message) {
-        $show = "none";
-        $toggler = "<label id='togglerp_" . $pollerId . "'>[ + ]</label><label id='togglerm_" . $pollerId .
-            "' style='display: none'>[ - ]</label>";
-        $pollerNameColor = "green";
-        if (preg_match_all("/Total (Errors|Warnings)\:[ ]+([0-9]+)/", $message, $globalMatches, PREG_SET_ORDER)) {
-            foreach ($globalMatches as $matches) {
-                if ($matches[2] != "0") {
-                    $show = "block";
-                    $toggler = "<label id='togglerp_" . $pollerId .
-                        "' style='display: none'>[ + ]</label><label id='togglerm_" . $pollerId . "'>[ - ]</label>";
-                    if ($matches[1] == "Errors") {
-                        $pollerNameColor = "red";
-                        $returnCode = 1;
-                    } elseif ($matches[1] == "Warnings") {
-                        $pollerNameColor = "orange";
-                    }
-                }
-            }
-        } else {
-            $show = "block";
-            $pollerNameColor = "red";
-            $toggler = "<label id='togglerp_" . $pollerId .
-                "' style='display: none'>[ + ]</label><label id='togglerm_" . $pollerId . "'>[ - ]</label>";
-            $returnCode = 1;
-        }
-        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\">";
-        $str .= $toggler . "</a> ";
-        $str .= "<b><font color='$pollerNameColor'>" . $tab_server[$pollerId]['name'] . "</font></b><br/>";
-        $str .= "<div style='display: $show;' id='debug_" . $pollerId . "'>" . htmlentities($message) . "</div><br/>";
-    }
-    $xml->text($str);
-    $xml->endElement();
-    return $returnCode;
-}

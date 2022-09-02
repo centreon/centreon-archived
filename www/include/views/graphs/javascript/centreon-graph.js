@@ -709,6 +709,10 @@
         legendDiv = jQuery('<div>').addClass('chart-legend')
             .data('curveid', curveId)
             .data('legend', i);
+        let legendText = legend.legend;
+        if (legend.unit) {
+            legendText += ' (' + legend.unit + ')';
+        }
 
         /* Build legend for a curve */
         legendLabel = jQuery('<div>')
@@ -717,11 +721,11 @@
               jQuery('<div>')
                 .addClass('chart-legend-color')
                 .css({
-                  'background-color': self.chart.color(curveId)
+                  'background-color': legend.ds_data.ds_color_line
                 })
             )
             .append(
-              jQuery('<span>').text(legend.legend)
+              jQuery('<span>').text(legendText)
             );
         legendLabel.appendTo(legendDiv);
 

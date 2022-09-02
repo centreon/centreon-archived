@@ -44,7 +44,6 @@
  */
 class Config
 {
-
     public $XMLfile;
     private $defaultConfiguration;
     public $tables;

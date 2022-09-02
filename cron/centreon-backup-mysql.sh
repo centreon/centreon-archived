@@ -49,7 +49,6 @@ SNAPSHOT_MOUNT="/mnt/snap-backup"
 SAVE_LAST_DIR="/var/lib/centreon-backup"
 SAVE_LAST_FILE="backup.last"
 DO_ARCHIVE=1
-INIT_SCRIPT="" # will try to find it later
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
 MNT_OPTIONS_XFS="-o nouuid"
 MNT_OPTIONS_NOT_XFS=""
@@ -57,7 +56,13 @@ MNT_OPTIONS_NOT_XFS=""
 ###
 # Check MySQL launch
 ###
-process=$(ps -o args --no-headers -C mysqld)
+if ps -o args --no-headers -C mariadbd >/dev/null  ; then
+    process="mariadb"
+elif ps -o args --no-header -C mysqld >/dev/null ; then
+    process="mysqld"
+else
+    output_log "ERROR: Can't find MySQL process running." 1
+fi
 started=0
 
 #####
@@ -97,17 +102,6 @@ fi
 ### Avoid datadir is a symlink (get the absolute path)
 datadir=$(cd "$datadir"; pwd -P)
 output_log "MySQL datadir finded: $datadir"
-
-# Get init script
-if [ -e "/etc/init.d/mysql" ] ; then
-    INIT_SCRIPT="/etc/init.d/mysql"
-elif [ -e "/etc/init.d/mysqld" ] ; then
-    INIT_SCRIPT="/etc/init.d/mysqld"
-fi
-if [ -z "$INIT_SCRIPT" ] ; then
-    output_log "ERROR: Can't find init MySQL script." 1
-    exit 1
-fi
 
 ###
 # Get mount
@@ -205,7 +199,7 @@ echo "#####################"
 if [ "$started" -eq 1 ] ; then
     i=0
     output_log "Stopping mysqld:" 0 1
-    $INIT_SCRIPT stop
+    systemctl stop $process
     while ps -o args --no-headers -C mysqld >/dev/null; do
         if [ "$i" -gt "$STOP_TIMEOUT" ] ; then
             output_log ""
@@ -231,7 +225,7 @@ lvcreate -l $free_pe -s -n dbbackup $lv_name
 # Start server
 ###
 output_log "Start mysqld:"
-$INIT_SCRIPT start
+systemctl start $process
 
 ###
 # Mount snapshot

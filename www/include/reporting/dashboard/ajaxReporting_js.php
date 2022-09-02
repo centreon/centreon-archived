@@ -36,17 +36,18 @@
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 if ($type == "Service") {
-    $arg = "id=".$service_id."&host_id=".$host_id;
+    $arg = "id=" . $serviceId . "&host_id=" . $hostId;
 } else {
-    $arg = "id=".$id;
+    $arg = "id=" . $id;
 }
 
-$arg .= "&color[UP]=#".$colors["up"]."&color[UNDETERMINED]=#".$colors["undetermined"].
-        "&color[DOWN]=#".$colors["down"]."&color[UNREACHABLE]=#".$colors["unreachable"].
-        "&color[OK]=#".$colors["ok"]."&color[WARNING]=#".$colors["warning"].
-        "&color[CRITICAL]=#".$colors["critical"]."&color[UNKNOWN]=#".$colors["unknown"];
+$arg .= "&color[UP]=#" . $colors["up"] . "&color[UNDETERMINED]=#" . $colors["undetermined"] .
+        "&color[DOWN]=#" . $colors["down"] . "&color[UNREACHABLE]=#" . $colors["unreachable"] .
+        "&color[OK]=#" . $colors["ok"] . "&color[WARNING]=#" . $colors["warning"] .
+        "&color[CRITICAL]=#" . $colors["critical"] . "&color[UNKNOWN]=#" . $colors["unknown"] .
+        "&startDate=" . $startDate . "&endDate=" . $endDate;
 $arg = str_replace("#", "%23", $arg);
-$url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
+$url = "./include/reporting/dashboard/xmlInformations/GetXml" . $type . ".php?" . $arg;
 
 ?>
 <script type="text/javascript">

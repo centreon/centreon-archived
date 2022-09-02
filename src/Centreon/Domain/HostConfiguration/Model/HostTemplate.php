@@ -390,12 +390,17 @@ class HostTemplate
      */
     public function setParentIds(array $parentIds): HostTemplate
     {
-        $this->parentIds = array_filter(
-            filter_var_array($parentIds, FILTER_VALIDATE_INT),
-            function ($value) {
-                return is_int($value);
-            }
-        );
+        $parentIds = filter_var_array($parentIds, FILTER_VALIDATE_INT);
+        if (is_array($parentIds)) {
+            $this->parentIds = array_values(
+                array_filter(
+                    $parentIds,
+                    function ($value) {
+                        return is_int($value);
+                    }
+                )
+            );
+        }
         return $this;
     }
 
@@ -706,10 +711,11 @@ class HostTemplate
      */
     public function setSnmpVersion(?string $snmpVersion): HostTemplate
     {
-        if ($snmpVersion !== null && !in_array($snmpVersion, ['1', '2c', '3'])) {
-            throw HostTemplateArgumentException::badSnmpVersion($snmpVersion);
+        if ($snmpVersion !== null) {
+            $this->snmpVersion = in_array($snmpVersion, ['1', '2c', '3'])
+                ? $snmpVersion
+                : null;
         }
-        $this->snmpVersion = $snmpVersion;
         return $this;
     }
 

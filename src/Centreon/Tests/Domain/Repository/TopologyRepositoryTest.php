@@ -11,13 +11,19 @@ use Centreon\Domain\Repository\TopologyRepository;
  */
 class TopologyRepositoryTest extends TestCase
 {
-
+    /**
+     * @var ((string|string[][])[]|(string|int[][])[])[]
+     */
     protected $datasets = [];
+
+    /**
+     * @var TopologyRepository
+     */
     protected $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $db = new CentreonDB;
+        $db = new CentreonDB();
         $this->datasets = [
             [
                 'query' => "SELECT topology_url "
@@ -84,7 +90,7 @@ class TopologyRepositoryTest extends TestCase
             $db->addResultSet($dataset['query'], $dataset['data']);
             unset($dataset);
         }
-        
+
         $this->repository = new TopologyRepository($db);
     }
 
@@ -108,7 +114,9 @@ class TopologyRepositoryTest extends TestCase
 
         // if user admin
         $user = new class {
-
+            /**
+             * @var boolean
+             */
             public $admin = true;
         };
 
@@ -124,20 +132,31 @@ class TopologyRepositoryTest extends TestCase
     {
         // if user non-admin
         $user = new class {
-
+            /**
+             * @var boolean
+             */
             public $admin = false;
+
+            /**
+             * @var mixed
+             */
             public $access;
 
             public function __construct()
             {
                 $this->access = new class {
-
-                    public function getAccessGroups()
+                    /**
+                     * @return int[]
+                     */
+                    public function getAccessGroups(): array
                     {
                         return [1];
                     }
 
-                    public function getAccessGroupsString()
+                    /**
+                     * @return string
+                     */
+                    public function getAccessGroupsString(): string
                     {
                         return '1';
                     }

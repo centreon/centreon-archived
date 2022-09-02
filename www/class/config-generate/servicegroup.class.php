@@ -36,26 +36,24 @@
 
 class Servicegroup extends AbstractObject
 {
+    private const TAG_TYPE = 'servicegroup';
+    private const SERVICEGROUP_FILENAME = 'servicegroups.cfg';
+    private const SERVICEGROUP_OBJECT_NAME = 'servicegroup';
+    private const TAG_FILENAME = 'tags.cfg';
+    private const TAG_OBJECT_NAME = 'tag';
+
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $sg = array();
-    private $sg_relation_cache = array();
-    protected $generate_filename = 'servicegroups.cfg';
-    protected $object_name = 'servicegroup';
+    private $sg = [];
+    private $sg_relation_cache = [];
+    protected $generate_filename = self::SERVICEGROUP_FILENAME;
+    protected $object_name = self::SERVICEGROUP_OBJECT_NAME;
     protected $attributes_select = '
         sg_id,
         sg_name as servicegroup_name,
         sg_alias as alias
     ';
-    protected $attributes_write = array(
-        'servicegroup_id',
-        'servicegroup_name',
-        'alias',
-    );
-    protected $attributes_array = array(
-        'members'
-    );
     protected $stmt_sg = null;
     protected $stmt_service_sg = null;
     protected $stmt_stpl_sg = null;
@@ -69,7 +67,7 @@ class Servicegroup extends AbstractObject
     private function getServicegroupFromId($sg_id)
     {
         if (is_null($this->stmt_sg)) {
-            $this->stmt_sg = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_sg = $this->backend_instance->db->prepare("SELECT
                 $this->attributes_select
             FROM servicegroup
             WHERE sg_id = :sg_id AND sg_activate = '1'
@@ -78,13 +76,12 @@ class Servicegroup extends AbstractObject
 
         $this->stmt_sg->bindParam(':sg_id', $sg_id, PDO::PARAM_INT);
         $this->stmt_sg->execute();
-        $results = $this->stmt_sg->fetchAll(PDO::FETCH_ASSOC);
-        $this->sg[$sg_id] = array_pop($results);
-        if (is_null($this->sg[$sg_id])) {
-            return 1;
+
+        if ($serviceGroup = $this->stmt_sg->fetch(PDO::FETCH_ASSOC)) {
+            $this->sg[$sg_id] = $serviceGroup;
+            $this->sg[$sg_id]['members_cache'] = [];
+            $this->sg[$sg_id]['members'] = [];
         }
-        $this->sg[$sg_id]['members_cache'] = array();
-        $this->sg[$sg_id]['members'] = array();
     }
 
     public function addServiceInSg($sg_id, $service_id, $service_description, $host_id, $host_name)
@@ -106,10 +103,11 @@ class Servicegroup extends AbstractObject
             return 0;
         }
 
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                  service_service_id, servicegroup_sg_id, host_host_id
-                FROM servicegroup_relation
-        ");
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT service_service_id, servicegroup_sg_id, host_host_id
+            FROM servicegroup_relation sgr, servicegroup sg
+            WHERE sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
+        );
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->sg_relation_cache[$value['service_service_id']])) {
@@ -134,11 +132,12 @@ class Servicegroup extends AbstractObject
 
         if (is_null($this->stmt_stpl_sg)) {
             # Meaning, linked with the host or hostgroup (for the null expression)
-            $this->stmt_stpl_sg = $this->backend_instance->db->prepare("SELECT 
-                    servicegroup_sg_id, host_host_id, service_service_id
-                FROM servicegroup_relation
+            $this->stmt_stpl_sg = $this->backend_instance->db->prepare(
+                "SELECT servicegroup_sg_id, host_host_id, service_service_id
+                FROM servicegroup_relation sgr, servicegroup sg
                 WHERE service_service_id = :service_id
-            ");
+                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
+            );
         }
         $this->stmt_stpl_sg->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_stpl_sg->execute();
@@ -161,11 +160,12 @@ class Servicegroup extends AbstractObject
 
         if (is_null($this->stmt_service_sg)) {
             # Meaning, linked with the host or hostgroup (for the null expression)
-            $this->stmt_service_sg = $this->backend_instance->db->prepare("SELECT 
-                    servicegroup_sg_id, host_host_id, service_service_id
-                FROM servicegroup_relation
+            $this->stmt_service_sg = $this->backend_instance->db->prepare(
+                "SELECT servicegroup_sg_id, host_host_id, service_service_id
+                FROM servicegroup_relation sgr, servicegroup sg
                 WHERE service_service_id = :service_id AND (host_host_id = :host_id OR host_host_id IS NULL)
-            ");
+                AND sgr.servicegroup_sg_id = sg.sg_id AND sg.sg_activate = '1'"
+            );
         }
         $this->stmt_service_sg->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service_sg->bindParam(':host_id', $host_id, PDO::PARAM_INT);
@@ -177,8 +177,34 @@ class Servicegroup extends AbstractObject
         return $this->sg_relation_cache[$service_id];
     }
 
-    public function generateObjects()
+    /**
+     * Generate service groups / tags and write in file
+     */
+    public function generateObjects(): void
     {
+        $this->generateServiceGroups();
+        $this->generateTags();
+    }
+
+    /**
+     * Generate service groups and write in file
+     */
+    private function generateServiceGroups(): void
+    {
+        $this->generate_filename = self::SERVICEGROUP_FILENAME;
+        $this->object_name = self::SERVICEGROUP_OBJECT_NAME;
+        $this->attributes_write = [
+            'servicegroup_id',
+            'servicegroup_name',
+            'alias',
+        ];
+        $this->attributes_array = [
+            'members',
+        ];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
         foreach ($this->sg as $id => &$value) {
             if (count($value['members_cache']) == 0) {
                 continue;
@@ -190,6 +216,38 @@ class Servicegroup extends AbstractObject
                 array_push($this->sg[$id]['members'], $content[0], $content[1]);
             }
             $this->generateObjectInFile($this->sg[$id], $id);
+        }
+    }
+
+    /**
+     * Generate tags and write in file
+     */
+    private function generateTags(): void
+    {
+        $this->generate_filename = self::TAG_FILENAME;
+        $this->object_name = self::TAG_OBJECT_NAME;
+        $this->attributes_write = [
+            'id',
+            'name',
+            'type',
+        ];
+        $this->attributes_array = [];
+
+        // reset cache to allow export of same ids
+        parent::reset();
+
+        foreach ($this->sg as $id => &$value) {
+            if (count($value['members_cache']) == 0) {
+                continue;
+            }
+
+            $tag = [
+                'id' => $value['servicegroup_id'],
+                'name' => $value['servicegroup_name'],
+                'type' => self::TAG_TYPE,
+            ];
+
+            $this->generateObjectInFile($tag, $id);
         }
     }
 

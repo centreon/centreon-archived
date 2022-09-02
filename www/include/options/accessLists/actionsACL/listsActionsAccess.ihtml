@@ -17,7 +17,7 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td>{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a><input name="p" value="{$p}" type="hidden"></td>
+			<td> {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a></td>
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -49,7 +49,7 @@
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>
-				{$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a><input name="p" value="{$p}" type="hidden">
+				 {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{php}
 			   include('./include/common/pagination.php');

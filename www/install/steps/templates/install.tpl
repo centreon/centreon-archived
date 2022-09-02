@@ -6,7 +6,8 @@
     <meta http-equiv="Content-Style-Type" content="text/css">
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
-    <link rel="stylesheet" href="../Themes/Centreon-2/style.css" type="text/css">
+    <link rel="stylesheet" href="../Themes/Generic-theme/Variables-css/variables.css" type="text/css">
+    <link rel="stylesheet" href="../Themes/Generic-theme/style.css" type="text/css">
     <link rel="stylesheet" href="./install.css" type="text/css">
     <link rel="stylesheet" href="./pub_install.css" type="text/css">
     <script type="text/javascript" src="../include/common/javascript/jquery/jquery.min.js"></script>
@@ -14,38 +15,15 @@
     <script type="text/javascript">jQuery.noConflict();</script>
     <script type='text/javascript'>
         {literal}
+        loadStep('stepContent');
 
-        jQuery(function() {
-            loadStep();
-        });
-
-        function loadStep() {
+        function loadStep(step = 'stepContent') {
             jQuery.ajax({
                 method: 'GET',
-                url: './steps/step.php?action=stepContent'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
+                url: `./steps/step.php?action=${step}`,
+                success: (data) => jQuery('#installationContent').html(data),
             });
         }
-
-        function previousStep() {
-            jQuery.ajax({
-                method: 'GET',
-                url: './steps/step.php?action=previousStep'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
-            });
-        }
-
-        function nextStep() {
-            jQuery.ajax({
-                method: 'GET',
-                url: './steps/step.php?action=nextStep'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
-            });
-        }
-
         {/literal}
     </script>
 </head>

@@ -160,6 +160,8 @@ $tpl->display("formGenerateFiles.ihtml");
     var postcmdOption;
 
     var tooltip = new CentreonToolTip();
+    var svg = "<?php displaySvg("www/img/icons/question.svg", "var(--help-tool-tip-icon-fill-color)", 18, 18); ?>"
+    tooltip.setSource(svg);
     var session_id = "<?php echo session_id(); ?>";
     tooltip.render();
     var msgTab = new Array();
@@ -502,7 +504,8 @@ $tpl->display("formGenerateFiles.ihtml");
         divErrors.style.visibility = 'hidden';
         tdEl2.appendChild(divErrors);
         for (var i = 0; i < errors.length; i++) {
-            divErrors.innerHTML += errors.item(i).firstChild.data;
+            divErrors.innerHTML += errors.get(i).firstChild.data;
+            divErrors.innerHTML += "<br/>";
         }
     }
 

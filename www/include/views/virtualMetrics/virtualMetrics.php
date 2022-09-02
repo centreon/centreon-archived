@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -57,7 +58,7 @@ $action = filter_var(
     $_POST['o1'] ?? $_POST['o2'] ?? null,
     FILTER_VALIDATE_REGEXP,
     array(
-        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
+        "options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/")
     )
 );
 if ($action !== false) {
@@ -98,26 +99,50 @@ switch ($o) {
         }
         break;
     case METRIC_ENABLE:
-        if (is_int($vmetricId)) {
-            enableVirtualMetricInDB($vmetricId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (is_int($vmetricId)) {
+                enableVirtualMetricInDB($vmetricId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DISABLE:
-        if (is_int($vmetricId)) {
-            disableVirtualMetricInDB($vmetricId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (is_int($vmetricId)) {
+                disableVirtualMetricInDB($vmetricId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DUPLICATE:
-        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-            multipleVirtualMetricInDB($selectIds, $duplicateNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+                multipleVirtualMetricInDB($selectIds, $duplicateNbr);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DELETE:
-        if (!in_array(false, $selectIds)) {
-            deleteVirtualMetricInDB($selectIds);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $selectIds)) {
+                deleteVirtualMetricInDB($selectIds);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listVirtualMetrics.php");
         break;

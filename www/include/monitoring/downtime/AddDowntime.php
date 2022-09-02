@@ -42,12 +42,34 @@ include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
+const DOWNTIME_YEAR_MAX = \Centreon\Domain\Downtime\Downtime::DOWNTIME_YEAR_MAX;
+
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hostAclId = preg_split('/,/', str_replace("'", "", $hostStr));
 
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
 $resourceId = $resourceId ?? 0;
+
+/**
+ * @param array $fields form data
+ * @return boolean|array Returns TRUE (valid date) if the year is less than 2100, otherwise returns errors
+ */
+function checkYearMax(array $fields)
+{
+    $errors = [];
+    $tooHighDateMessage = sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX);
+
+    if (((int) (new \DateTime($fields['alternativeDateStart']))->format('Y')) >= DOWNTIME_YEAR_MAX) {
+        $errors['start'] = $tooHighDateMessage;
+    }
+
+    if (((int) (new \DateTime($fields['alternativeDateEnd']))->format('Y')) >= DOWNTIME_YEAR_MAX) {
+        $errors['end'] = $tooHighDateMessage;
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
 
 if (
     !$centreon->user->access->checkAction("host_schedule_downtime")
@@ -125,17 +147,6 @@ if (
             array($disabled, 'id' => 'poller', 'onclick' => "toggleParams('poller');")
         );
         $form->addGroup($dtType, 'downtimeType', _("Downtime type"), '&nbsp;');
-
-        // uncomment this section :
-        // the user can choose to set a downtime based on the host time or the centreon user time.
-        /*
-        $host_or_centreon_time[] =
-        $form->createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
-        $host_or_centreon_time[] =
-        $form->createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
-        $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');
-        $form->setDefaults(array('host_or_centreon_time' => '0'));
-        */
 
         /* ----- Hosts ----- */
         $attrHosts = array(
@@ -314,6 +325,8 @@ if (
         )
     );
 
+    $form->addFormRule('checkYearMax');
+
     $form->addRule('end', _("Required Field"), 'required');
     $form->addRule('start', _("Required Field"), 'required');
     $form->addRule('end_time', _("Required Field"), 'required');
@@ -419,21 +432,22 @@ if (
              */
 
             //catch fix input host_id
-            if (!is_array($_POST["host_id"])) {
-                $_POST["host_id"] = array($_POST["host_id"]);
-            }
-
-            foreach ($_POST["host_id"] as $host_id) {
-                $ecObj->addHostDowntime(
-                    $host_id,
-                    $_POST["comment"],
-                    $concatenatedStart,
-                    $concatenatedEnd,
-                    $_POST["persistant"],
-                    $duration,
-                    $applyDtOnServices,
-                    $hostOrCentreonTime
-                );
+            if (isset($_POST["host_id"])) {
+                if (!is_array($_POST["host_id"])) {
+                    $_POST["host_id"] = [$_POST["host_id"]];
+                }
+                foreach ($_POST["host_id"] as $host_id) {
+                    $ecObj->addHostDowntime(
+                        $host_id,
+                        $_POST["comment"],
+                        $concatenatedStart,
+                        $concatenatedEnd,
+                        $_POST["persistant"],
+                        $duration,
+                        $applyDtOnServices,
+                        $hostOrCentreonTime
+                    );
+                }
             }
         } elseif (
             $values['downtimeType']['downtimeType'] == 0
@@ -543,6 +557,7 @@ if (
          */
         $tpl = new Smarty();
         $tpl = initSmartyTpl($path, $tpl, "template/");
+        $tpl->assign('dataPickerMaxYear', DOWNTIME_YEAR_MAX - 1);
 
         /*
          * Apply a template definition

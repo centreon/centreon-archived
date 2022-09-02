@@ -1,0 +1,5 @@
+{
+  "action": "ADD",
+  "object": "SERVICE",
+  "values": "test_host;service_test_dt;Ping-LAN;"
+}

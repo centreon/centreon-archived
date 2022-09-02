@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,12 +36,13 @@
 
 ini_set("display_errors", "Off");
 
+use App\Kernel;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Entity\Task;
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+require_once realpath(__DIR__ . "/../../../../../config/bootstrap.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
-
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
@@ -51,21 +53,75 @@ require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
+
+if (!defined('STATUS_OK')) {
+    define('STATUS_OK', 0);
+}
+if (!defined('STATUS_NOK')) {
+    define('STATUS_NOK', 1);
+}
+
 $pearDB = new CentreonDB();
 
-/* Check Session */
-CentreonSession::start(1);
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
-    print "Bad Session";
-    exit();
+$xml = new CentreonXML();
+$okMsg = "<b><font color='green'>OK</font></b>";
+$nokMsg = "<b><font color='red'>NOK</font></b>";
+
+if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+    $kernel = new Kernel('prod', false);
+    $kernel->boot();
+
+    $container = $kernel->getContainer();
+    if ($container == null) {
+        throw new Exception(_('Unable to load the Symfony container'));
+    }
+    $contactService = $container->get(ContactServiceInterface::class);
+    $contact = $contactService->findByAuthenticationToken($_SERVER['HTTP_X_AUTH_TOKEN']);
+    if ($contact === null) {
+        $xml->startElement("response");
+        $xml->writeElement("status", $nokMsg);
+        $xml->writeElement("statuscode", STATUS_NOK);
+        $xml->writeElement("error", 'Contact not found');
+        $xml->endElement();
+
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
+
+        $xml->output();
+        exit();
+    }
+    $centreon = new Centreon([
+        'contact_id' => $contact->getId(),
+        'contact_name' => $contact->getName(),
+        'contact_alias' => $contact->getAlias(),
+        'contact_email' => $contact->getEmail(),
+        'contact_admin' => $contact->isAdmin(),
+        'contact_lang' => null,
+        'contact_passwd' => null,
+        'contact_autologin_key' => null,
+        'contact_location' => null,
+        'reach_api' => $contact->hasAccessToApiConfiguration(),
+        'reach_api_rt' => $contact->hasAccessToApiRealTime(),
+        'show_deprecated_pages' => false
+    ]);
+} else {
+    /* Check Session */
+    CentreonSession::start(1);
+    if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+        print "Bad Session";
+        exit();
+    }
+    $centreon = $_SESSION['centreon'];
 }
 
-define('STATUS_OK', 0);
-define('STATUS_NOK', 1);
-
-if (!isset($_POST['poller'])) {
+if (!isset($_POST['poller']) || ! $centreon->user->access->checkAction('generate_cfg')) {
     exit;
 }
+
 
 /**
  * List of error from php
@@ -78,8 +134,10 @@ $pollers = explode(',', $_POST['poller']);
 
 // Add task to export files if there is a remote
 $pollerParams = [];
-foreach ($pollers as $pollerId) {
-    $pollerParams[':poller_' . $pollerId] = $pollerId;
+foreach ($pollers as $index => $pollerId) {
+    if (is_numeric($pollerId)) {
+        $pollerParams[':poller_' . $index] = $pollerId;
+    }
 }
 
 // SELECT Remote Servers from selected pollers
@@ -96,7 +154,7 @@ $statementRemotes = $pearDB->prepare(
     FROM nagios_server AS ns1
     JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
     JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
-    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ') 
+    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ')
     AND pt.type = "remote"
     UNION
     SELECT ns1.id
@@ -147,10 +205,9 @@ if (!empty($remotesResults)) {
  *
  * @see set_error_handler
  */
-function log_error($errno, $errstr, $errfile, $errline)
-{
+$log_error = function ($errno, $errstr, $errfile, $errline) {
     global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
+    if (!(error_reporting() && $errno)) {
         return;
     }
 
@@ -167,7 +224,7 @@ function log_error($errno, $errstr, $errfile, $errline)
             break;
     }
     return true;
-}
+};
 
 try {
     $ret = array();
@@ -177,21 +234,19 @@ try {
     $nagiosCFGPath = _CENTREON_CACHEDIR_ . "/config/engine/";
     $centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
-    $centreon = $_SESSION['centreon'];
-    $centreon = $centreon;
-
     /*  Set new error handler */
-    set_error_handler('log_error');
+    set_error_handler($log_error);
 
     # Centcore pipe path
     $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
-
-    $xml = new CentreonXML();
 
     /*
      * Copying image in logos directory
      */
     if (isset($centreon->optGen["nagios_path_img"]) && $centreon->optGen["nagios_path_img"]) {
+        /**
+         * @var CentreonDBStatement $DBRESULT_imgs
+         */
         $DBRESULT_imgs = $pearDB->query(
             "SELECT `dir_alias`, `img_path` " .
             "FROM `view_img`, `view_img_dir`, `view_img_dir_relation` " .
@@ -235,13 +290,13 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                 $dbResult = $pearDB->query(
-                    "SELECT cfg_dir FROM cfg_nagios, nagios_server
+                $dbResult = $pearDB->query("
+                    SELECT cfg_dir FROM cfg_nagios, nagios_server
                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                     AND nagios_server.localhost = '1'
                     ORDER BY cfg_nagios.nagios_activate
-                    DESC LIMIT 1"
-                );
+                    DESC LIMIT 1");
+
                 $nagiosCfg = $dbResult->fetch();
 
                 if (!is_dir($nagiosCfg["cfg_dir"])) {
@@ -259,7 +314,7 @@ try {
                 /*
                  * Copy monitoring engine's configuration files
                  */
-                foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
+                foreach (glob($nagiosCFGPath . $host['id'] . '/*.{json,cfg}', GLOB_BRACE) as $filename) {
                     $succeded = @copy(
                         $filename,
                         rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename)
@@ -338,11 +393,11 @@ try {
         }
     }
     $xml->startElement("response");
-    $xml->writeElement("status", "<b><font color='green'>OK</font></b>");
+    $xml->writeElement("status", $okMsg);
     $xml->writeElement("statuscode", STATUS_OK);
 } catch (Exception $e) {
     $xml->startElement("response");
-    $xml->writeElement("status", "<b><font color='red'>NOK</font></b>");
+    $xml->writeElement("status", $nokMsg);
     $xml->writeElement("statuscode", STATUS_NOK);
     $xml->writeElement("error", $e->getMessage());
 }
@@ -364,9 +419,11 @@ foreach ($generatePhpErrors as $error) {
 $xml->endElement();
 $xml->endElement();
 
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 $xml->output();

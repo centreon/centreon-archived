@@ -135,9 +135,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (199,'Add Widget',103,10304,NULL,NULL,'./include/home/customViews/addWidget.php',NULL,NULL,NULL,'0',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (200,'Rotation',103,10305,NULL,NULL,'./include/home/customViews/rotation.php',NULL,NULL,NULL,'0',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (204,'Connectors',608,60806,60,3,'./include/configuration/configObject/connector/connector.php',NULL,'0','0','1',NULL,NULL,NULL,'0');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
-	(NULL, 'Wizard', 60909, 6090901, 40, 11, './include/configuration/configCentreonBroker/wizard.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1'),
-	(NULL, 'WizardAjax', 60909, 6090902, 40, 11, './include/configuration/configCentreonBroker/wizard_ajax.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Broker Statistics', 505, 50501, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
@@ -173,20 +170,14 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart split',20401,2040101,1,1,'./include/views/graphs/graph-split.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart periods',20401,2040102,1,1,'./include/views/graphs/graph-periods.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 
--- Insert Multi-step Wizard into Topology
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller/Remote Wizard', '/poller-wizard/1', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Step 2', '/poller-wizard/2', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Step 3', '/poller-wizard/3', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Remote Wizard Final Step', '/poller-wizard/4', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Step 2', '/poller-wizard/5', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Step 3', '/poller-wizard/6', 60901, 60959, 1, '0', '0', '1');
-INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_page, topology_group, topology_show, readonly, is_react) VALUES ('Poller Wizard Final Step', '/poller-wizard/7', 60901, 60959, 1, '0', '0', '1');
-
 -- Insert Extensions Manager entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
 -- Add unified view page entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Resources Status', '/monitoring/resources', '1', '1', 2, 200, 1, 2);
+
+-- Add password policy page
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Authentication', '/administration/authentication', '1', '1', 5, 509, 1, 10);
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;

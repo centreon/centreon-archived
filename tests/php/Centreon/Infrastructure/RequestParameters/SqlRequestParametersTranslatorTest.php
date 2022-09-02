@@ -32,7 +32,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
 {
     protected $requestParameters;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
     }

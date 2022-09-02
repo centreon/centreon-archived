@@ -50,7 +50,7 @@ class Options
     public $verbosity = "info";
     public $confFile;
     public $version = '1.1';
-    
+
     /*
      *
      * Class constructor

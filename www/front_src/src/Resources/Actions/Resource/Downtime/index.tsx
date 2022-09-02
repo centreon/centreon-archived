@@ -1,92 +1,51 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
-import { useFormik, FormikErrors } from 'formik';
-import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
+import dayjs from 'dayjs';
+
+import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
+import { downtimeAtom, userAtom } from '@centreon/ui-context';
 
 import {
-  Severity,
-  useSnackbar,
-  useRequest,
-  useLocaleDateTimeFormat,
-} from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
-
-import {
-  labelRequired,
   labelDowntimeCommandSent,
   labelDowntimeBy,
-  labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-
-interface DateParams {
-  dateStart: Date;
-  timeStart: Date;
-  dateEnd: Date;
-  timeEnd: Date;
-}
-
-const formatDateInterval = (values: DateParams): [Date, Date] => {
-  const timeStart = new Date(values.timeStart);
-  const dateTimeStart = new Date(values.dateStart);
-  dateTimeStart.setHours(timeStart.getHours());
-  dateTimeStart.setMinutes(timeStart.getMinutes());
-  dateTimeStart.setSeconds(0);
-
-  const timeEnd = new Date(values.timeEnd);
-  const dateTimeEnd = new Date(values.dateEnd);
-  dateTimeEnd.setHours(timeEnd.getHours());
-  dateTimeEnd.setMinutes(timeEnd.getMinutes());
-  dateTimeEnd.setSeconds(0);
-
-  return [dateTimeStart, dateTimeEnd];
-};
-
-const getValidationSchema = (t): unknown =>
-  Yup.object().shape({
-    dateStart: Yup.string().required(t(labelRequired)).nullable(),
-    timeStart: Yup.string().required(t(labelRequired)).nullable(),
-    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
-    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
-    fixed: Yup.boolean(),
-    duration: Yup.object().when('fixed', (fixed, schema) => {
-      return !fixed
-        ? schema.shape({
-            value: Yup.string().required(t(labelRequired)),
-            unit: Yup.string().required(t(labelRequired)),
-          })
-        : schema;
-    }),
-    comment: Yup.string().required(t(labelRequired)),
-  });
-
-const validate = (values: DateParams, t): FormikErrors<DateParams> => {
-  const errors: FormikErrors<DateParams> = {};
-
-  if (
-    values.dateStart &&
-    values.timeStart &&
-    values.dateEnd &&
-    values.timeEnd
-  ) {
-    const [start, end] = formatDateInterval(values);
-
-    if (start >= end) {
-      errors.dateEnd = t(labelEndDateMustBeGreater);
-    }
-  }
-
-  return errors;
-};
+import { getValidationSchema } from './validation';
 
 interface Props {
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
-  onClose;
-  onSuccess;
+}
+
+export interface DowntimeFormValues {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: Date;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: Date;
+}
+
+export interface DowntimeToPost {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: string;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: string;
 }
 
 const DowntimeForm = ({
@@ -95,12 +54,8 @@ const DowntimeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
-
-  const { username } = useUserContext();
   const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
@@ -110,71 +65,70 @@ const DowntimeForm = ({
     request: setDowntimeOnResources,
   });
 
+  const { alias } = useAtomValue(userAtom);
+  const downtime = useAtomValue(downtimeAtom);
+
   const currentDate = new Date();
+  const defaultEndDate = dayjs(currentDate)
+    .add(dayjs.duration({ seconds: downtime.duration }))
+    .toDate();
 
-  const twoHoursMs = 2 * 60 * 60 * 1000;
-  const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
-
-  const form = useFormik({
+  const form = useFormik<DowntimeFormValues>({
     initialValues: {
-      dateStart: currentDate,
-      timeStart: currentDate,
-      dateEnd: twoHoursLaterDate,
-      timeEnd: twoHoursLaterDate,
-      fixed: true,
+      comment: undefined,
       duration: {
-        value: 3600,
         unit: 'seconds',
+        value: downtime.duration,
       },
-      comment: '',
-      downtimeAttachedResources: true,
+      endTime: defaultEndDate,
+      fixed: downtime.fixed,
+      isDowntimeWithServices: downtime.with_services,
+      startTime: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
 
-      const [startTime, endTime] = formatDateInterval(values);
+      const { startTime, endTime } = values;
 
       const unitMultipliers = {
-        seconds: 1,
-        minutes: 60,
         hours: 3600,
+        minutes: 60,
+        seconds: 1,
       };
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
 
       sendSetDowntimeOnResources({
-        resources,
         params: {
           ...values,
-          startTime: toIsoString(startTime),
-          endTime: toIsoString(endTime),
           duration,
+          endTime: toIsoString(endTime),
+          startTime: toIsoString(startTime),
         },
+        resources,
       }).then(() => {
-        showSuccess(t(labelDowntimeCommandSent));
+        showSuccessMessage(t(labelDowntimeCommandSent));
         onSuccess();
       });
     },
     validationSchema: getValidationSchema(t),
-    validate: (values) => validate(values, t),
   });
 
-  React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${username}`);
+  useEffect(() => {
+    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${alias}`);
   }, []);
 
   return (
     <DialogDowntime
-      resources={resources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
       canConfirm={form.isValid}
       errors={form.errors}
-      values={form.values}
       handleChange={form.handleChange}
+      resources={resources}
       setFieldValue={form.setFieldValue}
       submitting={sendingSetDowntingOnResources}
-      loading={form.values.comment === ''}
+      values={form.values}
+      onCancel={onClose}
+      onConfirm={form.submitForm}
     />
   );
 };

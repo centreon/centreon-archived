@@ -115,4 +115,16 @@ class Manifest extends AbstractObject
             'columns' => $columns
         ];
     }
+
+    /**
+     * clean
+     *
+     * @return void
+     */
+    public function clean()
+    {
+        $this->manifest['date'] = date('l jS \of F Y h:i:s A');
+        $this->manifest['import']['data'] = [];
+        $this->manifest['pollers'] = [];
+    }
 }

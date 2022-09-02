@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
+use Centreon\Domain\HostConfiguration\Exception\HostConfigurationServiceException;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\HostConfiguration\HostMacro;
@@ -32,10 +33,9 @@ interface HostConfigurationServiceInterface
      * Add a host.
      *
      * @param Host $host
-     * @return int Returns the host id
-     * @throws HostConfigurationException
+     * @throws HostConfigurationServiceException
      */
-    public function addHost(Host $host): int;
+    public function addHost(Host $host): void;
 
     /**
      * Find a host.
@@ -66,6 +66,17 @@ interface HostConfigurationServiceInterface
     public function findHostTemplatesRecursively(Host $host): array;
 
     /**
+     * Find the command of a host.
+     * A recursive search will be performed in the inherited templates in the
+     * case where the host does not have a command.
+     *
+     * @param int $hostId Host id
+     * @return string|null Return the command if found
+     * @throws HostConfigurationException
+     */
+    public function findCommandLine(int $hostId): ?string;
+
+    /**
      * Find all host macros for the host.
      *
      * @param int $hostId Id of the host
@@ -76,14 +87,14 @@ interface HostConfigurationServiceInterface
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
 
     /**
-     * Find all on-demand host macros of type password needed for this command.
+     * Find all on-demand host macros needed for this command.
      *
      * @param int $hostId Host id
      * @param string $command Command to analyse
-     * @return HostMacro[] List of host macros of type password
+     * @return HostMacro[] List of host macros
      * @throws HostConfigurationException
      */
-    public function findHostMacrosPassword(int $hostId, string $command): array;
+    public function findHostMacrosFromCommandLine(int $hostId, string $command): array;
 
     /**
      * Change the activation status of host.
@@ -102,4 +113,39 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
+
+    /**
+     * Update a host.
+     *
+     * @param Host $host
+     * @throws HostConfigurationServiceException
+     */
+    public function updateHost(Host $host): void;
+
+    /**
+     * Find host templates by host id (non recursive)
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host
+     * @return Host[]
+     */
+    public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find a host by its name
+     *
+     * @param string $hostName Host name to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws HostConfigurationException
+     */
+    public function findHostByName(string $hostName): ?Host;
+
+    /**
+     * Find a host template by its id
+     *
+     * @param int $hostTemplateId
+     * @return Host|null
+     */
+    public function findHostTemplate(int $hostTemplateId): ?Host;
 }

@@ -116,7 +116,6 @@ class ServiceTemplate extends AbstractService
                     $sg['host_host_id'],
                     $serviceId
                 );
-                break;
             }
         }
     }

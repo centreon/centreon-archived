@@ -1,20 +1,15 @@
-import * as React from 'react';
-
+/* eslint-disable react/jsx-no-constructed-context-values */
 import axios from 'axios';
-import {
-  RenderResult,
-  render,
-  waitFor,
-  fireEvent,
-  act,
-} from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
-import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { Provider } from 'jotai';
 
-import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
+import { RenderResult, render, waitFor, fireEvent, act } from '@centreon/ui';
+
+import Context, { ResourceContext } from '../../testUtils/Context';
+import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
+import { defaultSortField, defaultSortOrder } from '../Criterias/default';
 
 import EditFilterPanel from '.';
 
@@ -38,54 +33,70 @@ const EditFilterPanelTest = (): JSX.Element => {
   );
 };
 
+const EditFilterPanelTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <EditFilterPanelTest />
+  </Provider>
+);
+
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [0, 1].map((index) => ({
-    id: index,
-    name: `My filter ${index}`,
     criterias: [
       {
         name: 'resource_types',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'states',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'statuses',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'host_groups',
+        object_type: 'host_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'host_groups',
       },
       {
         name: 'service_groups',
+        object_type: 'service_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'service_groups',
       },
       {
         name: 'search',
+        object_type: null,
         type: 'text',
         value: '',
       },
+      {
+        name: 'sort',
+        object_type: null,
+        type: 'array',
+        value: [defaultSortField, defaultSortOrder],
+      },
     ],
+    id: index,
+    name: `My filter ${index}`,
   })),
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const renderEditFilterPanel = (): RenderResult =>
-  render(<EditFilterPanelTest />);
+  render(<EditFilterPanelTestWithJotai />);
 
 describe(EditFilterPanel, () => {
   beforeEach(() => {
@@ -121,6 +132,12 @@ describe(EditFilterPanel, () => {
 
     mockedAxios.put.mockResolvedValue({ data: updatedFilter });
 
+    await waitFor(() =>
+      expect(
+        getByLabelText(`${labelFilter}-${firstFilter.id}-${labelName}`),
+      ).toBeInTheDocument(),
+    );
+
     const renameFilterInput = getByLabelText(
       `${labelFilter}-${firstFilter.id}-${labelName}`,
     );
@@ -146,7 +163,7 @@ describe(EditFilterPanel, () => {
   });
 
   it('deletes a filter and sends a delete request when the corresponding delete button is clicked', async () => {
-    const { getAllByTitle, getByText } = renderEditFilterPanel();
+    const { getAllByLabelText, getByText } = renderEditFilterPanel();
 
     const [firstFilter] = retrievedCustomFilters.result;
 
@@ -159,10 +176,12 @@ describe(EditFilterPanel, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
+    await waitFor(() => expect(getAllByLabelText(labelDelete)).toHaveLength(2));
+
     fireEvent.click(
-      head(getAllByTitle(labelDelete))?.firstElementChild as HTMLElement,
+      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,
     );
-    fireEvent.click(getByText(labelDelete).parentElement as HTMLElement);
+    fireEvent.click(getByText(labelDelete) as HTMLElement);
 
     await waitFor(() => {
       expect(filterState.customFilters.map(prop('id'))).not.toContain(
@@ -170,41 +189,6 @@ describe(EditFilterPanel, () => {
       );
       expect(mockedAxios.delete).toHaveBeenCalledWith(
         `${filterEndpoint}/${firstFilter.id}`,
-        expect.anything(),
-      );
-    });
-  });
-
-  it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
-    const [firstFilter] = retrievedCustomFilters.result;
-
-    const { getByText, container } = renderEditFilterPanel();
-
-    act(() => {
-      filterState.loadCustomFilters();
-      filterState.setEditPanelOpen(true);
-    });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    const firstFilterDraggable = container.querySelector(
-      `[data-rbd-drag-handle-draggable-id="${firstFilter.id}"]`,
-    );
-
-    await makeDnd({
-      getByText,
-      getDragEl: () => firstFilterDraggable,
-      direction: DND_DIRECTION_DOWN,
-      positions: 1,
-    });
-
-    await waitFor(() => {
-      expect(filterState.customFilters.map(prop('id'))).toEqual([1, 0]);
-      expect(mockedAxios.patch).toHaveBeenCalledWith(
-        `${filterEndpoint}/${firstFilter.id}`,
-        { order: 1 },
         expect.anything(),
       );
     });

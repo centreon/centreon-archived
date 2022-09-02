@@ -105,8 +105,8 @@ try {
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?'
-        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id'
-        . (isset($connector_id) ? "&id={$connector_id}" : ''),
+        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id='
+        . (isset($connector_id) ? $connector_id : ''),
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?'
         . 'object=centreon_configuration_command&action=list',
         'linkedObject' => 'centreonCommand'

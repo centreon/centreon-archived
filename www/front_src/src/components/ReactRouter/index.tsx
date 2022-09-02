@@ -1,113 +1,128 @@
-import React, { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 
-import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
+import { Routes, Route } from 'react-router-dom';
+import { isNil, not } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/material';
 
-import internalPagesRoutes from '../../route-maps';
-import { dynamicImport } from '../../helpers/dynamicImport';
-import NotAllowedPage from '../../route-components/notAllowedPage';
+import { PageSkeleton, useMemoComponent } from '@centreon/ui';
+
+import internalPagesRoutes from '../../reactRoutes';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import useNavigation from '../../Navigation/useNavigation';
+import { federatedModulesAtom } from '../../federatedModules/atoms';
+import { FederatedModule } from '../../federatedModules/models';
+import { Remote } from '../../federatedModules/Load';
+
+const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
+const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
-  overflow: 'auto',
-  height: '100%',
+  background: theme.palette.background.default,
   display: 'grid',
   gridTemplateRows: 'auto 1fr',
-  background: theme.palette.background.default,
+  height: '100%',
+  overflow: 'auto',
 }));
 
 const getExternalPageRoutes = ({
-  history,
   allowedPages,
-  pages,
+  federatedModules,
 }): Array<JSX.Element> => {
-  const basename = history.createHref({
-    pathname: '/',
-    search: '',
-    hash: '',
-  });
-
-  const pageEntries = Object.entries(pages);
   const isAllowedPage = (path): boolean =>
-    allowedPages.find((allowedPage) => path.includes(allowedPage));
+    allowedPages?.find((allowedPage) => path.includes(allowedPage));
 
-  const loadablePages = pageEntries.filter(([path]) => isAllowedPage(path));
+  return federatedModules.map(
+    ({ federatedPages, remoteEntry, moduleFederationName, moduleName }) => {
+      return federatedPages?.map(({ component, route }) => {
+        if (not(isAllowedPage(route))) {
+          return null;
+        }
 
-  return loadablePages.map(([path, parameter]) => {
-    const Page = React.lazy(() => dynamicImport(basename, parameter));
-
-    return (
-      <Route
-        key={path}
-        path={path}
-        exact
-        render={(renderProps): JSX.Element => (
-          <PageContainer>
-            <BreadcrumbTrail path={path} />
-            <Page {...renderProps} />
-          </PageContainer>
-        )}
-      />
-    );
-  });
+        return (
+          <Route
+            element={
+              <PageContainer>
+                <BreadcrumbTrail path={route} />
+                <Remote
+                  component={component}
+                  key={component}
+                  moduleFederationName={moduleFederationName}
+                  moduleName={moduleName}
+                  remoteEntry={remoteEntry}
+                />
+              </PageContainer>
+            }
+            key={route}
+            path={route}
+          />
+        );
+      });
+    },
+  );
 };
 
 interface Props {
-  allowedPages: Array<string>;
-  history;
-  pages: Record<string, unknown>;
+  allowedPages: Array<string | Array<string>>;
   externalPagesFetched: boolean;
+  federatedModules: Array<FederatedModule>;
 }
 
-const ReactRouter = React.memo<Props>(
-  ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (isEmpty(allowedPages)) {
-      return null;
-    }
-    return (
-      <Suspense fallback={null}>
-        <Switch>
+const ReactRouterContent = ({
+  federatedModules,
+  externalPagesFetched,
+  allowedPages,
+}: Props): JSX.Element => {
+  return useMemoComponent({
+    Component: (
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
+              element={
+                allowedPages.includes(path) ? (
+                  <PageContainer>
+                    <BreadcrumbTrail path={path} />
+                    <Comp />
+                  </PageContainer>
+                ) : (
+                  <NotAllowedPage />
+                )
+              }
               key={path}
               path={path}
-              exact
-              render={(renderProps): JSX.Element => (
-                <PageContainer>
-                  {allowedPages.includes(path) ? (
-                    <>
-                      <BreadcrumbTrail path={path} />
-                      <Comp {...renderProps} />
-                    </>
-                  ) : (
-                    <NotAllowedPage {...renderProps} />
-                  )}
-                </PageContainer>
-              )}
               {...rest}
             />
           ))}
-          {getExternalPageRoutes({ history, allowedPages, pages })}
-          {externalPagesFetched && <Route component={NotAllowedPage} />}
-        </Switch>
+          {getExternalPageRoutes({ allowedPages, federatedModules })}
+          {externalPagesFetched && (
+            <Route element={<NotFoundPage />} path="*" />
+          )}
+        </Routes>
       </Suspense>
-    );
-  },
-  (previousProps, nextProps) =>
-    isEqual(previousProps.pages, nextProps.pages) &&
-    isEqual(previousProps.allowedPages, nextProps.allowedPages) &&
-    isEqual(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
-);
+    ),
+    memoProps: [externalPagesFetched, federatedModules, allowedPages],
+  });
+};
 
-const mapStateToProps = (state): Record<string, unknown> => ({
-  allowedPages: allowedPagesSelector(state),
-  pages: state.externalComponents.pages,
-  externalPagesFetched: state.externalComponents.fetched,
-});
+const ReactRouter = (): JSX.Element => {
+  const federatedModules = useAtomValue(federatedModulesAtom);
+  const { allowedPages } = useNavigation();
 
-export default connect(mapStateToProps)(withRouter(ReactRouter));
+  const externalPagesFetched = not(isNil(federatedModules));
+
+  if (!externalPagesFetched || !allowedPages) {
+    return <PageSkeleton />;
+  }
+
+  return (
+    <ReactRouterContent
+      allowedPages={allowedPages}
+      externalPagesFetched={externalPagesFetched}
+      federatedModules={federatedModules as Array<FederatedModule>}
+    />
+  );
+};
+
+export default ReactRouter;

@@ -1,5 +1,12 @@
 Centreon\Domain\Monitoring\Resource:
     virtual_properties:
+        getUuid:
+            name: getUuid
+            serialized_name: uuid
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         getDuration:
             name: getDuration
             serialized_name: duration
@@ -25,7 +32,6 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details'
         type:
             type: string
             groups:
@@ -36,36 +42,21 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details'
         alias:
             type: string
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details'
         fqdn:
             type: string
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        commandLine:
-            type: string
-            groups:
-                - 'resource_details'
-        timezone:
-            type: string
-            access_type: public_method
-            accessor:
-              getter: getSanitizedTimezone
-              setter: setTimezone
-            groups:
-                - 'resource_details'
         parent:
             type: Centreon\Domain\Monitoring\Resource
             groups:
@@ -75,23 +66,10 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details'
         flapping:
             type: bool
             groups:
                 - 'resource_main'
-        percentStateChange:
-            type: double
-            groups:
-                - 'resource_details'
-        lastCheck:
-            type: DateTime<'Y-m-d\TH:i:sP'>
-            groups:
-                - 'resource_details'
-        nextCheck:
-            type: DateTime<'Y-m-d\TH:i:sP'>
-            groups:
-                - 'resource_details'
         inDowntime:
             type: bool
             groups:
@@ -113,8 +91,8 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        severity:
-            type: Centreon\Domain\Monitoring\ResourceSeverity
+        severityLevel:
+            type: int
             groups:
                 - 'resource_main'
         chartUrl:
@@ -125,14 +103,6 @@ Centreon\Domain\Monitoring\Resource:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
-        lastNotification:
-            type: DateTime
-            groups:
-                - 'resource_details'
-        notificationNumber:
-            type: int
-            groups:
-                - 'resource_details'
         tries:
             type: string
             groups:
@@ -145,19 +115,11 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
-        executionTime:
-            type: double
+        monitoringServerName:
+            type: string
             groups:
-                - 'resource_details'
-        latency:
-            type: double
+                - 'resource_main'
+        notificationEnabled:
+            type: bool
             groups:
-                - 'resource_details'
-        downtimes:
-            type: array<Centreon\Domain\Downtime\Downtime>
-            groups:
-                - 'resource_details'
-        acknowledgement:
-            type: Centreon\Domain\Acknowledgement\Acknowledgement
-            groups:
-                - 'resource_details'
+                - 'resource_main'

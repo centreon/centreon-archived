@@ -1,41 +1,45 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
+
+require_once __DIR__ . '/../../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../../class/centreonAuth.class.php';
 
 function testExistence($name = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
@@ -58,7 +62,7 @@ function testExistence($name = null)
 
 function testAliasExistence($alias = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
@@ -84,7 +88,7 @@ function updateNotificationOptions($contact_id)
 {
     global $form, $pearDB;
 
-    $pearDB->query("DELETE FROM contact_param 
+    $pearDB->query("DELETE FROM contact_param
         WHERE cp_contact_id = " . $pearDB->escape($contact_id) . "
         AND cp_key LIKE 'monitoring%notification%'");
     $data = $form->getSubmitValues();
@@ -112,11 +116,11 @@ function updateContactInDB($contact_id = null)
     updateNotificationOptions($contact_id);
 }
 
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon;
 
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
 
@@ -142,19 +146,10 @@ function updateContact($contact_id = null)
           'contact_email = :contactEmail, ' .
           'contact_pager = :contactPager, ' .
           'default_page = :defaultPage, ' .
-          'contact_js_effects = :contactJsEffects, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
-          'contact_autologin_key = :contactAutologinKey';
-    $password_encrypted = null;
-    if (!empty($ret['contact_passwd'])) {
-        $rq .= ', contact_passwd = :contactPasswd';
-        if ($encryptType == 2) {
-            $password_encrypted = sha1($ret['contact_passwd']);
-        } else {
-            $password_encrypted = md5($ret['contact_passwd']);
-        }
-    }
-
+          'contact_autologin_key = :contactAutologinKey, ' .
+          'contact_theme = :contactTheme, ' .
+          'enable_one_click_export = :enableOneClickExport';
     $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
@@ -181,14 +176,22 @@ function updateContact($contact_id = null)
         !empty($ret['contact_location']) ? $ret['contact_location'] : null,
         \PDO::PARAM_INT
     );
+    $stmt->bindValue(
+        ':contactTheme',
+        !empty($ret['contact_theme']['contact_theme']) ? $ret['contact_theme']['contact_theme'] : "light",
+        \PDO::PARAM_STR
+    );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
-    $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
-    if (!is_null($password_encrypted)) {
-        $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
-    }
+    $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
+
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $hashedPassword = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $contact = new \CentreonContact($pearDB);
+        $contact->renewPasswordByContactId($contactId, $hashedPassword);
+    }
 
     /*
      * Update user object..
@@ -198,4 +201,62 @@ function updateContact($contact_id = null)
     $centreon->user->lang = $ret['contact_lang'];
     $centreon->user->email = $ret['contact_email'];
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
+}
+
+/**
+ * @param array<string,mixed> $fields
+ */
+function validatePasswordModification(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = (int) $centreon->user->get_id();
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $contact = new \CentreonContact($pearDB);
+        $contact->respectPasswordPolicyOrFail($password, $contactId);
+    } catch (\Throwable $e) {
+        $errors['contact_passwd'] = $e->getMessage();
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function checkAutologinValue(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+
+    if (!empty($fields['contact_autologin_key'])) {
+        $contactId = $centreon->user->get_id();
+        $statement = $pearDB->prepare(
+            'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
+        );
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (
+            ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+            && password_verify($fields['contact_autologin_key'], $result['password'])
+        ) {
+            $errors['contact_autologin_key'] = _('Your autologin key must be different than your current password');
+        } elseif (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = _('Your new password and autologin key must be different');
+            $errors['contact_passwd'] = $errorMessage;
+            $errors['contact_autologin_key'] = $errorMessage;
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
 }

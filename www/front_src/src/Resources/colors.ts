@@ -1,21 +1,21 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 
 interface Condition {
-  name: string;
-  condition;
   color: string;
+  condition;
+  name: string;
 }
 
 const rowColorConditions = (theme: Theme): Array<Condition> => [
   {
-    name: 'inDowntime',
-    condition: ({ in_downtime }): boolean => in_downtime,
     color: theme.palette.action.inDowntimeBackground,
+    condition: ({ in_downtime }): boolean => in_downtime,
+    name: 'inDowntime',
   },
   {
-    name: 'acknowledged',
-    condition: ({ acknowledged }): boolean => acknowledged,
     color: theme.palette.action.acknowledgedBackground,
+    condition: ({ acknowledged }): boolean => acknowledged,
+    name: 'acknowledged',
   },
 ];
 

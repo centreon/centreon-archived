@@ -1,0 +1,7 @@
+centreon_application_find_meta_service_metrics:
+  methods: GET
+  path: /monitoring/metaservices/{metaId}/metrics
+  controller: 'Centreon\Application\Controller\Monitoring\MetaServiceController::findMetaServiceMetrics'
+  requirements:
+      metaId: '\d+'
+  condition: "request.attributes.get('version') >= 21.10"

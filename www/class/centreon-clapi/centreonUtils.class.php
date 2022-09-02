@@ -42,11 +42,6 @@ class CentreonUtils
     /**
      * @var string
      */
-    private static $centreonPath;
-
-    /**
-     * @var string
-     */
     private static $clapiUserName;
 
     /**
@@ -60,7 +55,7 @@ class CentreonUtils
      * @param string $pattern
      * @return string
      */
-    public function convertSpecialPattern($pattern)
+    public static function convertSpecialPattern($pattern)
     {
         $pattern = str_replace("#S#", "/", $pattern);
         $pattern = str_replace("#BS#", "\\", $pattern);
@@ -73,7 +68,7 @@ class CentreonUtils
      * @param CentreonDB|null $db
      * @return int|null
      */
-    public function getImageId($imagename, $db = null)
+    public static function getImageId($imagename, $db = null)
     {
         if (is_null($db)) {
             $db = new \CentreonDB('centreon');

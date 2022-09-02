@@ -38,8 +38,6 @@ class Engine extends AbstractObject
     protected $engine = null;
     protected $generate_filename = null; # it's in 'cfg_nagios' table
     protected $object_name = null;
-    # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
-    # lock_file, daemon_dumps_core
     protected $attributes_select = '
         nagios_id,
         use_timezone,
@@ -53,12 +51,6 @@ class Engine extends AbstractObject
         command_file,
         state_retention_file,
         retention_update_interval,
-        retained_contact_host_attribute_mask,
-        retained_contact_service_attribute_mask,
-        retained_process_host_attribute_mask,
-        retained_process_service_attribute_mask,
-        retained_host_attribute_mask,
-        retained_service_attribute_mask,
         sleep_time,
         service_inter_check_delay_method,
         host_inter_check_delay_method,
@@ -67,7 +59,6 @@ class Engine extends AbstractObject
         max_service_check_spread,
         max_host_check_spread,
         check_result_reaper_frequency,
-        max_check_result_reaper_time,
         auto_rescheduling_interval,
         auto_rescheduling_window,
         enable_flap_detection,
@@ -79,27 +70,17 @@ class Engine extends AbstractObject
         host_check_timeout,
         event_handler_timeout,
         notification_timeout,
-        ocsp_timeout,
-        ochp_timeout,
-        perfdata_timeout,
-        host_perfdata_file,
-        service_perfdata_file,
-        host_perfdata_file_template,
-        service_perfdata_file_template,
-        host_perfdata_file_processing_interval,
-        service_perfdata_file_processing_interval,
         service_freshness_check_interval,
         host_freshness_check_interval,
+        instance_heartbeat_interval,
         date_format,
         illegal_object_name_chars,
         illegal_macro_output_chars,
         admin_email,
         admin_pager,
         event_broker_options,
-        translate_passive_host_checks,
         cached_host_check_horizon,
         cached_service_check_horizon,
-        passive_host_checks_are_soft,
         additional_freshness_latency,
         debug_file,
         debug_level,
@@ -109,12 +90,6 @@ class Engine extends AbstractObject
         log_pid,
         global_host_event_handler as global_host_event_handler_id,
         global_service_event_handler as global_service_event_handler_id,
-        ocsp_command as ocsp_command_id,
-        ochp_command as ochp_command_id,
-        host_perfdata_command as host_perfdata_command_id,
-        service_perfdata_command as service_perfdata_command_id,
-        host_perfdata_file_processing_command as host_perfdata_file_processing_command_id,
-        service_perfdata_file_processing_command as service_perfdata_file_processing_command_id,
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -132,13 +107,7 @@ class Engine extends AbstractObject
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
-        use_aggressive_host_checking,
         soft_state_dependencies,
-        obsess_over_services,
-        obsess_over_hosts,
-        process_performance_data,
-        host_perfdata_file_mode,
-        service_perfdata_file_mode,
         check_for_orphaned_services,
         check_for_orphaned_hosts,
         check_service_freshness,
@@ -147,11 +116,10 @@ class Engine extends AbstractObject
         use_true_regexp_matching,
         enable_predictive_host_dependency_checks,
         enable_predictive_service_dependency_checks,
-        use_large_installation_tweaks,
         enable_environment_macros,
-        use_setpgid,
         enable_macros_filter,
-        macros_filter
+        macros_filter,
+        logger_version
     ';
     protected $attributes_write = array(
         'use_timezone',
@@ -164,12 +132,6 @@ class Engine extends AbstractObject
         'command_file',
         'state_retention_file',
         'retention_update_interval',
-        'retained_contact_host_attribute_mask',
-        'retained_contact_service_attribute_mask',
-        'retained_process_host_attribute_mask',
-        'retained_process_service_attribute_mask',
-        'retained_host_attribute_mask',
-        'retained_service_attribute_mask',
         'sleep_time',
         'service_inter_check_delay_method',
         'host_inter_check_delay_method',
@@ -178,7 +140,6 @@ class Engine extends AbstractObject
         'max_service_check_spread',
         'max_host_check_spread',
         'check_result_reaper_frequency',
-        'max_check_result_reaper_time',
         'auto_rescheduling_interval',
         'auto_rescheduling_window',
         'low_service_flap_threshold',
@@ -189,15 +150,6 @@ class Engine extends AbstractObject
         'host_check_timeout',
         'event_handler_timeout',
         'notification_timeout',
-        'ocsp_timeout',
-        'ochp_timeout',
-        'perfdata_timeout',
-        'host_perfdata_file',
-        'service_perfdata_file',
-        'host_perfdata_file_template',
-        'service_perfdata_file_template',
-        'host_perfdata_file_processing_interval',
-        'service_perfdata_file_processing_interval',
         'service_freshness_check_interval',
         'host_freshness_check_interval',
         'date_format',
@@ -206,10 +158,8 @@ class Engine extends AbstractObject
         'admin_email',
         'admin_pager',
         'event_broker_options',
-        'translate_passive_host_checks',
         'cached_host_check_horizon',
         'cached_service_check_horizon',
-        'passive_host_checks_are_soft',
         'additional_freshness_latency',
         'debug_file',
         'debug_level',
@@ -218,17 +168,28 @@ class Engine extends AbstractObject
         'log_pid', // centengine
         'global_host_event_handler',
         'global_service_event_handler',
-        'ocsp_command',
-        'ochp_command',
-        'host_perfdata_command',
-        'service_perfdata_command',
-        'host_perfdata_file_processing_command',
-        'service_perfdata_file_processing_command',
         'macros_filter',
         'enable_macros_filter',
-        'grpc_port'
+        'grpc_port',
+        'log_v2_enabled',
+        'log_legacy_enabled',
+        'log_v2_logger',
+        'log_level_functions',
+        'log_level_config',
+        'log_level_events',
+        'log_level_checks',
+        'log_level_notifications',
+        'log_level_eventbroker',
+        'log_level_external_command',
+        'log_level_commands',
+        'log_level_downtimes',
+        'log_level_comments',
+        'log_level_macros',
+        'log_level_process',
+        'log_level_runtime',
     );
     protected $attributes_default = array(
+        'instance_heartbeat_interval',
         'enable_notifications',
         'execute_service_checks',
         'accept_passive_service_checks',
@@ -246,13 +207,7 @@ class Engine extends AbstractObject
         'log_external_commands',
         'log_passive_checks',
         'auto_reschedule_checks',
-        'use_aggressive_host_checking',
         'soft_state_dependencies',
-        'obsess_over_services',
-        'obsess_over_hosts',
-        'process_performance_data',
-        'host_perfdata_file_mode',
-        'service_perfdata_file_mode',
         'check_for_orphaned_services',
         'check_for_orphaned_hosts',
         'check_service_freshness',
@@ -262,9 +217,7 @@ class Engine extends AbstractObject
         'use_true_regexp_matching',
         'enable_predictive_host_dependency_checks',
         'enable_predictive_service_dependency_checks',
-        'use_large_installation_tweaks',
         'enable_environment_macros',
-        'use_setpgid', // centengine
     );
     protected $attributes_array = array(
         'cfg_file',
@@ -309,6 +262,8 @@ class Engine extends AbstractObject
             $value['cfg_file'][] = $value['path'] . '/meta_timeperiod.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_host.cfg';
             $value['cfg_file'][] = $value['path'] . '/meta_services.cfg';
+            $value['cfg_file'][] = $value['path'] . '/tags.cfg';
+            $value['cfg_file'][] = $value['path'] . '/severities.cfg';
 
             foreach ($this->add_cfg_files as $add_cfg_file) {
                 $value['cfg_file'][] = $value['path'] . '/' . $add_cfg_file;
@@ -342,6 +297,31 @@ class Engine extends AbstractObject
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     *  If log V2 enabled, set logger V2 configuration and unset logger legacy elements
+     */
+    private function setLoggerCfg(): void
+    {
+        $this->engine['log_v2_enabled'] = $this->engine['logger_version'] === 'log_v2_enabled' ? 1 : 0;
+        $this->engine['log_legacy_enabled'] = $this->engine['logger_version'] === 'log_legacy_enabled' ? 1 : 0;
+
+        if ($this->engine['log_v2_enabled'] === 1) {
+            $stmt = $this->backend_instance->db->prepare(
+                'SELECT log_v2_logger, log_level_functions, log_level_config, log_level_events, log_level_checks,
+                    log_level_notifications, log_level_eventbroker, log_level_external_command, log_level_commands,
+                    log_level_downtimes, log_level_comments, log_level_macros, log_level_process, log_level_runtime
+                FROM cfg_nagios_logger
+                WHERE cfg_nagios_id = :id'
+            );
+            $stmt->bindParam(':id', $this->engine['nagios_id'], PDO::PARAM_INT);
+            $stmt->execute();
+
+            $loggerCfg = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $this->engine = array_merge($this->engine, $loggerCfg);
+        }
+    }
+
     private function generate($poller_id)
     {
         if (is_null($this->stmt_engine)) {
@@ -362,6 +342,7 @@ class Engine extends AbstractObject
         }
 
         $this->buildCfgFile($poller_id);
+        $this->setLoggerCfg();
         $this->getBrokerModules();
         $this->getIntervalLength();
 
@@ -390,16 +371,6 @@ class Engine extends AbstractObject
             = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler']
             = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
-        $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
-        $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command']
-            = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
-        $object['service_perfdata_command']
-            = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['host_perfdata_file_processing_command']
-            = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
-        $object['service_perfdata_file_processing_command']
-            = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
 
         $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';

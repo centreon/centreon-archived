@@ -57,7 +57,7 @@ try {
     bind_textdomain_codeset("messages", "UTF-8");
     textdomain("messages");
 
-    if (CentreonSession::checkSession(session_id(), $db) == 0) {
+    if (CentreonSession::checkSession(session_id(), $db) === false) {
         throw new Exception('Invalid session');
     }
     $viewObj = new CentreonCustomView($centreon, $db);
@@ -103,6 +103,10 @@ try {
     $template->assign(
         "error_msg",
         _("No widget configured in this view. Please add a new widget with the \"Add widget\" button.")
+    );
+    $template->assign(
+        'helpIcon',
+        returnSvg("www/img/icons/question_2.svg", "var(--help-tool-tip-icon-fill-color)", 18, 18)
     );
     $template->display($columnClass . ".ihtml");
 } catch (CentreonWidgetException $e) {

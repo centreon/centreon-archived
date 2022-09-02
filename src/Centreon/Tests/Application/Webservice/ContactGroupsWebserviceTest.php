@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
 use Centreon\Application\Webservice\ContactGroupsWebservice;
-use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon
@@ -42,7 +42,7 @@ class ContactGroupsWebserviceTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container;
@@ -57,7 +57,7 @@ class ContactGroupsWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/ContactGroups/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/ContactGroups/';
     }
 
     /**

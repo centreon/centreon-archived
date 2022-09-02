@@ -144,10 +144,14 @@ class CheckController extends AbstractController
 
         $hasRights = false;
 
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $hasRights = $contact->hasRole(Contact::ROLE_HOST_CHECK);
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_CHECK);
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $hasRights = $contact->hasRole(Contact::ROLE_HOST_CHECK);
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+            case ResourceEntity::TYPE_META:
+                $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_CHECK);
+                break;
         }
 
         return $hasRights;
@@ -330,6 +334,64 @@ class CheckController extends AbstractController
         $this->checkService
             ->filterByContact($contact)
             ->checkService($check);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to check a meta service.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function checkMetaService(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
+
+        /**
+         * @var Check $check
+         */
+        $check = $serializer->deserialize(
+            (string) $request->getContent(),
+            Check::class,
+            'json',
+            $context
+        );
+        $check
+            ->setResourceId($metaId)
+            ->setCheckTime(new \DateTime());
+
+        $errors = $entityValidator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_META_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $this->checkService
+            ->filterByContact($contact)
+            ->checkMetaService($check);
 
         return $this->view();
     }

@@ -2,13 +2,13 @@ centreon_application_check_checkHosts:
     methods: POST
     path: /monitoring/hosts/check
     controller: 'Centreon\Application\Controller\CheckController::checkHosts'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_check_checkServices:
     methods: POST
     path: /monitoring/services/check
     controller: 'Centreon\Application\Controller\CheckController::checkServices'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_check_checkHost:
     methods: POST
@@ -16,7 +16,7 @@ centreon_application_check_checkHost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\CheckController::checkHost'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_check_checkService:
     methods: POST
@@ -25,11 +25,19 @@ centreon_application_check_checkService:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\CheckController::checkService'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_check_checkMetaService:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/check
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\CheckController::checkMetaService'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_check_checkResources:
     methods: POST
     path: /monitoring/resources/check
     controller: 'Centreon\Application\Controller\CheckController::checkResources'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -64,7 +65,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Requester"));
 $tpl->assign("headerMenu_outputs", _("Outputs"));
 $tpl->assign("headerMenu_inputs", _("Inputs"));
-$tpl->assign("headerMenu_loggers", _("Loggers"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
@@ -122,17 +122,22 @@ $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
+
 for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $config['config_id'] . "]");
 
     if ($config["config_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&id=" . $config['config_id'] . "&o=u&limit=" . $limit . "&num="
-            . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"
+            . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"
             . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&id=" . $config['config_id'] . "&o=s&limit=" . $limit . "&num=" .
-            $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"
+            $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"
             . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 "
@@ -161,16 +166,6 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $row = $res->fetch();
     $inputNumber = $row["num"];
 
-    // Number of logger
-    $res = $pearDB->query(
-        "SELECT COUNT(DISTINCT(config_group_id)) as num " .
-        "FROM cfg_centreonbroker_info " .
-        "WHERE config_group = 'logger' " .
-        "AND config_id = " . $config['config_id']
-    );
-    $row = $res->fetch();
-    $loggerNumber = $row["num"];
-
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
@@ -185,7 +180,6 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         ),
         "RowMenu_inputs" => $inputNumber,
         "RowMenu_outputs" => $outputNumber,
-        "RowMenu_loggers" => $loggerNumber,
         "RowMenu_status" => $config["config_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $config["config_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions

@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Broker;
 
-use Centreon\Domain\Broker\Broker;
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;

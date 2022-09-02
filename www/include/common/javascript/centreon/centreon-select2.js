@@ -130,7 +130,8 @@
 
       this.clearButton.on('click', function () {
         var currentValues = self.$elem.val();
-        self.$elem.val('');
+        self.$elem.val([]);
+        self.savedSearch = '';
         if (self.remoteData) {
           self.$elem.empty().append($('<option>'));
         }
@@ -453,6 +454,7 @@
         return;
       }
       this.confirmBox.centreonPopin('close');
+      this.confirmBox = null;
     },
     /**
      * Select all elements matching to the search

@@ -2,7 +2,7 @@ centreon_application_monitoring_submitresultresource:
     methods: POST
     path: /monitoring/resources/submit
     controller: 'Centreon\Application\Controller\Monitoring\SubmitResultController::submitResultResources'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_submitresulthost:
     methods: POST
@@ -10,7 +10,7 @@ centreon_application_monitoring_submitresulthost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\SubmitResultController::submitResultHost'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_submitresultservice:
     methods: POST
@@ -19,4 +19,4 @@ centreon_application_monitoring_submitresultservice:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\SubmitResultController::submitResultService'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"

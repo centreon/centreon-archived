@@ -207,7 +207,7 @@ class Service implements EntityDescriptorMetadataInterface
     protected $stateType;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $criticality;
 

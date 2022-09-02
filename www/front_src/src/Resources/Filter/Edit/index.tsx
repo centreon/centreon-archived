@@ -1,39 +1,33 @@
-import * as React from 'react';
+import { useCallback } from 'react';
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
-import { move, isNil } from 'ramda';
+import { map, find, equals, path } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { rectIntersection } from '@dnd-kit/core';
+import { rectSortingStrategy } from '@dnd-kit/sortable';
+
+import { Typography, LinearProgress, Stack } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
-  Typography,
-  makeStyles,
-  LinearProgress,
-  Paper,
-} from '@material-ui/core';
-import MoveIcon from '@material-ui/icons/UnfoldMore';
+  MemoizedSectionPanel as SectionPanel,
+  useRequest,
+  RootComponentProps,
+  SortableItems,
+} from '@centreon/ui';
 
-import { SectionPanel, useRequest } from '@centreon/ui';
-
-import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import { patchFilter } from '../api';
+import { customFiltersAtom, editPanelOpenAtom } from '../filterAtoms';
+import { Filter } from '../models';
+import { Criteria } from '../Criterias/models';
 
-import EditFilterCard from './EditFilterCard';
+import SortableContent from './SortableContent';
 
 const useStyles = makeStyles((theme) => ({
-  header: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   container: {
     width: '100%',
-  },
-  loadingIndicator: {
-    height: theme.spacing(1),
-    width: '100%',
-    marginBottom: theme.spacing(1),
   },
   filters: {
     display: 'grid',
@@ -42,50 +36,69 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows: '1fr',
     width: '100%',
   },
-  filterCard: {
-    display: 'grid',
-    gridGap: theme.spacing(2),
-    gridTemplateColumns: '1fr auto',
+  header: {
     alignItems: 'center',
-    padding: theme.spacing(1),
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  loadingIndicator: {
+    height: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    width: '100%',
   },
 }));
 
-const EditFiltersPanel = (): JSX.Element | null => {
+const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-
-  const {
-    setEditPanelOpen,
-    customFilters,
-    setCustomFilters,
-  } = useResourceContext();
 
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
   });
 
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
+
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);
   };
 
-  const onDragEnd = ({ draggableId, source, destination }): void => {
-    const id = Number(draggableId);
+  const dragEnd = ({ items, event }): void => {
+    const reorderedCutomFilters = map((id) => {
+      const filter = find(
+        (customFilter) => equals(Number(customFilter.id), Number(id)),
+        customFilters,
+      ) as Filter;
 
-    if (isNil(destination)) {
-      return;
-    }
+      return {
+        ...filter,
+        order: items.indexOf(id),
+      };
+    }, items);
 
-    const reordedCustomFilters = move(
-      source.index,
-      destination.index,
-      customFilters,
-    );
+    setCustomFilters(reorderedCutomFilters);
 
-    setCustomFilters(reordedCustomFilters);
+    const activeId = path(['active', 'id'], event);
+    const destinationIndex = path(
+      ['active', 'data', 'current', 'sortable', 'index'],
+      event,
+    ) as number;
 
-    sendRequest({ id, order: destination.index });
+    sendRequest({ id: activeId, order: destinationIndex + 1 });
   };
+
+  const displayedFilters = map(
+    ({ id, ...other }) => ({ ...other, id: `${id}` }),
+    customFilters,
+  );
+
+  const RootComponent = useCallback(
+    ({ children }: RootComponentProps): JSX.Element => (
+      <Stack spacing={2}>{children}</Stack>
+    ),
+    [],
+  );
 
   const sections = [
     {
@@ -96,40 +109,20 @@ const EditFiltersPanel = (): JSX.Element | null => {
           <div className={classes.loadingIndicator}>
             {sending && <LinearProgress style={{ width: '100%' }} />}
           </div>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(droppable): JSX.Element => (
-                <div
-                  className={classes.filters}
-                  ref={droppable.innerRef}
-                  {...droppable.droppableProps}
-                >
-                  {customFilters?.map((filter, index) => (
-                    <Draggable
-                      key={filter.id}
-                      draggableId={`${filter.id}`}
-                      index={index}
-                    >
-                      {(draggable): JSX.Element => (
-                        <Paper
-                          square
-                          className={classes.filterCard}
-                          ref={draggable.innerRef}
-                          {...draggable.draggableProps}
-                        >
-                          <EditFilterCard filter={filter} />
-                          <div {...draggable.dragHandleProps}>
-                            <MoveIcon />
-                          </div>
-                        </Paper>
-                      )}
-                    </Draggable>
-                  ))}
-                  {droppable.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <SortableItems<{
+            criterias: Array<Criteria>;
+            id: string;
+            name: string;
+          }>
+            updateSortableItemsOnItemsChange
+            Content={SortableContent}
+            RootComponent={RootComponent}
+            collisionDetection={rectIntersection}
+            itemProps={['criterias', 'id', 'name']}
+            items={displayedFilters}
+            sortingStrategy={rectSortingStrategy}
+            onDragEnd={dragEnd}
+          />
         </div>
       ),
     },
@@ -137,7 +130,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
 
   const header = (
     <div className={classes.header}>
-      <Typography variant="h6" align="center">
+      <Typography align="center" variant="h6">
         {t(labelEditFilters)}
       </Typography>
     </div>
@@ -145,8 +138,9 @@ const EditFiltersPanel = (): JSX.Element | null => {
 
   return (
     <SectionPanel
-      sections={sections}
       header={header}
+      memoProps={[customFilters]}
+      sections={sections}
       onClose={closeEditPanel}
     />
   );

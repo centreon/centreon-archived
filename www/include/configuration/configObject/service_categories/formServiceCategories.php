@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -52,7 +53,9 @@ if (!$oreon->user->admin) {
  */
 $cct = array();
 if (($o == "c" || $o == "w") && $sc_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '" . $sc_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM `service_categories` WHERE `sc_id` = :sc_id LIMIT 1');
+    $DBRESULT->bindValue(':sc_id', $sc_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     /*
      * Set base value
      */

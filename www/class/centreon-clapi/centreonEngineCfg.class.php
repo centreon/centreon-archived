@@ -77,7 +77,6 @@ class CentreonEngineCfg extends CentreonObject
             'execute_host_checks' => '2',
             'accept_passive_host_checks' => '2',
             'enable_event_handlers' => '1',
-            'log_archive_path' => '/var/log/centreon-engine/archives/',
             'check_external_commands' => '1',
             'command_check_interval' => '1s',
             'command_file' => '/var/log/centreon-engine/rw/nagios.cmd',
@@ -99,7 +98,6 @@ class CentreonEngineCfg extends CentreonObject
             'max_concurrent_checks' => '400',
             'max_service_check_spread' => '5',
             'check_result_reaper_frequency' => '5',
-            'interval_length' => '60',
             'auto_reschedule_checks' => '2',
             'enable_flap_detection' => '0',
             'low_service_flap_threshold' => '25.0',
@@ -111,14 +109,6 @@ class CentreonEngineCfg extends CentreonObject
             'host_check_timeout' => '10',
             'event_handler_timeout' => '30',
             'notification_timeout' => '30',
-            'ocsp_timeout' => '5',
-            'ochp_timeout' => '5',
-            'perfdata_timeout' => '5',
-            'obsess_over_services' => '0',
-            'obsess_over_hosts' => '2',
-            'process_performance_data' => '0',
-            'host_perfdata_file_mode' => '2',
-            'service_perfdata_file_mode' => '2',
             'check_for_orphaned_services' => '0',
             'check_for_orphaned_hosts' => '0',
             'check_service_freshness' => '2',
@@ -134,12 +124,12 @@ class CentreonEngineCfg extends CentreonObject
             'event_broker_options' => '-1',
             'enable_predictive_host_dependency_checks' => '2',
             'enable_predictive_service_dependency_checks' => '2',
-            'use_large_installation_tweaks' => '2',
             'enable_environment_macros' => '2',
             'debug_level' => '0',
             'debug_level_opt' => '0',
             'debug_verbosity' => '2',
-            'cached_host_check_horizon' => '60'
+            'cached_host_check_horizon' => '60',
+            'logger_version' => 'log_v2_enabled',
         );
         $this->nbOfCompulsoryParams = 3;
         $this->activateField = "nagios_activate";
@@ -205,18 +195,30 @@ class CentreonEngineCfg extends CentreonObject
             $commandColumns = array(
                 'global_host_event_handler',
                 'global_service_event_handler',
-                'host_perfdata_command',
-                'service_perfdata_command',
-                'host_perfdata_file_processing_command',
-                'service_perfdata_file_processing_command',
-                'ocsp_command',
-                'ochp_command'
             );
+            $loggerColumns = [
+                'log_v2_logger',
+                'log_level_functions',
+                'log_level_config',
+                'log_level_events',
+                'log_level_checks',
+                'log_level_notifications',
+                'log_level_eventbroker',
+                'log_level_external_command',
+                'log_level_commands',
+                'log_level_downtimes',
+                'log_level_comments',
+                'log_level_macros',
+                'log_level_process',
+                'log_level_runtime',
+            ];
+            $canUpdateParams = true;
             if ($params[1] == "instance" || $params[1] == "nagios_server_id") {
                 $params[1] = "nagios_server_id";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
+                $canUpdateParams = false;
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
@@ -229,8 +231,13 @@ class CentreonEngineCfg extends CentreonObject
                 } else {
                     $params[2] = null;
                 }
+            } elseif ($params[1] === 'logger_version' && $params[2] === 'log_v2_enabled') {
+                $this->createLoggerV2Cfg($objectId);
+            } elseif (preg_match('/(' . implode('|', $loggerColumns) . ')/', $params[1], $matches)) {
+                $this->updateLoggerV2Param($objectId, $params);
+                $canUpdateParams = false;
             }
-            if ($params[1] != "broker_module") {
+            if ($canUpdateParams) {
                 $p = strtolower($params[1]);
                 if ($params[2] == "") {
                     if (isset($this->params[$p]) && $this->params[$p] == 2) {
@@ -305,6 +312,8 @@ class CentreonEngineCfg extends CentreonObject
         );
 
         foreach ($elements as $element) {
+            $element = array_merge($element, $this->getLoggerV2Cfg($element['nagios_id']));
+
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -319,19 +328,15 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler'
+                    if (
+                        $parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command'
-                        || $parameter == 'service_perfdata_command'
-                        || $parameter == 'host_perfdata_file_processing_command'
-                        || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command'
-                        || $parameter == 'ocsp_command'
                     ) {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
-                    } elseif ($parameter == 'illegal_object_name_chars'
-                        || $parameter == 'illegal_macro_output_chars'
+                    } elseif (
+                        $parameter === 'illegal_object_name_chars'
+                        || $parameter === 'illegal_macro_output_chars'
                     ) {
                         $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML401);
                     }
@@ -453,5 +458,81 @@ class CentreonEngineCfg extends CentreonObject
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $bkModule);
             }
         }
+    }
+
+    /**
+     * This method is automatically called in CentreonObject
+     *
+     * @param int $nagiosId
+     */
+    public function insertRelations(int $nagiosId): void
+    {
+        $this->createLoggerV2Cfg($nagiosId);
+    }
+
+    /**
+     * @param int $nagiosId
+     * @return bool
+     */
+    private function doesLoggerV2CfgExist(int $nagiosId): bool
+    {
+        $statement = $this->db->prepare('SELECT id FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetch() !== false;
+    }
+
+    /**
+     * Create logger V2 config if it doesn't already exist
+     *
+     * @param int $nagiosId
+     */
+    private function createLoggerV2Cfg(int $nagiosId): void
+    {
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
+            $statement = $this->db->prepare('INSERT INTO cfg_nagios_logger (cfg_nagios_id) VALUES (:cfgNagiosId)');
+            $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+            $statement->execute();
+        }
+    }
+
+    /**
+     * @param int $nagiosId
+     * @return array<mixed>
+     */
+    private function getLoggerV2Cfg(int $nagiosId): array
+    {
+        $statement = $this->db->prepare('SELECT * FROM cfg_nagios_logger WHERE cfg_nagios_id = :cfgNagiosId');
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($result = $statement->fetch()) {
+            unset($result['cfg_nagios_id']);
+            unset($result['id']);
+        }
+
+        return empty($result) ? [] : $result;
+    }
+
+    /**
+     * Update loggerV2 config
+     *
+     * @param int $nagiosId
+     * @param string[] $params
+     * @throws CentreonClapiException if config isn't found in cfg_nagios_logger table
+     */
+    private function updateLoggerV2Param(int $nagiosId, array $params): void
+    {
+        if (! $this->doesLoggerV2CfgExist($nagiosId)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        $statement = $this->db->prepare(
+            "UPDATE cfg_nagios_logger SET `{$params[1]}` = :paramValue WHERE cfg_nagios_id = :cfgNagiosId"
+        );
+        $statement->bindValue(':paramValue', $params[2], \PDO::PARAM_STR);
+        $statement->bindValue(':cfgNagiosId', $nagiosId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 }

@@ -47,6 +47,10 @@ $hTpls = isset($hTpls) ? $hTpls : [];
 #
 $host = array();
 $macroArray = array();
+
+// Used to store all macro passwords
+$macroPasswords = [];
+
 if (($o === HOST_TEMPLATE_MODIFY || $o === HOST_TEMPLATE_WATCH) && isset($host_id)) {
     if (isset($lockedElements[$host_id])) {
         $o = HOST_TEMPLATE_WATCH;
@@ -146,9 +150,12 @@ if (($o === HOST_TEMPLATE_MODIFY || $o === HOST_TEMPLATE_WATCH) && isset($host_i
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($macroArray as $index => $macroValues) {
         if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $macroArray[$index]['macroValue_#index#'];
             // It's a password macro
             $macroArray[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
             $macroArray[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $macroArray[$index]['macroOriginalName_#index#'] = $macroArray[$index]['macroInput_#index#'];
         }
     }
 }
@@ -692,6 +699,8 @@ $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 #
 ## Sort 2 - Host Relations
 #
+$form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
+$form->addElement('header', 'HClinks', _("Host Categories Relations"));
 if ($o === HOST_TEMPLATE_ADD) {
     $form->addElement('header', 'title2', _("Add relations"));
 } elseif ($o === HOST_TEMPLATE_MODIFY) {
@@ -857,12 +866,8 @@ $assoc->setValue("0");
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 #
@@ -971,13 +976,33 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $hostObj->setValue(insertHostInDB());
     } elseif ($form->getSubmitValue("submitC")) {
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        if (isset($_REQUEST['macroInput'])) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                        * The password has not been changed along with the name, so its value is equal to the wildcard.
+                        * We will therefore recover the password stored for its original name.
+                        */
+                        foreach ($macroArray as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateHostInDB($value, true);
-            }
+        foreach (array_keys($select) as $hostTemplateIdToUpdate) {
+            updateHostInDB($hostTemplateIdToUpdate, true);
         }
     }
     $o = null;

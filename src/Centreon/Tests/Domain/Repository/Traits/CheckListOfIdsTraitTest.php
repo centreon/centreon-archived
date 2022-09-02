@@ -38,23 +38,27 @@ namespace Centreon\Tests\Domain\Repository\Traits;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Mock\RepositoryMock;
+use Centreon\Tests\Resources\Mock\RepositoryMock;
 use Centreon\Test\Mock\CentreonDBManagerService;
 use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 
 class CheckListOfIdsTraitTest extends TestCase
 {
-
-    public function testCheckListOfIdsTrait()
+    public function testCheckListOfIdsTrait(): void
     {
         $ids = [1, 3, 4];
 
-        $db = new CentreonDB;
-        $manager = new CentreonDBManagerService;
-        $trait = new class($db, $manager) extends RepositoryMock {
-
+        $db = new CentreonDB();
+        $manager = new CentreonDBManagerService();
+        $trait = new class ($db, $manager) extends RepositoryMock {
             use checkListOfIdsTrait;
 
+            /**
+             * @param int[] $ids
+             * @param string|null $tableName
+             * @param string|null $columnNameOfIdentificator
+             * @return boolean
+             */
             public function checkListOfIds(
                 array $ids,
                 string $tableName = null,

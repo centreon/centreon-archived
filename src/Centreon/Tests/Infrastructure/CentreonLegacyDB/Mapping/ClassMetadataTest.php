@@ -38,12 +38,12 @@ namespace Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
-use Centreon\Tests\Resource\Mock\EntityMock;
+use Centreon\Tests\Resources\Mock\EntityMock;
 use PDO;
 
 class ClassMetadataTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->metadata = new ClassMetadata;
         EntityMock::loadMetadata($this->metadata);

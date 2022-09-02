@@ -26,6 +26,7 @@ class Check
 {
     public const VALIDATION_GROUPS_HOST_CHECK = ['check_host'];
     public const VALIDATION_GROUPS_SERVICE_CHECK = ['check_service'];
+    public const VALIDATION_GROUPS_META_SERVICE_CHECK = ['check_meta_service'];
 
     /**
      * @var int Resource id

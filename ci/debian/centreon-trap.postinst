@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ]; then
+
+    if [ -f /etc/snmp/snmptrapd.conf ]; then
+        grep disableAuthorization /etc/snmp/snmptrapd.conf &>/dev/null && \
+        sed -i -e "s/disableAuthorization .*/disableAuthorization yes/g" /etc/snmp/snmptrapd.conf
+        grep disableAuthorization /etc/snmp/snmptrapd.conf &>/dev/null || \
+        cat <<EOF >> /etc/snmp/snmptrapd.conf
+disableAuthorization yes
+EOF
+        grep centreontrapdforward /etc/snmp/snmptrapd.conf &>/dev/null ||
+        cat <<EOF >> /etc/snmp/snmptrapd.conf
+# Centreon custom configuration
+traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforward"
+EOF
+    fi
+
+    # Fix permissions
+    chmod 0755 \
+        /usr/share/centreon/bin/centreontrapd \
+        /usr/share/centreon/bin/centreontrapdforward \
+        /var/spool/centreontrapd
+    chown centreon:centreon \
+        /var/spool/centreontrapd
+
+    # Initial installation
+    systemctl --no-reload preset centreontrapd.service || : &>/dev/null || :
+    
+fi
+exit 0

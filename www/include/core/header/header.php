@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,7 +41,7 @@ if (!defined('SMARTY_DIR')) {
 /*
  * Bench
  */
-function microtime_float()
+function microtime_float(): bool
 {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
@@ -61,8 +61,8 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
-require_once $classdir . '/centreonFeature.class.php';
-require_once SMARTY_DIR . "Smarty.class.php";
+require_once "$classdir/centreonFeature.class.php";
+require_once SMARTY_DIR . "SmartyBC.class.php";
 
 /*
  * Create DB Connection
@@ -76,52 +76,18 @@ $centreonSession = new CentreonSession();
 
 CentreonSession::start();
 
-/*
- * Delete Session Expired
- */
-$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-$session_expire = $DBRESULT->fetch();
-if (!isset($session_expire["value"]) || !$session_expire["value"]) {
-    $session_expire["value"] = 2;
-}
-$time_limit = time() - ($session_expire["value"] * 60);
-
-$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
-
-// drop session if session has been deleted due to expiration
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+// Check session and drop all expired sessions
+if (!$centreonSession->updateSession($pearDB)) {
     CentreonSession::stop();
 }
 
-
-$args = "&redirect='";
-$a = 0;
-foreach ($_GET as $key => $value) {
-    if ($a) {
-        $args .= '&';
-    }
-    if (is_string($value)) {
-        $args .= "{$key}={$value}";
-    }
-    $a++;
-}
-$args .= "'";
+$args = "&redirect=" . urlencode(http_build_query($_GET));
 
 // check centreon session
 // if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        $args = "&redirect='";
-        $a = 0;
-        foreach ($_GET as $key => $value) {
-            if ($a) {
-                $args .= '&';
-            }
-            $args .= "$key=$value";
-            $a++;
-        }
-        $args .= "'";
-        header("Location: index.php?disconnect=1" . $args);
+        include __DIR__ . '/../../../index.html';
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {
@@ -199,39 +165,19 @@ switch (strlen($p)) {
         break;
 }
 
-/*
- * Define Skin path
- */
-
-$tab_file_css = array();
-$i = 0;
-if ($handle = @opendir("./Themes/Centreon-2/Color")) {
-    while ($file = @readdir($handle)) {
-        if (is_file("./Themes/Centreon-2/Color" . "/$file")) {
-            $tab_file_css[$i++] = $file;
-        }
-    }
-    @closedir($handle);
-}
-
-$colorfile = "Color/" . $tab_file_css[0];
-
-//Get CSS Order and color
-$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
-if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
-    $colorfile = "Color/" . $elem["css_name"];
-}
-
 //Update Session Table For last_reload and current_page row
 $page = '' . $level1 . $level2 . $level3 . $level4;
-if ($page == '') {
-    $page = "NULL";
+if (empty($page)) {
+    $page = null;
 }
-$query = "UPDATE `session` SET `current_page` = " . $page .
-    ", `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
-    "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
-    $centreon->user->user_id . "'";
-$DBRESULT = $pearDB->query($query);
+$sessionStatement = $pearDB->prepare(
+    "UPDATE `session`
+    SET `current_page` = :currentPage
+    WHERE `session_id` = :sessionId"
+);
+$sessionStatement->bindValue(':currentPage', $page, \PDO::PARAM_INT);
+$sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+$sessionStatement->execute();
 
 //Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);

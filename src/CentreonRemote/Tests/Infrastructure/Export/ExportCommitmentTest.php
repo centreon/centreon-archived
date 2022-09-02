@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -30,20 +31,41 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
  */
 class ExportCommitmentTest extends TestCase
 {
-
+    /**
+     * @var ExportCommitment
+     */
     protected $commitment;
+
+    /**
+     * @var int
+     */
     protected $remote = 1;
+
+    /**
+     * @var int[]
+     */
     protected $pollers = [2, 3];
-    protected $meta = [
-        '',
-    ];
+
+    /**
+     * @var array<int,string>
+     */
+    protected $meta = [''];
+
+    /**
+     * @var string
+     */
     protected $path = '/tmp';
+
+
+    /**
+     * @var array<mixed>
+     */
     protected $exporters = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $parser = $this->getMockBuilder(ExportParserYaml::class)
-            ->setMethods(['parse', 'dump'])
+            ->onlyMethods(['parse', 'dump'])
             ->getMock();
 
         $this->commitment = new ExportCommitment(
@@ -59,7 +81,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getRemote
      */
-    public function testGetRemote()
+    public function testGetRemote(): void
     {
         $this->assertEquals($this->remote, $this->commitment->getRemote());
     }
@@ -67,7 +89,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getPollers
      */
-    public function testGetPollers()
+    public function testGetPollers(): void
     {
         $result = array_merge($this->pollers, [$this->remote]);
         $this->assertEquals($result, $this->commitment->getPollers());
@@ -76,7 +98,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getMeta
      */
-    public function testGetMeta()
+    public function testGetMeta(): void
     {
         $this->assertEquals($this->meta, $this->commitment->getMeta());
     }
@@ -84,7 +106,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getPath
      */
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $this->assertEquals($this->path, $this->commitment->getPath());
     }
@@ -92,7 +114,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getExporters
      */
-    public function testGetExporters()
+    public function testGetExporters(): void
     {
         $this->assertEquals($this->exporters, $this->commitment->getExporters());
     }
@@ -100,7 +122,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getFilePermission
      */
-    public function testGetFilePermission()
+    public function testGetFilePermission(): void
     {
         $this->assertEquals(0775, $this->commitment->getFilePermission());
     }
@@ -108,7 +130,7 @@ class ExportCommitmentTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportCommitment::getParser
      */
-    public function testGetParser()
+    public function testGetParser(): void
     {
         $this->assertInstanceOf(ExportParserInterface::class, $this->commitment->getParser());
     }

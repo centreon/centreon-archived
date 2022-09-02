@@ -409,12 +409,41 @@ CREATE TABLE `cb_type_field_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log_level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_centreonbroker_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_centreonbroker` int(11) NOT NULL,
+  `id_log` int(11) NOT NULL,
+  `id_level` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_centreonbroker` (
   `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
   `config_write_thread_id` enum('0','1') DEFAULT '1',
+  `log_directory` varchar(255),
+  `log_filename` varchar(255),
+  `log_max_size` int(11) NOT NULL DEFAULT 0,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '100000',
@@ -423,6 +452,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `stats_activate` enum('0','1') DEFAULT '1',
   `daemon` TINYINT(1),
   `pool_size` int(11) DEFAULT NULL,
+  `bbdo_version` varchar(50) DEFAULT '3.0.0',
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -451,45 +481,31 @@ CREATE TABLE `cfg_nagios` (
   `use_timezone` int(11) unsigned DEFAULT NULL,
   `log_file` varchar(255) DEFAULT NULL,
   `cfg_dir` varchar(255) DEFAULT NULL,
-  `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
-  `nagios_user` varchar(255) DEFAULT NULL,
-  `nagios_group` varchar(255) DEFAULT NULL,
-  `enable_notifications` enum('0','1','2') DEFAULT NULL,
-  `execute_service_checks` enum('0','1','2') DEFAULT NULL,
-  `accept_passive_service_checks` enum('0','1','2') DEFAULT NULL,
-  `execute_host_checks` enum('0','1','2') DEFAULT NULL,
-  `accept_passive_host_checks` enum('0','1','2') DEFAULT NULL,
-  `enable_event_handlers` enum('0','1','2') DEFAULT NULL,
-  `log_rotation_method` varchar(255) DEFAULT NULL,
-  `log_archive_path` varchar(255) DEFAULT NULL,
-  `check_external_commands` enum('0','1','2') DEFAULT NULL,
+  `enable_notifications` enum('0','1') DEFAULT NULL,
+  `execute_service_checks` enum('0','1') DEFAULT NULL,
+  `accept_passive_service_checks` enum('0','1') DEFAULT NULL,
+  `execute_host_checks` enum('0','1') DEFAULT NULL,
+  `accept_passive_host_checks` enum('0','1') DEFAULT NULL,
+  `enable_event_handlers` enum('0','1') DEFAULT NULL,
+  `check_external_commands` enum('0','1') DEFAULT NULL,
   `external_command_buffer_slots` int(11) DEFAULT NULL,
   `command_check_interval` varchar(255) DEFAULT NULL,
   `command_file` varchar(255) DEFAULT NULL,
-  `downtime_file` varchar(255) DEFAULT NULL,
-  `comment_file` varchar(255) DEFAULT NULL,
-  `lock_file` varchar(255) DEFAULT NULL,
-  `retain_state_information` enum('0','1','2') DEFAULT NULL,
+  `retain_state_information` enum('0','1') DEFAULT NULL,
   `state_retention_file` varchar(255) DEFAULT NULL,
   `retention_update_interval` int(11) DEFAULT NULL,
-  `use_retained_program_state` enum('0','1','2') DEFAULT NULL,
-  `use_retained_scheduling_info` enum('0','1','2') DEFAULT NULL,
-  `retained_contact_host_attribute_mask` bigint(20) DEFAULT NULL,
-  `retained_contact_service_attribute_mask` bigint(20) DEFAULT NULL,
-  `retained_process_host_attribute_mask` bigint(20) DEFAULT NULL,
-  `retained_process_service_attribute_mask` bigint(20) DEFAULT NULL,
-  `retained_host_attribute_mask` bigint(20) DEFAULT NULL,
-  `retained_service_attribute_mask` bigint(20) DEFAULT NULL,
-  `use_syslog` enum('0','1','2') DEFAULT NULL,
-  `log_notifications` enum('0','1','2') DEFAULT NULL,
-  `log_service_retries` enum('0','1','2') DEFAULT NULL,
-  `log_host_retries` enum('0','1','2') DEFAULT NULL,
-  `log_event_handlers` enum('0','1','2') DEFAULT NULL,
-  `log_initial_states` enum('0','1','2') DEFAULT NULL,
-  `log_external_commands` enum('0','1','2') DEFAULT NULL,
-  `log_passive_checks` enum('0','1','2') DEFAULT NULL,
+  `use_retained_program_state` enum('0','1') DEFAULT NULL,
+  `use_retained_scheduling_info` enum('0','1') DEFAULT NULL,
+  `use_syslog` enum('0','1') DEFAULT NULL,
+  `log_notifications` enum('0','1') DEFAULT NULL,
+  `log_service_retries` enum('0','1') DEFAULT NULL,
+  `log_host_retries` enum('0','1') DEFAULT NULL,
+  `log_event_handlers` enum('0','1') DEFAULT NULL,
+  `log_initial_states` enum('0','1') DEFAULT NULL,
+  `log_external_commands` enum('0','1') DEFAULT NULL,
+  `log_passive_checks` enum('0','1') DEFAULT NULL,
   `global_host_event_handler` int(11) DEFAULT NULL,
   `global_service_event_handler` int(11) DEFAULT NULL,
   `sleep_time` varchar(10) DEFAULT NULL,
@@ -500,99 +516,61 @@ CREATE TABLE `cfg_nagios` (
   `max_service_check_spread` int(11) DEFAULT NULL,
   `max_host_check_spread` int(11) DEFAULT NULL,
   `check_result_reaper_frequency` int(11) DEFAULT NULL,
-  `max_check_result_reaper_time` int(11) DEFAULT NULL,
-  `interval_length` int(11) DEFAULT NULL,
-  `auto_reschedule_checks` enum('0','1','2') DEFAULT NULL,
+  `auto_reschedule_checks` enum('0','1') DEFAULT NULL,
   `auto_rescheduling_interval` int(11) DEFAULT NULL,
   `auto_rescheduling_window` int(11) DEFAULT NULL,
-  `use_aggressive_host_checking` enum('0','1','2') DEFAULT NULL,
-  `enable_flap_detection` enum('0','1','2') DEFAULT NULL,
+  `enable_flap_detection` enum('0','1') DEFAULT NULL,
   `low_service_flap_threshold` varchar(255) DEFAULT NULL,
   `high_service_flap_threshold` varchar(255) DEFAULT NULL,
   `low_host_flap_threshold` varchar(255) DEFAULT NULL,
   `high_host_flap_threshold` varchar(255) DEFAULT NULL,
-  `soft_state_dependencies` enum('0','1','2') DEFAULT NULL,
+  `soft_state_dependencies` enum('0','1') DEFAULT NULL,
   `service_check_timeout` int(11) DEFAULT NULL,
   `host_check_timeout` int(11) DEFAULT NULL,
   `event_handler_timeout` int(11) DEFAULT NULL,
   `notification_timeout` int(11) DEFAULT NULL,
-  `ocsp_timeout` int(11) DEFAULT NULL,
-  `ochp_timeout` int(11) DEFAULT NULL,
-  `perfdata_timeout` int(11) DEFAULT NULL,
-  `obsess_over_services` enum('0','1','2') DEFAULT NULL,
-  `ocsp_command` int(11) DEFAULT NULL,
-  `obsess_over_hosts` enum('0','1','2') DEFAULT NULL,
-  `ochp_command` int(11) DEFAULT NULL,
-  `process_performance_data` enum('0','1','2') DEFAULT NULL,
-  `host_perfdata_command` int(11) DEFAULT NULL,
-  `service_perfdata_command` int(11) DEFAULT NULL,
-  `host_perfdata_file` varchar(255) DEFAULT NULL,
-  `service_perfdata_file` varchar(255) DEFAULT NULL,
-  `host_perfdata_file_template` text,
-  `service_perfdata_file_template` text,
-  `host_perfdata_file_mode` enum('a','w','2') DEFAULT NULL,
-  `service_perfdata_file_mode` enum('a','w','2') DEFAULT NULL,
-  `host_perfdata_file_processing_interval` int(11) DEFAULT NULL,
-  `service_perfdata_file_processing_interval` int(11) DEFAULT NULL,
-  `host_perfdata_file_processing_command` int(11) DEFAULT NULL,
-  `service_perfdata_file_processing_command` int(11) DEFAULT NULL,
-  `check_for_orphaned_services` enum('0','1','2') DEFAULT NULL,
-  `check_for_orphaned_hosts` enum('0','1','2') DEFAULT NULL,
-  `check_service_freshness` enum('0','1','2') DEFAULT NULL,
+  `check_for_orphaned_services` enum('0','1') DEFAULT NULL,
+  `check_for_orphaned_hosts` enum('0','1') DEFAULT NULL,
+  `check_service_freshness` enum('0','1') DEFAULT NULL,
   `service_freshness_check_interval` int(11) DEFAULT NULL,
   `freshness_check_interval` int(11) DEFAULT NULL,
-  `check_host_freshness` enum('0','1','2') DEFAULT NULL,
+  `check_host_freshness` enum('0','1') DEFAULT NULL,
   `host_freshness_check_interval` int(11) DEFAULT NULL,
   `date_format` varchar(255) DEFAULT NULL,
+  `instance_heartbeat_interval` smallint DEFAULT 30,
   `illegal_object_name_chars` varchar(255) DEFAULT NULL,
   `illegal_macro_output_chars` varchar(255) DEFAULT NULL,
-  `use_regexp_matching` enum('0','1','2') DEFAULT NULL,
-  `use_true_regexp_matching` enum('0','1','2') DEFAULT NULL,
+  `use_regexp_matching` enum('0','1') DEFAULT NULL,
+  `use_true_regexp_matching` enum('0','1') DEFAULT NULL,
   `admin_email` varchar(255) DEFAULT NULL,
   `admin_pager` varchar(255) DEFAULT NULL,
   `nagios_comment` text,
   `nagios_activate` enum('0','1') DEFAULT NULL,
   `event_broker_options` varchar(255) DEFAULT NULL,
-  `translate_passive_host_checks` int(11) DEFAULT NULL,
   `nagios_server_id` int(11) DEFAULT NULL,
-  `enable_predictive_host_dependency_checks` enum('0','1','2') DEFAULT NULL,
-  `enable_predictive_service_dependency_checks` enum('0','1','2') DEFAULT NULL,
+  `enable_predictive_host_dependency_checks` enum('0','1') DEFAULT NULL,
+  `enable_predictive_service_dependency_checks` enum('0','1') DEFAULT NULL,
   `cached_host_check_horizon` int(11) DEFAULT NULL,
   `cached_service_check_horizon` int(11) DEFAULT NULL,
   `passive_host_checks_are_soft` int(11) DEFAULT NULL,
-  `use_large_installation_tweaks` enum('0','1','2') DEFAULT NULL,
-  `enable_environment_macros` enum('0','1','2') DEFAULT NULL,
-  `use_setpgid` enum('0','1','2') DEFAULT NULL,
+  `enable_environment_macros` enum('0','1') DEFAULT NULL,
   `additional_freshness_latency` int(11) DEFAULT NULL,
   `debug_file` varchar(255) DEFAULT NULL,
   `debug_level` int(11) DEFAULT NULL,
   `debug_level_opt` varchar(200) DEFAULT '0',
-  `debug_verbosity` enum('0','1','2') DEFAULT NULL,
+  `debug_verbosity` enum('0','1') DEFAULT NULL,
   `max_debug_file_size` int(11) DEFAULT NULL,
-  `daemon_dumps_core` enum('0','1') DEFAULT NULL,
   `cfg_file` varchar(255) NOT NULL DEFAULT 'centengine.cfg',
   `log_pid` enum('0','1') DEFAULT '1',
   `enable_macros_filter` enum('0', '1') DEFAULT '0',
   `macros_filter` TEXT DEFAULT '',
+  `logger_version` enum('log_v2_enabled', 'log_legacy_enabled') DEFAULT 'log_v2_enabled',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),
-  KEY `cmd3_index` (`ocsp_command`),
-  KEY `cmd4_index` (`ochp_command`),
-  KEY `cmd5_index` (`host_perfdata_command`),
-  KEY `cmd6_index` (`service_perfdata_command`),
-  KEY `cmd7_index` (`host_perfdata_file_processing_command`),
-  KEY `cmd8_index` (`service_perfdata_file_processing_command`),
   KEY `nagios_server_id` (`nagios_server_id`),
-  CONSTRAINT `cfg_nagios_ibfk_15` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_18` FOREIGN KEY (`global_host_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_19` FOREIGN KEY (`global_service_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_20` FOREIGN KEY (`ocsp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_21` FOREIGN KEY (`ochp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_22` FOREIGN KEY (`host_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_23` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_24` FOREIGN KEY (`host_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_25` FOREIGN KEY (`service_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   CONSTRAINT `cfg_nagios_ibfk_27` FOREIGN KEY (`use_timezone`) REFERENCES `timezone` (`timezone_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -700,7 +678,6 @@ CREATE TABLE `contact` (
   `timeperiod_tp_id2` int(11) DEFAULT NULL,
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
-  `contact_passwd` varchar(255) DEFAULT NULL,
   `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
@@ -714,6 +691,7 @@ CREATE TABLE `contact` (
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
   `contact_js_effects` enum('0','1') DEFAULT '0',
+  `contact_theme` enum('light','dark') DEFAULT 'light',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -734,6 +712,9 @@ CREATE TABLE `contact` (
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
+  `enable_one_click_export` enum('0','1') DEFAULT '0',
+  `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+  `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -960,6 +941,7 @@ CREATE TABLE `dependency_hostChild_relation` (
   `host_host_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `host_host_id`),
   CONSTRAINT `dependency_hostChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostChild_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -971,6 +953,7 @@ CREATE TABLE `dependency_hostParent_relation` (
   `host_host_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `host_host_id`),
   CONSTRAINT `dependency_hostParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostParent_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -982,6 +965,7 @@ CREATE TABLE `dependency_hostgroupChild_relation` (
   `hostgroup_hg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
+  UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostgroupChild_relation_ibfk_2` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -993,6 +977,7 @@ CREATE TABLE `dependency_hostgroupParent_relation` (
   `hostgroup_hg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
+  UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostgroupParent_relation_ibfk_2` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1004,6 +989,7 @@ CREATE TABLE `dependency_metaserviceChild_relation` (
   `meta_service_meta_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
+  UNIQUE (`dependency_dep_id`, `meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_metaserviceChild_relation_ibfk_2` FOREIGN KEY (`meta_service_meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1015,6 +1001,7 @@ CREATE TABLE `dependency_metaserviceParent_relation` (
   `meta_service_meta_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
+  UNIQUE (`dependency_dep_id`, `meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_metaserviceParent_relation_ibfk_2` FOREIGN KEY (`meta_service_meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1028,6 +1015,7 @@ CREATE TABLE `dependency_serviceChild_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`),
   CONSTRAINT `dependency_serviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceChild_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceChild_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
@@ -1042,6 +1030,7 @@ CREATE TABLE `dependency_serviceParent_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`),
   CONSTRAINT `dependency_serviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceParent_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceParent_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
@@ -1054,6 +1043,7 @@ CREATE TABLE `dependency_servicegroupChild_relation` (
   `servicegroup_sg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
+  UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_servicegroupChild_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1065,6 +1055,7 @@ CREATE TABLE `dependency_servicegroupParent_relation` (
   `servicegroup_sg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
+  UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_servicegroupParent_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1656,7 +1647,7 @@ CREATE TABLE `ns_host_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
@@ -1672,7 +1663,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(4096) NOT NULL,
-  `is_password` tinyint(2) DEFAULT NULL,
+  `is_password` tinyint(2) DEFAULT 0,
   `description` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
@@ -1687,7 +1678,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(4096) NOT NULL,
-  `is_password` tinyint(2) DEFAULT NULL,
+  `is_password` tinyint(2) DEFAULT 0,
   `description` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
@@ -1841,7 +1832,7 @@ CREATE TABLE `session` (
   `session_id` varchar(256) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
-  `last_reload` int(11) DEFAULT NULL,
+  `last_reload` bigint UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `s_nbHostsUp` int(11) DEFAULT NULL,
   `s_nbHostsDown` int(11) DEFAULT NULL,
@@ -1855,7 +1846,8 @@ CREATE TABLE `session` (
   `update_acl` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`(255)),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2087,7 +2079,7 @@ CREATE TABLE `view_img_dir_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `virtual_metrics` (
   `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `vmetric_name` varchar(255) DEFAULT NULL,
   `def_type` enum('0','1') DEFAULT '0',
   `rpn_function` varchar(255) DEFAULT NULL,
@@ -2205,15 +2197,6 @@ CREATE TABLE `widgets` (
   PRIMARY KEY (`widget_id`),
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE ws_token (
-  contact_id INT NOT NULL,
-  token VARCHAR(100) NOT NULL,
-  generate_date DATETIME NOT NULL,
-  UNIQUE (token),
-  KEY `index1` (`generate_date`),
-  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2337,12 +2320,116 @@ CREATE TABLE `platform_topology` (
     `name` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL,
     `parent_id` int(11),
+    `pending` enum('0', '1') DEFAULT '1',
     `server_id` int(11),
     PRIMARY KEY (`id`),
     CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT='Registration and parent relation Table used to set the platform topology';
+
+-- Create authentication tables
+
+CREATE TABLE `provider_configuration` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `custom_configuration` JSON NOT NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT 1,
+  `is_forced` BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `password_expiration_excluded_users` (
+  `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`provider_configuration_id`, `user_id`),
+  CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(4096) NOT NULL,
+  `creation_date` bigint UNSIGNED NOT NULL,
+  `expiration_date` bigint UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `token_index` (`token`),
+  INDEX `expiration_index` (`expiration_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_authentication_tokens` (
+  `token` varchar(255) NOT NULL,
+  `provider_token_id` int(11) DEFAULT NULL,
+  `provider_token_refresh_id` int(11) DEFAULT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `security_authentication_tokens_token_fk` (`token`),
+  KEY `security_authentication_tokens_provider_token_id_fk` (`provider_token_id`),
+  KEY `security_authentication_tokens_provider_token_refresh_id_fk` (`provider_token_refresh_id`),
+  KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
+  KEY `security_authentication_tokens_user_id_fk` (`user_id`),
+  CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_id_fk` FOREIGN KEY (`provider_token_id`)
+  REFERENCES `security_token` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_refresh_id_fk` FOREIGN KEY (`provider_token_refresh_id`)
+  REFERENCES `security_token` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `contact_password` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `creation_date` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contact_password_contact_id_fk` (`contact_id`),
+  INDEX `creation_date_index` (`creation_date`),
+  CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cfg_nagios_logger` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cfg_nagios_id` int(11) NOT NULL,
+  `log_v2_logger` enum('file', 'syslog') DEFAULT 'file',
+  `log_level_functions` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_config` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_events` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_checks` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_notifications` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_eventbroker` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_external_command` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_commands` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_downtimes` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_comments` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_macros` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  `log_level_process` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'info',
+  `log_level_runtime` enum('trace', 'debug', 'info', 'warning', 'err', 'critical', 'off') DEFAULT 'err',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `cfg_nagios_logger_cfg_nagios_id_fk`
+    FOREIGN KEY (`cfg_nagios_id`)
+    REFERENCES `cfg_nagios` (`nagios_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_provider_access_group_relation` (
+  `claim_value` VARCHAR(255) NOT NULL,
+  `access_group_id` int(11) NOT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  PRIMARY KEY (`claim_value`, `access_group_id`, `provider_configuration_id`),
+  CONSTRAINT `security_provider_access_group_id`
+    FOREIGN KEY (`access_group_id`)
+    REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
+  CONSTRAINT `security_provider_provider_configuration_id`
+    FOREIGN KEY (`provider_configuration_id`)
+    REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

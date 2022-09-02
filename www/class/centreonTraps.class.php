@@ -93,7 +93,7 @@ class CentreonTraps
                 $i = 1;
                 $queryValues = [];
                 foreach ($rules as $key => $value) {
-                    if (is_null($value) || $value == "") {
+                    if (is_null($value) || $value == "" || filter_var($key, FILTER_VALIDATE_INT) === false) {
                         continue;
                     }
                     $value = filter_var($value, FILTER_SANITIZE_STRING);
@@ -612,7 +612,7 @@ class CentreonTraps
                 $i = 1;
                 $queryValues = [];
                 foreach ($preexec as $key => $value) {
-                    if (is_null($value) || $value == "") {
+                    if (is_null($value) || $value == "" || filter_var($key, FILTER_VALIDATE_INT) === false) {
                         continue;
                     }
                     $queryValues[':value'. $key] = [

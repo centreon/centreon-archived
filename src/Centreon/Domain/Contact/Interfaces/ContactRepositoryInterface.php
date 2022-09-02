@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,7 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 declare(strict_types=1);
 
@@ -51,6 +51,15 @@ interface ContactRepositoryInterface
     public function findByName(string $name): ?Contact;
 
     /**
+     * Find a contact by email.
+     *
+     * @param string $email email
+     * @return Contact|null
+     * @throws \Exception
+     */
+    public function findByEmail(string $email): ?Contact;
+
+    /**
      * Find a contact by id
      *
      * @param int $contactId Contact id
@@ -65,4 +74,11 @@ interface ContactRepositoryInterface
      * @return Contact|null
      */
     public function findBySession(string $sessionId): ?Contact;
+
+    /**
+     * Find a contact by an authentication token
+     * @param string $token
+     * @return Contact|null
+     */
+    public function findByAuthenticationToken(string $token): ?Contact;
 }

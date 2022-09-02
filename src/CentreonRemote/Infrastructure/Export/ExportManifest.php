@@ -46,10 +46,14 @@ class ExportManifest
     private $version;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $data;
 
+    /**
+     * @param ExportCommitment $commitment
+     * @param string|null $version
+     */
     public function __construct(ExportCommitment $commitment, string $version = null)
     {
         $this->commitment = $commitment;
@@ -61,7 +65,7 @@ class ExportManifest
      *
      * @param string $key Key of data array to retrieve
      *
-     * @return $result Array field
+     * @return array<mixed>
      */
     public function get(string $key)
     {
@@ -72,8 +76,8 @@ class ExportManifest
 
     /**
      * Validate manifest format and return content
-     *
-     * @return void
+     * @throws Exception
+     * @return array<mixed>
      */
     public function validate()
     {
@@ -126,7 +130,7 @@ class ExportManifest
     /**
      * Dump data in file
      *
-     * @param array $exportManifest
+     * @param array<string,mixed> $exportManifest
      * @return void
      */
     public function dump(array $exportManifest): void

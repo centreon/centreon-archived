@@ -55,7 +55,7 @@ class MetricControllerTest extends TestCase
 
     protected $requestParameters;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
 
@@ -100,7 +100,7 @@ class MetricControllerTest extends TestCase
         $this->start = new \DateTime('2020-02-18T00:00:00');
         $this->end = new \DateTime('2020-02-18T12:00:00');
 
-        $this->metricService = $this->createMock(metricServiceInterface::class);
+        $this->metricService = $this->createMock(MetricServiceInterface::class);
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);

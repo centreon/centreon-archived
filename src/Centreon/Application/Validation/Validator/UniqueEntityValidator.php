@@ -47,7 +47,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueEntityValidator extends ConstraintValidator implements CentreonValidatorInterface
 {
-
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService;
      */
@@ -88,7 +87,7 @@ class UniqueEntityValidator extends ConstraintValidator implements CentreonValid
         }
 
         foreach ($fields as $field) {
-            $methodValueGetter = 'get'. ucfirst($field);
+            $methodValueGetter = 'get' . ucfirst($field);
             $value = $entity->$methodValueGetter();
 
             $result = $this->db->getRepository($constraint->repository)

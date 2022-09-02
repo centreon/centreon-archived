@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,15 +36,14 @@
  * SVN : $Id$
  *
  */
- 
+
     /*
-	 * Lang file
-	 */
+     * Lang file
+     */
     $locale = $oreon->user->get_lang();
     putenv("LANG=$locale");
     setlocale(LC_ALL, $locale);
     bindtextdomain("messages", _CENTREON_PATH_ . "www/locale/");
-;
     bind_textdomain_codeset("messages", "UTF-8");
     textdomain("messages");
 ?><script type="text/javascript">
@@ -52,7 +52,7 @@ var _o = '<?php echo $o;?>';
 var _vdef = '<?php echo $vdef;?>';
 
 function resetLists(host_id, service_id, def_id){
-    update_select_list(host_service_id, def_id);
+    update_select_list(host_id + '-' + service_id, def_id);
 }
 
 /* Function for displaying selected template */
@@ -166,9 +166,11 @@ function update_select_list(host_service_id, def_id){
     }
 
     xhr.onreadystatechange = function() { get_select_options(xhr, def_id); };
-    xhr.open("GET", "./include/views/graphs/common/makeXML_ListMetrics.php?host_id="
-	    + host_id + "&service_id="  + service_id + "&vdef=" + _vdef,
-        true);
+    xhr.open(
+      "GET", "./include/views/graphs/common/makeXML_ListMetrics.php?host_id="
+        + host_id + "&service_id="  + service_id + "&vdef=" + _vdef,
+      true
+    );
     xhr.send(null);
 }
 

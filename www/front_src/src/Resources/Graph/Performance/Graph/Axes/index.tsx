@@ -1,11 +1,9 @@
-import * as React from 'react';
-
-import { AxisBottom } from '@visx/visx';
+import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { Line, TimeValue } from '../../models';
+import { Line } from '../../models';
 
 import YAxes from './Y';
 
@@ -15,19 +13,17 @@ const commonTickLabelProps = {
 };
 
 interface Props {
-  timeSeries: Array<TimeValue>;
-  lines: Array<Line>;
+  base: number;
   graphHeight: number;
   graphWidth: number;
   leftScale: ScaleLinear<number, number>;
+  lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
-  xScale: ScaleTime<number, number>;
   xAxisTickFormat: string;
-  base: number;
+  xScale: ScaleTime<number, number>;
 }
 
 const Axes = ({
-  timeSeries,
   lines,
   graphHeight,
   graphWidth,
@@ -42,25 +38,26 @@ const Axes = ({
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
 
+  const xTickCount = Math.ceil(graphWidth / 82);
+
   return (
     <>
-      <AxisBottom
-        top={graphHeight}
+      <Axis.AxisBottom
+        numTicks={xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}
-        numTicks={7}
-        tickLabelProps={(): {} => ({
+        tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
           textAnchor: 'middle',
         })}
+        top={graphHeight}
       />
       <YAxes
-        lines={lines}
-        timeSeries={timeSeries}
-        graphWidth={graphWidth}
-        graphHeight={graphHeight}
         base={base}
+        graphHeight={graphHeight}
+        graphWidth={graphWidth}
         leftScale={leftScale}
+        lines={lines}
         rightScale={rightScale}
       />
     </>

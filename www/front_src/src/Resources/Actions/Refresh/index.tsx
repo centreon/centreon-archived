@@ -1,11 +1,11 @@
-import * as React from 'react';
-
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
-import { Grid } from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
-import IconPlay from '@material-ui/icons/PlayArrow';
-import IconPause from '@material-ui/icons/Pause';
+import { Grid } from '@mui/material';
+import IconRefresh from '@mui/icons-material/Refresh';
+import IconPlay from '@mui/icons-material/PlayArrow';
+import IconPause from '@mui/icons-material/Pause';
 
 import { IconButton } from '@centreon/ui';
 
@@ -14,7 +14,10 @@ import {
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
+import {
+  enabledAutorefreshAtom,
+  sendingAtom,
+} from '../../Listing/listingAtoms';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -34,27 +37,26 @@ const AutorefreshButton = ({
   return (
     <IconButton
       ariaLabel={t(label)}
+      size="small"
       title={t(label)}
       onClick={toggleAutorefresh}
-      size="small"
     >
       {enabledAutorefresh ? <IconPause /> : <IconPlay />}
     </IconButton>
   );
 };
 
-interface Props {
+export interface Props {
   onRefresh: () => void;
 }
 
 const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const {
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sending,
-  } = useResourceContext();
+  const [enabledAutorefresh, setEnabledAutorefresh] = useAtom(
+    enabledAutorefreshAtom,
+  );
+  const sending = useAtomValue(sendingAtom);
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);
@@ -64,11 +66,12 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
     <Grid container spacing={1}>
       <Grid item>
         <IconButton
-          title={t(labelRefresh)}
           ariaLabel={t(labelRefresh)}
+          data-testid={labelRefresh}
           disabled={sending}
-          onClick={onRefresh}
           size="small"
+          title={t(labelRefresh)}
+          onClick={onRefresh}
         >
           <IconRefresh />
         </IconButton>

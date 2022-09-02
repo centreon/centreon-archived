@@ -6,7 +6,6 @@ use PDO;
 
 class HostTemplateRelationRepository extends ServiceEntityRepository
 {
-
     /**
      * Export host's templates relation
      *
@@ -45,7 +44,7 @@ WHERE tt.host_host_id IN ({$list})
 GROUP BY tt.host_host_id, tt.host_tpl_id
 SQL;
         }
-        
+
         $sql .= <<<SQL
 ) AS l
 GROUP BY l.host_host_id, l.host_tpl_id
@@ -131,7 +130,7 @@ SQL;
 
         while ($row = $stmt->fetch()) {
             $result[$row['id']] = $row['id'];
-            
+
             $this->getChainByParant($row['id'], $result);
         }
 

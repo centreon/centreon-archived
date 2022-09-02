@@ -1,0 +1,2 @@
+etc/snmp/centreon_traps
+var/spool/centreontrapd

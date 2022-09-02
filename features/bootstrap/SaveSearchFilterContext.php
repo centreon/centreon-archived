@@ -10,7 +10,6 @@ use Centreon\Test\Behat\Configuration\ServiceTemplateConfigurationListingPage;
  */
 class SaveSearchFilterContext extends CentreonContext
 {
-
     public function __construct()
     {
         parent::__construct();

@@ -120,6 +120,44 @@ class AssertionException extends \InvalidArgumentException
     }
 
     /**
+     * Exception when the value does not respect email format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function email(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value "%s" was expected to be a valid e-mail address'),
+                $propertyPath,
+                $value
+            )
+        );
+    }
+
+    /**
+     * Exception when the value of the date is higher than the expected date.
+     *
+     * @param \DateTime $date Tested date
+     * @param \DateTime $maxDate Maximum date
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function maxDate(\DateTime $date, \DateTime $maxDate, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The date "%s" was expected to be at most %s'),
+                $propertyPath,
+                $date->format('c'),
+                $maxDate->format('c')
+            )
+        );
+    }
+
+    /**
      * Exception when the value of the integer is less than the expected value.
      *
      * @param int $value Tested value
@@ -135,6 +173,114 @@ class AssertionException extends \InvalidArgumentException
                 $propertyPath,
                 $value,
                 $limit
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is empty.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function notEmpty(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is empty, but non empty value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is null.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function notNull(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is null, but non null value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is not expected.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @param string $value
+     * @param mixed[] $expectedValues
+     * @return self
+     */
+    public static function inArray(string $value, array $expectedValues, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value provided (%s) was not expected. Possible values %s'),
+                $propertyPath,
+                $value,
+                implode('|', $expectedValues)
+            )
+        );
+    }
+
+    /**
+     * Exception when the value does not respect ip format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function ipOrDomain(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value "%s" was expected to be a valid ip address or domain name'),
+                $propertyPath,
+                $value
+            )
+        );
+    }
+
+    /**
+     * Exception when the value doesn't match a regex.
+     *
+     * @param string $value
+     * @param string $pattern
+     * @param string|null $propertyPath
+     * @return self
+     */
+    public static function matchRegex(string $value, string $pattern, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value (%s) doesn\'t match the regex \'%s\''),
+                $propertyPath,
+                $value,
+                $pattern
+            )
+        );
+    }
+
+    /**
+     * Exception when the value does not respect ip format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function ipAddressNotValid(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value \'%s\' was expected to be a valid ip address'),
+                $propertyPath,
+                $value
             )
         );
     }

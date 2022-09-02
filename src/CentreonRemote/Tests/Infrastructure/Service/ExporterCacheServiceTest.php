@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Tests\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
@@ -10,8 +29,12 @@ use CentreonRemote\Infrastructure\Service\ExporterCacheService;
  */
 class ExporterCacheServiceTest extends TestCase
 {
+    /**
+     * @var ExporterCacheService
+     */
+    private $cache;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = new ExporterCacheService();
         $this->cache->set('key1', 'val1');
@@ -21,7 +44,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::getIf
      */
-    public function testGetIf()
+    public function testGetIf(): void
     {
         $callable = function () {
             return 'val1a';
@@ -39,7 +62,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::get
      */
-    public function testGet()
+    public function testGet(): void
     {
         $result = $this->cache->get('key1');
 
@@ -53,7 +76,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::has
      */
-    public function testHas()
+    public function testHas(): void
     {
         $result = $this->cache->has('key1');
 
@@ -67,7 +90,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::merge
      */
-    public function testMerge()
+    public function testMerge(): void
     {
         $this->cache->set('key3', ['val3']);
         $this->cache->merge('key3', ['val3a']);
@@ -82,7 +105,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::set
      */
-    public function testSet()
+    public function testSet(): void
     {
         $this->cache->set('key4', 'val4');
 
@@ -97,7 +120,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::destroy
      */
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $this->assertTrue($this->cache->has('key1'));
 

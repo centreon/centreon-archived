@@ -30,10 +30,18 @@ interface HostGroupRepositoryInterface
     /**
      * Retrieve hostgroups from their ids
      *
-     * @param array $hostGroupIds
+     * @param int[] $hostGroupIds
      * @return HostGroup[]
      */
     public function findHostGroupsByIds(array $hostGroupIds): array;
+
+    /**
+     * Retrieve hostgroups from their names
+     *
+     * @param string[] $hostGroupNames
+     * @return HostGroup[]
+     */
+    public function findHostGroupsByNames(array $hostGroupNames): array;
 
     /**
      * @param ContactInterface $contact
@@ -44,7 +52,7 @@ interface HostGroupRepositoryInterface
     /**
      * Sets the access groups that will be used to filter.
      *
-     * @param \Centreon\Domain\Security\AccessGroup[]|null $accessGroups
+     * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
      * @return HostGroupRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): HostGroupRepositoryInterface;

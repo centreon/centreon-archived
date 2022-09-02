@@ -1,12 +1,12 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { Severity, useSnackbar, useRequest } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { useSnackbar, useRequest } from '@centreon/ui';
+import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelRequired,
@@ -20,13 +20,25 @@ import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  force_active_checks: Yup.boolean(),
+  is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
+  persistent: Yup.boolean(),
 });
 
 interface Props {
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
-  onClose;
-  onSuccess;
+}
+
+export interface AcknowledgeFormValues {
+  acknowledgeAttachedResources: boolean;
+  comment?: string;
+  forceActiveChecks: boolean;
+  isSticky: boolean;
+  notify: boolean;
+  persistent: boolean;
 }
 
 const AcknowledgeForm = ({
@@ -35,9 +47,7 @@ const AcknowledgeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
-
-  const { username } = useUserContext();
+  const { showSuccessMessage } = useSnackbar();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -46,42 +56,44 @@ const AcknowledgeForm = ({
     request: acknowledgeResources,
   });
 
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
+  const { alias } = useAtomValue(userAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
 
-  const form = useFormik({
+  const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
+      acknowledgeAttachedResources: acknowledgement.with_services,
       comment: undefined,
-      notify: false,
-      acknowledgeAttachedResources: false,
+      forceActiveChecks: acknowledgement.force_active_checks,
+      isSticky: acknowledgement.sticky,
+      notify: acknowledgement.notify,
+      persistent: acknowledgement.persistent,
     },
-    onSubmit: (values) => {
+    onSubmit: (values): void => {
       sendAcknowledgeResources({
-        resources,
         params: values,
+        resources,
       }).then(() => {
-        showSuccess(t(labelAcknowledgeCommandSent));
+        showSuccessMessage(t(labelAcknowledgeCommandSent));
         onSuccess();
       });
     },
     validationSchema,
   });
 
-  React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${username}`);
+  useEffect(() => {
+    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${alias}`);
   }, []);
 
   return (
     <DialogAcknowledge
-      resources={resources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
       canConfirm={form.isValid}
       errors={form.errors}
-      values={form.values}
       handleChange={form.handleChange}
+      resources={resources}
       submitting={sendingAcknowledgeResources}
-      loading={isNil(form.values.comment)}
+      values={form.values}
+      onCancel={onClose}
+      onConfirm={form.submitForm}
     />
   );
 };
