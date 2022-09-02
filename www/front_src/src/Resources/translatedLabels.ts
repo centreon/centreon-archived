@@ -262,5 +262,6 @@ export const labelCSV = 'CSV';
 export const labelExport = 'Export';
 export const labelAsMediumSize = 'Medium size';
 export const labelAsSmallSize = 'Small size';
-
 export const labelExportToCSV = 'CSV';
+export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
+export const labelAnomalyDetection = 'Anomaly detection';

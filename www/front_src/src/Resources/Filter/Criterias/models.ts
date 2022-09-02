@@ -31,6 +31,7 @@ import {
   labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
+  labelAnomalyDetection,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -61,6 +62,7 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
+  // 'anomaly-detection': labelAnomalyDetection,
   hard: labelHard,
   host: labelHost,
   in_downtime: labelInDowntime,
@@ -68,6 +70,11 @@ const criteriaValueNameById = {
   service: labelService,
   soft: labelSoft,
   unhandled_problems: labelUnhandled,
+};
+
+const criteriaFilterByModules = {
+  'anomaly-detection': labelAnomalyDetection,
+  'license-manager': 'license-manager',
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -108,10 +115,17 @@ const metaServiceResourceType = {
   name: criteriaValueNameById[metaServiceResourceTypeId],
 };
 
+// const serviceAnomalyDetectionResourceId = 'anomaly-detection';
+// const serviceAnomalyDetectionType = {
+//   id: serviceAnomalyDetectionResourceId,
+//   name: criteriaValueNameById[serviceAnomalyDetectionResourceId],
+// };
+
 const selectableResourceTypes = [
   hostResourceType,
   serviceResourceType,
   metaServiceResourceType,
+  // serviceAnomalyDetectionType,
 ];
 
 const okStatusId = 'OK';
@@ -271,6 +285,7 @@ export {
   criticalStatus,
   unknownStatus,
   criteriaValueNameById,
+  criteriaFilterByModules,
   selectableResourceTypes,
   selectableStates,
   selectableStatuses,

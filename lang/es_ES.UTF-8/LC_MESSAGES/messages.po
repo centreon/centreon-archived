@@ -15185,7 +15185,6 @@ msgstr "Criticidad del host"
 
 msgid "Host severity level"
 msgstr "Nivel de criticidad del host"
-
 #  msgid "Listening address (optional)"
 #  msgstr ""
 

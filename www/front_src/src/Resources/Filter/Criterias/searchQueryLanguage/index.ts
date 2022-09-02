@@ -76,7 +76,13 @@ const isCriteriaPart = pipe(
 );
 const isFilledCriteria = pipe(endsWith(':'), not);
 
-const parse = (search: string): Array<Criteria> => {
+const parse = ({
+  search,
+  nameCriteria = criteriaValueNameById,
+}: {
+  nameCriteria?: any;
+  search: string;
+}): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
     search.split(' '),
@@ -106,7 +112,7 @@ const parse = (search: string): Array<Criteria> => {
 
           return {
             id,
-            name: criteriaValueNameById[id],
+            name: nameCriteria[id],
           };
         }
 

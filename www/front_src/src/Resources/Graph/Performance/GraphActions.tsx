@@ -24,6 +24,8 @@ import {
   labelPerformancePage,
   labelSmallSize,
   labelPerformanceGraphAD,
+  labelEditAnomalyDetectionData,
+  labelCSV,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -149,11 +151,11 @@ const GraphActions = ({
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
+
           {isResourceAnomalyDetection && (
             <IconButton
-              disableTouchRipple
-              ariaLabel={t(labelPerformanceGraphAD)}
-              data-testid={labelPerformanceGraphAD}
+              ariaLabel={t(labelEditAnomalyDetectionData)}
+              data-testid={labelEditAnomalyDetectionData}
               disabled={isNil(timeline)}
               size="small"
               title={t(labelPerformanceGraphAD)}
