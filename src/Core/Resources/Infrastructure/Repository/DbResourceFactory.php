@@ -25,37 +25,50 @@ namespace Core\Resources\Infrastructure\Repository;
 use Core\Domain\RealTime\Model\Icon;
 use Centreon\Domain\Monitoring\Notes;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Core\Domain\RealTime\ResourceTypeInterface;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Icon as LegacyIconModel;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 
 class DbResourceFactory
 {
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $record
+     * @param array<string,int|string|null> $record
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return ResourceEntity
      */
-    public static function createFromRecord(array $record): ResourceEntity
+    public static function createFromRecord(array $record, array $availableResourceTypes): ResourceEntity
     {
-        $resourceType = self::normalizeType((int) $record['type']);
+        $resourceType = self::normalizeType((int) $record['type'], $availableResourceTypes);
 
         $parent = null;
 
-        if ($resourceType === ResourceEntity::TYPE_SERVICE) {
+        if (self::resourceHasParent((int) $record['type'], $availableResourceTypes)) {
             $parentStatus = (new ResourceStatus())
                 ->setCode((int) $record['parent_status'])
-                ->setName(self::getStatusAsString(ResourceEntity::TYPE_HOST, (int) $record['parent_status']))
+                ->setName(self::getStatusAsString(HostResourceType::TYPE_NAME, (int) $record['parent_status']))
                 ->setSeverityCode(self::normalizeSeverityCode((int) $record['parent_status_ordered']));
+
+            /** @var string|null */
+            $name = $record['parent_name'];
+
+            /** @var string|null */
+            $alias = $record['parent_alias'];
+
+            /** @var string|null */
+            $fqdn = $record['parent_fqdn'];
 
             $parent = (new ResourceEntity())
                 ->setId((int) $record['parent_id'])
-                ->setName($record['parent_name'])
-                ->setAlias($record['parent_alias'])
-                ->setType(ResourceEntity::TYPE_HOST)
-                ->setFqdn($record['parent_fqdn'])
+                ->setName($name)
+                ->setAlias($alias)
+                ->setType(HostResourceType::TYPE_NAME)
+                ->setFqdn($fqdn)
                 ->setStatus($parentStatus);
         }
 
@@ -64,9 +77,15 @@ class DbResourceFactory
             ->setName(self::getStatusAsString($resourceType, (int) $record['status']))
             ->setSeverityCode(self::normalizeSeverityCode((int) $record['status_ordered']));
 
+        /** @var string|null */
+        $label = $record['notes'];
+
+        /** @var string|null */
+        $url = $record['notes_url'];
+
         $notes = (new Notes())
-            ->setLabel($record['notes'])
-            ->setUrl($record['notes_url']);
+            ->setLabel($label)
+            ->setUrl($url);
 
         $statusConfirmedAsString = (int) $record['status_confirmed'] === 1 ? 'H' : 'S';
         $tries = $record['check_attempts']
@@ -80,12 +99,24 @@ class DbResourceFactory
 
             $severity = new Severity(
                 (int) $record['severity_id'],
-                $record['severity_name'],
+                (string) $record['severity_name'],
                 (int) $record['severity_level'],
                 (int) $record['severity_type'],
                 $severityIcon
             );
         }
+
+        /** @var string|null */
+        $name = $record['name'];
+
+        /** @var string|null */
+        $alias = $record['alias'];
+
+        /** @var string|null */
+        $fqdn = $record['address'];
+
+        /** @var string|null */
+        $information = $record['output'];
 
         $resource = (new ResourceEntity())
             ->setType($resourceType)
@@ -99,29 +130,30 @@ class DbResourceFactory
             ->setInDowntime((int) $record['in_downtime'] === 1)
             ->setAcknowledged((int) $record['acknowledged'] === 1)
             ->setStateType((int) $record['status_confirmed'])
-            ->setName($record['name'])
-            ->setAlias($record['alias'])
-            ->setFqdn($record['address'])
+            ->setName($name)
+            ->setAlias($alias)
+            ->setFqdn($fqdn)
             ->setPassiveChecks((int) $record['passive_checks_enabled'] === 1)
             ->setActiveChecks((int) $record['active_checks_enabled'] === 1)
             ->setNotificationEnabled((int) $record['notifications_enabled'] === 1)
             ->setLastCheck(self::createDateTimeFromTimestamp((int) $record['last_check']))
-            ->setInformation($record['output'])
-            ->setMonitoringServerName($record['monitoring_server_name'])
+            ->setInformation($information)
+            ->setMonitoringServerName((string) $record['monitoring_server_name'])
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $record['last_status_change']))
             ->setHasGraph((int) $record['has_graph'] === 1)
-            ->setSeverity($severity);
+            ->setSeverity($severity)
+            ->setInternalId(self::getIntOrNull($record['internal_id']));
 
-        /**
-         * Handle special case of Meta Service resource type
-         */
-        $resourceId = $resource->getType() === ResourceEntity::TYPE_META
-            ? $record['internal_id']
-            : $record['id'];
+        $resource->setId(
+            self::resourceHasInternalId((int) $record['type'], $availableResourceTypes) === true
+                ? (int) $record['internal_id']
+                : (int) $record['id']
+        );
 
-        $resource->setId((int) $resourceId);
+        /** @var string|null */
+        $actionUrl = $record['action_url'];
 
-        $resource->getLinks()->getExternals()->setActionUrl($record['action_url']);
+        $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
         $resource->getLinks()->getExternals()->setNotes($notes);
 
         if (empty($record['icon_id']) === false) {
@@ -181,16 +213,55 @@ class DbResourceFactory
     /**
      * Converts the resource type value stored as int into a string
      *
-     * @param int $type
+     * @param integer $type
+     * @param ResourceTypeInterface[] $availableResourceTypes
      * @return string
      */
-    private static function normalizeType(int $type): string
+    private static function normalizeType(int $type, array $availableResourceTypes): string
     {
-        return match ($type) {
-            0 => ResourceEntity::TYPE_SERVICE,
-            1 => ResourceEntity::TYPE_HOST,
-            2 => ResourceEntity::TYPE_META,
-            default => ResourceEntity::TYPE_SERVICE
-        };
+        $normalizedType = '';
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($type)) {
+                $normalizedType =  $resourceType->getName();
+            }
+        }
+
+        return $normalizedType;
+    }
+
+    /**
+     * Checks if the Resource has a parent to define
+     *
+     * @param integer $resourceTypeId
+     * @param ResourceTypeInterface[] $availableResourceTypes
+     * @return boolean
+     */
+    private static function resourceHasParent(int $resourceTypeId, array $availableResourceTypes): bool
+    {
+        $hasParent = false;
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($resourceTypeId)) {
+                $hasParent = $resourceType->hasParent();
+            }
+        }
+
+        return $hasParent;
+    }
+
+    /**
+     * @param integer $resourceTypeId
+     * @param ResourceTypeInterface[] $availableResourceTypes
+     * @return boolean
+     */
+    private static function resourceHasInternalId(int $resourceTypeId, array $availableResourceTypes): bool
+    {
+        $hasInternalId = false;
+        foreach ($availableResourceTypes as $resourceType) {
+            if ($resourceType->isValidForTypeId($resourceTypeId)) {
+                $hasInternalId = $resourceType->hasInternalId();
+            }
+        }
+
+        return $hasInternalId;
     }
 }

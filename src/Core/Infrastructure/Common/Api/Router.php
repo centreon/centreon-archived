@@ -74,6 +74,8 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      * @param string $name
      * @param array<string,mixed> $parameters
      * @param int $referenceType
+     *
+     * @throws \Exception
      */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
@@ -85,7 +87,13 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
         $generatedRoute = $this->router->generate($name, $parameters, $referenceType);
 
         // remove double slashes
-        return preg_replace('/(?<!:)(\/{2,})/', '$2/', $generatedRoute);
+        $generatedRoute = preg_replace('/(?<!:)(\/{2,})/', '$2/', $generatedRoute);
+
+        if ($generatedRoute === null) {
+            throw new \Exception('Error occured during regular expression search and replace.');
+        }
+
+        return $generatedRoute;
     }
 
     /**

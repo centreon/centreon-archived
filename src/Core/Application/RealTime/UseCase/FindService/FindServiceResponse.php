@@ -31,6 +31,7 @@ use Core\Domain\RealTime\Model\ServiceStatus;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Core\Application\RealTime\Common\RealTimeResponseTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 class FindServiceResponse
 {
@@ -132,7 +133,7 @@ class FindServiceResponse
     public $maxCheckAttempts;
 
     /**
-     * @var array<string, string|null>
+     * @var array<string, int|string|null>
      */
     public $icon;
 
@@ -176,8 +177,13 @@ class FindServiceResponse
      */
     public ?array $severity = null;
 
+    /*
+     * @var string
+     */
+    public string $type = ServiceResourceType::TYPE_NAME;
+
     /**
-     * @param int $id
+     * @param int $serviceId
      * @param int $hostId
      * @param string $name
      * @param ServiceStatus $status
@@ -190,7 +196,7 @@ class FindServiceResponse
      * @param Severity|null $severity
      */
     public function __construct(
-        public int $id,
+        public int $serviceId,
         public int $hostId,
         public string $name,
         ServiceStatus $status,

@@ -27,7 +27,7 @@ use Core\Domain\Configuration\Notification\Model\NotifiedContact;
 class DbNotifiedContactFactory
 {
     /**
-     * @param array<string,mixed> $contact
+     * @param array<string,int|string|null> $contact
      * @return NotifiedContact
      */
     public static function createFromRecord(array $contact): NotifiedContact
@@ -38,9 +38,9 @@ class DbNotifiedContactFactory
 
         return new NotifiedContact(
             (int) $contact['contact_id'],
-            $contact['contact_alias'],
-            $contact['contact_name'],
-            $contact['contact_email'],
+            (string) $contact['contact_name'],
+            (string) $contact['contact_alias'],
+            (string) $contact['contact_email'],
             $hostNotification,
             $serviceNotification,
         );

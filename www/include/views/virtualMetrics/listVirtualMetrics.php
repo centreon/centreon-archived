@@ -130,31 +130,37 @@ for ($i = 0; $vmetric = $stmt->fetch(); $i++) {
         "\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $vmetric['vmetric_id'] . "]' />";
 
+    $indexDataStatement = $pearDBO->prepare("SELECT id,host_id,service_id FROM index_data " .
+        "WHERE id = :indexId ");
     try {
-        $query = "SELECT id,host_id,service_id FROM index_data WHERE id = '" . $vmetric['index_id'] . "'";
-        $dbindd = $pearDBO->query($query);
+        $indexDataStatement->bindValue(':indexId', (int) $vmetric['index_id'], \PDO::PARAM_INT);
+        $indexDataStatement->execute();
     } catch (\PDOException $e) {
         print "DB Error : " . $e->getMessage() . "<br />";
     }
-    $indd = $dbindd->fetchRow();
-    $dbindd->closeCursor();
+    $indd = $indexDataStatement->fetchRow();
+
+    $indexDataStatement->closeCursor();
     if ($indd !== false) {
         try {
-            $query = "(SELECT concat(h.host_name,' > ',s.service_description) full_name " .
+            $hsrStatement = $pearDB->prepare("(SELECT concat(h.host_name,' > ',s.service_description) full_name " .
                 "FROM host_service_relation AS hsr, host AS h, service AS s WHERE hsr.host_host_id = h.host_id " .
-                "AND hsr.service_service_id = s.service_id AND h.host_id = '" . $indd["host_id"] .
-                "' AND s.service_id = '" . $indd["service_id"] . "') UNION " .
+                "AND hsr.service_service_id = s.service_id AND h.host_id = :hostId " .
+                "AND s.service_id = :serviceId ) UNION " .
                 "(SELECT concat(h.host_name,' > ',s.service_description) full_name " .
                 "FROM host_service_relation AS hsr, host AS h, service AS s, hostgroup_relation AS hr " .
                 "WHERE hsr.hostgroup_hg_id = hr.hostgroup_hg_id AND hr.host_host_id = h.host_id " .
-                "AND hsr.service_service_id = s.Service_id AND h.host_id = '" . $indd["host_id"] .
-                "' AND s.service_id = '" . $indd["service_id"] . "') ORDER BY full_name";
-            $dbhsrname = $pearDB->query($query);
+                "AND hsr.service_service_id = s.Service_id AND h.host_id = :hostId " .
+                "AND s.service_id = :serviceId ) ORDER BY full_name");
+
+            $hsrStatement->bindValue(':hostId', (int) $indd["host_id"], \PDO::PARAM_INT);
+            $hsrStatement->bindValue(':serviceId', (int) $indd["service_id"], \PDO::PARAM_INT);
+            $hsrStatement->execute();
         } catch (\PDOException $e) {
             print "DB Error : " . $e->getMessage() . "<br />";
         }
-        $hsrname = $dbhsrname->fetchRow();
-        $dbhsrname->closeCursor();
+        $hsrname = $hsrStatement->fetchRow();
+        $hsrStatement->closeCursor();
         $hsrname["full_name"] = str_replace('#S#', "/", $hsrname["full_name"]);
         $hsrname["full_name"] = str_replace('#BS#', "\\", $hsrname["full_name"]);
     }

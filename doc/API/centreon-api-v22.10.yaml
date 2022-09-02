@@ -3400,7 +3400,7 @@ paths:
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/download:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance/download:
     get:
       tags:
         - Metrics
@@ -3707,7 +3707,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ["installed_version", "has_upgrade_available"]
+                required: ["is_installed", "has_upgrade_available"]
                 properties:
                   is_installed:
                     type: boolean

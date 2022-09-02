@@ -76,6 +76,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
         $statement->execute();
 
         if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             return DbAcknowledgementFactory::createFromRecord($row);
         }
 

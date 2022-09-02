@@ -258,3 +258,9 @@ export const labelHostSeverity = 'Host severity';
 export const labelHostSeverityLevel = 'Host severity level';
 export const labelServiceSeverityLevel = 'Service severity level';
 export const labelPerformanceGraphAD = 'Edit anomaly detection data';
+export const labelCSV = 'CSV';
+export const labelExport = 'Export';
+export const labelAsMediumSize = 'Medium size';
+export const labelAsSmallSize = 'Small size';
+
+export const labelExportToCSV = 'CSV';

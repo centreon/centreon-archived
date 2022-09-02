@@ -276,6 +276,10 @@ services:
     _instanceof:
         Core\Infrastructure\RealTime\Hypermedia\HypermediaProviderInterface:
             tags: ['realtime.hypermedia']
+        Core\Domain\RealTime\ResourceTypeInterface:
+            tags: ['monitoring.resource.type']
+        Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface:
+            tags: ['monitoring.resource.acl']
         Core\Security\Application\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface:
             tags: ['authentication.provider.repositories']
         Core\Security\Application\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface:
@@ -286,11 +290,6 @@ services:
             tags: ['platform.requirement.validators']
         Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidatorInterface:
             tags: ['platform.requirement.database.validators']
-
-    Core\Resources\Application\Repository\ReadResourceRepositoryInterface:
-        class: Core\Resources\Infrastructure\Repository\DbReadResourceRepository
-        arguments:
-            $sqlRequestTranslator: '@sqlRequestTranslator'
 
     Core\Security\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
         arguments:

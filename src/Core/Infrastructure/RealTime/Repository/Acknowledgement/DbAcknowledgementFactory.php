@@ -30,12 +30,18 @@ class DbAcknowledgementFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Acknowledgement
      */
     public static function createFromRecord(array $data): Acknowledgement
     {
         $entryTime = (new \DateTime())->setTimestamp((int) $data['entry_time']);
+
+        /** @var string|null */
+        $authorName = $data['author'];
+
+        /** @var string|null */
+        $comment = $data['comment_data'];
 
         return (new Acknowledgement(
             (int) $data['acknowledgement_id'],
@@ -43,7 +49,7 @@ class DbAcknowledgementFactory
             (int) $data['service_id'],
             $entryTime
         ))->setAuthorId((int) $data['author_id'])
-            ->setAuthorName($data['author'])
+            ->setAuthorName($authorName)
             ->setSticky((int) $data['sticky'] === 1)
             ->setPersistentComment((int) $data['persistent_comment'] === 1)
             ->setNotifyContacts((int) $data['notify_contacts'] === 1)
@@ -52,6 +58,6 @@ class DbAcknowledgementFactory
             ->setState((int) $data['state'])
             ->setInstanceId((int) $data['instance_id'])
             ->setDeletionTime(self::createDateTimeFromTimestamp((int) $data['deletion_time']))
-            ->setComment($data['comment_data']);
+            ->setComment($comment);
     }
 }

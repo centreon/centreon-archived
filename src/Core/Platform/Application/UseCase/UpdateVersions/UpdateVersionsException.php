@@ -33,12 +33,12 @@ class UpdateVersionsException extends \Exception
     }
 
     /**
-     * @param \Throwable $e
+     * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenRetrievingCurrentVersion(\Throwable $e): self
+    public static function errorWhenRetrievingCurrentVersion(\Throwable $ex): self
     {
-        return new self(_('An error occurred when retrieving the current version'), 0, $e);
+        return new self(_('An error occurred when retrieving the current version'), 0, $ex);
     }
 
     /**
@@ -50,38 +50,38 @@ class UpdateVersionsException extends \Exception
     }
 
     /**
-     * @param \Throwable $e
+     * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenRetrievingAvailableUpdates(\Throwable $e): self
+    public static function errorWhenRetrievingAvailableUpdates(\Throwable $ex): self
     {
-        return new self(_('An error occurred when retrieving available updates'), 0, $e);
+        return new self(_('An error occurred when retrieving available updates'), 0, $ex);
     }
 
     /**
      * @param string $version
      * @param string $technicalMessage
-     * @param \Throwable $e
+     * @param \Throwable $ex
      * @return self
      */
     public static function errorWhenApplyingUpdate(
         string $version,
         string $technicalMessage,
-        \Throwable $e
+        \Throwable $ex
     ): self {
         return new self(
             sprintf(_('An error occurred when applying the update %s (%s)'), $version, $technicalMessage),
             0,
-            $e
+            $ex
         );
     }
 
     /**
-     * @param \Throwable $e
+     * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenApplyingPostUpdate(\Throwable $e): self
+    public static function errorWhenApplyingPostUpdate(\Throwable $ex): self
     {
-        return new self(_('An error occurred when applying post update actions'), 0, $e);
+        return new self(_('An error occurred when applying post update actions'), 0, $ex);
     }
 }

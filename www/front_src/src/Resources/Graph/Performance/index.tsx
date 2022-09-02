@@ -39,7 +39,7 @@ import {
 } from '@centreon/ui';
 
 import { CommentParameters } from '../../Actions/api';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import { selectedResourcesDetailsAtom } from '../../Details/detailsAtoms';
 import { ResourceDetails } from '../../Details/models';
 import {
   CustomTimePeriod,
@@ -189,7 +189,7 @@ const PerformanceGraph = ({
     request: getData,
   });
 
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
 
   const timeValue = useAtomValue(timeValueAtom);
   const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
@@ -245,11 +245,11 @@ const PerformanceGraph = ({
   }, [endpoint]);
 
   useEffect(() => {
-    if (or(isNil(selectedResourceId), isNil(lineData))) {
+    if (or(isNil(selectedResource?.resourceId), isNil(lineData))) {
       return;
     }
     setLineData(undefined);
-  }, [selectedResourceId]);
+  }, [selectedResource?.resourceId]);
 
   useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {
