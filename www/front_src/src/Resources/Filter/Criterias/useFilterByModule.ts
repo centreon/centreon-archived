@@ -3,29 +3,26 @@ import { useAtomValue } from 'jotai/utils';
 import { platformVersionsAtom } from '../../../Main/atoms/platformVersionsAtom';
 
 import {
-  criteriaFilterByModules,
   criteriaValueNameById,
   selectableResourceTypes,
   selectableCriterias,
   CriteriaNames,
+  authorizedFilterByModules,
   CriteriaById,
 } from './models';
 
 const useFilterByModule = (): any => {
   const platformVersions = useAtomValue(platformVersionsAtom);
-  const Base = 'centreon-';
 
   const installedModules = platformVersions?.modules
     ? Object.keys(platformVersions?.modules)
     : null;
 
-  const names = installedModules?.map((item) => item.replace(Base, ''));
-
-  const defaultFiltersByModules = Object.keys(criteriaFilterByModules);
+  const defaultFiltersByModules = Object.keys(authorizedFilterByModules);
 
   const filtersToAdd = defaultFiltersByModules.map((filterName) => {
-    if (names?.includes(filterName)) {
-      return filterName;
+    if (installedModules?.includes(filterName)) {
+      return authorizedFilterByModules[filterName];
     }
 
     return null;
@@ -36,18 +33,25 @@ const useFilterByModule = (): any => {
 
   const filters = filtersToAdd.map((item): any => {
     if (item) {
-      newCriteriaValueNameById = {
-        ...newCriteriaValueNameById,
-        [item]: criteriaFilterByModules[item],
-      };
+      Object.keys(item).map((key, ind) => {
+        newCriteriaValueNameById = {
+          ...newCriteriaValueNameById,
+          [key]: Object.values(item)[ind],
+        };
 
-      const serviceId = item;
-      const serviceType = {
-        id: serviceId,
-        name: newCriteriaValueNameById[serviceId],
-      };
+        const serviceId = key;
+        const serviceType = {
+          id: serviceId,
+          name: newCriteriaValueNameById[serviceId],
+        };
 
-      newSelectableResourceTypes = [...newSelectableResourceTypes, serviceType];
+        newSelectableResourceTypes = [
+          ...newSelectableResourceTypes,
+          serviceType,
+        ];
+
+        return newSelectableResourceTypes;
+      });
     }
 
     return { newCriteriaValueNameById, newSelectableResourceTypes };

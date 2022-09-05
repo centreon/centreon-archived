@@ -273,6 +273,7 @@ interface DynamicCriteriaParametersAndValues {
 const getDynamicCriteriaParametersAndValue = ({
   search,
   cursorPosition,
+  newSelectableCriterias = selectableCriterias,
 }: AutocompleteSuggestionProps): DynamicCriteriaParametersAndValues | null => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
@@ -297,7 +298,7 @@ const getDynamicCriteriaParametersAndValue = ({
 
   return hasCriteriaDynamicValues
     ? {
-        criteria: selectableCriterias[pluralizedCriteriaName],
+        criteria: newSelectableCriterias[pluralizedCriteriaName],
         values: expressionCriteriaValues,
       }
     : null;
@@ -306,6 +307,7 @@ const getDynamicCriteriaParametersAndValue = ({
 const getAutocompleteSuggestions = ({
   search,
   cursorPosition,
+  criteriasByModules,
 }: AutocompleteSuggestionProps): Array<string> => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
@@ -329,13 +331,20 @@ const getAutocompleteSuggestions = ({
     const criterias = getSelectableCriteriasByName(criteriaName);
     const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
+    const criteriaNames = pluralize(criteriaName);
+
+    const criteriasWithInstalledModules =
+      criteriasByModules?.[criteriaNames]?.options;
+
+    const result = [...criterias, ...criteriasWithInstalledModules];
+
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
-      criterias,
+      criterias: [...new Set(result)],
       selectedValues: expressionCriteriaValues,
     });
 
     const isLastValueInSuggestions = getCriteriaValueSuggestions({
-      criterias,
+      criterias: [...new Set(result)],
       selectedValues: [],
     }).includes(lastCriteriaValue);
 

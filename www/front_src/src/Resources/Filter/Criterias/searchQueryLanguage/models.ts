@@ -34,7 +34,9 @@ export const criteriaNameSortOrder = {
 };
 
 export interface AutocompleteSuggestionProps {
+  criteriasByModules?: any;
   cursorPosition: number;
+  newSelectableCriterias?: any;
   search: string;
 }
 

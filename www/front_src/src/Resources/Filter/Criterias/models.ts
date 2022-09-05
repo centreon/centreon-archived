@@ -71,9 +71,10 @@ const criteriaValueNameById = {
   unhandled_problems: labelUnhandled,
 };
 
-const criteriaFilterByModules = {
-  'anomaly-detection': labelAnomalyDetection,
-  'license-manager': 'license-manager',
+const authorizedFilterByModules = {
+  'centreon-anomaly-detection': {
+    'anomaly-detection': labelAnomalyDetection,
+  },
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -277,11 +278,11 @@ export {
   criticalStatus,
   unknownStatus,
   criteriaValueNameById,
-  criteriaFilterByModules,
   selectableResourceTypes,
   selectableStates,
   selectableStatuses,
   selectableCriterias,
   selectableStateTypes,
   hardStateType,
+  authorizedFilterByModules,
 };

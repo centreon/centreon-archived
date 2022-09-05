@@ -83,6 +83,7 @@ import {
   sendingFilterAtom,
   setNewFilterDerivedAtom,
 } from './filterAtoms';
+import useFilterByModule from './Criterias/useFilterByModule';
 
 const renderClearFilter = (onClear) => (): JSX.Element => {
   const { t } = useTranslation();
@@ -129,6 +130,8 @@ const isDefined = pipe(isNil, not);
 const Filter = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { newSelectableCriterias } = useFilterByModule();
 
   const [isSearchFieldFocus, setIsSearchFieldFocused] = useState(false);
   const [autocompleteAnchor, setAutocompleteAnchor] =
@@ -245,6 +248,7 @@ const Filter = (): JSX.Element => {
 
     const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
       cursorPosition,
+      newSelectableCriterias,
       search,
     });
 
@@ -261,6 +265,7 @@ const Filter = (): JSX.Element => {
 
     setAutoCompleteSuggestions(
       getAutocompleteSuggestions({
+        criteriasByModules: newSelectableCriterias,
         cursorPosition,
         search,
       }),
@@ -278,6 +283,7 @@ const Filter = (): JSX.Element => {
   useEffect(() => {
     const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
       cursorPosition,
+      newSelectableCriterias,
       search,
     });
 
@@ -507,6 +513,7 @@ const Filter = (): JSX.Element => {
 
   const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
     cursorPosition,
+    newSelectableCriterias,
     search,
   });
 
