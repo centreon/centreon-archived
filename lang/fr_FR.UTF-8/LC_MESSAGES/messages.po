@@ -2178,7 +2178,7 @@ msgstr "Groupe de contacts"
 
 #: centreon-web/www/install/smarty_translate.php:714
 msgid "Previous"
-msgstr "Précédant"
+msgstr "Précédent"
 
 #: centreon-web/www/install/smarty_translate.php:717
 msgid "Next"
@@ -5973,7 +5973,7 @@ msgstr "Première page"
 #: centreon-web/www/include/common/pagination.php:166
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:150
 msgid "Previous page"
-msgstr "Page précédante"
+msgstr "Page précédente"
 
 #: centreon-web/www/include/common/pagination.php:167
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:151
