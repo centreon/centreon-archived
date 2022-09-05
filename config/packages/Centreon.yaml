@@ -439,7 +439,3 @@ services:
     Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface:
         class: Core\Infrastructure\Common\Repository\MultiReadSessionRepository
         public: true
-    
-    Core\Application\Common\Session\Repository\WriteSessionRepositoryInterface:
-        class: Core\Infrastructure\Common\Repository\SystemWriteSessionRepository
-        public: true
