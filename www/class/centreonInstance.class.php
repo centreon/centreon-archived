@@ -297,7 +297,11 @@ class CentreonInstance
         $stmt->execute();
         while ($data = $stmt->fetch()) {
             $hide = false;
-            if (!$centreon->user->access->admin && count($pollerAcl) && !in_array($data['id'], array_keys($pollerAcl))) {
+            if (
+                ! $centreon->user->access->admin
+                && count($pollerAcl)
+                && !in_array($data['id'], array_keys($pollerAcl))
+            ) {
                 $hide = true;
             }
             $items[] = array(
