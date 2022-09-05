@@ -72,11 +72,11 @@ function testActionExistence($name = null)
  */
 function enableActionInDB($aclActionId = null, $actions = array())
 {
-    global $pearDB, $centreon;
-
     if ($aclActionId === null && empty($actions)) {
         return;
     }
+
+    global $pearDB, $centreon;
 
     if ($aclActionId) {
         $actions = array($aclActionId => "1");
@@ -86,17 +86,38 @@ function enableActionInDB($aclActionId = null, $actions = array())
 
     foreach ($actions as $key => $value) {
         $sanitizedAclActionId = filter_var($key, FILTER_VALIDATE_INT);
-        if ($sanitizedAclActionId !== false) {
-            $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
+        if ($sanitizedAclActionId === false) {
+            throw new \InvalidArgumentException("Invalid id");
         }
+        $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
         $statement = $pearDB->prepare(
-            "UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = :aclActionId"
+            "UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = :acl_action_id_"
+                . $sanitizedAclActionId
         );
-        $pearDB->query("UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = '" . $key . "'");
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
-        $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetch();
-        $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "enable");
+        $statement->bindValue(
+            ":acl_action_id_" . $sanitizedAclActionId,
+            $key,
+            \PDO::PARAM_INT
+        );
+        $statement->execute();
+
+        $statementSelect = $pearDB->prepare(
+            "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = :acl_action_id_"
+                . $sanitizedAclActionId . " LIMIT 1"
+        );
+        $statementSelect->bindValue(
+            ":acl_action_id_" . $sanitizedAclActionId,
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId],
+            \PDO::PARAM_INT
+        );
+        $statementSelect->execute();
+        $row = $statementSelect->fetch();
+        $centreon->CentreonLogAction->insertLog(
+            "action access",
+            $sanitizedAclActionId,
+            $row['acl_action_name'],
+            "enable"
+        );
     }
 
     $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
@@ -121,11 +142,11 @@ function enableActionInDB($aclActionId = null, $actions = array())
  */
 function disableActionInDB($aclActionId = null, $actions = array())
 {
-    global $pearDB, $centreon;
-
     if ($aclActionId === null && empty($actions)) {
         return;
     }
+
+    global $pearDB, $centreon;
 
     if ($aclActionId) {
         $actions = array($aclActionId => "1");
@@ -135,26 +156,46 @@ function disableActionInDB($aclActionId = null, $actions = array())
 
     foreach ($actions as $key => $value) {
         $sanitizedAclActionId = filter_var($key, FILTER_VALIDATE_INT);
-        if ($sanitizedAclActionId !== false) {
-            $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
+        if ($sanitizedAclActionId === false) {
+            throw new \InvalidArgumentException("Invalid id");
         }
-        $pearDB->query("UPDATE acl_actions SET acl_action_activate = '0' WHERE acl_action_id = '" . $key . "'");
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
-        $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetch();
-        $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+        $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
         $statement = $pearDB->prepare(
-            "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
-                WHERE acl_action_id IN $aclActionIdQueryString"
+            "UPDATE acl_actions SET acl_action_activate = '0' WHERE acl_action_id = :acl_action_id_"
+                . $sanitizedAclActionId
         );
-        foreach ($queryValues as $bindParameter => $bindValue) {
-            $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
-        }
+        $statement->bindValue(
+            ":acl_action_id_" . $sanitizedAclActionId,
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId],
+            \PDO::PARAM_INT
+        );
         $statement->execute();
-        while($result = $statement->fetch()) {
-            $aclGroupIds[] = (int) $result["acl_group_id"];
-        }
-        $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "disable");
+
+        $statementSelect = $pearDB->prepare(
+            "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = :acl_action_id_"
+                . $sanitizedAclActionId . " LIMIT 1"
+        );
+        $statementSelect->bindValue(
+            ":acl_action_id_" . $sanitizedAclActionId,
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId],
+            \PDO::PARAM_INT
+        );
+        $statementSelect->execute();
+        $row = $statementSelect->fetch();
+        $centreon->CentreonLogAction->insertLog("action access", $sanitizedAclActionId, $row['acl_action_name'], "disable");
+    }
+
+    $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
+            WHERE acl_action_id IN $aclActionIdQueryString"
+    );
+    foreach ($queryValues as $bindParameter => $bindValue) {
+        $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    while($result = $statement->fetch()) {
+        $aclGroupIds[] = (int) $result["acl_group_id"];
     }
     flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
 }
@@ -171,12 +212,21 @@ function deleteActionInDB($actions = array())
     $aclGroupIds = [];
     foreach ($actions as $key => $value) {
         $sanitizedAclActionId = filter_var($key, FILTER_VALIDATE_INT);
-        if ($sanitizedAclActionId !== false) {
-            $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
+        if ($sanitizedAclActionId === false) {
+            throw new \InvalidArgumentException("Invalid id");
         }
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
-        $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetch();
+        $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
+        $statement = $pearDB->prepare(
+            "SELECT acl_action_name FROM `acl_actions`
+                WHERE acl_action_id = :acl_action_id_" . $sanitizedAclActionId . " LIMIT 1"
+        );
+        $statement->bindValue(
+            ":acl_action_id_" . $sanitizedAclActionId,
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId],
+            \PDO::PARAM_INT
+        );
+        $statement->execute();
+        $row = $statement->fetch();
         $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
         $statement = $pearDB->prepare(
             "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
@@ -300,13 +350,33 @@ function insertAction($ret)
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-    $rq = "INSERT INTO acl_actions ";
-    $rq .= "(acl_action_name, acl_action_description, acl_action_activate) ";
-    $rq .= "VALUES ";
-    $rq .= "('" . htmlentities($ret["acl_action_name"], ENT_QUOTES, "UTF-8") . "', '" .
-        htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8") . "', '" .
-        htmlentities((isset($ret["acl_action_activate"]) ? $ret["acl_action_activate"]["acl_action_activate"] : ''), ENT_QUOTES, "UTF-8") . "')";
-    $pearDB->query($rq);
+    $statement = $pearDB->prepare(
+        "INSERT INTO acl_actions (acl_action_name, acl_action_description, acl_action_activate) "
+            . "VALUES (:aclActionName, :aclActionDescription, :aclActionActivate)"
+    );
+    $statement->bindValue(
+        ':aclActionName',
+        htmlentities($ret["acl_action_name"], ENT_QUOTES, "UTF-8"),
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':aclActionDescription',
+        htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8"),
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':aclActionActivate',
+        htmlentities(
+            (isset($ret["acl_action_activate"])
+                ? $ret["acl_action_activate"]["acl_action_activate"]
+                : ''
+            ),
+            ENT_QUOTES,
+            "UTF-8"
+        ),
+        \PDO::PARAM_STR
+    );
+    $statement->execute();
     $dbResult = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
     $cg_id = $dbResult->fetch();
     return ($cg_id["MAX(acl_action_id)"]);
