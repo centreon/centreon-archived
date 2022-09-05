@@ -31,6 +31,7 @@ import {
   labelHostSeverity,
   labelHostSeverityLevel,
   labelServiceSeverityLevel,
+  labelAnomalyDetection,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -68,6 +69,11 @@ const criteriaValueNameById = {
   service: labelService,
   soft: labelSoft,
   unhandled_problems: labelUnhandled,
+};
+
+const criteriaFilterByModules = {
+  'anomaly-detection': labelAnomalyDetection,
+  'license-manager': 'license-manager',
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -271,6 +277,7 @@ export {
   criticalStatus,
   unknownStatus,
   criteriaValueNameById,
+  criteriaFilterByModules,
   selectableResourceTypes,
   selectableStates,
   selectableStatuses,

@@ -262,3 +262,5 @@ export const labelExport = 'Export';
 export const labelAsDisplayed = 'As displayed';
 export const labelAsMediumSize = 'Medium size';
 export const labelAsSmallSize = 'Small size';
+export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
+export const labelAnomalyDetection = 'Anomaly detection';

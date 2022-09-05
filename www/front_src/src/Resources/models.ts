@@ -1,12 +1,13 @@
 import { ListingModel } from '@centreon/ui';
 
 export enum ResourceType {
+  anomalydetection = 'anomalydetection',
   host = 'host',
   metaservice = 'metaservice',
   service = 'service',
 }
 
-export type ResourceShortType = 'h' | 's' | 'm';
+export type ResourceShortType = 'h' | 's' | 'm' | 'AD';
 
 export interface NamedEntity {
   id: number;

@@ -22,6 +22,7 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
+import { platformVersionsAtom } from '../../../Main/atoms/platformVersionsAtom';
 import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
@@ -93,6 +94,7 @@ const useLoadResources = (): LoadResources => {
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
+
   const setListing = useUpdateAtom(listingAtom);
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
@@ -127,7 +129,16 @@ const useLoadResources = (): LoadResources => {
     sendLoadDetailsRequest({
       endpoint: selectedResourceDetailsEndpoint,
     })
-      .then(setDetails)
+      .then((data) => {
+        if (!equals(data?.id, 26)) {
+          setDetails(data);
+
+          return;
+        }
+        const mockedResultsDetail = { ...data, type: 'anomalydetection' };
+        console.log({ mockedResultsDetail });
+        setDetails(mockedResultsDetail as ResourceDetails);
+      })
       .catch(() => {
         clearSelectedResource();
       });
