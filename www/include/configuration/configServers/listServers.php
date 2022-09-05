@@ -140,7 +140,7 @@ $tpl->assign("headerMenu_options", _("Options"));
  */
 $ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
 
-$query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default " .
+$query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default, updated " .
     ", gorgone_communication_type FROM `nagios_server` " . $ACLString . " " .
     ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
     " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
@@ -149,19 +149,13 @@ $dbResult = $pearDB->query($query);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 $servers = [];
-$changeStateServers = [];
 while (($config = $dbResult->fetch())) {
     $servers[] = $config;
-    if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
-        $changeStateServers[$config['id']] = $nagiosRestart[$config['id']];
-    }
 }
 
 include "./include/common/checkPagination.php";
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-
-$changeStateServers = getChangeState($changeStateServers);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = [];
@@ -203,10 +197,8 @@ foreach ($servers as $config) {
 
     // Manage flag for changes
     $confChangedMessage = _("N/A");
-    $hasChanged = false;
     if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
-        $hasChanged = $changeStateServers[$config['id']];
-        $confChangedMessage = $hasChanged ? _("Yes") : _("No");
+        $confChangedMessage = $config["updated"] ? _("Yes") : _("No");
     }
 
     // Manage flag for update time
@@ -286,7 +278,7 @@ foreach ($servers as $config) {
         'RowMenu_is_default' => $config['is_default'] ? _('Yes') : _('No'),
         'RowMenu_hasChanged' => $confChangedMessage,
         "RowMenu_pid" => $pollerProcessId,
-        'RowMenu_hasChangedFlag' => $hasChanged,
+        'RowMenu_hasChangedFlag' => $config['updated'],
         'RowMenu_version' => $version,
         'RowMenu_uptime' => $uptime,
         'RowMenu_lastUpdateTime' => $updateTime,

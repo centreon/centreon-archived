@@ -486,11 +486,11 @@ class OpenIdProvider implements OpenIdProviderInterface
                     'verify_peer' => $this->configuration->verifyPeer()
                 ]
             );
-        } catch (\Exception $e) {
-            $this->logExceptionInLoginLogFile("Unable to get Introspection Information: %s, message: %s", $e);
+        } catch (\Exception $ex) {
+            $this->logExceptionInLoginLogFile("Unable to get Introspection Information: %s, message: %s", $ex);
             $this->error(sprintf(
                 "[Error] Unable to get Token Introspection Information:, message: %s",
-                $e->getMessage()
+                $ex->getMessage()
             ));
             throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
@@ -537,6 +537,7 @@ class OpenIdProvider implements OpenIdProviderInterface
                 ]
             );
         } catch (\Exception $ex) {
+            $this->error($ex->getMessage(), [$ex->getTraceAsString()]);
             throw SSOAuthenticationException::requestForUserInformationFail();
         }
 
@@ -647,19 +648,18 @@ class OpenIdProvider implements OpenIdProviderInterface
                     'verify_peer' => $this->configuration->verifyPeer()
                 ]
             );
-        } catch (\Exception $e) {
-            $this->logExceptionInLoginLogFile('Unable to get Token Access Information: %s, message: %s', $e);
+        } catch (\Exception $ex) {
+            $this->logExceptionInLoginLogFile('Unable to get Token Access Information: %s, message: %s', $ex);
             if (array_key_exists('refresh_token', $data)) {
                 $this->error(
-                    sprintf("[Error] Unable to get Token Refresh Information:, message: %s", $e->getMessage())
+                    sprintf("[Error] Unable to get Token Refresh Information:, message: %s", $ex->getMessage())
                 );
                 throw SSOAuthenticationException::requestForRefreshTokenFail();
-            } else {
-                $this->error(
-                    sprintf("[Error] Unable to get Token Access Information:, message: %s", $e->getMessage())
-                );
-                throw SSOAuthenticationException::requestForConnectionTokenFail();
             }
+            $this->error(
+                sprintf("[Error] Unable to get Token Access Information:, message: %s", $ex->getMessage())
+            );
+            throw SSOAuthenticationException::requestForConnectionTokenFail();
         }
     }
 
@@ -768,16 +768,16 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Exception in login.log file
      *
      * @param string $message
-     * @param \Exception $e
+     * @param \Exception $ex
      */
-    private function logExceptionInLoginLogFile(string $message, \Exception $e): void
+    private function logExceptionInLoginLogFile(string $message, \Exception $ex): void
     {
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
             sprintf(
                 "[Openid] [Error] $message",
-                get_class($e),
-                $e->getMessage()
+                get_class($ex),
+                $ex->getMessage()
             )
         );
     }

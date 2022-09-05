@@ -187,13 +187,10 @@ Centreon\Domain\Monitoring\ResourceFilter:
             - Type:
                 type: array
                 groups: [Default]
-            - Choice:
-                choices:
-                    - service
-                    - host
-                    - metaservice
-                multiple: true
-                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
         states:
             - Type:
                 type: array

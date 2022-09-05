@@ -6,8 +6,9 @@ import { useColumnStyles } from '.';
 
 const ParentAliasColumn = ({
   row,
+  isHovered,
 }: ComponentColumnProps): JSX.Element | null => {
-  const classes = useColumnStyles();
+  const classes = useColumnStyles({ isHovered });
 
   if (!row.parent) {
     return null;
@@ -16,7 +17,9 @@ const ParentAliasColumn = ({
   return (
     <div className={classes.resourceDetailsCell}>
       <div className={classes.resourceNameItem}>
-        <Typography variant="body2">{row.parent.alias}</Typography>
+        <Typography className={classes.resourceNameText} variant="body2">
+          {row.parent.alias}
+        </Typography>
       </div>
     </div>
   );

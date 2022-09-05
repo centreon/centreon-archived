@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-import { gt, isNil, not, __ } from 'ramda';
+import { equals, gt, isNil, not, __ } from 'ramda';
 
 import { grey } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
@@ -21,7 +21,7 @@ import {
   ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
-import UserIcon from '@mui/icons-material/AccountCircle';
+import UserIcon from '@mui/icons-material/Person';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -36,6 +36,7 @@ import {
   useSnackbar,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
+import { ThemeMode } from '@centreon/ui-context';
 
 import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
@@ -82,6 +83,15 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  badge: {
+    alignItems: 'center',
+    borderRadius: '50%',
+    display: 'flex',
+    fontSize: '10px',
+    height: 15,
+    justifyContent: 'spaceBetween',
+    minWidth: 15,
+  },
   button: {
     '&:hover': {
       '&:after': {
@@ -94,6 +104,11 @@ const useStyles = makeStyles((theme) => ({
         right: 0,
         top: 0,
       },
+    },
+  },
+  clock: {
+    [theme.breakpoints.down(648)]: {
+      display: 'none',
     },
   },
   containerList: {
@@ -118,11 +133,22 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     minWidth: theme.spacing(3.75),
   },
+  icons: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: theme.spacing(2),
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(1),
+    },
+  },
   loaderUserMenu: {
     marginRight: theme.spacing(22 / 8),
   },
   menu: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
+    border: 'none',
     borderRadius: 0,
     color: theme.palette.common.white,
     minWidth: 190,
@@ -137,6 +163,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.warning.main,
   },
   popper: {
+    border: 'none',
+    outline: 'none',
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
   },
@@ -151,21 +179,26 @@ const useStyles = makeStyles((theme) => ({
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    marginLeft: theme.spacing(1),
+    fontSize: theme.spacing(3.7),
   },
   wrapRightUser: {
     alignItems: 'center',
-    background: theme.palette.common.black,
     display: 'flex',
     flexWrap: 'wrap',
-    marginLeft: theme.spacing(0.5),
-    padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
+    width: '100%',
   },
   wrapRightUserItems: {
     display: 'flex',
-    flex: '1 0 76%',
-    justifyContent: 'flex-end',
+    gap: theme.spacing(8),
+    justifyContent: 'space-between',
+    width: '100%',
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(2.5),
+    },
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(1.5),
+    },
   },
 }));
 interface Props {
@@ -346,8 +379,10 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
         className={classes.wrapRightUserItems}
         ref={profile as RefObject<HTMLDivElement>}
       >
-        <Clock />
-        <div>
+        <div className={classes.clock}>
+          <Clock />
+        </div>
+        <div className={classes.icons}>
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire

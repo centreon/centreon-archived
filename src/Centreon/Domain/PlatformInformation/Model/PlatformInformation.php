@@ -41,6 +41,11 @@ class PlatformInformation
     private $platformName;
 
     /**
+     * @var string server address
+     */
+    private string $address = '127.0.0.1';
+
+    /**
      * @var string|null central's address
      */
     private $centralServerAddress;
@@ -123,6 +128,25 @@ class PlatformInformation
         if (empty($this->platformName)) {
             throw new \InvalidArgumentException(_("Platform name can't be empty"));
         }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     * @return $this
+     */
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
         return $this;
     }
 

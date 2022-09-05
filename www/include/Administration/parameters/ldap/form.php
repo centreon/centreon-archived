@@ -153,8 +153,8 @@ $form->addRule('ldap_contact_tmpl', _("Compulsory Field"), 'required');
 /**
  * Default contactgroup for imported contact
  */
-$cgAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list';
-$cgDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+$cgAvRoute = './api/internal.php?object=centreon_configuration_contactgroup&action=list';
+$cgDeRoute = './api/internal.php?object=centreon_configuration_contactgroup'
     . '&action=defaultValues&target=contact&field=ldap_default_cg&id=' . $arId;
 $attrContactGroup = array(
     'datasourceOrigin' => 'ajax',

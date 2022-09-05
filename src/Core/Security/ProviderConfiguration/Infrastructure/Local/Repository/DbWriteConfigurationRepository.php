@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\Local\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration as LocalProviderConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -29,6 +30,8 @@ use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfig
 
 class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements WriteConfigurationRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -58,11 +61,12 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
             if ($beginInTransaction === false && $this->db->inTransaction()) {
                 $this->db->commit();
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             if ($beginInTransaction === false && $this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            throw $e;
+            throw $ex;
         }
     }
 

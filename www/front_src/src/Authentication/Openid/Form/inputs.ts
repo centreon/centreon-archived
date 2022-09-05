@@ -1,4 +1,4 @@
-import { equals, isEmpty, isNil, not, path, prop } from 'ramda';
+import { equals, isEmpty, not, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import { InputProps, InputType } from '@centreon/ui';
@@ -34,7 +34,7 @@ import {
   labelDeleteRelation,
   labelAuthorizationKey,
 } from '../translatedLabels';
-import { AuthenticationType, AuthorizationRule } from '../models';
+import { AuthenticationType } from '../models';
 import {
   labelActivation,
   labelAuthorizations,
@@ -204,6 +204,7 @@ export const inputs: Array<InputProps> = [
   },
   {
     connectedAutocomplete: {
+      additionalConditionParameters: [],
       endpoint: contactTemplatesEndpoint,
     },
     fieldName: 'contactTemplate',
@@ -231,6 +232,7 @@ export const inputs: Array<InputProps> = [
   },
   {
     connectedAutocomplete: {
+      additionalConditionParameters: [],
       endpoint: contactGroupsEndpoint,
     },
     fieldName: 'contactGroup',
@@ -257,6 +259,7 @@ export const inputs: Array<InputProps> = [
         },
         {
           connectedAutocomplete: {
+            additionalConditionParameters: [],
             endpoint: accessGroupsEndpoint,
           },
           fieldName: 'accessGroup',
@@ -269,20 +272,6 @@ export const inputs: Array<InputProps> = [
         claimValue: '',
       },
       deleteLabel: labelDeleteRelation,
-      getRequired: ({ values, index }): boolean => {
-        const tableValues = prop('authorizationRules', values);
-
-        const rowValues = path<AuthorizationRule>(
-          ['authorizationRules', index],
-          values,
-        );
-
-        return isNil(prop('contactGroup', values))
-          ? not(isNil(rowValues))
-          : isNil(tableValues) ||
-              isEmpty(rowValues?.claimValue) ||
-              isNil(rowValues?.accessGroup);
-      },
     },
     group: labelAuthorizations,
     label: labelDefineRelationAuthorizationValueAndAccessGroup,

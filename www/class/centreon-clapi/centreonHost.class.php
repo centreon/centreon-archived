@@ -37,6 +37,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
+require_once "centreonConfigurationChange.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
 require_once "centreonACL.class.php";
@@ -356,6 +357,19 @@ class CentreonHost extends CentreonObject
     }
 
     /**
+     * @param $parameters
+     * @return mixed
+     */
+    public function add($parameters): void
+    {
+        parent::add($parameters);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostId = $this->getObjectId($this->params[$this->object->getUniqueLabelField()]);
+        $centreonConfig->signalConfigurationChange(CentreonConfigurationChange::RESOURCE_TYPE_HOST, $hostId);
+    }
+
+    /**
      * Del Action
      * Must delete services as well
      *
@@ -365,7 +379,10 @@ class CentreonHost extends CentreonObject
      */
     public function del($objectName)
     {
-        $hostId = $this->getHostID($objectName);
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostId = $this->getObjectId($objectName);
+        $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds([$hostId]);
+
         $parentDependency = new \Centreon_Object_DependencyHostParent($this->dependencyInjector);
         $parentDependency->removeRelationLastHostDependency($hostId);
 
@@ -374,6 +391,62 @@ class CentreonHost extends CentreonObject
             "DELETE FROM service WHERE service_register = '1' "
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
+
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_HOST,
+            $hostId,
+            $previousPollerIds
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setParam($parameters = []): void
+    {
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
+        }
+        if (!empty($params)) {
+            $hostId = $params['objectId'];
+
+            $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+            $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds([$hostId]);
+
+            parent::setparam($parameters);
+
+            $centreonConfig->signalConfigurationChange(
+                CentreonConfigurationChange::RESOURCE_TYPE_HOST,
+                $hostId,
+                $previousPollerIds
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function enable($objectName)
+    {
+        parent::enable($objectName);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(CentreonConfigurationChange::RESOURCE_TYPE_HOST, $hostId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function disable($objectName)
+    {
+        parent::disable($objectName);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(CentreonConfigurationChange::RESOURCE_TYPE_HOST, $hostId, [], false);
     }
 
     /**

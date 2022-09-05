@@ -665,8 +665,7 @@ class CentreonGraph
                         ) {
                             $this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
                             if (!isset($ds_data["ds_color_area_warn"]) || empty($ds_data["ds_color_area_warn"])) {
-                                $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] =
-                                    $this->generalOpt["color_warning"];
+                                $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = "#ff9a13";
                             }
                         }
                         if (
@@ -677,8 +676,7 @@ class CentreonGraph
                         ) {
                             $this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
                             if (!isset($ds_data["ds_color_area_crit"]) || empty($ds_data["ds_color_area_crit"])) {
-                                $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] =
-                                    $this->generalOpt["color_critical"];
+                                $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = "#e00b3d";
                             }
                         }
                     }
