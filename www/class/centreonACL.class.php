@@ -354,7 +354,7 @@ class CentreonACL
     /**
      * Actions Setter
      */
-    public function setActions()
+    private function setActions()
     {
         $query = "SELECT ar.acl_action_name "
             . "FROM acl_group_actions_relations agar, acl_actions a, acl_actions_rules ar "
