@@ -82,32 +82,37 @@ function enableActionInDB($aclActionId = null, $actions = array())
         $actions = array($aclActionId => "1");
     }
 
-    $aclGroupIds = [];
+    $queryValues = [];
 
     foreach ($actions as $key => $value) {
         $sanitizedAclActionId = filter_var($key, FILTER_VALIDATE_INT);
         if ($sanitizedAclActionId !== false) {
             $queryValues[":acl_action_id_" . $sanitizedAclActionId] = $sanitizedAclActionId;
         }
+        $statement = $pearDB->prepare(
+            "UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = :aclActionId"
+        );
         $pearDB->query("UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = '" . $key . "'");
         $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
-        $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
-        $statement = $pearDB->prepare(
-            "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
-                WHERE acl_action_id IN $aclActionIdQueryString"
-        );
-        foreach ($queryValues as $bindParameter => $bindValue) {
-            $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
-        }
-        $statement->execute();
-        while($result = $statement->fetch()) {
-            $aclGroupIds[] = (int) $result["acl_group_id"];
-        }
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "enable");
     }
-    updateAuthentifiedUsersACL($aclGroupIds);
+
+    $aclActionIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
+            WHERE acl_action_id IN $aclActionIdQueryString"
+    );
+    foreach ($queryValues as $bindParameter => $bindValue) {
+        $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
+    }
+    $statement->execute();
+    $aclGroupIds = [];
+    while($result = $statement->fetch()) {
+        $aclGroupIds[] = (int) $result["acl_group_id"];
+    }
+    flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
 }
 
 /**
@@ -151,7 +156,7 @@ function disableActionInDB($aclActionId = null, $actions = array())
         }
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "disable");
     }
-    updateAuthentifiedUsersACL($aclGroupIds);
+    flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
 }
 
 /**
@@ -189,7 +194,7 @@ function deleteActionInDB($actions = array())
         $pearDB->query("DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "d");
     }
-    updateAuthentifiedUsersACL($aclGroupIds);
+    flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
 }
 
 /**
@@ -277,7 +282,7 @@ function insertActionInDB($ret = array())
     updateGroupActions($aclActionId, $ret);
     updateRulesActions($aclActionId, $ret);
     $ret = $form->getSubmitValues();
-    updateAuthentifiedUsersACL($ret['acl_groups']);
+    flagUpdatedAclForAuthentifiedUsers($ret['acl_groups']);
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "a", $fields);
 
@@ -322,7 +327,7 @@ function updateActionInDB($aclActionId = null)
     updateAction($aclActionId);
     updateGroupActions($aclActionId);
     $ret = $form->getSubmitValues();
-    updateAuthentifiedUsersACL($ret['acl_groups']);
+    flagUpdatedAclForAuthentifiedUsers($ret['acl_groups']);
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "c", $fields);
 }
@@ -487,10 +492,12 @@ function listActions()
     return $actions;
 }
 
-// Function which get all user id by their acl_groups
-//get all session_id by user_id
-//update actions access by user_id
-function updateAuthentifiedUsersACL(array $aclGroupIds): void
+/**
+ * This method flags updated ACL for authentified users.
+ *
+ * @param int[] $aclGroupIds
+ */
+function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
 {
     global $pearDB;
     $userIds = getUsersIdsByAclGroup($aclGroupIds);
@@ -508,6 +515,12 @@ function updateAuthentifiedUsersACL(array $aclGroupIds): void
     }
 }
 
+/**
+ * This function returns user ids from ACL Group Ids
+ *
+ * @param int[] $aclGroupIds
+ * @return int[]
+ */
 function getUsersIdsByAclGroup(array $aclGroupIds): array
 {
     global $pearDB;
@@ -538,6 +551,11 @@ function getUsersIdsByAclGroup(array $aclGroupIds): array
     return $userIds;
 }
 
+/**
+ * This method gets SessionRepository from Service container
+ *
+ * @return ReadSessionRepositoryInterface
+ */
 function getReadSessionRepository(): ReadSessionRepositoryInterface
 {
     $kernel = \App\Kernel::createForWeb();
