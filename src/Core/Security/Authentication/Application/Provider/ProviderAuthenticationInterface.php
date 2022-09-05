@@ -42,7 +42,6 @@ interface ProviderAuthenticationInterface
 
     /**
      * @param Configuration $configuration
-     * @return void
      */
     public function setConfiguration(Configuration $configuration): void;
 
@@ -74,7 +73,6 @@ interface ProviderAuthenticationInterface
 
     /**
      * @param LoginRequest $request
-     * @return void
      */
     public function authenticateOrFail(LoginRequest $request): void;
 
@@ -92,15 +90,13 @@ interface ProviderAuthenticationInterface
 
     /**
      * If isAutoImportEnabled method returns true, the user will be imported to the database
-     *
-     * @return void
      */
-    public function importUserToDatabase(): void;
+    public function importUser(): void;
 
     /**
      * @return void
      */
-    public function updateUserToDatabase(): void;
+    public function updateUser(): void;
 
     /**
      * @return NewProviderToken

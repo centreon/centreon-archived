@@ -99,6 +99,7 @@ beforeEach(function () {
     $this->writeSessionRepository = $this->createMock(WriteSessionRepository::class);
     $this->writeSessionTokenRepository = $this->createMock(WriteSessionTokenRepositoryInterface::class);
     $this->aclUpdater = $this->createMock(AclUpdaterInterface::class);
+    $this->defaultRedirectUri = '/monitoring/resources';
 
     $configuration = new Configuration(1, 'openid', 'openid', '{}', true, false);
     $customConfiguration = new CustomConfiguration([
@@ -131,7 +132,8 @@ beforeEach(function () {
 });
 
 it('expects to return an error message in presenter when no provider configuration are found', function () {
-    $request = LoginRequest::createForOpenId('unknown provider', '127.0.0.1', 'abcde-fghij-klmno');
+    $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
+    $request->providerName = 'unknown provider';
 
     $this->providerFactory
         ->expects($this->once())
@@ -147,7 +149,8 @@ it('expects to return an error message in presenter when no provider configurati
         $this->readTokenRepository,
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
-        $this->aclUpdater
+        $this->aclUpdater,
+        $this->defaultRedirectUri
     );
 
     $useCase($request, $this->presenter);
@@ -155,7 +158,7 @@ it('expects to return an error message in presenter when no provider configurati
 })->throws(ProviderException::class, 'Provider configuration (unknown provider) not found');
 
 it('expects to execute authenticateOrFail method from OpenIdProvider', function () {
-    $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
+    $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
 
     $this->providerFactory
         ->expects($this->once())
@@ -174,7 +177,8 @@ it('expects to execute authenticateOrFail method from OpenIdProvider', function 
         $this->readTokenRepository,
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
-        $this->aclUpdater
+        $this->aclUpdater,
+        $this->defaultRedirectUri
     );
     $useCase($request, $this->presenter);
 });
@@ -182,7 +186,7 @@ it('expects to execute authenticateOrFail method from OpenIdProvider', function 
 it(
     'expects to return an error message in presenter when the provider can\'t find the user and can\'t create it',
     function () {
-        $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
+        $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
 
         $this->provider
             ->expects($this->once())
@@ -194,7 +198,7 @@ it(
 
         $this->provider
             ->expects($this->never())
-            ->method('importUserToDatabase');
+            ->method('importUser');
 
         $this->provider
             ->expects($this->once())
@@ -214,7 +218,8 @@ it(
             $this->readTokenRepository,
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
-            $this->aclUpdater
+            $this->aclUpdater,
+            $this->defaultRedirectUri
         );
         $useCase($request, $this->presenter);
     }
@@ -223,7 +228,7 @@ it(
 it('expects to return an error message in presenter when the provider ' .
     'wasn\'t be able to return a user after creating it',
     function () {
-        $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
+        $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
 
         $this->provider
             ->expects($this->once())
@@ -240,7 +245,7 @@ it('expects to return an error message in presenter when the provider ' .
 
         $this->provider
             ->expects($this->once())
-            ->method('importUserToDatabase')
+            ->method('importUser')
             ->will($this->throwException(new NotFoundException('User not found')));
 
         $this->providerFactory
@@ -256,7 +261,8 @@ it('expects to return an error message in presenter when the provider ' .
             $this->readTokenRepository,
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
-            $this->aclUpdater
+            $this->aclUpdater,
+            $this->defaultRedirectUri
         );
 
         $useCase($request, $this->presenter);
@@ -264,7 +270,7 @@ it('expects to return an error message in presenter when the provider ' .
 )->throws(NotFoundException::class, 'User not found');
 
 it('should update access groups for the authenticated user', function () {
-    $request = LoginRequest::createForOpenId(Provider::OPENID, '127.0.0.1', 'abcde-fghij-klmno');
+    $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
 
     $accessGroup1 = new AccessGroup(1, "access_group_1", "access_group_1");
     $accessGroup2 = new AccessGroup(2, "access_group_2", "access_group_2");
@@ -303,7 +309,8 @@ it('should update access groups for the authenticated user', function () {
         $this->readTokenRepository,
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
-        $this->aclUpdater
+        $this->aclUpdater,
+        $this->defaultRedirectUri
     );
 
     $useCase($request, $this->presenter);

@@ -27,11 +27,11 @@ use Core\Domain\RealTime\Model\Hostgroup;
 class DbHostgroupFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Hostgroup
      */
     public static function createFromRecord(array $data): Hostgroup
     {
-        return new Hostgroup((int) $data['hostgroup_id'], $data['hostgroup_name']);
+        return new Hostgroup((int) $data['hostgroup_id'], (string) $data['hostgroup_name']);
     }
 }

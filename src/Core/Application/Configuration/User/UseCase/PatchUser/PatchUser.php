@@ -69,6 +69,7 @@ final class PatchUser
                     return;
                 }
             } catch (\Throwable $ex) {
+                $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
                 throw UserException::errorWhileSearchingForUser($ex);
             }
 
@@ -86,6 +87,7 @@ final class PatchUser
                     return;
                 }
             } catch (\Throwable $ex) {
+                $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
                 throw UserException::errorInReadingUserThemes($ex);
             }
 
@@ -95,12 +97,12 @@ final class PatchUser
                 $this->writeUserRepository->update($user);
                 $this->updateUserSessions($request);
             } catch (\Throwable $ex) {
-                $this->error($ex->getMessage());
+                $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
                 throw UserException::errorWhenUpdatingUserTheme($ex);
             }
             $presenter->setResponseStatus(new NoContentResponse());
         } catch (\Throwable $ex) {
-            $this->error($ex->getTraceAsString());
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $this->unexpectedError($ex->getMessage(), $presenter);
         }
     }

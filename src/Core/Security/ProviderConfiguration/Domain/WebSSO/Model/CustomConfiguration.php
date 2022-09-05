@@ -31,9 +31,19 @@ use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 final class CustomConfiguration implements CustomConfigurationInterface, ProviderConfigurationInterface
 {
     /**
-     * @param array $json
+     * @param array $trustedClientAddresses
+     * @param array $blacklistClientAddresses
+     * @param string|null $loginHeaderAttribute
+     * @param string|null $patternMatchingLogin
+     * @param string|null $patternReplaceLogin
      */
-    public function __construct(private array $json)
+    public function __construct(
+        private array $trustedClientAddresses = [],
+        private array $blacklistClientAddresses = [],
+        private ?string $loginHeaderAttribute = null,
+        private ?string $patternMatchingLogin = null,
+        private ?string $patternReplaceLogin = null
+    )
     {
         $this->guard();
     }
@@ -43,7 +53,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
      */
     public function getTrustedClientAddresses(): array
     {
-        return $this->json['trusted_client_addresses'] ?? [];
+        return $this->trustedClientAddresses;
     }
 
     /**
@@ -51,7 +61,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
      */
     public function getBlackListClientAddresses(): array
     {
-        return $this->json['blacklist_client_addresses'] ?? [];
+        return $this->blacklistClientAddresses;
     }
 
     /**
@@ -59,7 +69,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
      */
     public function getLoginHeaderAttribute(): ?string
     {
-        return $this->json['login_header_attribute'] ?? null;
+        return $this->loginHeaderAttribute;
     }
 
     /**
@@ -67,7 +77,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
      */
     public function getPatternMatchingLogin(): ?string
     {
-        return $this->json['pattern_matching_login'] ?? null;
+        return $this->patternMatchingLogin;
     }
 
     /**
@@ -75,12 +85,11 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
      */
     public function getPatternReplaceLogin(): ?string
     {
-        return $this->json['pattern_replace_login'];
+        return $this->patternReplaceLogin;
     }
 
-
     /**
-     * @return void
+     * Validate ips
      */
     private function guard(): void
     {

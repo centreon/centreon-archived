@@ -226,7 +226,7 @@ it('should find the metaservice as non-admin', function () {
     $findMetaService(1, $presenter);
 
     expect($presenter->response->name)->toBe($metaService->getName());
-    expect($presenter->response->id)->toBe($metaService->getId());
+    expect($presenter->response->metaId)->toBe($metaService->getId());
     expect($presenter->response->isFlapping)->toBe($metaService->isFlapping());
     expect($presenter->response->isAcknowledged)->toBe($metaService->isAcknowledged());
     expect($presenter->response->isInDowntime)->toBe($metaService->isInDowntime());

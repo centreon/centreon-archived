@@ -38,34 +38,29 @@ class Configuration
      * @param bool $isForced
      */
     public function __construct(
-        private int    $id,
+        private int $id,
         private string $type,
         private string $name,
         private string $jsonCustomConfiguration,
-        private bool   $isActive,
-        private bool   $isForced
+        private bool $isActive,
+        private bool $isForced
     )
     {
     }
 
     /**
-     * @param bool $isActive
-     * @param bool $isForced
-     * @return static
+     * @param bool|null $isActive
+     * @param bool|null $isForced
      */
-    public function update(
-        ?bool   $isActive = null,
-        ?bool   $isForced = null): self
+    public function update(?bool $isActive = null, ?bool $isForced = null): void
     {
-        if ($isActive != null) {
+        if ($isActive !== null) {
             $this->isActive = $isActive;
         }
 
-        if ($isForced != null) {
+        if ($isForced !== null) {
             $this->isForced = $isForced;
         }
-
-        return $this;
     }
 
 
@@ -79,7 +74,6 @@ class Configuration
 
     /**
      * @param int $id
-     * @return void
      */
     public function setId(int $id): void
     {
@@ -128,7 +122,6 @@ class Configuration
 
     /**
      * @param CustomConfigurationInterface $customConfiguration
-     * @return void
      */
     public function setCustomConfiguration(CustomConfigurationInterface $customConfiguration): void
     {

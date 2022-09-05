@@ -24,7 +24,8 @@ class VirtualMetricHandleContext extends CentreonContext
         $this->page = new MetricsConfigurationPage($this);
         $this->page->setProperties(array(
             'name' => $this->vmName,
-            'linked-host_services' => $this->host . ' - ' . $this->hostService
+            'linked-host_services' => $this->host . ' - ' . $this->hostService,
+            'known_metrics' => $this->functionRPN,
         ));
         $this->page->setProperties(array('function' => $this->functionRPN));
         $this->page->save();

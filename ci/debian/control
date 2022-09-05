@@ -89,6 +89,8 @@ Depends:
     php8.0-ldap,
     php8.0-readline,
     php8.0-sqlite3,
+    php8.0-grpc,
+    php8.0-protobuf,
     php-pear,
     ntp,
     rrdtool,

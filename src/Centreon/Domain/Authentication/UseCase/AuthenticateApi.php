@@ -33,8 +33,6 @@ use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Infrastructure\Provider\ProviderAuthenticationFactory;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Exception;
-use InvalidArgumentException;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Model\LocalProvider;
@@ -129,7 +127,7 @@ class AuthenticateApi
          * Authenticate with the legacy mechanism encapsulated into the Local Provider.
          */
         $this->debug('[AUTHENTICATE API] Authentication using provider', ['provider_name' => Provider::LOCAL]);
-        $request = LoginRequest::createForLocal(Provider::LOCAL, $request->getLogin(), $request->getPassword());
+        $request = LoginRequest::createForLocal($request->getLogin(), $request->getPassword());
         $localProvider->authenticateOrFail($request);
     }
 
@@ -183,7 +181,7 @@ class AuthenticateApi
             ['user' => $contact->getAlias()]
         );
         if ($providerConfiguration->getId() === null) {
-            throw new InvalidArgumentException("Provider configuration can't be null");
+            throw new \InvalidArgumentException("Provider configuration can't be null");
         }
         try {
             $this->writeTokenRepository->createAuthenticationTokens(
@@ -193,7 +191,7 @@ class AuthenticateApi
                 $providerToken,
                 $providerRefreshToken
             );
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationException::addAuthenticationToken($ex);
         }
     }

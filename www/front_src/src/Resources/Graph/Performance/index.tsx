@@ -41,7 +41,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import { selectedResourcesDetailsAtom } from '../../Details/detailsAtoms';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -97,7 +97,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   graphHeader: {
     display: 'grid',
     gridTemplateColumns: '0.4fr 1fr 0.4fr',
-    justifyItems: 'center',
+    justifyItems: 'end',
     width: '100%',
   },
   graphTranslation: {
@@ -123,6 +123,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   title: {
     maxWidth: '100%',
     overflow: 'hidden',
+    placeSelf: 'center',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
@@ -168,7 +169,7 @@ const PerformanceGraph = ({
     request: getData,
   });
 
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResource = useAtomValue(selectedResourcesDetailsAtom);
 
   const timeValue = useAtomValue(timeValueAtom);
   const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
@@ -205,11 +206,11 @@ const PerformanceGraph = ({
   }, [endpoint]);
 
   useEffect(() => {
-    if (or(isNil(selectedResourceId), isNil(lineData))) {
+    if (or(isNil(selectedResource?.resourceId), isNil(lineData))) {
       return;
     }
     setLineData(undefined);
-  }, [selectedResourceId]);
+  }, [selectedResource?.resourceId]);
 
   useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {

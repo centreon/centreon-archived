@@ -35,40 +35,40 @@
 
 /*
  *  Class that contains various methods for managing connectors
- * 
+ *
  * Usage example:
- * 
+ *
  * <?php
  * require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
  * require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
  * require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
- * 
+ *
  * $connector = new CentreonConnector(new CentreonDB);
- * 
+ *
  * //$connector->create(array(
  * //    'name' => 'jackyse',
  * //    'description' => 'some jacky',
  * //    'command_line' => 'ls -la',
  * //    'enabled' => true
  * //        ), true);
- * 
+ *
  * //$connector->update(10, array(
  * //    'name' => 'soapy',
  * //    'description' => 'Lorem ipsum',
  * //    'enabled' => true,
  * //    'command_line' => 'ls -laph --color'
  * //));
- * 
+ *
  * //$connector->getList(false, 20, false);
- * 
+ *
  * //$connector->delete(10);
- * 
+ *
  * //$connector->read(7);
- * 
+ *
  * //$connector->copy(1, 5, true);
- * 
+ *
  * //$connector->count(false);
- * 
+ *
  * //$connector->isNameAvailable('norExists');
  */
 
@@ -165,11 +165,13 @@ class CentreonConnector
                 throw new RuntimeException('Field id for connector not selected in query or connector not inserted');
             } else {
                 if (isset($connector["command_id"])) {
+                    $statement = $this->dbConnection->prepare("UPDATE `command` " .
+                        "SET connector_id = :conId WHERE `command_id` = :value");
                     foreach ($connector["command_id"] as $key => $value) {
                         try {
-                            $query = "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' " .
-                                "WHERE `command_id` = '" . $value . "'";
-                            $this->dbConnection->query($query);
+                            $statement->bindValue(':conId', (int) $lastId['id'], \PDO::PARAM_INT);
+                            $statement->bindValue(':value', (int) $value, \PDO::PARAM_INT);
+                            $statement->execute();
                         } catch (\PDOException $e) {
                             throw new RuntimeException('Cannot update connector');
                         }

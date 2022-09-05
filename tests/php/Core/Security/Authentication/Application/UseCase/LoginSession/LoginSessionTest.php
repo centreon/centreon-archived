@@ -31,7 +31,6 @@ use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\Authentication\Application\Provider\LocalProviderInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
@@ -48,13 +47,11 @@ use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Infrastructure\Api\Login\Local\LoginPresenter;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use PHPUnit\Framework\TestCase;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -76,11 +73,6 @@ class LoginSessionTest extends TestCase
      * @var AuthenticationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationService;
-
-    /**
-     * @var ProviderServiceInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $providerService;
 
     /**
      * @var ContactServiceInterface&\PHPUnit\Framework\MockObject\MockObject
@@ -157,7 +149,6 @@ class LoginSessionTest extends TestCase
         $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
         $this->loginSessionPresenter = $this->createMock(PresenterInterface::class);
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
-        $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->contactService = $this->createMock(ContactServiceInterface::class);
         $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
@@ -188,6 +179,7 @@ class LoginSessionTest extends TestCase
         $this->writeSessionTokenRepository = $this->createMock(WriteSessionTokenRepositoryInterface::class);
         $this->writeSessionRepository = $this->createMock(WriteSessionRepositoryInterface::class);
         $this->aclUpdater = $this->createMock(AclUpdaterInterface::class);
+        $this->defaultRedirectUri = '/monitoring/resources';
     }
 
     /**
@@ -334,7 +326,7 @@ class LoginSessionTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('importUserToDatabase');
+            ->method('importUser');
 
         $this->providerFactory
             ->expects($this->once())
@@ -370,7 +362,7 @@ class LoginSessionTest extends TestCase
 
         $this->provider
             ->expects($this->never())
-            ->method('importUserToDatabase');
+            ->method('importUser');
 
         $this->providerFactory
             ->expects($this->once())
@@ -536,12 +528,7 @@ class LoginSessionTest extends TestCase
      */
     private function createLoginSessionRequest(string $username = 'admin', string $password = 'centreon'): LoginRequest
     {
-        return LoginRequest::createForLocal(
-            Provider::LOCAL,
-            $username,
-            $password,
-            '127.0.0.1'
-        );
+        return LoginRequest::createForLocal($username, $password, '127.0.0.1');
     }
 
     /**
@@ -566,7 +553,8 @@ class LoginSessionTest extends TestCase
             $this->readTokenRepository,
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
-            $this->aclUpdater
+            $this->aclUpdater,
+            $this->defaultRedirectUri
         );
     }
 }

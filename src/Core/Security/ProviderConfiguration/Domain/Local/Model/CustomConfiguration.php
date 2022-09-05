@@ -25,46 +25,11 @@ namespace Core\Security\ProviderConfiguration\Domain\Local\Model;
 
 final class CustomConfiguration implements LocalCustomConfigurationInterface
 {
-    /** @var SecurityPolicy  */
-    private SecurityPolicy $securityPolicy;
-
     /**
      * @param SecurityPolicy $securityPolicy
-     * @return $this
      */
-    public static function createFromSecurityPolicy(SecurityPolicy $securityPolicy): self
+    public function __construct(private SecurityPolicy $securityPolicy)
     {
-        $self = new self();
-        $self->securityPolicy = $securityPolicy;
-
-        return $self;
-    }
-
-    /**
-     * @param array $json
-     * @param array $excludedUserAliases
-     * @return CustomConfiguration
-     */
-    public static function createFromJsonArray(array $json, array $excludedUserAliases): self
-    {
-        $securityPolicy = new SecurityPolicy(
-            $json['password_security_policy']['password_length'],
-            $json['password_security_policy']['has_uppercase_characters'],
-            $json['password_security_policy']['has_lowercase_characters'],
-            $json['password_security_policy']['has_numbers'],
-            $json['password_security_policy']['has_special_characters'],
-            $json['password_security_policy']['can_reuse_passwords'],
-            $json['password_security_policy']['attempts'],
-            $json['password_security_policy']['blocking_duration'],
-            $json['password_security_policy']['password_expiration_delay'],
-            $excludedUserAliases,
-            $json['password_security_policy']['delay_before_new_password'],
-        );
-
-        $self = new self();
-        $self->securityPolicy = $securityPolicy;
-
-        return $self;
     }
 
     /**

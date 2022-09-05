@@ -137,7 +137,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
 
         $this->info('Starting authentication with WebSSO');
         $provider->authenticateOrFail(
-            LoginRequest::createForSSO(Provider::WEB_SSO, $request->getClientIp())
+            LoginRequest::createForSSO($request->getClientIp())
         );
 
         $user = $provider->findUserOrFail();

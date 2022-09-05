@@ -26,7 +26,6 @@ namespace Core\Security\User\Application\UseCase\RenewPassword;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\User\Domain\Model\UserPasswordFactory;
 use Core\Application\Common\UseCase\UnauthorizedResponse;

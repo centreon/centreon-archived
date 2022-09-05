@@ -139,7 +139,7 @@ class AuthenticateApiTest extends TestCase
         $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'))
+            ->with(LoginRequest::createForLocal('admin', 'centreon'))
             ->willThrowException(AuthenticationException::invalidCredentials());
 
         $this->expectException(AuthenticationException::class);
@@ -170,7 +170,7 @@ class AuthenticateApiTest extends TestCase
         $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
+            ->with(LoginRequest::createForLocal('admin', 'centreon'));
 
         $this->providerAuthentication
             ->expects($this->once())
@@ -205,7 +205,7 @@ class AuthenticateApiTest extends TestCase
         $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
+            ->with(LoginRequest::createForLocal('admin', 'centreon'));
 
         $this->providerAuthentication
             ->expects($this->once())
@@ -247,7 +247,7 @@ class AuthenticateApiTest extends TestCase
         $this->providerAuthentication
             ->expects($this->once())
             ->method('authenticateOrFail')
-            ->with(LoginRequest::createForLocal(Provider::LOCAL, 'admin', 'centreon'));
+            ->with(LoginRequest::createForLocal('admin', 'centreon'));
 
         $this->providerAuthentication
             ->expects($this->once())

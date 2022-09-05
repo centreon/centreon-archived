@@ -632,7 +632,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
 
     /**
      * @param array $json
-     * @return void
      * @throws OpenIdConfigurationException
      */
     public function create(array $json): void
@@ -714,8 +713,8 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
      */
     private static function validateParametersForAutoImport(
         ?ContactTemplate $contactTemplate,
-        ?string          $emailBindAttribute,
-        ?string          $userNameBindAttribute
+        ?string $emailBindAttribute,
+        ?string $userNameBindAttribute
     ): void
     {
         $missingMandatoryParameters = [];

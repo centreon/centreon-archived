@@ -89,7 +89,7 @@ class UpdateConfigurationTest extends TestCase
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
 
-        $customConfiguration = CustomConfiguration::createFromSecurityPolicy($securityPolicy);
+        $customConfiguration = new CustomConfiguration($securityPolicy);
         $configuration = new Configuration(1, 'local', 'local', '{}', true, true);
         $configuration->setCustomConfiguration($customConfiguration);
 

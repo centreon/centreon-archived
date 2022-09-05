@@ -10233,10 +10233,6 @@ msgstr "Checagem de Manutenção"
 msgid "Preexec definition"
 msgstr "Definição de pré-execução"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:376
-msgid "The same OID element already exists"
-msgstr "O mesmo OID já existe"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:384
 msgid "Advanced matching rules"
 msgstr "Regras de correspondencia avançada"
@@ -11796,7 +11792,7 @@ msgstr "Escala"
 
 #: centreon-web/www/install/smarty_translate.php:414
 msgid "Service category"
-msgstr "Categoria do Serviço"
+msgstr "Categoria de Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:438
 msgid "Service Scheduling Options"
@@ -15623,6 +15619,9 @@ msgstr "Ocorreu um erro durante a recuperação das categorias de hosts"
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
 
+# msgid "Export to CSV"
+# msgstr ""
+
 msgid "Service severity"
 msgstr "Severidade de serviço"
 
@@ -15634,3 +15633,57 @@ msgstr "Severidade de host"
 
 msgid "Host severity level"
 msgstr "Nível de Severidade de host"
+
+#  msgid "Listening address (optional)"
+#  msgstr ""
+
+#  msgid "Listening port"
+#  msgstr ""
+
+#  msgid "Transport protocol"
+#  msgstr ""
+
+#  msgid "Authorization token (optional)"
+#  msgstr ""
+
+#  msgid "Private key path"
+#  msgstr ""
+
+#  msgid "Certificate path"
+#  msgstr ""
+
+#  msgid "Compression"
+#  msgstr ""
+
+#  msgid "Enable retention"
+#  msgstr ""
+
+#  msgid "Filter on event categories"
+#  msgstr ""
+
+#  msgid "Server address"
+#  msgstr ""
+
+#  msgid "Server port"
+#  msgstr ""
+
+#  msgid "Retry interval (in seconds)"
+#  msgstr ""
+
+#  msgid "Trusted CA's certificate path (optional)"
+#  msgstr ""
+
+#  msgid "Certificate Common Name (optional)"
+#  msgstr ""
+
+# msgid "As Displayed"
+# msgstr ""
+
+# msgid "Medium size"
+# msgstr ""
+
+# msgid "Small size"
+# msgstr ""
+
+# msgid "CSV"
+# msgstr ""

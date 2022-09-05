@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
 
 use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Application\UseCase\Login\Login;
@@ -38,6 +39,7 @@ use function json_decode;
 class LoginController extends AbstractController
 {
     use HttpUrlTrait;
+    use LoggerTrait;
 
     /**
      * @param Request $request
@@ -45,17 +47,15 @@ class LoginController extends AbstractController
      * @param LoginPresenter $presenter
      * @param SessionInterface $session
      * @return object
-     * @throws AuthenticationException
      */
     public function __invoke(
         Request $request,
         Login $useCase,
         LoginPresenter $presenter,
-        SessionInterface $session): object
-    {
+        SessionInterface $session): object {
         $payload = json_decode($request->getContent(), true);
+        // todo json validation file
         $request = LoginRequest::createForLocal(
-            Provider::LOCAL,
             $payload["login"] ?? null,
             $payload["password"] ?? null,
             $request->getClientIp());
@@ -63,7 +63,7 @@ class LoginController extends AbstractController
         try {
             $useCase($request, $presenter);
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            $this->error($e->getMessage());
         }
 
         $presenter->setResponseHeaders(

@@ -154,7 +154,7 @@ class RenewPasswordTest extends TestCase
         );
 
         $configuration = new Configuration(1, strtolower(Provider::LOCAL), Provider::LOCAL, '{}', true, true);
-        $configuration->setCustomConfiguration(CustomConfiguration::createFromSecurityPolicy($securityPolicy));
+        $configuration->setCustomConfiguration(new CustomConfiguration($securityPolicy));
 
         $this->readRepository
             ->expects($this->once())

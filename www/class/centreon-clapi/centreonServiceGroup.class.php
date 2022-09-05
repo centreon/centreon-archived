@@ -36,6 +36,7 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
+require_once "centreonConfigurationChange.class.php";
 require_once "centreonACL.class.php";
 require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
@@ -168,10 +169,10 @@ class CentreonServiceGroup extends CentreonObject
                             break;
                     }
 
-                    
+
                     $ret = $this->object->getParameters($objectId, $field);
                     $ret = $ret[$field];
-                
+
                     if (!isset($exportedFields[$paramSearch])) {
                         $resultString .= $ret . $this->delim;
                         $exportedFields[$paramSearch] = 1;
@@ -314,6 +315,11 @@ class CentreonServiceGroup extends CentreonObject
                 if (!isset($args[1])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
+
+                $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+                $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromServiceGroupId($sgId);
+                $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
+
                 $relation = $args[1];
                 $relations = explode("|", $relation);
                 $relationTable = array();
@@ -388,12 +394,35 @@ class CentreonServiceGroup extends CentreonObject
                         }
                     }
                 }
+
+                $centreonConfig->signalConfigurationChange(
+                    CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+                    $sgId,
+                    $previousPollerIds
+                );
+
                 $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
+    }
+
+    /**
+     * @param $parameters
+     * @return mixed
+     */
+    public function add($parameters): void
+    {
+        parent::add($parameters);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $servicegroupId = $this->getObjectId($this->params[$this->object->getUniqueLabelField()]);
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+            $servicegroupId
+        );
     }
 
     /**
@@ -407,9 +436,79 @@ class CentreonServiceGroup extends CentreonObject
     public function del($objectName)
     {
         $sgId = $this->getObjectId($objectName);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromServiceGroupId($sgId);
+        $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
+
         $parentDependency = new \Centreon_Object_DependencyServicegroupParent($this->dependencyInjector);
         $parentDependency->removeRelationLastServicegroupDependency($sgId);
         parent::del($objectName);
+
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+            $sgId,
+            $previousPollerIds
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setParam($parameters = []): void
+    {
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
+        }
+        if (!empty($params)) {
+            $servicegroupId = $params['objectId'];
+
+            $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+            $hostIds = $centreonConfig->findHostsForConfigChangeFlagFromServiceGroupId($servicegroupId);
+            $previousPollerIds = $centreonConfig->findPollersForConfigChangeFlagFromHostIds($hostIds);
+
+            parent::setparam($parameters);
+
+            $centreonConfig->signalConfigurationChange(
+                CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+                $servicegroupId,
+                $previousPollerIds
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function enable($objectName)
+    {
+        parent::enable($objectName);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $servicegroupId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+            $servicegroupId
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function disable($objectName)
+    {
+        parent::disable($objectName);
+
+        $centreonConfig = new CentreonConfigurationChange($this->dependencyInjector['configuration_db']);
+        $servicegroupId = $this->getObjectId($objectName);
+        $centreonConfig->signalConfigurationChange(
+            CentreonConfigurationChange::RESOURCE_TYPE_SERVICEGROUP,
+            $servicegroupId,
+            [],
+            false
+        );
     }
 
     /**

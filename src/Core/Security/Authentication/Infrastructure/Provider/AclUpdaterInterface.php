@@ -30,7 +30,6 @@ interface AclUpdaterInterface
     /**
      * @param ProviderAuthenticationInterface $provider
      * @param ContactInterface $user
-     * @return void
      */
     public function updateForProviderAndUser(ProviderAuthenticationInterface $provider, ContactInterface $user): void;
 }

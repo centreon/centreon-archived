@@ -230,7 +230,7 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
     {
         if (
             parent::authorize($action, $user, $isInternal)
-            || ($user && $user->hasAccessRestApiConfiguration())
+            || ($user && $user->is_admin())
         ) {
             return true;
         }

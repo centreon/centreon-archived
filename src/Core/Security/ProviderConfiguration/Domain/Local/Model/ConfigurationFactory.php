@@ -26,14 +26,16 @@ namespace Core\Security\ProviderConfiguration\Domain\Local\Model;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
 
+/**
+ * @deprecated
+ */
 class ConfigurationFactory
 {
     /**
      * Create a Security Policy from the DTO.
      *
      * @param UpdateConfigurationRequest $request
-     * @return Configuration
-     * @throws AssertionException
+     * @return CustomConfiguration
      */
     public static function createFromRequest(UpdateConfigurationRequest $request): CustomConfiguration
     {
@@ -51,6 +53,6 @@ class ConfigurationFactory
             $request->delayBeforeNewPassword
         );
 
-        return CustomConfiguration::createFromSecurityPolicy($securityPolicy);
+        return new CustomConfiguration($securityPolicy);
     }
 }

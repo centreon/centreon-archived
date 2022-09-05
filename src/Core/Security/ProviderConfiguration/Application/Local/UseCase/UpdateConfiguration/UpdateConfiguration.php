@@ -84,7 +84,7 @@ class UpdateConfiguration
                 $request->passwordExpirationExcludedUserAliases
             );
 
-            $configuration->setCustomConfiguration(CustomConfiguration::createFromSecurityPolicy($securityPolicy));
+            $configuration->setCustomConfiguration(new CustomConfiguration($securityPolicy));
             $this->writeConfigurationRepository->updateConfiguration($configuration, $excludedUserIds);
 
             $presenter->setResponseStatus(new NoContentResponse());
