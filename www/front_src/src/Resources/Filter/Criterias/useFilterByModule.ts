@@ -8,7 +8,6 @@ import {
   selectableResourceTypes,
   selectableCriterias,
   CriteriaNames,
-  CriteriaById,
 } from './models';
 
 const useFilterByModule = (): any => {

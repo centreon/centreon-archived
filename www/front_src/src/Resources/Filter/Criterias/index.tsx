@@ -40,21 +40,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
-  selectableCriterias[name];
-
-const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
-  pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
 const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const { newCriteriaValueName } = useFilterByModule();
+  const { newCriteriaValueName, newSelectableCriterias } = useFilterByModule();
   const [filtersByModules, setFiltersByModules] = useState(null);
 
   const filterWithSearchAtom =
     filterWithCustomParsedSearchDerived(newCriteriaValueName);
+
+  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
+    newSelectableCriterias[name];
+
+  const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
+    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
   // const filterWithParsedSearch = useAtomValue(
   //   filterWithParsedSearchDerivedAtom,
