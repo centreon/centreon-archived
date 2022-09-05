@@ -35,6 +35,8 @@
 
 namespace CentreonClapi;
 
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
+
 require_once "centreonObject.class.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Action.php";
@@ -253,6 +255,8 @@ class CentreonACLAction extends CentreonObject
             }
             unset($res);
         }
+        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
+        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
     }
 
     /**
@@ -281,6 +285,8 @@ class CentreonACLAction extends CentreonObject
                 );
             }
         }
+        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
+        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
     }
 
     /**
@@ -349,5 +355,164 @@ class CentreonACLAction extends CentreonObject
         }
 
         return $grantActions;
+    }
+
+    /**
+     * Del Action
+     *
+     * @param string $objectName
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function del($objectName)
+    {
+        // $ids will always be an array of 1 or 0 elements as we cannot delete multiple action acl at the same time.
+        $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($objectName));
+        if (! empty($ids)) {
+            $id = (int) $ids[0];
+            //Get all access groups linked to this action group
+            $aclGroupIds = $this->getAclGroupIdsByActionId($id);
+            $this->object->delete($id);
+            $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+            $this->addAuditLog('d', $id, $objectName);
+            $aclObj = new CentreonACL($this->dependencyInjector);
+            $aclObj->reload(true);
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
+        }
+    }
+
+    /**
+     * This method flags updated ACL for authentified users.
+     *
+     * @param int[] $aclGroupIds
+     */
+    function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
+    {
+        $userIds = $this->getUsersIdsByAclGroup($aclGroupIds);
+        $readSessionRepository = $this->getReadSessionRepository();
+        foreach ($userIds as $userId) {
+            try {
+                $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+                $statement = $this->db->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
+                foreach ($sessionIds as $sessionId) {
+                    $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                    $statement->execute();
+                }
+            } catch (\Throwable $ex) {
+            }
+        }
+    }
+
+    /**
+     * This function returns user ids from ACL Group Ids
+     *
+     * @param int[] $aclGroupIds
+     * @return int[]
+     */
+    function getUsersIdsByAclGroup(array $aclGroupIds): array
+    {
+        $queryValues = [];
+        foreach ($aclGroupIds as $index => $aclGroupId) {
+            $sanitizedAclGroupId = filter_var($aclGroupId, FILTER_VALIDATE_INT);
+            if ($sanitizedAclGroupId !== false) {
+                $queryValues[":acl_group_id_" . $index] = $sanitizedAclGroupId;
+            }
+        }
+
+        $aclGroupIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
+        $statement = $this->db->prepare(
+            "SELECT DISTINCT `contact_contact_id` FROM `acl_group_contacts_relations`
+                WHERE `acl_group_id`
+                IN $aclGroupIdQueryString"
+        );
+        foreach ($queryValues as $bindParameter => $bindValue) {
+            $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+        $userIds = [];
+        while($result = $statement->fetch()) {
+            $userIds[] = (int) $result["contact_contact_id"];
+        }
+
+        return $userIds;
+    }
+
+    /**
+     * This method gets SessionRepository from Service container
+     *
+     * @return ReadSessionRepositoryInterface
+     */
+    function getReadSessionRepository(): ReadSessionRepositoryInterface
+    {
+        $kernel = \App\Kernel::createForWeb();
+        $readSessionRepository = $kernel->getContainer()->get(
+            ReadSessionRepositoryInterface::class
+        );
+
+        return $readSessionRepository;
+    }
+
+    /**
+     * Get Acl group ids linked to an action access.
+     *
+     * @param int $actionId
+     * @return int[]
+     */
+    function getAclGroupIdsByActionId(int $actionId): array
+    {
+        $aclGroupIds = [];
+        $statement = $this->db->prepare(
+            "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
+                WHERE acl_action_id = :aclActionId"
+        );
+        $statement->bindValue(":aclActionId", $actionId, \PDO::PARAM_INT);
+        $statement->execute();
+        while($result = $statement->fetch()) {
+            $aclGroupIds[] = (int) $result["acl_group_id"];
+        };
+
+        return $aclGroupIds;
+    }
+
+    /**
+     * @param array $parameters
+     * @throws CentreonClapiException
+     */
+    public function setparam($parameters = array())
+    {
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
+        }
+
+        if (!empty($params)) {
+            $uniqueLabel = $this->object->getUniqueLabelField();
+            $objectId = $params['objectId'];
+            unset($params['objectId']);
+            if (
+                isset($params[$uniqueLabel])
+                && $this->objectExists($params[$uniqueLabel], $objectId) == true
+            ) {
+                throw new CentreonClapiException(self::NAMEALREADYINUSE);
+            }
+
+            $this->object->update($objectId, $params);
+            if (array_key_exists("acl_action_activate", $params)) {
+                $aclGroupIds = $this->getAclGroupIdsByActionId((int) $objectId);
+                $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+            }
+            $p = $this->object->getParameters($objectId, $uniqueLabel);
+
+            if (isset($p[$uniqueLabel])) {
+                $this->addAuditLog(
+                    'c',
+                    $objectId,
+                    $p[$uniqueLabel],
+                    $params
+                );
+            }
+        }
     }
 }
