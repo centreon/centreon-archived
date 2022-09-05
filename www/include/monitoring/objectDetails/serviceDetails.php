@@ -877,35 +877,6 @@ if (!is_null($host_id)) {
         $tpl->assign("index_data", $index_data);
         $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
 
-        /*
-         * Dynamics tools
-         */
-        $tools = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
-        while ($module = $DBRESULT->fetchrow()) {
-            if (
-                isset($module['svc_tools'])
-                && $module['svc_tools'] == 1
-                && file_exists('modules/' . $module['name'] . '/svc_tools.php')
-            ) {
-                include('modules/' . $module['name'] . '/svc_tools.php');
-            }
-        }
-        $DBRESULT->closeCursor();
-
-        foreach ($tools as $key => $tab) {
-            $tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@host_name@", $host_name, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@svc_description@", $svc_description, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@svc_id@", $service_id, $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@current_state@", $service_status["current_state"], $tools[$key]['url']);
-            $tools[$key]['url'] = str_replace("@plugin_output@", $service_status["plugin_output"], $tools[$key]['url']);
-        }
-
-        if (count($tools) > 0) {
-            $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
-        }
-
         /**
          * Build the service detail URI that will be used in the
          * deprecated banner
