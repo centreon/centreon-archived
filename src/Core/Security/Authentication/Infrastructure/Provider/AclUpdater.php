@@ -49,18 +49,16 @@ class AclUpdater implements AclUpdaterInterface
         private DataStorageEngineInterface $dataStorageEngine,
         private WriteContactGroupRepositoryInterface $contactGroupRepository,
         private WriteAccessGroupRepositoryInterface $accessGroupRepository,
-    )
-    {
+    ) {
     }
 
     /**
      * @param ProviderAuthenticationInterface $provider
      * @param ContactInterface $user
-     * @return void
      */
     public function updateForProviderAndUser(ProviderAuthenticationInterface $provider, ContactInterface $user): void
     {
-        $this->provider= $provider;
+        $this->provider = $provider;
         if ($provider->isUpdateACLSupported()) {
             $userClaims = $this->provider->getUserClaims();
             $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
@@ -96,8 +94,8 @@ class AclUpdater implements AclUpdaterInterface
             ]);
         }
     }
-    /**
 
+    /**
      * Delete and Insert Contact Group for authenticated user
      *
      * @param ContactInterface $user

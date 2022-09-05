@@ -107,7 +107,6 @@ class WebSSO implements ProviderAuthenticationInterface
 
     /**
      * @param Configuration $configuration
-     * @return void
      */
     public function setConfiguration(Configuration $configuration): void
     {
@@ -144,13 +143,12 @@ class WebSSO implements ProviderAuthenticationInterface
 
     /**
      * @param LoginRequest $request
-     * @return void
      * @throws SSOAuthenticationException
      */
     public function authenticateOrFail(LoginRequest $request): void
     {
         $this->info('Authenticate the user');
-        $this->ipIsAllowToConnect($request->getClientIp());
+        $this->ipIsAllowToConnect($request->clientIp);
         $this->validateLoginAttributeOrFail();
     }
 
@@ -246,7 +244,7 @@ class WebSSO implements ProviderAuthenticationInterface
     /**
      * @return void
      */
-    public function importUserToDatabase(): void
+    public function importUser(): void
     {
         throw new \DomainException("Feature not available for WebSSO provider");
     }
@@ -254,7 +252,7 @@ class WebSSO implements ProviderAuthenticationInterface
     /**
      * @return void
      */
-    public function updateUserToDatabase(): void
+    public function updateUser(): void
     {
         throw new \DomainException("Feature not available for WebSSO provider");
     }

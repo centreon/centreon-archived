@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -41,7 +42,6 @@ use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -62,16 +62,18 @@ final class Login
      * @param WriteTokenRepositoryInterface $writeTokenRepository
      * @param WriteSessionTokenRepositoryInterface $writeSessionTokenRepository
      * @param AclUpdaterInterface $aclUpdater
+     * @param string $defaultRedirectUri
      */
     public function __construct(
-        private ProviderAuthenticationFactoryInterface             $providerFactory,
-        private SessionInterface                     $session,
-        private DataStorageEngineInterface           $dataStorageEngine,
-        private WriteSessionRepositoryInterface      $sessionRepository,
-        private ReadTokenRepositoryInterface         $readTokenRepository,
-        private WriteTokenRepositoryInterface        $writeTokenRepository,
+        private ProviderAuthenticationFactoryInterface $providerFactory,
+        private SessionInterface $session,
+        private DataStorageEngineInterface $dataStorageEngine,
+        private WriteSessionRepositoryInterface $sessionRepository,
+        private ReadTokenRepositoryInterface $readTokenRepository,
+        private WriteTokenRepositoryInterface $writeTokenRepository,
         private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
-        private AclUpdaterInterface                  $aclUpdater
+        private AclUpdaterInterface $aclUpdater,
+        private string $defaultRedirectUri
     )
     {
     }
@@ -79,23 +81,22 @@ final class Login
     /**
      * @param LoginRequest $loginRequest
      * @param PresenterInterface $presenter
-     * @return void
      * @throws AuthenticationException
      */
     public function __invoke(LoginRequest $loginRequest, PresenterInterface $presenter): void
     {
         try {
-            $this->provider = $this->providerFactory->create($loginRequest->getProviderName());
+            $this->provider = $this->providerFactory->create($loginRequest->providerName);
 
             $this->provider->authenticateOrFail($loginRequest);
             $user = $this->provider->findUserOrFail();
 
-            if ($loginRequest->getProviderName() === Provider::LOCAL && !$user->isAllowedToReachWeb()) {
+            if ($loginRequest->providerName === Provider::LOCAL && !$user->isAllowedToReachWeb()) {
                 throw LegacyAuthenticationException::notAllowedToReachWebApplication();
             }
 
             if ($this->provider->isAutoImportEnabled()) {
-                $this->provider->importUserToDatabase();
+                $this->provider->importUser();
             }
 
             $this->updateACL($user);
@@ -108,7 +109,7 @@ final class Login
                         $user,
                         $this->provider->getProviderToken(),
                         $this->provider->getProviderRefreshToken(),
-                        $loginRequest->getClientIp(),
+                        $loginRequest->clientIp
                     );
                 }
             }
@@ -138,11 +139,11 @@ final class Login
      * @throws AuthenticationException
      */
     private function createAuthenticationTokens(
-        string            $sessionToken,
-        ContactInterface  $contact,
-        NewProviderToken  $providerToken,
+        string $sessionToken,
+        ContactInterface $contact,
+        NewProviderToken $providerToken,
         ?NewProviderToken $providerRefreshToken,
-        ?string           $clientIp,
+        ?string $clientIp,
     ): void
     {
         // TODO Move into startTransaction() ?
@@ -177,7 +178,7 @@ final class Login
     /**
      * Get the redirection uri where user will be redirect once logged.
      *
-     * @param ContactInterface $providerUser
+     * @param ContactInterface $authenticatedUser
      * @return string
      */
     private function getRedirectionUri(ContactInterface $authenticatedUser): string
@@ -186,8 +187,7 @@ final class Login
             return $this->buildDefaultRedirectionUri($authenticatedUser->getDefaultPage());
         }
 
-        // TODO inject this in config
-        return "/monitoring/resources";
+        return $this->defaultRedirectUri;
     }
 
     /**
@@ -211,7 +211,6 @@ final class Login
 
     /**
      * @param ContactInterface $user
-     * @return void
      */
     private function updateACL(ContactInterface $user): void
     {

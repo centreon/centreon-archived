@@ -22,18 +22,6 @@ declare(strict_types=1);
 
 namespace Tests\Security\Domain\Authentication;
 
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
-use PHPUnit\Framework\TestCase;
-use Security\Domain\Authentication\ProviderService;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface;
-use Security\Domain\Authentication\Model\ProviderFactory;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Exceptions\ProviderException;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
-
 /**
  * @package Tests\Security\Domain\Authentication
  */

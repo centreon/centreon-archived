@@ -119,15 +119,21 @@ it('should do nothing if Web SSO is not active', function () {
         ->willReturn(uniqid());
 
     $this->event->method('getRequest')->willReturn($this->request);
-
-    $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO, '{}', false, false);
-    $configuration->setCustomConfiguration(new CustomConfiguration([
+    $parameters = [
         'trusted_client_addresses' => [],
         'blacklist_client_addresses' => [],
         'login_header_attribute' => null,
         'pattern_matching_login' => null,
         'pattern_replace_login' => null
-    ]));
+    ];
+    $configuration = new Configuration(
+        3,
+        Provider::WEB_SSO,
+        Provider::WEB_SSO,
+        json_encode($parameters),
+        false,
+        false);
+    $configuration->setCustomConfiguration(new CustomConfiguration());
 
     $this->providerFactory
         ->expects($this->once())
@@ -188,7 +194,7 @@ it('should throw an exception if the user IP is blacklisted', function () {
     ];
     $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
         json_encode($parameters), true, false);
-    $configuration->setCustomConfiguration(new CustomConfiguration($parameters));
+    $configuration->setCustomConfiguration(new CustomConfiguration([], ['127.0.0.1']));
 
     $this->providerFactory
         ->expects($this->once())
@@ -203,7 +209,7 @@ it('should throw an exception if the user IP is blacklisted', function () {
     $this->provider
         ->expects($this->once())
         ->method('authenticateOrFail')
-        ->with(LoginRequest::createForSSO(Provider::WEB_SSO, '127.0.0.1'))
+        ->with(LoginRequest::createForSSO('127.0.0.1'))
         ->willThrowException(SSOAuthenticationException::blackListedClient());
 
     $this->provider
@@ -244,7 +250,7 @@ it('should throw an exception if the user IP is not whitelisted', function () {
     ];
     $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
         json_encode($parameters), true, false);
-    $configuration->setCustomConfiguration(new CustomConfiguration($parameters));
+    $configuration->setCustomConfiguration(new CustomConfiguration(['127.0.0.2']));
 
     $this->providerFactory
         ->expects($this->once())
@@ -259,7 +265,7 @@ it('should throw an exception if the user IP is not whitelisted', function () {
     $this->provider
         ->expects($this->once())
         ->method('authenticateOrFail')
-        ->with(LoginRequest::createForSSO(Provider::WEB_SSO, '127.0.0.1'))
+        ->with(LoginRequest::createForSSO('127.0.0.1'))
         ->willThrowException(SSOAuthenticationException::blackListedClient());
 
     $this->provider
@@ -296,7 +302,7 @@ it('should throw an exception when login attribute environment variable is not s
     ];
     $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
         json_encode($parameters), true, false);
-    $configuration->setCustomConfiguration(new CustomConfiguration($parameters));
+    $configuration->setCustomConfiguration(new CustomConfiguration([], [], 'HTTP_AUTH_CLIENT'));
 
     $this->providerFactory
         ->expects($this->once())
@@ -321,7 +327,7 @@ it('should throw an exception when login attribute environment variable is not s
     $this->provider
         ->expects($this->once())
         ->method('authenticateOrFail')
-        ->with(LoginRequest::createForSSO(Provider::WEB_SSO, '127.0.0.1'))
+        ->with(LoginRequest::createForSSO('127.0.0.1'))
         ->willThrowException(new InvalidArgumentException('Missing Login Attribute'));
 
     $this->provider
@@ -357,7 +363,7 @@ it('should throw an exception when login matching regexp return an invalid resul
     ];
     $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
         json_encode($parameters), true, false);
-    $configuration->setCustomConfiguration(new CustomConfiguration($parameters));
+    $configuration->setCustomConfiguration(new CustomConfiguration([], [], 'HTTP_AUTH_CLIENT'));
 
     $this->providerFactory
         ->expects($this->once())
@@ -382,7 +388,7 @@ it('should throw an exception when login matching regexp return an invalid resul
     $this->provider
         ->expects($this->once())
         ->method('authenticateOrFail')
-        ->with(LoginRequest::createForSSO(Provider::WEB_SSO, '127.0.0.1'))
+        ->with(LoginRequest::createForSSO('127.0.0.1'))
         ->willThrowException(SSOAuthenticationException::unableToRetrieveUsernameFromLoginClaim());
 
     $this->provider

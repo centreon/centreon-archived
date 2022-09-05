@@ -35,7 +35,6 @@ interface WriteSessionTokenRepositoryInterface
 
     /**
      * @param Session $session
-     * @return void
      */
     public function createSession(Session $session): void;
 }

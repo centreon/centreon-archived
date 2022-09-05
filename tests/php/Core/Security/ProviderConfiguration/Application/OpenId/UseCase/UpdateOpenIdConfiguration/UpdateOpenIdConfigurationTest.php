@@ -35,11 +35,10 @@ use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryIn
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
-    UpdateOpenIdConfigurationRequest};
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
+    UpdateOpenIdConfigurationRequest
+};
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 
 beforeEach(function () {
@@ -52,7 +51,7 @@ beforeEach(function () {
     $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
     $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
     $this->contactGroup = new ContactGroup(1, 'contact_group');
-    $this->contactTemplate =  new ContactTemplate(1, 'contact_template');
+    $this->contactTemplate = new ContactTemplate(1, 'contact_template');
 });
 
 it('should present a NoContentResponse when the use case is executed correctly', function () {

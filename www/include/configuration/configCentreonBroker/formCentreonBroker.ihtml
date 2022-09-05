@@ -211,6 +211,10 @@
                 openNewElem(id_name);
 
                 jQuery('#' + id_name).centreonValidate();
+
+                jQuery.each(jQuery('[data-ontab-fn]'), function () {
+                    window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+                });
             }
         });
     }

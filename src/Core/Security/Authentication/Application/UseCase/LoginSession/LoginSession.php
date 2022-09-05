@@ -215,13 +215,7 @@ class LoginSession
             ['provider_name' => $providerConfigurationName]
         );
 
-        /**
-         * @var LocalProviderInterface|null
-         */
-        $authenticationProvider = $this->providerService->findProviderByConfigurationName(
-            $providerConfigurationName
-        );
-
+        $authenticationProvider = null;
         if ($authenticationProvider === null) {
             throw ProviderException::providerConfigurationNotFound(
                 $providerConfigurationName

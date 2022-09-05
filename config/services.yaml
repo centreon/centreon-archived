@@ -91,3 +91,18 @@ services:
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Core\Resources\Infrastructure\Repository\DbReadResourceRepository:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $sqlRequestTranslator: '@sqlRequestTranslator'
+            $resourceACLProviders: !tagged_iterator 'monitoring.resource.acl'
+
+    Centreon\Application\Controller\MonitoringResourceController:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $hyperMediaProviders: !tagged_iterator 'realtime.hypermedia'
+
+    Core\Security\Authentication\Application\UseCase\Login\Login:
+        arguments:
+            $defaultRedirectUri: '/monitoring/resources'

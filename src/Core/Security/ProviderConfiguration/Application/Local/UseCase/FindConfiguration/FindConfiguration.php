@@ -25,10 +25,8 @@ namespace Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConf
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Symfony\Component\Translation\Provider\ProviderFactoryInterface;
 
 class FindConfiguration
 {

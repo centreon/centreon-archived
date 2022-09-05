@@ -25,7 +25,8 @@ namespace Core\Contact\Infrastructure\Api\FindContactGroups;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Contact\Application\UseCase\FindContactGroups\{
-    FindContactGroupsPresenterInterface
+    FindContactGroupsPresenterInterface,
+    FindContactGroupsResponse
 };
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -43,7 +44,7 @@ class FindContactGroupsPresenter extends AbstractPresenter implements FindContac
     }
 
     /**
-     * @param mixed $presentedData
+     * @param FindContactGroupsResponse $presentedData
      * @return void
      */
     public function present(mixed $presentedData): void

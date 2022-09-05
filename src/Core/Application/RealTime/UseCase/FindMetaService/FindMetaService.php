@@ -131,7 +131,7 @@ class FindMetaService
     }
 
     /**
-     * Handle Meta Service Provider not found. This method will log the error and set the ResponseStatus
+     * Handle Meta Service Configuration not found. This method will log the error and set the ResponseStatus
      *
      * @param int $metaId
      * @param FindMetaServicePresenterInterface $presenter

@@ -24,6 +24,7 @@ namespace Core\Security\Authentication\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -33,6 +34,7 @@ class WriteSessionRepository implements WriteSessionRepositoryInterface
 
     /**
      * @param SessionInterface $session
+     * @param RequestStack $requestStack
      */
     public function __construct(private SessionInterface $session, private RequestStack $requestStack)
     {
@@ -44,14 +46,11 @@ class WriteSessionRepository implements WriteSessionRepositoryInterface
     public function invalidate(): void
     {
         $this->session->invalidate();
-        $cookies = $this->requestStack->getCurrentRequest()->cookies;
-        $cookies->remove('PHPSESSID');
-        if ($cookies->has('mod_auth_openidc_session')) {
-            $cookies->remove('mod_auth_openidc_session');
-        }
     }
 
     /**
+     * Start a session (included the legacy session)
+     *
      * @param \Centreon $legacySession
      * @return bool
      */

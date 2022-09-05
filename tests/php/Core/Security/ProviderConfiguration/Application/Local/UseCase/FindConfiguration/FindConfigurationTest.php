@@ -23,22 +23,16 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration;
 
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfiguration;
-use Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\FindConfigurationErrorResponse;
-use Core\Security\ProviderConfiguration\Infrastructure\Local\Api\FindConfiguration\FindConfigurationPresenter;
-use Tests\Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConfiguration\{
-    FindConfigurationPresenterFake
-};
 
 class FindConfigurationTest extends TestCase
 {
@@ -86,7 +80,7 @@ class FindConfigurationTest extends TestCase
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
 
-        $customConfiguration = CustomConfiguration::createFromSecurityPolicy($securityPolicy);
+        $customConfiguration = new CustomConfiguration($securityPolicy);
         $configuration = new Configuration(1, 'local', 'local', '{}', true, true);
         $configuration->setCustomConfiguration($customConfiguration);
         $this->providerAuthenticationFactory

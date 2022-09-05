@@ -29,7 +29,6 @@ interface LoginInterface
 {
     /**
      * @param LoginRequest $request
-     * @return void
      */
     public function authenticateWithRequest(LoginRequest $request): void;
 }

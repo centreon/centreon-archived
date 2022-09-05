@@ -2,7 +2,16 @@ import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { omit } from 'ramda';
 
-import { render, RenderResult, screen, waitFor } from '@centreon/ui';
+import {
+  getFetchCall,
+  mockResponseOnce,
+  render,
+  RenderResult,
+  resetMocks,
+  screen,
+  TestQueryProvider,
+  waitFor,
+} from '@centreon/ui';
 
 import { Provider } from '../models';
 import {
@@ -66,7 +75,11 @@ const cancelTokenPutParams = {
 };
 
 const renderOpenidConfigurationForm = (): RenderResult =>
-  render(<OpenidConfigurationForm />);
+  render(
+    <TestQueryProvider>
+      <OpenidConfigurationForm />
+    </TestQueryProvider>,
+  );
 
 const retrievedOpenidConfiguration = {
   authentication_type: 'client_secret_post',
@@ -157,6 +170,7 @@ const retrievedContactGroups = getRetrievedEntities('Contact Group');
 const retrievedAccessGroups = getRetrievedEntities('Access Group');
 
 const mockGetBasicRequests = (): void => {
+  resetMocks();
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
     data: retrievedOpenidConfiguration,
@@ -448,11 +462,10 @@ describe('Openid configuration form', () => {
       accessGroupsEndpoint,
       labelAccessGroup,
       'Access Group 2',
-      1,
     ],
   ])(
     'updates the %p field when an option is selected from the retrieved options',
-    async (_, retrievedOptions, endpoint, label, value, index = 0) => {
+    async (_, retrievedOptions, endpoint, label, value) => {
       mockGetRequestsWithNoAuthorizationConfiguration();
       renderOpenidConfigurationForm();
 
@@ -463,7 +476,7 @@ describe('Openid configuration form', () => {
         );
       });
 
-      mockedAxios.get.mockResolvedValueOnce({
+      mockResponseOnce({
         data: retrievedOptions,
       });
 
@@ -474,11 +487,10 @@ describe('Openid configuration form', () => {
       userEvent.click(screen.getByLabelText(label));
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect(getFetchCall(0)).toEqual(
           `${endpoint}?page=1&sort_by=${encodeURIComponent(
             '{"name":"ASC"}',
           )}&search=${encodeURIComponent('{"$and":[]}')}`,
-          cancelTokenRequestParam,
         );
       });
 
@@ -489,7 +501,7 @@ describe('Openid configuration form', () => {
       userEvent.click(screen.getByText(value));
 
       await waitFor(() => {
-        expect(screen.getAllByLabelText(label)[index]).toHaveValue(value);
+        expect(screen.getAllByLabelText(label)[0]).toHaveValue(value);
       });
     },
   );
@@ -509,42 +521,6 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText(labelContactGroup)).toHaveAttribute(
-        'required',
-      );
-    });
-  });
-
-  it('displays the "Authorization value" and "Access group" fields as required when the "Contact group" field is filled', async () => {
-    mockGetRequestsWithNoAuthorizationConfiguration();
-    mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedContactGroups,
-    });
-
-    renderOpenidConfigurationForm();
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelContactGroup)).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByLabelText(labelContactGroup));
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${contactGroupsEndpoint}?page=1&sort_by=${encodeURIComponent(
-          '{"name":"ASC"}',
-        )}&search=${encodeURIComponent('{"$and":[]}')}`,
-        cancelTokenRequestParam,
-      );
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Contact Group 1')).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByText('Contact Group 1'));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelAuthorizationValue)).toHaveAttribute(
         'required',
       );
     });

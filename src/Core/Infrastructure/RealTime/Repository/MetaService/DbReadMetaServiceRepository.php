@@ -115,6 +115,7 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
         $statement->execute();
 
         if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             return DbMetaServiceFactory::createFromRecord($row);
         }
 

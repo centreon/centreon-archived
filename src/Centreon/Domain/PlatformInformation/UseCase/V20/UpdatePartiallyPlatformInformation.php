@@ -241,6 +241,7 @@ class UpdatePartiallyPlatformInformation
             $platformInformationToUpdate,
             $currentPlatformInformation
         );
+
         $this->remoteServerService->convertCentralToRemote(
             $platformInformationToUpdate
         );

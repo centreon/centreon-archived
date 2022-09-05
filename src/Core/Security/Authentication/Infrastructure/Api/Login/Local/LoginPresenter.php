@@ -29,7 +29,6 @@ class LoginPresenter extends AbstractPresenter implements LoginPresenterInterfac
 {
     /**
      * @param mixed $response
-     * @return void
      */
     public function present(mixed $response): void
     {

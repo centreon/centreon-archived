@@ -5,34 +5,9 @@ import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
 
 import { ClickAwayListener } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 
 import { MenuSkeleton } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
-
-export const useStyles = makeStyles((theme) => ({
-  link: {
-    textDecoration: 'none',
-  },
-  subMenuToggle: {
-    backgroundColor: theme.palette.common.black,
-    boxSizing: 'border-box',
-    display: 'none',
-    left: theme.spacing(0),
-    padding: theme.spacing(1),
-    position: 'absolute',
-    textAlign: 'left',
-    top: '100%',
-    width: '100%',
-    zIndex: theme.zIndex.mobileStepper,
-  },
-  subMenuToggleActive: {
-    display: 'block',
-  },
-  wrapMiddleIcon: {
-    display: 'flex',
-  },
-}));
 
 interface Props {
   children: (props) => JSX.Element;

@@ -60,19 +60,21 @@ $query = 'SELECT ip FROM remote_servers';
 $dbResult = $pearDB->query($query);
 $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
 $dbResult->closeCursor();
-//get poller informations
-$query = "
-SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id, 
-remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id 
-FROM nagios_server AS ns 
-    LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
-    LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
-    LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
-WHERE ns.ns_activate = '1' 
-AND ns.`id` =" . (int)$pollerId;
 
-$dbResult = $pearDB->query($query);
-$server = $dbResult->fetch();
+//get poller informations
+$statement = $pearDB->prepare(
+    "SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id,
+      remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id
+    FROM nagios_server AS ns
+    LEFT JOIN remote_servers AS rs ON rs.server_id = ns.id
+    LEFT JOIN cfg_nagios AS cn ON cn.`nagios_id` = ns.`id`
+    LEFT JOIN rs_poller_relation AS pr ON pr.`poller_server_id` = ns.`id`
+    WHERE ns.ns_activate = '1'
+    AND ns.`id` = :server_id"
+);
+$statement->bindValue(':server_id', (int) $pollerId, \PDO::PARAM_INT);
+$statement->execute();
+$server = $statement->fetch();
 
 //get gorgone api informations
 $gorgoneApi = [];

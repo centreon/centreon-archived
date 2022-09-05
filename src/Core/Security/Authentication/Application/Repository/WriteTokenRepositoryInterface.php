@@ -39,14 +39,14 @@ interface WriteTokenRepositoryInterface
      * @param int $contactId
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
-     * @return void
      */
     public function createAuthenticationTokens(
         string $token,
         int $providerConfigurationId,
         int $contactId,
         NewProviderToken $providerToken,
-        ?NewProviderToken $providerRefreshToken): void;
+        ?NewProviderToken $providerRefreshToken
+    ): void;
 
     /**
      * Updates the provider authentication tokens.
@@ -59,7 +59,6 @@ interface WriteTokenRepositoryInterface
      * Updates the provider token.
      *
      * @param ProviderToken $providerToken
-     * @return void
      */
     public function updateProviderToken(ProviderToken $providerToken): void;
 
@@ -67,7 +66,6 @@ interface WriteTokenRepositoryInterface
      * Delete a security token.
      *
      * @param string $token
-     * @return void
      */
     public function deleteSecurityToken(string $token): void;
 }

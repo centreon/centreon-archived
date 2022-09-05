@@ -63,7 +63,11 @@ trait HttpUrlTrait
                 ($protocol === 'http' && $this->httpServerBag->get('SERVER_PORT') !== '80')
                 || ($protocol === 'https' && $this->httpServerBag->get('SERVER_PORT') !== '443')
             ) {
-                $port = (int) $this->httpServerBag->get('SERVER_PORT');
+                /**
+                 * @var string
+                 */
+                $port = $this->httpServerBag->get('SERVER_PORT');
+                $port = (int) $port;
             }
         }
 
@@ -91,16 +95,14 @@ trait HttpUrlTrait
             'main(\.get)?\.php',
             '(?<!administration\/)authentication\/.+',
         ];
-
-        if (
-            $this->httpServerBag?->has('REQUEST_URI')
-            && preg_match(
-                '/^(.+?)\/?(' . implode('|', $routeSuffixPatterns) . ')/',
-                $this->httpServerBag->get('REQUEST_URI'),
-                $matches,
-            )
-        ) {
-            $baseUri = $matches[1];
+        if ($this->httpServerBag?->has('REQUEST_URI')) {
+            /**
+             * @var string
+             */
+            $requestUri = $this->httpServerBag->get('REQUEST_URI');
+            if (preg_match('/^(.+?)\/?(' . implode('|', $routeSuffixPatterns) . ')/', $requestUri, $matches)) {
+                $baseUri = $matches[1];
+            }
         }
 
         return rtrim($baseUri, '/');

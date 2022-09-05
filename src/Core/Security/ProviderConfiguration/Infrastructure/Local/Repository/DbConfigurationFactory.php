@@ -26,6 +26,9 @@ use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 
+/**
+ * @deprecated
+ */
 class DbConfigurationFactory
 {
     /**
@@ -64,7 +67,7 @@ class DbConfigurationFactory
             json_encode($customConfiguration),
             (int) $configuration['is_active'] === 1,
             (int) $configuration['is_forced'] === 1);
-        $configuration->setCustomConfiguration(CustomConfiguration::createFromSecurityPolicy($securityPolicy));
+        $configuration->setCustomConfiguration(new CustomConfiguration($securityPolicy));
 
         return $configuration;
     }

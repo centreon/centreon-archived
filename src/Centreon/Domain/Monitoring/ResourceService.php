@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
@@ -41,36 +41,10 @@ use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
  */
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
-    /**
-     * @param MonitoringRepositoryInterface $monitoringRepository ,
-     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
-     * @param ReadResourceRepositoryInterface $resourceRepository
-     */
     public function __construct(
-        private MonitoringRepositoryInterface $monitoringRepository,
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadResourceRepositoryInterface $resourceRepository
     ) {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function filterByContact($contact): self
-    {
-        parent::filterByContact($contact);
-
-        $accessGroups = $this->accessGroupRepository->findByContact($contact);
-
-        $this->resourceRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        $this->monitoringRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        return $this;
     }
 
     /**
@@ -88,18 +62,43 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
-            $list = $this->resourceRepository->findResources($filter);
+            $list = $this->getResources($filter);
             // replace macros in external links
             foreach ($list as $resource) {
                 $this->replaceMacrosInExternalLinks($resource);
             }
-        } catch (RepositoryException $ex) {
-            throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         }
 
         return $list;
+    }
+
+    /**
+     * @return \Centreon\Domain\Monitoring\Resource[]
+     */
+    private function getResources(ResourceFilter $filter): array
+    {
+        if (!$this->contact instanceof ContactInterface) {
+            return [];
+        }
+
+        if ($this->contact->isAdmin()) {
+            return $this->resourceRepository->findResources($filter);
+        }
+
+        $accessGroupIds = array_map(
+            function (AccessGroup $accessGroup) {
+                return $accessGroup->getId();
+            },
+            $this->accessGroupRepository->findByContact($this->contact)
+        );
+
+        if (!empty($accessGroupIds)) {
+            return $this->resourceRepository->findResourcesByAccessGroupIds($filter, $accessGroupIds);
+        }
+
+        return [];
     }
 
     /**

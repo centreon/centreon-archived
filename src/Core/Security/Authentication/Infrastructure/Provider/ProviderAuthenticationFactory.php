@@ -24,13 +24,9 @@ namespace Core\Security\Authentication\Infrastructure\Provider;
 
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
-use Core\Security\Authentication\Domain\Provider\WebSSOProvider;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Model\LocalProvider;
 
 class ProviderAuthenticationFactory implements ProviderAuthenticationFactoryInterface
 {
@@ -44,8 +40,7 @@ class ProviderAuthenticationFactory implements ProviderAuthenticationFactoryInte
         private Local $local,
         private OpenId $openId,
         private WebSSO $webSSO,
-        private ReadConfigurationRepositoryInterface $readConfigurationRepository)
-    {
+        private ReadConfigurationRepositoryInterface $readConfigurationRepository) {
     }
 
     /**

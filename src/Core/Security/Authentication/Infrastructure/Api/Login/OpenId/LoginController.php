@@ -48,21 +48,19 @@ class LoginController extends AbstractController
      * @throws AuthenticationException
      */
     public function __invoke(
-        Request          $request,
-        Login            $useCase,
-        LoginPresenter   $presenter,
+        Request $request,
+        Login $useCase,
+        LoginPresenter $presenter,
         SessionInterface $session
-    ): object
-    {
+    ): object {
         $request = LoginRequest::createForOpenId(
-            Provider::OPENID,
             $request->getClientIp(),
             $request->query->get("code"));
 
         $useCase($request, $presenter);
 
         $response = $presenter->getPresentedData();
-        if ($response->error !== null) {
+        if ($response->getException() !== null) {
             return View::createRedirect(
                 $this->getBaseUrl() . '/login?authenticationError=' . $response->getError()->getMessage(),
                 Response::HTTP_FOUND

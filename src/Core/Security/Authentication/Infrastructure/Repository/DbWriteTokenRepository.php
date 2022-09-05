@@ -139,7 +139,6 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
      * @param integer $contactId
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
-     * @return void
      */
     private function insertProviderTokens(
         string            $token,

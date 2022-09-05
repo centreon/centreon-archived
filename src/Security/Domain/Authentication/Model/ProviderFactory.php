@@ -32,6 +32,7 @@ use Security\Domain\Authentication\Exceptions\ProviderException;
 
 /**
  * @package Security\Domain\Authentication\Model
+ * @deprecated
  */
 class ProviderFactory
 {

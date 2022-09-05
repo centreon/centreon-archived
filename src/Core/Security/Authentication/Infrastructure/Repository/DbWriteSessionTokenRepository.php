@@ -70,10 +70,10 @@ class DbWriteSessionTokenRepository extends AbstractRepositoryDRB implements Wri
                 "VALUES (:sessionId, :userId, :lastReload, :ipAddress)"
             )
         );
-        $insertSessionStatement->bindValue(':sessionId', $session->getToken(), \PDO::PARAM_STR);
+        $insertSessionStatement->bindValue(':sessionId', $session->getToken());
         $insertSessionStatement->bindValue(':userId', $session->getContactId(), \PDO::PARAM_INT);
         $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
-        $insertSessionStatement->bindValue(':ipAddress', $session->getClientIp(), \PDO::PARAM_STR);
+        $insertSessionStatement->bindValue(':ipAddress', $session->getClientIp());
         $insertSessionStatement->execute();
     }
 }

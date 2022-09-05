@@ -10,6 +10,9 @@
     "isRemote": {
       "type": "boolean"
     },
+    "address": {
+      "type": "string"
+    },
     "centralServerAddress": {
       "type": "string"
     },

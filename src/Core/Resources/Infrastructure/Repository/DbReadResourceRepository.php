@@ -23,9 +23,12 @@ declare(strict_types=1);
 namespace Core\Resources\Infrastructure\Repository;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Resources\Infrastructure\Repository\ResourceACLProviders\ResourceACLProviderInterface;
 use Core\Tag\RealTime\Domain\Model\Tag;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
+use Core\Domain\RealTime\ResourceTypeInterface;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Repository\RepositoryException;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -36,8 +39,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
-use Core\Severity\RealTime\Domain\Model\Severity;
 
 class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadResourceRepositoryInterface
 {
@@ -53,19 +54,14 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
                   RESOURCE_TYPE_METASERVICE = 2;
 
     /**
+     * @var ResourceTypeInterface[]
+     */
+    private array $resourceTypes = [];
+
+    /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
-
-    /**
-     * @var ContactInterface
-     */
-    private $contact;
-
-    /**
-     * @var AccessGroup[]
-     */
-    private $accessGroups = [];
 
     /**
      * @var array<string, string>
@@ -99,48 +95,36 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     /**
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     * @param \Traversable<ResourceTypeInterface> $resourceTypes
+     * @param \Traversable<ResourceACLProviderInterface> $resourceACLProviders
      */
-    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
-    {
+    public function __construct(
+        DatabaseConnection $db,
+        SqlRequestParametersTranslator $sqlRequestTranslator,
+        \Traversable $resourceTypes,
+        private \Traversable $resourceACLProviders
+    ) {
         $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT)
             ->setConcordanceErrorMode(RequestParameters::CONCORDANCE_ERRMODE_SILENT);
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function setContact(ContactInterface $contact): ReadResourceRepositoryInterface
-    {
-        $this->contact = $contact;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function filterByAccessGroups(?array $accessGroups): ReadResourceRepositoryInterface
-    {
-        $this->accessGroups = $accessGroups;
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findResources(ResourceFilter $filter): array
-    {
-        $this->resources = [];
-
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $this->resources;
+        if ($resourceTypes instanceof \Countable && count($resourceTypes) === 0) {
+            throw new \InvalidArgumentException(
+                _('You must add at least one resource provider')
+            );
         }
 
-        $collector = new StatementCollector();
+        $this->resourceTypes = iterator_to_array($resourceTypes);
+    }
 
+    private function generateFindResourcesRequest(
+        ResourceFilter $filter,
+        StatementCollector $collector,
+        string $accessGroupRequest = ''
+    ): string {
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
 
         $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -202,6 +186,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         try {
             $searchSubRequest .= $this->sqlRequestTranslator->translateSearchParameterToSql();
         } catch (RequestParametersTranslatorException $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
@@ -211,25 +196,7 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
             AND resources.parent_name NOT LIKE '\_Module\_BAM%'
             AND resources.enabled = 1 AND resources.type != 3";
 
-        /**
-         * Handle ACL
-         */
-        if (! $this->contact->isAdmin()) {
-            $accessGroupIds = array_map(
-                function (AccessGroup $accessGroup) {
-                    return $accessGroup->getId();
-                },
-                $this->accessGroups
-            );
-            $request .= ' AND EXISTS (
-              SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE
-                  (resources.type IN (0,2) AND resources.parent_id = acl.host_id AND resources.id = acl.service_id)
-                  OR
-                  (resources.type = 1 AND resources.id = acl.host_id AND acl.service_id IS NULL)
-                  AND acl.group_id IN (' . implode(', ', $accessGroupIds) . ')
-              LIMIT 1
-            )';
-        }
+        $request .= $accessGroupRequest;
 
         /**
          * Resource Type filter
@@ -285,12 +252,63 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
          */
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
+        return $request;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findResources(ResourceFilter $filter): array
+    {
+        $this->resources = [];
+        $collector = new StatementCollector();
+        $request = $this->generateFindResourcesRequest($filter, $collector);
+
+        $this->fetchResources($request, $collector);
+
+        return $this->resources;
+    }
+
+    public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array
+    {
+        $this->resources = [];
+        $collector = new StatementCollector();
+        $accessGroupRequest = $this->addResourceAclSubRequest($accessGroupIds);
+        $request = $this->generateFindResourcesRequest($filter, $collector, $accessGroupRequest);
+        $this->fetchResources($request, $collector);
+
+        return $this->resources;
+    }
+
+    /**
+     * @param int[] $accessGroupIds
+     */
+    private function addResourceAclSubRequest(array $accessGroupIds): string
+    {
+        $orConditions = array_map(
+            fn(ResourceACLProviderInterface $provider) => '(' . $provider->getACLSubRequest() . ')',
+            iterator_to_array($this->resourceACLProviders)
+        );
+
+        if (empty($orConditions)) {
+            throw new \InvalidArgumentException(_('You must provide at least one ACL provider'));
+        }
+
+        $pattern = ' AND EXISTS (SELECT 1 FROM `:dbstg`.centreon_acl acl WHERE (%s) AND acl.group_id IN (%s) LIMIT 1)';
+
+        return sprintf($pattern, join(' OR ', $orConditions), join(', ', $accessGroupIds));
+    }
+
+    private function fetchResources(string $request, StatementCollector $collector): void
+    {
         $statement = $this->db->prepare(
             $this->translateDbName($request)
         );
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $collector->addValue($key, current($data), key($data));
+            /** @var int */
+            $data_type = key($data);
+            $collector->addValue($key, current($data), $data_type);
         }
 
         $collector->bind($statement);
@@ -303,14 +321,12 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
         }
 
         while ($resourceRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->resources[] = DbResourceFactory::createFromRecord($resourceRecord);
+            $this->resources[] = DbResourceFactory::createFromRecord($resourceRecord, $this->resourceTypes);
         }
 
         $iconIds = $this->getIconIdsFromResources();
         $icons = $this->getIconsDataForResources($iconIds);
         $this->completeResourcesWithIcons($icons);
-
-        return $this->resources;
     }
 
     /**
@@ -513,18 +529,8 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
     {
         return array_filter(
             $resources,
-            fn(ResourceEntity $resource) => $resource->hasGraph(),
+            fn (ResourceEntity $resource) => $resource->hasGraph(),
         );
-    }
-
-    /**
-     * @return bool Return FALSE if the contact is an admin or has at least one access group.
-     */
-    private function hasNotEnoughRightsToContinue(): bool
-    {
-        return ($this->contact !== null)
-            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
-            : count($this->accessGroups) == 0;
     }
 
     /**
@@ -535,15 +541,17 @@ class DbReadResourceRepository extends AbstractRepositoryDRB implements ReadReso
      */
     private function addResourceTypeSubRequest(ResourceFilter $filter): string
     {
+        /**
+         * @var int[] $resourceTypes
+         */
         $resourceTypes = [];
         $subRequest = '';
-        foreach ($filter->getTypes() as $resourceType) {
-            if ($resourceType === ResourceEntity::TYPE_HOST) {
-                $resourceTypes[] = self::RESOURCE_TYPE_HOST;
-            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-                $resourceTypes[] = self::RESOURCE_TYPE_SERVICE;
-            } elseif ($resourceType === ResourceEntity::TYPE_META) {
-                $resourceTypes[] = self::RESOURCE_TYPE_METASERVICE;
+        foreach ($filter->getTypes() as $filterType) {
+            foreach ($this->resourceTypes as $resourceType) {
+                if ($resourceType->isValidForTypeName($filterType)) {
+                    $resourceTypes[] = $resourceType->getId();
+                    break;
+                }
             }
         }
 

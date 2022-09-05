@@ -60,7 +60,6 @@ class Local implements ProviderAuthenticationInterface
 
     /**
      * @param LoginRequest $request
-     * @return void
      * @throws Throwable
      */
     public function authenticateOrFail(LoginRequest $request): void
@@ -71,11 +70,11 @@ class Local implements ProviderAuthenticationInterface
         );
 
         $this->provider->authenticateOrFail([
-            'login' => $request->getUsername(),
-            'password' => $request->getPassword()
+            'login' => $request->username,
+            'password' => $request->password
         ]);
 
-        $this->username = $request->getUsername();
+        $this->username = $request->username;
     }
 
     /**
@@ -113,10 +112,9 @@ class Local implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return void
      * @throws LegacyAuthenticationException
      */
-    public function importUserToDatabase(): void
+    public function importUser(): void
     {
         if ($this->isAutoImportEnabled() === false) {
             throw LegacyAuthenticationException::userNotFoundAndCannotBeCreated();
@@ -136,7 +134,7 @@ class Local implements ProviderAuthenticationInterface
     /**
      * @return void
      */
-    public function updateUserToDatabase(): void
+    public function updateUser(): void
     {
         $this->contactService->updateUser($this->provider->getUser());
     }
@@ -175,7 +173,6 @@ class Local implements ProviderAuthenticationInterface
 
     /**
      * @param Configuration $configuration
-     * @return void
      */
     public function setConfiguration(Configuration $configuration): void
     {

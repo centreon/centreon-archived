@@ -23,14 +23,16 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 
 class FindOpenIdConfiguration
 {
+    use LoggerTrait;
+
     /**
      * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
@@ -47,6 +49,7 @@ class FindOpenIdConfiguration
             $provider = $this->providerFactory->create(Provider::OPENID);
             $configuration = $provider->getConfiguration();
         } catch (\Throwable $ex) {
+            $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

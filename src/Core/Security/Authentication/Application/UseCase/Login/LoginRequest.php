@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+
 class LoginRequest
 {
     /**
@@ -32,86 +34,44 @@ class LoginRequest
      * @param string|null $code
      */
     private function __construct(
-        private string $providerName,
-        private ?string $clientIp = null,
-        private ?string $username = null,
-        private ?string $password = null,
-        private ?string $code = null)
-    {
+        public string $providerName,
+        public ?string $clientIp = null,
+        public ?string $username = null,
+        public ?string $password = null,
+        public ?string $code = null) {
     }
 
     /**
-     * @param string $providerName
      * @param string $username
      * @param string $password
      * @param string|null $clientIp
      * @return LoginRequest
      */
     public static function createForLocal(
-        string $providerName,
         string $username,
         string $password,
-        ?string $clientIp = null): self {
+        ?string $clientIp = null): self
+    {
 
-        return new self($providerName, $clientIp, $username, $password);
+        return new self(Provider::LOCAL, $clientIp, $username, $password);
     }
 
     /**
-     * @param string $providerName
      * @param string $clientIp
      * @param string $code
      * @return LoginRequest
      */
-    public static function createForOpenId(string $providerName, string $clientIp, string $code): self {
-        return new self($providerName, $clientIp, null, null, $code);
+    public static function createForOpenId(string $clientIp, string $code): self
+    {
+        return new self(Provider::OPENID, $clientIp, null, $code);
     }
 
     /**
-     * @param string $providerName
      * @param string $clientIp
      * @return LoginRequest
      */
-    public static function createForSSO(string $providerName, string $clientIp): self {
-        return new self($providerName, $clientIp);
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
+    public static function createForSSO(string $clientIp): self
     {
-        return $this->username;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProviderName(): string
-    {
-        return $this->providerName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientIp(): string
-    {
-        return $this->clientIp;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCode(): ?string
-    {
-        return $this->code;
+        return new self(Provider::WEB_SSO, $clientIp);
     }
 }

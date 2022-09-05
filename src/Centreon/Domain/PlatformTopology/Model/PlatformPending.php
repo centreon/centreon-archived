@@ -196,13 +196,11 @@ class PlatformPending implements PlatformInterface
     {
         // Check for valid IPv4 or IPv6 IP
         // or not sent address (in the case of Central's "parent_address")
-        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        $addressResolved = filter_var(gethostbyname($address), FILTER_VALIDATE_IP);
-        if (false === $addressResolved) {
+        if (
+            $address !== null
+            && ! filter_var($address, FILTER_VALIDATE_IP)
+            && ! filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+        ) {
             throw new \InvalidArgumentException(
                 sprintf(
                     _("The address '%s' of '%s' is not valid or not resolvable"),
@@ -212,7 +210,7 @@ class PlatformPending implements PlatformInterface
             );
         }
 
-        return $addressResolved;
+        return $address;
     }
 
     /**

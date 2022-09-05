@@ -37,18 +37,13 @@ interface ReadResourceRepositoryInterface
     public function findResources(ResourceFilter $filter): array;
 
     /**
-     * @param ContactInterface $contact
-     * @return self
-     */
-    public function setContact(ContactInterface $contact): self;
-
-    /**
-     * Sets the access groups that will be used to filter services and the host.
+     * Find all resources with filter on access group IDs
      *
-     * @param \Core\Security\AccessGroup\Domain\Model\AccessGroup[]|null $accessGroups
-     * @return self
+     * @param ResourceFilter $filter
+     * @param int[] $accessGroupIds
+     * @return \Centreon\Domain\Monitoring\Resource[]
      */
-    public function filterByAccessGroups(?array $accessGroups): self;
+    public function findResourcesByAccessGroupIds(ResourceFilter $filter, array $accessGroupIds): array;
 
     /**
      * Get list of resources with graph data.

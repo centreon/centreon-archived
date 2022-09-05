@@ -35,7 +35,7 @@ interface ReadTokenRepositoryInterface
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
 
     /**
-     * Find the authentication token using the session token.
+     * Check if authentication token as a session token
      *
      * @param string $token Session token
      * @return bool

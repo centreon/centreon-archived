@@ -257,20 +257,31 @@ class CentreonInstance
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
+        global $centreon;
+
         $selectedInstances = '';
         $items = array();
+
+        if (empty($values)) {
+            return $items;
+        }
+
+        // get list of authorized pollers
+        if (!$centreon->user->access->admin) {
+            $pollerAcl = $centreon->user->access->getPollers();
+        }
+
         $listValues = '';
         $queryValues = array();
-        if (!empty($values)) {
-            foreach ($values as $k => $v) {
-                $listValues .= ':instance' . $v . ',';
-                $queryValues['instance' . $v] = (int)$v;
+        foreach ($values as $k => $v) {
+            $multipleValues = explode(',', $v);
+            foreach ($multipleValues as $item) {
+                $listValues .= ':pId_' . $item . ', ';
+                $queryValues['pId_' . $item] = (int)$item;
             }
-            $listValues = rtrim($listValues, ',');
-            $selectedInstances .= "AND rel.instance_id IN ($listValues) ";
-        } else {
-            $listValues .= '""';
         }
+        $listValues = rtrim($listValues, ', ');
+        $selectedInstances .= " AND rel.instance_id IN ($listValues) ";
 
         $query = 'SELECT DISTINCT p.name as name, p.id  as id FROM cfg_resource r, nagios_server p, ' .
             'cfg_resource_instance_relations rel ' .
@@ -280,17 +291,23 @@ class CentreonInstance
             ' ORDER BY p.name';
 
         $stmt = $this->db->prepare($query);
-        if (!empty($queryValues)) {
-            foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
-            }
+        foreach ($queryValues as $key => $id) {
+            $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
-
         while ($data = $stmt->fetch()) {
+            $hide = false;
+            if (
+                ! $centreon->user->access->admin
+                && count($pollerAcl)
+                && !in_array($data['id'], array_keys($pollerAcl))
+            ) {
+                $hide = true;
+            }
             $items[] = array(
                 'id' => $data['id'],
-                'text' => $data['name']
+                'text' => $data['name'],
+                'hide' => $hide
             );
         }
 

@@ -26,6 +26,9 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInte
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 
+/**
+ * @deprecated
+ */
 interface ProviderServiceInterface
 {
     /**

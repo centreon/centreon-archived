@@ -65,13 +65,12 @@ class OpenId implements ProviderAuthenticationInterface
 
     /**
      * @param LoginRequest $request
-     * @return void
      * @throws SSOAuthenticationException
      * @throws OpenIdConfigurationException
      */
     public function authenticateOrFail(LoginRequest $request): void
     {
-        $this->provider->authenticateOrFail($request->getCode(), $request->getClientIp());
+        $this->provider->authenticateOrFail($request->code, $request->clientIp);
 
         $this->username = $this->provider->getUserInformation()['email'];
     }
@@ -118,11 +117,10 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return void
      * @throws SSOAuthenticationException
      * @throws Throwable
      */
-    public function importUserToDatabase(): void
+    public function importUser(): void
     {
         $user = $this->provider->getUser();
         if ($this->isAutoImportEnabled() && $user === null) {
@@ -133,11 +131,10 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return void
      * @throws SSOAuthenticationException
      * @throws Throwable
      */
-    public function updateUserToDatabase(): void
+    public function updateUser(): void
     {
         $user = $this->provider->getUser();
         if ($this->isAutoImportEnabled() === true && $user === null) {

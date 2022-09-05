@@ -30,6 +30,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
@@ -72,8 +73,6 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
      * @throws OpenIdConfigurationException
      * @throws RepositoryException
      * @throws Throwable
-     *
-     * TODO handle not found
      */
     public function getConfigurationById(int $id): Configuration
     {
@@ -101,10 +100,24 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     fn($user) => $user['contact_alias'],
                     $this->findExcludedUsers()
                 );
-                return LocalCustomConfiguration::createFromJsonArray(
-                    json_decode($configuration->getJsonCustomConfiguration(), true),
-                    $excludedUserAliases
+
+                $json =  json_decode($configuration->getJsonCustomConfiguration(), true);
+                $securityPolicy = new SecurityPolicy(
+                    $json['password_security_policy']['password_length'],
+                    $json['password_security_policy']['has_uppercase_characters'],
+                    $json['password_security_policy']['has_lowercase_characters'],
+                    $json['password_security_policy']['has_numbers'],
+                    $json['password_security_policy']['has_special_characters'],
+                    $json['password_security_policy']['can_reuse_passwords'],
+                    $json['password_security_policy']['attempts'],
+                    $json['password_security_policy']['blocking_duration'],
+                    $json['password_security_policy']['password_expiration_delay'],
+                    $excludedUserAliases,
+                    $json['password_security_policy']['delay_before_new_password'],
                 );
+
+                return new LocalCustomConfiguration($securityPolicy);
+
             case Provider::OPENID:
                 $jsonSchemaValidatorFile = __DIR__ . '/../OpenId/Repository/CustomConfigurationSchema.json';
                 $json = $configuration->getJsonCustomConfiguration();
@@ -124,7 +137,14 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 $jsonSchemaValidatorFile = __DIR__ . '/../WebSSO/Repository/CustomConfigurationSchema.json';
                 $json = $configuration->getJsonCustomConfiguration();
                 $this->validateJsonRecord($json, $jsonSchemaValidatorFile);
-                return new WebSSOCustomConfiguration(json_decode($json, true));
+                $json = json_decode($json, true);
+                return new WebSSOCustomConfiguration(
+                    $json['trusted_client_addresses'],
+                    $json['blacklist_client_addresses'],
+                    $json['login_header_attribute'],
+                    $json['pattern_matching_login'],
+                    $json['pattern_replace_login']
+                );
             default:
                 throw new \Exception("unknown configuration name, can't load custom config");
 
