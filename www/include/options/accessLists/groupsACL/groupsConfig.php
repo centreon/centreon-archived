@@ -72,9 +72,9 @@ $acl_group_id = filter_var($_GET['acl_group_id'] ?? $_POST['acl_group_id'] ?? nu
 
 // Caution $o may already be set from the GET or from the POST.
 $postO = filter_var(
-    $_POST['o1'] ?? $_POST['o2'] ?? null,
+    $_POST['o1'] ?? $_POST['o2'] ?? $o ?? null,
     FILTER_VALIDATE_REGEXP,
-    array("options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/"))
+    ["options" => ["regexp" => "/^(a|c|d|m|s|u|w)$/"]]
 );
 if ($postO !== false) {
     $o = $postO;
