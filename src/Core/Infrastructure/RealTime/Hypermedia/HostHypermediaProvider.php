@@ -25,6 +25,8 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\RequestParameters\RequestParameters;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 
 class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
@@ -34,8 +36,11 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
                  URI_HOST_CATEGORY_CONFIGURATION = '/main.php?p=60104&o=c&hc_id={hostCategoryId}',
-                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
-                 ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy';
+                 ENDPOINT_HOST_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addhostacknowledgement',
+                 ENDPOINT_HOST_DETAILS = 'centreon_application_monitoring_resource_details_host',
+                 ENDPOINT_HOST_DOWNTIME = 'monitoring.downtime.addHostDowntime',
+                 ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy',
+                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
 
     /**
      * @param ContactInterface $contact
@@ -50,34 +55,88 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
     /**
      * @inheritDoc
      */
-    public function isValidFor(mixed $data): bool
+    public function isValidFor(string $resourceType): bool
     {
-        return ($data instanceof FindHostResponse);
+        return $resourceType === HostResourceType::TYPE_NAME;
+    }
+
+    /**
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    private function generateDowntimeEndpoint(array $parameters): string
+    {
+        $downtimeFilter = [
+            'search' => json_encode([
+                RequestParameters::AGGREGATE_OPERATOR_AND => [
+                    [
+                        'start_time' => [
+                            RequestParameters::OPERATOR_LESS_THAN => time(),
+                        ],
+                        'end_time' => [
+                            RequestParameters::OPERATOR_GREATER_THAN => time(),
+                        ],
+                        [
+                            RequestParameters::AGGREGATE_OPERATOR_OR => [
+                                'is_cancelled' => [
+                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
+                                ],
+                                'deletion_time' => [
+                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ])
+        ];
+
+        return $this->uriGenerator->generateEndpoint(
+            self::ENDPOINT_HOST_DOWNTIME,
+            array_merge($parameters, $downtimeFilter)
+        );
+    }
+
+    /**
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    private function generateAcknowledgementEndpoint(array $parameters): string
+    {
+        $acknowledgementFilter = ['limit' => 1];
+
+        return $this->uriGenerator->generateEndpoint(
+            self::ENDPOINT_HOST_ACKNOWLEDGEMENT,
+            array_merge($parameters, $acknowledgementFilter)
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function createEndpoints(mixed $response): array
+    public function createEndpoints(array $parameters): array
     {
+        $parametersIds = [
+            'hostId' => $parameters['hostId']
+        ];
+
         return [
-            'timeline' => $this->uriGenerator->generateEndpoint(
-                self::ENDPOINT_HOST_TIMELINE,
-                ['hostId' => $response->id]
-            ),
+            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, $parametersIds),
             'notification_policy' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
-                ['hostId' => $response->id]
+                $parametersIds
             ),
+            'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $parametersIds),
+            'downtime' => $this->generateDowntimeEndpoint($parametersIds),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function createInternalUris(mixed $response): array
+    public function createInternalUris(array $parameters): array
     {
-        $parameters = ['hostId' => $response->id];
         return [
             'configuration' => $this->createForConfiguration($parameters),
             'logs' => $this->createForEventLog($parameters),

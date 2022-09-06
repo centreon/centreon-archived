@@ -1408,6 +1408,12 @@ ServerTokens Prod
     Alias ${base_uri}/api ${install_dir}
     Alias ${base_uri} ${install_dir}/www/
 
+    <IfModule mod_brotli.c>
+        AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json
+    </IfModule>
+
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+
     <LocationMatch ^\${base_uri}/?(?!api/latest/|api/beta/|api/v[0-9]+/|api/v[0-9]+\.[0-9]+/)(.*\.php(/.*)?)$>
         ProxyPassMatch "fcgi://127.0.0.1:9042${install_dir}/www/$1"
     </LocationMatch>

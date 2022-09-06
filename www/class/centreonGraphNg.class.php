@@ -508,10 +508,10 @@ class CentreonGraphNg
         $this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
         $this->metrics[$metric["metric_id"]]["crit_low"] = $metric["crit_low"];
         if (!isset($dsData["ds_color_area_warn"]) || empty($dsData["ds_color_area_warn"])) {
-            $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = $this->generalOpt["color_warning"]['value'];
+            $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = "#ff9a13";
         }
         if (!isset($dsData["ds_color_area_crit"]) || empty($dsData["ds_color_area_crit"])) {
-            $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = $this->generalOpt["color_critical"]['value'];
+            $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = "#e00b3d";
         }
 
         $this->metrics[$metric["metric_id"]]["ds_order"] =

@@ -101,6 +101,7 @@ class DbReadSeverityRepository extends AbstractRepositoryDRB implements ReadSeve
         $statement = $this->db->prepare($this->translateDbName($request));
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            /** @var int */
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);

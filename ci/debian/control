@@ -89,6 +89,8 @@ Depends:
     php8.1-ldap,
     php8.1-readline,
     php8.1-sqlite3,
+    php8.1-grpc,
+    php8.1-protobuf,
     php-pear,
     ntp,
     rrdtool,
@@ -98,7 +100,7 @@ Depends:
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
-Depends:    
+Depends:
     ${misc:Depends},
     centreon-common (>= ${centreon:version}~),
     libconfig-inifiles-perl,

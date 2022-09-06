@@ -299,7 +299,7 @@ CREATE TABLE `cb_field` (
   `cb_field_id` int(11) NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(100) NOT NULL,
   `displayname` varchar(100) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(510) DEFAULT NULL,
   `fieldtype` varchar(255) NOT NULL DEFAULT 'text',
   `external` varchar(255) DEFAULT NULL,
   `cb_fieldgroup_id` INT DEFAULT NULL,
@@ -2278,7 +2278,9 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `http_method` enum('http','https') NOT NULL DEFAULT 'http',
   `http_port` int(11) DEFAULT NULL,
   `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0',
-  `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
+  `no_proxy` enum('0','1') NOT NULL DEFAULT '0',
+  `server_id` int(11) NOT NULL,
+  CONSTRAINT `remote_server_nagios_server_ibfk_1` FOREIGN KEY(`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create rs_poller_relation for the additional relationship between poller and remote servers
