@@ -543,6 +543,17 @@ function listActions()
 }
 
 /**
+ * Updates ACL actions for an authentified user from ACL Action ID
+ *
+ * @param array<string,string> $queryValues
+ */
+function updateAclActionsForAuthentifiedUsers(array $queryValues): void
+{
+    $aclGroupIds = getAclGroupIdsByActionIds($queryValues);
+    flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+}
+
+/**
  * This method flags updated ACL for authentified users.
  *
  * @param int[] $aclGroupIds
@@ -640,15 +651,4 @@ function getAclGroupIdsByActionIds(array $queryValues): array
     }
 
     return $aclGroupIds;
-}
-
-/**
- * Updates ACL actions for an authentified user from ACL Action ID
- *
- * @param array<string,string> $queryValues
- */
-function updateAclActionsForAuthentifiedUsers(array $queryValues): void
-{
-    $aclGroupIds = getAclGroupIdsByActionIds($queryValues);
-    flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
 }
