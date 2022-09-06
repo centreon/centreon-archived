@@ -418,6 +418,17 @@ class CentreonACLAction extends CentreonObject
     }
 
     /**
+     * Updates ACL actions for an authentified user from ACL Action ID
+     *
+     * @param integer $aclActionId
+     */
+    private function updateAclActionsForAuthentifiedUsers(int $aclActionId): void
+    {
+        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
+        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+    }
+
+    /**
      * This method flags updated ACL for authentified users.
      *
      * @param int[] $aclGroupIds
@@ -510,16 +521,5 @@ class CentreonACLAction extends CentreonObject
         };
 
         return $aclGroupIds;
-    }
-
-    /**
-     * Updates ACL actions from ACL Action ID
-     *
-     * @param integer $aclActionId
-     */
-    private function updateAclActionsForAuthentifiedUsers(int $aclActionId): void
-    {
-        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
-        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
     }
 }

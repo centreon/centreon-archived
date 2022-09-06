@@ -429,12 +429,17 @@ class CentreonACLGroup extends CentreonObject
      */
     private function getUsersIdsByAclGroup(array $aclGroupIds): array
     {
+        if (empty($aclGroupIds)) {
+            return [];
+        }
+
         $queryValues = [];
         foreach ($aclGroupIds as $index => $aclGroupId) {
             $sanitizedAclGroupId = filter_var($aclGroupId, FILTER_VALIDATE_INT);
-            if ($sanitizedAclGroupId !== false) {
-                $queryValues[":acl_group_id_" . $index] = $sanitizedAclGroupId;
+            if ($sanitizedAclGroupId === false) {
+                throw new \InvalidArgumentException("Invalid ID");
             }
+            $queryValues[":acl_group_id_" . $index] = $sanitizedAclGroupId;
         }
 
         $aclGroupIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
