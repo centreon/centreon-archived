@@ -13,14 +13,14 @@ import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
 import getBreadcrumbsByPath from './getBreadcrumbsByPath';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   item: {
     display: 'flex',
   },
   root: {
-    padding: '4px 16px',
+    padding: theme.spacing(0.5, 3),
   },
-});
+}));
 
 interface Props {
   breadcrumbsByPath: BreadcrumbsByPath;
