@@ -23,8 +23,6 @@ When('I select the acknowledge action on a problematic Resource', () => {
     .click();
 
   cy.get(`[aria-label="${actions.acknowledge}"]`)
-    .parent('button')
-    .first()
     .should('be.enabled')
     .click();
 
@@ -55,8 +53,6 @@ When('I select the downtime action on a problematic Resource', () => {
     .click();
 
   cy.get(`[aria-label="${actions.setDowntime}"]`)
-    .parent('button')
-    .first()
     .should('be.enabled')
     .click();
 

@@ -91,7 +91,7 @@
     "@tanstack/react-query": "^4.1.0",
     "@visx/visx": "2.9.0",
     "axios": "^0.25.0",
-    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#fix-accessibility-errors-lighthouse",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",
@@ -127,8 +127,7 @@
     "ts.data.json": "^2.1.0",
     "tss-react": "^4.1.1",
     "use-deep-compare-effect": "^1.8.1",
-    "yup": "^0.32.11" ,
-    "tss-react": "^4.0.0"
+    "yup": "^0.32.11"
   },
   "jest": {
     "testResultsProcessor": "jest-junit",
