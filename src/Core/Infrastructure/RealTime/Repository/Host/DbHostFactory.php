@@ -65,7 +65,8 @@ class DbHostFactory
             ->setLastCheck(self::createDateTimeFromTimestamp((int) $data['last_check']))
             ->setLastTimeUp(self::createDateTimeFromTimestamp((int) $data['last_time_up']))
             ->setMaxCheckAttempts(self::getIntOrNull($data['max_check_attempts']))
-            ->setCheckAttempts(self::getIntOrNull($data['check_attempt']));
+            ->setCheckAttempts(self::getIntOrNull($data['check_attempt']))
+            ->setAlias($data['alias']);
 
         $nextCheck = self::createDateTimeFromTimestamp(
             (int) $data['active_checks'] === 1 ? (int) $data['next_check'] : null
