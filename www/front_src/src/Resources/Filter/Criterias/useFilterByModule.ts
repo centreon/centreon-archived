@@ -11,7 +11,12 @@ import {
   CriteriaById,
 } from './models';
 
-const useFilterByModule = (): any => {
+interface FilterByModule {
+  newCriteriaValueName: Record<string, string>;
+  newSelectableCriterias: CriteriaById;
+}
+
+const useFilterByModule = (): FilterByModule => {
   const platformVersions = useAtomValue(platformVersionsAtom);
 
   const installedModules = platformVersions?.modules
@@ -31,7 +36,7 @@ const useFilterByModule = (): any => {
   let newSelectableResourceTypes = [...selectableResourceTypes];
   let newCriteriaValueNameById = { ...criteriaValueNameById };
 
-  const filters = filtersToAdd.map((item): any => {
+  const filters = filtersToAdd.map((item) => {
     if (item) {
       Object.keys(item).map((key, ind) => {
         newCriteriaValueNameById = {

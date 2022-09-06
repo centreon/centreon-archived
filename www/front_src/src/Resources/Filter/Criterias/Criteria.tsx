@@ -14,7 +14,7 @@ import {
   setCriteriaAndNewFilterDerivedAtom,
 } from '../filterAtoms';
 
-import { criteriaValueNameById, selectableCriterias } from './models';
+import { criteriaValueNameById } from './models';
 import useFilterByModule from './useFilterByModule';
 
 interface Props {

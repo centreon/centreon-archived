@@ -86,9 +86,13 @@ export const filterWithParsedSearchDerivedAtom = atom((get) => ({
   ],
 }));
 
-export const filterWithCustomParsedSearchDerived = (
-  nameCriteria?: any,
-): any => {
+export const filter = atom(
+  null,
+
+  (get, set, data) => set(filter, data),
+);
+
+export const filterByInstalledModules = (nameCriteria?: any): any => {
   const filterWithCustomSearchDerivedAtom = atom((get) => ({
     ...get(currentFilterAtom),
     criterias: [
