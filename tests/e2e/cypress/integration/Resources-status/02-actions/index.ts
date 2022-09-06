@@ -18,7 +18,10 @@ before(() => {
 
 When('I select the acknowledge action on a problematic Resource', () => {
   cy.contains(serviceInAcknowledgementName)
-    .parents('div[class="MuiTableRow-root"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
@@ -46,7 +49,10 @@ Then('the problematic Resource is displayed as acknowledged', () => {
 
 When('I select the downtime action on a problematic Resource', () => {
   cy.contains(serviceInDowntimeName)
-    .parents('div[class="MuiTableRow-root"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
