@@ -570,6 +570,7 @@ function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
         foreach ($sessionIds as $sessionId) {
             $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
             $statement->execute();
+        }
     }
 }
 
@@ -626,8 +627,9 @@ function getReadSessionRepository(): ReadSessionRepositoryInterface
 
 /**
  * Returns ACL Group IDs
+ * Ex: $queryValue = [':acl_action_id_1' => 1, ..., ':acl_action_id_3' => 3]
  *
- * @param int[] $queryValues
+ * @param array<string,string> $queryValues
  * @return int[]
  */
 function getAclGroupIdsByActionIds(array $queryValues): array
