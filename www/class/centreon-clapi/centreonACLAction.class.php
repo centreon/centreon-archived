@@ -255,8 +255,7 @@ class CentreonACLAction extends CentreonObject
             }
             unset($res);
         }
-        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
-        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+        $this->updateAclActionById($aclActionId);
     }
 
     /**
@@ -285,8 +284,7 @@ class CentreonACLAction extends CentreonObject
                 );
             }
         }
-        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
-        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+        $this->updateAclActionById($aclActionId);
     }
 
     /**
@@ -371,9 +369,8 @@ class CentreonACLAction extends CentreonObject
         if (! empty($ids)) {
             $id = (int) $ids[0];
             //Get all access groups linked to this action group
-            $aclGroupIds = $this->getAclGroupIdsByActionId($id);
+            $this->updateAclActionById($id);
             $this->object->delete($id);
-            $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
             $this->addAuditLog('d', $id, $objectName);
             $aclObj = new CentreonACL($this->dependencyInjector);
             $aclObj->reload(true);
@@ -500,8 +497,7 @@ class CentreonACLAction extends CentreonObject
 
             $this->object->update($objectId, $params);
             if (array_key_exists("acl_action_activate", $params)) {
-                $aclGroupIds = $this->getAclGroupIdsByActionId((int) $objectId);
-                $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+                $this->updateAclActionById((int) $objectId);
             }
             $p = $this->object->getParameters($objectId, $uniqueLabel);
 
@@ -514,5 +510,11 @@ class CentreonACLAction extends CentreonObject
                 );
             }
         }
+    }
+
+    public function updateAclActionById(int $aclActionId): void
+    {
+        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
+        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
     }
 }
