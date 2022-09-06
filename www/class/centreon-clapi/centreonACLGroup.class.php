@@ -404,7 +404,7 @@ class CentreonACLGroup extends CentreonObject
      *
      * @param int[] $aclGroupIds
      */
-    function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
+    private function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
     {
         $userIds = $this->getUsersIdsByAclGroup($aclGroupIds);
         $readSessionRepository = $this->getReadSessionRepository();
@@ -427,7 +427,7 @@ class CentreonACLGroup extends CentreonObject
      * @param int[] $aclGroupIds
      * @return int[]
      */
-    function getUsersIdsByAclGroup(array $aclGroupIds): array
+    private function getUsersIdsByAclGroup(array $aclGroupIds): array
     {
         $queryValues = [];
         foreach ($aclGroupIds as $index => $aclGroupId) {
@@ -460,7 +460,7 @@ class CentreonACLGroup extends CentreonObject
      *
      * @return ReadSessionRepositoryInterface
      */
-    function getReadSessionRepository(): ReadSessionRepositoryInterface
+    private function getReadSessionRepository(): ReadSessionRepositoryInterface
     {
         $kernel = \App\Kernel::createForWeb();
         $readSessionRepository = $kernel->getContainer()->get(
