@@ -56,19 +56,8 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
         $this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         $this->db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 
-        $columns = ['ctime AS time'];
-        $pattern = 'AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s';
-        foreach ($metrics as $metric) {
-            $columns[] = sprintf($pattern, $metric->getId(), $metric->getName());
-        }
-
-        $query = sprintf(
-            'SELECT %s FROM `:dbstg`.data_bin WHERE ctime >= :start AND ctime < :end GROUP BY time',
-            join(',', $columns)
-        );
-
+        $query = $this->generateDataBinQuery($metrics);
         $statement = $this->db->prepare($this->translateDbName($query));
-
         $statement->bindValue(':start', $startDate->getTimestamp(), PDO::PARAM_INT);
         $statement->bindValue(':end', $endDate->getTimestamp(), PDO::PARAM_INT);
         $statement->execute();
@@ -78,6 +67,32 @@ class DbReadPerformanceDataRepository extends AbstractRepositoryDRB implements R
         }
 
         $statement->closeCursor();
+    }
+
+    /**
+     * Generates SQL query statement to extract metric data from table data_bin
+     *
+     * @param  array<Metric> $metrics
+     * @return string
+     */
+    private function generateDataBinQuery(array $metrics): string
+    {
+        $metricIds = [];
+        $subQueryColumns = [];
+        $subQueryPattern = 'AVG(CASE WHEN id_metric = %d THEN `value` end) AS %s';
+        foreach ($metrics as $metric) {
+            $subQueryColumns[] = sprintf($subQueryPattern, $metric->getId(), $metric->getName());
+            $metricIds[] = $metric->getId();
+        }
+
+        $pattern = 'SELECT %s FROM `:dbstg`.data_bin WHERE ';
+        $pattern .= ' ctime >= :start AND ctime < :end AND id_metric IN (%s) GROUP BY time';
+
+        return sprintf(
+            $pattern,
+            join(', ', ['ctime AS time', ...$subQueryColumns]),
+            join(',', $metricIds)
+        );
     }
 
     /**
