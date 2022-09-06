@@ -472,7 +472,7 @@ function insertMacrosDesc($cmd, $ret)
         foreach ($tab1 as $key => $value) {
             $tab2 = preg_split("/\ \:\ /", $value, 2);
             $str = trim(substr($tab2[0], 6));
-            $sDesc = trim(str_replace("\r", "", $tab2[1]));
+            $sDesc = trim(str_replace("\r", "", $tab2[1] ?? ''));
             $pos = strpos($str, ")");
             if ($pos > 0) {
                 $sType = substr($str, 1, $pos - 1);
