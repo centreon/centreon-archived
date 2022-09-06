@@ -46,17 +46,16 @@ const ResourceActionButton = ({
 
   return (
     <Tooltip title={permitted ? '' : labelActionNotPermitted}>
-      <span>
-        <ActionButton
-          data-testid={label}
-          disabled={disabled}
-          startIcon={icon}
-          variant="contained"
-          onClick={onClick}
-        >
-          {label}
-        </ActionButton>
-      </span>
+      <ActionButton
+        aria-label={t(label)}
+        data-testid={label}
+        disabled={disabled}
+        startIcon={icon}
+        variant="contained"
+        onClick={onClick}
+      >
+        {label}
+      </ActionButton>
     </Tooltip>
   );
 };
