@@ -240,7 +240,8 @@ class CentreonACLGroup extends CentreonObject
 
                     $updateParams = array('acl_group_changed' => '1');
 
-                    if (isset($updateParams[$uniqueLabel])
+                    if (
+                        isset($updateParams[$uniqueLabel])
                         && $this->objectExists($updateParams[$uniqueLabel], $groupId) == true
                     ) {
                         throw new CentreonClapiException(self::NAMEALREADYINUSE);
@@ -450,7 +451,7 @@ class CentreonACLGroup extends CentreonObject
         }
         $statement->execute();
         $userIds = [];
-        while($result = $statement->fetch()) {
+        while ($result = $statement->fetch()) {
             $userIds[] = (int) $result["contact_contact_id"];
         }
 

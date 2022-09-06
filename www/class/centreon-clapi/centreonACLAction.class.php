@@ -479,7 +479,7 @@ class CentreonACLAction extends CentreonObject
         }
         $statement->execute();
         $userIds = [];
-        while($result = $statement->fetch()) {
+        while ($result = $statement->fetch()) {
             $userIds[] = (int) $result["contact_contact_id"];
         }
 
@@ -516,7 +516,7 @@ class CentreonACLAction extends CentreonObject
         );
         $statement->bindValue(":aclActionId", $actionId, \PDO::PARAM_INT);
         $statement->execute();
-        while($result = $statement->fetch()) {
+        while ($result = $statement->fetch()) {
             $aclGroupIds[] = (int) $result["acl_group_id"];
         };
 

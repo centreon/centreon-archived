@@ -216,7 +216,7 @@ function deleteActionInDB($actions = array())
             $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
         }
         $statement->execute();
-        while($result = $statement->fetch()) {
+        while ($result = $statement->fetch()) {
             $aclGroupIds[] = (int) $result["acl_group_id"];
         }
         $pearDB->query("DELETE FROM acl_actions WHERE acl_action_id = '" . $key . "'");
@@ -603,7 +603,7 @@ function getUsersIdsByAclGroup(array $aclGroupIds): array
     }
     $statement->execute();
     $userIds = [];
-    while($result = $statement->fetch()) {
+    while ($result = $statement->fetch()) {
         $userIds[] = (int) $result["contact_contact_id"];
     }
 
@@ -645,7 +645,7 @@ function getAclGroupIdsByActionIds(array $queryValues): array
     }
     $statement->execute();
     $aclGroupIds = [];
-    while($result = $statement->fetch()) {
+    while ($result = $statement->fetch()) {
         $aclGroupIds[] = (int) $result["acl_group_id"];
     }
 
