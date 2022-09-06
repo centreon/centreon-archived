@@ -409,14 +409,11 @@ class CentreonACLGroup extends CentreonObject
         $userIds = $this->getUsersIdsByAclGroup($aclGroupIds);
         $readSessionRepository = $this->getReadSessionRepository();
         foreach ($userIds as $userId) {
-            try {
-                $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-                $statement = $this->db->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
-                foreach ($sessionIds as $sessionId) {
-                    $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
-                    $statement->execute();
-                }
-            } catch (\Throwable $ex) {
+            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+            $statement = $this->db->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
+            foreach ($sessionIds as $sessionId) {
+                $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $statement->execute();
             }
         }
     }

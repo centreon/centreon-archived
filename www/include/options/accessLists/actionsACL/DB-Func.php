@@ -96,7 +96,7 @@ function enableActionInDB($aclActionId = null, $actions = array())
         );
         $statement->bindValue(
             ":acl_action_id_" . $sanitizedAclActionId,
-            $key,
+            $queryValues[":acl_action_id_" . $sanitizedAclActionId],
             \PDO::PARAM_INT
         );
         $statement->execute();
@@ -543,7 +543,8 @@ function listActions()
 }
 
 /**
- * Updates ACL actions for an authentified user from ACL Action ID
+ * Updates ACL actions for an authentified user from ACL Action ID.
+ * Ex: $queryValue = [':acl_action_id_1' => 1, ..., ':acl_action_id_3' => 3]
  *
  * @param array<string,string> $queryValues
  */
@@ -564,15 +565,11 @@ function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
     $userIds = getUsersIdsByAclGroup($aclGroupIds);
     $readSessionRepository = getReadSessionRepository();
     foreach ($userIds as $userId) {
-        try {
-            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-            $statement = $pearDB->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
-            foreach ($sessionIds as $sessionId) {
-                $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
-                $statement->execute();
-            }
-        } catch (\Throwable $ex) {
-        }
+        $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+        $statement = $pearDB->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
+        foreach ($sessionIds as $sessionId) {
+            $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+            $statement->execute();
     }
 }
 
