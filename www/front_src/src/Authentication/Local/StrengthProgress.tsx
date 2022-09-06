@@ -3,7 +3,13 @@ import { useMemo } from 'react';
 import { findLast, gt, lt } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { alpha, LinearProgress, Theme, Typography } from '@mui/material';
+import {
+  alpha,
+  LinearProgress,
+  Theme,
+  Typography,
+  emphasize,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import memoizeComponent from '../../Resources/memoizedComponent';
@@ -22,7 +28,7 @@ interface Props {
 }
 const useStyles = makeStyles<Theme, Threshold>((theme) => ({
   label: {
-    color: ({ color }): string => color,
+    color: ({ color }): string => emphasize(color, -0.8),
   },
   linear: {
     backgroundColor: ({ color }): string => color,

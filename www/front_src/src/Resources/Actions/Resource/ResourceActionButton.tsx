@@ -32,13 +32,14 @@ const ResourceActionButton = ({
   if (displayCondensed) {
     return (
       <IconButton
+        ariaLabel={t(label)}
         data-testid={label}
         disabled={disabled}
         size="large"
         title={title}
         onClick={onClick}
       >
-        <div aria-label={label}>{icon}</div>
+        {icon}
       </IconButton>
     );
   }

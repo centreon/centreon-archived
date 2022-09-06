@@ -125,6 +125,7 @@
     "string-argv": "^0.3.1",
     "systemjs": "^6.12.1",
     "ts.data.json": "^2.1.0",
+    "tss-react": "^4.1.1",
     "use-deep-compare-effect": "^1.8.1",
     "yup": "^0.32.11"
   },

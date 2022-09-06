@@ -3,8 +3,6 @@ import { isNil, not } from 'ramda';
 import { CreateCSSProperties, makeStyles } from '@mui/styles';
 import { Fade, Theme } from '@mui/material';
 
-import { labelCentreonWallpaper } from './translatedLabels';
-
 export const defaultBackground = `
 linear-gradient(270deg, rgb(4, 76, 135), rgb(12, 114, 196), rgba(102, 183, 227, 0.2)),
 linear-gradient(180deg, rgb(1, 36, 56), rgba(104, 186, 229, 0.2)),
@@ -34,7 +32,7 @@ const BackgroundImage = ({ image }: Props): JSX.Element => {
 
   return (
     <Fade in={not(isNil(image))}>
-      <div aria-label={labelCentreonWallpaper} className={classes.wallpaper} />
+      <div className={classes.wallpaper} id="Centreon_wallpaper" />
     </Fade>
   );
 };
