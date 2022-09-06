@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
   },
   icons: {
     alignItems: 'center',
-    borderLeft: '1px solid white',
+    borderLeft: `1px solid ${theme.palette.common.white}`,
     display: 'flex',
     gap: theme.spacing(2),
     [theme.breakpoints.down(1200)]: {
