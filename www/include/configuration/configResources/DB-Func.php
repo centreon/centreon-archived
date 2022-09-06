@@ -294,23 +294,34 @@ function insertResource($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-    $rq = "INSERT INTO cfg_resource ";
-    $rq .= "(resource_name, resource_line, resource_comment, resource_activate) ";
-    $rq .= "VALUES (";
-    isset($ret["resource_name"]) && $ret["resource_name"] != null
-        ? $rq .= "'" . $pearDB->escape($ret["resource_name"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["resource_line"]) && $ret["resource_line"] != null
-        ? $rq .= "'" . $pearDB->escape($ret["resource_line"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["resource_comment"]) && $ret["resource_comment"] != null
-        ? $rq .= "'" . $pearDB->escape($ret["resource_comment"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != null
-        ? $rq .= "'" . $ret["resource_activate"]["resource_activate"] . "'"
-        : $rq .= "NULL";
-    $rq .= ")";
-    $pearDB->query($rq);
+    $statement = $pearDB->prepare(
+        "INSERT INTO cfg_resource
+        (resource_name, resource_line, resource_comment, resource_activate)
+        VALUES (:name, :line, :comment, :is_activated)"
+    );
+    $statement->bindValue(
+        ':name',
+        (isset($ret["resource_name"]) && ! empty($ret["resource_name"]))
+            ? $ret["resource_name"]
+            : null
+    );
+    $statement->bindValue(
+        ':line',
+        (isset($ret["resource_line"]) && ! empty($ret["resource_line"]))
+            ? $ret["resource_line"]
+            : null
+    );
+    $statement->bindValue(
+        ':comment',
+        (isset($ret["resource_comment"]) && ! empty($ret["resource_comment"]))
+            ? $ret["resource_comment"]
+            : null
+    );
+    $isActivated = isset($ret["resource_activate"]["resource_activate"])
+        && (bool) (int) $ret["resource_activate"]["resource_activate"];
+    $statement->bindValue(':is_activated', (string) (int) $isActivated);
+    $statement->execute();
+
     $dbResult = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
     $resource_id = $dbResult->fetch();
 
