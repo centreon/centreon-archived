@@ -127,7 +127,8 @@
     "ts.data.json": "^2.1.0",
     "tss-react": "^4.1.1",
     "use-deep-compare-effect": "^1.8.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11" ,
+    "tss-react": "^4.0.0"
   },
   "jest": {
     "testResultsProcessor": "jest-junit",

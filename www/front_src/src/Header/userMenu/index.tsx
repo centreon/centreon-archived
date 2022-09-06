@@ -135,10 +135,19 @@ const useStyles = makeStyles((theme) => ({
   },
   icons: {
     alignItems: 'center',
+    borderLeft: `1px solid ${theme.palette.common.white}`,
     display: 'flex',
     gap: theme.spacing(2),
     [theme.breakpoints.down(1200)]: {
       gap: theme.spacing(1),
+      paddingLeft: theme.spacing(2.5),
+    },
+    paddingLeft: theme.spacing(4),
+    [theme.breakpoints.down(900)]: {
+      paddingLeft: theme.spacing(1.5),
+    },
+    [theme.breakpoints.down(640)]: {
+      borderLeft: 'none',
     },
   },
   loaderUserMenu: {
@@ -179,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    fontSize: theme.spacing(3.7),
+    fontSize: theme.spacing(4),
   },
   wrapRightUser: {
     alignItems: 'center',
@@ -190,13 +199,13 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapRightUserItems: {
     display: 'flex',
-    gap: theme.spacing(8),
+    gap: theme.spacing(4),
     justifyContent: 'space-between',
     width: '100%',
     [theme.breakpoints.down(1200)]: {
       gap: theme.spacing(2.5),
     },
-    [theme.breakpoints.down(1200)]: {
+    [theme.breakpoints.down(900)]: {
       gap: theme.spacing(1.5),
     },
   },

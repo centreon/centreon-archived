@@ -37,11 +37,11 @@ import {
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
     [theme.breakpoints.up(767)]: {
-      padding: theme.spacing(1.5),
+      padding: theme.spacing(1.5, 1.5, 1.5, 0),
     },
     boxSizing: 'border-box',
     margin: theme.spacing(0, 'auto'),
-    padding: theme.spacing(1.5, 2.5, 0, 2.5),
+    padding: theme.spacing(1.5, 2.5, 0, 0),
   },
   extensionsTypes: {
     color: theme.palette.text.primary,
