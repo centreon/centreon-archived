@@ -1,36 +1,55 @@
-import { useAtomValue } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
 import SaveIcon from '@mui/icons-material/SaveAlt';
 import { Button, Stack } from '@mui/material';
 
-import {
-  getDatesDerivedAtom,
-  selectedTimePeriodAtom,
-} from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
-import { labelExportToCSV } from '../../../translatedLabels';
-import { detailsAtom } from '../../detailsAtoms';
+import { SearchParameter } from '@centreon/ui';
 
-const ExportToCsv = (): JSX.Element => {
+import { labelExportToCSV } from '../../../translatedLabels';
+
+interface Props {
+  getSearch: () => SearchParameter | undefined;
+  timelineEndpoint: string;
+}
+
+const ExportToCsv = ({ getSearch, timelineEndpoint }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const details = useAtomValue(detailsAtom);
-  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
-  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const timelineDownloadEndpoint = `${timelineEndpoint}/download`;
 
-  const [start, end] = getIntervalDates(selectedTimePeriod);
+  const data = getSearch();
 
-  const timelineDownloadEndpoint = `${details?.links.endpoints.timeline}/download`;
+  const paramsDate = data?.conditions?.map((item) => {
+    const { field } = item;
 
-  const search = {
-    $and: [{ date: { $gt: start } }, { date: { $lt: end } }],
-  };
+    const dateValues = Object.entries(item?.values as Record<string, string>);
 
-  const exportToCSVEndpoint = `${timelineDownloadEndpoint}?search=${JSON.stringify(
-    search,
-  )}`;
+    const results = dateValues.map(([key, value]) => ({
+      [field]: { [key]: value },
+    }));
+
+    return results;
+  });
+
+  const paramsType = data?.lists?.map((item) => {
+    const { field } = item;
+
+    const types = { $in: item?.values };
+
+    return { [field]: types };
+  });
 
   const exportToCsv = (): void => {
+    const operator = '$and';
+
+    const search = {
+      [operator]: [{ [operator]: paramsType }, { [operator]: paramsDate }],
+    };
+
+    const exportToCSVEndpoint = `${timelineDownloadEndpoint}?search=${JSON.stringify(
+      search,
+    )}`;
+
     window.open(exportToCSVEndpoint, 'noopener', 'noreferrer');
   };
 

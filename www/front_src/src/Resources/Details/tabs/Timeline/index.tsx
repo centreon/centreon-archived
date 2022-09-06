@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, path, isNil } from 'ramda';
+import { prop, isEmpty, path, isNil, equals } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { Paper, Stack } from '@mui/material';
@@ -23,6 +23,7 @@ import {
   getDatesDerivedAtom,
   selectedTimePeriodAtom,
 } from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
+import { ResourceType } from '../../../models';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -112,6 +113,9 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTypes(typeIds);
   };
 
+  const isExportCsv =
+    !equals(details?.type, ResourceType.host) && details?.parent;
+
   return (
     <InfiniteScroll
       details={details}
@@ -127,7 +131,12 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
               onChange={changeSelectedTypes}
             />
           </Paper>
-          <ExportToCsv />
+          {isExportCsv && (
+            <ExportToCsv
+              getSearch={getSearch}
+              timelineEndpoint={timelineEndpoint as string}
+            />
+          )}
         </Stack>
       }
       limit={limit}
