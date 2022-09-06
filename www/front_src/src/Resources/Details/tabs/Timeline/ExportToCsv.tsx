@@ -1,27 +1,34 @@
-import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
+import { useTranslation } from 'react-i18next';
 
-import { Button, Stack } from '@mui/material';
 import SaveIcon from '@mui/icons-material/SaveAlt';
+import { Button, Stack } from '@mui/material';
 
-import { labelExportToCSV } from '../../../translatedLabels';
-import { detailsAtom } from '../../detailsAtoms';
 import {
   getDatesDerivedAtom,
   selectedTimePeriodAtom,
 } from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
+import { labelExportToCSV } from '../../../translatedLabels';
+import { detailsAtom } from '../../detailsAtoms';
 
 const ExportToCsv = (): JSX.Element => {
   const { t } = useTranslation();
 
   const details = useAtomValue(detailsAtom);
-
   const getIntervalDates = useAtomValue(getDatesDerivedAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
 
   const [start, end] = getIntervalDates(selectedTimePeriod);
 
-  const exportToCSVEndpoint = `${details?.links.endpoints.timeline}/download?start_date=${start}&end_date=${end}`;
+  const timelineDownloadEndpoint = `${details?.links.endpoints.timeline}/download`;
+
+  const search = {
+    $and: [{ date: { $gt: start } }, { date: { $lt: end } }],
+  };
+
+  const exportToCSVEndpoint = `${timelineDownloadEndpoint}?search=${JSON.stringify(
+    search,
+  )}`;
 
   const exportToCsv = (): void => {
     window.open(exportToCSVEndpoint, 'noopener', 'noreferrer');
