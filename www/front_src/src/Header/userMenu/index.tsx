@@ -150,9 +150,6 @@ const useStyles = makeStyles((theme) => ({
       borderLeft: 'none',
     },
   },
-  loaderUserMenu: {
-    marginRight: theme.spacing(22 / 8),
-  },
   menu: {
     backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
       ? theme.palette.background.default
@@ -361,7 +358,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
+    return <MenuSkeleton width={24} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);

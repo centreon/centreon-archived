@@ -17,22 +17,23 @@ import UserMenu from './userMenu';
 export const isDarkMode = (theme: Theme): boolean =>
   equals(theme.palette.mode, ThemeMode.dark);
 
-export const headerHeight = 8;
+export const headerHeight = 6;
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     display: 'flex',
     margin: theme.spacing(0, 4, 0, 3),
     width: '100%',
   },
   header: {
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: isDarkMode(theme)
       ? theme.palette.background.default
       : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(headerHeight),
+    paddingBottom: theme.spacing(0.5),
     width: '100%',
   },
   item: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: theme.spacing(15),
   },
   leftContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     display: 'flex',
     flex: 1,
     gap: theme.spacing(3),
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flex: 0.5,
+    justifyContent: 'flex-end',
   },
 }));
 

@@ -137,7 +137,7 @@ const HostStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter<HostData>
       endpoint={hostStatusEndpoint}
-      loaderWidth={16}
+      loaderWidth={14}
       schema={statusSchema}
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
