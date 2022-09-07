@@ -53,9 +53,6 @@ require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
  */
 class CentreonConfigPoller
 {
-    /**
-     * @var \CentreonDB $DB
-     */
     private $DB;
     private $DBC;
     private $dependencyInjector;
