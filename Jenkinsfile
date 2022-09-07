@@ -140,7 +140,7 @@ stage('Deliver sources') {
     sh 'sudo apt install software-properties-common -y'
     sh 'sudo add-apt-repository ppa:ondrej/php -y'
     sh 'sudo apt update'
-    sh 'sudo apt install php8.1'
+    sh 'sudo apt install php8.1 -y'
     sh 'php -v'
     sh 'sudo update-alternatives --set php /usr/bin/php7.2'
     sh 'exit 2'
