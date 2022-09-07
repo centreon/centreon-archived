@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
-    justifyContent: 'space-between',
     margin: theme.spacing(0, 4, 0, 3),
     width: '100%',
   },
@@ -36,9 +35,13 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(headerHeight),
     width: '100%',
   },
+  item: {
+    flex: 1,
+  },
   leftContainer: {
     alignItems: 'center',
     display: 'flex',
+    flex: 1,
     gap: theme.spacing(3),
     [theme.breakpoints.down(768)]: {
       gap: theme.spacing(2),
@@ -51,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   userMenuContainer: {
     alignItems: 'center',
     display: 'flex',
+    flex: 0.5,
   },
 }));
 
@@ -62,10 +66,18 @@ const Header = (): JSX.Element => {
     <header className={classes.header} ref={headerRef}>
       <div className={classes.container}>
         <div className={classes.leftContainer}>
-          <PollerMenu />
-          <ServiceStatusCounter />
-          <HostStatusCounter />
-          <FederatedComponent path="/bam/header/topCounter" />
+          <div className={classes.item}>
+            <PollerMenu />
+          </div>
+          <div className={classes.item}>
+            <ServiceStatusCounter />
+          </div>
+          <div className={classes.item}>
+            <HostStatusCounter />
+          </div>
+          <div className={classes.item}>
+            <FederatedComponent path="/bam/header/topCounter" />
+          </div>
         </div>
         <div className={classes.userMenuContainer}>
           <UserMenu headerRef={headerRef} />

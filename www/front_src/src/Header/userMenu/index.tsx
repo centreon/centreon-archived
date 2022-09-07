@@ -200,14 +200,15 @@ const useStyles = makeStyles((theme) => ({
   wrapRightUserItems: {
     display: 'flex',
     gap: theme.spacing(4),
-    justifyContent: 'space-between',
-    width: '100%',
+    // justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     [theme.breakpoints.down(1200)]: {
       gap: theme.spacing(2.5),
     },
     [theme.breakpoints.down(900)]: {
       gap: theme.spacing(1.5),
     },
+    width: '100%',
   },
 }));
 interface Props {
@@ -361,7 +362,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
+    return <div />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);

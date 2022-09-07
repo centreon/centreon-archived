@@ -63,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     borderRight: '1px solid white',
     display: 'flex',
-    paddingRight: theme.spacing(3),
     [theme.breakpoints.down(768)]: {
       paddingRight: theme.spacing(1),
     },
@@ -196,7 +195,7 @@ const PollerMenu = (): JSX.Element | null => {
   }
 
   if (isNil(issues)) {
-    return <MenuSkeleton width={loaderWidth} />;
+    return <div />;
   }
 
   const redirectToPollerConfiguration = (): void => {
