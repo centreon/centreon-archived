@@ -304,9 +304,12 @@ class CentreonMeta
         if ($res->rowCount()) {
             $row = $res->fetchRow();
             $serviceId = $row['service_id'];
+            $query = 'UPDATE service SET display_name = :display_name WHERE service_id = :service_id';
+            $statement = $this->db->prepare($query);
             if ($row['display_name'] !== $metaName) {
-                $query = 'UPDATE service SET display_name = "' . $metaName . '" WHERE service_id = ' . $serviceId;
-                $this->db->query($query);
+                $statement->bindValue(':display_name', $metaName, \PDO::PARAM_STR);
+                $statement->bindValue(':service_id', (int) $serviceId, \PDO::PARAM_INT);
+                $statement->execute();
             }
         } else {
             $query = 'INSERT INTO service (service_description, display_name, service_register) '
@@ -314,11 +317,15 @@ class CentreonMeta
                 . '("' . $composedName . '", "' . $metaName . '", "2")';
             $this->db->query($query);
             $query = 'INSERT INTO host_service_relation(host_host_id, service_service_id) '
-                . 'VALUES ('
-                . $hostId . ','
-                . '(SELECT service_id FROM service WHERE service_description = "' . $composedName . '" AND service_register = "2" LIMIT 1)'
+                . 'VALUES (:host_id,'
+                . '(SELECT service_id 
+                    FROM service 
+                    WHERE service_description = :service_description AND service_register = "2" LIMIT 1)'
                 . ')';
-            $this->db->query($query);
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':host_id', (int) $hostId, \PDO::PARAM_INT);
+            $statement->bindValue(':service_description', $composedName, \PDO::PARAM_STR);
+            $statement->execute();
             $res = $this->db->query($queryService);
             if ($res->rowCount()) {
                 $row = $res->fetchRow();
