@@ -137,7 +137,7 @@ def checkoutCentreonBuild() {
 stage('Deliver sources') {
   node {
     sh 'php -v'
-    sh 'sudo apt install software-properties-common'
+    sh 'sudo apt install software-properties-common -y'
     sh 'sudo add-apt-repository ppa:ondrej/php -y'
     sh 'sudo apt update'
     sh 'sudo apt install php8.1'
