@@ -70,7 +70,7 @@ const RessourceStatusCounter = <
   }
 
   if (!data) {
-    return <div />;
+    return <MenuSkeleton width={loaderWidth} />;
   }
 
   const hasPending = data.pending > 0;

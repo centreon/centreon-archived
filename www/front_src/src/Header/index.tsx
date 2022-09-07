@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   item: {
     flex: 1,
+    maxWidth: theme.spacing(15),
   },
   leftContainer: {
     alignItems: 'center',
