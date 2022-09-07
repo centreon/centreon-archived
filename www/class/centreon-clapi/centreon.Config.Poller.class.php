@@ -39,6 +39,10 @@ namespace CentreonClapi;
 use App\Kernel;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\ServiceProvider;
+use CentreonRemote\Domain\Service\TaskService;
+use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Core\Domain\Engine\Model\EngineCommandGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
