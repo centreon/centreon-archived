@@ -548,6 +548,19 @@ class Broker extends AbstractObjectJSON
     }
 
     /**
+     * Method retrieving the Centreon Platform UUID generated during web installation
+     *
+     * @return string
+     */
+    private function getCentreonPlatformUuid(): string
+    {
+        global $pearDB;
+        $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
+        $record = $result->fetch(\PDO::FETCH_ASSOC);
+        return $record['value'];
+    }
+
+    /**
      * Generate complete proxy url
      *
      * @return array with lua parameters
@@ -611,6 +624,14 @@ class Broker extends AbstractObjectJSON
                 ];
             }
         }
+
+        $uuid = $this->getCentreonPlatformUuid();
+
+        $luaParameters[] = [
+            'type' => 'string',
+            'name' => 'centreon_platform_uuid',
+            'value' => $uuid
+        ];
 
         return $luaParameters;
     }
