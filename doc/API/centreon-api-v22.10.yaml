@@ -4795,11 +4795,9 @@ components:
               type: boolean
             attribute_path:
               type: string
-              nullable: false
               example: info.items[0].prop1
             endpoint:
               type: string
-              nullable: false
             authorized_values:
               type: array
               items:
@@ -4811,7 +4809,6 @@ components:
           nullable: true
         groups_mapping:
           type: object
-          nullable: false
           required:
             - is_enabled
             - attribute_path
@@ -4836,21 +4833,8 @@ components:
                     type: string
                     description: "Attribute group value"
                     example: "group1"
-                  contact_group:
-                    type: object
-                    description: "Contact group"
-                    properties:
-                      id:
-                        type: integer
-                        description: "Contact group ID"
-                        example: 1
-                      name:
-                        type: string
-                        description: "Contact group name"
-                        example: "cg1"
         roles_mapping:
           type: object
-          nullable: false
           required:
             - is_enabled
             - apply_only_first_role
@@ -4864,11 +4848,9 @@ components:
               type: boolean
             attribute_path:
               type: string
-              nullable: false
               example: info.items[0].role
             endpoint:
               type: string
-              nullable: false
             relations:
               type: array
               items:
@@ -4878,6 +4860,31 @@ components:
                     type: string
                     description: "Attribute role value"
                     example: "Administrator"
+    ReadAuthenticationOpenIdProvider:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            contact_group:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                  description: "Contact group ID"
+                  example: 1
+                name:
+                  type: string
+                  description: "Contact group name"
+                  example: "Default"
+            authorization_rules:
+              type: array
+              items:
+                type: object
+                properties:
+                  claim_value:
+                    type: string
+                    description: "Authorization claim value"
+                    example: "scope"
                   access_group:
                     type: object
                     description: "Access group"
@@ -4889,64 +4896,99 @@ components:
                       name:
                         type: string
                         description: "Access group name"
-                        example: "Administrators"
-    ReadAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group:
-          type: object
-          nullable: true
-          properties:
-            id:
+                        example: "Default"
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group:
+                        type: object
+                        description: "Contact group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Contact group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Contact group name"
+                            example: "cg1"
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      access_group:
+                        type: object
+                        description: "Access group"
+                        properties:
+                          id:
+                            type: integer
+                            description: "Access group ID"
+                            example: 1
+                          name:
+                            type: string
+                            description: "Access group name"
+                            example: "Administrators"
+    WriteAuthenticationOpenIdProvider:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+        - properties:
+            contact_group_id:
               type: integer
               description: "Contact group ID"
               example: 1
-            name:
-              type: string
-              description: "Contact group name"
-              example: "Default"
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
-                type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group:
+              nullable: true
+            authorization_rules:
+              type: array
+              items:
                 type: object
-                description: "Access group"
                 properties:
-                  id:
+                  claim_value:
+                    type: string
+                    description: "Authorization claim value"
+                    example: "scope"
+                  access_group_id:
                     type: integer
                     description: "Access group ID"
                     example: 1
-                  name:
-                    type: string
-                    description: "Access group name"
-                    example: "Default"
-    WriteAuthenticationOpenIdProvider:
-      $ref: '#/components/schemas/AuthenticationOpenIdProvider'
-      properties:
-        contact_group_id:
-          type: integer
-          description: "Contact group ID"
-          example: 1
-          nullable: true
-        authorization_rules:
-          type: array
-          items:
-            type: object
-            properties:
-              claim_value:
-                type: string
-                description: "Authorization claim value"
-                example: "scope"
-              access_group_id:
-                type: integer
-                description: "Access group ID"
-                example: 1
+            groups_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      group_value:
+                        type: string
+                        description: "Attribute group value"
+                        example: "group1"
+                      contact_group_id:
+                        type: integer
+                        description: "Contact group id"
+            roles_mapping:
+              type: object
+              properties:
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      access_group_id:
+                        type: integer
+                        description: "Access group id"
     Comment.Resources:
       type: object
       required: [ resources ]
