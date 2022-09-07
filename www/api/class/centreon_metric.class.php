@@ -196,7 +196,7 @@ class CentreonMetric extends CentreonWebService
         } else {
             throw new \RestBadRequestException('400 Bad Request, invalid service id');
         }
-        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
+        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if ($nameArg !== false) {
             $queryValues['name'] = '%' . $nameArg . '%';
         } else {
