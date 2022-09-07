@@ -132,7 +132,7 @@ class Local implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return void
+     * Update user in data storage
      */
     public function updateUser(): void
     {

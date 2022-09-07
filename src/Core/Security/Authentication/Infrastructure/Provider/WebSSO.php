@@ -126,16 +126,25 @@ class WebSSO implements ProviderAuthenticationInterface
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public function isUpdateACLSupported(): bool
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function canRefreshToken(): bool
     {
         return true;
     }
 
+    /**
+     * @return ContactInterface|null
+     */
     public function getAuthenticatedUser(): ?ContactInterface
     {
         return $this->authenticatedUser;
@@ -241,16 +250,13 @@ class WebSSO implements ProviderAuthenticationInterface
         return $userAlias;
     }
 
-    /**
-     * @return void
-     */
     public function importUser(): void
     {
         throw new \DomainException("Feature not available for WebSSO provider");
     }
 
     /**
-     * @return void
+     * Update user in data storage
      */
     public function updateUser(): void
     {
