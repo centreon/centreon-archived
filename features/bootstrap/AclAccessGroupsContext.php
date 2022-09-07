@@ -247,7 +247,7 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ACLGroupConfigurationListingPage($this);
         $object = $this->page->getEntry($this->accessGroupsName);
-        if ($object['status'] !== 'Disabled') {
+        if ($object['status'] === 'Enabled') {
             throw new Exception($this->accessGroupsName . ' is still enabled');
         }
     }
