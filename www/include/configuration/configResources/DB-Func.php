@@ -301,19 +301,19 @@ function insertResource($ret = array())
     );
     $statement->bindValue(
         ':name',
-        (isset($ret["resource_name"]) && ! empty($ret["resource_name"]))
+        ! empty($ret["resource_name"])
             ? $ret["resource_name"]
             : null
     );
     $statement->bindValue(
         ':line',
-        (isset($ret["resource_line"]) && ! empty($ret["resource_line"]))
+        ! empty($ret["resource_line"])
             ? $ret["resource_line"]
             : null
     );
     $statement->bindValue(
         ':comment',
-        (isset($ret["resource_comment"]) && ! empty($ret["resource_comment"]))
+        ! empty($ret["resource_comment"])
             ? $ret["resource_comment"]
             : null
     );
