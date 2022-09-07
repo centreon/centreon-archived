@@ -137,6 +137,7 @@ def checkoutCentreonBuild() {
 stage('Deliver sources') {
   node {
     sh 'php -v'
+    sh 'update-alternatives --set php /usr/bin/php7.2'
     sh 'exit 2'
     dir('centreon-web') {
       checkout scm
