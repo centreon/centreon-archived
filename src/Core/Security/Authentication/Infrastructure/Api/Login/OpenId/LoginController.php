@@ -55,15 +55,15 @@ class LoginController extends AbstractController
     ): object {
         $request = LoginRequest::createForOpenId(
             $request->getClientIp(),
-            $request->query->get("code"));
+            $request->query->get("code")
+        );
 
         $useCase($request, $presenter);
 
         $response = $presenter->getPresentedData();
         if ($response->getException() !== null) {
             return View::createRedirect(
-                $this->getBaseUrl() . '/login?authenticationError=' . $response->getError()->getMessage(),
-                Response::HTTP_FOUND
+                $this->getBaseUrl() . '/login?authenticationError=' . $response->getError()->getMessage()
             );
         }
 

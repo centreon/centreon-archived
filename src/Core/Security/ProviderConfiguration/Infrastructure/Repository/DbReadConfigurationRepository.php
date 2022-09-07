@@ -45,11 +45,14 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
 {
     use LoggerTrait;
 
+    /**
+     * @param DatabaseConnection $db
+     * @param ReadOpenIdConfigurationRepositoryInterface $readOpenIdConfigurationRepository
+     * @param ConfigurationBuilderInterface $configurationBuilder
+     */
     public function __construct(
         DatabaseConnection $db,
-        private ReadOpenIdConfigurationRepositoryInterface $readOpenIdConfigurationRepository
-    )
-    {
+        private ReadOpenIdConfigurationRepositoryInterface $readOpenIdConfigurationRepository) {
         $this->db = $db;
     }
 

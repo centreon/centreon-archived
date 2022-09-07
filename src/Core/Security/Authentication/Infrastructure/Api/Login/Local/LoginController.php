@@ -54,11 +54,18 @@ class LoginController extends AbstractController
         LoginPresenter $presenter,
         SessionInterface $session): object {
         $payload = json_decode($request->getContent(), true);
-        // todo json validation file
+
+        $referer = $request->headers->get('referer') ?
+            parse_url(
+                $request->headers->get('referer'),
+                PHP_URL_QUERY
+            ) : null;
+
         $request = LoginRequest::createForLocal(
             $payload["login"] ?? null,
             $payload["password"] ?? null,
-            $request->getClientIp());
+            $request->getClientIp(),
+                $referer);
 
         try {
             $useCase($request, $presenter);

@@ -25,6 +25,7 @@ namespace Tests\Core\Security\Authentication\Application\UseCase\LoginOpenIdSess
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use CentreonDB;
@@ -99,6 +100,7 @@ beforeEach(function () {
     $this->writeSessionRepository = $this->createMock(WriteSessionRepository::class);
     $this->writeSessionTokenRepository = $this->createMock(WriteSessionTokenRepositoryInterface::class);
     $this->aclUpdater = $this->createMock(AclUpdaterInterface::class);
+    $this->menuService = $this->createMock(MenuServiceInterface::class);
     $this->defaultRedirectUri = '/monitoring/resources';
 
     $configuration = new Configuration(1, 'openid', 'openid', '{}', true, false);
@@ -150,6 +152,7 @@ it('expects to return an error message in presenter when no provider configurati
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
         $this->aclUpdater,
+        $this->menuService,
         $this->defaultRedirectUri
     );
 
@@ -178,6 +181,7 @@ it('expects to execute authenticateOrFail method from OpenIdProvider', function 
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
         $this->aclUpdater,
+        $this->menuService,
         $this->defaultRedirectUri
     );
     $useCase($request, $this->presenter);
@@ -219,6 +223,7 @@ it(
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
             $this->aclUpdater,
+            $this->menuService,
             $this->defaultRedirectUri
         );
         $useCase($request, $this->presenter);
@@ -262,6 +267,7 @@ it('expects to return an error message in presenter when the provider ' .
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
             $this->aclUpdater,
+            $this->menuService,
             $this->defaultRedirectUri
         );
 
@@ -310,6 +316,7 @@ it('should update access groups for the authenticated user', function () {
         $this->writeTokenRepository,
         $this->writeSessionTokenRepository,
         $this->aclUpdater,
+        $this->menuService,
         $this->defaultRedirectUri
     );
 

@@ -554,6 +554,7 @@ class LoginSessionTest extends TestCase
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
             $this->aclUpdater,
+            $this->menuService,
             $this->defaultRedirectUri
         );
     }

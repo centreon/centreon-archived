@@ -32,28 +32,39 @@ class LoginRequest
      * @param string|null $username
      * @param string|null $password
      * @param string|null $code
+     * @param string|null $refererQueryParameters
      */
     private function __construct(
         public string $providerName,
         public ?string $clientIp = null,
         public ?string $username = null,
         public ?string $password = null,
-        public ?string $code = null) {
+        public ?string $code = null,
+        public ?string $refererQueryParameters = null) {
     }
 
     /**
      * @param string $username
      * @param string $password
      * @param string|null $clientIp
+     * @param string|null $refererQueryParameters
      * @return LoginRequest
      */
     public static function createForLocal(
         string $username,
         string $password,
-        ?string $clientIp = null): self
-    {
+        ?string $clientIp = null,
+        ?string $refererQueryParameters = null
+    ): self {
 
-        return new self(Provider::LOCAL, $clientIp, $username, $password);
+        return new self(
+            Provider::LOCAL,
+            $clientIp,
+            $username,
+            $password,
+            null,
+            $refererQueryParameters
+        );
     }
 
     /**
@@ -63,7 +74,7 @@ class LoginRequest
      */
     public static function createForOpenId(string $clientIp, string $code): self
     {
-        return new self(Provider::OPENID, $clientIp, null, $code);
+        return new self(Provider::OPENID, $clientIp, null, null, $code);
     }
 
     /**
