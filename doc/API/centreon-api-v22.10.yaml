@@ -4978,6 +4978,7 @@ components:
                       contact_group_id:
                         type: integer
                         description: "Contact group id"
+                        example: 1
             roles_mapping:
               type: object
               properties:
@@ -4989,6 +4990,7 @@ components:
                       access_group_id:
                         type: integer
                         description: "Access group id"
+                        example: 1
     Comment.Resources:
       type: object
       required: [ resources ]
