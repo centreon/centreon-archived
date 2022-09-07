@@ -135,7 +135,7 @@ def switchToPhpVersion(version) {
   sh 'sudo apt install software-properties-common -y'
   sh 'sudo add-apt-repository ppa:ondrej/php -y'
   sh 'sudo apt update'
-  sh "sudo apt install php${version} -y"
+  sh "sudo apt install php${version} php${version}-dom -y"
 }
 
 def retrieveOriginPhpVersion() {
