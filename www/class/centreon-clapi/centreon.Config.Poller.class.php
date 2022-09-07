@@ -39,10 +39,6 @@ namespace CentreonClapi;
 use App\Kernel;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\ServiceProvider;
-use CentreonRemote\Domain\Service\TaskService;
-use Centreon\Domain\Service\AppKeyGeneratorService;
-use Centreon\Infrastructure\Service\CentcoreCommandService;
-use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Core\Domain\Engine\Model\EngineCommandGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -57,6 +53,9 @@ require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
  */
 class CentreonConfigPoller
 {
+    /**
+     * @var \CentreonDB $DB
+     */
     private $DB;
     private $DBC;
     private $dependencyInjector;
@@ -192,11 +191,13 @@ class CentreonConfigPoller
         $poller_id = $this->getPollerId($variables);
         $this->testPollerId($poller_id);
 
-        $result = $this->DB->query(
-            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->DB->escape($poller_id) . "'  LIMIT 1"
+        $statement = $this->DB->prepare(
+            "SELECT * FROM `nagios_server` WHERE `id` = :poller_id  LIMIT 1"
         );
-        $host = $result->fetch();
-        $result->closeCursor();
+        $statement->bindValue(':poller_id', (int) $poller_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $host = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         $this->commandGenerator = $this->container->get(EngineCommandGenerator::class);
         $reloadCommand = $this->commandGenerator->getEngineCommand('RELOAD');
@@ -208,10 +209,12 @@ class CentreonConfigPoller
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
-        $this->DB->query(
-            "UPDATE `nagios_server` SET `last_restart` = '" . time()
-            . "' WHERE `id` = '" . $this->DB->escape($poller_id) . "' LIMIT 1"
+        $statement = $this->DB->prepare(
+            "UPDATE `nagios_server` SET `last_restart` = :last_restart WHERE `id` = :poller_id LIMIT 1"
         );
+        $statement->bindValue(':last_restart', time(), \PDO::PARAM_INT);
+        $statement->bindValue(':poller_id', (int) $poller_id, \PDO::PARAM_INT);
+        $statement->execute();
         return $return_code;
     }
 
@@ -266,11 +269,13 @@ class CentreonConfigPoller
         $this->testPollerId($variables);
         $poller_id = $this->getPollerId($variables);
 
-        $result = $this->DB->query(
-            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->DB->escape($poller_id) . "'  LIMIT 1"
+        $statement = $this->DB->prepare(
+            "SELECT * FROM `nagios_server` WHERE `id` = :poller_id  LIMIT 1"
         );
-        $host = $result->fetch();
-        $result->closeCursor();
+        $statement->bindValue(':poller_id', (int) $poller_id, \PDO::PARAM_INT);
+        $statement->execute();
+        $host = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
         $this->commandGenerator = $this->container->get(EngineCommandGenerator::class);
         $restartCommand = $this->commandGenerator->getEngineCommand('RESTART');
@@ -282,10 +287,12 @@ class CentreonConfigPoller
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
-        $this->DB->query(
-            "UPDATE `nagios_server` SET `last_restart` = '" . time()
-            . "' WHERE `id` = '" . $this->DB->escape($poller_id) . "' LIMIT 1"
+        $statement = $this->DB->prepare(
+            "UPDATE `nagios_server` SET `last_restart` = :last_restart WHERE `id` = :poller_id LIMIT 1"
         );
+        $statement->bindValue(':last_restart', time(), \PDO::PARAM_INT);
+        $statement->bindValue(':poller_id', (int) $poller_id, \PDO::PARAM_INT);
+        $statement->execute();
         return $return_code;
     }
 
