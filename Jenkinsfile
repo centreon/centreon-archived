@@ -131,19 +131,22 @@ def checkoutCentreonBuild() {
   }
 }
 
+def switchToPhpVersion(version) {
+  sh 'sudo apt install software-properties-common -y'
+  sh 'sudo add-apt-repository ppa:ondrej/php -y'
+  sh 'sudo apt update'
+  sh "sudo apt install php${version} -y"
+}
+
+def retrieveOriginPhpVersion() {
+  sh 'sudo update-alternatives --set php /usr/bin/php7.2'
+}
+
 /*
 ** Pipeline code.
 */
 stage('Deliver sources') {
   node {
-    sh 'php -v'
-    sh 'sudo apt install software-properties-common -y'
-    sh 'sudo add-apt-repository ppa:ondrej/php -y'
-    sh 'sudo apt update'
-    sh 'sudo apt install php8.1 -y'
-    sh 'php -v'
-    sh 'sudo update-alternatives --set php /usr/bin/php7.2'
-    sh 'exit 2'
     dir('centreon-web') {
       checkout scm
       if (!isStableBuild()) {
@@ -395,10 +398,12 @@ try {
               checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
+              switchToPhpVersion('8.1')
               def acceptanceStatus = sh(
                 script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
                 returnStatus: true
               )
+              retrieveOriginPhpVersion()
               junit 'xunit-reports/**/*.xml'
               archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
               if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
@@ -459,10 +464,12 @@ try {
             checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
+            switchToPhpVersion('8.1')
             def acceptanceStatus = sh(
               script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
               returnStatus: true
             )
+            retrieveOriginPhpVersion()
             junit 'xunit-reports/**/*.xml'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
             if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
