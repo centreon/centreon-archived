@@ -136,6 +136,8 @@ def checkoutCentreonBuild() {
 */
 stage('Deliver sources') {
   node {
+    sh 'php -v'
+    sh 'exit 2'
     dir('centreon-web') {
       checkout scm
       if (!isStableBuild()) {
