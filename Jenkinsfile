@@ -135,7 +135,7 @@ def switchToPhpVersion(version) {
   sh 'sudo apt install software-properties-common -y'
   sh 'sudo add-apt-repository ppa:ondrej/php -y'
   sh 'sudo apt update'
-  sh "sudo apt install php${version} php${version}-dom php${version}-curl -y"
+  sh "sudo apt install php${version} php${version}-dom php${version}-curl php${version}-mysql -y"
   sh "sudo update-alternatives --set php /usr/bin/php${version}"
 }
 
