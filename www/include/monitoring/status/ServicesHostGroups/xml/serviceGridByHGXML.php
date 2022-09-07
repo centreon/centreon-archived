@@ -321,11 +321,11 @@ if (isset($tab_finalH)) {
                 );
                 $obj->XML->writeElement(
                     "chartIcon",
-                    returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)", 18, 18)
+                    "./img/icons/chart.svg"
                 );
                 $obj->XML->writeElement(
                     "viewIcon",
-                    returnSvg("www/img/icons/view.svg", "var(--icons-fill-color)", 18, 18)
+                    "./img/icons/view.svg"
                 );
                 $obj->XML->endElement();
                 $count++;
