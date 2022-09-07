@@ -398,6 +398,7 @@ try {
               checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
+              sh 'sudo composer self-update'
               switchToPhpVersion('8.1')
               def acceptanceStatus = sh(
                 script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
@@ -464,6 +465,7 @@ try {
             checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
+            sh 'sudo composer self-update'
             switchToPhpVersion('8.1')
             def acceptanceStatus = sh(
               script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
