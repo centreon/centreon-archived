@@ -694,7 +694,6 @@ function updateContact_MC($contact_id = null)
         return;
     }
 
-    $ret = array();
     $ret = $form->getSubmitValues();
 
     // Remove all parameters that have an empty value in order to keep
