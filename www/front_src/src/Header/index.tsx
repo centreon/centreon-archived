@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   header: {
-    // alignItems: 'center',
     backgroundColor: isDarkMode(theme)
       ? theme.palette.background.default
       : theme.palette.primary.main,
