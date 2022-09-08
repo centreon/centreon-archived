@@ -169,7 +169,7 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
     /**
      * Insert provider token into security_token table.
      *
-     * @param ProviderToken $providerToken
+     * @param NewProviderToken $providerToken
      */
     private function insertSecurityToken(NewProviderToken $providerToken): void
     {
@@ -233,7 +233,9 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
+        /** @var ProviderToken $providerToken */
         $providerToken = $authenticationTokens->getProviderToken();
+        /** @var ProviderToken $providerRefreshToken */
         $providerRefreshToken = $authenticationTokens->getProviderRefreshToken();
         $updateTokenStatement = $this->db->prepare(
             $this->translateDbName(

@@ -26,6 +26,7 @@ namespace Core\Security\Authentication\Infrastructure\Provider;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
@@ -35,6 +36,7 @@ use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Exception;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
@@ -219,7 +221,7 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getUserClaims(): array
     {
@@ -227,7 +229,9 @@ class OpenId implements ProviderAuthenticationInterface
         $configuration = $this->provider->getConfiguration();
         $idTokenPayload = $this->provider->getIdTokenPayload();
         $userInformation = $this->provider->getUserInformation();
-        $claimName = $configuration->getCustomConfiguration()->getClaimName();
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $configuration->getCustomConfiguration();
+        $claimName = $customConfiguration->getClaimName();
 
         if (array_key_exists($claimName, $idTokenPayload)) {
             $userClaims = $idTokenPayload[$claimName];
@@ -258,14 +262,15 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @param array $claims
-     * @return array
+     * @param array<string> $claims
+     * @return array<int,AccessGroup>
      */
     public function getUserAccessGroupsFromClaims(array $claims): array
     {
         $userAccessGroups = [];
-        $configuration = $this->provider->getConfiguration();
-        foreach ($configuration->getCustomConfiguration()->getAuthorizationRules() as $authorizationRule) {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->provider->getConfiguration()->getCustomConfiguration();
+        foreach ($customConfiguration->getAuthorizationRules() as $authorizationRule) {
             if (!in_array($authorizationRule->getClaimValue(), $claims)) {
                 $this->info(
                     "Configured Claim Value not found in user claims",
@@ -306,7 +311,7 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function getUserInformation(): array
     {
@@ -314,7 +319,7 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function getIdTokenPayload(): array
     {

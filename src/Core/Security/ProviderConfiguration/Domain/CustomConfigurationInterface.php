@@ -25,5 +25,4 @@ namespace Core\Security\ProviderConfiguration\Domain;
 
 interface CustomConfigurationInterface
 {
-
 }

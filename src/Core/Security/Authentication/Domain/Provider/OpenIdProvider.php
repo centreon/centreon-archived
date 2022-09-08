@@ -170,7 +170,6 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
-        
         $this->info('Auto import starting...', [
             "user" => $this->username
         ]);
@@ -338,8 +337,11 @@ class OpenIdProvider implements OpenIdProviderInterface
         $creationDate = new \DateTimeImmutable();
         $providerTokenExpiration =
             (new \DateTimeImmutable())->add(new DateInterval('PT' . $content ['expires_in'] . 'S'));
+
+        /** @var ProviderToken $providerToken */
+        $providerToken =  $authenticationTokens->getProviderToken();
         $this->providerToken =  new ProviderToken(
-            $authenticationTokens->getProviderToken()->getId(),
+            $providerToken->getId(),
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration

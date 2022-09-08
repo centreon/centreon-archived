@@ -31,6 +31,7 @@ use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\Authentication\Domain\Provider\WebSSOProvider;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration;
 use InvalidArgumentException;
@@ -102,7 +103,9 @@ class WebSSO implements ProviderAuthenticationInterface
      */
     public function getConfiguration(): Configuration
     {
-        return $this->provider->getConfiguration();
+        /** @var WebSSOProvider $provider */
+        $provider = $this->provider;
+        return $provider->getConfiguration();
     }
 
     /**
