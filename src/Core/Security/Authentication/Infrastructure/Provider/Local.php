@@ -33,7 +33,6 @@ use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
-use Exception;
 use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Security\Domain\Authentication\Model\LocalProvider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -81,7 +80,7 @@ class Local implements ProviderAuthenticationInterface
 
     /**
      * @return ContactInterface
-     * @throws Exception
+     * @throws \Exception
      */
     public function findUserOrFail(): ContactInterface
     {
@@ -116,22 +115,11 @@ class Local implements ProviderAuthenticationInterface
 
     /**
      * @throws LegacyAuthenticationException
+     * @throws \Exception
      */
     public function importUser(): void
     {
-        if ($this->isAutoImportEnabled() === false) {
-            throw LegacyAuthenticationException::userNotFoundAndCannotBeCreated();
-        }
-
-        $user = $this->getAuthenticatedUser();
-        if (!$user) {
-            $this->debug(
-                '[AUTHENTICATE] Provider is allowed to create user. Creating user...',
-                ['user' => $user->getAlias()]
-            );
-
-            $this->contactService->addUser($user);
-        }
+        throw new \Exception("Feature not available for Local provider");
     }
 
     /**

@@ -51,7 +51,7 @@ interface ReadConfigurationRepositoryInterface
     public function findConfigurations(): array;
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function findExcludedUsers(): array;
 }

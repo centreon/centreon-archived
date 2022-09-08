@@ -37,8 +37,8 @@ interface WriteTokenRepositoryInterface
      * @param string $token
      * @param int $providerConfigurationId
      * @param int $contactId
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
+     * @param NewProviderToken $providerToken
+     * @param NewProviderToken|null $providerRefreshToken
      */
     public function createAuthenticationTokens(
         string $token,

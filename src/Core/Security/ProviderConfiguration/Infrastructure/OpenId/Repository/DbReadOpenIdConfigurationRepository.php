@@ -29,18 +29,12 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Contact\Infrastructure\Repository\DbContactGroupFactory;
 use Core\Contact\Infrastructure\Repository\DbContactTemplateFactory;
-use Core\Security\ProviderConfiguration\Infrastructure\OpenId\Builder\DbConfigurationBuilder;
-use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
-    as ReadRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\AccessGroup\Infrastructure\Repository\DbAccessGroupFactory;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface as ReadRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Throwable;
 
-class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
-    ReadProviderConfigurationsRepositoryInterface,
-    ReadRepositoryInterface
+class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
 {
     /**
 
@@ -49,50 +43,6 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findConfigurations(): array
-    {
-        $configurations = [];
-
-        $openIdConfiguration = $this->findConfiguration();
-        if ($openIdConfiguration !== null) {
-            $configurations[] = $openIdConfiguration;
-        }
-
-        return $configurations;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findConfiguration(): ?Configuration
-    {
-        $statement = $this->db->query(
-            $this->translateDbName("SELECT * FROM `:db`.`provider_configuration` WHERE name = 'openid'")
-        );
-        $configuration = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateJsonRecord(
-                $result['custom_configuration'],
-                __DIR__ . '/CustomConfigurationSchema.json',
-            );
-            $customConfiguration = json_decode($result['custom_configuration'], true);
-            $customConfiguration['contact_template'] = $customConfiguration['contact_template_id'] !== null
-                ? $this->getContactTemplate($customConfiguration['contact_template_id'])
-                : null;
-            $customConfiguration['contact_group'] = $customConfiguration['contact_group_id'] !== null
-                ? $this->getContactGroup($customConfiguration['contact_group_id'])
-                : null;
-            $customConfiguration['authorization_rules'] =
-                $this->getAuthorizationRulesByConfigurationId((int) $result["id"]);
-            $configuration = DbConfigurationBuilder::create($result, $customConfiguration);
-        }
-
-        return $configuration;
     }
 
     /**
@@ -155,9 +105,9 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * Get Authorization Rules
      *
-     * @param integer $providerConfigurationId
-     * @return AuthorizationRule[]
      * @throws Throwable
+     * @param int $providerConfigurationId
+     * @return array<AuthorizationRule>
      */
     public function getAuthorizationRulesByConfigurationId(int $providerConfigurationId): array
     {

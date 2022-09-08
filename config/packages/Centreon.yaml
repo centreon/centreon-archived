@@ -293,7 +293,6 @@ services:
 
     Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
         arguments:
-          - !tagged_iterator 'authentication.provider.repositories'
           - !tagged_iterator 'authentication.provider.responses'
 
     Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:

@@ -77,7 +77,6 @@ class UpdateConfigurationController extends AbstractController
             $passwordPolicy['password_expiration']['excluded_users'];
         $updateRequest->canReusePasswords = $passwordPolicy['can_reuse_passwords'];
         $updateRequest->delayBeforeNewPassword = $passwordPolicy['delay_before_new_password'];
-        $updateRequest->jsonConfiguration = $jsonBody;
 
         return $updateRequest;
     }

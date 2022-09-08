@@ -84,7 +84,6 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->claimName = $requestData['claim_name'];
         $updateOpenIdConfigurationRequest->authorizationRules = $requestData['authorization_rules'];
         $updateOpenIdConfigurationRequest->contactGroupId = $requestData["contact_group_id"];
-        $updateOpenIdConfigurationRequest->jsonConfiguration = $json;
 
         return $updateOpenIdConfigurationRequest;
     }

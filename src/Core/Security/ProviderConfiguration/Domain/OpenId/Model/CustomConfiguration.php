@@ -142,7 +142,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ?ContactGroup $contactGroup = null;
 
     /**
-     * @param array $json
+     * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
     public function __construct(array $json)
@@ -631,7 +631,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
-     * @param array $json
+     * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
     public function create(array $json): void
@@ -666,6 +666,8 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
+     * @param array<string,mixed> $json
+     * @return void
      * @throws OpenIdConfigurationException
      */
     private function validateMandatoryFields(array $json): void

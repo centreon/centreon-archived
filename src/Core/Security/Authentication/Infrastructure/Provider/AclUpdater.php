@@ -31,6 +31,7 @@ use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryI
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\Authentication\Domain\Provider\OpenIdProvider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class AclUpdater implements AclUpdaterInterface
 {
@@ -61,7 +62,9 @@ class AclUpdater implements AclUpdaterInterface
     {
         $this->provider = $provider;
         if ($provider->isUpdateACLSupported()) {
+            /** @phpstan-ignore-next-line */
             $userClaims = $this->provider->getUserClaims();
+            /** @phpstan-ignore-next-line */
             $userAccessGroups = $this->provider->getUserAccessGroupsFromClaims($userClaims);
             $this->updateAccessGroupsForUser($user, $userAccessGroups);
             $this->updateContactGroupsForUser($user);
@@ -102,6 +105,7 @@ class AclUpdater implements AclUpdaterInterface
      */
     private function updateContactGroupsForUser(ContactInterface $user): void
     {
+        /** @phpstan-ignore-next-line */
         $contactGroup = $this->provider->getConfiguration()->getCustomConfiguration()->getContactGroup();
 
         try {

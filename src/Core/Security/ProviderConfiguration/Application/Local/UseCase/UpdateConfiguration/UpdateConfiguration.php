@@ -30,6 +30,7 @@ use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
@@ -62,6 +63,7 @@ class UpdateConfiguration
 
         try {
             $provider = $this->providerFactory->create(Provider::LOCAL);
+            /** @var Configuration $configuration */
             $configuration = $provider->getConfiguration();
 
             $securityPolicy = new SecurityPolicy(

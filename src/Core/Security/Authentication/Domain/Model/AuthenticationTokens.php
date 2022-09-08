@@ -30,12 +30,12 @@ class AuthenticationTokens
     private string $sessionToken;
 
     /**
-     * @var ProviderToken
+     * @var NewProviderToken
      */
     private NewProviderToken $providerToken;
 
     /**
-     * @var null|ProviderToken
+     * @var null|NewProviderToken
      */
     private ?NewProviderToken $providerRefreshToken;
 
@@ -53,8 +53,8 @@ class AuthenticationTokens
      * @param int $userId
      * @param int $configurationProviderId
      * @param string $sessionToken
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
+     * @param NewProviderToken $providerToken
+     * @param NewProviderToken|null $providerRefreshToken
      */
     public function __construct(
         int $userId,
@@ -79,7 +79,7 @@ class AuthenticationTokens
     }
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
     public function getProviderToken(): NewProviderToken
     {
@@ -87,7 +87,7 @@ class AuthenticationTokens
     }
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
     public function getProviderRefreshToken(): ?NewProviderToken
     {

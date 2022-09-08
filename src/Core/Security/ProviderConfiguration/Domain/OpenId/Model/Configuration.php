@@ -33,6 +33,7 @@ final class Configuration extends \Core\Security\ProviderConfiguration\Domain\Mo
      */
     public function getCustomConfiguration(): CustomConfiguration
     {
+        /** @phpstan-ignore-next-line */
         return $this->customConfiguration;
     }
 }

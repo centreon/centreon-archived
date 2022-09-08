@@ -28,6 +28,7 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class FindOpenIdConfiguration
 {
@@ -63,6 +64,7 @@ class FindOpenIdConfiguration
      */
     private function createResponse(Configuration $provider): FindOpenIdConfigurationResponse
     {
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $provider->getCustomConfiguration();
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
         $findOpenIdConfigurationResponse->isActive = $provider->isActive();

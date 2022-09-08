@@ -50,11 +50,6 @@ class OpenId implements ProviderAuthenticationInterface
     private string $username;
 
     /**
-     * @var ContactInterface|null
-     */
-    private ?ContactInterface $authenticatedUser;
-
-    /**
      * @param Container $dependencyInjector
      * @param OpenIdProvider $provider
      */
@@ -127,6 +122,7 @@ class OpenId implements ProviderAuthenticationInterface
         if ($this->isAutoImportEnabled() && $user === null) {
             $this->info("Start auto import");
             $this->provider->createUser();
+            $user = $this->findUserOrFail();
             $this->info("User imported: " . $user->getName());
         }
     }
@@ -141,6 +137,7 @@ class OpenId implements ProviderAuthenticationInterface
         if ($this->isAutoImportEnabled() === true && $user === null) {
             $this->info("Start auto import");
             $this->provider->createUser();
+            $user = $this->provider->getUser();
             $this->info("User imported: " . $user->getName());
         }
     }
@@ -181,7 +178,7 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
     public function getProviderToken(): NewProviderToken
     {
@@ -189,7 +186,7 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
     public function getProviderRefreshToken(): ?NewProviderToken
     {
@@ -204,6 +201,10 @@ class OpenId implements ProviderAuthenticationInterface
         return $this->provider->getConfiguration();
     }
 
+    /**
+     * @param Configuration $configuration
+     * @return void
+     */
     public function setConfiguration(Configuration $configuration): void
     {
         $this->provider->setConfiguration($configuration);

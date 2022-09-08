@@ -29,16 +29,10 @@ use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfi
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\{
     ProviderResponseInterface
 };
-use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class FindProviderConfigurations
 {
     use LoggerTrait;
-
-    /**
-     * @var ReadProviderConfigurationsRepositoryInterface[]
-     */
-    private array $providerRepositories;
 
     /**
      * @var ProviderResponseInterface[]
@@ -46,22 +40,13 @@ class FindProviderConfigurations
     private array $providerResponses;
 
     /**
-     * @param \Traversable<ReadProviderConfigurationsRepositoryInterface> $providerRepositories
      * @param \Traversable<ProviderResponseInterface> $providerResponses
+     * @param ReadConfigurationRepositoryInterface $readConfigurationFactory
      */
     public function __construct(
-        \Traversable $providerRepositories,
         \Traversable $providerResponses,
         private ReadConfigurationRepositoryInterface $readConfigurationFactory
     ) {
-        if (iterator_count($providerRepositories) === 0) {
-            throw new NotFoundException(_('No provider repositories could be found'));
-        }
-        $this->providerRepositories = iterator_to_array($providerRepositories);
-
-        if (iterator_count($providerResponses) === 0) {
-            throw new NotFoundException(_('No provider responses could be found'));
-        }
         $this->providerResponses = iterator_to_array($providerResponses);
     }
 

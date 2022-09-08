@@ -90,7 +90,7 @@ class OpenIdConfigurationException extends \Exception
     /**
      * Exception thrown when mandatory parameters are missing
      *
-     * @param array $missingParameters
+     * @param array<string> $missingParameters
      * @return self
      */
     public static function missingMandatoryParameters(array $missingParameters): self

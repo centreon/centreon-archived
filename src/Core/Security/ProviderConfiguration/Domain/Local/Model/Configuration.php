@@ -33,6 +33,7 @@ class Configuration extends \Core\Security\ProviderConfiguration\Domain\Model\Co
      */
     public function getCustomConfiguration(): CustomConfiguration
     {
+        /** @phpstan-ignore-next-line */
         return $this->customConfiguration;
     }
 }

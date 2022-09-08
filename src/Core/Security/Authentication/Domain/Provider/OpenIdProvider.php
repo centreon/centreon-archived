@@ -59,11 +59,6 @@ class OpenIdProvider implements OpenIdProviderInterface
     private Configuration $configuration;
 
     /**
-     * @var CustomConfiguration
-     */
-    private CustomConfiguration $customConfiguration;
-
-    /**
      * @var NewProviderToken
      */
     private NewProviderToken $providerToken;
@@ -162,7 +157,9 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function canCreateUser(): bool
     {
-        return $this->configuration->getCustomConfiguration()->isAutoImportEnabled();
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+        return $customConfiguration->isAutoImportEnabled();
     }
 
     /**
@@ -171,6 +168,9 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function createUser(): void
     {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+        
         $this->info('Auto import starting...', [
             "user" => $this->username
         ]);
@@ -178,18 +178,18 @@ class OpenIdProvider implements OpenIdProviderInterface
 
         $user = new NewUser(
             $this->username,
-            $this->userInformations[$this->configuration->getCustomConfiguration()->getUserNameBindAttribute()],
-            $this->userInformations[$this->configuration->getCustomConfiguration()->getEmailBindAttribute()],
+            $this->userInformations[$customConfiguration->getUserNameBindAttribute()],
+            $this->userInformations[$customConfiguration->getEmailBindAttribute()],
         );
-        $user->setContactTemplate($this->configuration->getCustomConfiguration()->getContactTemplate());
+        $user->setContactTemplate($customConfiguration->getContactTemplate());
         $this->userRepository->create($user);
         $this->info('Auto import complete', [
             "user_alias" => $this->username,
             "user_fullname" => $this->userInformations[
-                $this->configuration->getCustomConfiguration()->getUserNameBindAttribute()
+                $customConfiguration->getUserNameBindAttribute()
             ],
             "user_email" => $this->userInformations[
-                $this->configuration->getCustomConfiguration()->getEmailBindAttribute()
+                $customConfiguration->getEmailBindAttribute()
             ]
         ]);
     }
@@ -233,6 +233,9 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void
     {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+
         $this->info('Start authenticating user...', [
             'provider' => $this->configuration->getName()
         ]);
@@ -246,12 +249,12 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::noAuthorizationCode($this->configuration->getName());
         }
 
-        if ($this->configuration->getCustomConfiguration()->getTokenEndpoint() === null) {
+        if ($customConfiguration->getTokenEndpoint() === null) {
             throw OpenIdConfigurationException::missingTokenEndpoint();
         }
         if (
-            $this->configuration->getCustomConfiguration()->getIntrospectionTokenEndpoint() === null
-            && $this->configuration->getCustomConfiguration()->getUserInformationEndpoint() === null
+            $customConfiguration->getIntrospectionTokenEndpoint() === null
+            && $customConfiguration->getUserInformationEndpoint() === null
         ) {
             throw OpenIdConfigurationException::missingInformationEndpoint();
         }
@@ -263,7 +266,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
             throw SSOAuthenticationException::tokensExpired($this->configuration->getName());
         }
-        if ($this->configuration->getCustomConfiguration()->getIntrospectionTokenEndpoint() !== null) {
+        if ($customConfiguration->getIntrospectionTokenEndpoint() !== null) {
             $this->sendRequestForIntrospectionTokenOrFail();
         }
 
@@ -292,6 +295,9 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function refreshToken(AuthenticationTokens $authenticationTokens): AuthenticationTokens
     {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+
         if ($authenticationTokens->getProviderRefreshToken() === null) {
             throw SSOAuthenticationException::noRefreshToken();
         }
@@ -305,8 +311,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         $data = [
             "grant_type" => "refresh_token",
             "refresh_token" => $authenticationTokens->getProviderRefreshToken()->getToken(),
-            "scope" => !empty($this->configuration->getCustomConfiguration()->getConnectionScopes())
-                ? implode(' ', $this->configuration->getCustomConfiguration()->getConnectionScopes())
+            "scope" => !empty($customConfiguration->getConnectionScopes())
+                ? implode(' ', $customConfiguration->getConnectionScopes())
                 : null
         ];
 
@@ -481,11 +487,15 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function sendRequestForIntrospectionTokenOrFail(): void
     {
         $this->info('Sending request for introspection token information');
+
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+
         // Define parameters for the request
         $data = [
             "token" => $this->providerToken->getToken(),
-            "client_id" => $this->configuration->getCustomConfiguration()->getClientId(),
-            "client_secret" => $this->configuration->getCustomConfiguration()->getClientSecret()
+            "client_id" => $customConfiguration->getClientId(),
+            "client_secret" => $customConfiguration->getClientSecret()
         ];
         $headers = [
             'Authorization' => 'Bearer ' . trim($this->providerToken->getToken())
@@ -493,12 +503,12 @@ class OpenIdProvider implements OpenIdProviderInterface
         try {
             $response = $this->client->request(
                 'POST',
-                $this->configuration->getCustomConfiguration()->getBaseUrl() . '/'
-                . ltrim($this->configuration->getCustomConfiguration()->getIntrospectionTokenEndpoint(), '/'),
+                $customConfiguration->getBaseUrl() . '/'
+                . ltrim($customConfiguration->getIntrospectionTokenEndpoint(), '/'),
                 [
                     'headers' => $headers,
                     'body' => $data,
-                    'verify_peer' => $this->configuration->getCustomConfiguration()->verifyPeer()
+                    'verify_peer' => $customConfiguration->verifyPeer()
                 ]
             );
         } catch (Exception $e) {
@@ -536,9 +546,11 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function sendRequestForUserInformationOrFail(): void
     {
         $this->info('Send Request for User Information...');
+
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
         ];
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         $url = str_starts_with($customConfiguration->getUserInformationEndpoint(), '/')
             ? $customConfiguration->getBaseUrl() . $customConfiguration->getUserInformationEndpoint()
@@ -584,14 +596,17 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function verifyThatClientIsAllowedToConnectOrFail(string $clientIp): void
     {
         $this->info('Check Client IP from blacklist/whitelist addresses');
-        foreach ($this->configuration->getCustomConfiguration()->getBlacklistClientAddresses() as $blackListedAddress) {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+
+        foreach ($customConfiguration->getBlacklistClientAddresses() as $blackListedAddress) {
             if ($blackListedAddress !== "" && preg_match('/' . $blackListedAddress . '/', $clientIp)) {
                 $this->error('IP Blacklisted', [ 'ip' => '...' . substr($clientIp, -5)]);
                 throw SSOAuthenticationException::blackListedClient();
             }
         }
 
-        foreach ($this->configuration->getCustomConfiguration()->getTrustedClientAddresses() as $trustedClientAddress) {
+        foreach ($customConfiguration->getTrustedClientAddresses() as $trustedClientAddress) {
             if (
                 $trustedClientAddress !== ""
                 && preg_match('/' . $trustedClientAddress . '/', $clientIp)
@@ -610,12 +625,14 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function getUsernameFromLoginClaim(): string
     {
-        $loginClaim = ! empty($this->configuration->getCustomConfiguration()->getLoginClaim())
-            ? $this->configuration->getCustomConfiguration()->getLoginClaim()
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+        $loginClaim = ! empty($customConfiguration->getLoginClaim())
+            ? $customConfiguration->getLoginClaim()
             : CustomConfiguration::DEFAULT_LOGIN_CLAIM;
         if (
             !array_key_exists($loginClaim, $this->userInformations)
-            && $this->configuration->getCustomConfiguration()->getUserInformationEndpoint() !== null
+            && $customConfiguration->getUserInformationEndpoint() !== null
         ) {
             $this->sendRequestForUserInformationOrFail();
         }
@@ -642,7 +659,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $headers = [
             'Content-Type' => "application/x-www-form-urlencoded"
         ];
-
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         if ($customConfiguration->getAuthenticationType() === CustomConfiguration::AUTHENTICATION_BASIC) {
             $headers['Authorization'] = "Basic " . base64_encode(
@@ -688,6 +705,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function validateAutoImportAttributesOrFail(): void
     {
         $missingAttributes = [];
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         if (! array_key_exists($customConfiguration->getEmailBindAttribute(), $this->userInformations)) {
             $missingAttributes[] = $customConfiguration->getEmailBindAttribute();

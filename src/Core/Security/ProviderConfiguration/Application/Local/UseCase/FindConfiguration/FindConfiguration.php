@@ -25,6 +25,7 @@ namespace Core\Security\ProviderConfiguration\Application\Local\UseCase\FindConf
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 
@@ -57,19 +58,6 @@ class FindConfiguration
             return;
         }
 
-        if ($configuration === null) {
-            $this->critical(
-                'Local provider configuration not found : check that your installation / upgrade went well. ' .
-                'A local provider configuration is necessary to manage password security policy.'
-            );
-            $presenter->setResponseStatus(
-                new FindConfigurationErrorResponse(
-                    'Local provider configuration not found. Please verify that your installation is valid'
-                )
-            );
-            return;
-        }
-
         $presenter->present($this->createResponse($configuration));
     }
 
@@ -79,6 +67,7 @@ class FindConfiguration
      */
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $configuration->getCustomConfiguration();
         $response = new FindConfigurationResponse();
         $response->passwordMinimumLength = $customConfiguration->getSecurityPolicy()->getPasswordMinimumLength();

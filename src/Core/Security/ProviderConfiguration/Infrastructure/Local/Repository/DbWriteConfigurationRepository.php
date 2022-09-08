@@ -26,7 +26,8 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
 
 class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements WriteConfigurationRepositoryInterface
 {
@@ -76,7 +77,9 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
      */
     private function updateCustomConfiguration(Configuration $configuration): void
     {
-        $securityPolicy = $configuration->getCustomConfiguration()->getSecurityPolicy();
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $configuration->getCustomConfiguration();
+        $securityPolicy = $customConfiguration->getSecurityPolicy();
 
         $configuration = json_encode([
             "password_security_policy" => [

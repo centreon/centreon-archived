@@ -117,14 +117,14 @@ interface ProviderAuthenticationInterface
     /**
      * Get User information gathered from IdP
      *
-     * @return array
+     * @return array<string,mixed>
      */
     public function getUserInformation(): array;
 
     /**
      * Get information store in id_token JWT Payload
      *
-     * @return array
+     * @return array<string,mixed>
      */
     public function getIdTokenPayload(): array;
 }

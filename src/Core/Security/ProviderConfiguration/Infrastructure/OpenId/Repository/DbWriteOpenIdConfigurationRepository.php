@@ -86,6 +86,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
      */
     private function buildCustomConfigurationFromOpenIdConfiguration(Configuration $configuration): array
     {
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $configuration->getCustomConfiguration();
 
         return [

@@ -31,8 +31,8 @@ use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 final class CustomConfiguration implements CustomConfigurationInterface, ProviderConfigurationInterface
 {
     /**
-     * @param array $trustedClientAddresses
-     * @param array $blacklistClientAddresses
+     * @param array<string> $trustedClientAddresses
+     * @param array<string> $blacklistClientAddresses
      * @param string|null $loginHeaderAttribute
      * @param string|null $patternMatchingLogin
      * @param string|null $patternReplaceLogin

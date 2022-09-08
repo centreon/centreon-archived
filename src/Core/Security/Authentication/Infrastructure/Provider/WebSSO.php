@@ -32,6 +32,7 @@ use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration;
 use InvalidArgumentException;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\WebSSOProviderInterface as LegacyWebSSOProviderInterface;
@@ -189,6 +190,7 @@ class WebSSO implements ProviderAuthenticationInterface
     public function ipIsAllowToConnect(string $ipAddress): void
     {
         $this->info('Check Client IP from blacklist/whitelist addresses');
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->getConfiguration()->getCustomConfiguration();
         if (in_array($ipAddress, $customConfiguration->getBlackListClientAddresses(), true)) {
             $this->error('IP Blacklisted', ['ip' => '...' . substr($ipAddress, -5)]);
@@ -208,6 +210,7 @@ class WebSSO implements ProviderAuthenticationInterface
      */
     public function validateLoginAttributeOrFail(): void
     {
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->getConfiguration()->getCustomConfiguration();
         $this->info('Validating login header attribute');
         if (!array_key_exists($customConfiguration->getLoginHeaderAttribute(), $_SERVER)) {
@@ -227,6 +230,8 @@ class WebSSO implements ProviderAuthenticationInterface
     public function extractUsernameFromLoginClaimOrFail(): string
     {
         $this->info('Retrieving username from login claim');
+
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->getConfiguration()->getCustomConfiguration();
 
         $userAlias = $_SERVER[$customConfiguration->getLoginHeaderAttribute()];
@@ -249,9 +254,13 @@ class WebSSO implements ProviderAuthenticationInterface
         return $userAlias;
     }
 
+    /**
+     * @return void
+     * @throws \Exception
+     */
     public function importUser(): void
     {
-        throw new \DomainException("Feature not available for WebSSO provider");
+        throw new \Exception("Feature not available for WebSSO provider");
     }
 
     /**
@@ -259,7 +268,7 @@ class WebSSO implements ProviderAuthenticationInterface
      */
     public function updateUser(): void
     {
-        throw new \DomainException("Feature not available for WebSSO provider");
+        throw new \Exception("Feature not available for WebSSO provider");
     }
 
     /**
@@ -267,7 +276,7 @@ class WebSSO implements ProviderAuthenticationInterface
      */
     public function getProviderToken(): NewProviderToken
     {
-        throw new \DomainException("Feature not available for WebSSO provider");
+        throw new \Exception("Feature not available for WebSSO provider");
     }
 
     /**
@@ -278,13 +287,16 @@ class WebSSO implements ProviderAuthenticationInterface
         return null;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getUserInformation(): array
     {
         return [];
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function getIdTokenPayload(): array
     {

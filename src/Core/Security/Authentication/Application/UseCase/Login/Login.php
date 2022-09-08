@@ -134,8 +134,8 @@ final class Login
      *
      * @param string $sessionToken
      * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
+     * @param NewProviderToken $providerToken
+     * @param NewProviderToken|null $providerRefreshToken
      * @param string|null $clientIp
      * @throws AuthenticationException
      */

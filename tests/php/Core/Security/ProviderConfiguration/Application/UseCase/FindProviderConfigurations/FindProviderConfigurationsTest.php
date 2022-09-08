@@ -42,7 +42,6 @@ beforeEach(function () {
     $this->readConfigurationRepository = $this->createMock(ReadConfigurationRepositoryInterface::class);
 
     $this->useCase = new FindProviderConfigurations(
-        new \ArrayObject([$this->readProviderConfigurationRepository]),
         new \ArrayObject([$this->providerResponse]),
         $this->readConfigurationRepository
     );

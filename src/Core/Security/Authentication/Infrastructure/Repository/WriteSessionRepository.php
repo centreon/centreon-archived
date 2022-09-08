@@ -34,9 +34,8 @@ class WriteSessionRepository implements WriteSessionRepositoryInterface
 
     /**
      * @param SessionInterface $session
-     * @param RequestStack $requestStack
      */
-    public function __construct(private SessionInterface $session, private RequestStack $requestStack)
+    public function __construct(private SessionInterface $session)
     {
     }
 
