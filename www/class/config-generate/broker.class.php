@@ -552,7 +552,7 @@ class Broker extends AbstractObjectJSON
      *
      * @return string|null
      */
-    private function getCentreonPlatformUuid(): string
+    private function getCentreonPlatformUuid(): ?string
     {
         global $pearDB;
         $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
