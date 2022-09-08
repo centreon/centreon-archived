@@ -452,6 +452,8 @@ class CentreonACLAction extends CentreonObject
      *
      * @param int[] $aclGroupIds
      * @return int[]
+     *
+     * @throws \InvalidArgumentException
      */
     private function getUsersIdsByAclGroup(array $aclGroupIds): array
     {
