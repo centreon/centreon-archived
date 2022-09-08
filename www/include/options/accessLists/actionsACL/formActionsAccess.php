@@ -175,7 +175,7 @@ $form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 // Configuration Actions
 $form->addElement('checkbox', 'create_edit_poller_cfg', _("Create and edit pollers"));
 $form->addElement('checkbox', 'delete_poller_cfg', _("Delete pollers"));
-$form->addElement('checkbox', 'generate_cfg', _("Deploy configuration Files"));
+$form->addElement('checkbox', 'generate_cfg', _("Deploy configuration"));
 $form->addElement('checkbox', 'generate_trap', _("Generate SNMP Trap configuration"));
 
 $form->addElement('checkbox', 'all_service', "");
