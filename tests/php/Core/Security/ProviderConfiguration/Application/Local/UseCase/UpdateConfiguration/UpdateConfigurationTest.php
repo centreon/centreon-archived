@@ -55,10 +55,14 @@ class UpdateConfigurationTest extends TestCase
     private $presenter;
 
     /**
-     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderAuthenticationFactoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory;
 
+    /**
+     * @var ProviderAuthenticationInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $provider;
 
     public function setUp(): void
     {
@@ -132,8 +136,15 @@ class UpdateConfigurationTest extends TestCase
             ->expects($this->once())
             ->method('setResponseStatus');
 
-        $useCase = new UpdateConfiguration($this->writeConfigurationRepository, $this->readUserRepository, $this->providerAuthenticationFactory);
+        $useCase = new UpdateConfiguration(
+            $this->writeConfigurationRepository,
+            $this->readUserRepository,
+            $this->providerAuthenticationFactory
+        );
         $useCase($this->presenter, $request);
-        $this->assertNotEquals($securityPolicy->hasLowercase(), $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase());
+        $this->assertNotEquals(
+            $securityPolicy->hasLowercase(),
+            $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase()
+        );
     }
 }

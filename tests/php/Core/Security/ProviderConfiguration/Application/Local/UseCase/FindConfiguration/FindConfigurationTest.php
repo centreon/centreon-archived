@@ -37,17 +37,12 @@ use PHPUnit\Framework\TestCase;
 class FindConfigurationTest extends TestCase
 {
     /**
-     * @var PresenterFormatterInterface&MockObject
-     */
-    private $presenterFormatter;
-
-    /**
-     * @var ProviderAuthenticationFactoryInterface
+     * @var ProviderAuthenticationFactoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory;
 
     /**
-     * @var ProviderAuthenticationInterface
+     * @var ProviderAuthenticationInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private ProviderAuthenticationInterface $providerAuthentication;
 
@@ -56,7 +51,6 @@ class FindConfigurationTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
         $this->providerAuthenticationFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
         $this->providerAuthentication = $this->createMock(ProviderAuthenticationInterface::class);
     }
@@ -103,9 +97,11 @@ class FindConfigurationTest extends TestCase
             $presenter->response->passwordMinimumLength,
             $configuration->getCustomConfiguration()->getSecurityPolicy()->getPasswordMinimumLength()
         );
-        $this->assertEquals($presenter->response->hasUppercase, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasUppercase());
-        $this->assertEquals($presenter->response->hasLowercase, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasLowercase());
-        $this->assertEquals($presenter->response->hasNumber, $configuration->getCustomConfiguration()->getSecurityPolicy()->hasNumber());
+
+        $customConf = $configuration->getCustomConfiguration();
+        $this->assertEquals($presenter->response->hasUppercase, $customConf->getSecurityPolicy()->hasUppercase());
+        $this->assertEquals($presenter->response->hasLowercase, $customConf->getSecurityPolicy()->hasLowercase());
+        $this->assertEquals($presenter->response->hasNumber, $customConf->getSecurityPolicy()->hasNumber());
         $this->assertEquals(
             $presenter->response->hasSpecialCharacter,
             $configuration->getCustomConfiguration()->getSecurityPolicy()->hasSpecialCharacter()
@@ -114,7 +110,7 @@ class FindConfigurationTest extends TestCase
             $presenter->response->canReusePasswords,
             $configuration->getCustomConfiguration()->getSecurityPolicy()->canReusePasswords()
         );
-        $this->assertEquals($presenter->response->attempts, $configuration->getCustomConfiguration()->getSecurityPolicy()->getAttempts());
+        $this->assertEquals($presenter->response->attempts, $customConf->getSecurityPolicy()->getAttempts());
         $this->assertEquals(
             $presenter->response->blockingDuration,
             $configuration->getCustomConfiguration()->getSecurityPolicy()->getBlockingDuration()
@@ -128,35 +124,4 @@ class FindConfigurationTest extends TestCase
             $configuration->getCustomConfiguration()->getSecurityPolicy()->getDelayBeforeNewPassword()
         );
     }
-
-    /**
-     * Test that an error message is returned by the API when no security policy was found.
-     * todo
-     */
-//    public function testFindConfigurationError(): void
-//    {
-//        $this->providerAuthenticationFactory
-//            ->expects($this->once())
-//            ->method('create')
-//            ->with(Provider::LOCAL)
-//            ->willReturn($this->providerAuthentication);
-//
-//        $this->providerAuthentication
-//            ->expects($this->once())
-//            ->method('getConfiguration')
-//            ->willReturn($configuration)
-//            ->willThrowException(new Exception("unknown configuration name, can't load custom config"));
-//
-//        $useCase = new FindConfiguration($this->readConfigurationFactory);
-//        $presenter = new FindConfigurationPresenter($this->presenterFormatter);
-//
-//        $useCase($presenter);
-//
-//        $this->assertEquals(
-//            $presenter->getResponseStatus(),
-//            new FindConfigurationErrorResponse(
-//                "unknown configuration name, can't load custom config"
-//            )
-//        );
-//    }
 }

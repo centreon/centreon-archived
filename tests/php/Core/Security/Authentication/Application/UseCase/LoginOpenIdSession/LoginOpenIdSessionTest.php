@@ -103,7 +103,14 @@ beforeEach(function () {
     $this->menuService = $this->createMock(MenuServiceInterface::class);
     $this->defaultRedirectUri = '/monitoring/resources';
 
-    $configuration = new Configuration(1, 'openid', 'openid', '{}', true, false);
+    $configuration = new Configuration(
+        1,
+        'openid',
+        'openid',
+        '{}',
+        true,
+        false
+    );
     $customConfiguration = new CustomConfiguration([
         'is_active' => true,
         'client_id' => 'MyCl1ientId',
@@ -230,7 +237,8 @@ it(
     }
 )->throws(NotFoundException::class, 'User could not be created');
 
-it('expects to return an error message in presenter when the provider ' .
+it(
+    'expects to return an error message in presenter when the provider ' .
     'wasn\'t be able to return a user after creating it',
     function () {
         $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');

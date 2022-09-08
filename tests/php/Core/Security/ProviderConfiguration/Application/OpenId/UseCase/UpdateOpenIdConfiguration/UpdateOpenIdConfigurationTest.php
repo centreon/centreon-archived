@@ -73,7 +73,7 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
-    $request->contactTemplate = ['id' => 1];
+    $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
 
@@ -124,7 +124,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
-    $request->contactTemplate = ['id' => 1];
+    $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
 

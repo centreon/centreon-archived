@@ -60,24 +60,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class LoginSessionTest extends TestCase
 {
     /**
-     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $presenterFormatter;
-
-    /**
-     * @var LoginPresenter
+     * @var PresenterInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $loginSessionPresenter;
-
-    /**
-     * @var AuthenticationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $authenticationService;
-
-    /**
-     * @var ContactServiceInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $contactService;
 
     /**
      * @var RequestStack&\PHPUnit\Framework\MockObject\MockObject
@@ -105,24 +90,9 @@ class LoginSessionTest extends TestCase
     private $contact;
 
     /**
-     * @var AuthenticationTokens&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $authenticationTokens;
-
-    /**
      * @var MenuServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $menuService;
-
-    /**
-     * @var AuthenticationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $authenticationRepository;
-
-    /**
-     * @var SessionRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $sessionRepository;
 
     /**
      * @var DataStorageEngineInterface&\PHPUnit\Framework\MockObject\MockObject
@@ -130,32 +100,46 @@ class LoginSessionTest extends TestCase
     private $dataStorageEngine;
 
     /**
-     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderAuthenticationFactoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private ProviderAuthenticationFactoryInterface $providerFactory;
 
+    /**
+     * @var ReadTokenRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     private ReadTokenRepositoryInterface $readTokenRepository;
 
+    /**
+     * @var WriteTokenRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     private WriteTokenRepositoryInterface $writeTokenRepository;
 
+    /**
+     * @var WriteSessionTokenRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository;
 
+    /**
+     * @var WriteSessionRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     private WriteSessionRepositoryInterface $writeSessionRepository;
 
+    /**
+     * @var AclUpdaterInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     private AclUpdaterInterface $aclUpdater;
+
+    /**
+     * @var string
+     */
+    private string $defaultRedirectUri;
 
     protected function setUp(): void
     {
-        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
         $this->loginSessionPresenter = $this->createMock(PresenterInterface::class);
-        $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
-        $this->contactService = $this->createMock(ContactServiceInterface::class);
         $this->provider = $this->createMock(ProviderAuthenticationInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
-        $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->menuService = $this->createMock(MenuServiceInterface::class);
-        $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
-        $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
         $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
         $this->session = $this->createMock(SessionInterface::class);
         $this->session
