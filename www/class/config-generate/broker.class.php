@@ -550,13 +550,17 @@ class Broker extends AbstractObjectJSON
     /**
      * Method retrieving the Centreon Platform UUID generated during web installation
      *
-     * @return string
+     * @return string|null
      */
     private function getCentreonPlatformUuid(): string
     {
         global $pearDB;
         $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
-        $record = $result->fetch(\PDO::FETCH_ASSOC);
+
+        if (! $record = $result->fetch(\PDO::FETCH_ASSOC)) {
+            return null;
+        };
+
         return $record['value'];
     }
 
