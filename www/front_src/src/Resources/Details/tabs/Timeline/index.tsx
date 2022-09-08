@@ -131,7 +131,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
               onChange={changeSelectedTypes}
             />
           </Paper>
-          {isExportCsv && (
+          {displayCsvExport && (
             <ExportToCsv
               getSearch={getSearch}
               timelineEndpoint={timelineEndpoint as string}

@@ -22,7 +22,7 @@ const ExportToCsv = ({ getSearch, timelineEndpoint }: Props): JSX.Element => {
 
     const parameters = getSearchQueryParameterValue(data);
     const exportToCSVEndpoint = `${timelineDownloadEndpoint}?search=${JSON.stringify(
-      params,
+      parameters,
     )}`;
 
     window.open(exportToCSVEndpoint, 'noopener', 'noreferrer');
