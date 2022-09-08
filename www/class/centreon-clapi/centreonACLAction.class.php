@@ -365,23 +365,24 @@ class CentreonACLAction extends CentreonObject
     {
         // $ids will always be an array of 1 or 0 elements as we cannot delete multiple action acl at the same time.
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($objectName));
-        if (! empty($ids)) {
-            $id = (int) $ids[0];
-            $this->updateAclActionsForAuthentifiedUsers($id);
-            $this->object->delete($id);
-            $this->addAuditLog('d', $id, $objectName);
-            $aclObj = new CentreonACL($this->dependencyInjector);
-            $aclObj->reload(true);
-        } else {
+
+        if (empty($ids)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
         }
+
+        $id = (int) $ids[0];
+        $this->updateAclActionsForAuthentifiedUsers($id);
+        $this->object->delete($id);
+        $this->addAuditLog('d', $id, $objectName);
+        $aclObj = new CentreonACL($this->dependencyInjector);
+        $aclObj->reload(true);
     }
 
     /**
      * @param array $parameters
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = array())
+    public function setparam($parameters = array()): void
     {
         if (method_exists($this, "initUpdateParameters")) {
             $params = $this->initUpdateParameters($parameters);
