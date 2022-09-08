@@ -15675,3 +15675,12 @@ msgstr "Nível de Severidade de host"
 
 # msgid "CSV"
 # msgstr ""
+
+#  msgid "Create and edit pollers"
+#  msgstr ""
+
+#  msgid "Delete pollers"
+#  msgstr ""
+
+#  msgid "Deploy configuration"
+#  msgstr ""

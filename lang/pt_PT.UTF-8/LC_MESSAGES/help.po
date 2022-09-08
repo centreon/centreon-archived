@@ -4779,15 +4779,6 @@ msgstr ""
 #  msgid "Poller Configuration Actions / Poller Management"
 #  msgstr ""
 
-#  msgid "Create and edit pollers"
-#  msgstr ""
-
-#  msgid "Delete pollers"
-#  msgstr ""
-
-#  msgid "Deploy configuration"
-#  msgstr ""
-
 #  msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 #  msgstr ""
 

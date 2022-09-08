@@ -7218,15 +7218,6 @@ msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en 
 msgid "Poller Configuration Actions / Poller Management"
 msgstr "Actions de configuration du collecteur / Gestion du collecteur"
 
-msgid "Create and edit pollers"
-msgstr "Créer et modifier des collecteurs"
-
-msgid "Delete pollers"
-msgstr "Supprimer des collecteurs"
-
-msgid "Deploy configuration"
-msgstr "Déployer la configuration"
-
 msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
 
