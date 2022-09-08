@@ -45,7 +45,7 @@ class AuthenticateApi
     /**
      * @param AuthenticationServiceInterface $authenticationService
      * @param WriteTokenRepositoryInterface $writeTokenRepository
-     * @param ProviderAuthenticationFactory $providerFactory
+     * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
     public function __construct(
         private AuthenticationServiceInterface $authenticationService,

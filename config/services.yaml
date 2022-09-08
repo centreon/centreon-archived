@@ -80,9 +80,6 @@ services:
         class: Security\Domain\Authentication\AuthenticationService
         public: true
 
-    Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface:
-        class: Security\Infrastructure\Repository\ProviderRepository
-
     Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
         class: Security\Infrastructure\Repository\SessionRepository
 

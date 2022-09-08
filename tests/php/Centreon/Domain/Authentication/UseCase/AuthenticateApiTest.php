@@ -46,17 +46,17 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 class AuthenticateApiTest extends TestCase
 {
     /**
-     * @var AuthenticationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationService;
 
     /**
-     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderAuthenticationFactoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private ProviderAuthenticationFactoryInterface $providerFactory;
 
     /**
-     * @var WriteTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var WriteTokenRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private WriteTokenRepositoryInterface $writeTokenRepository;
 
@@ -66,19 +66,23 @@ class AuthenticateApiTest extends TestCase
     private NewProviderToken $providerToken;
 
     /**
-     * @var ContactInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var Contact
      */
-    private ContactInterface $contact;
+    private Contact $contact;
 
     /**
-     * @var Configuration|\PHPUnit\Framework\MockObject\MockObject
+     * @var Configuration&\PHPUnit\Framework\MockObject\MockObject
      */
     private Configuration $configuration;
+
+    /**
+     * @var ProviderAuthenticationInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private ProviderAuthenticationInterface $providerAuthentication;
 
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
-        $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
         $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
         $this->providerAuthentication = $this->createMock(ProviderAuthenticationInterface::class);
         $this->configuration = $this->createMock(Configuration::class);
