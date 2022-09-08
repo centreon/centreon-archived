@@ -77,17 +77,17 @@ class AuthenticationServiceTest extends TestCase
     private $refreshToken;
 
     /**
-     * @var ReadConfigurationRepositoryInterface
+     * @var ReadConfigurationRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $readConfigurationFactory;
 
     /**
-     * @var ProviderAuthenticationFactoryInterface
+     * @var ProviderAuthenticationFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $providerFactory;
 
     /**
-     * @var ReadTokenRepositoryInterface
+     * @var ReadTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $readTokenRepository;
 

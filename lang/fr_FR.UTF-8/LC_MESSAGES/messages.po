@@ -17022,3 +17022,6 @@ msgstr "Petite taille"
 
 msgid "CSV"
 msgstr "CSV"
+
+msgid "User information cannot be updated"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mis à jour"

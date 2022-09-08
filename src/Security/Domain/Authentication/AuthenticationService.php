@@ -28,7 +28,6 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFact
 use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
-use Core\Security\Authentication\Infrastructure\Provider\ProviderAuthenticationFactory;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
@@ -47,7 +46,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param SessionRepositoryInterface $sessionRepository
      * @param WriteTokenRepositoryInterface $writeTokenRepository
      * @param ReadConfigurationRepositoryInterface $readConfigurationFactory
-     * @param ProviderAuthenticationFactory $providerFactory
+     * @param ProviderAuthenticationFactoryInterface $providerFactory
      * @param ReadTokenRepositoryInterface $readTokenRepository
      */
     public function __construct(

@@ -345,7 +345,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function updateProviderToken(ProviderToken $providerToken): void
+    public function updateProviderToken(NewProviderToken $providerToken): void
     {
         $updateStatement = $this->db->prepare(
             $this->translateDbName(

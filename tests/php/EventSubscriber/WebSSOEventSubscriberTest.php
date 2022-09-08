@@ -132,7 +132,8 @@ it('should do nothing if Web SSO is not active', function () {
         Provider::WEB_SSO,
         json_encode($parameters),
         false,
-        false);
+        false
+    );
     $configuration->setCustomConfiguration(new CustomConfiguration());
 
     $this->providerFactory
@@ -192,8 +193,14 @@ it('should throw an exception if the user IP is blacklisted', function () {
         'pattern_matching_login' => null,
         'pattern_replace_login' => null
     ];
-    $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
-        json_encode($parameters), true, false);
+    $configuration = new Configuration(
+        3,
+        Provider::WEB_SSO,
+        Provider::WEB_SSO,
+        json_encode($parameters),
+        true,
+        false
+    );
     $configuration->setCustomConfiguration(new CustomConfiguration([], ['127.0.0.1']));
 
     $this->providerFactory
@@ -248,8 +255,14 @@ it('should throw an exception if the user IP is not whitelisted', function () {
         'pattern_matching_login' => null,
         'pattern_replace_login' => null
     ];
-    $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
-        json_encode($parameters), true, false);
+    $configuration = new Configuration(
+        3,
+        Provider::WEB_SSO,
+        Provider::WEB_SSO,
+        json_encode($parameters),
+        true,
+        false
+    );
     $configuration->setCustomConfiguration(new CustomConfiguration(['127.0.0.2']));
 
     $this->providerFactory
@@ -288,6 +301,7 @@ it('should throw an exception when login attribute environment variable is not s
     $this->request
         ->method('getSession')
         ->willReturn($this->session);
+
     $this->session
         ->method('getId')
         ->willReturn('');
@@ -300,8 +314,14 @@ it('should throw an exception when login attribute environment variable is not s
         'pattern_matching_login' => null,
         'pattern_replace_login' => null
     ];
-    $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
-        json_encode($parameters), true, false);
+    $configuration = new Configuration(
+        3,
+        Provider::WEB_SSO,
+        Provider::WEB_SSO,
+        json_encode($parameters),
+        true,
+        false
+    );
     $configuration->setCustomConfiguration(new CustomConfiguration([], [], 'HTTP_AUTH_CLIENT'));
 
     $this->providerFactory
@@ -361,8 +381,14 @@ it('should throw an exception when login matching regexp return an invalid resul
         'pattern_matching_login' => null,
         'pattern_replace_login' => null
     ];
-    $configuration = new Configuration(3, Provider::WEB_SSO, Provider::WEB_SSO,
-        json_encode($parameters), true, false);
+    $configuration = new Configuration(
+        3,
+        Provider::WEB_SSO,
+        Provider::WEB_SSO,
+        json_encode($parameters),
+        true,
+        false
+    );
     $configuration->setCustomConfiguration(new CustomConfiguration([], [], 'HTTP_AUTH_CLIENT'));
 
     $this->providerFactory
