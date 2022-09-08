@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import SaveIcon from '@mui/icons-material/SaveAlt';
 import { Button, Stack } from '@mui/material';
 
-import { SearchParameter } from '@centreon/ui';
+import { SearchParameter, getSearchQueryParameterValue } from '@centreon/ui';
 
 import { labelExportToCSV } from '../../../translatedLabels';
 
@@ -17,37 +17,12 @@ const ExportToCsv = ({ getSearch, timelineEndpoint }: Props): JSX.Element => {
 
   const timelineDownloadEndpoint = `${timelineEndpoint}/download`;
 
-  const data = getSearch();
-
-  const paramsDate = data?.conditions?.map((item) => {
-    const { field } = item;
-
-    const dateValues = Object.entries(item?.values as Record<string, string>);
-
-    const results = dateValues.map(([key, value]) => ({
-      [field]: { [key]: value },
-    }));
-
-    return results;
-  });
-
-  const paramsType = data?.lists?.map((item) => {
-    const { field } = item;
-
-    const types = { $in: item?.values };
-
-    return { [field]: types };
-  });
-
   const exportToCsv = (): void => {
-    const operator = '$and';
+    const data = getSearch();
 
-    const search = {
-      [operator]: [{ [operator]: paramsType }, { [operator]: paramsDate }],
-    };
-
+    const params = getSearchQueryParameterValue(data);
     const exportToCSVEndpoint = `${timelineDownloadEndpoint}?search=${JSON.stringify(
-      search,
+      params,
     )}`;
 
     window.open(exportToCSVEndpoint, 'noopener', 'noreferrer');
