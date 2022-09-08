@@ -37,6 +37,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
                  ENDPOINT_SERVICE_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
                  ENDPOINT_SERVICE_STATUS_GRAPH = 'monitoring.metric.getServiceStatusMetrics',
                  ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebyhostandservice',
+                 TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_host_and_service',
                  URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}',
                  URI_REPORTING = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}',
@@ -182,13 +183,12 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
      */
     public function createEndpoints(array $parameters): array
     {
-        $parametersIds = [
-            'serviceId' => $parameters['serviceId'],
-            'hostId' => $parameters['hostId'],
-        ];
+        $parametersIds = ['serviceId' => $parameters['serviceId'], 'hostId' => $parameters['hostId'],];
+
         return [
             'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $parametersIds),
             'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parametersIds),
+            'timeline_download' => $this->uriGenerator->generateEndpoint(self::TIMELINE_DOWNLOAD, $parametersIds),
             'status_graph' => $this->uriGenerator->generateEndpoint(
                 self::ENDPOINT_SERVICE_STATUS_GRAPH,
                 $parametersIds
