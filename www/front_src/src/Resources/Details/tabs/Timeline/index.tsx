@@ -113,7 +113,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTypes(typeIds);
   };
 
-  const isExportCsv =
+  const displayCsvExport =
     !equals(details?.type, ResourceType.host) && details?.parent;
 
   return (
