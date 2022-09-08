@@ -40,7 +40,8 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                  ENDPOINT_HOST_DETAILS = 'centreon_application_monitoring_resource_details_host',
                  ENDPOINT_HOST_DOWNTIME = 'monitoring.downtime.addHostDowntime',
                  ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy',
-                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
+                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
+                 ENDPOINT_HOST_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_host';
 
     /**
      * @param ContactInterface $contact
@@ -126,6 +127,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
                 $parametersIds
             ),
+            'timeline_download' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE_DOWNLOAD, $parametersIds),
             'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $parametersIds),
             'downtime' => $this->generateDowntimeEndpoint($parametersIds),
             'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
