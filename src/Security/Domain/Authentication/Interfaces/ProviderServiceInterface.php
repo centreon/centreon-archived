@@ -47,7 +47,9 @@ interface ProviderServiceInterface
      * @return ProviderAuthenticationInterface|null
      * @throws ProviderException
      */
-    public function findProviderByConfigurationName(string $providerAuthenticationName): ?ProviderAuthenticationInterface;
+    public function findProviderByConfigurationName(
+        string $providerAuthenticationName
+    ): ?ProviderAuthenticationInterface;
 
     /**
      * @param string $providerConfigurationName
