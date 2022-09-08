@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -40,7 +41,8 @@ class ProviderAuthenticationFactory implements ProviderAuthenticationFactoryInte
         private Local $local,
         private OpenId $openId,
         private WebSSO $webSSO,
-        private ReadConfigurationRepositoryInterface $readConfigurationRepository) {
+        private ReadConfigurationRepositoryInterface $readConfigurationRepository
+    ) {
     }
 
     /**

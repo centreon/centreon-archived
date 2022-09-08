@@ -26,6 +26,7 @@ namespace Core\Security\Authentication\Application\UseCase\Login;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Centreon\Domain\Menu\Model\Page;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Application\Common\UseCase\PresenterInterface;
@@ -36,7 +37,6 @@ use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInter
 use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
-use Core\Security\Authentication\Application\UseCase\LoginSession\PasswordExpiredResponse;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
@@ -62,6 +62,7 @@ final class Login
      * @param WriteTokenRepositoryInterface $writeTokenRepository
      * @param WriteSessionTokenRepositoryInterface $writeSessionTokenRepository
      * @param AclUpdaterInterface $aclUpdater
+     * @param MenuServiceInterface $menuService
      * @param string $defaultRedirectUri
      */
     public function __construct(
@@ -73,9 +74,9 @@ final class Login
         private WriteTokenRepositoryInterface $writeTokenRepository,
         private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
         private AclUpdaterInterface $aclUpdater,
+        private MenuServiceInterface $menuService,
         private string $defaultRedirectUri
-    )
-    {
+    ) {
     }
 
     /**
@@ -125,7 +126,7 @@ final class Login
             throw $e;
         }
 
-        $presenter->present(new LoginResponse($this->getRedirectionUri($user)));
+        $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
     }
 
     /**
@@ -144,9 +145,8 @@ final class Login
         NewProviderToken $providerToken,
         ?NewProviderToken $providerRefreshToken,
         ?string $clientIp,
-    ): void
-    {
-        // TODO Move into startTransaction() ?
+    ): void {
+
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
 
         if (!$isAlreadyInTransaction) {
@@ -179,15 +179,21 @@ final class Login
      * Get the redirection uri where user will be redirect once logged.
      *
      * @param ContactInterface $authenticatedUser
+     * @param string|null $refererQueryParameters
      * @return string
      */
-    private function getRedirectionUri(ContactInterface $authenticatedUser): string
+    private function getRedirectionUri(ContactInterface $authenticatedUser, ?string $refererQueryParameters): string
     {
-        if ($authenticatedUser->getDefaultPage()?->getUrl() !== null) {
-            return $this->buildDefaultRedirectionUri($authenticatedUser->getDefaultPage());
+        $redirectionUri = $this->defaultRedirectUri;
+
+        $refererRedirectionPage = $this->getRedirectionPageFromRefererQueryParameters($refererQueryParameters);
+        if ($refererRedirectionPage !== null) {
+            $redirectionUri = $this->buildDefaultRedirectionUri($refererRedirectionPage);
+        } elseif ($authenticatedUser->getDefaultPage()?->getUrl() !== null) {
+            $redirectionUri = $this->buildDefaultRedirectionUri($authenticatedUser->getDefaultPage());
         }
 
-        return $this->defaultRedirectUri;
+        return $redirectionUri;
     }
 
     /**
@@ -207,6 +213,38 @@ final class Login
         }
 
         return $redirectUri;
+    }
+
+    /**
+     * Get a Page from referer page number.
+     *
+     * @param string|null $refererQueryParameters
+     * @return Page|null
+     */
+    private function getRedirectionPageFromRefererQueryParameters(?string $refererQueryParameters): ?Page
+    {
+        if ($refererQueryParameters === null) {
+            return null;
+        }
+
+        $refererRedirectionPage = null;
+        $queryParameters = [];
+        parse_str($refererQueryParameters, $queryParameters);
+        if (array_key_exists('redirect', $queryParameters)) {
+            $redirectionPageParameters = [];
+            parse_str($queryParameters['redirect'], $redirectionPageParameters);
+            if (array_key_exists('p', $redirectionPageParameters)) {
+                $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber(
+                    (int)$redirectionPageParameters['p']
+                );
+                unset($redirectionPageParameters['p']);
+                if ($refererRedirectionPage !== null) {
+                    $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                }
+            }
+        }
+
+        return $refererRedirectionPage;
     }
 
     /**

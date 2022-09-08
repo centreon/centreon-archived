@@ -47,8 +47,7 @@ class UpdateConfiguration
         private WriteConfigurationRepositoryInterface $writeConfigurationRepository,
         private ReadUserRepositoryInterface $readUserRepository,
         private ProviderAuthenticationFactoryInterface $providerFactory
-    )
-    {
+    ) {
     }
 
     /**
@@ -58,8 +57,7 @@ class UpdateConfiguration
     public function __invoke(
         UpdateConfigurationPresenterInterface $presenter,
         UpdateConfigurationRequest $request
-    ): void
-    {
+    ): void {
         $this->info('Updating Security Policy');
 
         try {

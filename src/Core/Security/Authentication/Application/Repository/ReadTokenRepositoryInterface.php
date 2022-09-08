@@ -41,6 +41,4 @@ interface ReadTokenRepositoryInterface
      * @return bool
      */
     public function hasAuthenticationTokensByToken(string $token): bool;
-
-
 }

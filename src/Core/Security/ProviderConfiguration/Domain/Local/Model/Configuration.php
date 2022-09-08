@@ -25,9 +25,8 @@ namespace Core\Security\ProviderConfiguration\Domain\Local\Model;
 
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-class Configuration
-    extends \Core\Security\ProviderConfiguration\Domain\Model\Configuration
-    implements ProviderConfigurationInterface
+class Configuration extends \Core\Security\ProviderConfiguration\Domain\Model\Configuration implements
+    ProviderConfigurationInterface
 {
     /**
      * @return CustomConfiguration

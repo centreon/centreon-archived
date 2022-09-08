@@ -35,10 +35,10 @@ class NewProviderToken
      * @param DateTimeImmutable|null $expirationDate
      */
     public function __construct(
-        private string             $token,
-        private DateTimeImmutable  $creationDate,
-        private ?DateTimeImmutable $expirationDate = null)
-    {
+        private string $token,
+        private DateTimeImmutable $creationDate,
+        private ?DateTimeImmutable $expirationDate = null
+    ) {
     }
 
     /**
@@ -73,6 +73,7 @@ class NewProviderToken
     public function setExpirationDate(?DateTimeImmutable $expirationDate): self
     {
         $this->expirationDate = $expirationDate;
+
         return $this;
     }
 
@@ -89,6 +90,7 @@ class NewProviderToken
         if ($now === null) {
             $now = new DateTime();
         }
+
         return $this->expirationDate->getTimestamp() < $now->getTimestamp();
     }
 }

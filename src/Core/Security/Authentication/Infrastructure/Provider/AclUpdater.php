@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -76,7 +77,6 @@ class AclUpdater implements AclUpdaterInterface
     private function updateAccessGroupsForUser(ContactInterface $user, array $userAccessGroups): void
     {
         try {
-
             $this->info("Updating User Access Groups", [
                 "user_id" => $user->getId(),
                 "access_groups" => $userAccessGroups

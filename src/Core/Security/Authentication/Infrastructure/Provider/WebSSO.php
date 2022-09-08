@@ -51,8 +51,7 @@ class WebSSO implements ProviderAuthenticationInterface
         private Container $dependencyInjector,
         private LegacyWebSSOProviderInterface $provider,
         private Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface $contactRepository
-    )
-    {
+    ) {
     }
 
     /**

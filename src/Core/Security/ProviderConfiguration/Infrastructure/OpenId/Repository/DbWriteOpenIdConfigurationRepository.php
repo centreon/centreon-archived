@@ -57,7 +57,8 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             )
         );
 
-        $statement->bindValue(':customConfiguration',
+        $statement->bindValue(
+            ':customConfiguration',
             json_encode($this->buildCustomConfigurationFromOpenIdConfiguration($configuration))
         );
 
@@ -153,7 +154,8 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
                 $insertStatement->bindValue(
                     ':providerConfigurationId',
                     $providerConfigurationId,
-                    \PDO::PARAM_INT);
+                    \PDO::PARAM_INT
+                );
                 $insertStatement->execute();
             }
         }

@@ -105,8 +105,8 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
         int $providerConfigurationId,
         int $contactId,
         NewProviderToken $providerToken,
-        ?NewProviderToken $providerRefreshToken): void
-    {
+        ?NewProviderToken $providerRefreshToken
+    ): void {
         // We avoid to start again a database transaction
         $isAlreadyInTransaction = $this->db->inTransaction();
         if ($isAlreadyInTransaction === false) {
@@ -141,12 +141,12 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
      * @param ProviderToken|null $providerRefreshToken
      */
     private function insertProviderTokens(
-        string            $token,
-        int               $providerConfigurationId,
-        int               $contactId,
-        NewProviderToken  $providerToken,
-        ?NewProviderToken $providerRefreshToken): void
-    {
+        string $token,
+        int $providerConfigurationId,
+        int $contactId,
+        NewProviderToken $providerToken,
+        ?NewProviderToken $providerRefreshToken
+    ): void {
 
         $this->insertSecurityToken($providerToken);
         $securityTokenId = (int)$this->db->lastInsertId();
@@ -157,8 +157,13 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
             $securityRefreshTokenId = (int)$this->db->lastInsertId();
         }
 
-        $this->insertSecurityAuthenticationToken($token, $contactId, $securityTokenId, $securityRefreshTokenId,
-            $providerConfigurationId);
+        $this->insertSecurityAuthenticationToken(
+            $token,
+            $contactId,
+            $securityTokenId,
+            $securityRefreshTokenId,
+            $providerConfigurationId
+        );
     }
 
     /**
@@ -199,12 +204,11 @@ class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteToken
      */
     private function insertSecurityAuthenticationToken(
         string $sessionId,
-        int    $contactId,
-        int    $securityTokenId,
-        ?int   $securityRefreshTokenId,
-        int    $providerConfigurationId
-    ): void
-    {
+        int $contactId,
+        int $securityTokenId,
+        ?int $securityRefreshTokenId,
+        int $providerConfigurationId
+    ): void {
         $insertSecurityAuthenticationStatement = $this->db->prepare(
             $this->translateDbName(
                 "INSERT INTO `:db`.security_authentication_tokens " .

@@ -87,7 +87,8 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
             $customConfiguration['contact_group'] = $customConfiguration['contact_group_id'] !== null
                 ? $this->getContactGroup($customConfiguration['contact_group_id'])
                 : null;
-            $customConfiguration['authorization_rules'] = $this->getAuthorizationRulesByConfigurationId((int) $result["id"]);
+            $customConfiguration['authorization_rules'] =
+                $this->getAuthorizationRulesByConfigurationId((int) $result["id"]);
             $configuration = DbConfigurationBuilder::create($result, $customConfiguration);
         }
 

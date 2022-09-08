@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,35 +21,32 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Application\UseCase\LoginSession;
+namespace Core\Security\Authentication\Application\UseCase\Login;
 
-/**
- * @deprecated
- */
-class LoginSessionRequest
+use Core\Application\Common\UseCase\BodyResponseInterface;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
+
+class PasswordExpiredResponse extends UnauthorizedResponse implements ResponseStatusInterface, BodyResponseInterface
 {
     /**
-     * @var string
+     * @var mixed
      */
-    public string $login;
+    private $body;
 
     /**
-     * @var string
+     * @inheritDoc
      */
-    public string $password;
+    public function setBody(mixed $body): void
+    {
+        $this->body = $body;
+    }
 
     /**
-     * @var string
+     * @inheritDoc
      */
-    public string $baseUri;
-
-    /**
-     * @var string|null
-     */
-    public ?string $refererQueryParameters;
-
-    /**
-     * @var string|null
-     */
-    public ?string $clientIp;
+    public function getBody(): mixed
+    {
+        return $this->body;
+    }
 }

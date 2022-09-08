@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -58,9 +59,9 @@ class OpenId implements ProviderAuthenticationInterface
      * @param OpenIdProvider $provider
      */
     public function __construct(
-        private Container               $dependencyInjector,
-        private OpenIdProviderInterface $provider)
-    {
+        private Container $dependencyInjector,
+        private OpenIdProviderInterface $provider
+    ) {
     }
 
     /**

@@ -82,7 +82,7 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
             "password_security_policy" => [
                 "password_length" => $securityPolicy->getPasswordMinimumLength(),
                 "has_uppercase_characters" => $securityPolicy->hasUppercase(),
-                "has_lowercase_characters" =>$securityPolicy->hasLowercase(),
+                "has_lowercase_characters" => $securityPolicy->hasLowercase(),
                 "has_numbers" => $securityPolicy->hasNumber(),
                 "has_special_characters" => $securityPolicy->hasSpecialCharacter(),
                 "attempts" => $securityPolicy->getAttempts(),

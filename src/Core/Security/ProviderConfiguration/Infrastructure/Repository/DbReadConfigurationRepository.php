@@ -37,26 +37,26 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
 use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
-use PDO;
-use Throwable;
-use function json_decode;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
 {
     use LoggerTrait;
 
+    /**
+     * @param DatabaseConnection $db
+     * @param ReadOpenIdConfigurationRepositoryInterface $readOpenIdConfigurationRepository
+     */
     public function __construct(
         DatabaseConnection $db,
         private ReadOpenIdConfigurationRepositoryInterface $readOpenIdConfigurationRepository
-    )
-    {
+    ) {
         $this->db = $db;
     }
 
     /**
      * @param string $providerName
      * @return Configuration
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function getConfigurationByName(string $providerName): Configuration
     {
@@ -72,7 +72,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
      * @return Configuration
      * @throws OpenIdConfigurationException
      * @throws RepositoryException
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function getConfigurationById(int $id): Configuration
     {
@@ -88,10 +88,12 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
      * @param Configuration $configuration
      * @return CustomConfigurationInterface
      * @throws OpenIdConfigurationException
-     * @throws RepositoryException|Throwable
+     * @throws RepositoryException|\Throwable
      */
-    private function loadCustomConfigurationFromConfiguration(Configuration $configuration): CustomConfigurationInterface
-    {
+    private function loadCustomConfigurationFromConfiguration(
+        Configuration $configuration
+    ): CustomConfigurationInterface {
+
         switch ($configuration->getName()) {
             case Provider::LOCAL:
                 $jsonSchemaValidatorFile = __DIR__ . '/../Local/Repository/CustomConfigurationSchema.json';
@@ -130,7 +132,9 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     ? $this->readOpenIdConfigurationRepository->getContactGroup($jsonDecoded['contact_group_id'])
                     : null;
                 $jsonDecoded['authorization_rules'] =
-                    $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId($configuration->getId());
+                    $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
+                        $configuration->getId()
+                    );
 
                 return new OpenIdCustomConfiguration($jsonDecoded);
             case Provider::WEB_SSO:
@@ -138,6 +142,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 $json = $configuration->getJsonCustomConfiguration();
                 $this->validateJsonRecord($json, $jsonSchemaValidatorFile);
                 $json = json_decode($json, true);
+
                 return new WebSSOCustomConfiguration(
                     $json['trusted_client_addresses'],
                     $json['blacklist_client_addresses'],
@@ -147,7 +152,6 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 );
             default:
                 throw new \Exception("unknown configuration name, can't load custom config");
-
         }
     }
 
@@ -164,7 +168,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         );
 
         $statement = $this->db->query($query);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         return new Configuration(
             (int)$result['id'],
@@ -172,7 +176,8 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             $result['type'],
             $result['custom_configuration'],
             (bool)$result['is_active'],
-            (bool)$result['is_forced']);
+            (bool)$result['is_forced']
+        );
     }
 
     /**
@@ -188,7 +193,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         );
 
         $statement = $this->db->query($query);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         return new Configuration(
             (int)$result['id'],
@@ -196,20 +201,21 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             $result['type'],
             $result['custom_configuration'],
             (bool)$result['is_active'],
-            (bool)$result['is_forced']);
+            (bool)$result['is_forced']
+        );
     }
 
 
     /**
      * @return array|Configuration[]
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function findConfigurations(): array
     {
         $configurations = [];
         $query = $this->translateDbName("SELECT name FROM `:db`.`provider_configuration` where name <> 'web-sso'");
         $statement = $this->db->query($query);
-        while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $configurations[] = $this->getConfigurationByName($result['name']);
         }
 

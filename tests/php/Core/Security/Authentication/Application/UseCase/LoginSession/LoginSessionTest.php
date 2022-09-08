@@ -40,7 +40,7 @@ use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInte
 use Core\Security\Authentication\Application\UseCase\Login\Login;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Application\UseCase\Login\LoginResponse;
-use Core\Security\Authentication\Application\UseCase\LoginSession\PasswordExpiredResponse;
+use Core\Security\Authentication\Application\UseCase\Login\PasswordExpiredResponse;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
@@ -554,6 +554,7 @@ class LoginSessionTest extends TestCase
             $this->writeTokenRepository,
             $this->writeSessionTokenRepository,
             $this->aclUpdater,
+            $this->menuService,
             $this->defaultRedirectUri
         );
     }

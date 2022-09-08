@@ -61,7 +61,8 @@ class AuthenticationTokens
         int $configurationProviderId,
         string $sessionToken,
         NewProviderToken $providerToken,
-        ?NewProviderToken $providerRefreshToken) {
+        ?NewProviderToken $providerRefreshToken
+    ) {
         $this->userId = $userId;
         $this->configurationProviderId = $configurationProviderId;
         $this->sessionToken = $sessionToken;

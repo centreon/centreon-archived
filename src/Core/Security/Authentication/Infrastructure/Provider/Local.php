@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -52,10 +53,11 @@ class Local implements ProviderAuthenticationInterface
      * @param SessionInterface $session
      * @param ContactServiceInterface $contactService
      */
-    public function __construct(private LocalProviderInterface $provider,
+    public function __construct(
+        private LocalProviderInterface $provider,
         private SessionInterface $session,
-        private ContactServiceInterface $contactService)
-    {
+        private ContactServiceInterface $contactService
+    ) {
     }
 
     /**
@@ -86,7 +88,8 @@ class Local implements ProviderAuthenticationInterface
         $this->info('[AUTHENTICATE] Retrieving user informations from provider');
         $user = $this->getAuthenticatedUser();
         if ($user === null) {
-            $this->critical('[AUTHENTICATE] No contact could be found from provider',
+            $this->critical(
+                '[AUTHENTICATE] No contact could be found from provider',
                 ['provider_name' => $this->provider->getConfiguration()->getName()]
             );
             throw LegacyAuthenticationException::userNotFound();

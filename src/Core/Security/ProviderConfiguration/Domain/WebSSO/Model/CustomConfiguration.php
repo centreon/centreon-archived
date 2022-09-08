@@ -43,8 +43,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, Provide
         private ?string $loginHeaderAttribute = null,
         private ?string $patternMatchingLogin = null,
         private ?string $patternReplaceLogin = null
-    )
-    {
+    ) {
         $this->guard();
     }
 

@@ -25,9 +25,8 @@ namespace Core\Security\ProviderConfiguration\Domain\WebSSO\Model;
 
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-final class Configuration
-    extends \Core\Security\ProviderConfiguration\Domain\Model\Configuration
-    implements ProviderConfigurationInterface
+final class Configuration extends \Core\Security\ProviderConfiguration\Domain\Model\Configuration implements
+    ProviderConfigurationInterface
 {
     /**
      * @return CustomConfiguration

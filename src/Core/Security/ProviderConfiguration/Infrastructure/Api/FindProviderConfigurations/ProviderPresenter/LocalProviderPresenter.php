@@ -57,7 +57,8 @@ class LocalProviderPresenter implements ProviderPresenterInterface
     {
         $authenticationUri = $this->router->generate(
             'centreon_security_authentication_login',
-            ['providerName' => Provider::LOCAL]);
+            ['providerName' => Provider::LOCAL]
+        );
 
         return [
             'id' => $response->id,

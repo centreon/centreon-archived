@@ -715,8 +715,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         ?ContactTemplate $contactTemplate,
         ?string $emailBindAttribute,
         ?string $userNameBindAttribute
-    ): void
-    {
+    ): void {
         $missingMandatoryParameters = [];
         if ($contactTemplate === null) {
             $missingMandatoryParameters[] = 'contact_template';

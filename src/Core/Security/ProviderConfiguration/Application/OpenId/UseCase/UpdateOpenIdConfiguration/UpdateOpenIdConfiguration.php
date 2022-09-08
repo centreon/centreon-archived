@@ -62,8 +62,7 @@ class UpdateOpenIdConfiguration
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private DataStorageEngineInterface $dataStorageEngine,
         private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory
-    )
-    {
+    ) {
     }
 
     /**
@@ -73,8 +72,8 @@ class UpdateOpenIdConfiguration
     public function __invoke(
         UpdateOpenIdConfigurationPresenterInterface $presenter,
         UpdateOpenIdConfigurationRequest $request
-    ): void
-    {
+    ): void {
+
         $this->info('Updating OpenID Provider');
         try {
             $provider = $this->providerAuthenticationFactory->create(Provider::OPENID);
@@ -94,7 +93,7 @@ class UpdateOpenIdConfiguration
 
             $configuration->setCustomConfiguration(new CustomConfiguration($requestArray));
             $this->updateConfiguration($configuration);
-        } catch (AssertionException|AssertionFailedException|OpenIdConfigurationException $ex) {
+        } catch (AssertionException | AssertionFailedException | OpenIdConfigurationException $ex) {
             $this->error(
                 'Unable to create OpenID Provider because one or several parameters are invalid',
                 ['trace' => $ex->getTraceAsString()]
@@ -208,8 +207,8 @@ class UpdateOpenIdConfiguration
      */
     private function findAccessGroupFromFoundAccessGroups(
         int $accessGroupIdFromRequest,
-        array $foundAccessGroups): ?AccessGroup
-    {
+        array $foundAccessGroups
+    ): ?AccessGroup {
         foreach ($foundAccessGroups as $foundAccessGroup) {
             if ($accessGroupIdFromRequest === $foundAccessGroup->getId()) {
                 return $foundAccessGroup;

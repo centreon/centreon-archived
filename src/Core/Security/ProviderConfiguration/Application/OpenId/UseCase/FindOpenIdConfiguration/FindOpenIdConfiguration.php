@@ -68,11 +68,13 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->isActive = $provider->isActive();
         $findOpenIdConfigurationResponse->isForced = $provider->isForced();
         $findOpenIdConfigurationResponse->trustedClientAddresses = $customConfiguration->getTrustedClientAddresses();
-        $findOpenIdConfigurationResponse->blacklistClientAddresses = $customConfiguration->getBlacklistClientAddresses();
+        $findOpenIdConfigurationResponse->blacklistClientAddresses =
+            $customConfiguration->getBlacklistClientAddresses();
         $findOpenIdConfigurationResponse->baseUrl = $customConfiguration->getBaseUrl();
         $findOpenIdConfigurationResponse->authorizationEndpoint = $customConfiguration->getAuthorizationEndpoint();
         $findOpenIdConfigurationResponse->tokenEndpoint = $customConfiguration->getTokenEndpoint();
-        $findOpenIdConfigurationResponse->introspectionTokenEndpoint = $customConfiguration->getIntrospectionTokenEndpoint();
+        $findOpenIdConfigurationResponse->introspectionTokenEndpoint =
+            $customConfiguration->getIntrospectionTokenEndpoint();
         $findOpenIdConfigurationResponse->userInformationEndpoint = $customConfiguration->getUserInformationEndpoint();
         $findOpenIdConfigurationResponse->endSessionEndpoint = $customConfiguration->getEndSessionEndpoint();
         $findOpenIdConfigurationResponse->connectionScopes = $customConfiguration->getConnectionScopes();
@@ -91,9 +93,10 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->contactGroup = $customConfiguration->getContactGroup() === null
             ? null
             : $findOpenIdConfigurationResponse::contactGroupToArray($customConfiguration->getContactGroup());
-        $findOpenIdConfigurationResponse->authorizationRules = empty($customConfiguration->getAuthorizationRules())
-            ? []
-            : $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
+        $findOpenIdConfigurationResponse->authorizationRules =
+            empty($customConfiguration->getAuthorizationRules()) ? []
+            :
+            $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
 
         return $findOpenIdConfigurationResponse;
     }

@@ -28,13 +28,8 @@ use Centreon\Domain\Log\LoggerTrait;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Application\UseCase\Login\Login;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
-use Core\Security\Authentication\Domain\Exception\AuthenticationException;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use function json_decode;
 
 class LoginController extends AbstractController
 {
@@ -52,13 +47,22 @@ class LoginController extends AbstractController
         Request $request,
         Login $useCase,
         LoginPresenter $presenter,
-        SessionInterface $session): object {
+        SessionInterface $session
+    ): object {
         $payload = json_decode($request->getContent(), true);
-        // todo json validation file
+
+        $referer = $request->headers->get('referer') ?
+            parse_url(
+                $request->headers->get('referer'),
+                PHP_URL_QUERY
+            ) : null;
+
         $request = LoginRequest::createForLocal(
             $payload["login"] ?? null,
             $payload["password"] ?? null,
-            $request->getClientIp());
+            $request->getClientIp(),
+            $referer
+        );
 
         try {
             $useCase($request, $presenter);
