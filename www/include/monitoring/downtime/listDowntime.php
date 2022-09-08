@@ -50,13 +50,13 @@ $view_downtime_cycle = 0;
 
 if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = filter_input(INPUT_POST, 'search_service', FILTER_SANITIZE_STRING);
+    $search_service = filter_input(INPUT_POST, 'search_service', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_service"] = $search_service;
-    $host_name = filter_input(INPUT_POST, 'search_host', FILTER_SANITIZE_STRING);
+    $host_name = filter_input(INPUT_POST, 'search_host', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = filter_input(INPUT_POST, 'search_output', FILTER_SANITIZE_STRING);
+    $search_output = filter_input(INPUT_POST, 'search_output', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = filter_input(INPUT_POST, 'search_author', FILTER_SANITIZE_STRING);
+    $search_author = filter_input(INPUT_POST, 'search_author', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
@@ -64,13 +64,13 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = filter_input(INPUT_GET, 'search_service', FILTER_SANITIZE_STRING);
+    $search_service = filter_input(INPUT_GET, 'search_service', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]['search_service'] = $search_service;
-    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING);
+    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING);
+    $search_output = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = filter_input(INPUT_GET, 'search_author', FILTER_SANITIZE_STRING);
+    $search_author = filter_input(INPUT_GET, 'search_author', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;

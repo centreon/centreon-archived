@@ -46,16 +46,16 @@ include("./include/common/autoNumLimit.php");
 //initializing filters values
 $searchService = filter_var(
     $_POST["searchService"] ?? $_GET["searchService"] ?? '',
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $searchHost = filter_var(
     $_POST["searchHost"] ?? $_GET["searchHost"] ?? '',
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $searchOutput = filter_var(
     $_POST["searchOutput"] ?? $_GET["searchOutput"] ?? '',
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['search']) || isset($_GET['search'])) {

@@ -58,7 +58,7 @@ if (isset($_POST["url"])) {
             $search = filter_input(
                 INPUT_POST,
                 'search',
-                FILTER_SANITIZE_STRING
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
             $centreon->historySearchService[$url] = $search;
         }
@@ -67,7 +67,7 @@ if (isset($_POST["url"])) {
             $searchHost = filter_input(
                 INPUT_POST,
                 'seach_host',
-                FILTER_SANITIZE_STRING
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
             $centreon->historySearch[$url] = $searchHost;
         }
@@ -76,7 +76,7 @@ if (isset($_POST["url"])) {
             $searchOutput = filter_input(
                 INPUT_POST,
                 'search_output',
-                FILTER_SANITIZE_STRING
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
             $centreon->historySearchOutput[$url] = $searchOutput;
         }

@@ -62,7 +62,7 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, ['options' => ['default' => 0]]);
+$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => 0]]);
 
 // splitting the host/service combination
 if (!empty($svcId)) {

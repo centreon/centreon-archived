@@ -72,20 +72,20 @@ const UNLOCK_SERVICE = "nlk";
  * Prepare search engine
  */
 $inputArguments = array(
-    'Search' => FILTER_SANITIZE_STRING,
-    'searchH' => FILTER_SANITIZE_STRING,
+    'Search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'searchH' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     'num' => FILTER_SANITIZE_NUMBER_INT,
     'limit' => FILTER_SANITIZE_NUMBER_INT,
-    'searchS' => FILTER_SANITIZE_STRING,
-    'searchP' => FILTER_SANITIZE_STRING,
-    'o' => FILTER_SANITIZE_STRING,
-    'o1' => FILTER_SANITIZE_STRING,
-    'o2' => FILTER_SANITIZE_STRING,
+    'searchS' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'searchP' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o1' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o2' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     'select' => array(
-        'filter' => FILTER_SANITIZE_STRING,
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
         'flags' => FILTER_REQUIRE_ARRAY
     ),
-    'id' => FILTER_SANITIZE_STRING
+    'id' => FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $inputGet = filter_input_array(
     INPUT_GET,

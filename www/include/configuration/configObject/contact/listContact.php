@@ -73,12 +73,12 @@ $p = filter_var(
 
 $searchContact = filter_var(
     $_POST['searchC'] ?? $_GET['searchC'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $search = filter_var(
     $_POST['Search'] ?? $_GET['Search'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $contactGroup = filter_var(

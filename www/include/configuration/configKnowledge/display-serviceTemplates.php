@@ -75,13 +75,13 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $postServiceTemplate = !empty($_POST['searchServiceTemplate'])
-        ? filter_input(INPUT_POST, 'searchServiceTemplate', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchServiceTemplate', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
     $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
 
     $conf = getWikiConfig($pearDB);

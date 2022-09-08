@@ -65,12 +65,12 @@ $template = filter_var(
 
 $searchH = filter_var(
     $_POST['searchH'] ?? $_GET['search'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $searchS = filter_var(
     $_POST['searchS'] ?? $_GET['searchS'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $status = filter_var(

@@ -42,7 +42,7 @@ include "./include/common/autoNumLimit.php";
 
 $search = filter_var(
     $_POST['searchN'] ?? $_GET['searchN'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchN']) || isset($_GET['searchN'])) {

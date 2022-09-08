@@ -98,7 +98,7 @@ $postFilter = array(
         ]
     ],
     'name' => [
-        'filter' => FILTER_SANITIZE_STRING,
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
         'options' => [
             'default' => ''
         ]
@@ -121,7 +121,7 @@ $postFilter = array(
         ]
     ],
     'widget_title' => [
-        'filter' => FILTER_SANITIZE_STRING,
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
         'options' => [
             'default' => ''
         ]
@@ -166,7 +166,7 @@ if (!empty($_POST['unlockedUsergroups'])) {
 $positions = [];
 if (!empty($_POST['positions'])) {
     foreach ($_POST['positions'] as $position) {
-        if (filter_var($position, FILTER_SANITIZE_STRING) !== false) {
+        if (filter_var($position, FILTER_SANITIZE_FULL_SPECIAL_CHARS) !== false) {
             $positions[] = $position;
         }
     }
@@ -180,7 +180,7 @@ if (!empty($_POST['create_load']['create_load'])) {
 
 $postInputs['layout'] = filter_var(
     $_POST['layout']['layout'] ?? '',
-    FILTER_SANITIZE_STRING,
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     $postFilter['layout']
 );
 

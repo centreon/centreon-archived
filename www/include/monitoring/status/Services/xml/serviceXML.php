@@ -80,19 +80,19 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => 'h']]);
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 $nc = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $criticalityId = filter_input(INPUT_GET, 'criticality', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
-$serviceToSearch = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
+$serviceToSearch = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => '']]);
+$hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => '']]);
+$outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => '']]);
+$sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
-$statusService = filter_input(INPUT_GET, 'statusService', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$statusService = filter_input(INPUT_GET, 'statusService', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => '']]);
+$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_FULL_SPECIAL_CHARS, ['options' => ['default' => '']]);
 $dateFormat = "Y/m/d H:i:s";
 //if instance, hostgroup or servicegroup values are not set, displaying each active linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);

@@ -214,7 +214,7 @@ class CentreonUtils
         $init = array();
         try {
             $initForm = $form->getElement('initialValues');
-            $initForm = filter_var($initForm->getValue(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $initForm = filter_var($initForm->getValue(), FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
 
             if ($initForm === false) {
                 throw new \InvalidArgumentException('Invalid Parameters');

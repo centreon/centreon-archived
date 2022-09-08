@@ -49,7 +49,7 @@ $path = "./include/views/graphs/";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$chartId = filter_var($_GET['chartId'] ?? null, FILTER_SANITIZE_STRING);
+$chartId = filter_var($_GET['chartId'] ?? null, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
     $hostId = (int)$matches[1];

@@ -44,7 +44,7 @@ include("./include/common/autoNumLimit.php");
 //initializing filters values
 $search = filter_var(
     $_POST["searchDT"] ?? $_GET["searchDT"] ?? '',
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST["Search"])) {

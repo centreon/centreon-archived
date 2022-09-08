@@ -53,12 +53,12 @@ $mySessionId = session_id();
 
 // checks for token
 if (!empty($_GET['username'])) {
-    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_STRING);
+    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 $token = filter_var(
     $_GET['token'] ?? $_GET['akey'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (!empty($userName) && !empty($token)) {
@@ -106,11 +106,11 @@ $index = filter_var(
 
 // Checking hostName and service
 if (!empty($_GET['hostname'])) {
-    $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
+    $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 if (!empty($_GET['service'])) {
-    $serviceDescription = filter_var($_GET['service'], FILTER_SANITIZE_STRING);
+    $serviceDescription = filter_var($_GET['service'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 $pearDBO = new CentreonDB("centstorage");
@@ -136,7 +136,7 @@ if (!empty($hostName) && !empty($serviceDescription)) {
 $chartId = null;
 
 if (!empty($_GET['chartId'])) {
-    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 if (!empty($chartId)) {

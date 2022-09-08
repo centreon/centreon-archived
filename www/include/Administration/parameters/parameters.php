@@ -41,13 +41,13 @@ if (!isset($centreon)) {
 $gopt_id = filter_input(
     INPUT_GET,
     'gopt_id',
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 if ((!isset($cg) || is_null($cg))) {
     $gopt_id = filter_input(
         INPUT_POST,
         'gopt_id',
-        FILTER_SANITIZE_STRING
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 }
 

@@ -105,8 +105,8 @@ $defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
  * Get input vars
  */
 $inputArguments = array(
-    'lang' => FILTER_SANITIZE_STRING,
-    'id' => FILTER_SANITIZE_STRING,
+    'lang' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'id' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     'num' => [
         'filter' => FILTER_VALIDATE_INT,
         'options' => [
@@ -119,29 +119,29 @@ $inputArguments = array(
             'default' => $defaultLimit
         ]
     ],
-    'StartDate' => FILTER_SANITIZE_STRING,
-    'EndDate' => FILTER_SANITIZE_STRING,
-    'StartTime' => FILTER_SANITIZE_STRING,
-    'EndTime' => FILTER_SANITIZE_STRING,
+    'StartDate' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'EndDate' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'StartTime' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'EndTime' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     'period' => FILTER_VALIDATE_INT,
-    'engine' => FILTER_SANITIZE_STRING,
-    'up' => FILTER_SANITIZE_STRING,
-    'down' => FILTER_SANITIZE_STRING,
-    'unreachable' => FILTER_SANITIZE_STRING,
-    'ok' => FILTER_SANITIZE_STRING,
-    'warning' => FILTER_SANITIZE_STRING,
-    'critical' => FILTER_SANITIZE_STRING,
-    'unknown' => FILTER_SANITIZE_STRING,
-    'notification' => FILTER_SANITIZE_STRING,
-    'alert' => FILTER_SANITIZE_STRING,
-    'oh' => FILTER_SANITIZE_STRING,
-    'error' => FILTER_SANITIZE_STRING,
-    'output' => FILTER_SANITIZE_STRING,
-    'search_H' => FILTER_SANITIZE_STRING,
-    'search_S' => FILTER_SANITIZE_STRING,
-    'search_host' => FILTER_SANITIZE_STRING,
-    'search_service' => FILTER_SANITIZE_STRING,
-    'export' => FILTER_SANITIZE_STRING,
+    'engine' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'up' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'down' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'unreachable' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'ok' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'warning' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'critical' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'unknown' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'notification' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'alert' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'oh' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'error' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'output' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'search_H' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'search_S' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'search_host' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'search_service' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'export' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
 );
 
 // Saving bound values
@@ -181,11 +181,11 @@ $buffer->startElement("root");
  */
 $lang_ = filter_var(
     $inputs["lang"] ?? "-1",
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $openid = filter_var(
     $inputs["id"] ?? "-1",
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";

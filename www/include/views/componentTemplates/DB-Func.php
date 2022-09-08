@@ -374,7 +374,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'comment':
             case 'ds_transparency':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR, null];
                     } else {

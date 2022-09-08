@@ -74,7 +74,7 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $search = filter_var(
     $_POST['searchCB'] ?? $_GET['searchCB'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchCB']) || isset($_GET['searchCB'])) {

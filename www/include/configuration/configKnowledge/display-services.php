@@ -78,10 +78,10 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $postHost = !empty($_POST['searchHost'])
-        ? filter_input(INPUT_POST, 'searchHost', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchHost', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
     $postService = !empty($_POST['searchService'])
-        ? filter_input(INPUT_POST, 'searchService', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchService', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
     $postHostgroup = !empty($_POST['searchHostgroup'])
         ? filter_input(INPUT_POST, 'searchHostgroup', FILTER_VALIDATE_INT)
@@ -93,10 +93,10 @@ try {
         ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
     $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
-        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         : '';
 
     $conf = getWikiConfig($pearDB);
