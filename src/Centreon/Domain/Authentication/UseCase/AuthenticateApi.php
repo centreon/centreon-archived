@@ -141,7 +141,7 @@ class AuthenticateApi
      */
     private function getUserFromProviderOrFail(ProviderAuthenticationInterface $localProvider): ContactInterface
     {
-        $this->info('[AUTHENTICATE API] Retrieving user informations from provider');
+        $this->info('[AUTHENTICATE API] Retrieving user information from provider');
 
         $contact = $localProvider->getAuthenticatedUser();
 

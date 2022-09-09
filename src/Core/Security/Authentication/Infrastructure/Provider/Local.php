@@ -84,7 +84,7 @@ class Local implements ProviderAuthenticationInterface
      */
     public function findUserOrFail(): ContactInterface
     {
-        $this->info('[AUTHENTICATE] Retrieving user informations from provider');
+        $this->info('[AUTHENTICATE] Retrieving user information from provider');
         $user = $this->getAuthenticatedUser();
         if ($user === null) {
             $this->critical(

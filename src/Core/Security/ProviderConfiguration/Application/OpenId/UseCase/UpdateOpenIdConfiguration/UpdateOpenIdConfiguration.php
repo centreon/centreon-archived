@@ -141,7 +141,7 @@ class UpdateOpenIdConfiguration
     {
         $this->info('Getting Contact Group');
         if (($contactGroup = $this->contactGroupRepository->find($contactGroupId)) === null) {
-            $this->error('An existent contact group is mandatory for OpenID Provider');
+            $this->error('An existing contact group is mandatory for OpenID Provider');
             throw OpenIdConfigurationException::contactGroupNotFound(
                 $contactGroupId
             );
