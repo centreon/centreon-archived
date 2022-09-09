@@ -443,7 +443,7 @@ class CentreonACLAction extends CentreonObject
         $readSessionRepository = $this->getReadSessionRepository();
         foreach ($userIds as $userId) {
             $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-            $this->sessionRepository->FlagUpdateAclBySessionIds($sessionIds);
+            $this->sessionRepository->flagUpdateAclBySessionIds($sessionIds);
         }
     }
 

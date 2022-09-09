@@ -35,7 +35,7 @@ class SessionRepository
      *
      * @param int[] $sessionIds
      */
-    public function FlagUpdateAclBySessionIds(array $sessionIds): void
+    public function flagUpdateAclBySessionIds(array $sessionIds): void
     {
         $statement = $this->db->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
         foreach ($sessionIds as $sessionId) {

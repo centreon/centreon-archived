@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
@@ -413,7 +414,7 @@ class CentreonACLGroup extends CentreonObject
         $readSessionRepository = $this->getReadSessionRepository();
         foreach ($userIds as $userId) {
             $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-            $this->sessionRepository->FlagUpdateAclBySessionIds($sessionIds);
+            $this->sessionRepository->flagUpdateAclBySessionIds($sessionIds);
         }
     }
 
