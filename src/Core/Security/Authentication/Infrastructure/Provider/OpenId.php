@@ -155,7 +155,7 @@ class OpenId implements ProviderAuthenticationInterface
 
         $user = $this->provider->getUser();
         if ($user === null) {
-            throw new \Exception("can't initialize legacy session, user does not exists");
+            throw new \Exception("can't initialize legacy session, user does not exist");
         }
 
         $sessionUserInfos = [
@@ -241,7 +241,7 @@ class OpenId implements ProviderAuthenticationInterface
         } else {
             $this->info(
                 "configured claim name not found in user information or id_token, " .
-                "default contact group ACL will be apply",
+                "default contact group ACL will be applied",
                 ["claim_name" => $claimName]
             );
         }

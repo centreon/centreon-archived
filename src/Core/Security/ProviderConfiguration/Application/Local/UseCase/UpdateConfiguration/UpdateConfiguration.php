@@ -89,7 +89,7 @@ class UpdateConfiguration
 
             $presenter->setResponseStatus(new NoContentResponse());
         } catch (AssertionException $ex) {
-            $this->error('Unable to create Security Policy because one or many parameters are invalid');
+            $this->error('Unable to create Security Policy because one or several parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

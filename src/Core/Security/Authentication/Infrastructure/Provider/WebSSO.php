@@ -172,10 +172,10 @@ class WebSSO implements ProviderAuthenticationInterface
     public function findUserOrFail(): ContactInterface
     {
         $alias = $this->extractUsernameFromLoginClaimOrFail();
-        $this->info('searching user', ['user' => $alias]);
+        $this->info('searching for user', ['user' => $alias]);
         $user = $this->contactRepository->findByName($alias);
         if ($user === null) {
-            throw new NotFoundException("Contact $alias does not exists");
+            throw new NotFoundException("Contact $alias does not exist");
         }
 
         return $user;
