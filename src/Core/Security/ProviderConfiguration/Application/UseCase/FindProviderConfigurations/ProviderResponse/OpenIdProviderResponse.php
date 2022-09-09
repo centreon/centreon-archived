@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse;
 
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class OpenIdProviderResponse implements ProviderResponseInterface
@@ -67,7 +68,7 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public function getType(): string
     {
-        return CustomConfiguration::NAME;
+        return Provider::OPENID;
     }
 
     /**

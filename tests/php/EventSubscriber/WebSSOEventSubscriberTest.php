@@ -150,7 +150,7 @@ it('should do nothing if Web SSO is not active', function () {
     $this->subscriber->loginWebSSOUser($this->event);
 });
 
-it('should throw an exception if the user's IP is blacklisted', function () {
+it("should throw an exception if the user's IP is blacklisted", function () {
     $this->request->cookies = new InputBag();
     $this->request->cookies->set('PHPSESSID', null);
     $this->request
@@ -211,7 +211,7 @@ it('should throw an exception if the user's IP is blacklisted', function () {
     $this->subscriber->loginWebSSOUser($this->event);
 })->throws(SSOAuthenticationException::class, 'Your IP is blacklisted');
 
-it('should throw an exception if the user's IP is not whitelisted', function () {
+it("should throw an exception if the user's IP is not whitelisted", function () {
 
     $this->request->cookies = new InputBag();
     $this->request->cookies->set('PHPSESSID', null);

@@ -151,13 +151,14 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     $json['pattern_replace_login']
                 );
             default:
-                throw new \Exception("unknown configuration name, can't load custom config");
+                throw new \Exception("Unknown provider configuration name, can't load custom configuration");
         }
     }
 
     /**
      * @param string $providerName
      * @return Configuration
+     * @throws \Exception
      */
     private function loadConfigurationByName(string $providerName): Configuration
     {
@@ -168,21 +169,24 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         );
 
         $statement = $this->db->query($query);
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return new Configuration(
+                (int)$result['id'],
+                $result['name'],
+                $result['type'],
+                $result['custom_configuration'],
+                (bool)$result['is_active'],
+                (bool)$result['is_forced']
+            );
+        }
 
-        return new Configuration(
-            (int)$result['id'],
-            $result['name'],
-            $result['type'],
-            $result['custom_configuration'],
-            (bool)$result['is_active'],
-            (bool)$result['is_forced']
-        );
+        throw new \Exception(sprintf("Provider configuration with name %s not found", $providerName));
     }
 
     /**
      * @param int $id
      * @return Configuration
+     * @throws \Exception
      */
     private function loadConfigurationById(int $id): Configuration
     {
@@ -193,27 +197,29 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         );
 
         $statement = $this->db->query($query);
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return new Configuration(
+                (int)$result['id'],
+                $result['name'],
+                $result['type'],
+                $result['custom_configuration'],
+                (bool)$result['is_active'],
+                (bool)$result['is_forced']
+            );
+        }
 
-        return new Configuration(
-            (int)$result['id'],
-            $result['name'],
-            $result['type'],
-            $result['custom_configuration'],
-            (bool)$result['is_active'],
-            (bool)$result['is_forced']
-        );
+        throw new \Exception(sprintf("provider configuration with id %d not found", $id));
     }
 
 
     /**
-     * @return array|Configuration[]
+     * @return Configuration[]
      * @throws \Throwable
      */
     public function findConfigurations(): array
     {
         $configurations = [];
-        $query = $this->translateDbName("SELECT name FROM `:db`.`provider_configuration` where name <> 'web-sso'");
+        $query = $this->translateDbName("SELECT name FROM `:db`.`provider_configuration`");
         $statement = $this->db->query($query);
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $configurations[] = $this->getConfigurationByName($result['name']);
