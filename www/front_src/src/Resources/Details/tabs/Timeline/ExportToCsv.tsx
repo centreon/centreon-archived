@@ -6,14 +6,17 @@ import { Button, Stack } from '@mui/material';
 import { getSearchQueryParameterValue, SearchParameter } from '@centreon/ui';
 
 import { labelExportToCSV } from '../../../translatedLabels';
+
 interface Props {
   getSearch: () => SearchParameter | undefined;
   timelineDownloadEndpoint: string;
 }
 
-const ExportToCsv = ({ getSearch, timelineDownloadEndpoint }: Props): JSX.Element => {
+const ExportToCsv = ({
+  getSearch,
+  timelineDownloadEndpoint,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
-
 
   const exportToCsv = (): void => {
     const data = getSearch();

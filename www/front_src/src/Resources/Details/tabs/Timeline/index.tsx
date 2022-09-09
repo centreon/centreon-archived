@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, path, isNil, equals } from 'ramda';
+import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { Paper, Stack } from '@mui/material';
@@ -23,7 +23,6 @@ import {
   getDatesDerivedAtom,
   selectedTimePeriodAtom,
 } from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
-import { ResourceType } from '../../../models';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -93,7 +92,10 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   };
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
-  const timelineDownloadEndpoint = path(['links', 'endpoints', 'timeline_download'], details);
+  const timelineDownloadEndpoint = path(
+    ['links', 'endpoints', 'timeline_download'],
+    details,
+  );
 
   const listTimeline = ({
     atPage,
@@ -134,7 +136,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
           {displayCsvExport && (
             <ExportToCsv
               getSearch={getSearch}
-              timelineDownloadEndpoint={timelineDownloadEndpoint}
+              timelineDownloadEndpoint={timelineDownloadEndpoint as string}
             />
           )}
         </Stack>
