@@ -171,8 +171,16 @@ try {
         $cntObj = new CentreonConnector($pearDB);
         $tab = $form->getSubmitValues();
         $connectorValues = array();
-        $connectorValues['name'] = filter_var($tab['connector_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $connectorValues['description'] = filter_var($tab['connector_description'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $connectorValues['name'] = filter_var(
+            $tab['connector_name'],
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        $connectorValues['description'] = filter_var(
+            $tab['connector_description'],
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
         $connectorValues['enabled'] = $tab['connector_status']['connector_status'] === '0' ? 0 : 1;
         $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
         $connectorValues['command_line'] = $tab['command_line'];

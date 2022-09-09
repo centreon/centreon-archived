@@ -45,7 +45,7 @@ $kernel = \App\Kernel::createForWeb();
 $updateWriteRepository = $kernel->getContainer()->get(WriteUpdateRepositoryInterface::class);
 
 $parameters = filter_input_array(INPUT_POST);
-$current = filter_var($_POST['current'] ?? "step 5", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$current = filter_var($_POST['current'] ?? "step 5", FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
 
 if ($parameters) {
     if ((int)$parameters["send_statistics"] === 1) {

@@ -48,7 +48,8 @@ $type = filter_var(
 
 $search = filter_var(
     $_POST['searchC'] ?? $_GET['searchC'] ?? $centreon->historySearch[$url]['search' . $type] ?? '',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 $displayLocked = filter_var(

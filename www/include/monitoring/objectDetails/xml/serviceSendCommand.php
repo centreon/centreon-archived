@@ -72,7 +72,8 @@ $pollerId = $hostObj->getHostPollerId($hostId);
 
 $cmd = filter_var(
     $_POST['cmd'] ?? '',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 $cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);

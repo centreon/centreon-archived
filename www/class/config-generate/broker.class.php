@@ -200,8 +200,16 @@ class Broker extends AbstractObjectJSON
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
             //logger
-            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $object['log']['directory'] = filter_var(
+                $row['log_directory'],
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            $object['log']['filename'] = filter_var(
+                $row['log_filename'],
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();
             $logs = $this->cacheLogValue[$object['broker_id']];

@@ -96,8 +96,11 @@ class CentreonTraps
                     if (is_null($value) || $value == "" || filter_var($key, FILTER_VALIDATE_INT) === false) {
                         continue;
                     }
-                    $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                    $regexp[$key] = filter_var($regexp[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS) ? $regexp[$key] : "";
+                    $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+                    $regexp[$key] =
+                        filter_var($regexp[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES)
+                        ? $regexp[$key]
+                        : "";
                     $status[$key] = filter_var($status[$key], FILTER_VALIDATE_INT) ? (int) $status[$key] : 0;
                     $severity[$key] = filter_var($severity[$key], FILTER_VALIDATE_INT);
 

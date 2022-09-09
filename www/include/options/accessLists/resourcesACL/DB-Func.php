@@ -45,7 +45,7 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('acl_res_id');
     }
-    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
     $statement = $pearDB->prepare("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = :name");
     $statement->bindValue(':name', $name, \PDO::PARAM_STR);
     $statement->execute();
@@ -707,14 +707,26 @@ function updateMetaServices($acl_id = null)
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['acl_res_name'] = filter_var($resources['acl_res_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sanitizedParameters['acl_res_name'] = filter_var(
+        $resources['acl_res_name'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
 
     if (empty($sanitizedParameters['acl_res_name'])) {
         throw new InvalidArgumentException(_("ACL Resource name can't be empty"));
     }
 
-    $sanitizedParameters['acl_res_alias'] = filter_var($resources['acl_res_alias'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $sanitizedParameters['acl_res_comment'] = filter_var($resources['acl_res_comment'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sanitizedParameters['acl_res_alias'] = filter_var(
+        $resources['acl_res_alias'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
+    $sanitizedParameters['acl_res_comment'] = filter_var(
+        $resources['acl_res_comment'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
 
     // set default value for unconsistent FILTER_VALIDATE_INT
     $default = ["options" => ["default" => 0]];

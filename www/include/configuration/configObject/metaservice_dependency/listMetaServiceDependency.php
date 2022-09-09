@@ -50,7 +50,8 @@ if (!$centreon->user->admin) {
 
 $search = filter_var(
     $_POST['searchMSD'] ?? $_GET['searchMSD'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 if (isset($_POST['searchMSD']) || isset($_GET['searchMSD'])) {

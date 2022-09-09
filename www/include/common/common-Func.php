@@ -1631,7 +1631,7 @@ function getDuplicateNumberOption()
 
 function isNotEmptyAfterStringSanitize($test): bool
 {
-    if (empty(filter_var($test, FILTER_SANITIZE_FULL_SPECIAL_CHARS))) {
+    if (empty(filter_var($test, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES))) {
         return false;
     } else {
         return true;

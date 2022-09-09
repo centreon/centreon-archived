@@ -463,8 +463,8 @@ class CentreonDB extends \PDO
             return -1;
         }
 
-        $table = filter_var($table, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $column = filter_var($column, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $table = filter_var($table, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+        $column = filter_var($column, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
 
         $query = "SELECT COLUMN_NAME
             FROM INFORMATION_SCHEMA.COLUMNS

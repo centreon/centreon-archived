@@ -112,7 +112,13 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         if (
             !isset($_POST['version'])
             || !$_POST['version']
-            || empty($version = filter_var($_POST['version'], FILTER_SANITIZE_FULL_SPECIAL_CHARS))
+            || empty(
+                $version = filter_var(
+                    $_POST['version'],
+                    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                )
+            )
         ) {
             throw new \RestBadRequestException('Please send \'version\' in the request.');
         }

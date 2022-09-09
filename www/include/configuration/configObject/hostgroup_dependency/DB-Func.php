@@ -295,12 +295,20 @@ function updateHostGroupDependency($depId = null): void
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['dep_name'] = filter_var($resources['dep_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sanitizedParameters['dep_name'] = filter_var(
+        $resources['dep_name'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
     if (empty($sanitizedParameters['dep_name'])) {
         throw new InvalidArgumentException(_("Dependency name can't be empty"));
     }
 
-    $sanitizedParameters['dep_description'] = filter_var($resources['dep_description'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sanitizedParameters['dep_description'] = filter_var(
+        $resources['dep_description'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
     if (empty($sanitizedParameters['dep_description'])) {
         throw new InvalidArgumentException(_("Dependency description can't be empty"));
     }
@@ -316,7 +324,8 @@ function sanitizeResourceParameters(array $resources): array
                 ",",
                 array_keys($resources["execution_failure_criteria"])
             ),
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
     }
 
@@ -326,11 +335,16 @@ function sanitizeResourceParameters(array $resources): array
                 ",",
                 array_keys($resources["notification_failure_criteria"])
             ),
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
     }
 
-    $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sanitizedParameters['dep_comment'] = filter_var(
+        $resources['dep_comment'],
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        FILTER_FLAG_NO_ENCODE_QUOTES
+    );
     return $sanitizedParameters;
 }
 

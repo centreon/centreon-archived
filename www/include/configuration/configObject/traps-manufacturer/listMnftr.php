@@ -45,7 +45,8 @@ $mnftr_id = null;
 
 $search = filter_var(
     $_POST['searchTM'] ?? $_GET['searchTM'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {

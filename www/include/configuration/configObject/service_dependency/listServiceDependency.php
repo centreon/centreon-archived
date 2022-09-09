@@ -45,7 +45,8 @@ isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
 $search = filter_var(
     $_POST['searchSD'] ?? $_GET['searchSD'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 if (isset($_POST['searchSD']) || isset($_GET['searchSD'])) {

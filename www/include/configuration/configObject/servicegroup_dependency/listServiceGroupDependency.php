@@ -50,7 +50,8 @@ if (!$centreon->user->admin) {
 
 $search = filter_var(
     $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 if (isset($_POST['searchSGD']) || isset($_GET['searchSGD'])) {
     //saving filters values

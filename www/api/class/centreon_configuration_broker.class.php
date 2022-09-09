@@ -53,8 +53,16 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
 
         $page = filter_var((int)$this->arguments['page'], FILTER_VALIDATE_INT);
         $position = filter_var((int)$this->arguments['position'], FILTER_VALIDATE_INT);
-        $blockId = filter_var((string)$this->arguments['blockId'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $tag = filter_var((string)$this->arguments['tag'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $blockId = filter_var(
+            (string) $this->arguments['blockId'],
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        $tag = filter_var(
+            (string) $this->arguments['tag'],
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
         if (empty($tag) || empty($blockId) || $page === false || $position === false) {
             throw new \InvalidArgumentException('Invalid Parameters');
         }

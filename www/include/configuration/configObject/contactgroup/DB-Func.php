@@ -199,9 +199,11 @@ function insertContactGroup($ret)
         $ret = $form->getSubmitValues();
     }
 
-    $cgName = $centreon->checkIllegalChar(filter_var($ret["cg_name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $cgName = $centreon->checkIllegalChar(
+        filter_var($ret["cg_name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES)
+    );
+    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
     $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1';//enum
 
     $stmt = $pearDB->prepare(
@@ -258,9 +260,15 @@ function updateContactGroup($cgId = null, $params = array())
         $ret = $form->getSubmitValues();
     }
 
-    $cgName = $centreon->checkIllegalChar(filter_var($ret["cg_name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $cgName = $centreon->checkIllegalChar(
+        filter_var(
+            $ret["cg_name"],
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        )
+    );
+    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
     $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1';//enum
 
     $stmt = $pearDB->prepare(

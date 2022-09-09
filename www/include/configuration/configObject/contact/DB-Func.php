@@ -1168,7 +1168,11 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_hostNotifOpts':
-                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $inputValue = filter_var(
+                    implode(",", array_keys($inputValue)),
+                    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 if (empty($inputValue)) {
                     $bindParams[':contact_host_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
@@ -1176,7 +1180,11 @@ function sanitizeFormContactParameters(array $ret): array
                 }
                 break;
             case 'contact_svNotifOpts':
-                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $inputValue = filter_var(
+                    implode(",", array_keys($inputValue)),
+                    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 if (empty($inputValue)) {
                     $bindParams[':contact_service_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
@@ -1235,7 +1243,11 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $inputValue = filter_var(
+                        $inputValue,
+                        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'browser'];
                     } else {
@@ -1245,7 +1257,11 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_auth_type':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $inputValue = filter_var(
+                        $inputValue,
+                        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'local'];
                     } else {
