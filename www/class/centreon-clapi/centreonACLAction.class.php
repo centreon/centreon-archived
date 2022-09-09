@@ -1,33 +1,19 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give CENTREON
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
  *
@@ -35,6 +21,8 @@
 
 namespace CentreonClapi;
 
+use CentreonClapi\Repository\SessionRepository;
+use CentreonClapi\Repository\AclGroupRepository;
 use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
 
 require_once "centreonObject.class.php";
@@ -57,6 +45,16 @@ class CentreonACLAction extends CentreonObject
     protected $availableActions;
 
     /**
+     * @var AclGroupRepository
+     */
+    private AclGroupRepository $aclGroupRepository;
+
+    /**
+     * @var SessionRepository
+     */
+    private SessionRepository $sessionRepository;
+
+    /**
      * Constructor
      *
      * @return void
@@ -64,6 +62,9 @@ class CentreonACLAction extends CentreonObject
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
+        $db = $dependencyInjector["configuration_db"];
+        $this->aclGroupRepository = new AclGroupRepository($db);
+        $this->sessionRepository = new SessionRepository($db);
         $this->object = new \Centreon_Object_Acl_Action($dependencyInjector);
         $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
         $this->relObject = new \Centreon_Object_Relation_Acl_Group_Action($dependencyInjector);
@@ -425,7 +426,7 @@ class CentreonACLAction extends CentreonObject
      */
     private function updateAclActionsForAuthentifiedUsers(int $aclActionId): void
     {
-        $aclGroupIds = $this->getAclGroupIdsByActionId($aclActionId);
+        $aclGroupIds = $this->aclGroupRepository->getAclGroupIdsByActionId($aclActionId);
         $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
     }
 
@@ -436,57 +437,12 @@ class CentreonACLAction extends CentreonObject
      */
     private function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
     {
-        $userIds = $this->getUsersIdsByAclGroup($aclGroupIds);
+        $userIds = $this->aclGroupRepository->getUsersIdsByAclGroupIds($aclGroupIds);
         $readSessionRepository = $this->getReadSessionRepository();
         foreach ($userIds as $userId) {
             $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
-            $statement = $this->db->prepare("UPDATE session SET update_acl = '1' WHERE session_id = :sessionId");
-            foreach ($sessionIds as $sessionId) {
-                $statement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
-                $statement->execute();
-            }
+            $this->sessionRepository->FlagUpdateAclBySessionIds($sessionIds);
         }
-    }
-
-    /**
-     * This function returns user ids from ACL Group Ids
-     *
-     * @param int[] $aclGroupIds
-     * @return int[]
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function getUsersIdsByAclGroup(array $aclGroupIds): array
-    {
-        if (empty($aclGroupIds)) {
-            return [];
-        }
-
-        $queryValues = [];
-        foreach ($aclGroupIds as $index => $aclGroupId) {
-            $sanitizedAclGroupId = filter_var($aclGroupId, FILTER_VALIDATE_INT);
-            if ($sanitizedAclGroupId === false) {
-                throw new \InvalidArgumentException("Invalid ID");
-            }
-            $queryValues[":acl_group_id_" . $index] = $sanitizedAclGroupId;
-        }
-
-        $aclGroupIdQueryString = "(" . implode(", ", array_keys($queryValues)) . ")";
-        $statement = $this->db->prepare(
-            "SELECT DISTINCT `contact_contact_id` FROM `acl_group_contacts_relations`
-                WHERE `acl_group_id`
-                IN $aclGroupIdQueryString"
-        );
-        foreach ($queryValues as $bindParameter => $bindValue) {
-            $statement->bindValue($bindParameter, $bindValue, \PDO::PARAM_INT);
-        }
-        $statement->execute();
-        $userIds = [];
-        while ($result = $statement->fetch()) {
-            $userIds[] = (int) $result["contact_contact_id"];
-        }
-
-        return $userIds;
     }
 
     /**
@@ -502,27 +458,5 @@ class CentreonACLAction extends CentreonObject
         );
 
         return $readSessionRepository;
-    }
-
-    /**
-     * Get Acl group ids linked to an action access.
-     *
-     * @param int $actionId
-     * @return int[]
-     */
-    private function getAclGroupIdsByActionId(int $actionId): array
-    {
-        $aclGroupIds = [];
-        $statement = $this->db->prepare(
-            "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations
-                WHERE acl_action_id = :aclActionId"
-        );
-        $statement->bindValue(":aclActionId", $actionId, \PDO::PARAM_INT);
-        $statement->execute();
-        while ($result = $statement->fetch()) {
-            $aclGroupIds[] = (int) $result["acl_group_id"];
-        };
-
-        return $aclGroupIds;
     }
 }
