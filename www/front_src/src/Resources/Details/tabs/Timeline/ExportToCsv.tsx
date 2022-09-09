@@ -3,19 +3,17 @@ import { useTranslation } from 'react-i18next';
 import SaveIcon from '@mui/icons-material/SaveAlt';
 import { Button, Stack } from '@mui/material';
 
-import { SearchParameter, getSearchQueryParameterValue } from '@centreon/ui';
+import { getSearchQueryParameterValue, SearchParameter } from '@centreon/ui';
 
 import { labelExportToCSV } from '../../../translatedLabels';
-
 interface Props {
   getSearch: () => SearchParameter | undefined;
-  timelineEndpoint: string;
+  timelineDownloadEndpoint: string;
 }
 
-const ExportToCsv = ({ getSearch, timelineEndpoint }: Props): JSX.Element => {
+const ExportToCsv = ({ getSearch, timelineDownloadEndpoint }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const timelineDownloadEndpoint = `${timelineEndpoint}/download`;
 
   const exportToCsv = (): void => {
     const data = getSearch();

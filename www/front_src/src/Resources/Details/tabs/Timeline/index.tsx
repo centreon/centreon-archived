@@ -93,6 +93,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   };
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
+  const timelineDownloadEndpoint = path(['links', 'endpoints', 'timeline_download'], details);
 
   const listTimeline = ({
     atPage,
@@ -113,8 +114,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTypes(typeIds);
   };
 
-  const displayCsvExport =
-    !equals(details?.type, ResourceType.host) && details?.parent;
+  const displayCsvExport = !isNil(timelineDownloadEndpoint);
 
   return (
     <InfiniteScroll
@@ -134,7 +134,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
           {displayCsvExport && (
             <ExportToCsv
               getSearch={getSearch}
-              timelineEndpoint={timelineEndpoint as string}
+              timelineDownloadEndpoint={timelineDownloadEndpoint}
             />
           )}
         </Stack>
