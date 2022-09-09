@@ -141,9 +141,9 @@ class Local implements ProviderAuthenticationInterface
     /**
      * @return ProviderToken
      */
-    public function getProviderToken(): NewProviderToken
+    public function getProviderToken(?string $token = null): NewProviderToken
     {
-        return $this->provider->getProviderToken($this->session->getId());
+        return $this->provider->getProviderToken($token);
     }
 
     /**

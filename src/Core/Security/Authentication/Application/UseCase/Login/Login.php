@@ -108,7 +108,7 @@ final class Login
                     $this->createAuthenticationTokens(
                         $this->session->getId(),
                         $user,
-                        $this->provider->getProviderToken(),
+                        $this->provider->getProviderToken($this->session->getId()),
                         $this->provider->getProviderRefreshToken(),
                         $loginRequest->clientIp
                     );

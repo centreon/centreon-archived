@@ -100,9 +100,10 @@ interface ProviderAuthenticationInterface
     public function updateUser(): void;
 
     /**
+     * @param string|null $token
      * @return NewProviderToken
      */
-    public function getProviderToken(): NewProviderToken;
+    public function getProviderToken(?string $token = null): NewProviderToken;
 
     /**
      * @return NewProviderToken|null

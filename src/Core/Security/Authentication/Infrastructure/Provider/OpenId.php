@@ -180,9 +180,10 @@ class OpenId implements ProviderAuthenticationInterface
     }
 
     /**
+     * @param string|null $token
      * @return NewProviderToken
      */
-    public function getProviderToken(): NewProviderToken
+    public function getProviderToken(?string $token = null): NewProviderToken
     {
         return $this->provider->getProviderToken();
     }

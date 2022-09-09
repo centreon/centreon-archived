@@ -275,9 +275,11 @@ class WebSSO implements ProviderAuthenticationInterface
     }
 
     /**
+     * @param string|null $token
      * @return NewProviderToken
+     * @throws \Exception
      */
-    public function getProviderToken(): NewProviderToken
+    public function getProviderToken(?string $token = null): NewProviderToken
     {
         throw new \Exception("Feature not available for WebSSO provider");
     }
