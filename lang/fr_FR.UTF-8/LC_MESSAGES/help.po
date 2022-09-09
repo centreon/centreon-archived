@@ -7215,9 +7215,6 @@ msgstr ""
 msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
 msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"
 
-msgid "Poller Configuration Actions / Poller Management"
-msgstr "Actions de configuration du collecteur / Gestion du collecteur"
-
 msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
 

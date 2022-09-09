@@ -4776,9 +4776,6 @@ msgstr ""
 #  msgid "Disacknowledgement command sent"
 #  msgid ""
 
-#  msgid "Poller Configuration Actions / Poller Management"
-#  msgstr ""
-
 #  msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
 #  msgstr ""
 
