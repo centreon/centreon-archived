@@ -78,7 +78,8 @@ $searchContact = filter_var(
 
 $search = filter_var(
     $_POST['Search'] ?? $_GET['Search'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+);
 
 $contactGroup = filter_var(
     $_POST["contactGroup"] ?? $_GET["contactGroup"] ?? 0,
