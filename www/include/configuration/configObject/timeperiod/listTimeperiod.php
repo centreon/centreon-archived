@@ -41,8 +41,7 @@ include "./include/common/autoNumLimit.php";
 
 $search = filter_var(
     $_POST['searchTP'] ?? $_GET['searchTP'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 if (isset($_POST['searchTP']) || isset($_GET['searchTP'])) {
     //saving filters values

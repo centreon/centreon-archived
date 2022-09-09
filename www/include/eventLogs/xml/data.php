@@ -181,13 +181,11 @@ $buffer->startElement("root");
  */
 $lang_ = filter_var(
     $inputs["lang"] ?? "-1",
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $openid = filter_var(
     $inputs["id"] ?? "-1",
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";

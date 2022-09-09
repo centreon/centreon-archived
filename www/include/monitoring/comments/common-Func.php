@@ -45,8 +45,7 @@ function DeleteComment($type = null, $hosts = [])
     global $pearDB;
     $type = filter_var(
         $type ?? '',
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 
     foreach ($hosts as $key => $value) {

@@ -64,8 +64,7 @@ $index = filter_var(
 );
 $period = filter_var(
     $_GET['period'] ?? $_POST['period'] ?? 'today',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $start = filter_var(
     $_GET['start'] ?? false,
@@ -77,8 +76,7 @@ $end = filter_var(
 );
 $chartId = filter_var(
     $_GET['chartId'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (!empty($chartId)) {

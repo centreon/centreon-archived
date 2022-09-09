@@ -709,8 +709,7 @@ function sanitizeResourceParameters(array $resources): array
     $sanitizedParameters = [];
     $sanitizedParameters['acl_res_name'] = filter_var(
         $resources['acl_res_name'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 
     if (empty($sanitizedParameters['acl_res_name'])) {
@@ -719,13 +718,11 @@ function sanitizeResourceParameters(array $resources): array
 
     $sanitizedParameters['acl_res_alias'] = filter_var(
         $resources['acl_res_alias'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
     $sanitizedParameters['acl_res_comment'] = filter_var(
         $resources['acl_res_comment'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 
     // set default value for unconsistent FILTER_VALIDATE_INT

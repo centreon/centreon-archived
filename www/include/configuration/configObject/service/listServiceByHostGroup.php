@@ -44,14 +44,12 @@ $mediaObj = new CentreonMedia($pearDB);
 
 $searchHG = filter_var(
     $_POST['hostgroups'] ?? $_GET['hostgroups'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $searchS = filter_var(
     $_POST['searchS'] ?? $_GET['searchS'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $template = filter_var(

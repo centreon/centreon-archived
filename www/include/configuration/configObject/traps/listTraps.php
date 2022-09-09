@@ -60,8 +60,7 @@ $tabStatusFilter = array(
 
 $searchTraps = filter_var(
     $_POST['searchT'] ?? $_GET['searchT'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 $searchStatus = null;

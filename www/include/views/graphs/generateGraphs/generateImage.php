@@ -58,8 +58,7 @@ if (!empty($_GET['username'])) {
 
 $token = filter_var(
     $_GET['token'] ?? $_GET['akey'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (!empty($userName) && !empty($token)) {
@@ -109,16 +108,14 @@ $index = filter_var(
 if (!empty($_GET['hostname'])) {
     $hostName = filter_var(
         $_GET['hostname'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 }
 
 if (!empty($_GET['service'])) {
     $serviceDescription = filter_var(
         $_GET['service'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 }
 
