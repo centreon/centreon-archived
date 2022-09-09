@@ -21,16 +21,16 @@
 
 namespace CentreonClapi;
 
-use CentreonClapi\Repository\SessionRepository;
-use CentreonClapi\Repository\AclGroupRepository;
-use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
-
 require_once "centreonObject.class.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Action.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Action.php";
 require_once __DIR__ . "/Repository/AclGroupRepository.php";
 require_once __DIR__ . "/Repository/SessionRepository.php";
+
+use CentreonClapi\Repository\SessionRepository;
+use CentreonClapi\Repository\AclGroupRepository;
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
 
 /**
  * Class for managing ACL Actions
