@@ -237,13 +237,11 @@ if ($arId) {
         // sanitize name and description
         $gopt['ar_name'] = filter_var(
             $row['ar_name'],
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS
         );
         $gopt['ar_description'] = filter_var(
             $row['ar_description'],
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS
         );
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
         $gopt['ar_sync_base_date'] = $row['ar_sync_base_date'];
@@ -345,13 +343,11 @@ if ($form->validate()) {
     // sanitize name and description
     $values['ar_name'] = filter_var(
         $values['ar_name'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
     $values['ar_description'] = filter_var(
         $values['ar_description'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 
     // Check if sanitized name and description are not empty

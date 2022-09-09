@@ -47,18 +47,15 @@ include("./include/common/autoNumLimit.php");
 $searchService = filter_var(
     $_POST["searchService"] ?? $_GET["searchService"] ?? '',
     FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
 );
 
 $searchHost = filter_var(
     $_POST["searchHost"] ?? $_GET["searchHost"] ?? '',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 $searchOutput = filter_var(
     $_POST["searchOutput"] ?? $_GET["searchOutput"] ?? '',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['search']) || isset($_GET['search'])) {

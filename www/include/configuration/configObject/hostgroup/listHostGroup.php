@@ -53,8 +53,7 @@ $mainQueryParameters = [];
 
 $search = filter_var(
     $_POST['searchHg'] ?? $_GET['searchHg'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchHg']) || isset($_GET['searchHg'])) {

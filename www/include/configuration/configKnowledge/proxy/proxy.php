@@ -78,13 +78,12 @@ $proxy = new ProceduresProxy($pearDB);
 $url = null;
 
 if (isset($_GET["host_name"])) {
-    $hostName = filter_var($_GET['host_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $hostName = filter_var($_GET['host_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 if (isset($_GET["service_description"])) {
     $serviceDescription = filter_var(
         $_GET['service_description'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        FILTER_FLAG_NO_ENCODE_QUOTES
+        FILTER_SANITIZE_FULL_SPECIAL_CHARS
     );
 }
 

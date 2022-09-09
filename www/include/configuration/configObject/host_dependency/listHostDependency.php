@@ -45,8 +45,7 @@ $list = $_GET["list"] ?? null;
 
 $search = filter_var(
     $_POST['searchHD'] ?? $_GET['searchHD'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    FILTER_FLAG_NO_ENCODE_QUOTES
+    FILTER_SANITIZE_FULL_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchHD']) || isset($_GET['searchHD'])) {

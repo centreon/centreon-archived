@@ -53,7 +53,7 @@ $mySessionId = session_id();
 
 // checks for token
 if (!empty($_GET['username'])) {
-    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 $token = filter_var(
@@ -145,7 +145,7 @@ if (!empty($hostName) && !empty($serviceDescription)) {
 $chartId = null;
 
 if (!empty($_GET['chartId'])) {
-    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 }
 
 if (!empty($chartId)) {

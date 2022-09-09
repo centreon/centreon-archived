@@ -646,95 +646,29 @@ class Request
                     'default' => $defaultLimit
                 ]
             ],
-            'StartDate' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'EndDate' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'StartTime' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'EndTime' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
+            'StartDate' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'EndDate' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'StartTime' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'EndTime' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'period' => FILTER_VALIDATE_INT,
-            'engine' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'up' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'down' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'unreachable' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'ok' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'warning' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'critical' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'unknown' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'notification' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'alert' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'oh' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'error' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'output' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'search_H' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'search_S' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'search_host' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'search_service' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
-            'export' => [
-                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-            ],
+            'engine' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'up' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'down' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'unreachable' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'ok' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'warning' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'critical' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'unknown' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'notification' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'alert' =>FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'oh' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'error' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'output' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'search_H' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'search_S' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'search_host' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'search_service' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'export' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
         ];
     }
 

@@ -45,7 +45,7 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('acl_res_id');
     }
-    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $statement = $pearDB->prepare("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = :name");
     $statement->bindValue(':name', $name, \PDO::PARAM_STR);
     $statement->execute();

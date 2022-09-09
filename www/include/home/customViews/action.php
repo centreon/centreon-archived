@@ -166,7 +166,7 @@ if (!empty($_POST['unlockedUsergroups'])) {
 $positions = [];
 if (!empty($_POST['positions'])) {
     foreach ($_POST['positions'] as $position) {
-        if (filter_var($position, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES) !== false) {
+        if (filter_var($position, FILTER_SANITIZE_FULL_SPECIAL_CHARS) !== false) {
             $positions[] = $position;
         }
     }

@@ -50,22 +50,19 @@ function getPeriodToReport(?string $alternate = null): array
     if (isset($_POST['period'])) {
         $period = filter_var(
             $_POST['period'],
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS
         );
     } elseif (isset($_GET['period'])) {
         $period = filter_var(
             $_GET['period'],
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS
         );
     }
 
     if (isset($_POST['period_choice'])) {
         $period_choice = filter_var(
             $_POST['period_choice'],
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            FILTER_SANITIZE_FULL_SPECIAL_CHARS
         );
     }
 
@@ -73,37 +70,33 @@ function getPeriodToReport(?string $alternate = null): array
         if (isset($_POST['alternativeDateStartDate'])) {
             $start_date = filter_var(
                 $_POST['alternativeDateStartDate'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
         }
 
         if (isset($_POST['alternativeDateEndDate'])) {
             $end_date = filter_var(
                 $_POST['alternativeDateEndDate'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
         }
     } else {
         if (isset($_POST['StartDate'])) {
             $start_date = filter_var(
                 $_POST['StartDate'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
         } elseif (isset($_GET['StartDate'])) {
             $start_date = filter_var(
                 $_GET['StartDate'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                FILTER_SANITIZE_FULL_SPECIAL_CHARS
             );
         }
 
         if (isset($_POST['EndDate'])) {
-            $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         } elseif (isset($_GET['EndDate'])) {
-            $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
     }
 

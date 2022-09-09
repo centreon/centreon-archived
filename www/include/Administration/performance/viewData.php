@@ -72,44 +72,17 @@ const UNLOCK_SERVICE = "nlk";
  * Prepare search engine
  */
 $inputArguments = array(
-    'Search' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'searchH' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
+    'Search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'searchH' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
     'num' => FILTER_SANITIZE_NUMBER_INT,
     'limit' => FILTER_SANITIZE_NUMBER_INT,
-    'searchS' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'searchP' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'o' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'o1' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'o2' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
-    'select' => array(
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_REQUIRE_ARRAY
-    ),
-    'id' => [
-        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
-    ],
+    'searchS' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'searchP' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o1' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o2' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'select' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'id' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
 );
 $inputGet = filter_input_array(
     INPUT_GET,
