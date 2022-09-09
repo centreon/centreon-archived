@@ -2364,7 +2364,7 @@ function updateHostHostCategory_MC($host_id, $ret = array())
 
 function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
 {
-    global $pearDB, $path;
+    global $pearDB, $path, $centreon;
 
     if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {
         return 0;
@@ -2419,7 +2419,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
 
 function createHostTemplateService($host_id = null, $htm_id = null)
 {
-    global $form;
+    global $pearDB, $path, $centreon, $form;
 
     if (!$host_id) {
         return;
