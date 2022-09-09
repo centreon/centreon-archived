@@ -83,3 +83,6 @@ cypress/results
 config/packages/serializer/Centreon*
 config/packages/dev/Centreon*
 config/packages/prod/Centreon*
+
+# Php-CS-Fixer output file
+checkstyle.core.xml

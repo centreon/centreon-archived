@@ -106,6 +106,7 @@ class Comment
      */
     public function setComment(string $comment): Comment
     {
+        $comment = trim($comment);
         if (empty($comment)) {
             throw new \InvalidArgumentException(
                 "Comment can not be empty"

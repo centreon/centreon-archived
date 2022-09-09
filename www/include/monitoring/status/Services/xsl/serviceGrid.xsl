@@ -38,7 +38,10 @@
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_uri"/></xsl:attribute>
                             <xsl:attribute name="isreact">true</xsl:attribute>
-                            <xsl:value-of select="viewIcon" disable-output-escaping="yes"/>
+                            <xsl:element name="span">
+                                <xsl:attribute name="class">svgs</xsl:attribute>
+                                <xsl:value-of select="viewIcon" disable-output-escaping="yes"/>
+                            </xsl:element>
                         </xsl:element>
                         <xsl:element name="a">
                             <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
