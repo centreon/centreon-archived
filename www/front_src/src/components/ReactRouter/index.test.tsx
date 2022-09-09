@@ -60,7 +60,7 @@ describe('React Router', () => {
     });
   });
 
-  it('displays an error message when the page is not found', async () => {
+  it('displays the fallback page with an error message when the page is not found', async () => {
     window.history.pushState({}, '', '/not-found');
 
     renderReactRouter();
@@ -71,10 +71,10 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByAltText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
   });
 
-  it('displays an error message when the user is not allowed', async () => {
+  it('displays the fallback page with an error message when the user is not allowed', async () => {
     window.history.pushState({}, '', '/monitoring/resources');
 
     renderReactRouter(retrievedNavigationWithAnEmptySet);
@@ -85,6 +85,6 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByAltText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
   });
 });

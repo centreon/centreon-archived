@@ -1,9 +1,21 @@
-import CommonFallback from '../CommonFallback';
+import { useTranslation } from 'react-i18next';
 
-import { labelYouAreNotAllowedToSeeThisPage } from './translatedLabels';
+import { FallbackPage } from '@centreon/ui';
 
-const NotAllowedPage = (): JSX.Element => (
-  <CommonFallback message={labelYouAreNotAllowedToSeeThisPage} />
-);
+import {
+  labelLostInSpace,
+  labelYouAreNotAllowedToSeeThisPage,
+} from './translatedLabels';
+
+const NotAllowedPage = (): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <FallbackPage
+      message={t(labelYouAreNotAllowedToSeeThisPage)}
+      title={t(labelLostInSpace)}
+    />
+  );
+};
 
 export default NotAllowedPage;
