@@ -30,7 +30,7 @@ interface ProviderRepositoryInterface
      * Find the provider's configuration.
      *
      * @param int $id Id of the provider configuration
-     * @return ProviderConfiguration|null
+     * @return Configuration|null
      * @throws \Exception
      */
     public function findProviderConfiguration(int $id): ?Configuration;

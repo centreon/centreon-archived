@@ -39,7 +39,6 @@ use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration;
 use EventSubscriber\WebSSOEventSubscriber;
 use InvalidArgumentException;
-use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
@@ -47,11 +46,8 @@ use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\Security\Core\Security;
 
 beforeEach(function () {
-    $this->security = $this->createMock(Security::class);
-    $this->dependencyInjector = $this->createMock(Container::class);
     $this->webSSOReadRepository = $this->createMock(ReadWebSSOConfigurationRepositoryInterface::class);
     $this->contactRepository = $this->createMock(ContactRepositoryInterface::class);
     $this->session = $this->createMock(SessionInterface::class);
@@ -59,8 +55,6 @@ beforeEach(function () {
     $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
     $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
     $this->optionService = $this->createMock(OptionServiceInterface::class);
-    $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
-    $this->security = $this->createMock(Security::class);
     $this->event = $this->createMock(RequestEvent::class);
     $this->request = $this->createMock(Request::class);
     $this->writeTokenRepository = $this->createMock(WriteTokenRepositoryInterface::class);
@@ -70,7 +64,6 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
 
     $this->subscriber = new WebSSOEventSubscriber(
-        $this->dependencyInjector,
         $this->webSSOReadRepository,
         $this->contactRepository,
         $this->session,
@@ -78,8 +71,6 @@ beforeEach(function () {
         $this->sessionRepository,
         $this->dataStorageEngine,
         $this->optionService,
-        $this->authenticationRepository,
-        $this->security,
         $this->writeTokenRepository,
         $this->writeSessionRepository,
         $this->providerFactory
@@ -153,11 +144,6 @@ it('should do nothing if Web SSO is not active', function () {
     $this->provider
         ->expects($this->never())
         ->method('findUserOrFail');
-
-    $this->security
-        ->expects($this->never())
-        ->method('getUser')
-        ->willReturn(null);
 
     $this->event
         ->expects($this->never())

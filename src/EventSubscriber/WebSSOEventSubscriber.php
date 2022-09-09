@@ -39,12 +39,10 @@ use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\Authentication\Infrastructure\Provider\WebSSO;
 use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use DateInterval;
 use DateTimeImmutable;
 use Exception;
-use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
@@ -54,14 +52,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Security;
 
 class WebSSOEventSubscriber implements EventSubscriberInterface
 {
     use LoggerTrait;
 
     /**
-     * @param Container $dependencyInjector
      * @param ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository
      * @param ContactRepositoryInterface $contactRepository
      * @param SessionInterface $session
@@ -69,14 +65,11 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param SessionRepositoryInterface $sessionRepository
      * @param DataStorageEngineInterface $dataStorageEngine
      * @param OptionServiceInterface $optionService
-     * @param AuthenticationRepositoryInterface $authenticationRepository
-     * @param Security $security
      * @param WriteTokenRepositoryInterface $writeTokenRepository
      * @param WriteSessionRepositoryInterface $writeSessionRepository
      * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
     public function __construct(
-        private Container $dependencyInjector,
         private ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository,
         private ContactRepositoryInterface $contactRepository,
         private SessionInterface $session,
@@ -84,13 +77,10 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         private SessionRepositoryInterface $sessionRepository,
         private DataStorageEngineInterface $dataStorageEngine,
         private OptionServiceInterface $optionService,
-        private AuthenticationRepositoryInterface $authenticationRepository,
-        private Security $security,
         private WriteTokenRepositoryInterface $writeTokenRepository,
         private WriteSessionRepositoryInterface $writeSessionRepository,
         private ProviderAuthenticationFactoryInterface $providerFactory
-    )
-    {
+    ) {
     }
 
     /**
@@ -174,7 +164,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      *
      * @param string $sessionId
      * @param integer $webSSOConfigurationId
-     * @param Contact $user
+     * @param ContactInterface $user
      * @param string $clientIp
      * @throws AuthenticationException
      * @throws Centreon\Domain\Authentication\Exception\AuthenticationException
@@ -184,8 +174,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         int $webSSOConfigurationId,
         ContactInterface $user,
         string $clientIp
-    ): void
-    {
+    ): void {
         $this->info('creating token');
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
             $sessionId
@@ -225,8 +214,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         NewProviderToken $providerToken,
         ?NewProviderToken $providerRefreshToken,
         ?string $clientIp,
-    ): void
-    {
+    ): void {
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
 
         if (!$isAlreadyInTransaction) {

@@ -32,6 +32,7 @@ use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
@@ -77,16 +78,15 @@ class LocalProvider implements LocalProviderInterface
      * @param ContactServiceInterface $contactService
      * @param Container $dependencyInjector
      * @param OptionServiceInterface $optionService
-     * @param ReadConfigurationRepositoryInterface $readProviderConfigurationRepository
      * @param ReadUserRepositoryInterface $readUserRepository
      * @param WriteUserRepositoryInterface $writeUserRepository
+     * @param ReadConfigurationRepositoryInterface $readConfigurationRepository
      */
     public function __construct(
         private int $sessionExpirationDelay,
         private ContactServiceInterface $contactService,
         private Container $dependencyInjector,
         private OptionServiceInterface $optionService,
-        private ReadConfigurationRepositoryInterface $readProviderConfigurationRepository,
         private ReadUserRepositoryInterface $readUserRepository,
         private WriteUserRepositoryInterface $writeUserRepository,
         private ReadConfigurationRepositoryInterface $readConfigurationRepository
@@ -142,7 +142,9 @@ class LocalProvider implements LocalProviderInterface
             }
 
             $providerConfiguration = $this->readConfigurationRepository->getConfigurationByName(Provider::LOCAL);
-            $securityPolicy = $providerConfiguration->getCustomConfiguration()->getSecurityPolicy();
+            /** @var CustomConfiguration $customConfiguration */
+            $customConfiguration = $providerConfiguration->getCustomConfiguration();
+            $securityPolicy = $customConfiguration->getSecurityPolicy();
 
             $this->respectLocalSecurityPolicyOrFail($user, $securityPolicy, $doesPasswordMatch);
         }

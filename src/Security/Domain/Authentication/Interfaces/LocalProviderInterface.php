@@ -42,7 +42,7 @@ interface LocalProviderInterface extends ProviderInterface
      * Return the provider token
      *
      * @param string $token
-     * @return ProviderToken
+     * @return NewProviderToken
      */
     public function getProviderToken(string $token): NewProviderToken;
 
@@ -50,7 +50,7 @@ interface LocalProviderInterface extends ProviderInterface
      * Return the provider refresh token.
      *
      * @param string $token
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
     public function getProviderRefreshToken(string $token): ?NewProviderToken;
 

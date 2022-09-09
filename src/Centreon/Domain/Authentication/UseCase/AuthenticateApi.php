@@ -119,10 +119,11 @@ class AuthenticateApi
      *
      * @param ProviderAuthenticationInterface $localProvider
      * @param AuthenticateApiRequest $request
-     * @throws AuthenticationException
      */
-    private function authenticateOrFail(ProviderAuthenticationInterface $localProvider, AuthenticateApiRequest $request): void
-    {
+    private function authenticateOrFail(
+        ProviderAuthenticationInterface $localProvider,
+        AuthenticateApiRequest $request
+    ): void {
         /**
          * Authenticate with the legacy mechanism encapsulated into the Local Provider.
          */
@@ -169,7 +170,7 @@ class AuthenticateApi
      * @return void
      * @throws AuthenticationException
      */
-    public function createAPIAuthenticationTokens(
+    private function createAPIAuthenticationTokens(
         string $token,
         Configuration $providerConfiguration,
         ContactInterface $contact,

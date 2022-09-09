@@ -697,7 +697,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         }
 
         if ($json['auto_import'] === true) {
-            self::validateParametersForAutoImport(
+            $this->validateParametersForAutoImport(
                 $json['contact_template'],
                 $json['email_bind_attribute'],
                 $json['fullname_bind_attribute']
@@ -713,7 +713,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
      * @param string|null $userNameBindAttribute
      * @throws OpenIdConfigurationException
      */
-    private static function validateParametersForAutoImport(
+    private function validateParametersForAutoImport(
         ?ContactTemplate $contactTemplate,
         ?string $emailBindAttribute,
         ?string $userNameBindAttribute

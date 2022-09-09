@@ -35,12 +35,12 @@ interface OpenIdProviderInterface extends ProviderInterface
     public function getConfiguration(): Configuration;
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
     public function getProviderToken(): NewProviderToken;
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
     public function getProviderRefreshToken(): ?NewProviderToken;
 
