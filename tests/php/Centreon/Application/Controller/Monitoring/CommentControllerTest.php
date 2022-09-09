@@ -28,10 +28,9 @@ use Psr\Container\ContainerInterface;
 use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Comment\CommentService;
 use Centreon\Application\Controller\Monitoring\CommentController;
-use Centreon\Domain\Monitoring\MonitoringService;
-use Centreon\Test\Api\Context\CommentContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -53,7 +52,7 @@ class CommentControllerTest extends TestCase
 
     protected $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
         $dateTime = new \DateTime('now');
@@ -249,10 +248,6 @@ class CommentControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->hostCommentJson);
 
-        $this->request->expects($this->any())
-            ->method('findOneHost')
-            ->willReturn($this->hostResource);
-
         $view = $commentController->addHostComment($this->request, $this->hostResource->getId());
 
         $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
@@ -310,14 +305,6 @@ class CommentControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->serviceCommentJson);
-
-        $this->request->expects($this->any())
-            ->method('findOneHost')
-            ->willReturn($this->hostResource);
-
-        $this->request->expects($this->any())
-            ->method('findOneService')
-            ->willReturn($this->serviceResource);
 
         $view = $commentController->addServiceComment(
             $this->request,

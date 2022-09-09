@@ -18,7 +18,7 @@ Feature:
     And I wait until host "host_test" is monitored
     And I wait until service "service_ping" from host "host_test" is monitored
 
-    When I send a GET request to '/beta/monitoring/resources?search={"s.description":{"$rg":"^service_ping$"}}'
+    When I send a GET request to '/api/v21.10/monitoring/resources?search={"s.description":{"$rg":"^service_ping$"}}'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
     And the json node "result" should have 1 elements

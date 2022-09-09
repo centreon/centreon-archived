@@ -41,7 +41,6 @@
  */
 class CentreonMonitoring
 {
-
     protected $poller;
     protected $DB;
     protected $objBroker;
@@ -143,7 +142,7 @@ class CentreonMonitoring
             $rq .= "WHERE h.host_id = s.host_id "
                 . "AND s.enabled = '1' "
                 . "AND h.enabled = '1' "
-                . "AND h.name NOT LIKE '_Module_%' ";
+                . "AND h.name NOT LIKE '\_Module\_%' ";
 
         if ($o == "svcgrid_pb" || $o == "svcOV_pb") {
             $rq .= "AND s.state != 0 ";
@@ -168,7 +167,7 @@ class CentreonMonitoring
         }
 
         $rq .= " order by tri asc, service_name";
-        
+
         $tab = array();
         $DBRESULT = $objXMLBG->DBC->query($rq);
         while ($svc = $DBRESULT->fetchRow()) {

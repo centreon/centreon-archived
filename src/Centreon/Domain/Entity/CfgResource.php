@@ -3,7 +3,6 @@ namespace Centreon\Domain\Entity;
 
 class CfgResource
 {
-
     /**
      * @var int
      */

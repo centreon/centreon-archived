@@ -37,7 +37,9 @@
 		{/if}
 	</table>
 	<div id="validForm">
-		<p>{$form.action.html}</p>
+		{if isset($form.action)}
+			<p>{$form.action.html}</p>
+		{/if}
 		<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	</div>
 </div>

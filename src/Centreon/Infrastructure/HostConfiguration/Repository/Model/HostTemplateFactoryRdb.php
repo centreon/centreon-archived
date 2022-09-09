@@ -39,7 +39,7 @@ class HostTemplateFactoryRdb
      * @param array<string, mixed> $data
      * @return HostTemplate
      * @throw \InvalidArgumentException
-     * @throws HostTemplateFactoryException
+     * @throws HostTemplateFactoryException|\Assert\AssertionFailedException
      */
     public static function create(array $data): HostTemplate
     {
@@ -131,7 +131,7 @@ class HostTemplateFactoryRdb
         }
         $optionToDefine = 0;
         $optionsTags = explode(',', $options);
-        $optionsNotAllowed = array_diff($optionsTags, ['d','u','r','f','s',]);
+        $optionsNotAllowed = array_diff($optionsTags, ['d','u','r','f','s','n']);
         if (!empty($optionsNotAllowed)) {
             throw HostTemplateFactoryException::notificationOptionsNotAllowed(implode(',', $optionsNotAllowed));
         }

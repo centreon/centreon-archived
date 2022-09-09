@@ -48,8 +48,8 @@ function testExistence($name = null)
         $id = $form->getSubmitValue('id');
     }
 
-    $dbResult = $pearDB->query("SELECT config_name, config_id 
-                                FROM `cfg_centreonbroker` 
+    $dbResult = $pearDB->query("SELECT config_name, config_id
+                                FROM `cfg_centreonbroker`
                                 WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
     $ndomod = $dbResult->fetch();
     if ($dbResult->rowCount() >= 1 && $ndomod["config_id"] == $id) {
@@ -118,19 +118,19 @@ function deleteCentreonBrokerInDB($ids = array())
 function getCentreonBrokerInformation($id)
 {
     global $pearDB;
-
     $query =
         "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
             config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
-            cache_directory, command_file, daemon, pool_size
+            cache_directory, command_file, daemon, pool_size, log_directory, log_filename, log_max_size, bbdo_version
         FROM cfg_centreonbroker
         WHERE config_id = " . $id;
     try {
         $res = $pearDB->query($query);
     } catch (\PDOException $e) {
-        return [
+        $brokerConf = [
             "name" => '',
             "filename" => '',
+            "log_directory" => '/var/log/centreon-broker/',
             "write_timestamp" => '1',
             "write_thread_id" => '1',
             "activate_watchdog" => '1',
@@ -140,24 +140,47 @@ function getCentreonBrokerInformation($id)
         ];
     }
     $row = $res->fetch();
-    $brokerConf = [
-        "id" => $id,
-        "name" => $row['config_name'],
-        "filename" => $row['config_filename'],
-        "ns_nagios_server" => $row['ns_nagios_server'],
-        "activate" => $row['config_activate'],
-        "activate_watchdog" => $row['daemon'],
-        "stats_activate" => $row['stats_activate'],
-        "write_timestamp" => $row['config_write_timestamp'],
-        "write_thread_id" => $row['config_write_thread_id'],
-        "event_queue_max_size" => $row['event_queue_max_size'],
-        "cache_directory" => $row['cache_directory'],
-        "command_file" => $row['command_file'],
-        "daemon" => $row['daemon'],
-        "pool_size" => $row['pool_size'],
-    ];
-
-    return $brokerConf;
+    if (!isset($brokerConf)) {
+        $brokerConf = [
+            "id" => $id,
+            "name" => $row['config_name'],
+            "filename" => $row['config_filename'],
+            "ns_nagios_server" => $row['ns_nagios_server'],
+            "activate" => $row['config_activate'],
+            "activate_watchdog" => $row['daemon'],
+            "stats_activate" => $row['stats_activate'],
+            "write_timestamp" => $row['config_write_timestamp'],
+            "write_thread_id" => $row['config_write_thread_id'],
+            "event_queue_max_size" => $row['event_queue_max_size'],
+            "cache_directory" => $row['cache_directory'],
+            "command_file" => $row['command_file'],
+            "daemon" => $row['daemon'],
+            "pool_size" => $row['pool_size'],
+            "log_directory" => $row['log_directory'],
+            "log_filename" => $row['log_filename'],
+            "log_max_size" => $row['log_max_size'],
+            "bbdo_version" => $row['bbdo_version'],
+        ];
+    }
+    /*
+     * Log
+     */
+    $brokerLogConf = [];
+    $query = "SELECT log.`name`, relation.`id_level`
+            FROM `cb_log` log
+            LEFT JOIN `cfg_centreonbroker_log` relation
+                ON relation.`id_log`  = log.`id`
+            WHERE relation.`id_centreonbroker` = " . $id;
+    try {
+        $res = $pearDB->query($query);
+    } catch (\PDOException $e) {
+        return $brokerConf;
+    }
+    while ($row = $res->fetch()) {
+        $brokerLogConf['log_' . $row['name']] = $row['id_level'];
+    }
+    $result = array_merge($brokerConf, $brokerLogConf);
+    return $result;
 }
 
 /**
@@ -194,7 +217,6 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
         $dbResult = $pearDB->query($query);
         $values['output'] = array();
         $values['input'] = array();
-        $values['logger'] = array();
         while ($rowOpt = $dbResult->fetch()) {
             if ($rowOpt['config_key'] == 'filters') {
                 continue;

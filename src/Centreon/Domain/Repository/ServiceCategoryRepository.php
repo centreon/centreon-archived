@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class ServiceCategoryRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      * @param int[] $pollerIds

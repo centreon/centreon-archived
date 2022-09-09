@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class ViewImgDirRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

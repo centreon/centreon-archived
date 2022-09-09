@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -108,16 +109,20 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hc['hc_id'] . "]");
     $moptions = "";
     if ($hc["hc_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right'" .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right'" .
             "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -138,7 +143,7 @@ for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
     }
     $DBRESULT2 = $pearDB->query(
         "SELECT h.host_id, h.host_activate " .
-        "FROM hostcategories_relation hcr, host h " . $aclFrom . 
+        "FROM hostcategories_relation hcr, host h " . $aclFrom .
         " WHERE hostcategories_hc_id = '" . $hc['hc_id'] . "'" .
         " AND h.host_id = hcr.host_host_id " . $aclCond .
         " AND h.host_register = '1' "

@@ -22,26 +22,84 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
+use Centreon\Domain\Contact\Exception\ContactServiceException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 
 class ContactService implements ContactServiceInterface
 {
     /**
-     * @var ContactRepositoryInterface
+     * @param ContactRepositoryInterface $contactRepository
      */
-    private $contactRepository;
-
-    public function __construct(ContactRepositoryInterface $contactRepository)
+    public function __construct(private ContactRepositoryInterface $contactRepository)
     {
-        $this->contactRepository = $contactRepository;
     }
 
     /**
      * @inheritDoc
      */
-    public function findBySession(string $session): ?Contact
+    public function addUser(ContactInterface $contact): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUser(ContactInterface $contact): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findContact(int $id): ?ContactInterface
+    {
+        return $this->contactRepository->findById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function exists(ContactInterface $contact): bool
+    {
+        $contact = $this->contactRepository->findById($contact->getId());
+        return $contact !== null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByName(string $name): ?ContactInterface
+    {
+        return $this->contactRepository->findByName($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findBySession(string $session): ?ContactInterface
     {
         return $this->contactRepository->findBySession($session);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByAuthenticationToken(string $token): ?ContactInterface
+    {
+        try {
+            return $this->contactRepository->findByAuthenticationToken($token);
+        } catch (\Exception $ex) {
+            throw ContactServiceException::errorWhileSearchingContact($ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByEmail(string $email): ?ContactInterface
+    {
+        return $this->contactRepository->findByEmail($email);
     }
 }

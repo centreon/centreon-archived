@@ -45,7 +45,6 @@ use Centreon\Infrastructure\Webservice;
 class OpenApiWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizePublicInterface
 {
-
     /**
      * @OA\Get(
      *   path="/external.php?object=openapi&action=generate",

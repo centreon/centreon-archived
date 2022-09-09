@@ -61,10 +61,12 @@ sub run {
                                         password => $self->{centreon_config}->{db_passwd},
                                         force => 0,
                                         logger => $self->{logger});
-    my ($status, $sth) = $cdb->query("SELECT nagios_server.id, nagios_server.ns_ip_address, nagios_server.ssh_port, cfg_nagios.log_archive_path FROM nagios_server, cfg_nagios 
+    my ($status, $sth) = $cdb->query("SELECT nagios_server.id, nagios_server.ns_ip_address, nagios_server.ssh_port, cfg_nagios.log_file FROM nagios_server, cfg_nagios
                                       WHERE nagios_server.ns_activate = '1' AND nagios_server.localhost = '0' AND nagios_server.id = cfg_nagios.nagios_server_id");
     die("Error SQL Quit") if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
+        $data->{log_archive_path} = $data->{log_file};
+        $data->{log_archive_path} =~ s#(.*)/.*#$1/archives/#;
 		if (defined($data->{log_archive_path}) && $data->{log_archive_path} ne '') {
 			`$self->{rsync} -c -e "ssh -o port=$data->{'ssh_port'}" $data->{'ns_ip_address'}:$data->{'log_archive_path'}/* $self->{centreon_config}->{VarLib}/log/$data->{'id'}/archives/`;
 		} else {

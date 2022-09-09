@@ -52,7 +52,7 @@ $hostId = filter_var($_POST['data'], FILTER_VALIDATE_INT);
 $db = new CentreonDB();
 $pearDB = $db;
 
-if (CentreonSession::checkSession(session_id(), $db) == 0) {
+if (CentreonSession::checkSession(session_id(), $db) === false) {
     exit();
 }
 $monitoringDb = new CentreonDB('centstorage');

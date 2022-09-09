@@ -19,11 +19,11 @@ Feature:
         And I wait until host "test" is monitored
         And I wait until service "test_service1" from host "test" is monitored
 
-        When I send a GET request to '/beta/monitoring/services?search={"host.name":"test"}'
+        When I send a GET request to '/api/v21.10/monitoring/services?search={"host.name":"test"}'
         Then the response code should be "200"
         And the JSON node "result" should have "2" elements
 
-        When I send a GET request to '/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
+        When I send a GET request to '/api/v21.10/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
         Then the response code should be "200"
         And the response should be formatted like JSON format "standard/listing.json"
         And the response should be formatted like JSON format "monitoring/service/listing.json"

@@ -1,4 +1,24 @@
 <?php
+
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Resources\DefaultConfig;
 
 /**
@@ -10,7 +30,7 @@ class CfgCentreonBrokerInfo
      * Get template configuration
      * @todo move it as yml
      *
-     * @return array the configuration template
+     * @return array<int, array<string,int|string>> the configuration template
      */
     public static function getConfiguration(): array
     {
@@ -46,7 +66,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'input',
                 'config_group_id' => 1,
             ],
@@ -200,7 +220,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'name',
-                'config_value'    => 'central-broker-master-sql',
+                'config_value'    => 'central-broker-master-unified-sql',
                 'config_group'    => 'output',
                 'config_group_id' => 1,
             ],
@@ -214,7 +234,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1,
             ],
@@ -276,15 +296,57 @@ class CfgCentreonBrokerInfo
             ],
             [
                 'config_id'       => 1,
+                'config_key'      => 'interval',
+                'config_value'    => '60',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
+                'config_key'      => 'length',
+                'config_value'    => '15552000',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
+                'config_key'      => 'check_replication',
+                'config_value'    => 'no',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
+                'config_key'      => 'rebuild_check_interval',
+                'config_value'    => '',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
+                'config_key'      => 'store_in_data_bin',
+                'config_value'    => 'yes',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
+                'config_key'      => 'insert_in_index_data',
+                'config_value'    => '1',
+                'config_group'    => 'output',
+                'config_group_id' => 1,
+            ],
+            [
+                'config_id'       => 1,
                 'config_key'      => 'type',
-                'config_value'    => 'sql',
+                'config_value'    => 'unified_sql',
                 'config_group'    => 'output',
                 'config_group_id' => 1,
             ],
             [
                 'config_id'       => 1,
                 'config_key'      => 'blockId',
-                'config_value'    => '1_16',
+                'config_value'    => '1_34',
                 'config_group'    => 'output',
                 'config_group_id' => 1,
             ],
@@ -319,7 +381,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 2,
             ],
@@ -407,139 +469,6 @@ class CfgCentreonBrokerInfo
                 'config_group'    => 'output',
                 'config_group_id' => 2,
             ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'name',
-                'config_value'    => 'central-broker-master-perfdata',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'interval',
-                'config_value'    => '60',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'retry_interval',
-                'config_value'    => '60',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'buffering_timeout',
-                'config_value'    => '0',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'length',
-                'config_value'    => '15552000',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_type',
-                'config_value'    => 'mysql',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_host',
-                'config_value'    => '@address@',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_port',
-                'config_value'    => '@port@',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_user',
-                'config_value'    => '@db_user@',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_password',
-                'config_value'    => '@db_password@',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'db_name',
-                'config_value'    => '@db_storage@',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'queries_per_transaction',
-                'config_value'    => '',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'read_timeout',
-                'config_value'    => '',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'check_replication',
-                'config_value'    => 'no',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'rebuild_check_interval',
-                'config_value'    => '',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'store_in_data_bin',
-                'config_value'    => 'yes',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'insert_in_index_data',
-                'config_value'    => '1',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'type',
-                'config_value'    => 'storage',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
-            [
-                'config_id'       => 1,
-                'config_key'      => 'blockId',
-                'config_value'    => '1_14',
-                'config_group'    => 'output',
-                'config_group_id' => 3,
-            ],
 
             /////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////
@@ -579,7 +508,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 2,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'input',
                 'config_group_id' => 1
             ],
@@ -754,7 +683,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 2,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1
             ],
@@ -901,7 +830,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 3,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1
             ],

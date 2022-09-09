@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -24,7 +25,7 @@ namespace Centreon\Infrastructure\Downtime;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Security\AccessGroup;
+use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
@@ -46,7 +47,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      */
     private $accessGroups;
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $downtimeConcordanceArray;
 
@@ -125,7 +126,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
 
     /**
      * @param bool $isAdmin Indicates whether user is an admin
-     * @return array
+     * @return Downtime[]
      * @throws \Exception
      */
     private function findHostDowntimes(bool $isAdmin = false): array
@@ -255,7 +256,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      * Find all downtimes.
      *
      * @param bool $isAdmin Indicates whether user is an admin
-     * @return array
+     * @return Downtime[]
      * @throws \Exception
      */
     private function findDowntimes(bool $isAdmin): array
@@ -488,7 +489,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      * @param int $hostId Host id linked to this service
      * @param int $serviceId Service id for which we want to find downtimes
      * @param bool $isAdmin Indicates whether user is an admin
-     * @return array
+     * @return Downtime[]
      * @throws \Exception
      */
     private function findDowntimesByService(int $hostId, int $serviceId, bool $isAdmin): array

@@ -162,6 +162,8 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         } else {
             $this->instance = null;
         }
+        // set criticality
+        $this->criticality = $this->arguments['criticality'] ?? null;
 
         /* view properties */
         if (isset($this->arguments['viewType'])) {
@@ -269,7 +271,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             if (isset($fieldList['state_type'])) {
                 $fields["s.state_type"] = 'state_type';
             }
-            if (isset($fieldList['id'])) {
+            if (isset($fieldList['service_id'])) {
                 $fields["s.service_id"] = 'service_id';
             }
             if (isset($fieldList['output'])) {
@@ -390,11 +392,11 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if ($this->criticality) {
             $query .= " AND s.service_id = cvs. service_id " .
                 "AND cvs.host_id = h.host_id " .
-                "AND cvs.name = 'CRITICALITY_ID' " .
+                "AND cvs.name = 'CRITICALITY_LEVEL' " .
                 "AND cvs.value =  :criticality";
             $queryValues['criticality'] = (string)$this->criticality;
         }
-        $query .= " AND h.name NOT LIKE '_Module_BAM%' ";
+        $query .= " AND h.name NOT LIKE '\_Module\_BAM%' ";
 
         /* Search string to a host name, alias or address */
         if ($this->searchHost) {

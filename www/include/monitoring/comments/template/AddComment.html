@@ -73,8 +73,20 @@
             </tr>
         </table>
         <div id="validForm">
-            <p>{$form.action.html}</p>
-            <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            <p>
+                {if isset($form.action)}
+                    {$form.action.html}
+                {/if}
+            </p>
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {elseif isset($form.submitMC)}
+                    {$form.submitMC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
         </div>
         {$form.hidden}
     </form>

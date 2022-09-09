@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 
 final class HostGroupService extends AbstractCentreonService implements HostGroupServiceInterface
 {
@@ -35,17 +35,17 @@ final class HostGroupService extends AbstractCentreonService implements HostGrou
     private $hostGroupRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param HostGroupRepositoryInterface $hostGroupRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         HostGroupRepositoryInterface $hostGroupRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        ReadAccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->hostGroupRepository = $hostGroupRepository;
         $this->accessGroupRepository = $accessGroupRepository;
@@ -72,6 +72,18 @@ final class HostGroupService extends AbstractCentreonService implements HostGrou
     {
         try {
             return $this->hostGroupRepository->findHostGroupsByIds($hostGroupIds);
+        } catch (\Throwable $e) {
+            throw new HostGroupException(_('Error when searching hostgroups'), 0, $e);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostGroupsByNames(array $hostGroupNames): array
+    {
+        try {
+            return $this->hostGroupRepository->findHostGroupsByNames($hostGroupNames);
         } catch (\Throwable $e) {
             throw new HostGroupException(_('Error when searching hostgroups'), 0, $e);
         }

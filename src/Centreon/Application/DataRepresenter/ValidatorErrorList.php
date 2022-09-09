@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -41,7 +42,6 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class ValidatorErrorList implements JsonSerializable
 {
-
     /**
      * @var ConstraintViolationList
      */

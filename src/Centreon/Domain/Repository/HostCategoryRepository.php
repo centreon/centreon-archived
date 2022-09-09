@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class HostCategoryRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

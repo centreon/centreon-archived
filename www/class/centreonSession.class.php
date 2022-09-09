@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,17 +36,10 @@
 
 class CentreonSession
 {
-    /*
-	 * Constructor class
-	 *
-	 * @access public
-	 * @return 	object	object session
-	 */
-    public function __construct()
-    {
-    }
-
-    public static function start($flag = 0)
+    /**
+     * @param int $flag
+     */
+    public static function start($flag = 0): void
     {
         session_start();
         if ($flag) {
@@ -53,14 +47,14 @@ class CentreonSession
         }
     }
 
-    public static function stop()
+    public static function stop(): void
     {
         // destroy the session
         session_unset();
         session_destroy();
     }
 
-    public static function restart()
+    public static function restart(): void
     {
         static::stop();
         self::start();
@@ -74,24 +68,25 @@ class CentreonSession
      * @param  string $key   session attribute
      * @param  mixed  $value session value to save
      */
-    public static function writeSessionClose($key, $value)
+    public static function writeSessionClose($key, $value): void
     {
         session_start();
         $_SESSION[$key] = $value;
         session_write_close();
     }
 
-    public function s_unset()
-    {
-        session_unset();
-    }
-
-    public function unregisterVar($registerVar)
+    /**
+     * @param mixed $registerVar
+     */
+    public function unregisterVar($registerVar): void
     {
         unset($_SESSION[$registerVar]);
     }
 
-    public function registerVar($registerVar)
+    /**
+     * @param mixed $registerVar
+     */
+    public function registerVar($registerVar): void
     {
         if (!isset($_SESSION[$registerVar])) {
             $_SESSION[$registerVar] = $$registerVar;
@@ -103,19 +98,18 @@ class CentreonSession
      *
      * @param  string        $sessionId Session id to check
      * @param  CentreonDB    $db
-     * @return int
+     * @return bool
      * @throws PDOException
      */
-    public static function checkSession($sessionId, CentreonDB $db)
+    public static function checkSession($sessionId, CentreonDB $db): bool
     {
         if (empty($sessionId)) {
-            return 0;
+            return false;
         }
-        $prepare = $db->prepare('SELECT COUNT(*) AS total FROM session WHERE `session_id` = :session_id');
+        $prepare = $db->prepare('SELECT `session_id` FROM session WHERE `session_id` = :session_id');
         $prepare->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         $prepare->execute();
-        $total = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['total'];
-        return ($total > 0) ? 1 : 0;
+        return $prepare->fetch(\PDO::FETCH_ASSOC) !== false;
     }
 
     /**
@@ -124,21 +118,47 @@ class CentreonSession
      * @param \CentreonDB $pearDB
      * @return bool If the session is updated or not
      */
-    public function updateSession($pearDB) : bool
+    public function updateSession($pearDB): bool
     {
         $sessionUpdated = false;
 
         session_start();
         $sessionId = session_id();
 
-        if (self::checkSession($sessionId, $pearDB) === 1) {
+        if (self::checkSession($sessionId, $pearDB)) {
             try {
-                /* Update last_reload parameter */
-                $query = 'UPDATE `session` '
-                    . 'SET `last_reload` = "' . time() . '", '
-                    . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
-                    . 'WHERE `session_id` = "' . $sessionId . '" ';
-                $pearDB->query($query);
+                $sessionStatement = $pearDB->prepare(
+                    "UPDATE `session`
+                    SET `last_reload` = :lastReload, `ip_address` = :ipAddress
+                    WHERE `session_id` = :sessionId"
+                );
+                $sessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
+                $sessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
+                $sessionStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $sessionStatement->execute();
+
+                $sessionExpire = 120;
+                $optionResult = $pearDB->query(
+                    "SELECT `value`
+                    FROM `options`
+                    WHERE `key` = 'session_expire'"
+                );
+                if (($option = $optionResult->fetch()) && !empty($option['value'])) {
+                    $sessionExpire = (int) $option['value'];
+                }
+
+                $expirationDate = (new \Datetime())
+                    ->add(new DateInterval('PT' . $sessionExpire . 'M'))
+                    ->getTimestamp();
+                $tokenStatement = $pearDB->prepare(
+                    "UPDATE `security_token`
+                    SET `expiration_date` = :expirationDate
+                    WHERE `token` = :sessionId"
+                );
+                $tokenStatement->bindValue(':expirationDate', $expirationDate, \PDO::PARAM_INT);
+                $tokenStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $tokenStatement->execute();
+
                 $sessionUpdated = true; // return true if session is properly updated
             } catch (\PDOException $e) {
                 $sessionUpdated = false; // return false if session is not properly updated in database
@@ -150,6 +170,11 @@ class CentreonSession
         return $sessionUpdated;
     }
 
+    /**
+     * @param string $sessionId
+     * @param \CentreonDB $pearDB
+     * @return int|string
+     */
     public static function getUser($sessionId, $pearDB)
     {
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);

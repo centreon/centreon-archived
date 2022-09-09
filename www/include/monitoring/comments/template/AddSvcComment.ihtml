@@ -26,10 +26,20 @@
 				<td class="ListColLeft">{$form.comment.label}</td>
 				<td class="ListColLeft">{$form.comment.html}</td>
 			</tr>
-		</table>		
+		</table>
 		<div id="validForm">
-			<p>{$form.action.html}</p>
-			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+			<p>
+				{if isset($form.action)}
+					{$form.action.html}
+				{/if}
+			</p>
+			<p>
+				{if isset($form.submitC)}
+					{$form.submitC.html}
+				{else}
+					{$form.submitA.html}
+				{/if}
+				&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
 		{$form.hidden}
 	</form>

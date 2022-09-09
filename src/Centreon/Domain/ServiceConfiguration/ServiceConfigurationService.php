@@ -22,24 +22,27 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
-use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\ServiceConfiguration\Exception\ServiceConfigurationServiceException;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 
 class ServiceConfigurationService extends AbstractCentreonService implements ServiceConfigurationServiceInterface
 {
+    use LoggerTrait;
+
     /**
      * @var ServiceConfigurationRepositoryInterface
      */
     private $serviceRepository;
-
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
     /**
@@ -55,13 +58,13 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      * ServiceConfigurationService constructor.
      *
      * @param ServiceConfigurationRepositoryInterface $serviceConfigurationRepository
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param HostConfigurationServiceInterface $hostConfigurationService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
      */
     public function __construct(
         ServiceConfigurationRepositoryInterface $serviceConfigurationRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         HostConfigurationServiceInterface $hostConfigurationService,
         EngineConfigurationServiceInterface $engineConfigurationService
     ) {
@@ -92,6 +95,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      */
     public function applyServices(Host $host): void
     {
+        $this->info('Apply services to host');
         if ($host->getId() == null) {
             throw new ServiceConfigurationException(_('The host id cannot be null'));
         }
@@ -195,15 +199,11 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     continue;
                 }
 
-                $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
                 if (
                     $serviceTemplate->getAlias() !== null
                     && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
                 ) {
-                    $serviceDescription = EngineConfiguration::removeIllegalCharacters(
-                        $serviceTemplate->getAlias(),
-                        $illegalObjectNameCharacters
-                    );
+                    $serviceDescription = $engineConfiguration->removeIllegalCharacters($serviceTemplate->getAlias());
 
                     if (empty($serviceDescription)) {
                         continue;
@@ -221,8 +221,14 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         }
 
         try {
+            $this->debug('Service to be created', [], function () use ($servicesToBeCreated) {
+                return array_map(function (Service $service) {
+                    return ['id' => $service->getId(), 'description' => $service->getDescription()];
+                }, $servicesToBeCreated);
+            });
             $this->serviceRepository->addServicesToHost($host, $servicesToBeCreated);
         } catch (\Throwable $ex) {
+            $this->error($ex->getMessage());
             throw new ServiceConfigurationException(
                 sprintf(
                     _('Error when adding services to the host %d'),
@@ -299,19 +305,27 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     /**
      * @inheritDoc
      */
-    public function findServiceMacrosPassword(int $serviceId, string $command): array
+    public function findServiceMacrosFromCommandLine(int $serviceId, string $command): array
     {
-        $serviceMacrosPassword = [];
-        // If contains on-demand service macros
-        if (strpos($command, '$_SERVICE') !== false) {
-            $onDemandServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
-            foreach ($onDemandServiceMacros as $serviceMacro) {
-                if ($serviceMacro->isPassword()) {
-                    $serviceMacrosPassword[] = $serviceMacro;
+        $serviceMacros = [];
+        if (preg_match_all('/(\$_SERVICE\S+?\$)/', $command, $matches)) {
+            $matchedMacros = $matches[0];
+
+            foreach ($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new ServiceMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
+            foreach ($linkedServiceMacros as $linkedServiceMacro) {
+                if (in_array($linkedServiceMacro->getName(), $matchedMacros)) {
+                    $serviceMacros[$linkedServiceMacro->getName()] = $linkedServiceMacro;
                 }
             }
         }
-        return $serviceMacrosPassword;
+
+        return array_values($serviceMacros);
     }
 
     /**
@@ -320,5 +334,28 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     public function getHostConfigurationService(): HostConfigurationServiceInterface
     {
         return $this->hostConfigurationService;
+    }
+
+    /**
+     * @param Host $host
+     * @throws \Assert\AssertionFailedException
+     * @throws ServiceConfigurationServiceException
+     */
+    public function removeServices(Host $host): void
+    {
+        Assertion::notNull($host->getId(), 'Host::id');
+        try {
+            $this->debug('Remove services from a host', ['host_id' => $host->getId()]);
+            $this->serviceRepository->removeServicesOnHost($host->getId());
+        } catch (\Throwable $ex) {
+            $this->error(
+                sprintf(
+                    _('Error on removing services from the host #%d (Reason: %s)'),
+                    $host->getId(),
+                    $ex->getMessage()
+                )
+            );
+            throw ServiceConfigurationServiceException::errorOnRemovingServicesFromHost($host->getId());
+        }
     }
 }

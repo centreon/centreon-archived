@@ -17,11 +17,10 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o1.html}
+                {$form.o1.html}
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -47,7 +46,7 @@
         </tr>
         {assign var=title_mode value=0}
         {section name=elem loop=$elemArr}
-        {if $elemArr[elem].title != $title_value}
+        {if isset($title_value) && $elemArr[elem].title != $title_value}
         {assign var=title_mode value=0}
         {/if}
         {if $elemArr[elem].title && $title_mode == 0}
@@ -87,11 +86,10 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o2.html}
+                {$form.o2.html}
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

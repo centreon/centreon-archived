@@ -50,9 +50,9 @@ class ModuleEntity implements JsonSerializable
     /**
      * Construct
      *
-     * @param \CentreonModule\Infrastructure\Entity\Module $entity
+     * @param \CentreonModule\Infrastructure\Entity\Module|null $entity
      */
-    public function __construct(Module $entity)
+    public function __construct(?Module $entity)
     {
         $this->entity = $entity;
     }
@@ -75,7 +75,7 @@ class ModuleEntity implements JsonSerializable
      *
      * JSON serialization of entity
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function jsonSerialize()
     {

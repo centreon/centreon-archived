@@ -47,7 +47,7 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if ($_POST["Search"]) {
+if (isset($_POST["Search"])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["search"] = $search;
@@ -101,16 +101,20 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 foreach ($listDowntime as $dt) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $dt['dt_id'] . "]");
     if ($dt["dt_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=e&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))" .

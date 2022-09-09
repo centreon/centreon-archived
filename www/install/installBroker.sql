@@ -96,21 +96,21 @@ UNLOCK TABLES;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `downtimes` (
   `downtime_id` int(11) NOT NULL AUTO_INCREMENT,
-  `entry_time` int(11) DEFAULT NULL,
+  `entry_time` int(11) UNSIGNED DEFAULT NULL,
   `host_id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
   `author` varchar(64) DEFAULT NULL,
   `cancelled` tinyint(1) DEFAULT NULL,
   `comment_data` text,
-  `deletion_time` int(11) DEFAULT NULL,
-  `duration` int(11) DEFAULT NULL,
-  `end_time` int(11) DEFAULT NULL,
+  `deletion_time` int(11) UNSIGNED DEFAULT NULL,
+  `duration` int(11) UNSIGNED DEFAULT NULL,
+  `end_time` int(11) UNSIGNED DEFAULT NULL,
   `fixed` tinyint(1) DEFAULT NULL,
   `instance_id` int(11) DEFAULT NULL,
   `internal_id` int(11) DEFAULT NULL,
-  `start_time` int(11) DEFAULT NULL,
-  `actual_start_time` int(11) DEFAULT NULL,
-  `actual_end_time` int(11) DEFAULT NULL,
+  `start_time` int(11) UNSIGNED DEFAULT NULL,
+  `actual_start_time` int(11) UNSIGNED DEFAULT NULL,
+  `actual_end_time` int(11) UNSIGNED DEFAULT NULL,
   `started` tinyint(1) DEFAULT NULL,
   `triggered_by` int(11) DEFAULT NULL,
   `type` smallint(6) DEFAULT NULL,
@@ -187,7 +187,8 @@ UNLOCK TABLES;
 CREATE TABLE `hostgroups` (
   `hostgroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`hostgroup_id`)
+  PRIMARY KEY (`hostgroup_id`),
+  KEY `hg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,7 +204,7 @@ CREATE TABLE `hosts` (
   `instance_id` int(11) NOT NULL,
   `acknowledged` tinyint(1) DEFAULT NULL,
   `acknowledgement_type` smallint(6) DEFAULT NULL,
-  `action_url` varchar(255) DEFAULT NULL,
+  `action_url` varchar(2048) DEFAULT NULL,
   `active_checks` tinyint(1) DEFAULT NULL,
   `address` varchar(75) DEFAULT NULL,
   `alias` varchar(100) DEFAULT NULL,
@@ -254,8 +255,8 @@ CREATE TABLE `hosts` (
   `next_check` int(11) DEFAULT NULL,
   `next_host_notification` int(11) DEFAULT NULL,
   `no_more_notifications` tinyint(1) DEFAULT NULL,
-  `notes` varchar(255) DEFAULT NULL,
-  `notes_url` varchar(255) DEFAULT NULL,
+  `notes` varchar(512) DEFAULT NULL,
+  `notes_url` varchar(2048) DEFAULT NULL,
   `notification_interval` double DEFAULT NULL,
   `notification_number` smallint(6) DEFAULT NULL,
   `notification_period` varchar(75) DEFAULT NULL,
@@ -404,9 +405,10 @@ CREATE TABLE `instances` (
   `running` tinyint(1) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
-  `deleted` boolean NOT NULL default false, 
+  `deleted` boolean NOT NULL default false,
   `outdated` boolean NOT NULL default false,
-  PRIMARY KEY (`instance_id`)
+  PRIMARY KEY (`instance_id`),
+  KEY `instances_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -517,7 +519,8 @@ UNLOCK TABLES;
 CREATE TABLE `servicegroups` (
   `servicegroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`servicegroup_id`)
+  PRIMARY KEY (`servicegroup_id`),
+  KEY `sg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -533,7 +536,7 @@ CREATE TABLE `services` (
   `service_id` int(11) NOT NULL,
   `acknowledged` tinyint(1) DEFAULT NULL,
   `acknowledgement_type` smallint(6) DEFAULT NULL,
-  `action_url` varchar(255) DEFAULT NULL,
+  `action_url` varchar(2048) DEFAULT NULL,
   `active_checks` tinyint(1) DEFAULT NULL,
   `check_attempt` smallint(6) DEFAULT NULL,
   `check_command` text,
@@ -585,8 +588,8 @@ CREATE TABLE `services` (
   `next_check` int(11) DEFAULT NULL,
   `next_notification` int(11) DEFAULT NULL,
   `no_more_notifications` tinyint(1) DEFAULT NULL,
-  `notes` varchar(255) DEFAULT NULL,
-  `notes_url` varchar(255) DEFAULT NULL,
+  `notes` varchar(512) DEFAULT NULL,
+  `notes_url` varchar(2048) DEFAULT NULL,
   `notification_interval` double DEFAULT NULL,
   `notification_number` smallint(6) DEFAULT NULL,
   `notification_period` varchar(75) DEFAULT NULL,

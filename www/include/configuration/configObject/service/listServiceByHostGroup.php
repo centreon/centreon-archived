@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -260,6 +261,8 @@ $interval_length = $centreon->optGen['interval_length'];
 $elemArr = array();
 $fgHostgroup = array("value" => null, "print" => null);
 
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     $moptions = "";
     $fgHostgroup["value"] != $service["hg_name"]
@@ -270,10 +273,12 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     if ($service["service_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
+            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
+            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
     $moptions .= "</a>&nbsp;";
@@ -299,19 +304,23 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             $tplStr .= "&nbsp;>&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
         }
     }
-
+    $isServiceSvgFile = true;
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
-    } elseif ($icone = $mediaObj->getFilename(
-        getMyServiceExtendedInfoField(
-            $service["service_id"],
-            "esi_icon_image"
+    } elseif (
+        $icone = $mediaObj->getFilename(
+            getMyServiceExtendedInfoField(
+                $service["service_id"],
+                "esi_icon_image"
+            )
         )
-    )
     ) {
+        $isServiceSvgFile = false;
         $svc_icon = "./img/media/" . $icone;
     } else {
-        $svc_icon = "./img/icons/service.png ";
+        $isServiceSvgFile = true;
+        $svc_icon = returnSvg("www/img/icons/service.svg", "var(--icons-fill-color)", 14, 14);
     }
 
     //Get service intervals in seconds
@@ -353,7 +362,8 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         "RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
         "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $service["service_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_options" => $moptions
+        "RowMenu_options" => $moptions,
+        "isServiceSvgFile" => $isServiceSvgFile
     );
 
     $fgHostgroup["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;

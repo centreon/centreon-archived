@@ -8,7 +8,7 @@
   </tr>
 </table>
 </form>
-{if $msg_err}
+{if isset($msg_err)}
 <div class="update" style='text-align:center;'>{$msg_err}</div>
 {else}
 <table class="ListTable broker_stats_cntr">
@@ -28,7 +28,7 @@
         </td>
     </tr>
     <tr>
-        {if $perf_err.conf_name}
+        {if isset($perf_err.conf_name)}
         <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
         {else}
         <td style="vertical-align: top;" id="modules" class="broker_stats">
@@ -58,7 +58,7 @@
                         </div>
                         {/if}
                     {/foreach}
-                    {if $io_infos.filters && count($io_infos.filters)}
+                    {if isset($io_infos.filters) && count($io_infos.filters)}
                     <div class="informations">
                         <span class="info_name">{$lang.filters}</span>
                         <p class="info_name" id="filters_{$io_name}">

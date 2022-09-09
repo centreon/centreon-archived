@@ -2,9 +2,18 @@
 <form {$form.attributes}>
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c" || $o == "mc"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {elseif isset($form.submitMC)}
+                {$form.submitMC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
@@ -26,7 +35,6 @@
             <h4>{$form.header.links}</h4>
           </td>
         </tr>
-		<!--<tr class="list_one"><td class="FormRowField">{$form.sc_svc.label}</td><td class="FormRowValue">{$form.sc_svc.html}</td></tr>-->
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_template"> {$form.sc_svcTpl.label}</td><td class="FormRowValue">{$form.sc_svcTpl.html}</td></tr>
                 <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sc_type"> {$form.sc_type.label}</td><td class="FormRowValue">{$form.sc_type.html}</td></tr>
                 <tr class="list_two" id="severity_level">
@@ -47,14 +55,23 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sc_activate"> {$form.sc_activate.label}</td><td class="FormRowValue">{$form.sc_activate.html}</td></tr>
 	</table>
 	</div>
-	<div id="validForm">
-	{if $o == "a" || $o == "c" || $o == "mc"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
-	{/if}
-	</div>
-	{$form.hidden}
+    <div id="validForm">
+    {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {elseif isset($form.submitMC)}
+                {$form.submitMC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
+    </div>
+    {$form.hidden}
 </form>
 {$helptext}
 {literal}

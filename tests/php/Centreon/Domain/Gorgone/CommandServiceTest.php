@@ -55,15 +55,16 @@ class CommandServiceTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $responseRepository->expects($this->at(0))
+        $responseRepository->expects($this->exactly(2))
             ->method('getResponse')
-            ->with($thumbprintCommand)
-            ->willReturn($firstGorgoneResponse);
-
-        $responseRepository->expects($this->at(1))
-            ->method('getResponse')
-            ->with($thumbprintCommand)
-            ->willReturn($secondGorgoneResponse);
+            ->withConsecutive(
+                [$thumbprintCommand],
+                [$thumbprintCommand]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $firstGorgoneResponse,
+                $secondGorgoneResponse
+            );
 
         $service = new GorgoneService($responseRepository, $commandRepository);
         Response::setRepository($responseRepository);

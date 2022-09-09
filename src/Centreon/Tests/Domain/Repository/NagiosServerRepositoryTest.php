@@ -23,7 +23,7 @@ namespace Centreon\Tests\Domain\Repository;
 
 use Centreon\Domain\Repository\NagiosServerRepository;
 use PHPUnit\Framework\TestCase;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon

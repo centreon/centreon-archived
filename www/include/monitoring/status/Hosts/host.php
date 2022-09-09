@@ -191,18 +191,28 @@ $resourcesStatusLabel = _('Resources Status');
 
 $filter = [
     'criterias' => [
-        'resourceTypes' => [
-            [
-                'id' => 'host',
-                'name' => 'Host'
+        [
+            'name' => 'resource_types',
+            'value' => [
+                [
+                    'id' => 'host',
+                    'name' => 'Host'
+                ]
             ]
         ],
-        'states' => [
-            [
-                'id' => 'unhandled_problems',
-                'name' => 'Unhandled'
+        [
+            'name' => 'states',
+            'value' => [
+                [
+                    'id' => 'unhandled_problems',
+                    'name' => 'Unhandled'
+                ]
             ]
         ],
+        [
+            'name' => 'search',
+            'value' => ''
+        ]
     ]
 ];
 

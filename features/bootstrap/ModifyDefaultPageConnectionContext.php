@@ -18,7 +18,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     {
         parent::__construct();
         $this->nonAdminName = "nonAdminContact";
-        $this->nonAdminPwd = "pwd";
+        $this->nonAdminPwd = "Centreon!2021";
     }
 
     /**
@@ -64,7 +64,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     {
         $this->iAmLoggedOut();
         $this->parameters['centreon_user'] = "admin";
-        $this->parameters['centreon_password'] = "centreon";
+        $this->parameters['centreon_password'] = "Centreon!2021";
         $this->iAmLoggedIn();
     }
 

@@ -1,0 +1,14 @@
+# Monolog Bundle configuration
+# https://github.com/symfony/monolog-bundle/blob/master/DependencyInjection/Configuration.php#L25
+monolog:
+    channels: ['centreon']
+    handlers:
+        system:
+            type: error_log
+            level: warning
+            formatter: monolog.error.formater
+            channels: ['!centreon']
+        centreon:
+            type: service
+            id: monolog.debug.handler
+            channels: ['centreon']

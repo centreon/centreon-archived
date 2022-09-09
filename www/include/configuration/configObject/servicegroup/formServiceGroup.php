@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -55,7 +56,9 @@ $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 $sg = array();
 $hServices = array();
 if (($o == "c" || $o == "w") && $sg_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $sg_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM servicegroup WHERE sg_id = :sg_id LIMIT 1');
+    $DBRESULT->bindValue(':sg_id', $sg_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     // Set base value
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
@@ -191,13 +194,11 @@ if ($o == "w") {
     }
     $form->setDefaults($sg);
     $form->freeze();
-} # Modify a Service Group information
-elseif ($o == "c") {
+} elseif ($o == "c") { # Modify a Service Group information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($sg);
-} # Add a Service Group information
-elseif ($o == "a") {
+} elseif ($o == "a") { # Add a Service Group information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }

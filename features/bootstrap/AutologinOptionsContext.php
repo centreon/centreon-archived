@@ -79,7 +79,7 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $this->currentPage->find('css', 'select[name="host"]');
+                $element = $this->currentPage->find('css', 'select[name="hostElement"]');
                 return !is_null($element);
             },
             'The current page is not valid.',

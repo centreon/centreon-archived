@@ -192,7 +192,7 @@ if ($criticalityId) {
     // the variable bounded to criticalityValue must be an integer. But is inserted in a DB's varchar column
     $queryValues['criticalityValue'] = [\PDO::PARAM_STR => $criticalityId];
 }
-$request .= " AND h.name NOT LIKE '_Module_BAM%' "
+$request .= " AND h.name NOT LIKE '\_Module\_BAM%' "
     . $searchHost
     . $searchService
     . $searchOutput
@@ -659,6 +659,7 @@ if (!$sqlError) {
             "svc_index",
             (isset($graphs[$data["host_id"]][$data["service_id"]]) ? $graphs[$data["host_id"]][$data["service_id"]] : 0)
         );
+        $obj->XML->writeElement("chartIcon", returnSvg("www/img/icons/chart.svg", "var(--icons-fill-color)", 18, 18));
         $obj->XML->endElement();
     }
     $dbResult->closeCursor();

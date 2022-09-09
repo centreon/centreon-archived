@@ -167,7 +167,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
      */
     public function iWaitTheTimeLimitSetForExpiration()
     {
-        $this->getSession()->wait(60000, '');
+        $this->getSession()->wait(60000);
     }
 
     /**

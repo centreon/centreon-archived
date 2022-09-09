@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -163,7 +164,7 @@ abstract class Centreon_Object
                 $sqlUpdate .= ",";
             }
             $sqlUpdate .= $key . " = ? ";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             }
             if (!is_null($value)) {
@@ -262,15 +263,21 @@ abstract class Centreon_Object
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (!count($filterTab)) {
-                    $sql .= " WHERE $key LIKE ? ";
+                    $sql .= " WHERE $key ";
                 } else {
-                    $sql .= " $filterType $key LIKE ? ";
+                    $sql .= " $filterType $key ";
                 }
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
+                if (is_array($rawvalue)) {
+                    $sql .= ' IN (' . str_repeat('?,', count($rawvalue) - 1) . '?) ';
+                    $filterTab = array_merge($filterTab, $rawvalue);
+                } else {
+                    $sql .= ' LIKE ? ';
+                    $value = trim($rawvalue);
+                    $value = str_replace("\\", "\\\\", $value);
+                    $value = str_replace("_", "\_", $value);
+                    $value = str_replace(" ", "\ ", $value);
+                    $filterTab[] = $value;
+                }
             }
         }
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {

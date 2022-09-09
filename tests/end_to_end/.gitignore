@@ -1,5 +1,0 @@
-node_modules
-cypress/node_modules
-cypress/screenshots
-cypress/videos
-cypress/*.yml

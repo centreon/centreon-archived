@@ -75,7 +75,8 @@ try {
         $step->getDatabaseConfiguration(),
         $step->getAdminConfiguration(),
         $step->getEngineConfiguration(),
-        $step->getBrokerConfiguration()
+        $step->getBrokerConfiguration(),
+        getGorgoneApiCredentialMacros(_CENTREON_ETC_ . '/../centreon-gorgone'),
     );
 
     $utils->executeSqlFile(__DIR__ . '/../../insertMacros.sql', $macros);
@@ -102,14 +103,16 @@ if ($row = $centralServerQuery->fetch()) {
             `name`,
             `type`,
             `parent_id`,
-            `server_id`
+            `server_id`,
+            `pending`
         ) VALUES (
             :centralAddress,
             :hostname,
             :name,
             'central',
             NULL,
-            :id
+            :id,
+            '0'
         )
     ");
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);

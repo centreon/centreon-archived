@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -47,7 +48,8 @@ $continue = true;
 // DB Connect
 include_once './class/centreonDB.class.php';
 
-if (!isset($_GET["cmd"])
+if (
+    !isset($_GET["cmd"])
     && isset($_POST["cmd"])
 ) {
     $param = $_POST;
@@ -55,29 +57,34 @@ if (!isset($_GET["cmd"])
     $param = $_GET;
 }
 
-if (isset($param["cmd"])
+if (
+    isset($param["cmd"])
     && $param["cmd"] == 15
     && isset($param["author"])
     && isset($param["en"])
     && $param["en"] == 1
 ) {
-    if (!isset($param["sticky"])
+    if (
+        !isset($param["sticky"])
         || !in_array($param["sticky"], array('0', '1'))
     ) {
         $param["sticky"] = '0';
     }
-    if (!isset($param["notify"])
+    if (
+        !isset($param["notify"])
         || !in_array($param["notify"], array('0', '1'))
     ) {
         $param["notify"] = '0';
     }
-    if (!isset($param["persistent"])
+    if (
+        !isset($param["persistent"])
         || !in_array($param["persistent"], array('0', '1'))
     ) {
         $param["persistent"] = '0';
     }
     acknowledgeService($param);
-} elseif (isset($param["cmd"])
+} elseif (
+    isset($param["cmd"])
     && $param["cmd"] == 15
     && isset($param["author"])
     && isset($param["en"])
@@ -86,7 +93,8 @@ if (isset($param["cmd"])
     acknowledgeServiceDisable();
 }
 
-if (isset($param["cmd"])
+if (
+    isset($param["cmd"])
     && $param["cmd"] == 16
     && isset($param["output"])
 ) {

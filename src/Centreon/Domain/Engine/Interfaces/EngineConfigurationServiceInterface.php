@@ -24,10 +24,20 @@ namespace Centreon\Domain\Engine\Interfaces;
 
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Engine\Exception\EngineConfigurationException;
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 
 interface EngineConfigurationServiceInterface
 {
+    /**
+     * Find the Engine configuration associated to the central poller.
+     *
+     * @throws EngineException
+     * @return EngineConfiguration|null
+     */
+    public function findCentralEngineConfiguration(): ?EngineConfiguration;
+
     /**
      * Find the Engine configuration associated to a host.
      *
@@ -36,6 +46,15 @@ interface EngineConfigurationServiceInterface
      * @return EngineConfiguration|null
      */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
+
+    /**
+     * Find the Engine configuration linked to a monitoring server.
+     *
+     * @param MonitoringServer $monitoringServer
+     * @return EngineConfiguration|null
+     * @throws EngineConfigurationException
+     */
+    public function findEngineConfigurationByMonitoringServer(MonitoringServer $monitoringServer): ?EngineConfiguration;
 
     /**
      * Find the Engine configuration by its name.

@@ -40,11 +40,13 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Application\Validation\Validator\UniqueEntityValidator;
 use Centreon\Application\Validation\Constraints\UniqueEntity;
 use Centreon\ServiceProvider;
-use Centreon\Tests\Resource\Dependency;
-use Centreon\Tests\Resource\Mock;
+use Centreon\Tests\Resources\Dependency;
+use Centreon\Tests\Resources\Mock;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilder;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Pimple\Container;
 use Pimple\Psr11\Container as Psr11Container;
 
@@ -54,12 +56,11 @@ use Pimple\Psr11\Container as Psr11Container;
  */
 class UniqueEntityValidatorTest extends TestCase
 {
-
     use Dependency\CentreonDbManagerDependencyTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->container = new Container;
+        $this->container = new Container();
         $this->executionContext = $this->createMock(ExecutionContext::class);
 
         // dependency
@@ -69,43 +70,39 @@ class UniqueEntityValidatorTest extends TestCase
         $this->validator->initialize($this->executionContext);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
-     */
     public function testValidateWithDifferentConstraint()
     {
+        $this->expectException(UnexpectedTypeException::class);
+
         $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
-     */
     public function testValidateWithDifferentTypeOfFields()
     {
         $constraint = $this->createMock(UniqueEntity::class);
-        $constraint->fields = new \stdClass;
+        $constraint->fields = new \stdClass();
+
+        $this->expectException(UnexpectedTypeException::class);
 
         $this->validator->validate(null, $constraint);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
-     */
     public function testValidateWithDifferentTypeOfErrorPath()
     {
         $constraint = $this->createMock(UniqueEntity::class);
         $constraint->errorPath = [];
 
+        $this->expectException(UnexpectedTypeException::class);
+
         $this->validator->validate(null, $constraint);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
     public function testValidateWithEmptyFields()
     {
         $constraint = $this->createMock(UniqueEntity::class);
         $constraint->fields = [];
+
+        $this->expectException(ConstraintDefinitionException::class);
 
         $this->validator->validate(null, $constraint);
     }
@@ -124,11 +121,11 @@ class UniqueEntityValidatorTest extends TestCase
         $constraint->repository = Mock\RepositoryMock::class;
         $constraint->fields = 'name';
 
-        $entity = new Mock\EntityMock;
+        $entity = new Mock\EntityMock();
         $entity->setId(1);
         $entity->setName('my name');
 
-        $entityResult = new Mock\EntityMock;
+        $entityResult = new Mock\EntityMock();
         $entityResult->setId(2);
         $entityResult->setName('your name');
 
@@ -145,10 +142,10 @@ class UniqueEntityValidatorTest extends TestCase
         // register mocked repository in DB manager
         $this->container[ServiceProvider::CENTREON_DB_MANAGER]
             ->addRepositoryMock($constraint->repository, $repository);
-        
-        
+
+
         $usedMethods = [];
-        
+
         // mock execution context object
         $this->executionContext
             ->method('buildViolation')

@@ -43,9 +43,9 @@ include_once "./class/centreonUtils.class.php";
 include "./include/common/autoNumLimit.php";
 
 $contactTypeIcone = array(
-    1 => "./img/icons/admin.png",
-    2 => "./img/icons/user.png",
-    3 => "./img/icons/user_template.png"
+    1 => returnSvg("www/img/icons/admin.svg", "var(--icons-fill-color)", 22, 22),
+    2 => returnSvg("www/img/icons/user.svg", "var(--icons-fill-color)", 22, 22),
+    3 => returnSvg("www/img/icons/user-template.svg", "var(--icons-fill-color)", 22, 22)
 );
 
 /*
@@ -133,6 +133,8 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 foreach ($contacts as $contact) {
     $selectedElements = $form->addElement('checkbox', "select[" . $contact['contact_id'] . "]");
 
@@ -140,12 +142,12 @@ foreach ($contacts as $contact) {
     if ($contact["contact_id"] != $centreon->user->get_id()) {
         if ($contact["contact_activate"]) {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
-                "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search .
+                "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
                 "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                 _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
-                "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search .
+                "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
                 "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
                 _("Enabled") . "'></a>&nbsp;&nbsp;";
         }

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -101,15 +102,19 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $group = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $group['acl_group_id'] . "]");
     if ($group["acl_group_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_group_id=" . $group['acl_group_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&acl_group_id=" . $group['acl_group_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
 
@@ -121,16 +126,18 @@ for ($i = 0; $group = $statement->fetchRow(); $i++) {
 
     /* Contacts */
     $ctNbr = array();
-    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations " .
-        "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $dbResult2 = $pearDB->query($rq2);
+    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations WHERE acl_group_id = :aclGroupId ";
+    $dbResult2 = $pearDB->prepare($rq2);
+    $dbResult2->bindValue(':aclGroupId', $group['acl_group_id'], PDO::PARAM_INT);
+    $dbResult2->execute();
     $ctNbr = $dbResult2->fetchRow();
     $dbResult2->closeCursor();
 
     $cgNbr = array();
-    $rq3 = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations " .
-        "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $dbResult3 = $pearDB->query($rq3);
+    $rq3 = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations WHERE acl_group_id = :aclGroupId ";
+    $dbResult3 = $pearDB->prepare($rq3);
+    $dbResult3->bindValue('aclGroupId', $group['acl_group_id'], PDO::PARAM_INT);
+    $dbResult3->execute();
     $cgNbr = $dbResult3->fetchRow();
     $dbResult3->closeCursor();
 

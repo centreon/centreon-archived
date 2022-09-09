@@ -22,8 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Engine;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class EngineConfiguration
 {
+    public const NOTIFICATIONS_OPTION_DISABLED = 0,
+                 NOTIFICATIONS_OPTION_ENABLED = 1,
+                 NOTIFICATIONS_OPTION_DEFAULT = 2;
+
+    private const AVAILABLE_NOTIFICATION_OPTIONS = [
+        self::NOTIFICATIONS_OPTION_DISABLED,
+        self::NOTIFICATIONS_OPTION_ENABLED,
+        self::NOTIFICATIONS_OPTION_DEFAULT,
+    ];
+
     /**
      * @var int|null
      */
@@ -43,6 +55,11 @@ class EngineConfiguration
      * @var string|null Engine configuration name
      */
     private $name;
+
+    /**
+     * @var int
+     */
+    private $notificationsEnabledOption = self::NOTIFICATIONS_OPTION_ENABLED;
 
     /**
      * @return int|null
@@ -120,15 +137,14 @@ class EngineConfiguration
      * Remove all illegal characters from the given string.
      *
      * @param string $stringToAnalyse String for which we want to remove illegal characters
-     * @param string|null $illegalCharacters String containing illegal characters
      * @return string Return the string without illegal characters
      */
-    public static function removeIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): string
+    public function removeIllegalCharacters(string $stringToAnalyse): string
     {
-        if ($illegalCharacters === null) {
+        if ($this->illegalObjectNameCharacters === null) {
             return $stringToAnalyse;
         }
-        $illegalCharacters = html_entity_decode($illegalCharacters);
+        $illegalCharacters = html_entity_decode($this->illegalObjectNameCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
 
@@ -136,11 +152,35 @@ class EngineConfiguration
      * Find if the given string has an illegal character in it.
      *
      * @param string $stringToCheck String to analyse
-     * @param string|null $illegalCharacters String containing illegal characters
      * @return bool Return true if illegal characters have been found
      */
-    public static function hasIllegalCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    public function hasIllegalCharacters(string $stringToCheck): bool
     {
-        return $stringToCheck !== self::removeIllegalCharacters($stringToCheck, $illegalCharacters);
+        return $stringToCheck !== $this->removeIllegalCharacters($stringToCheck);
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationsEnabledOption(): int
+    {
+        return $this->notificationsEnabledOption;
+    }
+
+    /**
+     * @param int $notificationsEnabledOption
+     * @return self
+     */
+    public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
+    {
+        Assertion::inArray(
+            $notificationsEnabledOption,
+            self::AVAILABLE_NOTIFICATION_OPTIONS,
+            'Engine::notificationsEnabledOption',
+        );
+
+        $this->notificationsEnabledOption = $notificationsEnabledOption;
+
+        return $this;
     }
 }

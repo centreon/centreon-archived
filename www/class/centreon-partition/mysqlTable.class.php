@@ -43,7 +43,6 @@
  */
 class MysqlTable
 {
-
     private $db;
     private $name;
     private $schema;

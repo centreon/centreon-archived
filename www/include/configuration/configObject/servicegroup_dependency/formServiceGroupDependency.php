@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -39,8 +40,10 @@
 #
 $dep = array();
 $initialValues = array();
-if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
+if (($o == MODIFY_DEPENDENCY || $o == WATCH_DEPENDENCY) && $dep_id) {
+    $DBRESULT = $pearDB->prepare('SELECT * FROM dependency WHERE dep_id = :dep_id LIMIT 1');
+    $DBRESULT->bindValue(':dep_id', $dep_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -87,11 +90,11 @@ $attrServicegroups = array(
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == ADD_DEPENDENCY) {
     $form->addElement('header', 'title', _("Add a Dependency"));
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_DEPENDENCY) {
     $form->addElement('header', 'title', _("Modify a Dependency"));
-} elseif ($o == "w") {
+} elseif ($o == WATCH_DEPENDENCY) {
     $form->addElement('header', 'title', _("View a Dependency"));
 }
 
@@ -114,42 +117,42 @@ $tab[] = $form->createElement(
     'o',
     '&nbsp;',
     _("Ok"),
-    array('id' => 'sOk', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nOk', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
-    array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nWarning', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
-    array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nUnknown', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
-    array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nCritical', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
-    array('id' => 'sPending', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nPending', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
     _("None"),
-    array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);')
+    array('id' => 'nNone', 'onClick' => 'applyNotificationRules(this);')
 );
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
@@ -159,42 +162,42 @@ $tab[] = $form->createElement(
     'o',
     '&nbsp;',
     _("Ok"),
-    array('id' => 'sOk2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eOk', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
-    array('id' => 'sWarning2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eWarning', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
-    array('id' => 'sUnknown2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eUnknown', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
-    array('id' => 'sCritical2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eCritical', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
-    array('id' => 'sPending2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'ePending', 'onClick' => 'applyExecutionRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
     _("None"),
-    array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);')
+    array('id' => 'eNone', 'onClick' => 'applyExecutionRules(this);')
 );
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
@@ -227,11 +230,15 @@ $init->setValue(serialize($initialValues));
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
+$form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
 $form->addRule('dep_name', _("Compulsory Name"), 'required');
+$form->addRule('dep_name', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_description', _("Required Field"), 'required');
+$form->addRule('dep_description', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_sgParents', _("Required Field"), 'required');
 $form->addRule('dep_sgChilds', _("Required Field"), 'required');
 
+$form->addRule('execution_failure_criteria', _("Required Field"), 'required');
 $form->addRule('notification_failure_criteria', _("Required Field"), 'required');
 
 $form->registerRule('cycle', 'callback', 'testServiceGroupDependencyCycle');
@@ -249,7 +256,7 @@ $tpl = initSmartyTpl($path, $tpl);
 /*
  * Just watch a Dependency information
  */
-if ($o == "w") {
+if ($o == WATCH_DEPENDENCY) {
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -260,12 +267,12 @@ if ($o == "w") {
     }
     $form->setDefaults($dep);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_DEPENDENCY) {
     # Modify a Dependency information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
-} elseif ($o == "a") {
+} elseif ($o == ADD_DEPENDENCY) {
     # Add a Dependency information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -301,8 +308,8 @@ if ($valid) {
     require_once("listServiceGroupDependency.php");
 } else {
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -313,27 +320,29 @@ if ($valid) {
 }
 ?>
 <script type="text/javascript">
-    function uncheckAllS(object) {
-        if (object.id == "sNone" && object.checked) {
-            document.getElementById('sOk').checked = false;
-            document.getElementById('sWarning').checked = false;
-            document.getElementById('sUnknown').checked = false;
-            document.getElementById('sCritical').checked = false;
-            document.getElementById('sPending').checked = false;
-        } else {
-            document.getElementById('sNone').checked = false;
+    function applyNotificationRules(object) {
+      console.log(object.id);
+        if (object.id === "nNone" && object.checked) {
+            document.getElementById('nOk').checked = false;
+            document.getElementById('nWarning').checked = false;
+            document.getElementById('nUnknown').checked = false;
+            document.getElementById('nCritical').checked = false;
+            document.getElementById('nPending').checked = false;
+        }
+        else {
+            document.getElementById('nNone').checked = false;
         }
     }
-
-    function uncheckAllS2(object) {
-        if (object.id == "sNone2" && object.checked) {
-            document.getElementById('sOk2').checked = false;
-            document.getElementById('sWarning2').checked = false;
-            document.getElementById('sUnknown2').checked = false;
-            document.getElementById('sCritical2').checked = false;
-            document.getElementById('sPending2').checked = false;
-        } else {
-            document.getElementById('sNone2').checked = false;
+    function applyExecutionRules(object) {
+        if (object.id === "eNone" && object.checked) {
+            document.getElementById('eOk').checked = false;
+            document.getElementById('eWarning').checked = false;
+            document.getElementById('eUnknown').checked = false;
+            document.getElementById('eCritical').checked = false;
+            document.getElementById('ePending').checked = false;
+        }
+        else {
+            document.getElementById('eNone').checked = false;
         }
     }
 </script>

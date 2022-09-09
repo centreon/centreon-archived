@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { map, prop, sum, pipe } from 'ramda';
 
@@ -10,10 +10,16 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+  Skeleton,
+} from '@mui/material';
 
-import { useRequest, getData, ListingModel, Column } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  ListingModel,
+  Column,
+  ColumnType,
+} from '@centreon/ui';
 
 import {
   labelSomethingWentWrong,
@@ -25,11 +31,15 @@ const getYesNoLabel = (value: boolean): string => (value ? labelYes : labelNo);
 
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
+  id: string;
+  label: string;
+  type: ColumnType;
+  width: number;
 }
 
 export interface DetailsTableProps {
-  endpoint: string;
   columns: Array<DetailsTableColumn>;
+  endpoint: string;
 }
 
 const DetailsTable = <TDetails extends { id: number }>({
@@ -43,9 +53,11 @@ const DetailsTable = <TDetails extends { id: number }>({
   });
 
   useEffect(() => {
-    sendRequest(endpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails.result),
-    );
+    sendRequest({
+      endpoint,
+    }).then((retrievedDetails) => {
+      setDetails(retrievedDetails.result);
+    });
   }, []);
 
   const loading = details === undefined;
@@ -68,7 +80,7 @@ const DetailsTable = <TDetails extends { id: number }>({
           {loading && (
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <Skeleton height={20} animation="wave" />
+                <Skeleton animation="wave" height={20} />
               </TableCell>
             </TableRow>
           )}

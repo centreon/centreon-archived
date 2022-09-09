@@ -90,18 +90,22 @@ $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
 
 
-$availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
-if ($o !== METRIC_ADD) {
-    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
-        '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
-}
+$availableRoute = './api/internal.php?object=centreon_configuration_service&action=list';
+
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
-    'defaultDatasetRoute' => $defaultRoute,
     'linkedObject' => 'centreonService',
     'multiple' => false
 );
+
+if ($o !== METRIC_ADD) {
+    $defaultRoute = './api/internal.php?object=centreon_configuration_graphvirtualmetric' .
+        '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
+
+    $attrServices['defaultDatasetRoute'] = $defaultRoute;
+}
+
 
 
 /*
@@ -148,7 +152,9 @@ $form->addElement(
 #$form->addElement('select', 'real_metrics', null, $rmetrics);
 $form->addElement('text', 'unit_name', _("Metric Unit"), $attrsText2);
 $form->addElement('text', 'warn', _("Warning Threshold"), $attrsText2);
+$form->addRule('warn', _('Must be a number'), 'numeric');
 $form->addElement('text', 'crit', _("Critical Threshold"), $attrsText2);
+$form->addRule('crit', _('Must be a number'), 'numeric');
 // Options
 $form->addElement('checkbox', 'vhidden', _("Hidden Graph And Legend"), "", "onChange=manageVDEF();");
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
@@ -169,7 +175,12 @@ $form->addRule('host_id', _("Required service"), 'required');
 
 $form->registerRule('existName', 'callback', 'hasVirtualNameNeverUsed');
 $form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
-$form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName', $vmetric['index_id']);
+$form->addRule(
+    'vmetric_name',
+    _("Name already in use for this Host/Service"),
+    'existName',
+    $vmetric['index_id'] ?? null
+);
 $form->addRule(
     'rpn_function',
     _("Can't Use This Virtual Metric '" . (isset($_POST["vmetric_name"])

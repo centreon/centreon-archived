@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -33,6 +34,7 @@ interface ExporterServiceInterface
 
     public function setManifest(ExportManifest $manifest): void;
 
+    /** @return array<mixed> */
     public function export(int $remoteId): array;
 
     public function import(ExportManifest $manifest): void;

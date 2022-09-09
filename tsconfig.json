@@ -1,14 +1,15 @@
 {
-  "extends": "./node_modules/@centreon/frontend-core/tsconfig/index",
+  "extends": "./node_modules/centreon-frontend/packages/frontend-config/tsconfig/index",
   "compilerOptions": {
     "baseUrl": "./",
     "typeRoots": [
       "./types",
       "./node_modules/@types"
     ],
-    "module": "esnext",
+    "module": "esnext"
   },
   "include": [
     "./www/front_src/src"
-  ]
+  ],
+  "exclude": ["./www/front_src/src/**/*.spec.tsx"]
 }

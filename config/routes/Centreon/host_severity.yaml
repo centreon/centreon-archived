@@ -1,0 +1,5 @@
+centreon_application_find_host_severities:
+  methods: GET
+  path: /configuration/hosts/severities
+  controller: 'Centreon\Application\Controller\HostSeverityController::findHostSeverities'
+  condition: "request.attributes.get('version') >= 21.10"

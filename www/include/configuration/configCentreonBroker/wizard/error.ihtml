@@ -1,7 +1,0 @@
-<div class="content">
-    <p class="error title">{$strerr}</p>
-    {foreach from=$msgErr item=err}
-    <p class="error">{$err}</p>
-    {/foreach}
-    <input type="hidden" name="end" value="false" />
-</div>

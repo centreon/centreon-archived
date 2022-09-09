@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2017 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -75,18 +76,17 @@ require_once "Centreon/Object/Dependency/DependencyHostParent.php";
  */
 class CentreonHost extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 0;
-    const ORDER_ALIAS = 1;
-    const ORDER_ADDRESS = 2;
-    const ORDER_TEMPLATE = 3;
-    const ORDER_POLLER = 4;
-    const ORDER_HOSTGROUP = 5;
-    const MISSING_INSTANCE = "Instance name is mandatory";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_UNIQUENAME = 0;
+    public const ORDER_ALIAS = 1;
+    public const ORDER_ADDRESS = 2;
+    public const ORDER_TEMPLATE = 3;
+    public const ORDER_POLLER = 4;
+    public const ORDER_HOSTGROUP = 5;
+    public const MISSING_INSTANCE = "Instance name is mandatory";
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
     public const INVALID_GEO_COORDS = "Invalid geo coords";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const HOST_LOCATION = "timezone";
+    public const UNKNOWN_TIMEZONE = "Invalid timezone";
+    public const HOST_LOCATION = "timezone";
 
     /**
      *
@@ -507,7 +507,7 @@ class CentreonHost extends CentreonObject
             $exportedFields = [];
             $resultString = "";
             foreach ($listParam as $paramSearch) {
-                if (!$paramString) {
+                if (!isset($paramString) || !$paramString) {
                     $paramString = $paramSearch;
                 } else {
                     $paramString = $paramString . $this->delim . $paramSearch;
@@ -704,9 +704,7 @@ class CentreonHost extends CentreonObject
                 return $updateParams;
             } else {
                 $params[1] = "ehi_" . $params[1];
-                if ($params[1] == "ehi_icon_image"
-                    || $params[1] == "ehi_statusmap_image"
-                ) {
+                if ($params[1] == "ehi_icon_image" || $params[1] == "ehi_statusmap_image") {
                     if ($params[2]) {
                         $id = CentreonUtils::getImageId($params[2], $this->db);
                         if (is_null($id)) {
@@ -901,13 +899,24 @@ class CentreonHost extends CentreonObject
 
         // disable the check if the macro added is already in host template with same value
         //if($this->hasMacroFromHostChanged($hostId,$params[1],$params[2],$cmdId = false)){
+        $description = (string) $params[4];
+        if (
+            strlen($description) === 0
+            || (
+                strlen($description) === 2
+                && substr($description, 0, 1) === "'"
+                && substr($description, 1, 1) === "'"
+            )
+        ) {
+            $description = null;
+        }
         if (count($macroList)) {
             $macroObj->update(
                 $macroList[0][$macroObj->getPrimaryKey()],
                 array(
                     'host_macro_value' => $params[2],
-                    'is_password' => $params[3],
-                    'description' => $params[4]
+                    'is_password' => (strlen($params[3]) === 0) ? 0 : (int) $params[3],
+                    'description' => $description
                 )
             );
         } else {
@@ -916,8 +925,8 @@ class CentreonHost extends CentreonObject
                     'host_host_id' => $hostId,
                     'host_macro_name' => $this->wrapMacro($params[1]),
                     'host_macro_value' => $params[2],
-                    'is_password' => $params[3],
-                    'description' => $params[4],
+                    'is_password' => (strlen($params[3]) === 0) ? 0 : (int) $params[3],
+                    'description' => $description,
                     'macro_order' => $macroOrder
                 )
             );
@@ -1344,9 +1353,13 @@ class CentreonHost extends CentreonObject
                     echo $this->action . $this->delim
                     . "addparent" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . ((isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]))
-                        ? $elements[$parentId][$this->object->getUniqueLabelField()]
-                        : ''
+                    . (
+                        (
+                            isset($elements[$parentId])
+                            && isset($elements[$parentId][$this->object->getUniqueLabelField()])
+                        )
+                            ? $elements[$parentId][$this->object->getUniqueLabelField()]
+                            : ''
                     )
                     . "\n";
                 }
@@ -1388,13 +1401,22 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
+                $description = $macro['description'];
+                if (
+                    strlen($description) > 0
+                    && substr($description, 0, 1) !== "'"
+                    && substr($description, -1, 1) !== "'"
+                ) {
+                    $description = "'" . $description . "'";
+                }
+
                 echo $this->action . $this->delim
                     . "setmacro" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
                     . $this->stripMacro($macro['host_macro_name']) . $this->delim
                     . $macro['host_macro_value'] . $this->delim
-                    . $macro['is_password'] . $this->delim
-                    . "'" . $macro['description'] . "'" . "\n";
+                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
+                    . $description . "\n";
             }
         }
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host($this->dependencyInjector);

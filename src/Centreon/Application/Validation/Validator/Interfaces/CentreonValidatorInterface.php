@@ -43,5 +43,4 @@ namespace Centreon\Application\Validation\Validator\Interfaces;
  */
 interface CentreonValidatorInterface
 {
-
 }

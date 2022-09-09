@@ -682,13 +682,15 @@ class CentreonService
         $aMacros = $this->getMacros($serviceId, $aListTemplate, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                # Don't override macros on massive change if there is not direct inheritance
-                if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
-                    || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
-                        isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')
-                ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                if (isset($macro['macroInput_#index#']) && isset($macro["macroValue_#index#"])) {
+                    # Don't override macros on massive change if there is not direct inheritance
+                    if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
+                        || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
+                            isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
@@ -884,8 +886,6 @@ class CentreonService
 
     public function purgeOldMacroToForm(&$macroArray, &$form, $fromKey, $macrosArrayToCompare = null)
     {
-
-
         if (isset($form["macroInput"]["#index#"])) {
             unset($form["macroInput"]["#index#"]);
         }

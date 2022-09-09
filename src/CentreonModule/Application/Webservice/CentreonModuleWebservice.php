@@ -52,6 +52,23 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
 {
 
     /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param \CentreonUser $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     *
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if (!$user->admin && $user->access->page('50709') === 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @OA\Get(
      *   path="/internal.php?object=centreon_module&action=list",
      *   description="Get list of modules and widgets",
@@ -153,7 +170,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      * Get list of modules and widgets
      *
      * @throws \RestBadRequestException
-     * @return []
+     * @return Response
      */
     public function getList()
     {
@@ -256,7 +273,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      * Get details of module/widget
      *
      * @throws \RestBadRequestException
-     * @return []
+     * @return Response
      */
     public function getDetails()
     {
@@ -344,7 +361,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      * Install module or widget
      *
      * @throws \RestBadRequestException
-     * @return []
+     * @return Response
      */
     public function postInstall()
     {
@@ -437,7 +454,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      * Update module or widget
      *
      * @throws \RestBadRequestException
-     * @return []
+     * @return Response
      */
     public function postUpdate()
     {
@@ -530,7 +547,7 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      * Remove module or widget
      *
      * @throws \RestBadRequestException
-     * @return []
+     * @return Response
      */
     public function deleteRemove()
     {

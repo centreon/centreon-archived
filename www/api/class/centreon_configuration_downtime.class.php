@@ -39,7 +39,6 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationDowntime extends CentreonConfigurationObjects
 {
-
     /**
      * @var CentreonDB
      */

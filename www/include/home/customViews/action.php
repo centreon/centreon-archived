@@ -54,7 +54,7 @@ if (empty($_POST['action']) || !isset($_SESSION['centreon'])) {
 $centreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
-if (CentreonSession::checkSession(session_id(), $db) == 0) {
+if (CentreonSession::checkSession(session_id(), $db) === false) {
     exit();
 }
 
@@ -275,7 +275,7 @@ try {
             );
             break;
         case 'position':
-            $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $positions, $permission);
+            $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $permission, $positions);
             break;
         case 'deleteView':
             if ($postInputs['custom_view_id']) {

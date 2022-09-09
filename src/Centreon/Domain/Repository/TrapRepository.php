@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class TrapRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *
@@ -65,7 +64,7 @@ SQL;
      * @param int[] $pollerIds
      * @return string
      */
-    public static function exportFilterSql(array $pollerIds) : string
+    public static function exportFilterSql(array $pollerIds): string
     {
         $ids = join(',', $pollerIds);
         $sql = <<<SQL

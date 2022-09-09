@@ -31,7 +31,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\SubmitResult\Interfaces\SubmitResultServiceInterface;
 
@@ -61,20 +61,20 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface
+     * @var ReadAccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * SubmitResultService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
+        ReadAccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator
@@ -142,6 +142,49 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
                 )
             );
         }
+        $service->setHost($host);
+
+        $this->engineService->submitServiceResult($result, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function submitMetaServiceResult(SubmitResult $result): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $result,
+            null,
+            self::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $result->getResourceId());
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta Service %d not found'),
+                    $result->getResourceId()
+                )
+            );
+        }
+
+        $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+
+        if (is_null($host)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta Host %d not found'),
+                    $service->getHost()->getId()
+                )
+            );
+        }
+
         $service->setHost($host);
 
         $this->engineService->submitServiceResult($result, $service);

@@ -6,7 +6,6 @@ use Centreon\Domain\Repository\Interfaces\AclResourceRefreshInterface;
 
 class AclResourcesServiceRelationsRepository extends ServiceEntityRepository implements AclResourceRefreshInterface
 {
-
     /**
      * Refresh
      */

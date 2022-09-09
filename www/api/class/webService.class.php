@@ -253,11 +253,19 @@ class CentreonWebService
     protected static function updateTokenTtl()
     {
         global $pearDB;
+
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = :token';
             try {
-                $stmt = $pearDB->prepare($query);
-                $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
+                $stmt = $pearDB->prepare(
+                    'UPDATE security_token
+                    SET expiration_date = (
+                        SELECT UNIX_TIMESTAMP(NOW() + INTERVAL (`value` * 60) SECOND)
+                        FROM `options`
+                        wHERE `key` = \'session_expire\'
+                    )
+                    WHERE token = :token'
+                );
+                $stmt->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
                 $stmt->execute();
             } catch (Exception $e) {
                 static::sendResult("Internal error", 500);
@@ -317,10 +325,10 @@ class CentreonWebService
             $dependencyInjector['translator'];
 
             // Use the web service if has been initialized or initialize it
-            if(isset($dependencyInjector[$webService['class']])) {
+            if (isset($dependencyInjector[$webService['class']])) {
                 $wsObj = $dependencyInjector[$webService['class']];
             } else {
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
                 $wsObj->setDi($dependencyInjector);
             }
         } else {
@@ -335,7 +343,7 @@ class CentreonWebService
             } else {
                 /* Initialize the webservice */
                 require_once($webService['path']);
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
             }
         }
 

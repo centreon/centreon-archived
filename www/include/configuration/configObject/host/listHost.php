@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -219,12 +220,13 @@ $form->addElement('select2', 'template', "", array(), $attrHosttemplates);
 
 //select2 Host Status
 $attrHostStatus = null;
+$statusDefault = '';
 if ($status) {
     $statusDefault = array($statusFilter[$status] => $status);
-    $attrHostStatus = array(
-        'defaultDataset' => $statusDefault
-    );
 }
+$attrHostStatus = array(
+    'defaultDataset' => $statusDefault
+);
 $form->addElement('select2', 'status', "", $statusFilter, $attrHostStatus);
 
 $attrBtnSuccess = array(
@@ -311,8 +313,12 @@ $search = tidySearchKey($search, $advanced_search);
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
 
+
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
-    if (!isset($poller)
+    if (
+        !isset($poller)
         || $poller == 0
         || ($poller != 0 && $poller == $tab_relation_id[$host["host_id"]])
     ) {
@@ -323,13 +329,15 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-                . "&o=u&limit=$limit&num=$num&searchH=$search'>"
-                . "<img src='img/icons/disabled.png' class='ico-14 margin_right' "
+                . "&o=u&limit=$limit&num=$num&searchH=$search"
+                . "&centreon_token=" . $centreonToken
+                . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Disabled") . "'></a>";
         } else {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-                . "&o=s&limit=$limit&num=$num&searchH=$search'>"
-                . "<img src='img/icons/enabled.png' class='ico-14 margin_right' "
+                . "&o=s&limit=$limit&num=$num&searchH=$search"
+                . "&centreon_token=" . $centreonToken
+                . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Enabled") . "'></a>";
         }
 
@@ -362,10 +370,13 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
         }
 
         // Check icon
-        $host_icone = "./img/icons/host.png";
-        if (isset($ehiCache[$host["host_id"]])
+        $host_icone = returnSvg("www/img/icons/host.svg", "var(--icons-fill-color)", 21, 21);
+        $isSvgFile = true;
+        if (
+            isset($ehiCache[$host["host_id"]])
             && $ehiCache[$host["host_id"]]
         ) {
+            $isSvgFile = false;
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
         } else {
             $icone = $host_method->replaceMacroInString(
@@ -377,6 +388,7 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
                 )
             );
             if ($icone) {
+                $isSvgFile = false;
                 $host_icone = "./img/media/" . $icone;
             }
         }
@@ -397,7 +409,8 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
             "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
             "RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
             "RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
-            "RowMenu_options" => $moptions
+            "RowMenu_options" => $moptions,
+            "isSvgFile" => $isSvgFile
         );
 
         $style != "two"
@@ -437,9 +450,9 @@ foreach (array('o1', 'o2') as $option) {
             . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
             . _("Do you confirm the deletion ?") . "')) {"
             . "   setO(this.form.elements['$option'].value); submit();} "
-            . "else if (this.form.elements['$option'].selectedIndex == 3 || 
-                        this.form.elements['$option'].selectedIndex == 4 || 
-                        this.form.elements['$option'].selectedIndex == 5 || 
+            . "else if (this.form.elements['$option'].selectedIndex == 3 ||
+                        this.form.elements['$option'].selectedIndex == 4 ||
+                        this.form.elements['$option'].selectedIndex == 5 ||
                         this.form.elements['$option'].selectedIndex == 6){"
             . "   setO(this.form.elements['$option'].value); submit();} "
             . "this.form.elements['$option'].selectedIndex = 0"
@@ -476,4 +489,5 @@ $tpl->assign('Poller', _("Poller"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
+$tpl->assign('listServicesIcon', returnSvg("www/img/icons/all_services.svg", "var(--icons-fill-color)", 18, 18));
 $tpl->display("listHost.ihtml");

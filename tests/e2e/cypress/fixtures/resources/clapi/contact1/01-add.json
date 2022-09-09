@@ -1,0 +1,5 @@
+{
+  "action": "ADD",
+  "object": "CONTACT",
+  "values": "user1;User1;user1@test.com;Centreon!2021User1;0;1;en_US;local"
+}

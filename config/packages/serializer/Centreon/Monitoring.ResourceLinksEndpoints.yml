@@ -24,3 +24,7 @@ Centreon\Domain\Monitoring\ResourceLinksEndpoints:
             type: string
             groups:
                 - 'resource_status_main'
+        notificationPolicy:
+            type: string
+            groups:
+                - 'resource_status_main'

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -112,7 +112,7 @@ class CentreonPurgeEngine
 
         $this->readConfig();
 
-        $this->isPartitioned();
+        $this->checkTablesPartitioned();
     }
 
     private function readConfig()
@@ -144,21 +144,24 @@ class CentreonPurgeEngine
         }
     }
 
-    private function isPartitioned()
+    private function checkTablesPartitioned()
     {
-        $query = 'SELECT DISTINCT TABLE_NAME '
-            . 'FROM INFORMATION_SCHEMA.PARTITIONS '
-            . 'WHERE PARTITION_NAME IS NOT NULL ';
+        foreach ($this->tablesToPurge as $name => $value) {
+            try {
+                $DBRESULT = $this->dbCentstorage->query('SHOW CREATE TABLE `' . dbcstg . '`.`' . $name . '`');
+            } catch (\PDOException $e) {
+                throw new Exception('Cannot get partition information');
+            }
 
-        try {
-            $DBRESULT = $this->dbCentstorage->query($query);
-        } catch (\PDOException $e) {
-            throw new Exception('Cannot get partition information');
-        }
-
-        while ($row = $DBRESULT->fetchRow()) {
-            if (isset($this->tablesToPurge[$row['TABLE_NAME']])) {
-                $this->tablesToPurge[$row['TABLE_NAME']]['is_partitioned'] = true;
+            $row = $DBRESULT->fetchRow();
+            $matches = [];
+            // dont care of MAXVALUE
+            if (preg_match_all('/PARTITION `(.*?)` VALUES LESS THAN \((.*?)\)/', $row['Create Table'], $matches)) {
+                $this->tablesToPurge[$name]['is_partitioned'] = true;
+                $this->tablesToPurge[$name]['partitions'] = [];
+                for ($i = 0; isset($matches[1][$i]); $i++) {
+                    $this->tablesToPurge[$name]['partitions'][ $matches[1][$i] ] = $matches[2][$i];
+                }
             }
         }
     }
@@ -181,9 +184,9 @@ class CentreonPurgeEngine
         $this->purgeIndexData();
         echo "[" . date(DATE_RFC822) . "] index_data purged\n";
 
-	echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
-	$this->purgeLogActionModification();
-	echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
+        echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
+        $this->purgeLogActionModification();
+        echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
     }
 
     /**
@@ -191,33 +194,31 @@ class CentreonPurgeEngine
      * Drop partitions that are older than the retention duration
      * @param MysqlTable $table
      */
-    private function purgeParts($table)
+    private function purgeParts($table): int
     {
-        $request = "SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS ";
-        $request .= "WHERE TABLE_NAME='" . $table . "' ";
-        $request .= "AND TABLE_SCHEMA='" . dbcstg . "' ";
-        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
-        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " .
-            $this->tablesToPurge[$table]['retention'] . " ";
-        $request .= "AND PARTITION_NAME NOT LIKE 'pmax' ";
+        $dropPartitions = [];
+        foreach ($this->tablesToPurge[$table]['partitions'] as $partName => $partTimestamp) {
+            if ($partTimestamp < $this->tablesToPurge[$table]['retention']) {
+                $dropPartitions[] = '`' . $partName . '`';
+                echo "[" . date(DATE_RFC822) . "] Partition will be delete " . $partName . "\n";
+            }
+        }
 
+        if (count($dropPartitions) <= 0) {
+            return 0;
+        }
+
+        $request = 'ALTER TABLE `' . $table . '` DROP PARTITION ' . implode(', ', $dropPartitions);
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
         } catch (\PDOException $e) {
-            throw new Exception("Error : Cannot get partitions to purge for table "
+            throw new Exception("Error : Cannot drop partitions of table "
                 . $table . ", " . $e->getMessage() . "\n");
+            return 1;
         }
 
-        while ($row = $DBRESULT->fetchRow()) {
-            $request = "ALTER TABLE " . $table . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
-            try {
-                $DBRESULT2 = $this->dbCentstorage->query($request);
-            } catch (\PDOException $e) {
-                throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
-                    . $table . ", " . $e->getMessage() . "\n");
-            }
-            echo "[" . date(DATE_RFC822) . "] Partition " . $row["PARTITION_NAME"] . " deleted\n";
-        }
+        echo "[" . date(DATE_RFC822) . "] Partitions deleted\n";
+        return 0;
     }
 
     private function purgeOldData($table)
@@ -244,15 +245,7 @@ class CentreonPurgeEngine
     private function purgeIndexData()
     {
         $request = "UPDATE index_data SET to_delete = '1' WHERE ";
-
-        // Delete index_data entries for service by hostgroup
-        $request .= "ISNULL((SELECT 1 FROM " . db . ".hostgroup_relation hr, " . db . ".host_service_relation hsr ";
-        $request .= "WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id ";
-        $request .= "AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
-
-        // Delete index_data entries for service by host
-        $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr " .
-            "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
+        $request .= "NOT EXISTS(SELECT 1 FROM " . db . ".service WHERE service.service_id = index_data.service_id)";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);

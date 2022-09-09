@@ -1,0 +1,2 @@
+# centreontrapd command line options
+OPTIONS="--logfile=/var/log/centreon/centreontrapd.log --severity=error --config=/etc/centreon/conf.pm  --config-extra=/etc/centreon/centreontrapd.pm"

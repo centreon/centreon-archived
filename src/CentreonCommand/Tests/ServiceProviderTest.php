@@ -24,7 +24,7 @@ namespace CentreonCommand\Tests;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use CentreonCommand\ServiceProvider;
-use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use Centreon\Tests\Resources\Traits\WebserviceTrait;
 use CentreonCommand\Application\Webservice;
 
 /**
@@ -48,7 +48,7 @@ class ServiceProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
         $this->container = new Container();
@@ -63,7 +63,7 @@ class ServiceProviderTest extends TestCase
      *
      * @covers \CentreonCommand\ServiceProvider::register
      */
-    public function testWebservices()
+    public function testWebservices(): void
     {
         $checkList = [
             Webservice\CommandWebservice::class,
@@ -77,7 +77,7 @@ class ServiceProviderTest extends TestCase
      *
      * @covers \CentreonCommand\ServiceProvider::order
      */
-    public function testOrder()
+    public function testOrder(): void
     {
         $this->assertEquals(51, $this->provider::order());
     }

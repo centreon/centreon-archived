@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -89,7 +90,7 @@ include "./include/common/checkPagination.php";
 
 // Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 /* Access level */
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
@@ -112,16 +113,20 @@ $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $nagios = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $nagios['nagios_id'] . "]");
     if ($nagios["nagios_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14' border='0' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14' border='0' " .
             "alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' " .
             "class='ico-14' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .

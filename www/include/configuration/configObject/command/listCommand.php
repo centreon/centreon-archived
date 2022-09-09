@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -57,7 +58,10 @@ $displayLocked = filter_var(
 
 // keep checkbox state if navigating in pagination
 // this trick is mandatory cause unchecked checkboxes do not post any data
-if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+if (
+    (isset($centreon->historyPage[$url]) && $centreon->historyPage[$url] > 0 || $num !== 0)
+    && isset($centreon->historySearch[$url]['displayLocked'])
+) {
     $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
@@ -124,7 +128,7 @@ $style = "one";
 $addrType = $type ? "&type=" . $type : "";
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType. "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType . "');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
@@ -138,16 +142,20 @@ $commandType = array(
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cmd['command_id'] . "]");
 
     if ($cmd["command_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&command_id=" . $cmd['command_id'] . "&o=di&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+            "&num=" . $num . "&search=" . $search .  "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&command_id=" . $cmd['command_id'] . "&o=en&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "&num=" . $num . "&search=" . $search .  "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
 
@@ -159,14 +167,16 @@ for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
             . "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr["
             . $cmd['command_id'] . "]' />";
     }
-
+    $decodedCommand = myDecodeCommand($cmd["command_line"]);
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $cmd["command_name"],
         "RowMenu_link" => "main.php?p=" . $p .
             "&o=c&command_id=" . $cmd['command_id'] . "&type=" . $cmd['command_type'],
-        "RowMenu_desc" => CentreonUtils::escapeSecure(substr(myDecodeCommand($cmd["command_line"]), 0, 50)) . "...",
+        "RowMenu_desc" => (strlen($decodedCommand) > 50)
+            ? CentreonUtils::escapeSecure(substr($decodedCommand, 0, 50), CentreonUtils::ESCAPE_ALL) . "..."
+            : CentreonUtils::escapeSecure($decodedCommand, CentreonUtils::ESCAPE_ALL),
         "RowMenu_type" => $commandType[$cmd["command_type"]],
         "RowMenu_huse" => "<a name='#' title='" . _("Host links (host template links)") . "'>" .
             getHostNumberUse($cmd['command_id']) . " (" . getHostTPLNumberUse($cmd['command_id']) . ")</a>",

@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Application\Webservice;
 
 /**
@@ -70,7 +89,7 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
      * )
      *
      * Get data for topology_id
-     * @return string
+     * @return array<string,string|bool>
      * @throws \RestBadRequestException
      */
     public function postGetTopologyData()
@@ -79,7 +98,7 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('You need to send \'topology_id\' in the request.');
         }
 
-        $topologyID = (int) $_POST['topology_id'];
+        $topologyID = (int)$_POST['topology_id'];
         $statement = $this->pearDB->prepare(
             'SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id'
         );
@@ -91,8 +110,8 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
         }
 
         return [
-            'url'      => $result['topology_url'],
-            'is_react' => (bool) $result['is_react'],
+            'url' => $result['topology_url'],
+            'is_react' => (bool)$result['is_react'],
         ];
     }
 
@@ -101,9 +120,9 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
      *
      * @param string $action The action name
      * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
+     * @param bool $isInternal If the api is call in internal
      *
-     * @return boolean If the user has access to the action
+     * @return bool If the user has access to the action
      */
     public function authorize($action, $user, $isInternal = false)
     {
@@ -111,6 +130,6 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
             return true;
         }
 
-        return $user && $user->hasAccessRestApiConfiguration();
+        return $user->hasAccessRestApiConfiguration();
     }
 }

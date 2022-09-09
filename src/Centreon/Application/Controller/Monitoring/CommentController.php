@@ -30,7 +30,6 @@ use Centreon\Domain\Monitoring\Host;
 use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\Monitoring\Service;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\Comment\Comment;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -49,7 +48,7 @@ class CommentController extends AbstractController
     private $commentService;
 
     /**
-     * Monitoring
+     * MonitoringService
      *
      * @var MonitoringServiceInterface
      */
@@ -70,8 +69,8 @@ class CommentController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $receivedData
-     * @throws InvalidArgumentException
+     * @return array<string,mixed> $receivedData
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
@@ -108,7 +107,7 @@ class CommentController extends AbstractController
      * on the selected resources
      *
      * @param Contact $contact
-     * @param array $resources
+     * @param array<string,mixed> $resources
      * @return boolean
      */
     private function hasCommentRightsForResources(Contact $contact, array $resources): bool
@@ -133,6 +132,7 @@ class CommentController extends AbstractController
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
                 || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
@@ -187,14 +187,18 @@ class CommentController extends AbstractController
         foreach ($receivedData['resources'] as $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
             $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
-                ->setDate($date)
-                ->setParentResourceId($commentResource['parent']['id']);
+                ->setDate($date);
 
             if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
                 $resourceIds['host'][] = $commentResource['id'];
             } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $comments[$commentResource['id']]->setParentResourceId($commentResource['parent']['id']);
                 $resourceIds['service'][] = [
                     'host_id' => $commentResource['parent']['id'],
+                    'service_id' => $commentResource['id']
+                ];
+            } elseif ($commentResource['type'] === ResourceEntity::TYPE_META) {
+                $resourceIds['metaservice'][] = [
                     'service_id' => $commentResource['id']
                 ];
             }
@@ -294,6 +298,60 @@ class CommentController extends AbstractController
 
         $host->setId($hostId);
         $service->setId($serviceId)->setHost($host);
+
+        $this->commentService->addServiceComment($comment, $service);
+
+        return $this->view(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Entry point to add a comment on a service
+     *
+     * @param Request $request
+     * @param int $metaId ID of the Meta Service
+     * @return View
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     */
+    public function addMetaServiceComment(
+        Request $request,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        $this->commentService->filterByContact($contact);
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ADD_COMMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $receivedData = $this->validateAndRetrievePostData(
+            $request,
+            'config/json_validator/latest/Centreon/Comment/Comment.json'
+        );
+
+        /**
+         * At this point we validate the JSON sent with the JSON validator.
+         */
+        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
+
+        $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta service %d not found'),
+                    $metaId
+                )
+            );
+        }
+
+        $comment = (new Comment($service->getId(), $receivedData['comment']))
+            ->setParentResourceId($service->getHost()->getId())
+            ->setDate($date);
 
         $this->commentService->addServiceComment($comment, $service);
 

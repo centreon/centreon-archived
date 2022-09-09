@@ -43,7 +43,6 @@ use Centreon\ServiceProvider;
 
 trait DependenciesTrait
 {
-
     /**
      * List of dependencies
      *

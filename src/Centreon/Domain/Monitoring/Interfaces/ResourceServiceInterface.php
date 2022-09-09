@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 interface ResourceServiceInterface
 {
@@ -115,18 +117,12 @@ interface ResourceServiceInterface
     public function extractResourcesWithGraphData(array $resources): array;
 
     /**
-     * Enrich resource object with specific host data
+     * Replace macros set in the external links by their actual values
      *
      * @param ResourceEntity $resource
+     * @return void
      */
-    public function enrichHostWithDetails(ResourceEntity $resource): void;
-
-    /**
-     * Enrich resource object with specific service data
-     *
-     * @param ResourceEntity $resource
-     */
-    public function enrichServiceWithDetails(ResourceEntity $resource): void;
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
 
     /**
      * Used to filter requests according to a contact.

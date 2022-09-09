@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
 /**
@@ -13,7 +32,7 @@ class CfgCentreonBroker
      *
      * @param int $serverID the poller id
      * @param string $pollerName the poller name
-     * @return array the configuration template
+     * @return array<string, array<string, int|string>> the configuration template
      */
     public static function getConfiguration(int $serverID, string $pollerName): array
     {
@@ -30,6 +49,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
             ],
@@ -43,6 +63,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-engine',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '0',
             ],
@@ -56,6 +77,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
             ]

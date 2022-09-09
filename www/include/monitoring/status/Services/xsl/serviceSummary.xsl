@@ -32,17 +32,14 @@
 			<xsl:element name="a">
 			  	<xsl:attribute name="href"><xsl:value-of select="s_listing_uri"/></xsl:attribute>
                 <xsl:attribute name="isreact">true</xsl:attribute>
-					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icons/view.png</xsl:attribute>
-						<xsl:attribute name="class">ico-18</xsl:attribute>
-					</xsl:element>
+                <xsl:value-of select="viewIcon" disable-output-escaping="yes"/>
 			</xsl:element>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
-					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-						<xsl:attribute name="class">ico-18</xsl:attribute>
-					</xsl:element>
+                <xsl:element name="span">
+                    <xsl:attribute name="class">svgs</xsl:attribute>
+                    <xsl:value-of select="chartIcon" disable-output-escaping="yes"/>
+                </xsl:element>
 			</xsl:element>
 		</td>
 		<td class='ListColCenter'>
@@ -107,5 +104,8 @@
 </xsl:for-each>
 </table>
 <div id="div_popup" class="popup_volante"><div class="container-load"></div><div id="popup-container-display"></div></div>
+<script type="text/javascript">
+    $(displaySvgOnXSL());
+</script>
 </xsl:template>
 </xsl:stylesheet>

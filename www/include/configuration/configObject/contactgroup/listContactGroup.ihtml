@@ -18,7 +18,7 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                {$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;
+                {$form.o1.html}&nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
                 <a href='#' class="btc bt_info"
                    onclick="window.open('?p=60302&o=dn&min=1', '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.view_notif}</a>
@@ -26,7 +26,6 @@
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -62,13 +61,12 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                {$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}"
+                {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}"
                                                                    class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

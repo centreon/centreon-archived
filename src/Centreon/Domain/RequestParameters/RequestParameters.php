@@ -200,7 +200,7 @@ class RequestParameters implements RequestParametersInterface
         $names = [];
         $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
             foreach ($data as $key => $value) {
-                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
+                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys) && !is_int($key)) {
                     $names[] = $key;
                 }
                 if (is_object($value) || is_array($value)) {
@@ -326,6 +326,7 @@ class RequestParameters implements RequestParametersInterface
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function getSort(): array
     {

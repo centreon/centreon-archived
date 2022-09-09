@@ -44,7 +44,9 @@ $DBRESULT = $pearDB->query(
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
-$gopt[$opt["kb_wiki_password"]] = CentreonAuth::PWS_OCCULTATION;
+if (isset($opt["kb_wiki_password"])) {
+    $gopt[$opt["kb_wiki_password"]] = CentreonAuth::PWS_OCCULTATION;
+}
 $DBRESULT->closeCursor();
 
 $attrsAdvSelect = null;

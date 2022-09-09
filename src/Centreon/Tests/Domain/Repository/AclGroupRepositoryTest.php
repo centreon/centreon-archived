@@ -24,7 +24,7 @@ namespace Centreon\Tests\Domain\Repository;
 use Centreon\Domain\Repository\AclGroupRepository;
 use Centreon\Domain\Entity\AclGroup;
 use PHPUnit\Framework\TestCase;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 use Centreon\Test\Mock\CentreonDB;
 
 /**
@@ -44,7 +44,7 @@ class AclGroupRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->db = new CentreonDB();
         $this->repository = new AclGroupRepository($this->db);

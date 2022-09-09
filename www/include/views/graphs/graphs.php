@@ -291,10 +291,10 @@ if ($period_start != 'undefined' && $period_end != 'undefined') {
     $endTime = date('H:i', $period_end);
     $form->setDefaults(
         array(
-            'alternativeDateEndDate' => $startDay,
+            'StartDate' => $startDay,
             'StartTime' => $startTime,
-            'alternativeDateStartDate' => $endDay,
-            'EndTime' => $endTime
+            'EndTime' => $endTime,
+            'EndDate' => $endDay
         )
     );
 } else {
@@ -318,6 +318,11 @@ $tpl->assign('Apply', _("Apply"));
 $tpl->assign('defaultCharts', json_encode($defaultGraphs));
 $tpl->assign("admin", $centreon->user->admin);
 $tpl->assign("topologyAccess", $centreon->user->access->topology);
+$tpl->assign("timerDisabled", returnSvg("www/img/icons/timer.svg", "var(--icons-disabled-fill-color)", 14, 14));
+$tpl->assign("timerEnabled", returnSvg("www/img/icons/timer.svg", "var(--icons-fill-color)", 14, 14));
+$tpl->assign("removeIcon", returnSvg("www/img/icons/circle-crossed.svg", "var(--icons-fill-color)", 20, 20));
+$tpl->assign("csvIcon", returnSvg("www/img/icons/csv.svg", "var(--icons-fill-color)", 19, 19));
+$tpl->assign("pictureIcon", returnSvg("www/img/icons/picture.svg", "var(--icons-fill-color)", 19, 19));
 $tpl->display("graphs.html");
 
 $multi = 1;

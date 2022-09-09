@@ -1,43 +1,97 @@
-const { merge } = require('webpack-merge');
 const path = require('path');
 const os = require('os');
 
-const devConfig = require('@centreon/frontend-core/webpack/patch/dev');
-const baseConfig = require('./webpack.config');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { merge } = require('webpack-merge');
+const {
+  getDevConfiguration,
+  devJscTransformConfiguration,
+  devRefreshJscTransformConfiguration,
+} = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
+
+const getBaseConfiguration = require('./webpack.config');
 
 const devServerPort = 9090;
 
 const interfaces = os.networkInterfaces();
-const externalInterface = Object.keys(interfaces).find((interfaceName) => {
-  return (
+const externalInterface = Object.keys(interfaces).find(
+  (interfaceName) =>
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
-    interfaces[interfaceName][0].internal === false
-  );
-});
+    interfaces[interfaceName][0].internal === false &&
+    !process.env.IS_STATIC_PORT_FORWARDED,
+);
 
 const devServerAddress = externalInterface
   ? interfaces[externalInterface][0].address
   : 'localhost';
 
-module.exports = merge(baseConfig, devConfig, {
-  output: {
-    publicPath: `http://${devServerAddress}:${devServerPort}/static/`,
+const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
+
+const isServeMode = process.env.WEBPACK_ENV === 'serve';
+const isDevelopmentMode = process.env.WEBPACK_ENV === 'development';
+
+const plugins = isServeMode ? [new ReactRefreshWebpackPlugin()] : [];
+
+const output =
+  isServeMode || isDevelopmentMode
+    ? {
+        publicPath,
+      }
+    : {};
+
+const getStaticDirectoryPath = (moduleName) =>
+  `${__dirname}/www/modules/${moduleName}/static`;
+
+const modules = [
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-license-manager',
   },
-  resolve: {
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
-      '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-autodiscovery-server',
+  },
+  { getDirectoryPath: getStaticDirectoryPath, name: 'centreon-bam-server' },
+  {
+    getDirectoryPath: getStaticDirectoryPath,
+    name: 'centreon-augmented-services',
+  },
+  {
+    getDirectoryPath: () => `${__dirname}/www/modules/centreon-map4-web-client`,
+    name: 'centreon-map4-web-client',
+  },
+];
+
+module.exports = merge(
+  getBaseConfiguration(
+    isServeMode
+      ? devRefreshJscTransformConfiguration
+      : devJscTransformConfiguration,
+  ),
+  getDevConfiguration(),
+  {
+    devServer: {
+      compress: true,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      host: '0.0.0.0',
+      hot: true,
+      port: devServerPort,
+
+      static: modules.map(({ name, getDirectoryPath }) => ({
+        directory: path.resolve(getDirectoryPath(name)),
+        publicPath,
+        watch: true,
+      })),
+    },
+    output,
+    plugins,
+    resolve: {
+      alias: {
+        '@mui/material': path.resolve('./node_modules/@mui/material'),
+        dayjs: path.resolve('./node_modules/dayjs'),
+        'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+      },
     },
   },
-  devServer: {
-    contentBase: path.resolve(`${__dirname}/www/modules/`),
-    compress: true,
-    host: '0.0.0.0',
-    port: devServerPort,
-    hot: true,
-    watchContentBase: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-  },
-});
+);

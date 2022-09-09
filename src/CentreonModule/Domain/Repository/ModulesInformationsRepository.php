@@ -40,9 +40,9 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class ModulesInformationsRepository extends ServiceEntityRepository
 {
-
     /**
      * Get an associative array of all modules vs versions
+     * @return string[]
      */
     public function getAllModuleVsVersion(): array
     {
@@ -62,6 +62,8 @@ class ModulesInformationsRepository extends ServiceEntityRepository
 
     /**
      * Get id by name
+     * @param string $name
+     * @return int|null
      */
     public function findIdByName($name): ?int
     {

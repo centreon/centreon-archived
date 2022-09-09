@@ -1,8 +1,12 @@
 centreon:
     resource: "./Centreon/**/*.yaml"
-    prefix: "/{base_uri}api/{version}"
+    prefix: "{base_uri}api/{version}"
     defaults:
-        base_uri: "centreon/"
-        version: "beta"
+        version: "latest"
     requirements:
-        base_uri: "(.+/)|.{0}"
+        base_uri: ".*"
+security:
+    resource: "./Security/**/*.yaml"
+    prefix: "{base_uri}authentication"
+    requirements:
+        base_uri: ".*"

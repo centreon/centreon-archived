@@ -56,6 +56,10 @@ $cmdId = 0;
 $serviceTplId = null;
 $service = array();
 $serviceObj = new CentreonService($pearDB);
+
+// Used to store all macro passwords
+$macroPasswords = [];
+
 if (($o == SERVICE_TEMPLATE_MODIFY || $o == SERVICE_TEMPLATE_WATCH) && isset($service_id)) {
     if (isset($lockedElements[$service_id])) {
         $o = SERVICE_TEMPLATE_WATCH;
@@ -156,9 +160,12 @@ if (($o == SERVICE_TEMPLATE_MODIFY || $o == SERVICE_TEMPLATE_WATCH) && isset($se
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($aMacros as $index => $macroValues) {
         if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
             // It's a password macro
             $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
             $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
         }
     }
 }
@@ -239,15 +246,6 @@ $attrServicetemplates = array(
     'availableDatasetRoute' => $servTplAvRoute,
     'multiple' => false,
     'linkedObject' => 'centreonServicetemplates'
-);
-
-$servGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
-    . '&action=list';
-$attrServicegroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $servGrAvRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonServicegroups'
 );
 
 $servCatAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory'
@@ -910,12 +908,8 @@ $service_register = 0;
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 $form->applyFilter('__ALL__', 'myTrim');
@@ -1015,17 +1009,35 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $serviceObj->setValue(insertServiceInDB());
     } elseif ($form->getSubmitValue("submitC")) {
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                    /*
+                     * The password has not been changed along with the name, so its value is equal to the wildcard.
+                     * We will therefore recover the password stored for its original name.
+                     */
+                    foreach ($aMacros as $indexMacro => $macroDetails) {
+                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         updateServiceInDB($serviceObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateServiceInDB($value, true);
-            }
+        foreach (array_keys($select) as $svcTemplateIdToUpdate) {
+            updateServiceInDB($svcTemplateIdToUpdate, true);
         }
     }
     $action = $form->getSubmitValue("action");
-    if (!$action["action"]["action"]) {
+    if ($action !== null && !$action["action"]["action"]) {
         $o = SERVICE_TEMPLATE_WATCH;
     } else {
         $o = null;

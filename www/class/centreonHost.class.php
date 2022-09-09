@@ -192,7 +192,7 @@ class CentreonHost
             return $ppList;
         }
         $dbResult = $this->db->query(
-            'SELECT ph.host_id 
+            'SELECT ph.host_id
             FROM mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
             AND pp.slug NOT IN ("' . implode('","', $freePp) . '")'
@@ -1091,12 +1091,28 @@ class CentreonHost
         $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if ($input == $macro['macroInput_#index#'] &&
-                    $macroValue[$ind] == $macro["macroValue_#index#"] &&
-                    $macroPassword[$ind] == $macro['macroPassword_#index#']
+                if (
+                    isset($macro['macroInput_#index#'])
+                    && isset($macro["macroValue_#index#"])
                 ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                    if (
+                        $input == $macro['macroInput_#index#']
+                        && $macroValue[$ind] == $macro["macroValue_#index#"]
+                        && (
+                            (
+                                isset($macro['macroPassword_#index#'])
+                                && isset($macroPassword[$ind])
+                                && $macroPassword[$ind] == $macro['macroPassword_#index#']
+                            )
+                            || (
+                                isset($macro['macroPassword_#index#']) === false
+                                && isset($macroPassword[$ind]) === false
+                            )
+                        )
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
@@ -1416,8 +1432,8 @@ class CentreonHost
     ) {
         if (!in_array($hostId, $alreadyProcessed)) {
             $alreadyProcessed[$hostId] = $hostId;
-            $query = 'SELECT host_host_id FROM host_template_relation htr 
-                WHERE htr.host_tpl_id = :hostId 
+            $query = 'SELECT host_host_id FROM host_template_relation htr
+                WHERE htr.host_tpl_id = :hostId
                 ORDER BY `order` ASC';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
@@ -1492,8 +1508,8 @@ class CentreonHost
                     }
                 }
                 $query = 'SELECT ' . $queryFields . ' ' .
-                    'FROM host h ' .
-                    'WHERE host_id = :hostId';
+                    'FROM host h, extended_host_information ehi ' .
+                    'WHERE host_id = :hostId AND host_id = ehi.host_host_id';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();

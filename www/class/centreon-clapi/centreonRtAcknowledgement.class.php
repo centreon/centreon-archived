@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2017 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -165,12 +166,20 @@ class CentreonRtAcknowledgement extends CentreonObject
      */
     private function parseShowParameters($parameters)
     {
-        list($type, $resource) = explode(';', $parameters);
+        $parameters = explode(';', $parameters);
+        if (count($parameters) === 1) {
+            $resource = '';
+        } elseif (count($parameters) === 2) {
+            $resource = $parameters[1];
+        } else {
+            throw new CentreonClapiException('Bad parameters');
+        }
+        $type = $parameters[0];
 
-        return array(
+        return [
             'type' => $type,
             'resource' => $resource,
-        );
+        ];
     }
 
     /**
@@ -190,8 +199,8 @@ class CentreonRtAcknowledgement extends CentreonObject
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
         } else {
-            $this->aHosts = $this->object->getHostAcknowledgement();
-            $this->aServices = $this->object->getSvcAcknowledgement();
+            $this->aHosts = $this->object->getLastHostAcknowledgement();
+            $this->aServices = $this->object->getLastSvcAcknowledgement();
             $list = '';
             //all host
             if (count($this->aHosts) !== 0) {
@@ -240,18 +249,24 @@ class CentreonRtAcknowledgement extends CentreonObject
 
             // check if host exist
             $unknownHost = array();
-            $existingHost = array();
+            $existingHostIds = array();
             foreach ($hostList as $host) {
-                if ($this->hostObject->getHostID($host) == 0) {
+                if (($hostId = $this->hostObject->getHostID($host)) == 0) {
                     $unknownHost[] = $host;
                 } else {
-                    $existingHost[] = $host;
+                    $existingHostIds[] = $hostId;
                 }
             }
+            if (count($unknownHost) !== 0) {
+                echo "\n";
+                throw new CentreonClapiException(
+                    self::OBJECT_NOT_FOUND . ' : Host : ' . implode('|', $unknownHost) . "\n"
+                );
+            }
             // Result of the research in the base
-            $hostAcknowledgementList = $this->object->getHostAcknowledgement($existingHost);
+            $hostAcknowledgementList = $this->object->getLastHostAcknowledgement($existingHostIds);
         } else {
-            $hostAcknowledgementList = $this->object->getHostAcknowledgement();
+            $hostAcknowledgementList = $this->object->getLastHostAcknowledgement();
         }
 
         // Init user timezone
@@ -273,11 +288,6 @@ class CentreonRtAcknowledgement extends CentreonObject
 
                 echo implode($this->delim, array_values($hostAcknowledgement)) . "\n";
             }
-        }
-
-        if (count($unknownHost) !== 0) {
-            echo "\n";
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : Host : ' . implode('|', $unknownHost) . "\n");
         }
     }
 
@@ -326,14 +336,14 @@ class CentreonRtAcknowledgement extends CentreonObject
             // Result of the research in the base
             if (count($existingService)) {
                 foreach ($existingService as $svc) {
-                    $tmpAcknowledgement = $this->object->getSvcAcknowledgement($svc);
+                    $tmpAcknowledgement = $this->object->getLastSvcAcknowledgement($svc);
                     if (!empty($tmpAcknowledgement)) {
-                        $serviceAcknowledgementList[] = $tmpAcknowledgement[0];
+                        $serviceAcknowledgementList[] = array_pop($tmpAcknowledgement);
                     }
                 }
             }
         } else {
-            $serviceAcknowledgementList = $this->object->getSvcAcknowledgement();
+            $serviceAcknowledgementList = $this->object->getLastSvcAcknowledgement();
         }
 
         // Init user timezone
@@ -498,7 +508,7 @@ class CentreonRtAcknowledgement extends CentreonObject
             list($hostName, $serviceName) = explode(',', $acknowledgement);
 
             if ($serviceName) {
-                $serviceId = $this->serviceObject->getObjectId($serviceName);
+                $serviceId = $this->serviceObject->getObjectId($hostName . ";" . $serviceName);
                 if ($this->object->svcIsAcknowledged($serviceId)) {
                     $this->externalCmdObj->deleteAcknowledgement(
                         'SVC',

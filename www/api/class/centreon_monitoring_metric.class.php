@@ -59,32 +59,83 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        $queryValues = array();
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
-            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        global $centreon;
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT(`metric_name`)
+            COLLATE utf8_bin as "metric_name" FROM `metrics` as m ';
+
+        $queryValues = [];
+
+        /**
+         * If ACLs on, then only return metrics linked to services that the user can see.
+         */
+        if (!$centreon->user->admin) {
+            $query .= 'INNER JOIN index_data i
+                  ON i.id = m.index_id
+                INNER JOIN centreon_acl acl
+                  ON acl.host_id = i.host_id
+                  AND acl.service_id = i.service_id
+                INNER JOIN `' . db . '`.acl_groups acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = "1"
+                  AND (
+                    acg.acl_group_id IN (
+                        SELECT acl_group_id FROM `' . db . '`.acl_group_contacts_relations
+                        WHERE contact_contact_id = :contact_id
+                    ) OR acl_group_id IN (
+                        SELECT acl_group_id FROM `' . db . '`.acl_group_contactgroups_relations agcr
+                        INNER JOIN `' . db . '`.contactgroup_contact_relation cgcr
+                            ON cgcr.contactgroup_cg_id = agcr.cg_cg_id
+                        WHERE cgcr.contact_contact_id = :contact_id
+                    )
+                  )';
+            $queryValues[':contact_id'] = [$centreon->user->user_id, \PDO::PARAM_INT];
         }
 
-        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
-            'FROM `metrics` ' .
-            'WHERE metric_name LIKE :name ' .
-            'ORDER BY `metric_name` COLLATE utf8_general_ci ';
+        if (isset($this->arguments['q'])) {
+            $query .= 'WHERE metric_name LIKE :name ';
+            $queryValues[':name'] = ['%' . (string)$this->arguments['q'] . '%', \PDO::PARAM_STR];
+        }
+
+        $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (
+                filter_var(($limit = $this->arguments['page_limit']), FILTER_VALIDATE_INT) === false
+                || filter_var(($page = $this->arguments['page']), FILTER_VALIDATE_INT) === false
+            ) {
+                throw new \InvalidArgumentException('Pagination parameters must be integers');
+            }
+
+            if ($page < 1) {
+                throw new \InvalidArgumentException('Page number must be greater than zero');
+            }
+
+            $offset = ($page - 1) * $limit;
+            $query .= 'LIMIT :offset, :limit';
+            $queryValues[':offset'] = [$offset, \PDO::PARAM_INT];
+            $queryValues[':limit'] = [$limit, \PDO::PARAM_INT];
+        }
+
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
+        foreach ($queryValues as $name => $parameters) {
+            list($value, $type) = $parameters;
+            $stmt->bindValue($name, $value, $type);
+        }
+        $stmt->execute();
+
+        $metrics = [];
+        while ($row = $stmt->fetch()) {
+            $metrics[] = [
+                'id' => $row['metric_name'],
+                'text' => $row['metric_name']
+            ];
         }
 
-        $metricList = array();
-        while ($data = $stmt->fetch()) {
-            $metricList[] = array('id' => $data['metric_name'], 'text' => $data['metric_name']);
-        }
-        return array(
-            'items' => $metricList,
+        return [
+            'items' => $metrics,
             'total' => (int) $this->pearDBMonitoring->numberRows()
-        );
+        ];
     }
 
     /**

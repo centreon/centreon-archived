@@ -59,6 +59,8 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
 if (
     ($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false
     && ($host_id = filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT)) !== false
+    && ($startDate = filter_var($_GET['startDate'] ?? false, FILTER_VALIDATE_INT)) !== false
+    && ($endDate = filter_var($_GET['endDate'] ?? false, FILTER_VALIDATE_INT)) !== false
 ) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
@@ -73,14 +75,18 @@ if (
 
     if ($accessService) {
         /* Use "like" instead of "=" to avoid mysql bug on partitioned tables */
-        $query = 'SELECT * ' .
-            'FROM `log_archive_service` ' .
-            'WHERE host_id LIKE :host_id ' .
-            'AND service_id LIKE :service_id ' .
-            'ORDER BY date_start DESC';
+        $query = 'SELECT *
+            FROM `log_archive_service`
+            WHERE host_id LIKE :host_id
+            AND service_id LIKE :service_id
+            AND date_start >= :start_date
+            AND date_end <= :end_date
+            ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
         $stmt->bindValue(':host_id', $host_id, PDO::PARAM_INT);
         $stmt->bindValue(':service_id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':start_date', $startDate, PDO::PARAM_INT);
+        $stmt->bindValue(':end_date', $endDate, PDO::PARAM_INT);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             fillBuffer($statesTab, $row, $color);

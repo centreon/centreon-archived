@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -20,24 +21,24 @@
 
 namespace CentreonRemote\Domain\Exporter;
 
-use Pimple\Container;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
-
 use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
 {
+    public const NAME = 'configuration';
+    private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
-    const NAME = 'configuration';
-    const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
+    /**
+     * @var \ConfigGenerateRemote\Generate
+     */
+    private $generateService;
 
     /**
      * Set generate service
      *
-     * @param Container $dependencyInjector
      * @param \ConfigGenerateRemote\Generate $generateService
-     * @return void
      */
     public function setGenerateService(\ConfigGenerateRemote\Generate $generateService): void
     {
@@ -46,6 +47,8 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Export data
+     * @param int $remoteId
+     * @return mixed[]
      */
     public function export(int $remoteId): array
     {
@@ -71,6 +74,15 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         $db = $this->db->getAdapter('configuration_db');
 
+        // get tables
+        $stmt = $db->getCentreonDBInstance()->query('SHOW TABLES');
+        $tables = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            foreach ($row as $name) {
+                $tables[$name] = 1;
+            }
+        }
+
         // start transaction
         $db->beginTransaction();
 
@@ -81,24 +93,31 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
             $import = $manifest->get("import");
             foreach ($import['data'] as $data) {
-                if (!isset($truncated[$data['table']])) {
+                $exportPathFile = $this->getFile($data['filename']);
+                $size = filesize($exportPathFile);
+                echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "' ($size).\n";
+
+                if ($size > 0 && !isset($tables[$data['table']])) {
+                    echo date("Y-m-d H:i:s") . " - ERROR - cannot import table '" . $data['table'] . "': not exist.\n";
+                    continue;
+                }
+
+                if (!isset($truncated[$data['table']]) && isset($tables[$data['table']])) {
                     // empty table
                     $db->query("DELETE FROM `" . $data['table'] . "`");
-                    // optimize table
-                    $db->query("OPTIMIZE TABLE `" . $data['table'] . "`");
                     $truncated[$data['table']] = 1;
                 }
 
                 // insert data
-                $exportPathFile = $this->getFile($data['filename']);
-                echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
-                $db->loadDataInfile(
-                    $exportPathFile,
-                    $data['table'],
-                    $import['infile_clauses']['fields_clause'],
-                    $import['infile_clauses']['lines_clause'],
-                    $data['columns']
-                );
+                if ($size > 0) {
+                    $db->loadDataInfile(
+                        $exportPathFile,
+                        $data['table'],
+                        $import['infile_clauses']['fields_clause'],
+                        $import['infile_clauses']['lines_clause'],
+                        $data['columns']
+                    );
+                }
             }
 
             // restore foreign key checks
@@ -114,14 +133,16 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         // media copy
         $exportPathMedia = $this->commitment->getPath() . "/media";
-        $mediaPath = static::MEDIA_PATH;
+        $mediaPath = self::MEDIA_PATH;
         $this->recursiveCopy($exportPathMedia, $mediaPath);
     }
 
     /**
      * Copy directory recursively
+     * @param string $src
+     * @param string $dst
      */
-    private function recursiveCopy($src, $dst)
+    private function recursiveCopy($src, $dst): void
     {
         $dir = opendir($src);
         @mkdir($dst, $this->commitment->getFilePermission(), true);

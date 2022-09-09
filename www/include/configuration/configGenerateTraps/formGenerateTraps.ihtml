@@ -52,7 +52,7 @@
     </table>
     <div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
     <br /><br /><br /><br />
-    {if $msg_generate}
+    {if isset($msg_generate)}
         <div id='tab1' class='tab'>
             <table class="ListTable">
                 <tr class="ListHeader">

@@ -62,7 +62,7 @@ function myDecodeService($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$centreon->user->admin && isset($service_id)) {
+if (!$centreon->user->admin && is_numeric($service_id)) {
     $checkres = $pearDB->query(
         "SELECT service_id
         FROM $aclDbName.centreon_acl
@@ -84,6 +84,10 @@ $cmdId = 0;
 $service = array();
 $serviceTplId = null;
 $initialValues = array();
+
+// Used to store all macro passwords
+$macroPasswords = [];
+
 if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     $statement = $pearDB->prepare(
         'SELECT * 
@@ -191,9 +195,12 @@ if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($aMacros as $index => $macroValues) {
         if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
             // It's a password macro
             $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
             $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
         }
     }
 }
@@ -913,6 +920,7 @@ if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title4', _("View an Extended Info"));
 } elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
+    $form->addElement('header', 'title4', _("Modify an Extended Info"));
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));
@@ -1141,9 +1149,32 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $serviceObj->setValue(insertServiceInDB());
     } elseif ($form->getSubmitValue("submitC")) {
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        if (array_key_exists('macroInput', $_REQUEST)) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                         * The password has not been changed along with the name, so its value is equal to the wildcard.
+                         * We will therefore recover the password stored for its original name.
+                         */
+                        foreach ($aMacros as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         updateServiceInDB($serviceObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $serviceIdToUpdate) {
+        foreach (array_keys($select) as $serviceIdToUpdate) {
             updateServiceInDB($serviceIdToUpdate, true);
         }
     }

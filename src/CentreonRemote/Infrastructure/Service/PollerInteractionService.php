@@ -1,12 +1,30 @@
 <?php
 
+/*
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Infrastructure\Service;
 
 use Pimple\Container;
 
 class PollerInteractionService
 {
-
     /** @var Container */
     private $di;
 
@@ -32,7 +50,10 @@ class PollerInteractionService
     }
 
 
-    public function generateAndExport($pollers)
+    /**
+     * @param int[] $pollers
+     */
+    public function generateAndExport($pollers): void
     {
         $pollers = (array) $pollers;
 
@@ -41,7 +62,11 @@ class PollerInteractionService
         $this->restartPoller($pollers);
     }
 
-    private function generateConfiguration(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function generateConfiguration(array $pollerIDs): void
     {
         $username = 'unknown';
 
@@ -66,7 +91,11 @@ class PollerInteractionService
         }
     }
 
-    private function moveConfigurationFiles(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function moveConfigurationFiles(array $pollerIDs): void
     {
         $centreonBrokerPath = _CENTREON_CACHEDIR_ . '/config/broker/';
 
@@ -115,7 +144,11 @@ class PollerInteractionService
         }
     }
 
-    private function restartPoller(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function restartPoller(array $pollerIDs): void
     {
         $tabServers = [];
 

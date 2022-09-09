@@ -176,15 +176,18 @@ class CentreonMedia
      * Add directory
      * @param string $dirname
      */
-    private function createDirectory($dirname)
+    private function createDirectory($dirname): void
     {
         $mediaDirectory = $this->getMediaDirectory();
 
         $fullPath = $mediaDirectory . '/' . $dirname;
 
         // Create directory and nested folder structure
-        if (!is_dir($fullPath)) {
-            mkdir($fullPath, 0755, true);
+        if (! is_dir($fullPath)) {
+            @mkdir($fullPath, 0755, true);
+            if (! is_dir($fullPath)) {
+                error_log('Impossible to create directory ' . $fullPath);
+            }
         } elseif (fileperms($fullPath) !== 0755) {
             chmod($fullPath, 0755);
         }

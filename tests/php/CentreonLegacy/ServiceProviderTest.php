@@ -32,7 +32,7 @@ class ServiceProviderTest extends TestCase
     protected $container;
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         global $conf_centreon, $centreon_path;
         $conf_centreon = [];

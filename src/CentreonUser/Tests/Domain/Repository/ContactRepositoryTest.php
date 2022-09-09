@@ -24,7 +24,7 @@ namespace CentreonUser\Tests\Domain\Repository;
 use CentreonUser\Domain\Repository\ContactRepository;
 use CentreonUser\Domain\Entity\Contact;
 use PHPUnit\Framework\TestCase;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser
@@ -37,7 +37,7 @@ class ContactRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             ContactRepository::class,

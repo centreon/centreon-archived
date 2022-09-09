@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,6 +33,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 ?>
 <script type="text/javascript">
     function mk_pagination() {}

@@ -78,6 +78,8 @@ $tpl->assign("tab_order", $tab_order);
 $tpl->assign('limit', $limit);
 if (isset($_GET['searchHG'])) {
     $tpl->assign('searchHG', $_GET['searchHG']);
+} else {
+    $tpl->assign('searchHG', '');
 }
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

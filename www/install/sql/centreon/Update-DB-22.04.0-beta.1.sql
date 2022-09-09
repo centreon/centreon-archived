@@ -1,0 +1,1 @@
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Authentication', '/administration/authentication', '1', '1', 5, 509, 1, 10);

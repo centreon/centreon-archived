@@ -436,7 +436,6 @@ class CentreonACLMenu extends CentreonObject
      */
     private function grantMenu($aclTopoId, $aclTopoName)
     {
-
         $grantedMenu = '';
 
         $grantedMenuTpl = $this->action . $this->delim .
@@ -451,9 +450,9 @@ class CentreonACLMenu extends CentreonObject
         );
 
         $queryAclMenuRelations = 'SELECT t.topology_page, t.topology_id, t.topology_name, atr.access_right ' .
-            'FROM acl_topology_relations atr, topology t ' .
-            'WHERE atr.topology_topology_id = t.topology_id ' .
-            "AND atr.access_right <> '0' " .
+            'FROM acl_topology_relations atr ' .
+            'LEFT JOIN topology t ON t.topology_id = atr.topology_topology_id ' .
+            "WHERE atr.access_right <> '0' " .
             'AND atr.acl_topo_id = :topoId';
         $stmt = $this->db->prepare($queryAclMenuRelations);
         $stmt->bindParam(':topoId', $aclTopoId);

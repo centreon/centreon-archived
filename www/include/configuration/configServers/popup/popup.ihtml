@@ -1,6 +1,6 @@
 <h3 style="text-align: center;"> Gorgone configuration file :</h3>
 <br>
-<div  style="background-color: #ededed; padding: 4px;">
+<div class="gorgone_config_file">
     <pre id='configuration_file' style="overflow-x: auto;">{$args}</pre>
     <br>
     <pre id='command_configuration_file' style="overflow-x: auto; display: none">
