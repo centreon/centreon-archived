@@ -23,15 +23,34 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\OpenId\Repository;
 
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 
 interface ReadOpenIdConfigurationRepositoryInterface
 {
     /**
-     * Find the OpenId Configuration
+     * @param int $providerConfigurationId
+     * @return array<AuthorizationRule>
+     */
+    public function getAuthorizationRulesByConfigurationId(int $providerConfigurationId): array;
+
+    /**
+     * Get Contact Template
      *
-     * @return Configuration|null
+     * @param int $contactTemplateId
+     * @return ContactTemplate|null
      * @throws \Throwable
      */
-    public function findConfiguration(): ?Configuration;
+    public function getContactTemplate(int $contactTemplateId): ?ContactTemplate;
+
+    /**
+     * Get Contact Group
+     *
+     * @param int $contactGroupId
+     * @return ContactGroup|null
+     * @throws \Throwable
+     */
+    public function getContactGroup(int $contactGroupId): ?ContactGroup;
 }

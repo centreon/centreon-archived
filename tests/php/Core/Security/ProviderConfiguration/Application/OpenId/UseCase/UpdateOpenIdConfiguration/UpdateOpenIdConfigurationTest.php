@@ -25,29 +25,33 @@ namespace Tests\Core\Security\ProviderConfiguration\Application\OpenId\UseCase\U
 
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
+use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{
-    UpdateOpenIdConfiguration,
+use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
 };
-use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
-use Core\Contact\Domain\Model\ContactGroup;
-use Core\Security\ProviderConfiguration\Application\OpenId\Builder\ConfigurationBuilder;
-use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\OpenIdConfigurationFactory;
 
 beforeEach(function () {
     $this->repository = $this->createMock(WriteOpenIdConfigurationRepositoryInterface::class);
     $this->contactGroupRepository = $this->createMock(ReadContactGroupRepositoryInterface::class);
     $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
     $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
+    $this->readOpenIdRepository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
     $this->contactTemplateRepository = $this->createMock(ReadContactTemplateRepositoryInterface::class);
     $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
+    $this->providerFactory = $this->createMock(ProviderAuthenticationFactoryInterface::class);
+    $this->contactGroup = new ContactGroup(1, 'contact_group');
+    $this->contactTemplate = new ContactTemplate(1, 'contact_template');
 });
 
 it('should present a NoContentResponse when the use case is executed correctly', function () {
@@ -69,23 +73,21 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
+    $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
-
-    $contactGroup = new ContactGroup(1, 'contact_group');
-
-    $openIdConfiguration = ConfigurationBuilder::create($request, null, $contactGroup, []);
-
-    $this->repository
-        ->expects($this->once())
-        ->method('updateConfiguration')
-        ->with($openIdConfiguration);
 
     $this->contactGroupRepository
         ->expects($this->once())
         ->method('find')
         ->with(1)
-        ->willReturn($contactGroup);
+        ->willReturn($this->contactGroup);
+
+    $this->contactTemplateRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with(1)
+        ->willReturn($this->contactTemplate);
 
     $this->presenter
         ->expects($this->once())
@@ -97,7 +99,8 @@ it('should present a NoContentResponse when the use case is executed correctly',
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
         $this->accessGroupRepository,
-        $this->dataStorageEngine
+        $this->dataStorageEngine,
+        $this->providerFactory
     );
     $useCase($this->presenter, $request);
 });
@@ -121,22 +124,27 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
+    $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
-
-    $contactGroup = new ContactGroup(1, 'contact_group');
 
     $this->contactGroupRepository
         ->expects($this->once())
         ->method('find')
         ->with(1)
-        ->willReturn($contactGroup);
+        ->willReturn($this->contactGroup);
+
+    $this->contactTemplateRepository
+        ->expects($this->once())
+        ->method('find')
+        ->with(1)
+        ->willReturn($this->contactTemplate);
 
     $this->presenter
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new ErrorResponse(
-            AssertionException::ipOrDomain('abcd_.@', 'OpenIdConfiguration::trustedClientAddresses')->getMessage()
+            AssertionException::ipOrDomain('abcd_.@', 'OpenIdCustomConfiguration::trustedClientAddresses')->getMessage()
         ));
 
     $useCase = new UpdateOpenIdConfiguration(
@@ -144,7 +152,8 @@ it('should present an ErrorResponse when an error occured during the use case ex
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
         $this->accessGroupRepository,
-        $this->dataStorageEngine
+        $this->dataStorageEngine,
+        $this->providerFactory
     );
 
     $useCase($this->presenter, $request);
@@ -156,7 +165,7 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->isForced = true;
     $request->trustedClientAddresses = [];
     $request->blacklistClientAddresses = [];
-    $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
+    $request->baseUrl = 'http://127.0.0.1/auth/openid-connect2';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
     $request->introspectionTokenEndpoint = '/introspect';
@@ -198,7 +207,8 @@ it('should present an Error Response when auto import is enable and mandatory pa
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
         $this->accessGroupRepository,
-        $this->dataStorageEngine
+        $this->dataStorageEngine,
+        $this->providerFactory
     );
 
     $useCase($this->presenter, $request);
@@ -247,7 +257,8 @@ it('should present an Error Response when auto import is enable and the contact 
         $this->contactTemplateRepository,
         $this->contactGroupRepository,
         $this->accessGroupRepository,
-        $this->dataStorageEngine
+        $this->dataStorageEngine,
+        $this->providerFactory
     );
 
     $useCase($this->presenter, $request);

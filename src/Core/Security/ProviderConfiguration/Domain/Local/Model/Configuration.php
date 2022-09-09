@@ -23,135 +23,17 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Domain\Local\Model;
 
-class Configuration
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+
+class Configuration extends \Core\Security\ProviderConfiguration\Domain\Model\Configuration implements
+    ProviderConfigurationInterface
 {
     /**
-     * @var integer
+     * @return CustomConfiguration
      */
-    private int $id;
-
-    /**
-     * @var string
-     */
-    private string $name;
-
-    /**
-     * @var string
-     */
-    private string $type;
-
-    /**
-     * @var boolean
-     */
-    private bool $isActive;
-
-    /**
-     * @var boolean
-     */
-    private bool $isForced;
-
-    /**
-     * @param SecurityPolicy $securityPolicy
-     */
-    public function __construct(private SecurityPolicy $securityPolicy)
+    public function getCustomConfiguration(): CustomConfiguration
     {
-    }
-
-    /**
-     * @return SecurityPolicy
-     */
-    public function getSecurityPolicy(): SecurityPolicy
-    {
-        return $this->securityPolicy;
-    }
-
-    /**
-     * @param integer $id
-     * @return static
-     */
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $name
-     * @return static
-     */
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $type
-     * @return static
-     */
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param boolean $isActive
-     * @return static
-     */
-    public function setActive(bool $isActive): static
-    {
-        $this->isActive = $isActive;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isActive(): bool
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * @param boolean $isForced
-     * @return static
-     */
-    public function setForced(bool $isForced): static
-    {
-        $this->isForced = $isForced;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isForced(): bool
-    {
-        return $this->isForced;
+        /** @phpstan-ignore-next-line */
+        return $this->customConfiguration;
     }
 }

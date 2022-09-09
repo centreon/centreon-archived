@@ -61,7 +61,8 @@ class UpdateConfigurationController extends AbstractController
     private function createUpdateConfigurationRequest(
         Request $request,
     ): UpdateConfigurationRequest {
-        $requestData = json_decode((string) $request->getContent(), true);
+        $jsonBody = (string) $request->getContent();
+        $requestData = json_decode($jsonBody, true);
         $passwordPolicy = $requestData['password_security_policy'];
         $updateRequest = new UpdateConfigurationRequest();
         $updateRequest->passwordMinimumLength = $passwordPolicy['password_min_length'];

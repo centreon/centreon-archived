@@ -24,25 +24,24 @@ declare(strict_types=1);
 namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration;
 
 use Assert\AssertionFailedException;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
-use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Contact\Domain\Model\ContactGroup;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Application\OpenId\Builder\ConfigurationBuilder;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{
-    UpdateOpenIdConfigurationErrorResponse
-};
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Contact\Domain\Model\ContactGroup;
+use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class UpdateOpenIdConfiguration
 {
@@ -54,13 +53,15 @@ class UpdateOpenIdConfiguration
      * @param ReadContactGroupRepositoryInterface $contactGroupRepository
      * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
      * @param DataStorageEngineInterface $dataStorageEngine
+     * @param ProviderAuthenticationFactoryInterface $providerAuthenticationFactory
      */
     public function __construct(
         private WriteOpenIdConfigurationRepositoryInterface $repository,
         private ReadContactTemplateRepositoryInterface $contactTemplateRepository,
         private ReadContactGroupRepositoryInterface $contactGroupRepository,
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        private DataStorageEngineInterface $dataStorageEngine
+        private DataStorageEngineInterface $dataStorageEngine,
+        private ProviderAuthenticationFactoryInterface $providerAuthenticationFactory
     ) {
     }
 
@@ -72,29 +73,35 @@ class UpdateOpenIdConfiguration
         UpdateOpenIdConfigurationPresenterInterface $presenter,
         UpdateOpenIdConfigurationRequest $request
     ): void {
-        $this->info('Updating OpenID Configuration');
+
+        $this->info('Updating OpenID Provider');
         try {
-            $contactTemplate = $this->getContactTemplateOrFail($request->contactTemplate);
-            $contactGroup = $request->contactGroupId !== null
+            $provider = $this->providerAuthenticationFactory->create(Provider::OPENID);
+            $configuration = $provider->getConfiguration();
+            $configuration->update($request->isActive, $request->isForced);
+            $requestArray = $request->toArray();
+
+            $requestArray['contact_template'] = $request->contactTemplate &&
+            array_key_exists('id', $request->contactTemplate) !== null
+                ? $this->getContactTemplateOrFail($request->contactTemplate)
+                : null;
+            $requestArray['contact_group'] = $request->contactGroupId !== null
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
-            $authorizationRules = $this->createAuthorizationRules($request->authorizationRules);
-            $configuration = ConfigurationBuilder::create(
-                $request,
-                $contactTemplate,
-                $contactGroup,
-                $authorizationRules
-            );
+            $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
+            $requestArray["is_active"] = $request->isActive;
+
+            $configuration->setCustomConfiguration(new CustomConfiguration($requestArray));
             $this->updateConfiguration($configuration);
         } catch (AssertionException | AssertionFailedException | OpenIdConfigurationException $ex) {
             $this->error(
-                'Unable to create OpenID Configuration because one or several parameters are invalid',
+                'Unable to create OpenID Provider because one or several parameters are invalid',
                 ['trace' => $ex->getTraceAsString()]
             );
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         } catch (\Throwable $ex) {
-            $this->error('Error during Opend ID Configuration Update', ['trace' => $ex->getTraceAsString()]);
+            $this->error('Error during Opend ID Provider Update', ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new UpdateOpenIdConfigurationErrorResponse());
             return;
         }
@@ -134,7 +141,7 @@ class UpdateOpenIdConfiguration
     {
         $this->info('Getting Contact Group');
         if (($contactGroup = $this->contactGroupRepository->find($contactGroupId)) === null) {
-            $this->error('An existent contact group is mandatory for OpenID Configuration');
+            $this->error('An existing contact group is mandatory for OpenID Provider');
             throw OpenIdConfigurationException::contactGroupNotFound(
                 $contactGroupId
             );
@@ -227,7 +234,7 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Update OpenId Configuration
+     * Update OpenId Provider
      *
      * @param Configuration $configuration
      * @throws \Throwable
@@ -236,22 +243,16 @@ class UpdateOpenIdConfiguration
     {
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
         try {
-            if (! $isAlreadyInTransaction) {
+            if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->startTransaction();
             }
-            $this->info('Updating OpenID Configuration');
+            $this->info('Updating OpenID Provider');
             $this->repository->updateConfiguration($configuration);
-            if (! empty($configuration->getAuthorizationRules())) {
-                $this->info('Removing existent Authorization Rules');
-                $this->repository->deleteAuthorizationRules();
-                $this->info('Inserting new Authorization Rules');
-                $this->repository->insertAuthorizationRules($configuration->getAuthorizationRules());
-            }
-            if (! $isAlreadyInTransaction) {
+            if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->commitTransaction();
             }
         } catch (\Throwable $ex) {
-            if (! $isAlreadyInTransaction) {
+            if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
                 throw $ex;
             }

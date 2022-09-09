@@ -23,15 +23,16 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\OpenId\Builder;
 
-use Assert\InvalidArgumentException;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\ProviderConfiguration\Infrastructure\OpenId\Builder\DbConfigurationBuilder;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 beforeEach(function () {
     $this->customConfiguration = [
+        'is_active' => true,
         'client_id' => 'clientid',
         'client_secret' => 'clientsecret',
         'base_url' => 'http://127.0.0.1/openid',
@@ -40,7 +41,7 @@ beforeEach(function () {
         'token_endpoint' => '/token',
         'introspection_token_endpoint' => '/introspect',
         'userinfo_endpoint' => '/userinfo',
-        'contact_template' => new ContactTemplate(1, 'contact_template'),
+        'contact_template_id' => 1,
         'email_bind_attribute' => 'email',
         'fullname_bind_attribute' => 'name',
         'trusted_client_addresses' => [],
@@ -50,7 +51,7 @@ beforeEach(function () {
         'login_claim' => 'preferred_username',
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
-        'contact_group' => new ContactGroup(1, 'contact_group'),
+        'contact_group' => 1,
         'claim_name' => 'groups',
         'authorization_rules' => [],
     ];
@@ -58,8 +59,16 @@ beforeEach(function () {
 
 it('should throw an exception when a mandatory parameters is empty and configuration is active', function () {
     $this->customConfiguration['base_url'] = null;
-    DbConfigurationBuilder::create(['id' => 2, 'is_active' => true, 'is_forced' => true], $this->customConfiguration);
-})->expectException(InvalidArgumentException::class);
+    $configuration = new Configuration(
+        2,
+        strtolower(Provider::OPENID),
+        Provider::OPENID,
+        json_encode($this->customConfiguration),
+        true,
+        false
+    );
+    $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
+})->throws(OpenIdConfigurationException::class, "Missing mandatory parameters: base_url");
 
 it(
     'should throw an exception when both userinformation and introspection '
@@ -67,10 +76,15 @@ it(
     function () {
         $this->customConfiguration['userinfo_endpoint'] = null;
         $this->customConfiguration['introspection_token_endpoint'] = null;
-        DbConfigurationBuilder::create(
-            ['id' => 2, 'is_active' => true, 'is_forced' => true],
-            $this->customConfiguration
+        $configuration = new Configuration(
+            2,
+            strtolower(Provider::OPENID),
+            Provider::OPENID,
+            json_encode($this->customConfiguration),
+            true,
+            false
         );
+        $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
     }
 )->throws(
     OpenIdConfigurationException::class,
@@ -81,12 +95,17 @@ it(
     'should throw an exception when the configuration is active, autoimport enable but with missing parameters',
     function () {
         $this->customConfiguration['contact_template'] = null;
-        $this->customConfiguration['email_bind_attribute'] =  null;
+        $this->customConfiguration['email_bind_attribute'] = null;
         $this->customConfiguration['fullname_bind_attribute'] = null;
-        DbConfigurationBuilder::create(
-            ['id' => 2, 'is_active' => true, 'is_forced' => true],
-            $this->customConfiguration
+        $configuration = new Configuration(
+            2,
+            strtolower(Provider::OPENID),
+            Provider::OPENID,
+            json_encode($this->customConfiguration),
+            true,
+            false
         );
+        $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
     }
 )->throws(
     OpenIdConfigurationException::class,
@@ -95,10 +114,20 @@ it(
     )->getMessage()
 );
 
-it('should return a Configuration when all mandatory parameters are present', function () {
-    $configuration = DbConfigurationBuilder::create(
-        ['id' => 2, 'is_active' => true, 'is_forced' => true],
-        $this->customConfiguration
+it('should return a Provider when all mandatory parameters are present', function () {
+
+    // Note: contact_template and contact_group are overridden
+    $this->customConfiguration['contact_template'] = new ContactTemplate(1, 'contact_template');
+    $this->customConfiguration['contact_group'] = new ContactGroup(1, 'contact_group');
+
+    $configuration = new Configuration(
+        2,
+        strtolower(Provider::OPENID),
+        Provider::OPENID,
+        json_encode($this->customConfiguration),
+        true,
+        false
     );
-    expect($configuration)->toBeInstanceOf(Configuration::class);
+    $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
+    expect($configuration->getCustomConfiguration())->toBeInstanceOf(CustomConfiguration::class);
 });

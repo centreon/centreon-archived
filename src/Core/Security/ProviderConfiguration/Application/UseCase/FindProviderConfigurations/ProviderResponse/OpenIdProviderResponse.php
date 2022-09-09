@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse;
 
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class OpenIdProviderResponse implements ProviderResponseInterface
 {
@@ -66,22 +68,26 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public function getType(): string
     {
-        return Configuration::NAME;
+        return Provider::OPENID;
     }
 
     /**
+     * @param Configuration $configuration
      * @inheritDoc
      */
     public static function create(mixed $configuration): self
     {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $configuration->getCustomConfiguration();
+
         $response = new self();
         $response->isActive = $configuration->isActive();
         $response->isForced = $configuration->isForced();
-        $response->baseUrl = $configuration->getBaseUrl();
-        $response->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
-        $response->clientId = $configuration->getClientId();
+        $response->baseUrl = $customConfiguration->getBaseUrl();
+        $response->authorizationEndpoint = $customConfiguration->getAuthorizationEndpoint();
+        $response->clientId = $customConfiguration->getClientId();
         $response->id = $configuration->getId();
-        $response->connectionScopes = $configuration->getConnectionScopes();
+        $response->connectionScopes = $customConfiguration->getConnectionScopes();
 
         return $response;
     }

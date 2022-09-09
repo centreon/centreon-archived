@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\User\Application\UseCase\RenewPassword;
 
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use PHPUnit\Framework\TestCase;
 use Core\Security\User\Domain\Model\User;
 use Core\Security\User\Domain\Model\UserPassword;
@@ -36,7 +38,7 @@ use Core\Security\User\Application\Repository\ReadUserRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\User\Application\Repository\WriteUserRepositoryInterface;
 use Core\Security\User\Application\UseCase\RenewPassword\RenewPasswordPresenterInterface;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPasswordTest extends TestCase
 {
@@ -151,7 +153,8 @@ class RenewPasswordTest extends TestCase
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
 
-        $configuration = new Configuration($securityPolicy);
+        $configuration = new Configuration(1, strtolower(Provider::LOCAL), Provider::LOCAL, '{}', true, true);
+        $configuration->setCustomConfiguration(new CustomConfiguration($securityPolicy));
 
         $this->readRepository
             ->expects($this->once())
@@ -164,7 +167,7 @@ class RenewPasswordTest extends TestCase
 
         $this->readConfigurationRepository
             ->expects($this->once())
-            ->method('findConfiguration')
+            ->method('getConfigurationByName')
             ->willReturn($configuration);
 
         $this->presenter

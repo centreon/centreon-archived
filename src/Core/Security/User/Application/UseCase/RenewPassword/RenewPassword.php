@@ -26,11 +26,13 @@ namespace Core\Security\User\Application\UseCase\RenewPassword;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\User\Domain\Model\UserPasswordFactory;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Security\User\Application\Repository\ReadUserRepositoryInterface;
 use Core\Security\User\Application\Repository\WriteUserRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPassword
 {
@@ -75,18 +77,13 @@ class RenewPassword
         }
 
 
-        $providerConfiguration = $this->readConfigurationRepository->findConfiguration();
-        if ($providerConfiguration === null) {
-            $this->error('No local configuration could be found');
-            $presenter->setResponseStatus(new NotFoundResponse('Configuration'));
-            return;
-        }
-
+        /** @var Configuration $providerConfiguration */
+        $providerConfiguration = $this->readConfigurationRepository->getConfigurationByName(Provider::LOCAL);
         $this->info('Validate password against security policy');
         $newPassword = UserPasswordFactory::create(
             $renewPasswordRequest->newPassword,
             $user,
-            $providerConfiguration->getSecurityPolicy()
+            $providerConfiguration->getCustomConfiguration()->getSecurityPolicy()
         );
         $user->setPassword($newPassword);
 

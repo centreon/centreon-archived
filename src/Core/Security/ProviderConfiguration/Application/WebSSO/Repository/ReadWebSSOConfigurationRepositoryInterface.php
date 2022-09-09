@@ -28,7 +28,7 @@ use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\WebSSOConfiguration;
 interface ReadWebSSOConfigurationRepositoryInterface
 {
     /**
-     * Find WebSSO Configuration.
+     * Find WebSSO Provider.
      *
      * @return WebSSOConfiguration|null
      */

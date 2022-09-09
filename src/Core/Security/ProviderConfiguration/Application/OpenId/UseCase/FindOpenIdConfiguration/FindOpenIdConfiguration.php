@@ -25,18 +25,19 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpe
 
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class FindOpenIdConfiguration
 {
     use LoggerTrait;
 
     /**
-     * @param ReadOpenIdConfigurationRepositoryInterface $repository
+     * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
-    public function __construct(private ReadOpenIdConfigurationRepositoryInterface $repository)
+    public function __construct(private ProviderAuthenticationFactoryInterface $providerFactory)
     {
     }
 
@@ -46,15 +47,11 @@ class FindOpenIdConfiguration
     public function __invoke(FindOpenIdConfigurationPresenterInterface $presenter): void
     {
         try {
-            $configuration = $this->repository->findConfiguration();
+            $provider = $this->providerFactory->create(Provider::OPENID);
+            $configuration = $provider->getConfiguration();
         } catch (\Throwable $ex) {
             $this->error($ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
-            return;
-        }
-
-        if ($configuration === null) {
-            $presenter->setResponseStatus(new NotFoundResponse('OpenIdConfiguration'));
             return;
         }
 
@@ -62,41 +59,46 @@ class FindOpenIdConfiguration
     }
 
     /**
-     * @param Configuration $configuration
+     * @param Configuration $provider
      * @return FindOpenIdConfigurationResponse
      */
-    private function createResponse(Configuration $configuration): FindOpenIdConfigurationResponse
+    private function createResponse(Configuration $provider): FindOpenIdConfigurationResponse
     {
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $provider->getCustomConfiguration();
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
-        $findOpenIdConfigurationResponse->isActive = $configuration->isActive();
-        $findOpenIdConfigurationResponse->isForced = $configuration->isForced();
-        $findOpenIdConfigurationResponse->trustedClientAddresses = $configuration->getTrustedClientAddresses();
-        $findOpenIdConfigurationResponse->blacklistClientAddresses = $configuration->getBlacklistClientAddresses();
-        $findOpenIdConfigurationResponse->baseUrl = $configuration->getBaseUrl();
-        $findOpenIdConfigurationResponse->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
-        $findOpenIdConfigurationResponse->tokenEndpoint = $configuration->getTokenEndpoint();
-        $findOpenIdConfigurationResponse->introspectionTokenEndpoint = $configuration->getIntrospectionTokenEndpoint();
-        $findOpenIdConfigurationResponse->userInformationEndpoint = $configuration->getUserInformationEndpoint();
-        $findOpenIdConfigurationResponse->endSessionEndpoint = $configuration->getEndSessionEndpoint();
-        $findOpenIdConfigurationResponse->connectionScopes = $configuration->getConnectionScopes();
-        $findOpenIdConfigurationResponse->loginClaim = $configuration->getLoginClaim();
-        $findOpenIdConfigurationResponse->clientId = $configuration->getClientId();
-        $findOpenIdConfigurationResponse->clientSecret = $configuration->getClientSecret();
-        $findOpenIdConfigurationResponse->authenticationType = $configuration->getAuthenticationType();
-        $findOpenIdConfigurationResponse->verifyPeer = $configuration->verifyPeer();
-        $findOpenIdConfigurationResponse->isAutoImportEnabled = $configuration->isAutoImportEnabled();
-        $findOpenIdConfigurationResponse->contactTemplate = $configuration->getContactTemplate() === null
+        $findOpenIdConfigurationResponse->isActive = $provider->isActive();
+        $findOpenIdConfigurationResponse->isForced = $provider->isForced();
+        $findOpenIdConfigurationResponse->trustedClientAddresses = $customConfiguration->getTrustedClientAddresses();
+        $findOpenIdConfigurationResponse->blacklistClientAddresses =
+            $customConfiguration->getBlacklistClientAddresses();
+        $findOpenIdConfigurationResponse->baseUrl = $customConfiguration->getBaseUrl();
+        $findOpenIdConfigurationResponse->authorizationEndpoint = $customConfiguration->getAuthorizationEndpoint();
+        $findOpenIdConfigurationResponse->tokenEndpoint = $customConfiguration->getTokenEndpoint();
+        $findOpenIdConfigurationResponse->introspectionTokenEndpoint =
+            $customConfiguration->getIntrospectionTokenEndpoint();
+        $findOpenIdConfigurationResponse->userInformationEndpoint = $customConfiguration->getUserInformationEndpoint();
+        $findOpenIdConfigurationResponse->endSessionEndpoint = $customConfiguration->getEndSessionEndpoint();
+        $findOpenIdConfigurationResponse->connectionScopes = $customConfiguration->getConnectionScopes();
+        $findOpenIdConfigurationResponse->loginClaim = $customConfiguration->getLoginClaim();
+        $findOpenIdConfigurationResponse->clientId = $customConfiguration->getClientId();
+        $findOpenIdConfigurationResponse->clientSecret = $customConfiguration->getClientSecret();
+        $findOpenIdConfigurationResponse->authenticationType = $customConfiguration->getAuthenticationType();
+        $findOpenIdConfigurationResponse->verifyPeer = $customConfiguration->verifyPeer();
+        $findOpenIdConfigurationResponse->isAutoImportEnabled = $customConfiguration->isAutoImportEnabled();
+        $findOpenIdConfigurationResponse->contactTemplate = $customConfiguration->getContactTemplate() === null
             ? null
-            : $findOpenIdConfigurationResponse::contactTemplateToArray($configuration->getContactTemplate());
-        $findOpenIdConfigurationResponse->emailBindAttribute = $configuration->getEmailBindAttribute();
-        $findOpenIdConfigurationResponse->userNameBindAttribute = $configuration->getUserNameBindAttribute();
-        $findOpenIdConfigurationResponse->claimName = $configuration->getClaimName();
-        $findOpenIdConfigurationResponse->contactGroup = $configuration->getContactGroup() === null
+            : $findOpenIdConfigurationResponse::contactTemplateToArray($customConfiguration->getContactTemplate());
+        $findOpenIdConfigurationResponse->emailBindAttribute = $customConfiguration->getEmailBindAttribute();
+        $findOpenIdConfigurationResponse->userNameBindAttribute = $customConfiguration->getUserNameBindAttribute();
+        $findOpenIdConfigurationResponse->claimName = $customConfiguration->getClaimName();
+        $findOpenIdConfigurationResponse->contactGroup = $customConfiguration->getContactGroup() === null
             ? null
-            : $findOpenIdConfigurationResponse::contactGroupToArray($configuration->getContactGroup());
-        $findOpenIdConfigurationResponse->authorizationRules = empty($configuration->getAuthorizationRules())
-            ? []
-            : $findOpenIdConfigurationResponse::authorizationRulesToArray($configuration->getAuthorizationRules());
+            : $findOpenIdConfigurationResponse::contactGroupToArray($customConfiguration->getContactGroup());
+        $findOpenIdConfigurationResponse->authorizationRules =
+            empty($customConfiguration->getAuthorizationRules()) ? []
+            :
+            $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
 
         return $findOpenIdConfigurationResponse;
     }

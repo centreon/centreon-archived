@@ -291,18 +291,8 @@ services:
         Core\Platform\Infrastructure\Validator\RequirementValidators\DatabaseRequirementValidatorInterface:
             tags: ['platform.requirement.database.validators']
 
-<<<<<<< HEAD
-    Core\Resources\Application\Repository\ReadResourceRepositoryInterface:
-        class: Core\Resources\Infrastructure\Repository\DbReadResourceRepository
-        arguments:
-            $sqlRequestTranslator: '@sqlRequestTranslator'
-
     Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
-=======
-    Core\Security\Application\UseCase\FindProviderConfigurations\FindProviderConfigurations:
->>>>>>> develop
         arguments:
-          - !tagged_iterator 'authentication.provider.repositories'
           - !tagged_iterator 'authentication.provider.responses'
 
     Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:

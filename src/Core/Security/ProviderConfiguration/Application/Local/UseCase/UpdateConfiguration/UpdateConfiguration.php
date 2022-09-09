@@ -27,10 +27,13 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\ConfigurationFactory;
-use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\ProviderConfiguration\Application\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 
 class UpdateConfiguration
 {
@@ -39,10 +42,12 @@ class UpdateConfiguration
     /**
      * @param WriteConfigurationRepositoryInterface $writeConfigurationRepository
      * @param ReadUserRepositoryInterface $readUserRepository
+     * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
     public function __construct(
         private WriteConfigurationRepositoryInterface $writeConfigurationRepository,
         private ReadUserRepositoryInterface $readUserRepository,
+        private ProviderAuthenticationFactoryInterface $providerFactory
     ) {
     }
 
@@ -57,19 +62,36 @@ class UpdateConfiguration
         $this->info('Updating Security Policy');
 
         try {
-            $configuration = ConfigurationFactory::createFromRequest($request);
+            $provider = $this->providerFactory->create(Provider::LOCAL);
+            /** @var Configuration $configuration */
+            $configuration = $provider->getConfiguration();
+
+            $securityPolicy = new SecurityPolicy(
+                $request->passwordMinimumLength,
+                $request->hasUppercase,
+                $request->hasLowercase,
+                $request->hasNumber,
+                $request->hasSpecialCharacter,
+                $request->canReusePasswords,
+                $request->attempts,
+                $request->blockingDuration,
+                $request->passwordExpirationDelay,
+                $request->passwordExpirationExcludedUserAliases,
+                $request->delayBeforeNewPassword
+            );
+
+            $excludedUserIds = $this->readUserRepository->findUserIdsByAliases(
+                $request->passwordExpirationExcludedUserAliases
+            );
+
+            $configuration->setCustomConfiguration(new CustomConfiguration($securityPolicy));
+            $this->writeConfigurationRepository->updateConfiguration($configuration, $excludedUserIds);
+
+            $presenter->setResponseStatus(new NoContentResponse());
         } catch (AssertionException $ex) {
-            $this->error('Unable to create Security Policy because one or many parameters are invalid');
+            $this->error('Unable to create Security Policy because one or several parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
-
-        $excludedUserIds = $this->readUserRepository->findUserIdsByAliases(
-            $request->passwordExpirationExcludedUserAliases
-        );
-
-        $this->writeConfigurationRepository->updateConfiguration($configuration, $excludedUserIds);
-
-        $presenter->setResponseStatus(new NoContentResponse());
     }
 }

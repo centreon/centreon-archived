@@ -28,7 +28,7 @@ use Centreon\Domain\Monitoring\ResourceService;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 
 it('find resources and build uuids', function () {
     $hostResource = (new Resource())

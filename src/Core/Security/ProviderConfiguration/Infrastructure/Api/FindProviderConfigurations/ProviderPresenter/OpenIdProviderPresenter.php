@@ -22,13 +22,10 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter;
 
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse\{
     OpenIdProviderResponse
-};
-use Core\Security\ProviderConfiguration\Infrastructure\Api\FindProviderConfigurations\ProviderPresenter\{
-    ProviderPresenterInterface
 };
 
 class OpenIdProviderPresenter implements ProviderPresenterInterface
@@ -55,15 +52,15 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
     public function present(mixed $response): array
     {
         $redirectUri = $this->router->generate(
-            'centreon_security_authentication_openid_login',
+            'centreon_security_authentication_login_openid',
             [],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
         return [
             'id' => $response->id,
-            'type' => Configuration::TYPE,
-            'name' => Configuration::NAME,
+            'type' => CustomConfiguration::TYPE,
+            'name' => CustomConfiguration::NAME,
             'authentication_uri' => $response->baseUrl . '/'
                 . ltrim($response->authorizationEndpoint ?? '', '/')
                 . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri='

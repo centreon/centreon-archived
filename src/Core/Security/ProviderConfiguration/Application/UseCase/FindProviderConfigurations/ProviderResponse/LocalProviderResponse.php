@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\ProviderResponse;
 
-use Security\Domain\Authentication\Model\LocalProvider;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 
 class LocalProviderResponse implements ProviderResponseInterface
 {
@@ -56,7 +56,7 @@ class LocalProviderResponse implements ProviderResponseInterface
      */
     public function getType(): string
     {
-        return LocalProvider::NAME;
+        return Provider::LOCAL;
     }
 
     /**

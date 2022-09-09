@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations;
 
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigurations\{
     FindProviderConfigurations,
     FindProviderConfigurationsPresenterInterface,
@@ -29,28 +30,27 @@ use Core\Security\ProviderConfiguration\Application\UseCase\FindProviderConfigur
 };
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadProviderConfigurationsRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
 beforeEach(function () {
     $this->readProviderConfigurationRepository = $this->createMock(
         ReadProviderConfigurationsRepositoryInterface::class
     );
     $this->providerResponse = new LocalProviderResponse();
-
     $this->presenter = $this->createMock(FindProviderConfigurationsPresenterInterface::class);
-
     $this->localConfiguration = $this->createMock(Configuration::class);
+    $this->readConfigurationRepository = $this->createMock(ReadConfigurationRepositoryInterface::class);
 
     $this->useCase = new FindProviderConfigurations(
-        new \ArrayObject([$this->readProviderConfigurationRepository]),
         new \ArrayObject([$this->providerResponse]),
+        $this->readConfigurationRepository
     );
 });
 
 it('returns error when there is an issue during configurations search', function () {
     $errorMessage = 'error during configurations search';
 
-    $this->readProviderConfigurationRepository
+    $this->readConfigurationRepository
         ->expects($this->once())
         ->method('findConfigurations')
         ->willThrowException(new \Exception($errorMessage));
@@ -64,7 +64,7 @@ it('returns error when there is an issue during configurations search', function
 });
 
 it('presents an empty array when configurations are not found', function () {
-    $this->readProviderConfigurationRepository
+    $this->readConfigurationRepository
         ->expects($this->once())
         ->method('findConfigurations')
         ->willReturn([]);
@@ -78,7 +78,7 @@ it('presents an empty array when configurations are not found', function () {
 });
 
 it('presents found configurations', function () {
-    $this->readProviderConfigurationRepository
+    $this->readConfigurationRepository
         ->expects($this->once())
         ->method('findConfigurations')
         ->willReturn([$this->localConfiguration]);
