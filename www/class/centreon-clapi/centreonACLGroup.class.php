@@ -36,8 +36,6 @@ require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Menu.ph
 require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Action.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Contact/Contact.php";
 require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Contact/Group.php";
-require_once __DIR__ . "/Repository/AclGroupRepository.php";
-require_once __DIR__ . "/Repository/SessionRepository.php";
 
 /**
  * Class for managing ACL groups
