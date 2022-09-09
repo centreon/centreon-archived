@@ -60,7 +60,7 @@ function testServiceCategorieExistence($name = null)
 {
     global $pearDB, $form;
 
-    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $name = filter_var($name, FILTER_SANITIZE_SPECIAL_CHARS);
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('sc_id');
@@ -105,14 +105,14 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                 $value2 = is_int($value2) ? (string) $value2 : $value2;
                 switch ($key2) {
                     case 'sc_name':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
                         $sc_name = $value2 = $value2 . "_" . $i;
                         $bindParams[':sc_name'] = [
                             \PDO::PARAM_STR => $value2
                         ];
                         break;
                     case 'sc_description':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
                         $bindParams[':sc_description'] = [
                             \PDO::PARAM_STR => $value2
                         ];
@@ -206,10 +206,10 @@ function disableServiceCategorieInDB(?int $sc_id = null, $sc_arr = [])
 function insertServiceCategorieInDB()
 {
     global $pearDB, $centreon;
-    $scName = filter_var($_POST['sc_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $scName = filter_var($_POST['sc_name'], FILTER_SANITIZE_SPECIAL_CHARS);
     $scDescription = filter_var(
         $_POST['sc_description'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+        FILTER_SANITIZE_SPECIAL_CHARS
     );
     $scSeverityLevel = filter_var($_POST['sc_severity_level'], FILTER_VALIDATE_INT);
     $scType = filter_var($_POST['sc_type'] ?? false, FILTER_VALIDATE_INT);
@@ -262,10 +262,10 @@ function updateServiceCategorieInDB()
     global $pearDB, $centreon;
 
     $scId = filter_var($_POST['sc_id'], FILTER_VALIDATE_INT);
-    $scName = filter_var($_POST['sc_name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $scName = filter_var($_POST['sc_name'], FILTER_SANITIZE_SPECIAL_CHARS);
     $scDescription = filter_var(
         $_POST['sc_description'],
-        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+        FILTER_SANITIZE_SPECIAL_CHARS
     );
     $scSeverityLevel = filter_var($_POST['sc_severity_level'], FILTER_VALIDATE_INT);
     $scType = filter_var($_POST['sc_type'] ?? false, FILTER_VALIDATE_INT);

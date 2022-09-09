@@ -1170,7 +1170,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_hostNotifOpts':
                 $inputValue = filter_var(
                     implode(",", array_keys($inputValue)),
-                    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                    FILTER_SANITIZE_SPECIAL_CHARS
                 );
                 if (empty($inputValue)) {
                     $bindParams[':contact_host_notification_options'] = [\PDO::PARAM_STR => null];
@@ -1181,7 +1181,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_svNotifOpts':
                 $inputValue = filter_var(
                     implode(",", array_keys($inputValue)),
-                    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                    FILTER_SANITIZE_SPECIAL_CHARS
                 );
                 if (empty($inputValue)) {
                     $bindParams[':contact_service_notification_options'] = [\PDO::PARAM_STR => null];
@@ -1243,7 +1243,7 @@ function sanitizeFormContactParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $inputValue = filter_var(
                         $inputValue,
-                        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                        FILTER_SANITIZE_SPECIAL_CHARS
                     );
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'browser'];
@@ -1256,7 +1256,7 @@ function sanitizeFormContactParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $inputValue = filter_var(
                         $inputValue,
-                        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                        FILTER_SANITIZE_SPECIAL_CHARS
                     );
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'local'];
@@ -1270,7 +1270,7 @@ function sanitizeFormContactParameters(array $ret): array
                 if (
                     $inputValue = filter_var(
                         $inputValue ?? "",
-                        FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                        FILTER_SANITIZE_SPECIAL_CHARS,
                     )
                 ) {
                     if (!empty($inputValue)) {
@@ -1294,7 +1294,7 @@ function sanitizeFormContactParameters(array $ret): array
                 if (
                     $inputValue = filter_var(
                         $inputValue ?? "",
-                        FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                        FILTER_SANITIZE_SPECIAL_CHARS
                     )
                 ) {
                     if (!empty($inputValue)) {

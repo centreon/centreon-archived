@@ -50,7 +50,7 @@ if (!$oreon->user->admin) {
 
 $search = filter_var(
     $_POST['searchHGD'] ?? $_GET['searchHGD'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchHGD']) || isset($_GET['searchHGD'])) {

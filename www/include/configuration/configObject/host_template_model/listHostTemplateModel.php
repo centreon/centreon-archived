@@ -56,7 +56,7 @@ $DBRESULT->closeCursor();
 
 $search = filter_var(
     $_POST['searchHT'] ?? $_GET['searchHT'] ?? $centreon->historySearch[$url]['search'] ?? '',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 
 $displayLocked = filter_var(

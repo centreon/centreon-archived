@@ -73,7 +73,7 @@ if (preg_match('/^title_(\d+)$/', $_POST['elementId'], $matches)) {
 $newName = filter_input(
     INPUT_POST,
     'newName',
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 if ($newName === null) {
     echo 'missing newName argument';

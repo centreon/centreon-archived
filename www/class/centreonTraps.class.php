@@ -96,9 +96,9 @@ class CentreonTraps
                     if (is_null($value) || $value == "" || filter_var($key, FILTER_VALIDATE_INT) === false) {
                         continue;
                     }
-                    $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                     $regexp[$key] =
-                        filter_var($regexp[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS)
+                        filter_var($regexp[$key], FILTER_SANITIZE_SPECIAL_CHARS)
                         ? $regexp[$key]
                         : "";
                     $status[$key] = filter_var($status[$key], FILTER_VALIDATE_INT) ? (int) $status[$key] : 0;

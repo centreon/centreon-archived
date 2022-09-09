@@ -216,7 +216,7 @@ class CentreonUtils
             $initForm = $form->getElement('initialValues');
             $initForm = filter_var(
                 $initForm->getValue(),
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                FILTER_SANITIZE_SPECIAL_CHARS
             );
 
             if ($initForm === false) {

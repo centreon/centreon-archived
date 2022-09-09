@@ -202,11 +202,11 @@ class Broker extends AbstractObjectJSON
             //logger
             $object['log']['directory'] = filter_var(
                 $row['log_directory'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                FILTER_SANITIZE_SPECIAL_CHARS
             );
             $object['log']['filename'] = filter_var(
                 $row['log_filename'],
-                FILTER_SANITIZE_FULL_SPECIAL_CHARS
+                FILTER_SANITIZE_SPECIAL_CHARS
             );
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();

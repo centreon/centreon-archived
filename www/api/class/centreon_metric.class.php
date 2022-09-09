@@ -198,7 +198,7 @@ class CentreonMetric extends CentreonWebService
         }
         $nameArg = filter_var(
             $this->arguments['q'] ?? false,
-            FILTER_SANITIZE_FULL_SPECIAL_CHARS
+            FILTER_SANITIZE_SPECIAL_CHARS
         );
         if ($nameArg !== false) {
             $queryValues['name'] = '%' . $nameArg . '%';

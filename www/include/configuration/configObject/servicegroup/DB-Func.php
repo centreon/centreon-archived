@@ -46,7 +46,7 @@ function testServiceGroupExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('sg_id');
     }
-    $sgName = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $sgName = filter_var($name, FILTER_SANITIZE_SPECIAL_CHARS);
 
     $statement = $pearDB->prepare("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = :sg_name");
     $statement->bindValue(':sg_name', $sgName, \PDO::PARAM_STR);
@@ -172,16 +172,16 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
             foreach ($row as $key2 => $value2) {
                 switch ($key2) {
                     case 'sg_name':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
                         $sgName = $value2 = $value2 . "_" . $i;
                         $bindParams[':sg_name'] = [\PDO::PARAM_STR => $value2];
                         break;
                     case 'sg_alias':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
                         $bindParams[':sg_alias'] = [\PDO::PARAM_STR => $value2];
                         break;
                     case 'sg_comment':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
                         $value2
                             ? $bindParams[':sg_comment'] = [\PDO::PARAM_STR => $value2]
                             : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];
@@ -329,15 +329,15 @@ function insertServiceGroup($ret = [])
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'sg_name':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $bindParams[':sg_name'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'sg_alias':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $bindParams[':sg_alias'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'sg_comment':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $value
                     ? $bindParams[':sg_comment'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];
@@ -406,15 +406,15 @@ function updateServiceGroup($sgId, $ret = [])
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'sg_name':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $bindParams[':sg_name'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'sg_alias':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $bindParams[':sg_alias'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'sg_comment':
-                $value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 $value
                     ? $bindParams[':sg_comment'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];

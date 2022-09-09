@@ -81,12 +81,12 @@ $filterParameters = [
             'default' => 1
         ],
     ],
-    'h' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'hg' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'poller' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'svc' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'svcg' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'output' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'h' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'hg' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'poller' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'svc' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'svcg' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'output' => FILTER_SANITIZE_SPECIAL_CHARS,
 ];
 
 $getInputs = filter_input_array(

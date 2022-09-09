@@ -47,7 +47,7 @@ $labels = array(
 
 $searchLdap = filter_var(
     $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 
 $ldapConf = new CentreonLdapAdmin($pearDB);

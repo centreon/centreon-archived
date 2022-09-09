@@ -62,7 +62,7 @@ $mainQueryParameters = [];
 //initializing filters values
 $search = filter_var(
     $_POST["searchH"] ?? $_GET["searchH"] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 $poller = filter_var(
     $_POST["poller"] ?? $_GET["poller"] ?? 0,

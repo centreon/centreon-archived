@@ -44,7 +44,7 @@ include "./include/common/autoNumLimit.php";
 
 $search = filter_var(
     $_POST['searchMS'] ?? $_GET['searchMS'] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 
 if (isset($_POST['searchMS']) || isset($_GET['searchMS'])) {

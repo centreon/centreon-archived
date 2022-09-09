@@ -38,12 +38,12 @@ if (!isset($centreon)) {
 }
 
 $filterParameters = array(
-    'sort_types' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'order' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'num' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'host_search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'sort_type' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'hostgroups' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'sort_types' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'order' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'num' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'host_search' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'sort_type' => FILTER_SANITIZE_SPECIAL_CHARS,
+    'hostgroups' => FILTER_SANITIZE_SPECIAL_CHARS,
     'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
     'reset_filter' => FILTER_SANITIZE_NUMBER_INT
 );

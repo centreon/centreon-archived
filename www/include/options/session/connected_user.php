@@ -48,7 +48,7 @@ require_once "./class/centreonMsg.class.php";
 
 $action = filter_var(
     $_GET["o"] ?? null,
-    FILTER_SANITIZE_FULL_SPECIAL_CHARS
+    FILTER_SANITIZE_SPECIAL_CHARS
 );
 
 $selectedUserId = filter_var(
