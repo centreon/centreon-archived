@@ -304,9 +304,9 @@ class CentreonMeta
         if ($res->rowCount()) {
             $row = $res->fetchRow();
             $serviceId = $row['service_id'];
-            $query = 'UPDATE service SET display_name = :display_name WHERE service_id = :service_id';
-            $statement = $this->db->prepare($query);
             if ($row['display_name'] !== $metaName) {
+                $query = 'UPDATE service SET display_name = :display_name WHERE service_id = :service_id';
+                $statement = $this->db->prepare($query);
                 $statement->bindValue(':display_name', $metaName, \PDO::PARAM_STR);
                 $statement->bindValue(':service_id', (int) $serviceId, \PDO::PARAM_INT);
                 $statement->execute();
