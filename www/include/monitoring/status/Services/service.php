@@ -38,21 +38,63 @@ if (!isset($centreon)) {
 }
 
 $filterParameters = array(
-    'host_search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'output_search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'hg' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'sg' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'monitoring_default_hostgroups' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'monitoring_default_servicegroups' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'hostgroup' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'host_search' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'search' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'output_search' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'hg' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'sg' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'monitoring_default_hostgroups' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'monitoring_default_servicegroups' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'hostgroup' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
     'sort_type' => FILTER_SANITIZE_NUMBER_INT,
-    'host_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'global_sort_type' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'global_sort_order' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'order' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'monitoring_service_status_filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'monitoring_service_status' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'host_name' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'global_sort_type' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'global_sort_order' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'order' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'monitoring_service_status_filter' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'monitoring_service_status' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
     'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
     'reset_filter' => FILTER_SANITIZE_NUMBER_INT
 );

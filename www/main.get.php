@@ -54,11 +54,26 @@ if (function_exists('filter_var')) {
 
 $inputArguments = array(
     'p' => FILTER_SANITIZE_NUMBER_INT,
-    'o' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'min' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'type' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'search' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-    'limit' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+    'o' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'min' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'type' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'search' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
+    'limit' => [
+        'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+        'flags' => FILTER_FLAG_NO_ENCODE_QUOTES
+    ],
     'num' => FILTER_SANITIZE_NUMBER_INT
 );
 $inputGet = filter_input_array(
