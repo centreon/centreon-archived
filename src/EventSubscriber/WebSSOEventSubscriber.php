@@ -58,9 +58,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     use LoggerTrait;
 
     /**
-     * @param ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository
-     * @param ContactRepositoryInterface $contactRepository
-     * @param SessionInterface $session
      * @param AuthenticationServiceInterface $authenticationService
      * @param SessionRepositoryInterface $sessionRepository
      * @param DataStorageEngineInterface $dataStorageEngine
@@ -70,9 +67,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param ProviderAuthenticationFactoryInterface $providerFactory
      */
     public function __construct(
-        private ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository,
-        private ContactRepositoryInterface $contactRepository,
-        private SessionInterface $session,
         private AuthenticationServiceInterface $authenticationService,
         private SessionRepositoryInterface $sessionRepository,
         private DataStorageEngineInterface $dataStorageEngine,

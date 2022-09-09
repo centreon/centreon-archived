@@ -139,7 +139,7 @@ class Local implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
     public function getProviderToken(?string $token = null): NewProviderToken
     {
@@ -147,9 +147,9 @@ class Local implements ProviderAuthenticationInterface
     }
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
-    public function getProviderRefreshToken(): ?ProviderToken
+    public function getProviderRefreshToken(): ?NewProviderToken
     {
         return $this->provider->getProviderRefreshToken($this->session->getId());
     }

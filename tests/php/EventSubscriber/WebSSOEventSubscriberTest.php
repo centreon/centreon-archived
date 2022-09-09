@@ -33,13 +33,11 @@ use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryIn
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
-use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration;
 use EventSubscriber\WebSSOEventSubscriber;
 use InvalidArgumentException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -48,7 +46,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 beforeEach(function () {
-    $this->webSSOReadRepository = $this->createMock(ReadWebSSOConfigurationRepositoryInterface::class);
     $this->contactRepository = $this->createMock(ContactRepositoryInterface::class);
     $this->session = $this->createMock(SessionInterface::class);
     $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -64,9 +61,6 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
 
     $this->subscriber = new WebSSOEventSubscriber(
-        $this->webSSOReadRepository,
-        $this->contactRepository,
-        $this->session,
         $this->authenticationService,
         $this->sessionRepository,
         $this->dataStorageEngine,
