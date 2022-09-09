@@ -150,7 +150,7 @@ it('should do nothing if Web SSO is not active', function () {
     $this->subscriber->loginWebSSOUser($this->event);
 });
 
-it('should throw an exception if the user IP is blacklisted', function () {
+it('should throw an exception if the user's IP is blacklisted', function () {
     $this->request->cookies = new InputBag();
     $this->request->cookies->set('PHPSESSID', null);
     $this->request
@@ -211,7 +211,7 @@ it('should throw an exception if the user IP is blacklisted', function () {
     $this->subscriber->loginWebSSOUser($this->event);
 })->throws(SSOAuthenticationException::class, 'Your IP is blacklisted');
 
-it('should throw an exception if the user IP is not whitelisted', function () {
+it('should throw an exception if the user's IP is not whitelisted', function () {
 
     $this->request->cookies = new InputBag();
     $this->request->cookies->set('PHPSESSID', null);
@@ -342,7 +342,7 @@ it('should throw an exception when login attribute environment variable is not s
     $this->subscriber->loginWebSSOUser($this->event);
 })->throws(\InvalidArgumentException::class, 'Missing Login Attribute');
 
-it('should throw an exception when login matching regexp return an invalid result', function () {
+it('should throw an exception when login matching regexp returns an invalid result', function () {
     $this->request->cookies = new InputBag();
     $this->request->cookies->set('PHPSESSID', null);
 
