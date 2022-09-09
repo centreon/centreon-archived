@@ -17024,4 +17024,4 @@ msgid "CSV"
 msgstr "CSV"
 
 msgid "User information cannot be updated"
-msgstr "Les informations de l'utilisateur ne peuvent pas être mis à jour"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mises à jour"
