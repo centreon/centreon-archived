@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -326,7 +327,7 @@ function return_plugin($rep)
 
 function insertArgDesc($cmd_id, $ret = null)
 {
-    global $centreon, $pearDB;
+    global $pearDB;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();

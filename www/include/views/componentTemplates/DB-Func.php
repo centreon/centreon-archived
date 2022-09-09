@@ -94,7 +94,6 @@ function NameHsrTestExistence($name = null)
 {
     global $pearDB, $form;
     $formValues = [];
-    $bindParams = [];
 
     if (isset($form)) {
         $formValues = $form->getSubmitValues();
@@ -190,7 +189,7 @@ function noDefaultOreonGraph()
 {
     global $pearDB;
     $rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 }
 
 function multipleComponentTemplateInDB($compos = [], $nbrDup = [])
@@ -215,7 +214,7 @@ function multipleComponentTemplateInDB($compos = [], $nbrDup = [])
             }
             if (NameHsrTestExistence($name)) {
                 $val ? $rq = "INSERT INTO giv_components_template VALUES (" . $val . ")" : $rq = null;
-                $dbResult2 = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         }
     }

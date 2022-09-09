@@ -2364,7 +2364,7 @@ function updateHostHostCategory_MC($host_id, $ret = array())
 
 function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
 {
-    global $pearDB, $path, $centreon;
+    global $pearDB, $path;
 
     if (isset($antiLoop[$hID2]) && $antiLoop[$hID2]) {
         return 0;
@@ -2409,7 +2409,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
                     "service_hPars" => array("0" => $hID),
                     "service_sgs" => $service_sgs
                 );
-                $service_id = insertServiceInDB($service, array());
+                insertServiceInDB($service, array());
             }
         }
         $antiLoop[$hID2] = 1;
@@ -2419,7 +2419,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
 
 function createHostTemplateService($host_id = null, $htm_id = null)
 {
-    global $pearDB, $path, $centreon, $form;
+    global $form;
 
     if (!$host_id) {
         return;
@@ -2448,7 +2448,7 @@ function updateHostTemplateService($host_id = null)
     if ($row["host_register"] == 0) {
         $rq = "DELETE FROM host_service_relation ";
         $rq .= "WHERE host_host_id = '" . $host_id . "'";
-        $dbResult2 = $pearDB->query($rq);
+        $pearDB->query($rq);
         $ret = array();
         $ret = $form->getSubmitValue("host_svTpls");
         if ($ret) {
@@ -2458,7 +2458,7 @@ function updateHostTemplateService($host_id = null)
                     $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
                     $rq .= "VALUES ";
                     $rq .= "(NULL, '" . $host_id . "', NULL, '" . $ret[$i] . "')";
-                    $dbResult2 = $pearDB->query($rq);
+                    $pearDB->query($rq);
                 }
             }
         }
@@ -2517,9 +2517,10 @@ function updateHostTemplateUsed($useTpls = array())
     require_once "./include/common/common-Func.php";
 
     foreach ($useTpls as $key => $value) {
-        $dbResult = $pearDB->query("UPDATE host
-                                    SET host_template_model_htm_id = '" . getMyHostID($value) . "'
-                                    WHERE host_id = '" . $key . "'");
+        $pearDB->query("UPDATE host
+            SET host_template_model_htm_id = '" . getMyHostID($value) . "'
+            WHERE host_id = '" . $key . "'"
+        );
     }
 }
 
@@ -2539,14 +2540,14 @@ function updateNagiosServerRelation($host_id, $ret = array())
         : $ret = $form->getSubmitValue("nagios_server_id");
 
     if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
+        $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
 
         $rq = "INSERT INTO `ns_host_relation` ";
         $rq .= "(`host_host_id`, `nagios_server_id`) ";
         $rq .= "VALUES ";
         $rq .= "('" . (int)$host_id . "', '" . $ret . "')";
 
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 

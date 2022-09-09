@@ -2,7 +2,7 @@
 
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,8 +21,7 @@
 
 namespace ConfigGenerateRemote;
 
-use \Exception;
-use \PDO;
+use PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Broker extends AbstractObject
