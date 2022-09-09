@@ -660,7 +660,7 @@ class Request
             'critical' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'unknown' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'notification' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'alert' =>FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'alert' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'oh' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'error' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'output' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,

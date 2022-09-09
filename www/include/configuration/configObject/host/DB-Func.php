@@ -2517,7 +2517,8 @@ function updateHostTemplateUsed($useTpls = array())
     require_once "./include/common/common-Func.php";
 
     foreach ($useTpls as $key => $value) {
-        $pearDB->query("UPDATE host
+        $pearDB->query(
+            "UPDATE host
             SET host_template_model_htm_id = '" . getMyHostID($value) . "'
             WHERE host_id = '" . $key . "'"
         );
