@@ -27,7 +27,7 @@ use Assert\InvalidArgumentException;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 
-it('should thrown an Exception when an access group name is empty', function () {
+it('should throw an Exception when an access group name is empty', function () {
     new AccessGroup(1, '', 'alias');
 })->throws(InvalidArgumentException::class, AssertionException::notEmpty('AccessGroup::name')->getMessage());
 
