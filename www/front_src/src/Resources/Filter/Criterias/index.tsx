@@ -1,9 +1,6 @@
-import { useCallback, useState, useEffect } from 'react';
-
-import { useAtomCallback, useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { isNil, pipe, reject, sortBy } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useAtom } from 'jotai';
 
 import TuneIcon from '@mui/icons-material/Tune';
 import { Button, Grid } from '@mui/material';
@@ -19,11 +16,10 @@ import {
 import {
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
-  filterByInstalledModules,
+  filterByInstalledModulesWithParsedSearchDerivedAtom,
   filterWithParsedSearchDerivedAtom,
-  filter,
-  // updatedFilterWithParsedSearchDerivedAtom,
 } from '../filterAtoms';
+import { Filter } from '../models';
 
 import Criteria from './Criteria';
 import { Criteria as CriteriaModel, CriteriaDisplayProps } from './models';
@@ -44,9 +40,9 @@ const CriteriasContent = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { newCriteriaValueName, newSelectableCriterias } = useFilterByModule();
-  const [filtersByModules, setFiltersByModules] = useState(null);
-
-  const filterWithSearchAtom = filterByInstalledModules(newCriteriaValueName);
+  const filterByInstalledModulesWithParsedSearch = useAtomValue(
+    filterByInstalledModulesWithParsedSearchDerivedAtom,
+  );
 
   const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
     newSelectableCriterias[name];
@@ -54,54 +50,20 @@ const CriteriasContent = (): JSX.Element => {
   const isNonSelectableCriteria = (criteria: CriteriaModel): boolean =>
     pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
-  const [filterWithParsedSearch] = useAtom(filterWithParsedSearchDerivedAtom);
-
-  const [T, setT] = useAtom(filter);
-
-  // const [r, setR] = useAtom(updatedFilterWithParsedSearchDerivedAtom);
-
-  console.log({ filterWithParsedSearch });
-
   const getSelectableCriterias = (): Array<CriteriaModel> => {
+    const criteriasValue = filterByInstalledModulesWithParsedSearch({
+      nameCriteria: newCriteriaValueName,
+    });
     const criterias = sortBy(
       ({ name }) => criteriaNameSortOrder[name],
-      filterWithParsedSearch?.criterias,
+      criteriasValue?.criterias,
     );
 
     return reject(isNonSelectableCriteria)(criterias);
   };
 
-  console.log({ T });
-
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
-
-  const readFiltersByModules = useAtomCallback(
-    useCallback((get) => {
-      console.log('read');
-      const currFiltersByModules = get(filterWithSearchAtom);
-      setFiltersByModules(currFiltersByModules);
-
-      console.log({ currFiltersByModules });
-      setT(currFiltersByModules);
-
-      // setR(currFiltersByModules);
-
-      return currFiltersByModules;
-    }, []),
-  );
-
-  const readCustomFiltersByModule = async (): any => {
-    await readFiltersByModules();
-  };
-
-  const getUpdatedValue = async (): any => {
-    await readFiltersByModules();
-  };
-
-  useEffect(() => {
-    readCustomFiltersByModule();
-  }, []);
 
   return (
     <PopoverMenu
@@ -121,11 +83,7 @@ const CriteriasContent = (): JSX.Element => {
           {getSelectableCriterias().map(({ name, value }) => {
             return (
               <Grid item key={name}>
-                <Criteria
-                  getUpdatedValue={getUpdatedValue}
-                  name={name}
-                  value={value as Array<SelectEntry>}
-                />
+                <Criteria name={name} value={value as Array<SelectEntry>} />
               </Grid>
             );
           })}

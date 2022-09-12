@@ -18,16 +18,11 @@ import { criteriaValueNameById } from './models';
 import useFilterByModule from './useFilterByModule';
 
 interface Props {
-  getUpdatedValue: () => void;
   name: string;
   value: Array<SelectEntry>;
 }
 
-const CriteriaContent = ({
-  name,
-  value,
-  getUpdatedValue,
-}: Props): JSX.Element => {
+const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { newSelectableCriterias } = useFilterByModule();
 
@@ -44,7 +39,6 @@ const CriteriaContent = ({
 
   const changeCriteria = (updatedValue): void => {
     setCriteriaAndNewFilter({ name, value: updatedValue });
-    getUpdatedValue();
   };
 
   const getUntranslated = (values): Array<SelectEntry> => {
@@ -109,19 +103,13 @@ const CriteriaContent = ({
   );
 };
 
-const Criteria = ({ value, name, getUpdatedValue }: Props): JSX.Element => {
+const Criteria = ({ value, name }: Props): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
 
   return useMemoComponent({
-    Component: (
-      <CriteriaContent
-        getUpdatedValue={getUpdatedValue}
-        name={name}
-        value={value}
-      />
-    ),
+    Component: <CriteriaContent name={name} value={value} />,
     memoProps: [value, name, filterWithParsedSearch],
   });
 };
