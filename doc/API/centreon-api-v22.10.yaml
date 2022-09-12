@@ -4649,8 +4649,6 @@ components:
       required:
         - is_active
         - is_forced
-        - trusted_client_addresses
-        - blacklist_client_addresses
         - base_url
         - authorization_endpoint
         - token_endpoint
@@ -4679,20 +4677,6 @@ components:
           type: boolean
           description: "Indicates whether the provider is forced or not"
           example: false
-        trusted_client_addresses:
-          type: array
-          description: "List of trusted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
-        blacklist_client_addresses:
-          type: array
-          description: "List of blacklisted client addresses"
-          items:
-            type: string
-            description: "IP address"
-            example: "127.0.0.1"
         base_url:
           type: string
           description: "Base URL of the provider"
@@ -4786,11 +4770,27 @@ components:
         authentication_conditions:
           type: object
           required:
+            - trusted_client_addresses
+            - blacklist_client_addresses
             - is_enabled
             - attribute_path
             - endpoint
             - authorized_values
           properties:
+            trusted_client_addresses:
+              type: array
+              description: "List of trusted client addresses"
+              items:
+                type: string
+                description: "IP address"
+                example: "127.0.0.1"
+            blacklist_client_addresses:
+              type: array
+              description: "List of blacklisted client addresses"
+              items:
+                type: string
+                description: "IP address"
+            example: "127.0.0.1"
             is_enabled:
               type: boolean
             attribute_path:
