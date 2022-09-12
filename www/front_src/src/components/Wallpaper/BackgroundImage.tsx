@@ -32,7 +32,7 @@ const BackgroundImage = ({ image }: Props): JSX.Element => {
 
   return (
     <Fade in={not(isNil(image))}>
-      <div className={classes.wallpaper} id="Centreon_wallpaper" />
+      <div className={classes.wallpaper} id="centreon-wallpaper" />
     </Fade>
   );
 };
