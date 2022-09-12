@@ -45,7 +45,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
  */
 class AuthenticationConditions
 {
-        /**
+    /**
      * @var string[]
      */
     private array $trustedClientAddresses = [];

@@ -294,7 +294,6 @@ class CentreonDB extends \PDO
      * @param mixed $parameters
      * @param mixed $parametersArgs
      */
-    #[\ReturnTypeWillChange]
     public function query($queryString, $parameters = null, ...$parametersArgs)
     {
         if (!is_null($parameters) && !is_array($parameters)) {
