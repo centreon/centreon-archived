@@ -17022,3 +17022,15 @@ msgstr "Petite taille"
 
 msgid "CSV"
 msgstr "CSV"
+
+msgid "Poller Configuration Actions / Poller Management"
+msgstr "Actions de configuration des collecteurs / Gestion des collecteurs"
+
+msgid "Create and edit pollers"
+msgstr "Créer et modifier des collecteurs"
+
+msgid "Delete pollers"
+msgstr "Supprimer des collecteurs"
+
+msgid "Deploy configuration"
+msgstr "Déployer la configuration"

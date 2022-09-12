@@ -111,6 +111,9 @@ class CentreonTopCounter extends CentreonWebService
     {
         if ($this->centreon->user->access->admin == 0) {
             $tabActionACL = $this->centreon->user->access->getActions();
+            session_start();
+            $_SESSION['centreon'] = $this->centreon;
+            session_write_close();
             if (isset($tabActionACL["top_counter"])) {
                 $this->hasAccessToTopCounter = true;
             }
