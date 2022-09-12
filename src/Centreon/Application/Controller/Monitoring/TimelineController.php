@@ -31,7 +31,6 @@ use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
@@ -177,22 +176,10 @@ class TimelineController extends AbstractController
     }
 
     /**
-     * Entry point to get timeline for a meta service
-     *
-     * @param int $metaId ID of the Meta
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws EntityNotFoundException
+     * @return TimelineEvent[]
      */
-    public function getMetaServiceTimeline(
-        int $metaId,
-        RequestParametersInterface $requestParameters
-    ): View {
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $user
-         */
+    private function getMetaServiceTimelineById(int $metaId): array
+    {
         $user = $this->getUser();
         $this->monitoringService->filterByContact($user);
         $this->timelineService->filterByContact($user);
@@ -220,7 +207,20 @@ class TimelineController extends AbstractController
 
         $service->setHost($host);
 
-        $timeline = $this->timelineService->findTimelineEventsByService($service);
+        return $this->timelineService->findTimelineEventsByService($service);
+    }
+
+    /**
+     * Entry point to get timeline for a meta service
+     *
+     * @param int $metaId ID of the Meta
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function getMetaServiceTimeline(int $metaId, RequestParametersInterface $requestParameters): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
         $context = (new Context())
             ->setGroups(static::SERIALIZER_GROUPS_MAIN)
@@ -228,10 +228,22 @@ class TimelineController extends AbstractController
 
         return $this->view(
             [
-                'result' => $timeline,
+                'result' => $this->getMetaServiceTimelineById($metaId),
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    public function downloadMetaserviceTimeline(
+        int $metaId,
+        RequestParametersInterface $requestParameters
+    ): StreamedResponse {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $this->addDownloadParametersInRequestParameters($requestParameters);
+
+        $timeLines = $this->formatTimeLinesForDownload($this->getMetaServiceTimelineById($metaId));
+
+        return $this->streamTimeLines($timeLines);
     }
 
     /**

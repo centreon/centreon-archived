@@ -34,6 +34,7 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     use HttpUrlTrait;
 
     public const ENDPOINT_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
+                 ENDPOINT_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_metaservice',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getMetaServicePerformanceMetrics',
                  ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getMetaServiceStatusMetrics',
                  ENDPOINT_METRIC_LIST = 'centreon_application_find_meta_service_metrics',
@@ -182,6 +183,10 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
             'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersId),
             'downtime' => $this->generateDowntimeEndpoint($parametersId),
             'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_TIMELINE, $parametersId),
+            'timeline_download' => $this->uriGenerator->generateEndpoint(
+                self::ENDPOINT_TIMELINE_DOWNLOAD,
+                $parametersId
+            ),
             'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parametersId),
             'metrics' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_METRIC_LIST, $parametersId),
             'performance_graph' => $parameters['hasGraphData']
