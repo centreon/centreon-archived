@@ -249,9 +249,9 @@ describe(Actions, () => {
 
     const refreshButton = screen.getByLabelText(labelRefresh);
 
-    await waitFor(() => expect(refreshButton.firstChild).toBeEnabled());
+    await waitFor(() => expect(refreshButton).toBeEnabled());
 
-    userEvent.click(refreshButton.firstChild as HTMLElement);
+    userEvent.click(refreshButton);
 
     expect(onRefresh).toHaveBeenCalled();
   });
