@@ -516,7 +516,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         } catch (Exception $e) {
             $this->logExceptionInLoginLogFile("Unable to get Introspection Information: %s, message: %s", $e);
             $this->error(sprintf(
-                "[Error] Unable to get Token Introspection Information:, message: %s",
+                "[Error] Unable to get Introspection Token Information:, message: %s",
                 $e->getMessage()
             ));
             throw SSOAuthenticationException::requestForIntrospectionTokenFail();

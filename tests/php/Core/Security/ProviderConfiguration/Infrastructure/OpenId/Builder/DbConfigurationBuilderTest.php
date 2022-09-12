@@ -57,7 +57,7 @@ beforeEach(function () {
     ];
 });
 
-it('should throw an exception when a mandatory parameters is empty and configuration is active', function () {
+it('should throw an exception when a mandatory parameter is empty and configuration is active', function () {
     $this->customConfiguration['base_url'] = null;
     $configuration = new Configuration(
         2,
@@ -68,7 +68,7 @@ it('should throw an exception when a mandatory parameters is empty and configura
         false
     );
     $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
-})->throws(OpenIdConfigurationException::class, "Missing mandatory parameters: base_url");
+})->throws(OpenIdConfigurationException::class, "Missing mandatory parameter: base_url");
 
 it(
     'should throw an exception when both userinformation and introspection '
@@ -92,7 +92,7 @@ it(
 );
 
 it(
-    'should throw an exception when the configuration is active, autoimport enable but with missing parameters',
+    'should throw an exception when the configuration is active, autoimport enabled but with missing parameters',
     function () {
         $this->customConfiguration['contact_template'] = null;
         $this->customConfiguration['email_bind_attribute'] = null;
