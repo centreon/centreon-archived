@@ -16,7 +16,6 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
 import { platformInstallationStatusAtom } from '../Main/atoms/platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
-import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
 import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
 import {
