@@ -69,7 +69,7 @@ it('should throw an exception when a mandatory parameter is empty and configurat
         false
     );
     $configuration->setCustomConfiguration(new CustomConfiguration($this->customConfiguration));
-})->throws(OpenIdConfigurationException::class, "Missing mandatory parameter: base_url");
+})->throws(OpenIdConfigurationException::class, "Missing mandatory parameters: base_url");
 
 it(
     'should throw an exception when both userinformation and introspection '
