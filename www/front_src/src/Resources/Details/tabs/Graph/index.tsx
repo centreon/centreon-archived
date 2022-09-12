@@ -1,8 +1,9 @@
-import { equals, or } from 'ramda';
+import { equals } from 'ramda';
 
 import { Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
+import { ResourceType } from '../../../models';
 import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
@@ -36,11 +37,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
-  const type = details?.type as string;
-  const equalsService = equals('service');
-  const equalsMetaService = equals('metaservice');
+  const type = details?.type as ResourceType;
+  const equalsService = equals(ResourceType.service);
+  const equalsMetaService = equals(ResourceType.metaservice);
+  const equalsAnomalyDetection = equals(ResourceType.anomalydetection);
 
-  const isService = or(equalsService(type), equalsMetaService(type));
+  const isService =
+    equalsService(type) ||
+    equalsMetaService(type) ||
+    equalsAnomalyDetection(type);
 
   return (
     <div className={classes.container}>
