@@ -161,6 +161,10 @@ class UpdateOpenIdConfiguration
     {
         $this->info('Creating Authorization Rules');
         $accessGroupIds = $this->getAccessGroupIds($authorizationRulesFromRequest);
+        if (empty($accessGroupIds)) {
+            return [];
+        }
+
         $foundAccessGroups = $this->accessGroupRepository->findByIds($accessGroupIds);
 
         $this->logNonExistentAccessGroupsIds($accessGroupIds, $foundAccessGroups);
