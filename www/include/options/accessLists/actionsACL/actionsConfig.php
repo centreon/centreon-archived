@@ -68,17 +68,23 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     }
 }
 
+const ACL_ACTION_ADD = 'a';
+const ACL_ACTION_WATCH = 'w';
+const ACL_ACTION_MODIFY = 'c';
+const ACL_ACTION_ACTIVATION = 's';
+const ACL_ACTION_MASSIVE_ACTIVATION = 'ms';
+const ACL_ACTION_DEACTIVATION = 'u';
+const ACL_ACTION_MASSIVE_DEACTIVATION = 'mu';
+const ACL_ACTION_DUPLICATION = 'm';
+const ACL_ACTION_DELETION = 'd';
+
 switch ($o) {
-    case "a":
-        require_once(__DIR__ .  "/formActionsAccess.php");
-        break; #Add an Actions Access
-    case "w":
-        require_once(__DIR__ .  "/formActionsAccess.php");
-        break; #Watch an Actions Access
-    case "c":
+    case ACL_ACTION_ADD:
+    case ACL_ACTION_WATCH:
+    case ACL_ACTION_MODIFY:
         require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Modify an Actions Access
-    case "s":
+    case ACL_ACTION_ACTIVATION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -88,7 +94,7 @@ switch ($o) {
         }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
-    case "ms":
+    case ACL_ACTION_MASSIVE_ACTIVATION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -98,7 +104,7 @@ switch ($o) {
         }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
-    case "u":
+    case ACL_ACTION_DEACTIVATION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -108,7 +114,7 @@ switch ($o) {
         }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate an an Actions Access
-    case "mu":
+    case ACL_ACTION_MASSIVE_DEACTIVATION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -118,7 +124,7 @@ switch ($o) {
         }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate n Actions Access
-    case "m":
+    case ACL_ACTION_DUPLICATION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -128,7 +134,7 @@ switch ($o) {
         }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Duplicate n Actions Access
-    case "d":
+    case ACL_ACTION_DELETION:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
