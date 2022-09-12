@@ -601,14 +601,18 @@ class OpenIdProvider implements OpenIdProviderInterface
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
 
-        foreach ($customConfiguration->getBlacklistClientAddresses() as $blackListedAddress) {
+        foreach (
+            $customConfiguration->getAuthenticationConditions()->getBlacklistClientAddresses() as $blackListedAddress
+        ) {
             if ($blackListedAddress !== "" && preg_match('/' . $blackListedAddress . '/', $clientIp)) {
                 $this->error('IP Blacklisted', [ 'ip' => '...' . substr($clientIp, -5)]);
                 throw SSOAuthenticationException::blackListedClient();
             }
         }
 
-        foreach ($customConfiguration->getTrustedClientAddresses() as $trustedClientAddress) {
+        foreach (
+            $customConfiguration->getAuthenticationConditions()->getTrustedClientAddresses() as $trustedClientAddress
+        ) {
             if (
                 $trustedClientAddress !== ""
                 && preg_match('/' . $trustedClientAddress . '/', $clientIp)

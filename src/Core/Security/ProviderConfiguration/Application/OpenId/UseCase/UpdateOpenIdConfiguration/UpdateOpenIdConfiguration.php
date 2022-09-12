@@ -267,7 +267,7 @@ class UpdateOpenIdConfiguration
      * Create Authentication Condition from request data.
      *
      * @param array<string,bool|string|string[]> $authenticationConditionsParameters
-     * @return AuthenticationCondition
+     * @return AuthenticationConditions
      * @throws OpenIdConfigurationException
      */
     private function createAuthenticationConditions(array $authenticationConditionsParameters): AuthenticationConditions
