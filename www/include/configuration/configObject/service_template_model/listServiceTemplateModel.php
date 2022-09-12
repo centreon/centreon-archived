@@ -82,16 +82,16 @@ if ($search) {
         "WHERE (sv.service_description LIKE :search OR sv.service_alias LIKE :search) " .
         "AND sv.service_register = '0' " .
         $lockedFilter .
-        "ORDER BY service_description LIMIT :scope, :limit");
+        "ORDER BY service_description LIMIT :offset, :limit");
     $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
     $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description," .
         " sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv " .
         "WHERE sv.service_register = '0' " . $lockedFilter .
-        "ORDER BY service_description LIMIT :scope, :limit");
+        "ORDER BY service_description LIMIT :offset, :limit");
 }
 $statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-$statement->bindValue(':scope', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':offset', (int) $num * (int) $limit, \PDO::PARAM_INT);
 $statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
