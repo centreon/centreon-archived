@@ -165,7 +165,6 @@ const PollerMenu = (): JSX.Element | null => {
       clearInterval(interval.current);
     };
   }, []);
-  const loaderWidth = 16;
   const pollerListIssues =
     'internal.php?object=centreon_topcounter&action=pollersListIssues';
 
@@ -196,7 +195,7 @@ const PollerMenu = (): JSX.Element | null => {
   }
 
   if (isNil(issues)) {
-    return <MenuSkeleton width={loaderWidth} />;
+    return <MenuSkeleton />;
   }
 
   const redirectToPollerConfiguration = (): void => {
@@ -225,7 +224,6 @@ const PollerMenu = (): JSX.Element | null => {
           <div className={classes.iconToggleMenu}>
             <IconToggleSubmenu
               data-testid="submenu-poller"
-              iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
             />
