@@ -19,7 +19,6 @@ import {
   filterByInstalledModulesWithParsedSearchDerivedAtom,
   filterWithParsedSearchDerivedAtom,
 } from '../filterAtoms';
-import { Filter } from '../models';
 
 import Criteria from './Criteria';
 import { Criteria as CriteriaModel, CriteriaDisplayProps } from './models';

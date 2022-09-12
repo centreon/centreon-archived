@@ -76,13 +76,15 @@ const isCriteriaPart = pipe(
 );
 const isFilledCriteria = pipe(endsWith(':'), not);
 
+interface ParametersParse {
+  nameCriteria?: Record<string, string>;
+  search: string;
+}
+
 const parse = ({
   search,
   nameCriteria = criteriaValueNameById,
-}: {
-  nameCriteria?: any;
-  search: string;
-}): Array<Criteria> => {
+}: ParametersParse): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
     search.split(' '),
@@ -313,6 +315,8 @@ const getAutocompleteSuggestions = ({
     cursorPosition,
     search,
   });
+
+  console.log({ criteriasByModules });
 
   if (isNil(cursorPosition) || !isNextCharacterEmpty) {
     return [];

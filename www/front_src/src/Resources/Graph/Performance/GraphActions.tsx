@@ -83,7 +83,6 @@ const GraphActions = ({
     ResourceType.anomalydetection,
   );
 
-  console.log({ resourceType });
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };

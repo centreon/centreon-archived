@@ -1,5 +1,7 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   always,
   equals,
@@ -10,29 +12,37 @@ import {
   pathOr,
   prop,
 } from 'ramda';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
 import {
   getData,
+  getUrlQueryParameters,
   SelectEntry,
   useRequest,
-  getUrlQueryParameters,
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import { platformVersionsAtom } from '../../../Main/atoms/platformVersionsAtom';
-import { ResourceListing, SortOrder } from '../../models';
-import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
   selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourcesDetailsAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
-  selectedResourcesDetailsAtom,
 } from '../../Details/detailsAtoms';
+import { ResourceDetails } from '../../Details/models';
+import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
+import {
+  appliedFilterAtom,
+  customFiltersAtom,
+  getCriteriaValueDerivedAtom,
+} from '../../Filter/filterAtoms';
+import { ResourceListing, SortOrder } from '../../models';
+import {
+  labelNoResourceFound,
+  labelSomethingWentWrong,
+} from '../../translatedLabels';
+import { listResources } from '../api';
 import {
   enabledAutorefreshAtom,
   limitAtom,
@@ -40,17 +50,6 @@ import {
   pageAtom,
   sendingAtom,
 } from '../listingAtoms';
-import { listResources } from '../api';
-import {
-  labelNoResourceFound,
-  labelSomethingWentWrong,
-} from '../../translatedLabels';
-import { ResourceDetails } from '../../Details/models';
-import {
-  appliedFilterAtom,
-  customFiltersAtom,
-  getCriteriaValueDerivedAtom,
-} from '../../Filter/filterAtoms';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -136,7 +135,6 @@ const useLoadResources = (): LoadResources => {
           return;
         }
         const mockedResultsDetail = { ...data, type: 'anomalydetection' };
-        console.log({ mockedResultsDetail });
         setDetails(mockedResultsDetail as ResourceDetails);
       })
       .catch(() => {
