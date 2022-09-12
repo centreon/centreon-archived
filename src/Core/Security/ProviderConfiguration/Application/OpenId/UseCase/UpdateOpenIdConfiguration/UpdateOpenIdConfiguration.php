@@ -40,6 +40,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenI
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
@@ -89,6 +90,9 @@ class UpdateOpenIdConfiguration
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
             $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
+            $requestArray["authentication_conditions"] = $this->createAuthenticationConditions(
+                $request->authenticationConditions
+            );
             $requestArray["is_active"] = $request->isActive;
 
             $configuration->setCustomConfiguration(new CustomConfiguration($requestArray));
@@ -257,5 +261,34 @@ class UpdateOpenIdConfiguration
                 throw $ex;
             }
         }
+    }
+
+    /**
+     * Create Authentication Condition from request data.
+     *
+     * @param array<string,bool|string|string[]> $authenticationConditionsParameters
+     * @return AuthenticationCondition
+     * @throws OpenIdConfigurationException
+     */
+    private function createAuthenticationConditions(array $authenticationConditionsParameters): AuthenticationConditions
+    {
+        $authenticationConditions = new AuthenticationConditions(
+            $authenticationConditionsParameters["is_enabled"],
+            $authenticationConditionsParameters["attribute_path"],
+            $authenticationConditionsParameters["endpoint"],
+            $authenticationConditionsParameters["authorized_values"],
+        );
+        if (! empty($authenticationConditionsParameters["trusted_client_addresses"])) {
+            $authenticationConditions->setTrustedClientAddresses(
+                $authenticationConditionsParameters["trusted_client_addresses"]
+            );
+        }
+        if (! empty($authenticationConditionsParameters["blacklist_client_addresses"])) {
+            $authenticationConditions->setBlacklistClientAddresses(
+                $authenticationConditionsParameters["blacklist_client_addresses"]
+            );
+        }
+
+        return $authenticationConditions;
     }
 }

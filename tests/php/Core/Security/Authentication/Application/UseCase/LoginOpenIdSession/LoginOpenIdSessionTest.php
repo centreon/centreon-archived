@@ -46,7 +46,7 @@ use Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginPresenter;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
 use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
@@ -134,7 +134,7 @@ beforeEach(function () {
         'contact_group' => new ContactGroup(3, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
-
+        'authentication_conditions' => new AuthenticationConditions(false, '', '', [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
     $this->validOpenIdConfiguration = $configuration;

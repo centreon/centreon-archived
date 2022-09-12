@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
 
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
@@ -40,16 +39,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     public const DEFAULT_CLAIM_NAME = "groups";
 
     private ?string $claimName = self::DEFAULT_CLAIM_NAME;
-
-    /**
-     * @var string[]
-     */
-    private array $trustedClientAddresses = [];
-
-    /**
-     * @var string[]
-     */
-    private array $blacklistClientAddresses = [];
 
     /**
      * @var string|null
@@ -142,28 +131,17 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ?ContactGroup $contactGroup = null;
 
     /**
+     * @var AuthenticationConditions
+     */
+    private AuthenticationConditions $authenticationConditions;
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
     public function __construct(array $json)
     {
         $this->create($json);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getTrustedClientAddresses(): array
-    {
-        return $this->trustedClientAddresses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getBlacklistClientAddresses(): array
-    {
-        return $this->blacklistClientAddresses;
     }
 
     /**
@@ -308,80 +286,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     public function getContactGroup(): ?ContactGroup
     {
         return $this->contactGroup;
-    }
-
-    /**
-     * @param string[] $trustedClientAddresses
-     * @return self
-     * @throws AssertionException
-     */
-    public function setTrustedClientAddresses(array $trustedClientAddresses): self
-    {
-        $this->trustedClientAddresses = [];
-        foreach ($trustedClientAddresses as $trustedClientAddress) {
-            $this->addTrustedClientAddress($trustedClientAddress);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $trustedClientAddress
-     * @return self
-     * @throws AssertionException
-     */
-    public function addTrustedClientAddress(string $trustedClientAddress): self
-    {
-        $this->validateClientAddressOrFail($trustedClientAddress, 'trustedClientAddresses');
-        $this->trustedClientAddresses[] = $trustedClientAddress;
-
-        return $this;
-    }
-
-    /**
-     * @param string[] $blacklistClientAddresses
-     * @return self
-     * @throws AssertionException
-     */
-    public function setBlacklistClientAddresses(array $blacklistClientAddresses): self
-    {
-        $this->blacklistClientAddresses = [];
-        foreach ($blacklistClientAddresses as $blacklistClientAddress) {
-            $this->addBlacklistClientAddress($blacklistClientAddress);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $blacklistClientAddress
-     * @return self
-     * @throws AssertionException
-     */
-    public function addBlacklistClientAddress(string $blacklistClientAddress): self
-    {
-        $this->validateClientAddressOrFail($blacklistClientAddress, 'blacklistClientAddresses');
-        $this->blacklistClientAddresses[] = $blacklistClientAddress;
-
-        return $this;
-    }
-
-    /**
-     * @param string $clientAddress
-     * @param string $fieldName
-     * @throws AssertionException
-     */
-    private function validateClientAddressOrFail(string $clientAddress, string $fieldName): void
-    {
-        if (
-            filter_var($clientAddress, FILTER_VALIDATE_IP) === false
-            && filter_var($clientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-        ) {
-            throw AssertionException::ipOrDomain(
-                $clientAddress,
-                'OpenIdCustomConfiguration::' . $fieldName
-            );
-        }
     }
 
     /**
@@ -631,6 +535,24 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
+     * @param AuthenticationConditions $authenticationConditions
+     * @return self
+     */
+    public function setAuthenticationConditions(AuthenticationConditions $authenticationConditions): self
+    {
+        $this->authenticationConditions = $authenticationConditions;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAuthenticationConditions(): AuthenticationConditions
+    {
+        return $this->authenticationConditions;
+    }
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
@@ -651,8 +573,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         $this->setContactTemplate($json['contact_template']);
         $this->setEmailBindAttribute($json['email_bind_attribute']);
         $this->setUserNameBindAttribute($json['fullname_bind_attribute']);
-        $this->setTrustedClientAddresses($json['trusted_client_addresses']);
-        $this->setBlacklistClientAddresses($json['blacklist_client_addresses']);
         $this->setEndSessionEndpoint($json['endsession_endpoint']);
         $this->setConnectionScopes($json['connection_scopes']);
         $this->setLoginClaim($json['login_claim']);
@@ -663,6 +583,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         if (array_key_exists('authorization_rules', $json)) {
             $this->setAuthorizationRules($json['authorization_rules']);
         }
+        $this->setAuthenticationConditions($json['authentication_conditions']);
     }
 
     /**
