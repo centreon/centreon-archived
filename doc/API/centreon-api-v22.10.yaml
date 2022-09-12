@@ -4790,7 +4790,7 @@ components:
               items:
                 type: string
                 description: "IP address"
-            example: "127.0.0.1"
+                example: "127.0.0.1"
             is_enabled:
               type: boolean
             attribute_path:
