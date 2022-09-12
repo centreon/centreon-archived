@@ -127,7 +127,10 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
                 $parametersIds
             ),
-            'timeline_download' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE_DOWNLOAD, $parametersIds),
+            'timeline_download' => $this->uriGenerator->generateEndpoint(
+                self::ENDPOINT_HOST_TIMELINE_DOWNLOAD,
+                $parametersIds
+            ),
             'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $parametersIds),
             'downtime' => $this->generateDowntimeEndpoint($parametersIds),
             'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
