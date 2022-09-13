@@ -37,8 +37,6 @@ use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
