@@ -261,7 +261,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * Create Authentication Conditions from record.
      *
-     * @param array<string,bool|string|string[]>
+     * @param array<string,bool|string|string[]> $authenticationConditionsRecord
      * @return AuthenticationConditions
      */
     public function createAuthenticationConditionsFromRecord(

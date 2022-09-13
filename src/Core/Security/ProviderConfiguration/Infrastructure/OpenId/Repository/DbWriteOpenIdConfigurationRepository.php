@@ -164,6 +164,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         }
     }
 
+    /**
+     * @param AuthenticationConditions $authenticationConditions
+     * @return array<string,bool|string|string[]>
+     */
     private function authenticationConditionsToArray(AuthenticationConditions $authenticationConditions): array
     {
         return [
