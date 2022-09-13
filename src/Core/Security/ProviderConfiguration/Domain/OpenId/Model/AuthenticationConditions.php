@@ -67,21 +67,12 @@ class AuthenticationConditions
         private string $endpoint,
         private array $authorizedValues
     ) {
-        if ($isEnabled) {
-            $mandatoryParameters = [];
-            if (empty($attributePath)) {
-                $mandatoryParameters[] = "attribute_path";
-            }
-            if (empty($endpoint)) {
-                $mandatoryParameters[] = "endpoint";
-            }
-            if (empty($authorizedValues)) {
-                $mandatoryParameters[] = "authorized_values";
-            }
-            if (! empty($mandatoryParameters)) {
-                throw OpenIdConfigurationException::missingMandatoryParameters($mandatoryParameters);
-            }
-        }
+        $this->validateMandatoryParametersForEnabledConfiguration(
+            $isEnabled,
+            $attributePath,
+            $endpoint,
+            $authorizedValues
+        );
     }
 
     /**
@@ -203,6 +194,29 @@ class AuthenticationConditions
                 $clientAddress,
                 'AuthenticationConditions::' . $fieldName
             );
+        }
+    }
+
+    private function validateMandatoryParametersForEnabledConfiguration(
+        bool $isEnabled,
+        string $attributePath,
+        string $endpoint,
+        array $authorizedValues
+    ): void {
+        if ($isEnabled) {
+            $mandatoryParameters = [];
+            if (empty($attributePath)) {
+                $mandatoryParameters[] = "attribute_path";
+            }
+            if (empty($endpoint)) {
+                $mandatoryParameters[] = "endpoint";
+            }
+            if (empty($authorizedValues)) {
+                $mandatoryParameters[] = "authorized_values";
+            }
+            if (! empty($mandatoryParameters)) {
+                throw OpenIdConfigurationException::missingMandatoryParameters($mandatoryParameters);
+            }
         }
     }
 }

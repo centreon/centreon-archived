@@ -219,22 +219,23 @@ final class DbReadAccessGroupRepository extends AbstractRepositoryDRB implements
             $queryBindValues[':access_group_' . $accessGroupId] = $accessGroupId;
         }
 
-        $accessGroups = [];
-        if (! empty($queryBindValues)) {
-            $boundIds = implode(', ', array_keys($queryBindValues));
-            $statement = $this->db->prepare(
-                "SELECT * FROM acl_groups WHERE acl_group_id IN ($boundIds)"
-            );
-            foreach ($queryBindValues as $bindKey => $accessGroupId) {
-                $statement->bindValue($bindKey, $accessGroupId, \PDO::PARAM_INT);
-            }
-            $statement->execute();
-
-            while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
-            }
-            $this->debug('Access group found: ' . count($accessGroups));
+        if (empty($queryBindValues)) {
+            return [];
         }
+        $accessGroups = [];
+        $boundIds = implode(', ', array_keys($queryBindValues));
+        $statement = $this->db->prepare(
+            "SELECT * FROM acl_groups WHERE acl_group_id IN ($boundIds)"
+        );
+        foreach ($queryBindValues as $bindKey => $accessGroupId) {
+            $statement->bindValue($bindKey, $accessGroupId, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $accessGroups[] = DbAccessGroupFactory::createFromRecord($result);
+        }
+        $this->debug('Access group found: ' . count($accessGroups));
 
         return $accessGroups;
     }
