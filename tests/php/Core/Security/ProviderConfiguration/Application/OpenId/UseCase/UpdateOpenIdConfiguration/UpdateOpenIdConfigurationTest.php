@@ -109,8 +109,6 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = ["abcd_.@"];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -127,6 +125,14 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->authenticationConditions = [
+        "is_enabled" => true,
+        "attribute_path" => "info.groups",
+        "endpoint" => "http://127.0.0.1/information",
+        "authorized_values" => ["groupsA"],
+        "trusted_client_addresses" => ['abcd_.@'],
+        "blacklist_client_addresses" => []
+    ];
 
     $this->contactGroupRepository
         ->expects($this->once())
@@ -144,7 +150,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new ErrorResponse(
-            AssertionException::ipOrDomain('abcd_.@', 'OpenIdCustomConfiguration::trustedClientAddresses')->getMessage()
+            AssertionException::ipOrDomain('abcd_.@', 'AuthenticationConditions::trustedClientAddresses')->getMessage()
         ));
 
     $useCase = new UpdateOpenIdConfiguration(
