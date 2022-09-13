@@ -23,10 +23,9 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Security\Domain\Authentication\Model\ProviderToken;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Domain\Authentication\SSOAuthenticationException;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
 
 interface OpenIdProviderInterface extends ProviderInterface
 {
@@ -36,14 +35,14 @@ interface OpenIdProviderInterface extends ProviderInterface
     public function getConfiguration(): Configuration;
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
-    public function getProviderToken(): ProviderToken;
+    public function getProviderToken(): NewProviderToken;
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
-    public function getProviderRefreshToken(): ?ProviderToken;
+    public function getProviderRefreshToken(): ?NewProviderToken;
 
     /**
      * Create user with informations from identity provider
