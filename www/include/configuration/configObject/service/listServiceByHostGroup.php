@@ -202,27 +202,55 @@ $tpl->assign("headerMenu_options", _("Options"));
  * HostGroup/service list
  */
 if ($searchS || $searchHG) {
+    //preparing tmp binds
+    $tmpIds = explode(',', $tmp);
+    $tmpQueryBinds = [];
+    foreach ($tmpIds as $key => $value) {
+        $tmpQueryBinds[':tmp_id_' . $key] = $value;
+    }
+    $tmpBinds = implode(',', array_keys($tmpQueryBinds));
+    //preparing tmp2 binds
+    $tmp2Ids = explode(',', $tmp2);
+    $tmp2QueryBinds = [];
+    foreach ($tmp2Ids as $key => $value) {
+        $tmp2QueryBinds[':tmp2_id_' . $key] = $value;
+    }
+    $tmp2Binds = implode(',', array_keys($tmp2QueryBinds));
+
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
         "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
-        "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (" . ($tmp ? $tmp : 'NULL') .
-        ") AND hsr.hostgroup_hg_id IN (" . ($tmp2 ? $tmp2 : 'NULL') . ") " .
-        ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+        "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN ($tmpBinds) AND hsr.hostgroup_hg_id IN ($tmp2Binds) " .
+        ((isset($template) && $template) ? " AND service_template_model_stm_id = :template " : "") .
         " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
-        "ORDER BY hg.hg_name, sv.service_description LIMIT " . $num * $limit . ", " . $limit;
+        "ORDER BY hg.hg_name, sv.service_description LIMIT :offset_, :limit";
+    $statement = $pearDB->prepare($query);
+    //tmp bind values
+    foreach ($tmpQueryBinds as $key => $value) {
+        $statement->bindValue($key, (int) $value, PDO::PARAM_INT);
+    }
+    //tmp bind values
+    foreach ($tmp2QueryBinds as $key => $value) {
+        $statement->bindValue($key, (int) $value, PDO::PARAM_INT);
+    }
 } else {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
         "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase " .
-        ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+        ((isset($template) && $template) ? " AND service_template_model_stm_id = :template " : "") .
         " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
-        "ORDER BY hg.hg_name, sv.service_description LIMIT " . $num * $limit . ", " . $limit;
+        "ORDER BY hg.hg_name, sv.service_description LIMIT :offset_, :limit";
+    $statement = $pearDB->prepare($query);
 }
-$dbResult = $pearDB->query($query);
-
+$statement->bindValue(':offset_', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+if ((isset($template) && $template)) {
+    $statement->bindValue(':template', (int) $template, \PDO::PARAM_INT);
+}
+$statement->execute();
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 // Different style between each lines
@@ -263,7 +291,7 @@ $fgHostgroup = array("value" => null, "print" => null);
 
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $service = $dbResult->fetch(); $i++) {
+for ($i = 0; $service = $statement->fetch(); $i++) {
     $moptions = "";
     $fgHostgroup["value"] != $service["hg_name"]
         ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"])
