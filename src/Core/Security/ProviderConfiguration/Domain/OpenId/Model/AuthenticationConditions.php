@@ -60,6 +60,7 @@ class AuthenticationConditions
      * @param string $attributePath
      * @param string $endpoint
      * @param string[] $authorizedValues
+     * @throws OpenIdConfigurationException
      */
     public function __construct(
         private bool $isEnabled,
@@ -197,6 +198,15 @@ class AuthenticationConditions
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param boolean $isEnabled
+     * @param string $attributePath
+     * @param string $endpoint
+     * @param array $authorizedValues
+     * @throws OpenIdConfigurationException
+     */
     private function validateMandatoryParametersForEnabledConfiguration(
         bool $isEnabled,
         string $attributePath,

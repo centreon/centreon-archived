@@ -70,7 +70,6 @@ try {
             ON DELETE CASCADE"
         );
     }
-
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
