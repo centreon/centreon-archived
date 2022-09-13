@@ -1469,7 +1469,7 @@ VALUES (
 (
   'openid',
   'openid',
-  '{"base_url":null,"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true, "auto_import": false, "contact_template_id": null, "email_bind_attribute": null, "fullname_bind_attribute": null, "claim_name": "groups", "contact_group_id": null, "authentication_conditions":{"is_enabled": false, "endpoint": "", attribute_path: "", "authorized_values": [], "trusted_client_addresses":[], "blacklist_client_addresses":[]}}',
+  '{"base_url":null,"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true, "auto_import": false, "contact_template_id": null, "email_bind_attribute": null, "fullname_bind_attribute": null, "claim_name": "groups", "contact_group_id": null, "authentication_conditions":{"is_enabled": false, "endpoint": "", "attribute_path": "", "authorized_values": [], "trusted_client_addresses":[], "blacklist_client_addresses":[]}}',
   false,
   false
 ),
