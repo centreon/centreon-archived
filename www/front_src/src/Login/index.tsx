@@ -1,3 +1,5 @@
+import { lazy, Suspense } from 'react';
+
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
@@ -10,18 +12,23 @@ import { LoadingSkeleton } from '@centreon/ui';
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
-import Wallpaper from '../components/Wallpaper';
 import useLoadWallpaper from '../components/Wallpaper/useLoadWallpaper';
 import { platformVersionsAtom } from '../Main/atoms/platformVersionsAtom';
 
-import Copyright from './Copyright';
 import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
 import useLogin from './useLogin';
-import LoginForm from './Form';
-import ExternalProviders from './ExternalProviders';
 import { labelLogin } from './translatedLabels';
-import Logo from './Logo';
+
+const ExternalProviders = lazy(() => import('./ExternalProviders'));
+
+const Copyright = lazy(() => import('./Copyright'));
+
+const Wallpaper = lazy(() => import('../components/Wallpaper'));
+
+const LoginForm = lazy(() => import('./Form'));
+
+const Logo = lazy(() => import('./Logo'));
 
 const useStyles = makeStyles((theme) => ({
   copyrightAndVersion: {
@@ -29,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     rowGap: theme.spacing(0.5),
+  },
+  copyrightSkeleton: {
+    width: theme.spacing(16),
   },
   loginBackground: {
     alignItems: 'center',
@@ -75,11 +85,25 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <div>
-      <Wallpaper />
+      <Suspense fallback={<LoadingSkeleton />}>
+        <Wallpaper />
+      </Suspense>
       <div className={classes.loginBackground}>
         <Paper className={classes.loginPaper}>
-          <Logo />
-          <Typography variant="h5">{t(labelLogin)}</Typography>
+          <Suspense
+            fallback={
+              <LoadingSkeleton height={60} variant="text" width={250} />
+            }
+          >
+            <Logo />
+          </Suspense>
+          <Suspense
+            fallback={
+              <LoadingSkeleton height={30} variant="text" width={115} />
+            }
+          >
+            <Typography variant="h5">{t(labelLogin)}</Typography>
+          </Suspense>
           <div>
             <Formik<LoginFormValues>
               validateOnMount
@@ -87,14 +111,35 @@ const LoginPage = (): JSX.Element => {
               validationSchema={validationSchema}
               onSubmit={submitLoginForm}
             >
-              <LoginForm />
+              <Suspense
+                fallback={
+                  <LoadingSkeleton height={45} variant="text" width={250} />
+                }
+              >
+                <LoginForm />
+              </Suspense>
             </Formik>
-            <ExternalProviders
-              providersConfiguration={providersConfiguration}
-            />
+            <Suspense
+              fallback={
+                <LoadingSkeleton height={45} variant="text" width={250} />
+              }
+            >
+              <ExternalProviders
+                providersConfiguration={providersConfiguration}
+              />
+            </Suspense>
           </div>
           <div className={classes.copyrightAndVersion}>
-            <Copyright />
+            <Suspense
+              fallback={
+                <LoadingSkeleton
+                  className={classes.copyrightSkeleton}
+                  variant="text"
+                />
+              }
+            >
+              <Copyright />
+            </Suspense>
             {isNil(platformVersions) ? (
               <LoadingSkeleton variant="text" width="40%" />
             ) : (

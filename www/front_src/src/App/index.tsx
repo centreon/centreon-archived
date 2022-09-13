@@ -7,7 +7,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import { headerHeight } from '../Header';
+import { headerHeight, headerPadding } from '../Header';
 
 import useApp from './useApp';
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     backgroundColor: theme.palette.background.paper,
-    height: `calc(100vh - ${theme.spacing(headerHeight)})`,
+    height: `calc(100vh - ${theme.spacing(headerHeight + headerPadding)})`,
     width: '100%',
   },
   wrapper: {
