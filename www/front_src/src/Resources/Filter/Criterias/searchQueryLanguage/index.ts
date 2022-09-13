@@ -339,15 +339,17 @@ const getAutocompleteSuggestions = ({
       criteriaNames
     ]?.options as Array<{ id: string; name: string }>;
 
-    const result = [...criterias, ...criteriasWithInstalledModules];
+    const allCriterias = newSelectableCriterias
+      ? criteriasWithInstalledModules
+      : criterias;
 
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
-      criterias: [...new Set(result)],
+      criterias: allCriterias,
       selectedValues: expressionCriteriaValues,
     });
 
     const isLastValueInSuggestions = getCriteriaValueSuggestions({
-      criterias: [...new Set(result)],
+      criterias: allCriterias,
       selectedValues: [],
     }).includes(lastCriteriaValue);
 
