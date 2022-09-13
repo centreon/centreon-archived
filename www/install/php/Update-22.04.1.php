@@ -19,7 +19,7 @@
  *
  */
 
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 
 require_once __DIR__ . '/../../class/centreonLog.class.php';
 

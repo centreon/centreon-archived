@@ -31,7 +31,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\SubmitResult\Interfaces\SubmitResultServiceInterface;
 

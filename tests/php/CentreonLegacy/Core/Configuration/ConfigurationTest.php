@@ -25,7 +25,7 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * @group CentreonLegacy
- * @group CentreonLegacy\Configuration
+ * @group CentreonLegacy\Provider
  */
 class ConfigurationTest extends TestCase
 {

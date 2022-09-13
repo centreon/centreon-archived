@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 

@@ -18,15 +18,14 @@ before(() => {
 
 When('I select the acknowledge action on a problematic Resource', () => {
   cy.contains(serviceInAcknowledgementName)
-    .parents('div[role="row"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[aria-label="${actions.acknowledge}"]`)
-    .parent('button')
-    .first()
-    .should('be.enabled')
-    .click();
+  cy.get(`[aria-label="${actions.acknowledge}"]`).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains('Acknowledge').click();
@@ -50,15 +49,14 @@ Then('the problematic Resource is displayed as acknowledged', () => {
 
 When('I select the downtime action on a problematic Resource', () => {
   cy.contains(serviceInDowntimeName)
-    .parents('div[role="row"]:first')
+    .parent()
+    .parent()
+    .parent()
+    .parent()
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[aria-label="${actions.setDowntime}"]`)
-    .parent('button')
-    .first()
-    .should('be.enabled')
-    .click();
+  cy.get(`[aria-label="${actions.setDowntime}"]`).last().click();
 
   cy.get('textarea').should('be.visible');
   cy.get('button').contains(`${actions.setDowntime}`).click();

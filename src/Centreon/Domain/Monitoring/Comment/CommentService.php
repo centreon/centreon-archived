@@ -33,7 +33,7 @@ use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\Comment\CommentException;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
 

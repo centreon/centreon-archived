@@ -22,15 +22,15 @@ declare(strict_types=1);
 
 namespace Security\Infrastructure\Repository\Model;
 
-use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 
 class ProviderConfigurationFactoryRdb
 {
     /**
      * @param array<string,mixed> $data
-     * @return ProviderConfiguration
+     * @return Configuration
      */
-    public static function create(array $data): ProviderConfiguration
+    public static function create(array $data): Configuration
     {
         $mandatoryFields = ['id', 'type', 'name', 'is_active', 'is_forced'];
         foreach ($mandatoryFields as $mandatoryField) {
@@ -40,10 +40,11 @@ class ProviderConfigurationFactoryRdb
                 );
             }
         }
-        return new ProviderConfiguration(
+        return new Configuration(
             (int) $data['id'],
             $data['type'],
             $data['name'],
+            $data['custom_configuration'],
             (bool) $data['is_active'],
             (bool) $data['is_forced']
         );
