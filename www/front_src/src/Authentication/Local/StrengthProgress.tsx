@@ -21,9 +21,6 @@ interface Props {
   value: number;
 }
 const useStyles = makeStyles<Theme, Threshold>((theme) => ({
-  label: {
-    color: ({ color }): string => color,
-  },
   linear: {
     backgroundColor: ({ color }): string => color,
   },

@@ -140,7 +140,8 @@ beforeEach(function () {
     $this->validOpenIdConfiguration = $configuration;
 });
 
-it('expects to return an error message in presenter when no provider configuration are found', function () {
+
+it('expects to return an error message in presenter when no provider configuration is found', function () {
     $request = LoginRequest::createForOpenId('127.0.0.1', 'abcde-fghij-klmno');
     $request->providerName = 'unknown provider';
 
