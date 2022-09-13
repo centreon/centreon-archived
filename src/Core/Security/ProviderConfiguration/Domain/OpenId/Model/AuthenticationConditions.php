@@ -68,7 +68,7 @@ class AuthenticationConditions
         private string $endpoint,
         private array $authorizedValues
     ) {
-        $this->validateMandatoryParametersForEnabledConfiguration(
+        $this->validateMandatoryParametersForEnabledCondition(
             $isEnabled,
             $attributePath,
             $endpoint,
@@ -199,7 +199,7 @@ class AuthenticationConditions
     }
 
     /**
-     * Undocumented function
+     * Validate that all mandatory parameters are correctly set when conditions are enabled
      *
      * @param boolean $isEnabled
      * @param string $attributePath
@@ -207,7 +207,7 @@ class AuthenticationConditions
      * @param string[] $authorizedValues
      * @throws OpenIdConfigurationException
      */
-    private function validateMandatoryParametersForEnabledConfiguration(
+    private function validateMandatoryParametersForEnabledCondition(
         bool $isEnabled,
         string $attributePath,
         string $endpoint,

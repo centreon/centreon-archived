@@ -278,16 +278,12 @@ class UpdateOpenIdConfiguration
             $authenticationConditionsParameters["endpoint"],
             $authenticationConditionsParameters["authorized_values"],
         );
-        if (! empty($authenticationConditionsParameters["trusted_client_addresses"])) {
-            $authenticationConditions->setTrustedClientAddresses(
-                $authenticationConditionsParameters["trusted_client_addresses"]
-            );
-        }
-        if (! empty($authenticationConditionsParameters["blacklist_client_addresses"])) {
-            $authenticationConditions->setBlacklistClientAddresses(
-                $authenticationConditionsParameters["blacklist_client_addresses"]
-            );
-        }
+        $authenticationConditions->setTrustedClientAddresses(
+            $authenticationConditionsParameters["trusted_client_addresses"]
+        );
+        $authenticationConditions->setBlacklistClientAddresses(
+            $authenticationConditionsParameters["blacklist_client_addresses"]
+        );
 
         return $authenticationConditions;
     }

@@ -273,17 +273,12 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             $authenticationConditionsRecord["endpoint"],
             $authenticationConditionsRecord["authorized_values"]
         );
-
-        if (! empty($authenticationConditionsRecord["trusted_client_addresses"])) {
-            $authenticationConditions->setTrustedClientAddresses(
-                $authenticationConditionsRecord["trusted_client_addresses"]
-            );
-        }
-        if (! empty($authenticationConditionsRecord["blacklist_client_addresses"])) {
-            $authenticationConditions->setBlacklistClientAddresses(
-                $authenticationConditionsRecord["blacklist_client_addresses"]
-            );
-        }
+        $authenticationConditions->setTrustedClientAddresses(
+            $authenticationConditionsRecord["trusted_client_addresses"]
+        );
+        $authenticationConditions->setBlacklistClientAddresses(
+            $authenticationConditionsRecord["blacklist_client_addresses"]
+        );
 
         return $authenticationConditions;
     }

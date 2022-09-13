@@ -19,7 +19,8 @@
     "auto_import",
     "contact_template_id",
     "email_bind_attribute",
-    "fullname_bind_attribute"
+    "fullname_bind_attribute",
+    "authentication_conditions"
   ],
   "properties": {
     "is_active": {
@@ -27,18 +28,6 @@
     },
     "is_forced": {
       "type": "boolean"
-    },
-    "trusted_client_addresses": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "blacklist_client_addresses": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     },
     "base_url": {
       "type": [
