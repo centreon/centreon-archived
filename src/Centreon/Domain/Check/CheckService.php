@@ -31,7 +31,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 class CheckService extends AbstractCentreonService implements CheckServiceInterface

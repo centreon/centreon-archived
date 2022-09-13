@@ -1,34 +1,34 @@
 centreon_security_find_provider_configuration_local:
     methods: GET
     path: /administration/authentication/providers/local
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\Local\Api\FindConfiguration\FindConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\Local\Api\FindConfiguration\FindConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
 
 centreon_security_update_provider_configuration_local:
     methods: PUT
     path: /administration/authentication/providers/local
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\Local\Api\UpdateConfiguration\UpdateConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\Local\Api\UpdateConfiguration\UpdateConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
 
 centreon_security_update_provider_configuration_web_sso:
     methods: PUT
     path: /administration/authentication/providers/web-sso
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration\UpdateWebSSOConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\WebSSO\Api\UpdateWebSSOConfiguration\UpdateWebSSOConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
 
 centreon_security_find_provider_configuration_web_sso:
     methods: GET
     path: /administration/authentication/providers/web-sso
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\FindWebSSOConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\WebSSO\Api\FindWebSSOConfiguration\FindWebSSOConfigurationController'
 
 centreon_security_update_provider_configuration_openid:
     methods: PUT
     path: /administration/authentication/providers/openid
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
 
 centreon_security_find_provider_configuration_openid:
     methods: GET
     path: /administration/authentication/providers/openid
-    controller: 'Core\Security\Infrastructure\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration\FindOpenIdConfigurationController'
+    controller: 'Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\FindOpenIdConfiguration\FindOpenIdConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"

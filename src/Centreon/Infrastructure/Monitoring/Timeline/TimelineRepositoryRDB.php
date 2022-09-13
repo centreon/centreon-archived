@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\Monitoring\Timeline;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Entity\EntityCreator;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;

@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Tests\Security\Infrastructure\Authentication\Repository\Model;
 
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Security\Infrastructure\Repository\Model\ProviderConfigurationFactoryRdb;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,6 +44,7 @@ class ProviderConfigurationFactoryRdbTest extends TestCase
             'name' => 'local',
             'is_active' => true,
             'is_forced' => true,
+            'custom_configuration' => '{}'
         ];
     }
 
@@ -54,7 +55,7 @@ class ProviderConfigurationFactoryRdbTest extends TestCase
     {
         $providerConfiguration = ProviderConfigurationFactoryRdb::create($this->dbData);
 
-        $this->assertInstanceOf(ProviderConfiguration::class, $providerConfiguration);
+        $this->assertInstanceOf(Configuration::class, $providerConfiguration);
         $this->assertEquals($this->dbData['id'], $providerConfiguration->getId());
         $this->assertEquals($this->dbData['type'], $providerConfiguration->getType());
         $this->assertEquals($this->dbData['name'], $providerConfiguration->getName());
