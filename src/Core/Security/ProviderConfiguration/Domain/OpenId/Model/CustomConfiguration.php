@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
