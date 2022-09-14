@@ -131,6 +131,7 @@ interface Props {
   base: number;
   displayCompleteGraph?: () => void;
   displayTimeValues: boolean;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
@@ -158,6 +159,7 @@ const LegendContent = ({
   displayCompleteGraph,
   timeSeries,
   displayTimeValues,
+  isEditAnomalyDetectionDataDialogOpen,
 }: Props): JSX.Element => {
   const panelWidth = useAtomValue(panelWidthStorageAtom);
   const classes = useStyles({ limitLegendRows, panelWidth });
@@ -268,6 +270,7 @@ const LegendContent = ({
             const metric = find(equals(line.metric), metrics);
 
             const formattedValue =
+              !isEditAnomalyDetectionDataDialogOpen &&
               displayTimeValues &&
               metric &&
               getFormattedMetricData(metric)?.formattedValue;

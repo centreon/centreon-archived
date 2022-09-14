@@ -8,6 +8,7 @@ import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import memoizeComponent from '../../../memoizedComponent';
+import { ResourceType } from '../../../models';
 
 import HostGraph from './HostGraph';
 
@@ -54,6 +55,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
             graphHeight={280}
+            isEditAnomalyDetectionDataDialogOpen={false}
             resource={details}
           />
         </>

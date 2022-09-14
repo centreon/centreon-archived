@@ -1,36 +1,42 @@
 import { ReactNode } from 'react';
 
-import { difference, min, max, isNil } from 'ramda';
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
+import { difference, equals, isNil, max, min } from 'ramda';
 
 import { alpha } from '@mui/material';
 
-import { Line, TimeValue } from '../models';
+import AnomalyDetectionShapeCircle from '../AnomalyDetection/AnomalyDetectionShapeCircle';
 import {
-  getUnits,
+  getTime,
+  getInvertedStackedLines,
+  getMax,
+  getMin,
+  getNotInvertedStackedLines,
   getSortedStackedLines,
   getTimeSeriesForLines,
-  getMin,
-  getMax,
-  getNotInvertedStackedLines,
-  getInvertedStackedLines,
+  getUnits,
   getYScale,
 } from '../timeSeries';
+import { Line, TimeValue } from '../models';
+import { ResourceType } from '../../../models';
 
-import RegularLine from './RegularLine';
 import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
+import RegularLine from './RegularLine';
 import StackedLines from './StackedLines';
 
 interface Props {
   anomalyDetectionEnvelope?: ReactNode;
+  anomalyDetectionResizeEnvelope: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
+  type: string;
   xScale: ScaleTime<number, number>;
 }
 
@@ -82,7 +88,10 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
+  isEditAnomalyDetectionDataDialogOpen,
   anomalyDetectionEnvelope,
+  anomalyDetectionResizeEnvelope,
+  type,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -104,6 +113,19 @@ const Lines = ({
 
   const regularLines = difference(lines, stackedLines);
 
+  const isLegendClicked = lines?.length <= 1;
+
+  const showCircle =
+    equals(type, ResourceType.anomalydetection) &&
+    isEditAnomalyDetectionDataDialogOpen &&
+    !isLegendClicked;
+
+  const propsShapeCircle = {
+    getTime,
+    timeSeries,
+    xScale,
+  };
+
   return (
     <g>
       <StackedLines
@@ -124,6 +146,7 @@ const Lines = ({
       />
       <g>
         {anomalyDetectionEnvelope}
+        {anomalyDetectionResizeEnvelope}
         {regularLines.map(
           ({
             metric,
@@ -146,24 +169,35 @@ const Lines = ({
 
             return (
               <g key={metric}>
-                <RegularAnchorPoint
-                  areaColor={areaColor}
-                  displayTimeValues={displayTimeValues}
-                  lineColor={lineColor}
-                  metric={metric}
-                  timeSeries={timeSeries}
-                  timeTick={timeTick}
-                  transparency={transparency}
-                  xScale={xScale}
-                  yScale={yScale}
-                />
+                {!isEditAnomalyDetectionDataDialogOpen && (
+                  <RegularAnchorPoint
+                    areaColor={areaColor}
+                    displayTimeValues={displayTimeValues}
+                    lineColor={lineColor}
+                    metric={metric}
+                    timeSeries={timeSeries}
+                    timeTick={timeTick}
+                    transparency={transparency}
+                    xScale={xScale}
+                    yScale={yScale}
+                  />
+                )}
                 <RegularLine
                   areaColor={areaColor}
                   filled={filled}
                   graphHeight={graphHeight}
                   highlight={highlight}
                   lineColor={lineColor}
+                  lines={lines}
                   metric={metric}
+                  shapeCircleAnomalyDetection={
+                    showCircle && (
+                      <AnomalyDetectionShapeCircle
+                        {...propsShapeCircle}
+                        yScale={yScale}
+                      />
+                    )
+                  }
                   timeSeries={timeSeries}
                   transparency={transparency}
                   unit={unit}

@@ -9,6 +9,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useRequest, ListingModel } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { CustomFactorsData } from '../AnomalyDetection/models';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
@@ -17,6 +18,7 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
+import MemoizedGraphActions from '../GraphActions';
 import {
   adjustTimePeriodDerivedAtom,
   customTimePeriodAtom,
@@ -26,6 +28,7 @@ import {
   selectedTimePeriodAtom,
 } from '../TimePeriods/timePeriodAtoms';
 import { detailsAtom } from '../../../Details/detailsAtoms';
+import EditAnomalyDetectionDataDialog from '../AnomalyDetection/EditAnomalyDetectionDataDialog';
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
@@ -45,7 +48,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
+  resizeEnvelopeData?: CustomFactorsData;
   resource?: Resource | ResourceDetails;
 }
 
@@ -53,10 +58,16 @@ const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
+  isEditAnomalyDetectionDataDialogOpen,
+  resizeEnvelopeData,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
+  const [performanceGraphRef, setPerformanceGraphRef] =
+    useState<HTMLDivElement | null>(null);
+  const [isOpenModalAD, setIsOpenModalAD] = useState(false);
+
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
@@ -166,6 +177,14 @@ const ExportablePerformanceGraphWithTimeline = ({
     ]);
   };
 
+  const getIsModalOpened = (value: boolean): void => {
+    setIsOpenModalAD(value);
+  };
+
+  const getPerformanceGraphRef = (ref): void => {
+    setPerformanceGraphRef(ref);
+  };
+
   return (
     <Paper className={classes.graphContainer}>
       <div
@@ -178,9 +197,46 @@ const ExportablePerformanceGraphWithTimeline = ({
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
           endpoint={graphEndpoint}
+          getPerformanceGraphRef={getPerformanceGraphRef}
+          graphActions={
+            !isEditAnomalyDetectionDataDialogOpen && (
+              <MemoizedGraphActions
+                customTimePeriod={customTimePeriod}
+                getIsModalOpened={getIsModalOpened}
+                performanceGraphRef={
+                  performanceGraphRef as unknown as MutableRefObject<HTMLDivElement | null>
+                }
+                resourceName={resource?.name as string}
+                resourceParentName={resource?.parent?.name}
+                resourceType={resource?.type}
+                timeline={timeline}
+              />
+            )
+          }
           graphHeight={graphHeight}
+          isEditAnomalyDetectionDataDialogOpen={
+            isEditAnomalyDetectionDataDialogOpen
+          }
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
+          modal={
+            isOpenModalAD && (
+              <EditAnomalyDetectionDataDialog
+                isOpen={isOpenModalAD}
+                setIsOpen={setIsOpenModalAD}
+              >
+                {({ factorsData }): JSX.Element => (
+                  <ExportablePerformanceGraphWithTimeline
+                    isEditAnomalyDetectionDataDialogOpen
+                    graphHeight={180}
+                    resizeEnvelopeData={factorsData}
+                    resource={resource}
+                  />
+                )}
+              </EditAnomalyDetectionDataDialog>
+            )
+          }
+          resizeEnvelopeData={resizeEnvelopeData}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

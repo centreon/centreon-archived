@@ -9,6 +9,7 @@ import { Divider, Menu, MenuItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { useTheme } from '@mui/material/styles';
 import WrenchIcon from '@mui/icons-material/Build';
 
 import {
@@ -23,7 +24,7 @@ import {
   labelMediumSize,
   labelPerformancePage,
   labelSmallSize,
-  labelEditAnomalyDetectionData,
+  labelPerformanceGraphAD,
   labelCSV,
 } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
@@ -40,6 +41,7 @@ import {
 
 interface Props {
   customTimePeriod?: CustomTimePeriod;
+  getIsModalOpened: (value: boolean) => void;
   performanceGraphRef: MutableRefObject<HTMLDivElement | null>;
   resourceName: string;
   resourceParentName?: string;
@@ -49,12 +51,10 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
+    alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'inline',
     flexDirection: 'row',
-  },
-  labelButton: {
-    fontWeight: 'bold',
   },
 }));
 
@@ -65,6 +65,7 @@ const GraphActions = ({
   resourceType,
   timeline,
   performanceGraphRef,
+  getIsModalOpened,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
@@ -77,7 +78,6 @@ const GraphActions = ({
     resourceType,
     ResourceType.anomalydetection,
   );
-
   const openSizeExportMenu = (event: MouseEvent<HTMLButtonElement>): void => {
     setMenuAnchor(event.currentTarget);
   };
@@ -132,6 +132,10 @@ const GraphActions = ({
     });
   };
 
+  const openModalAnomalyDetection = (): void => {
+    getIsModalOpened(true);
+  };
+
   return (
     <div className={classes.buttonGroup}>
       <ContentWithCircularLoading
@@ -157,19 +161,20 @@ const GraphActions = ({
             data-testid={labelExport}
             disabled={isNil(timeline)}
             size="small"
-            title={t(labelExport)}
+            title={t(labelExportToPng)}
             onClick={openSizeExportMenu}
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
           {isResourceAnomalyDetection && (
             <IconButton
-              ariaLabel={t(labelEditAnomalyDetectionData)}
-              data-testid={labelEditAnomalyDetectionData}
+              disableTouchRipple
+              ariaLabel={t(labelPerformanceGraphAD)}
+              data-testid={labelPerformanceGraphAD}
               disabled={isNil(timeline)}
               size="small"
-              title={t(labelEditAnomalyDetectionData)}
-              onClick={(): void => undefined}
+              title={t(labelPerformanceGraphAD)}
+              onClick={openModalAnomalyDetection}
             >
               <WrenchIcon fontSize="inherit" />
             </IconButton>

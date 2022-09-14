@@ -1,65 +1,71 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Responsive } from '@visx/visx';
+import { useAtomValue } from 'jotai/utils';
 import {
-  map,
-  prop,
-  propEq,
+  add,
+  equals,
   find,
-  reject,
-  sortBy,
+  head,
   isEmpty,
   isNil,
-  head,
-  equals,
-  pipe,
-  not,
-  add,
+  map,
   negate,
+  not,
   or,
+  pipe,
+  prop,
+  propEq,
   propOr,
+  reject,
+  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useAtomValue } from 'jotai/utils';
 
-import { Typography, Theme, Skeleton } from '@mui/material';
+import { Skeleton, Theme, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {
-  useRequest,
   getData,
   timeFormat,
   useLocaleDateTimeFormat,
+  useRequest,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
-import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { ResourceDetails } from '../../Details/models';
 import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
 import { selectedResourcesDetailsAtom } from '../../Details/detailsAtoms';
 
-import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
+import { CustomFactorsData } from './AnomalyDetection/models';
 import Graph from './Graph';
-import Legend from './Legend';
-import LoadingSkeleton from './LoadingSkeleton';
-import {
-  GraphData,
-  TimeValue,
-  Line as LineModel,
-  AdjustTimePeriodProps,
-} from './models';
-import { getTimeSeries, getLineData, getMetrics } from './timeSeries';
-import { TimeShiftDirection } from './Graph/TimeShiftZones';
-import MemoizedGraphActions from './GraphActions';
 import {
   isListingGraphOpenAtom,
   timeValueAtom,
 } from './Graph/mouseTimeValueAtoms';
+import { TimeShiftDirection } from './Graph/TimeShiftZones';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
+import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
+import {
+  AdjustTimePeriodProps,
+  GraphData,
+  Line as LineModel,
+  TimeValue,
+} from './models';
+import { getLineData, getMetrics, getTimeSeries } from './timeSeries';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -68,10 +74,17 @@ interface Props {
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
+  getPerformanceGraphRef: (
+    value: MutableRefObject<HTMLDivElement | null>,
+  ) => void;
+  graphActions?: ReactNode;
   graphHeight: number;
+  isEditAnomalyDetectionDataDialogOpen?: boolean;
   isInViewport?: boolean;
   limitLegendRows?: boolean;
+  modal?: ReactNode;
   onAddComment?: (commentParameters: CommentParameters) => void;
+  resizeEnvelopeData?: CustomFactorsData;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
@@ -148,6 +161,11 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
+  isEditAnomalyDetectionDataDialogOpen,
+  modal,
+  graphActions,
+  getPerformanceGraphRef,
+  resizeEnvelopeData,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -160,6 +178,7 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = useState<Array<LineModel>>();
   const [title, setTitle] = useState<string>();
   const [base, setBase] = useState<number>();
+
   const performanceGraphRef = useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = useRef<number>(0);
 
@@ -188,16 +207,25 @@ const PerformanceGraph = ({
       .then((graphData) => {
         const type = resource?.type;
         let newLineData;
+
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
         newLineData = getLineData(graphData);
 
         if (equals(type, ResourceType.anomalydetection)) {
+          const isModalAD = endpoint.includes('15');
           setTimeSeries(getTimeSeries(mockedResultGraph));
           setBase(mockedResultGraph.global.base);
           setTitle(mockedResultGraph.global.title);
           newLineData = getLineData(mockedResultGraph);
+
+          if (isModalAD) {
+            setTimeSeries(getTimeSeries(mockedResultModalGraph));
+            setBase(mockedResultModalGraph.global.base);
+            setTitle(mockedResultModalGraph.global.title);
+            newLineData = getLineData(mockedResultModalGraph);
+          }
         }
 
         if (lineData) {
@@ -229,6 +257,10 @@ const PerformanceGraph = ({
         performanceGraphRef.current.clientHeight;
     }
   }, [isInViewport, lineData]);
+
+  useEffect(() => {
+    getPerformanceGraphRef(performanceGraphRef);
+  }, [performanceGraphRef]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
@@ -381,23 +413,20 @@ const PerformanceGraph = ({
           >
             {title}
           </Typography>
-          <MemoizedGraphActions
-            customTimePeriod={customTimePeriod}
-            performanceGraphRef={performanceGraphRef}
-            resourceName={resource.name}
-            resourceParentName={resource.parent?.name}
-            resourceType={resource.type}
-            timeline={timeline}
-          />
+          {graphActions}
+          {modal}
         </div>
       )}
 
       <div>
-        {displayTimeValues && timeTick && containsMetrics && (
-          <Typography align="center" variant="body1">
-            {toDateTime(timeTick)}
-          </Typography>
-        )}
+        {displayTimeValues &&
+          timeTick &&
+          containsMetrics &&
+          !isEditAnomalyDetectionDataDialogOpen && (
+            <Typography align="center" variant="body1">
+              {toDateTime(timeTick)}
+            </Typography>
+          )}
       </div>
       <div>
         <Responsive.ParentSize>
@@ -410,10 +439,14 @@ const PerformanceGraph = ({
               displayEventAnnotations={displayEventAnnotations}
               displayTimeValues={displayTimeValues}
               height={height}
+              isEditAnomalyDetectionDataDialogOpen={
+                isEditAnomalyDetectionDataDialogOpen
+              }
               lines={displayedLines}
               loading={
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
+              resizeEnvelopeData={resizeEnvelopeData}
               resource={resource}
               shiftTime={shiftTime}
               timeSeries={timeSeries}
@@ -429,6 +462,9 @@ const PerformanceGraph = ({
         base={base as number}
         displayCompleteGraph={displayCompleteGraph}
         displayTimeValues={displayTimeValues}
+        isEditAnomalyDetectionDataDialogOpen={
+          isEditAnomalyDetectionDataDialogOpen
+        }
         limitLegendRows={limitLegendRows}
         lines={sortedLines}
         timeSeries={timeSeries}
