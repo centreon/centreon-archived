@@ -25,9 +25,13 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\Contact\Contact;
 
 abstract class AbstractHypermediaProvider
 {
+    public const URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}';
+    public const ENDPOINT_SERVICE_DOWNTIME = '';
+
     /**
      * @param ContactInterface $contact
      * @param UriGenerator $uriGenerator
@@ -39,7 +43,8 @@ abstract class AbstractHypermediaProvider
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $parameters
+     * @return array<string, string|null>
      */
     public function createInternalUris(array $parameters): array
     {
@@ -157,7 +162,7 @@ abstract class AbstractHypermediaProvider
     }
 
     /**
-     * @param array<string, int> $parameters
+     * @param array<string, int> $urlParams
      */
     protected function createUrlForEventLog(array $urlParams): ?string
     {
