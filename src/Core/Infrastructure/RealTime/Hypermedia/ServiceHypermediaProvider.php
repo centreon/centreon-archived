@@ -24,8 +24,6 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\RequestParameters\RequestParameters;
 use Core\Domain\RealTime\Model\ResourceTypes\ServiceResourceType;
 
 class ServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
@@ -45,16 +43,6 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
                  URI_SERVICE_CATEGORY_CONFIGURATION = '/main.php?p=60209&o=c&sc_id={serviceCategoryId}';
 
     /**
-     * @param ContactInterface $contact
-     * @param UriGenerator $uriGenerator
-     */
-    public function __construct(
-        private ContactInterface $contact,
-        private UriGenerator $uriGenerator
-    ) {
-    }
-
-    /**
      * @inheritDoc
      */
     public function isValidFor(string $resourceType): bool
@@ -63,10 +51,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
     }
 
     /**
-     * Create configuration redirection uri for Service resource
-     *
-     * @param array<string, mixed> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForConfiguration(array $parameters): ?string
     {
@@ -79,17 +64,11 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_CONFIGURATION,
-            ['{serviceId}' => $parameters['serviceId']]
-        );
+        return $this->generateUri(self::URI_CONFIGURATION, ['{serviceId}' => $parameters['serviceId']]);
     }
 
     /**
-     * Create reporting redirection uri for Service resource
-     *
-     * @param array<string, mixed> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForReporting(array $parameters): ?string
     {
@@ -97,7 +76,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_REPORTING,
             [
                 '{serviceId}' => $parameters['serviceId'],
@@ -107,61 +86,13 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
     }
 
     /**
-     * Create event logs redirection uri for Service resource
-     *
-     * @param array<string, mixed> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
-            return null;
-        }
+        $urlParams = ['{serviceId}' => $parameters['serviceId'], '{hostId}' => $parameters['hostId']];
 
-        return $this->uriGenerator->generateUri(
-            self::URI_EVENT_LOGS,
-            [
-                '{serviceId}' => $parameters['serviceId'],
-                '{hostId}' => $parameters['hostId']
-            ]
-        );
-    }
-
-    /**
-     * @param array<string, integer> $parameters
-     * @return string
-     */
-    private function generateDowntimeEndpoint(array $parameters): string
-    {
-        $downtimeFilter = [
-            'search' => json_encode([
-                RequestParameters::AGGREGATE_OPERATOR_AND => [
-                    [
-                        'start_time' => [
-                            RequestParameters::OPERATOR_LESS_THAN => time(),
-                        ],
-                        'end_time' => [
-                            RequestParameters::OPERATOR_GREATER_THAN => time(),
-                        ],
-                        [
-                            RequestParameters::AGGREGATE_OPERATOR_OR => [
-                                'is_cancelled' => [
-                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
-                                ],
-                                'deletion_time' => [
-                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
-                                ],
-                            ],
-                        ]
-                    ]
-                ]
-            ])
-        ];
-
-        return $this->uriGenerator->generateEndpoint(
-            self::ENDPOINT_SERVICE_DOWNTIME,
-            array_merge($parameters, $downtimeFilter)
-        );
+        return $this->createUrlForEventLog($urlParams);
     }
 
     /**
@@ -172,7 +103,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
     {
         $acknowledgementFilter = ['limit' => 1];
 
-        return $this->uriGenerator->generateEndpoint(
+        return $this->generateEndpoint(
             self::ENDPOINT_SERVICE_ACKNOWLEDGEMENT,
             array_merge($parameters, $acknowledgementFilter)
         );
@@ -183,37 +114,22 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
      */
     public function createEndpoints(array $parameters): array
     {
-        $parametersIds = ['serviceId' => $parameters['serviceId'], 'hostId' => $parameters['hostId'],];
+        $urlParams = ['serviceId' => $parameters['serviceId'], 'hostId' => $parameters['hostId'],];
 
         return [
-            'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $parametersIds),
-            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $parametersIds),
-            'timeline_download' => $this->uriGenerator->generateEndpoint(self::TIMELINE_DOWNLOAD, $parametersIds),
-            'status_graph' => $this->uriGenerator->generateEndpoint(
-                self::ENDPOINT_SERVICE_STATUS_GRAPH,
-                $parametersIds
-            ),
+            'details' => $this->generateEndpoint(self::ENDPOINT_SERVICE_DETAILS, $urlParams),
+            'timeline' => $this->generateEndpoint(self::ENDPOINT_SERVICE_TIMELINE, $urlParams),
+            'timeline_download' => $this->generateEndpoint(self::TIMELINE_DOWNLOAD, $urlParams),
+            'status_graph' => $this->generateEndpoint(self::ENDPOINT_SERVICE_STATUS_GRAPH, $urlParams),
             'performance_graph' => $parameters['hasGraphData']
-                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_SERVICE_PERFORMANCE_GRAPH, $parametersIds)
+                ? $this->generateEndpoint(self::ENDPOINT_SERVICE_PERFORMANCE_GRAPH, $urlParams)
                 : null,
-            'notification_policy' => $this->uriGenerator->generateEndpoint(
+            'notification_policy' => $this->generateEndpoint(
                 self::ENDPOINT_SERVICE_NOTIFICATION_POLICY,
-                $parametersIds
+                $urlParams
             ),
-            'downtime' => $this->generateDowntimeEndpoint($parametersIds),
-            'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createInternalUris(array $parameters): array
-    {
-        return [
-            'configuration' => $this->createForConfiguration($parameters),
-            'logs' => $this->createForEventLog($parameters),
-            'reporting' => $this->createForReporting($parameters)
+            'downtime' => $this->generateDowntimeEndpoint($urlParams),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($urlParams)
         ];
     }
 
@@ -234,7 +150,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_SERVICEGROUP_CONFIGURATION,
             ['{servicegroupId}' => $parameters['servicegroupId']]
         );
@@ -272,7 +188,7 @@ class ServiceHypermediaProvider extends AbstractHypermediaProvider implements Hy
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_SERVICE_CATEGORY_CONFIGURATION,
             ['{serviceCategoryId}' => $parameters['categoryId']]
         );

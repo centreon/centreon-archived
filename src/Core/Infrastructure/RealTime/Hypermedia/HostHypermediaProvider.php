@@ -24,10 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\RequestParameters\RequestParameters;
 use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 
 class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
@@ -38,20 +35,10 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
                  URI_HOST_CATEGORY_CONFIGURATION = '/main.php?p=60104&o=c&hc_id={hostCategoryId}',
                  ENDPOINT_HOST_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addhostacknowledgement',
                  ENDPOINT_HOST_DETAILS = 'centreon_application_monitoring_resource_details_host',
-                 ENDPOINT_HOST_DOWNTIME = 'monitoring.downtime.addHostDowntime',
+                 ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addHostDowntime',
                  ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
                  ENDPOINT_HOST_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_host';
-
-    /**
-     * @param ContactInterface $contact
-     * @param UriGenerator $uriGenerator
-     */
-    public function __construct(
-        private ContactInterface $contact,
-        private UriGenerator $uriGenerator
-    ) {
-    }
 
     /**
      * @inheritDoc
@@ -65,48 +52,11 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
      * @param array<string, int> $parameters
      * @return string
      */
-    private function generateDowntimeEndpoint(array $parameters): string
-    {
-        $downtimeFilter = [
-            'search' => json_encode([
-                RequestParameters::AGGREGATE_OPERATOR_AND => [
-                    [
-                        'start_time' => [
-                            RequestParameters::OPERATOR_LESS_THAN => time(),
-                        ],
-                        'end_time' => [
-                            RequestParameters::OPERATOR_GREATER_THAN => time(),
-                        ],
-                        [
-                            RequestParameters::AGGREGATE_OPERATOR_OR => [
-                                'is_cancelled' => [
-                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
-                                ],
-                                'deletion_time' => [
-                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
-                                ],
-                            ],
-                        ]
-                    ]
-                ]
-            ])
-        ];
-
-        return $this->uriGenerator->generateEndpoint(
-            self::ENDPOINT_HOST_DOWNTIME,
-            array_merge($parameters, $downtimeFilter)
-        );
-    }
-
-    /**
-     * @param array<string, int> $parameters
-     * @return string
-     */
     private function generateAcknowledgementEndpoint(array $parameters): string
     {
         $acknowledgementFilter = ['limit' => 1];
 
-        return $this->uriGenerator->generateEndpoint(
+        return $this->generateEndpoint(
             self::ENDPOINT_HOST_ACKNOWLEDGEMENT,
             array_merge($parameters, $acknowledgementFilter)
         );
@@ -117,43 +67,23 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
      */
     public function createEndpoints(array $parameters): array
     {
-        $parametersIds = [
-            'hostId' => $parameters['hostId']
-        ];
+        $urlParams = ['hostId' => $parameters['hostId']];
 
         return [
-            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, $parametersIds),
-            'notification_policy' => $this->uriGenerator->generateEndpoint(
+            'timeline' => $this->generateEndpoint(self::ENDPOINT_HOST_TIMELINE, $urlParams),
+            'timeline_download' => $this->generateEndpoint(self::ENDPOINT_HOST_TIMELINE_DOWNLOAD, $urlParams),
+            'notification_policy' => $this->generateEndpoint(
                 self::ENDPOINT_HOST_NOTIFICATION_POLICY,
-                $parametersIds
+                $urlParams
             ),
-            'timeline_download' => $this->uriGenerator->generateEndpoint(
-                self::ENDPOINT_HOST_TIMELINE_DOWNLOAD,
-                $parametersIds
-            ),
-            'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $parametersIds),
-            'downtime' => $this->generateDowntimeEndpoint($parametersIds),
-            'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersIds)
+            'details' => $this->generateEndpoint(self::ENDPOINT_HOST_DETAILS, $urlParams),
+            'downtime' => $this->generateDowntimeEndpoint($urlParams),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($urlParams)
         ];
     }
 
     /**
      * @inheritDoc
-     */
-    public function createInternalUris(array $parameters): array
-    {
-        return [
-            'configuration' => $this->createForConfiguration($parameters),
-            'logs' => $this->createForEventLog($parameters),
-            'reporting' => $this->createForReporting($parameters),
-        ];
-    }
-
-    /**
-     * Create configuration redirection uri
-     *
-     * @param array<string, mixed> $parameters
-     * @return string|null
      */
     public function createForConfiguration(array $parameters): ?string
     {
@@ -166,17 +96,11 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_CONFIGURATION,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->generateUri(self::URI_CONFIGURATION, ['{hostId}' => $parameters['hostId']]);
     }
 
     /**
-     * Create reporting redirection uri
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForReporting(array $parameters): ?string
     {
@@ -184,28 +108,17 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_REPORTING,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->generateUri(self::URI_REPORTING, ['{hostId}' => $parameters['hostId']]);
     }
 
     /**
-     * Create event logs redirection uri
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
-            return null;
-        }
+        $urlParams = ['{hostId}' => $parameters['hostId']];
 
-        return $this->uriGenerator->generateUri(
-            self::URI_EVENT_LOGS,
-            ['{hostId}' => $parameters['hostId']]
-        );
+        return $this->createUrlForEventLog($urlParams);
     }
 
     /**
@@ -225,7 +138,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_HOSTGROUP_CONFIGURATION,
             ['{hostgroupId}' => $parameters['hostgroupId']]
         );
@@ -248,7 +161,7 @@ class HostHypermediaProvider extends AbstractHypermediaProvider implements Hyper
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
+        return $this->generateUri(
             self::URI_HOST_CATEGORY_CONFIGURATION,
             ['{hostCategoryId}' => $parameters['categoryId']]
         );
