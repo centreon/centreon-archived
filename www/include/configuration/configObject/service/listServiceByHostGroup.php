@@ -221,7 +221,8 @@ if ($searchS || $searchHG) {
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
         "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
-        "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN ($tmpBinds) AND hsr.hostgroup_hg_id IN ($tmp2Binds) " .
+        "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id " .
+        "IN ($tmpBinds) AND hsr.hostgroup_hg_id IN ($tmp2Binds) " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = :template " : "") .
         " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
         "ORDER BY hg.hg_name, sv.service_description LIMIT :offset_, :limit";
