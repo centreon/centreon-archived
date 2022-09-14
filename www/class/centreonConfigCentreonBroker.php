@@ -793,7 +793,7 @@ class CentreonConfigCentreonBroker
         $query = "SELECT config_id FROM cfg_centreonbroker WHERE config_name = :config_name";
         try {
             $statement = $this->db->prepare($query);
-            $statement->bindValue(':config_name', (string) $values['name'], \PDO::PARAM_STR);
+            $statement->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
             $statement->execute();
         } catch (\PDOException $e) {
             return false;

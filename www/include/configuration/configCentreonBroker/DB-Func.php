@@ -306,10 +306,14 @@ function getCfgBrokerData(int $configId): array
             event_queue_max_size, cache_directory, daemon "
              . "FROM cfg_centreonbroker "
              . "WHERE config_id = :config_id ";
-    $statement = $pearDB->prepare($query);
-    $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
-    $statement->execute();
-    $cfgBrokerData = $statement->fetch(\PDO::FETCH_ASSOC);
+    try {
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+        $statement->execute();
+        $cfgBrokerData = $statement->fetch(\PDO::FETCH_ASSOC);
+    } catch (PDOException $exception) {
+        throw new \Exception("Cannot fetch Broker config data");
+    }
     $statement->closeCursor();
     return $cfgBrokerData;
 }
@@ -327,10 +331,14 @@ function getCfgBrokerInfoData(int $configId): array
     $query = "SELECT config_key, config_value, config_group, config_group_id "
              . "FROM cfg_centreonbroker_info "
              . "WHERE config_id = :config_id";
-    $statement = $pearDB->prepare($query);
-    $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
-    $statement->execute();
-    $cfgBrokerInfoData = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    try {
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+        $statement->execute();
+        $cfgBrokerInfoData = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    } catch (\PDOException $exception) {
+        throw new \Exception("Cannot fetch Broker info config data");
+    }
     $statement->closeCursor();
     return $cfgBrokerInfoData;
 }
