@@ -29,6 +29,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface
     as WriteRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
@@ -90,8 +91,6 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         return [
             'is_active' => $configuration->isActive(),
             'is_forced' => $configuration->isForced(),
-            'trusted_client_addresses' => $customConfiguration->getTrustedClientAddresses(),
-            'blacklist_client_addresses' => $customConfiguration->getBlacklistClientAddresses(),
             'base_url' => $customConfiguration->getBaseUrl(),
             'authorization_endpoint' => $customConfiguration->getAuthorizationEndpoint(),
             'token_endpoint' => $customConfiguration->getTokenEndpoint(),
@@ -110,7 +109,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'fullname_bind_attribute' => $customConfiguration->getUserNameBindAttribute(),
             'claim_name' => $customConfiguration->getClaimName(),
             'contact_group_id' => $customConfiguration->getContactGroup()?->getId(),
-            'roles_mapping' => $customConfiguration->getACLConditions()->toArray()
+            'roles_mapping' => $customConfiguration->getACLConditions()->toArray(),
+            "authentication_conditions" => $this->authenticationConditionsToArray(
+                $customConfiguration->getAuthenticationConditions()
+            )
         ];
     }
 
@@ -159,5 +161,21 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
                 $insertStatement->execute();
             }
         }
+    }
+
+    /**
+     * @param AuthenticationConditions $authenticationConditions
+     * @return array<string,bool|string|string[]>
+     */
+    private function authenticationConditionsToArray(AuthenticationConditions $authenticationConditions): array
+    {
+        return [
+            "is_enabled" => $authenticationConditions->isEnabled(),
+            "attribute_path" => $authenticationConditions->getAttributePath(),
+            "endpoint" => $authenticationConditions->getEndpoint(),
+            "authorized_values" => $authenticationConditions->getAuthorizedValues(),
+            "trusted_client_addresses" => $authenticationConditions->getTrustedClientAddresses(),
+            "blacklist_client_addresses" => $authenticationConditions->getBlacklistClientAddresses(),
+        ];
     }
 }

@@ -58,13 +58,11 @@ class UpdateOpenIdConfigurationController extends AbstractController
      */
     private function createUpdateOpenIdConfigurationRequest(Request $request): UpdateOpenIdConfigurationRequest
     {
-        $json = (string)$request->getContent();
+        $json = (string) $request->getContent();
         $requestData  = json_decode($json, true);
         $updateOpenIdConfigurationRequest = new UpdateOpenIdConfigurationRequest();
         $updateOpenIdConfigurationRequest->isActive = $requestData['is_active'];
         $updateOpenIdConfigurationRequest->isForced = $requestData['is_forced'];
-        $updateOpenIdConfigurationRequest->trustedClientAddresses = $requestData['trusted_client_addresses'];
-        $updateOpenIdConfigurationRequest->blacklistClientAddresses = $requestData['blacklist_client_addresses'];
         $updateOpenIdConfigurationRequest->baseUrl = $requestData['base_url'];
         $updateOpenIdConfigurationRequest->authorizationEndpoint = $requestData['authorization_endpoint'];
         $updateOpenIdConfigurationRequest->tokenEndpoint = $requestData['token_endpoint'];
@@ -85,6 +83,7 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->authorizationRules = $requestData['authorization_rules'];
         $updateOpenIdConfigurationRequest->contactGroupId = $requestData["contact_group_id"];
         $updateOpenIdConfigurationRequest->rolesMapping = $requestData['roles_mapping'];
+        $updateOpenIdConfigurationRequest->authenticationConditions = $requestData["authentication_conditions"];
 
         return $updateOpenIdConfigurationRequest;
     }

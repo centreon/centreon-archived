@@ -42,16 +42,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ?string $claimName = self::DEFAULT_CLAIM_NAME;
 
     /**
-     * @var string[]
-     */
-    private array $trustedClientAddresses = [];
-
-    /**
-     * @var string[]
-     */
-    private array $blacklistClientAddresses = [];
-
-    /**
      * @var string|null
      */
     private ?string $endSessionEndpoint = null;
@@ -147,28 +137,17 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ACLConditions $aclConditions;
 
     /**
+     * @var AuthenticationConditions
+     */
+    private AuthenticationConditions $authenticationConditions;
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
     public function __construct(array $json)
     {
         $this->create($json);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getTrustedClientAddresses(): array
-    {
-        return $this->trustedClientAddresses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getBlacklistClientAddresses(): array
-    {
-        return $this->blacklistClientAddresses;
     }
 
     /**
@@ -644,6 +623,24 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
+     * @param AuthenticationConditions $authenticationConditions
+     * @return self
+     */
+    public function setAuthenticationConditions(AuthenticationConditions $authenticationConditions): self
+    {
+        $this->authenticationConditions = $authenticationConditions;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAuthenticationConditions(): AuthenticationConditions
+    {
+        return $this->authenticationConditions;
+    }
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
@@ -664,8 +661,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         $this->setContactTemplate($json['contact_template']);
         $this->setEmailBindAttribute($json['email_bind_attribute']);
         $this->setUserNameBindAttribute($json['fullname_bind_attribute']);
-        $this->setTrustedClientAddresses($json['trusted_client_addresses']);
-        $this->setBlacklistClientAddresses($json['blacklist_client_addresses']);
         $this->setEndSessionEndpoint($json['endsession_endpoint']);
         $this->setConnectionScopes($json['connection_scopes']);
         $this->setLoginClaim($json['login_claim']);
@@ -676,7 +671,8 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         if (array_key_exists('authorization_rules', $json)) {
             $this->setAuthorizationRules($json['authorization_rules']);
         }
-        $this->setACLConditions($json['roles_mapping']);
+        $this->setAuthenticationConditions($json['authentication_conditions']);
+        $this->setACLConditions($json['roles_mapping']);     
     }
 
     /**

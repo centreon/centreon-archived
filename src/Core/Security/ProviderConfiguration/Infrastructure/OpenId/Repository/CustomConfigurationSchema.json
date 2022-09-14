@@ -1,69 +1,173 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Read OpenID configuration",
-    "type": "object",
-    "additionalProperties": false,
-    "required": [
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Read OpenID configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "base_url",
+    "authorization_endpoint",
+    "token_endpoint",
+    "introspection_token_endpoint",
+    "userinfo_endpoint",
+    "endsession_endpoint",
+    "connection_scopes",
+    "login_claim",
+    "client_id",
+    "client_secret",
+    "authentication_type",
+    "verify_peer",
+    "auto_import",
+    "contact_template_id",
+    "email_bind_attribute",
+    "fullname_bind_attribute",
+    "authentication_conditions"
+  ],
+  "properties": {
+    "is_active": {
+      "type": "boolean"
+    },
+    "is_forced": {
+      "type": "boolean"
+    },
+    "base_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authorization_endpoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "token_endpoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "introspection_token_endpoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "userinfo_endpoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "endsession_endpoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "connection_scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "login_claim": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "client_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "client_secret": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authentication_type": {
+      "enum": [
+        "client_secret_post",
+        "client_secret_basic"
+      ]
+    },
+    "verify_peer": {
+      "type": "boolean"
+    },
+    "auto_import": {
+      "type": "boolean"
+    },
+    "contact_template_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "email_bind_attribute": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fullname_bind_attribute": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contact_group_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "claim_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authentication_conditions": {
+      "type": "object",
+      "required": [
+        "is_enabled",
+        "attribute_path",
+        "endpoint",
+        "authorized_values",
         "trusted_client_addresses",
-        "blacklist_client_addresses",
-        "base_url",
-        "authorization_endpoint",
-        "token_endpoint",
-        "introspection_token_endpoint",
-        "userinfo_endpoint",
-        "endsession_endpoint",
-        "connection_scopes",
-        "login_claim",
-        "client_id",
-        "client_secret",
-        "authentication_type",
-        "verify_peer",
-        "auto_import",
-        "contact_template_id",
-        "email_bind_attribute",
-        "fullname_bind_attribute"
-    ],
-    "properties": {
-      "is_active": {
-        "type": "boolean"
-      },
-      "is_forced": {
-        "type": "boolean"
-      },
-      "trusted_client_addresses": {
-        "type": "array",
-        "items": {
+        "blacklist_client_addresses"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "authorized_values": {
+          "type": "array",
+          "items": {
             "type": "string"
-        }
-      },
-      "blacklist_client_addresses": {
-        "type": "array",
-        "items": {
+          }
+        },
+        "trusted_client_addresses": {
+          "type": "array",
+          "items": {
             "type": "string"
-        }
-      },
-      "base_url": {
-        "type": ["string", "null"]
-      },
-      "authorization_endpoint": {
-        "type": ["string", "null"]
-      },
-      "token_endpoint": {
-        "type": ["string", "null"]
-      },
-      "introspection_token_endpoint": {
-        "type": ["string", "null"]
-      },
-      "userinfo_endpoint": {
-        "type": ["string", "null"]
-      },
-      "endsession_endpoint": {
-        "type": ["string", "null"]
-      },
-      "connection_scopes": {
-        "type": "array",
-        "items": {
+          }
+        },
+        "blacklist_client_addresses": {
+          "type": "array",
+          "items": {
             "type": "string"
+          }
         }
       },
       "login_claim": {
@@ -163,4 +267,5 @@
         }
       }
     }
+  }
 }

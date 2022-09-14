@@ -25,6 +25,7 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpe
 
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 
 class FindOpenIdConfigurationResponse
@@ -38,16 +39,6 @@ class FindOpenIdConfigurationResponse
      * @var boolean
      */
     public bool $isForced = false;
-
-    /**
-     * @var string[]
-     */
-    public array $trustedClientAddresses = [];
-
-    /**
-     * @var string[]
-     */
-    public array $blacklistClientAddresses = [];
 
     /**
      * @var string|null
@@ -150,6 +141,11 @@ class FindOpenIdConfigurationResponse
     public array $aclConditions = [];
 
     /**
+     * @var array<string,bool|string|string[]>
+     */
+    public array $authenticationConditions = [];
+
+    /**
      * @param ContactTemplate $contactTemplate
      * @return array<string,int|string>
      */
@@ -188,5 +184,21 @@ class FindOpenIdConfigurationResponse
                 ]
             ];
         }, $authorizationRules);
+    }
+
+    /**
+     * @param AuthenticationConditions $authenticationConditions
+     * @return array<string,bool|string|string[]>
+     */
+    public static function authenticationConditionsToArray(AuthenticationConditions $authenticationConditions): array
+    {
+        return [
+            "is_enabled" => $authenticationConditions->isEnabled(),
+            "attribute_path" => $authenticationConditions->getAttributePath(),
+            "endpoint" => $authenticationConditions->getEndpoint(),
+            "authorized_values" => $authenticationConditions->getAuthorizedValues(),
+            "trusted_client_addresses" => $authenticationConditions->getTrustedClientAddresses(),
+            "blacklist_client_addresses" => $authenticationConditions->getBlacklistClientAddresses()
+        ];
     }
 }

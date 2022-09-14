@@ -632,6 +632,7 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
             'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
             'relations' => []
         ];
+
         $encodedConfiguration = json_encode($customConfiguration);
 
         $statement = $pearDB->prepare(

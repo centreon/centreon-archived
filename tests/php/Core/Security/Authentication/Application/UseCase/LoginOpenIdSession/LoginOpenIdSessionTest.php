@@ -48,6 +48,7 @@ use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepositor
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
@@ -142,7 +143,8 @@ beforeEach(function () {
             '',
             new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
             []
-        )
+        ),
+        'authentication_conditions' => new AuthenticationConditions(false, '', '', [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
     $this->validOpenIdConfiguration = $configuration;

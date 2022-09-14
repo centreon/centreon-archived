@@ -69,9 +69,6 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
         $findOpenIdConfigurationResponse->isActive = $provider->isActive();
         $findOpenIdConfigurationResponse->isForced = $provider->isForced();
-        $findOpenIdConfigurationResponse->trustedClientAddresses = $customConfiguration->getTrustedClientAddresses();
-        $findOpenIdConfigurationResponse->blacklistClientAddresses =
-            $customConfiguration->getBlacklistClientAddresses();
         $findOpenIdConfigurationResponse->baseUrl = $customConfiguration->getBaseUrl();
         $findOpenIdConfigurationResponse->authorizationEndpoint = $customConfiguration->getAuthorizationEndpoint();
         $findOpenIdConfigurationResponse->tokenEndpoint = $customConfiguration->getTokenEndpoint();
@@ -100,6 +97,10 @@ class FindOpenIdConfiguration
             :
             $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
         $findOpenIdConfigurationResponse->aclConditions = $customConfiguration->getACLConditions()->toArray();
+        $findOpenIdConfigurationResponse->authenticationConditions =
+            $findOpenIdConfigurationResponse::authenticationConditionsToArray(
+                $customConfiguration->getAuthenticationConditions()
+            );
 
         return $findOpenIdConfigurationResponse;
     }

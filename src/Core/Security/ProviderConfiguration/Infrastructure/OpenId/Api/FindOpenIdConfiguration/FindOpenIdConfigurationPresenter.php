@@ -40,8 +40,6 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
         $presenterResponse = [
             'is_active' => $response->isActive,
             'is_forced' => $response->isForced,
-            'trusted_client_addresses' => $response->trustedClientAddresses,
-            'blacklist_client_addresses' => $response->blacklistClientAddresses,
             'base_url' => $response->baseUrl,
             'authorization_endpoint' => $response->authorizationEndpoint,
             'token_endpoint' => $response->tokenEndpoint,
@@ -62,6 +60,7 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'claim_name' => $response->claimName,
             'authorization_rules' => $response->authorizationRules,
             'roles_mapping' => $response->aclConditions
+            "authentication_conditions" => $response->authenticationConditions
         ];
 
         $this->presenterFormatter->present($presenterResponse);

@@ -36,6 +36,8 @@ use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
@@ -141,9 +143,13 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
                         $configuration->getId()
                     );
+
                 $jsonDecoded['roles_mapping'] = $this->createAclConditions(
                     $configuration->getId(),
                     $jsonDecoded['roles_mapping']
+                );
+                $jsonDecoded['authentication_conditions'] = $this->createAuthenticationConditionsFromRecord(
+                    $jsonDecoded['authentication_conditions']
                 );
 
                 return new OpenIdCustomConfiguration($jsonDecoded);
@@ -280,5 +286,30 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         }
 
         return $excludedUsers;
+    }
+
+    /**
+     * Create Authentication Conditions from record.
+     *
+     * @param array<string,bool|string|string[]> $authenticationConditionsRecord
+     * @return AuthenticationConditions
+     */
+    public function createAuthenticationConditionsFromRecord(
+        array $authenticationConditionsRecord
+    ): AuthenticationConditions {
+        $authenticationConditions = new AuthenticationConditions(
+            $authenticationConditionsRecord["is_enabled"],
+            $authenticationConditionsRecord["attribute_path"],
+            $authenticationConditionsRecord["endpoint"],
+            $authenticationConditionsRecord["authorized_values"]
+        );
+        $authenticationConditions->setTrustedClientAddresses(
+            $authenticationConditionsRecord["trusted_client_addresses"]
+        );
+        $authenticationConditions->setBlacklistClientAddresses(
+            $authenticationConditionsRecord["blacklist_client_addresses"]
+        );
+
+        return $authenticationConditions;
     }
 }

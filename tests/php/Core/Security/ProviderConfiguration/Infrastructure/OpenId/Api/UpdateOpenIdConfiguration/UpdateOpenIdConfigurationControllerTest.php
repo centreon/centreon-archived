@@ -106,8 +106,6 @@ it('should execute the usecase properly', function () {
         $validPayload = json_encode([
             'is_active' => true,
             'is_forced' => true,
-            'trusted_client_addresses' => [],
-            'blacklist_client_addresses' => [],
             'base_url' => 'http://127.0.0.1/auth/openid-connect',
             'authorization_endpoint' => '/authorization',
             'token_endpoint' => '/token',
@@ -133,7 +131,15 @@ it('should execute the usecase properly', function () {
                 '',
                 new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
                 []
-            ))->toArray()
+            ))->toArray(),
+            "authentication_conditions" => [
+                "is_enabled" => false,
+                "attribute_path" => "",
+                "endpoint" => "",
+                "authorized_values" => [],
+                "trusted_client_addresses" => [],
+                "blacklist_client_addresses" => []
+            ]
         ]);
 
         $this->request
