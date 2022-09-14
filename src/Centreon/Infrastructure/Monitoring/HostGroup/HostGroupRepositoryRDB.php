@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\Monitoring\HostGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;

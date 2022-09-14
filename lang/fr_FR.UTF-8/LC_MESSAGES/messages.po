@@ -17023,6 +17023,9 @@ msgstr "Petite taille"
 msgid "CSV"
 msgstr "CSV"
 
+msgid "User information cannot be updated"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mises à jour"
+
 msgid "Poller Configuration Actions / Poller Management"
 msgstr "Actions de configuration des collecteurs / Gestion des collecteurs"
 

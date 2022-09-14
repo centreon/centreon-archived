@@ -34,7 +34,7 @@
  *
  */
 
-use Core\Security\Domain\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 
 class CentreonContact
 {
