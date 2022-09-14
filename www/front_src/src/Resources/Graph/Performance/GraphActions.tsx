@@ -9,7 +9,6 @@ import { Divider, Menu, MenuItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { useTheme } from '@mui/material/styles';
 import WrenchIcon from '@mui/icons-material/Build';
 
 import {
@@ -161,7 +160,7 @@ const GraphActions = ({
             data-testid={labelExport}
             disabled={isNil(timeline)}
             size="small"
-            title={t(labelExportToPng)}
+            title={t(labelExport)}
             onClick={openSizeExportMenu}
           >
             <SaveAsImageIcon fontSize="inherit" />
@@ -185,11 +184,7 @@ const GraphActions = ({
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
-            <MenuItem
-              className={classes.labelButton}
-              data-testid={labelExport}
-              sx={{ cursor: 'auto' }}
-            >
+            <MenuItem data-testid={labelExport} sx={{ cursor: 'auto' }}>
               {t(labelExport)}
             </MenuItem>
             <Divider />

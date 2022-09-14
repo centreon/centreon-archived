@@ -128,7 +128,7 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   };
 
   const resizeEnvelope = (): void => {
-    console.log('confirm');
+    // console.log('confirm');
   };
 
   const cancelResizingEnvelope = (): void => {
