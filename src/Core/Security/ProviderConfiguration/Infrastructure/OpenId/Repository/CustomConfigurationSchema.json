@@ -202,65 +202,65 @@
       },
       "claim_name": {
         "type": ["string", "null"]
-      },
-      "roles_mapping": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "is_enabled",
-          "apply_only_first_role",
-          "attribute_path",
-          "endpoint",
-          "relations"
-        ],
-        "properties": {
-          "is_enabled": {
-            "type": "boolean"
-          },
-          "apply_only_first_role": {
-            "type": "boolean"
-          },
-          "attribute_path": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "endpoint": {
-            "type": [
-              "object"
-            ],
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "introspection_endpoint",
-                  "user_information_endpoint",
-                  "custom_endpoint"
-                ]
-              },
-              "custom_endpoint": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
+      }
+    },
+    "roles_mapping": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "is_enabled",
+        "apply_only_first_role",
+        "attribute_path",
+        "endpoint",
+        "relations"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "apply_only_first_role": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "object"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "introspection_endpoint",
+                "user_information_endpoint",
+                "custom_endpoint"
+              ]
+            },
+            "custom_endpoint": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
-          },
-          "relations": {
-            "type": "array",
-            "minLength": 0,
-            "items": {
-              "type": "object",
-              "properties": {
-                "claim_value": {
-                  "type": "string"
-                },
-                "access_group_id": {
-                  "type": "integer"
-                }
+          }
+        },
+        "relations": {
+          "type": "array",
+          "minLength": 0,
+          "items": {
+            "type": "object",
+            "properties": {
+              "claim_value": {
+                "type": "string"
+              },
+              "access_group_id": {
+                "type": "integer"
               }
             }
           }

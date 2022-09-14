@@ -126,11 +126,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             case Provider::OPENID:
                 $jsonSchemaValidatorFile = __DIR__ . '/../OpenId/Repository/CustomConfigurationSchema.json';
                 $json = $configuration->getJsonCustomConfiguration();
-                try {
-                    $this->validateJsonRecord($json, $jsonSchemaValidatorFile);
-                } catch (\Exception $e) {
-                    dd($e->getMessage());
-                }
+                $this->validateJsonRecord($json, $jsonSchemaValidatorFile);
                 $jsonDecoded = json_decode($json, true);
                 $jsonDecoded['contact_template'] = $jsonDecoded['contact_template_id'] !== null
                     ? $this->readOpenIdConfigurationRepository->getContactTemplate($jsonDecoded['contact_template_id'])
