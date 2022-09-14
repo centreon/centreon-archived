@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { difference, min, max, isNil } from 'ramda';
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
@@ -21,6 +23,7 @@ import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import StackedLines from './StackedLines';
 
 interface Props {
+  anomalyDetectionEnvelope?: ReactNode;
   displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
@@ -79,6 +82,7 @@ const Lines = ({
   graphHeight,
   timeTick,
   displayTimeValues,
+  anomalyDetectionEnvelope,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -119,6 +123,7 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <g>
+        {anomalyDetectionEnvelope}
         {regularLines.map(
           ({
             metric,

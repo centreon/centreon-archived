@@ -264,3 +264,4 @@ export const labelAsMediumSize = 'Medium size';
 export const labelAsSmallSize = 'Small size';
 export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
 export const labelAnomalyDetection = 'Anomaly detection';
+export const labelPerformanceGraphAD = 'Edit anomaly detection data';

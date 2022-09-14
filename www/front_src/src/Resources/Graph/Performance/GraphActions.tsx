@@ -49,14 +49,9 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
-    alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'inline',
     flexDirection: 'row',
-  },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
   },
   labelButton: {
     fontWeight: 'bold',
@@ -78,7 +73,7 @@ const GraphActions = ({
   const [exporting, setExporting] = useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const navigate = useNavigate();
-  const isAnomalyDetectionResource = equals(
+  const isResourceAnomalyDetection = equals(
     resourceType,
     ResourceType.anomalydetection,
   );
@@ -167,7 +162,7 @@ const GraphActions = ({
           >
             <SaveAsImageIcon fontSize="inherit" />
           </IconButton>
-          {isAnomalyDetectionResource && (
+          {isResourceAnomalyDetection && (
             <IconButton
               ariaLabel={t(labelEditAnomalyDetectionData)}
               data-testid={labelEditAnomalyDetectionData}
