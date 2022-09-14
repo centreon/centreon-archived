@@ -33,7 +33,7 @@ const resourceMonitoringApi = /.+api\/beta\/monitoring\/resources.?page.+/;
 
 const apiFilterResources = `${apiBase}/${versionApi}/users/filters/events-view`;
 
-const insertResourceFixtures = () => {
+const insertResourceFixtures = (): Cypress.Chainable => {
   return loginAsAdminViaApiV2()
     .then(initializeResourceData)
     .then(applyConfigurationViaClapi)
@@ -73,7 +73,7 @@ const deleteUserFilter = (): Cypress.Chainable => {
     });
 };
 
-const tearDownResource = () => {
+const tearDownResource = (): Cypress.Chainable => {
   return setUserTokenApiV1()
     .then(removeResourceData)
     .then(applyConfigurationViaClapi)
@@ -81,8 +81,8 @@ const tearDownResource = () => {
 };
 
 const actionBackgroundColors = {
-  acknowledge: 'rgb(247, 244, 229)',
-  inDowntime: 'rgb(249, 231, 255)',
+  acknowledge: 'rgb(245, 241, 233)',
+  inDowntime: 'rgb(240, 233, 248)',
 };
 const actions = {
   acknowledge: 'Acknowledge',

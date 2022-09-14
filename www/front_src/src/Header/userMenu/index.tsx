@@ -4,8 +4,10 @@ import clsx from 'clsx';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-import { gt, isNil, not, __ } from 'ramda';
+import { equals, gt, isNil, not, __ } from 'ramda';
 
+import { grey } from '@mui/material/colors';
+import Divider from '@mui/material/Divider';
 import {
   Typography,
   Paper,
@@ -19,7 +21,7 @@ import {
   ListItemIcon as MUIListItemIcon,
   Fade,
 } from '@mui/material';
-import UserIcon from '@mui/icons-material/AccountCircle';
+import UserIcon from '@mui/icons-material/Person';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -34,7 +36,9 @@ import {
   useSnackbar,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
+import { ThemeMode } from '@centreon/ui-context';
 
+import SwitchMode from '../SwitchThemeMode/index';
 import Clock from '../Clock';
 import useNavigation from '../../Navigation/useNavigation';
 import { areUserParametersLoadedAtom } from '../../Main/useUser';
@@ -79,6 +83,41 @@ const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
+  badge: {
+    alignItems: 'center',
+    borderRadius: '50%',
+    display: 'flex',
+    fontSize: '10px',
+    height: 15,
+    justifyContent: 'spaceBetween',
+    minWidth: 15,
+  },
+  button: {
+    '&:hover': {
+      '&:after': {
+        backgroundColor: theme.palette.common.white,
+        content: '""',
+        height: '100%',
+        left: 0,
+        opacity: 0.08,
+        position: 'absolute',
+        right: 0,
+        top: 0,
+      },
+    },
+  },
+  clock: {
+    [theme.breakpoints.down(648)]: {
+      display: 'none',
+    },
+  },
+  containerList: {
+    padding: theme.spacing(0.5, 0, 0.5, 0),
+  },
+  divider: {
+    borderColor: grey[600],
+    margin: theme.spacing(0, 1.25, 0, 1.25),
+  },
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -91,21 +130,52 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(-13),
     width: theme.spacing(0),
   },
-  loaderUserMenu: {
-    marginRight: 22,
+  icon: {
+    minWidth: theme.spacing(3.75),
+  },
+  icons: {
+    alignItems: 'center',
+    borderLeft: `1px solid ${theme.palette.common.white}`,
+    display: 'flex',
+    gap: theme.spacing(2),
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(1),
+      paddingLeft: theme.spacing(2.5),
+    },
+    paddingLeft: theme.spacing(4),
+    [theme.breakpoints.down(900)]: {
+      paddingLeft: theme.spacing(1.5),
+    },
+    [theme.breakpoints.down(640)]: {
+      borderLeft: 'none',
+    },
   },
   menu: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
+    border: 'none',
+    borderRadius: 0,
     color: theme.palette.common.white,
-    maxWidth: 230,
-    width: '100%',
+    minWidth: 190,
+  },
+  menuItem: {
+    padding: theme.spacing(0, 2, 0.25, 2),
+  },
+  nameContainer: {
+    padding: theme.spacing(0, 2, 0.25, 2.25),
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
   },
   popper: {
+    border: 'none',
+    outline: 'none',
     overflow: 'hidden',
     zIndex: theme.zIndex.tooltip,
+  },
+  switchItem: {
+    padding: theme.spacing(0, 2, 0.25, 11 / 8),
   },
   text: {
     overflow: 'hidden',
@@ -115,24 +185,33 @@ const useStyles = makeStyles((theme) => ({
   userIcon: {
     color: theme.palette.common.white,
     cursor: 'pointer',
-    marginLeft: theme.spacing(1),
+    fontSize: theme.spacing(4),
   },
   wrapRightUser: {
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    marginLeft: theme.spacing(0.5),
-    padding: theme.spacing(1, 2.75, 1, 1.5),
     position: 'relative',
+    width: '100%',
   },
   wrapRightUserItems: {
     display: 'flex',
-    flex: '1 0 76%',
+    gap: theme.spacing(4),
     justifyContent: 'flex-end',
+    [theme.breakpoints.down(1200)]: {
+      gap: theme.spacing(2.5),
+    },
+    [theme.breakpoints.down(900)]: {
+      gap: theme.spacing(1.5),
+    },
+    width: '100%',
   },
 }));
+interface Props {
+  headerRef?: RefObject<HTMLElement>;
+}
 
-const UserMenu = (): JSX.Element => {
+const UserMenu = ({ headerRef }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { allowedPages } = useNavigation();
@@ -140,10 +219,12 @@ const UserMenu = (): JSX.Element => {
   const [copied, setCopied] = useState(false);
   const [data, setData] = useState<UserData | null>(null);
   const [anchorEl, setAnchorEl] = useState<SVGSVGElement | null>(null);
+  const [anchorHeight, setAnchorHeight] = useState(12);
   const profile = useRef<HTMLDivElement>();
   const userMenu = useRef<HTMLDivElement>();
   const autologinNode = useRef<HTMLTextAreaElement>();
   const refreshTimeout = useRef<NodeJS.Timeout>();
+  const userIconRef = useRef<SVGSVGElement | null>(null);
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
   });
@@ -198,6 +279,21 @@ const UserMenu = (): JSX.Element => {
     }, 60000);
   };
 
+  const getPositionOfPopper = (): void => {
+    if (isNil(headerRef?.current) || isNil(userIconRef?.current)) {
+      return;
+    }
+    const headerHeight = headerRef?.current?.getBoundingClientRect()?.height;
+
+    const userMenuBottom =
+      userIconRef?.current?.getBoundingClientRect()?.bottom;
+
+    if (isNil(headerHeight)) {
+      return;
+    }
+    setAnchorHeight(headerHeight - userMenuBottom);
+  };
+
   const toggle = (event: MouseEvent<SVGSVGElement>): void => {
     if (anchorEl) {
       setAnchorEl(null);
@@ -205,6 +301,7 @@ const UserMenu = (): JSX.Element => {
       return;
     }
     setAnchorEl(event.currentTarget);
+    getPositionOfPopper();
   };
 
   const closeUserMenu = (): void => {
@@ -246,10 +343,14 @@ const UserMenu = (): JSX.Element => {
 
   useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
+    window.addEventListener('resize', getPositionOfPopper);
+
     loadUserData();
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
+      window.removeEventListener('resize', getPositionOfPopper);
+
       if (refreshTimeout.current) {
         clearTimeout(refreshTimeout.current);
       }
@@ -257,7 +358,7 @@ const UserMenu = (): JSX.Element => {
   }, []);
 
   if (!data) {
-    return <MenuSkeleton className={classes.loaderUserMenu} width={14} />;
+    return <MenuSkeleton width={24} />;
   }
 
   const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);
@@ -279,13 +380,15 @@ const UserMenu = (): JSX.Element => {
   };
 
   return (
-    <div className={clsx(classes.wrapRightUser)}>
+    <div className={classes.wrapRightUser}>
       <div
-        className={clsx(classes.wrapRightUserItems)}
+        className={classes.wrapRightUserItems}
         ref={profile as RefObject<HTMLDivElement>}
       >
-        <Clock />
-        <div>
+        <div className={classes.clock}>
+          <Clock />
+        </div>
+        <div className={classes.icons}>
           <Tooltip
             title={
               passwordIsNotYetAboutToExpire
@@ -302,8 +405,10 @@ const UserMenu = (): JSX.Element => {
             >
               <UserIcon
                 aria-label={t(labelProfile)}
-                className={clsx(classes.userIcon)}
+                className={classes.userIcon}
+                data-cy="userIcon"
                 fontSize="large"
+                ref={userIconRef}
                 onClick={toggle}
               />
             </Badge>
@@ -312,8 +417,16 @@ const UserMenu = (): JSX.Element => {
             transition
             anchorEl={anchorEl}
             className={classes.popper}
+            data-cy="popper"
+            modifiers={[
+              {
+                name: 'offset',
+                options: {
+                  offset: [22, anchorHeight],
+                },
+              },
+            ]}
             open={not(isNil(anchorEl))}
-            placement="bottom-end"
           >
             {({ TransitionProps }): JSX.Element => (
               <Fade {...TransitionProps} timeout={350}>
@@ -324,21 +437,18 @@ const UserMenu = (): JSX.Element => {
                     display: isNil(anchorEl) ? 'none' : 'block',
                   }}
                 >
-                  <List dense>
-                    <ListItem>
+                  <List dense className={classes.containerList}>
+                    <ListItem className={classes.nameContainer}>
                       <ListItemText
                         primaryTypographyProps={primaryTypographyProps}
                       >
-                        {data.fullname}
+                        {data.username}
                       </ListItemText>
                     </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primaryTypographyProps={primaryTypographyProps}
-                      >{`${t('as')} ${data.username}`}</ListItemText>
-                    </ListItem>
+                    <Divider className={classes.divider} />
+
                     {not(passwordIsNotYetAboutToExpire) && (
-                      <ListItem>
+                      <ListItem className={classes.menuItem}>
                         <div className={classes.passwordExpiration}>
                           <Typography variant="body2">
                             {t(labelPasswordWillExpireIn)}:
@@ -350,11 +460,12 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {allowEditProfile && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton
+                          className={classes.button}
                           onClick={navigateToUserSettingsAndCloseUserMenu}
                         >
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             <SettingsIcon fontSize="small" />
                           </ListItemIcon>
                           <ListItemText>{t(labelEditProfile)}</ListItemText>
@@ -362,9 +473,9 @@ const UserMenu = (): JSX.Element => {
                       </ListItem>
                     )}
                     {data.autologinkey && (
-                      <ListItem disableGutters>
+                      <ListItem disableGutters disablePadding>
                         <ListItemButton onClick={onCopy}>
-                          <ListItemIcon>
+                          <ListItemIcon className={classes.icon}>
                             {copied ? (
                               <CheckIcon fontSize="small" />
                             ) : (
@@ -384,9 +495,18 @@ const UserMenu = (): JSX.Element => {
                         />
                       </ListItem>
                     )}
-                    <ListItem disableGutters>
-                      <ListItemButton onClick={logoutFromSession}>
-                        <ListItemIcon>
+                    <div className={classes.switchItem}>
+                      <SwitchMode />
+                    </div>
+
+                    <Divider className={classes.divider} />
+
+                    <ListItem disableGutters disablePadding>
+                      <ListItemButton
+                        className={classes.button}
+                        onClick={logoutFromSession}
+                      >
+                        <ListItemIcon className={classes.icon}>
                           <LogoutIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>{t(labelLogout)}</ListItemText>

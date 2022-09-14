@@ -61,34 +61,6 @@ class CentreonUtils
      * Defines all self-closing html tags allowed
      */
     public static $selfclosingHtmlTagsAllowed = ['br', 'hr'];
-    
-    /**
-     * Converts Object into Array
-     *
-     * @param int $idPage
-     * @param boolean $redirect
-     * @return mixed
-     */
-    public function visit($idPage, $redirect = true)
-    {
-        global $centreon;
-        $http = '';
-
-        if ($_SERVER['HTTPS']) {
-            $http .= 'https://';
-        } else {
-            $http .= 'http://';
-        }
-
-        $newUrl = $http . $_SERVER['HTTP_HOST'] . $centreon->optGen["oreon_web_path"] . 'main.php?p=' . $idPage;
-
-        if ($redirect) {
-            header("Location: " . $newUrl);
-            exit;
-        } else {
-            return stripslashes($newUrl);
-        }
-    }
 
     /**
      * Converts Object into Array

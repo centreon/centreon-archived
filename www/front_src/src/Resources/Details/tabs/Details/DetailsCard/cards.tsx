@@ -26,17 +26,22 @@ import {
   labelPerformanceData,
   labelCommand,
   labelLastCheckWithOkStatus,
+  labelCategories,
+  labelSeverity,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
 import { ChangeExpandedCardsProps } from '../SortableCards/models';
+import { ResourceType } from '../../../../models';
+import { CriteriaNames } from '../../../../Filter/Criterias/models';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
-import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
+import GroupChips from './GroupChips';
+import SeverityCard from './SeverityCard';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -96,6 +101,13 @@ const getDetailCardLines = ({
       line: <AcknowledgementCard details={details} />,
       shouldBeDisplayed: !isNil(details.acknowledgement),
       title: labelAcknowledgement,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: <SeverityCard details={details} />,
+      shouldBeDisplayed: !isNil(details.severity),
+      title: labelSeverity,
       xs: 12,
     },
     {
@@ -184,10 +196,42 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
+      line: <DetailsLine line={details.parent?.uuid} />,
+      shouldBeDisplayed: !isNil(details.calculation_type),
+      title: labelCalculationType,
+    },
+    {
       isCustomCard: true,
-      line: <Groups details={details} />,
+      line: (
+        <GroupChips
+          getType={(): CriteriaNames =>
+            equals(details?.type, ResourceType.host)
+              ? CriteriaNames.hostGroups
+              : CriteriaNames.serviceGroups
+          }
+          groups={details?.groups}
+          title={labelGroups}
+        />
+      ),
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: (
+        <GroupChips
+          getType={(): CriteriaNames =>
+            equals(details?.type, ResourceType.host)
+              ? CriteriaNames.hostCategories
+              : CriteriaNames.serviceCategories
+          }
+          groups={details?.categories}
+          title={labelCategories}
+        />
+      ),
+      shouldBeDisplayed: !isEmpty(details.categories),
+      title: labelCategories,
       xs: 12,
     },
     {

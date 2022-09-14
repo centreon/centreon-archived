@@ -22,12 +22,15 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHost;
 
-use Core\Application\RealTime\Common\RealTimeResponseTrait;
-use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\HostStatus;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\HostStatus;
+use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Severity\RealTime\Domain\Model\Severity;
+use Core\Application\RealTime\Common\RealTimeResponseTrait;
+use Core\Domain\RealTime\Model\ResourceTypes\HostResourceType;
 
 class FindHostResponse
 {
@@ -131,11 +134,6 @@ class FindHostResponse
     /**
      * @var int|null
      */
-    public $severityLevel;
-
-    /**
-     * @var int|null
-     */
     public $checkAttempts;
 
     /**
@@ -144,14 +142,14 @@ class FindHostResponse
     public $maxCheckAttempts;
 
     /**
-     * @var array<string, string|null>
+     * @var array<string, int|string|null>
      */
     public $icon;
 
     /**
      * @var array<array<string, mixed>>
      */
-    public $hostgroups;
+    public $groups;
 
     /**
      * @var array<string, mixed>
@@ -169,7 +167,22 @@ class FindHostResponse
     public $acknowledgement;
 
     /**
-     * @param int $id
+     * @var array<array<string, mixed>>
+     */
+    public array $categories = [];
+
+    /**
+     * @var array<string, mixed>|null
+     */
+    public ?array $severity = null;
+
+    /**
+     * @var string
+     */
+    public string $type = HostResourceType::TYPE_NAME;
+
+    /**
+     * @param int $hostId
      * @param string $name
      * @param string $address
      * @param string $monitoringServerName
@@ -177,10 +190,12 @@ class FindHostResponse
      * @param Icon|null $icon
      * @param Hostgroup[] $hostgroups
      * @param Downtime[] $downtimes
-     * @param Acknowledgement|null $acknowledgement
+     * @param Acknowledgement|null $acknowledgement,
+     * @param Tag[] $categories
+     * @param Severity|null $severity
      */
     public function __construct(
-        public int $id,
+        public int $hostId,
         public string $name,
         public string $address,
         public string $monitoringServerName,
@@ -188,13 +203,17 @@ class FindHostResponse
         ?Icon $icon,
         array $hostgroups,
         array $downtimes,
-        ?Acknowledgement $acknowledgement
+        ?Acknowledgement $acknowledgement,
+        array $categories,
+        ?Severity $severity
     ) {
         $this->icon = $this->iconToArray($icon);
         $this->status = $this->statusToArray($status);
-        $this->hostgroups = $this->hostgroupsToArray($hostgroups);
+        $this->groups = $this->hostgroupsToArray($hostgroups);
         $this->downtimes = $this->downtimesToArray($downtimes);
         $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
+        $this->categories = $this->tagsToArray($categories);
+        $this->severity = is_null($severity) ? $severity : $this->severityToArray($severity);
     }
 
     /**

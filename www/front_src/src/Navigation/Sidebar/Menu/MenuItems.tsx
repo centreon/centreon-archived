@@ -18,10 +18,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
+import { isDarkMode } from '../../../Header';
 import { searchUrlFromEntry } from '../helpers/getUrlFromEntry';
 import { Page } from '../../models';
 import {
@@ -37,36 +39,52 @@ interface Props {
   data: Page;
   hover: boolean;
   icon?: ReactNode;
+  isDoubleClickedFromRoot?: boolean;
   isDrawerOpen?: boolean;
+  isItemClicked?: () => void;
   isOpen: boolean;
   isRoot?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
+  onLeaveMenuItem?: () => void;
   onMouseEnter: (e: MouseEvent<HTMLElement>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
-  activated: {
+  activated: ({ isRoot }): CreateCSSProperties => ({
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color: theme.palette.background.paper,
+        color:
+          isDarkMode(theme) && isRoot
+            ? theme.palette.primary.main
+            : theme.palette.common.white,
       },
     },
     '& .MuiSvgIcon-root': {
-      color: theme.palette.background.paper,
+      color:
+        isDarkMode(theme) && isRoot
+          ? theme.palette.primary.main
+          : theme.palette.common.white,
     },
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor:
+        isDarkMode(theme) && isRoot
+          ? theme.palette.common.black
+          : theme.palette.primary.dark,
+      color: theme.palette.common.white,
     },
 
-    backgroundColor: theme.palette.primary.main,
-  },
+    backgroundColor:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.black
+        : theme.palette.primary.dark,
+  }),
   containerIcon: {
     alignItems: 'center',
-    color: theme.palette.text.primary,
+    color: theme.palette.common.white,
     minWidth: theme.spacing(5.75),
   },
   icon: {
-    color: theme.palette.text.primary,
+    color: theme.palette.common.white,
   },
   label: {
     '& .MuiTypography-root': {
@@ -80,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 0.8,
   },
   rootLabel: {
+    color: theme.palette.common.white,
     margin: theme.spacing(0),
   },
 }));
@@ -87,12 +106,15 @@ const useStyles = makeStyles((theme) => ({
 const MenuItems = ({
   onMouseEnter,
   onClick,
+  onLeaveMenuItem,
+  isItemClicked,
   isOpen,
   icon,
   hover,
   data,
   isDrawerOpen,
   isRoot,
+  isDoubleClickedFromRoot,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
   const user = useAtomValue(userAtom);
@@ -110,6 +132,8 @@ const MenuItems = ({
 
   const handleClickItem = (e: MouseEvent<HTMLAnchorElement>): void => {
     if (!isRoot && canNavigate) {
+      isItemClicked?.();
+
       return;
     }
 
@@ -127,7 +151,8 @@ const MenuItems = ({
         sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onClick={handleClickItem}
         onDoubleClick={isRoot ? onClick : undefined}
-        onMouseEnter={onMouseEnter}
+        onMouseEnter={!isDoubleClickedFromRoot ? onMouseEnter : undefined}
+        onMouseLeave={onLeaveMenuItem}
       >
         {isRoot ? (
           <>
@@ -162,6 +187,7 @@ const MenuItems = ({
       isOpen,
       isRoot,
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       user,
       hoveredNavigationItems,
       selectedNavigationItems,

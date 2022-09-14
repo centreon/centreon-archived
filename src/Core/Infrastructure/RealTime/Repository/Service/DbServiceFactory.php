@@ -31,7 +31,7 @@ class DbServiceFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Service
      */
     public static function createFromRecord(array $data): Service
@@ -39,13 +39,22 @@ class DbServiceFactory
         $service = new Service(
             (int) $data['service_id'],
             (int) $data['host_id'],
-            $data['description'],
+            (string) $data['description'],
             DbServiceStatusFactory::createFromRecord($data)
         );
 
-        $service->setPerformanceData($data['performance_data'])
-            ->setOutput($data['output'])
-            ->setCommandLine($data['command_line'])
+        /** @var string|null */
+        $performanceData = $data['performance_data'];
+
+        /** @var string|null */
+        $output = $data['output'];
+
+        /** @var string|null */
+        $commandLine = $data['command_line'];
+
+        $service->setPerformanceData($performanceData)
+            ->setOutput($output)
+            ->setCommandLine($commandLine)
             ->setIsFlapping((int) $data['flapping'] === 1)
             ->setIsAcknowledged((int) $data['acknowledged'] === 1)
             ->setIsInDowntime((int) $data['in_downtime'] === 1)
@@ -54,7 +63,6 @@ class DbServiceFactory
             ->setLatency(self::getFloatOrNull($data['latency']))
             ->setExecutionTime(self::getFloatOrNull($data['execution_time']))
             ->setStatusChangePercentage(self::getFloatOrNull($data['status_change_percentage']))
-            ->setSeverityLevel(self::getIntOrNull($data['severity_level']))
             ->setNotificationEnabled((int) $data['notify'] === 1)
             ->setNotificationNumber(self::getIntOrNull($data['notification_number']))
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $data['last_status_change']))

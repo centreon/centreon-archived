@@ -1,15 +1,16 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { Responsive } from '@visx/visx';
 
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
+import { Group } from '@centreon/ui';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -20,14 +21,15 @@ import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
-  labelAutoImport,
+  labelAuthorizations,
+  labelAutoImportUsers,
   labelClientAddresses,
   labelIdentityProvider,
 } from './translatedLabels';
-import { Category } from './FormInputs/models';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
+import Description from './Openid/Description';
 
 const panels = [
   {
@@ -50,7 +52,7 @@ const panels = [
   },
 ];
 
-export const categories: Array<Category> = [
+export const groups: Array<Group> = [
   {
     name: labelActivation,
     order: 1,
@@ -64,8 +66,14 @@ export const categories: Array<Category> = [
     order: 3,
   },
   {
-    name: labelAutoImport,
+    name: labelAutoImportUsers,
     order: 3,
+  },
+  {
+    EndIcon: HelpOutlineIcon,
+    TooltipContent: Description,
+    name: labelAuthorizations,
+    order: 4,
   },
 ];
 
@@ -74,41 +82,44 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'hidden',
   },
   container: {
-    height: '100%',
+    maxHeight: `calc(100vh - ${theme.spacing(12)})`,
     maxWidth: theme.spacing(125),
     overflowY: 'hidden',
   },
   formContainer: {
     display: 'grid',
     gridTemplateColumns: '1.2fr 0.6fr',
-    height: '100%',
-    overflowY: 'auto',
+    justifyItems: 'center',
+    overflowY: 'hidden',
     padding: theme.spacing(3),
   },
   image: {
+    height: '200px',
     opacity: 0.5,
     padding: theme.spacing(0, 5),
     position: 'sticky',
     top: 0,
+    width: '200px',
   },
   panel: {
-    height: '80%',
+    overflowY: 'auto',
     padding: 0,
-  },
-  paper: {
-    boxShadow: theme.shadows[3],
-    height: '100%',
   },
   tabList: {
     boxShadow: theme.shadows[2],
   },
 }));
 
-const marginBottomHeight = 88;
+const scrollMargin = 8;
 
 const Authentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const formContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [clientRect, setClientRect] = useState<DOMRect | null>(null);
 
   const appliedTab = useAtomValue(appliedTabAtom);
   const { themeMode } = useAtomValue(userAtom);
@@ -117,6 +128,23 @@ const Authentication = (): JSX.Element => {
   const changeTab = (_, newTab: Provider): void => {
     setTab(newTab);
   };
+
+  const resize = (): void => {
+    setWindowHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+
+    setClientRect(formContainerRef.current?.getBoundingClientRect() ?? null);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  const formContainerHeight =
+    windowHeight - (clientRect?.top || 0) - scrollMargin;
 
   const tabs = useMemo(
     () =>
@@ -127,33 +155,31 @@ const Authentication = (): JSX.Element => {
   );
 
   const tabPanels = useMemo(
-    () => (
-      <Responsive.ParentSize>
-        {({ height }): Array<JSX.Element> =>
-          panels.map(({ Component, value, image }) => (
-            <TabPanel
-              className={classes.panel}
-              key={value}
-              style={{ height: height - marginBottomHeight }}
-              value={value}
-            >
-              <div className={classes.formContainer}>
-                <Component />
-                <img alt="padlock" className={classes.image} src={image} />
-              </div>
-            </TabPanel>
-          ))
-        }
-      </Responsive.ParentSize>
-    ),
-    [themeMode],
+    () =>
+      panels.map(({ Component, value, image }) => (
+        <TabPanel className={classes.panel} key={value} value={value}>
+          <Box
+            ref={formContainerRef}
+            sx={{
+              height: `${formContainerHeight}px`,
+              overflowY: 'auto',
+            }}
+          >
+            <div className={classes.formContainer}>
+              <Component />
+              <img alt="padlock" className={classes.image} src={image} />
+            </div>
+          </Box>
+        </TabPanel>
+      )),
+    [themeMode, formContainerHeight],
   );
 
   return (
     <Box className={classes.box}>
       <TabContext value={appliedTab}>
         <Container className={classes.container}>
-          <Paper className={classes.paper}>
+          <Paper square>
             <TabList
               className={classes.tabList}
               variant="fullWidth"

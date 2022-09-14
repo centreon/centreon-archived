@@ -7215,7 +7215,71 @@ msgstr ""
 msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
 msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"
 
-msgid "Mode used to retrieve information displayed in Resource Status page."
-"The optimized mode will only be available and functional when using the BBDO 3.0.0 protocol for the collect engine."
-msgstr "Mode utilisé pour récupérer les données affichées dans la page Resource Status."
-"Le mode optimisé pourra être utilisé et fonctionnel que si le moteur de supervision utilise le protocole BBDO 3.0.0"
+msgid "Allows user to perform “Add”, “Add (advanced)” and “Duplicate” actions on pollers."
+msgstr "Permet à l'utilisateur de créer des collecteurs (boutons Ajouter, Ajouter (avancé) et Dupliquer)."
+
+msgid "Allows user to delete pollers."
+msgstr "Permet à l'utilisateur de supprimer des collecteurs."
+
+msgid "Allows user to deploy configuration."
+msgstr "Permet à l'utilisateur de déployer la configuration."
+
+
+msgid "Fill in this field only if you want to specify the address on which Broker should listen"
+msgstr "Ne remplir ce champ que si vous souhaitez spécifier l’adresse sur laquelle Broker doit écouter"
+
+msgid "TCP port on which Broker should listen"
+msgstr "Port TCP sur lequel Broker doit écouter"
+
+msgid "The transport protocol can be either TCP (binary flow over TCP) or gRPC (HTTP2)"
+msgstr "Le protocole de transport peut être soit TCP (flux binaire sur TCP) soit gRPC (HTTP2)"
+
+msgid "Authorization token to be requested from the client (must be the same for both client and server)"
+msgstr "Jeton d’autorisation à exiger du client (doit être identique entre le client et le serveur)"
+
+msgid "Enable TLS 1.3 encryption"
+msgstr "Activer le chiffrement TLS 1.3"
+
+msgid "Full path to the file containing the private key in PEM format (required for encryption)"
+msgstr "Chemin complet du fichier contenant la clé privée au format PEM (nécessaire pour le chiffrement)"
+
+msgid "Full path to the file containing the certificate in PEM format (required for encryption)"
+msgstr "Chemin complet du fichier contenant le certificat au format PEM (nécessaire pour le chiffrement)"
+
+msgid "Enable data compression"
+msgstr "Activer la compression des données"
+
+msgid "Enable data retention until the client is connected"
+msgstr "Activer la rétention des données jusqu'à connexion du client"
+
+msgid "Broker event categories to filter. If none is selected, all categories of events will be processed"
+msgstr "Catégories d'évènements à filtrer. Si aucune n’est sélectionnée, toutes les catégories seront traitées"
+
+msgid "Address of the server to which the client should connect"
+msgstr "Adresse du serveur auquel le client doit se connecter"
+
+msgid "TCP port of the server to which the client should connect"
+msgstr "Port TCP du serveur auquel le client doit se connecter"
+
+msgid "Number of seconds between a lost or failed connection and the next try"
+msgstr "Nombre de secondes entre une perte ou un échec de connexion et la tentative suivante"
+
+msgid "Authorization token expected by the server (must be the same for both client and server)"
+msgstr "Jeton d’autorisation attendu par le serveur (doit être identique entre le client et le serveur)"
+
+msgid ""
+"If the server's certificate is signed by an untrusted Certification Authority (CA), then specify the certificate's path."
+"If the server's certificate is self-signed, then specify its path."
+"You can also add the certificate to the store of certificates trusted by the operating system."
+"The file must be in PEM format."
+msgstr ""
+"Si le certificat du serveur est signé par une autorité de certification (CA) non reconnue, spécifiez le chemin du certificat de la CA."
+"Si le certificat du serveur est autosigné, spécifiez son chemin."
+"Il est également possible d’ajouter le certificat au magasin des certificats reconnnus par le système d’exploitation."
+"Le fichier doit être au format PEM."
+
+msgid "If the Common Name (CN) of the certificate is different from the value in the \"Server address\" field, the CN must be provided here"
+msgstr "Si le \"Common Name\" (CN) du certificat est différent de la valeur du champ \"Adresse du serveur\", alors saisissez le CN du certificat"
+
+msgid "Enable compression"
+msgstr "Activer la compression des données"

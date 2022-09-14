@@ -1,11 +1,23 @@
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
+import { omit } from 'ramda';
 
-import { render, RenderResult, screen, waitFor } from '@centreon/ui';
+import {
+  getFetchCall,
+  mockResponseOnce,
+  render,
+  RenderResult,
+  resetMocks,
+  screen,
+  TestQueryProvider,
+  waitFor,
+} from '@centreon/ui';
 
 import { Provider } from '../models';
 import {
+  accessGroupsEndpoint,
   authenticationProvidersEndpoint,
+  contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../api/endpoints';
 import {
@@ -17,20 +29,23 @@ import {
 import { labelActivation } from '../translatedLabels';
 
 import {
-  labelAliasAttributeToBind,
+  labelAccessGroup,
   labelAuthorizationEndpoint,
+  labelAuthorizationKey,
+  labelAuthorizationValue,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
+  labelContactGroup,
   labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
   labelDisableVerifyPeer,
-  labelEmailAttributeToBind,
+  labelEmailAttribute,
   labelEnableAutoImport,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
-  labelFullnameAttributeToBind,
+  labelFullnameAttribute,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
   labelInvalidURL,
@@ -43,7 +58,6 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from './translatedLabels';
-import { OpenidConfigurationToAPI } from './models';
 
 import OpenidConfigurationForm from '.';
 
@@ -61,18 +75,35 @@ const cancelTokenPutParams = {
 };
 
 const renderOpenidConfigurationForm = (): RenderResult =>
-  render(<OpenidConfigurationForm />);
+  render(
+    <TestQueryProvider>
+      <OpenidConfigurationForm />
+    </TestQueryProvider>,
+  );
 
-const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
-  alias_bind_attribute: 'firstname',
+const retrievedOpenidConfiguration = {
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
+  authorization_rules: [
+    {
+      access_group: {
+        id: 1,
+        name: 'Access group',
+      },
+      claim_value: 'Authorization relation',
+    },
+  ],
   auto_import: true,
   base_url: 'https://localhost:8080',
   blacklist_client_addresses: ['127.0.0.1'],
+  claim_name: 'groups',
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
+  contact_group: {
+    id: 1,
+    name: 'Contact group',
+  },
   contact_template: {
     id: 1,
     name: 'Contant template',
@@ -90,12 +121,72 @@ const retrievedOpenidConfiguration: OpenidConfigurationToAPI = {
   verify_peer: false,
 };
 
+const retrievedOpenidConfigurationWithEmptyAuthorization = {
+  authentication_type: 'client_secret_post',
+  authorization_endpoint: '/authorize',
+  authorization_rules: [],
+  auto_import: true,
+  base_url: 'https://localhost:8080',
+  blacklist_client_addresses: ['127.0.0.1'],
+  claim_name: null,
+  client_id: 'client_id',
+  client_secret: 'client_secret',
+  connection_scopes: ['openid'],
+  contact_group: null,
+  contact_template: null,
+  email_bind_attribute: 'email',
+  endsession_endpoint: '/logout',
+  fullname_bind_attribute: 'lastname',
+  introspection_token_endpoint: '/introspect',
+  is_active: true,
+  is_forced: false,
+  login_claim: 'sub',
+  token_endpoint: '/token',
+  trusted_client_addresses: ['127.0.0.1'],
+  userinfo_endpoint: '/userinfo',
+  verify_peer: false,
+};
+
+const getRetrievedEntities = (label: string): unknown => ({
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 30,
+  },
+  result: [
+    {
+      id: 1,
+      name: `${label} 1`,
+    },
+    {
+      id: 2,
+      name: `${label} 2`,
+    },
+  ],
+});
+
+const retrievedContactTemplates = getRetrievedEntities('Contact Template');
+const retrievedContactGroups = getRetrievedEntities('Contact Group');
+const retrievedAccessGroups = getRetrievedEntities('Access Group');
+
+const mockGetBasicRequests = (): void => {
+  resetMocks();
+  mockedAxios.get.mockReset();
+  mockedAxios.get.mockResolvedValue({
+    data: retrievedOpenidConfiguration,
+  });
+};
+
+const mockGetRequestsWithNoAuthorizationConfiguration = (): void => {
+  mockedAxios.get.mockReset();
+  mockedAxios.get.mockResolvedValueOnce({
+    data: retrievedOpenidConfigurationWithEmptyAuthorization,
+  });
+};
+
 describe('Openid configuration form', () => {
   beforeEach(() => {
-    mockedAxios.get.mockReset();
-    mockedAxios.get.mockResolvedValue({
-      data: retrievedOpenidConfiguration,
-    });
+    mockGetBasicRequests();
 
     mockedAxios.put.mockReset();
     mockedAxios.put.mockResolvedValue({
@@ -121,9 +212,12 @@ describe('Openid configuration form', () => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
-    ).toBeChecked();
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
+      ).toBeChecked();
+    });
+
     expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
@@ -163,14 +257,15 @@ describe('Openid configuration form', () => {
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
     expect(screen.getByLabelText(labelEnableAutoImport)).toBeChecked();
-    expect(screen.getByLabelText(labelEmailAttributeToBind)).toHaveValue(
-      'email',
-    );
-    expect(screen.getByLabelText(labelAliasAttributeToBind)).toHaveValue(
-      'firstname',
-    );
-    expect(screen.getByLabelText(labelFullnameAttributeToBind)).toHaveValue(
+    expect(screen.getByLabelText(labelEmailAttribute)).toHaveValue('email');
+    expect(screen.getByLabelText(labelFullnameAttribute)).toHaveValue(
       'lastname',
+    );
+    expect(screen.getByText('Contact group')).toBeInTheDocument();
+    expect(screen.getByLabelText(labelAuthorizationKey)).toHaveValue('groups');
+    expect(screen.getAllByLabelText(labelAuthorizationValue)).toHaveLength(2);
+    expect(screen.getAllByLabelText(labelAuthorizationValue)[0]).toHaveValue(
+      'Authorization relation',
     );
   });
 
@@ -185,7 +280,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -237,7 +332,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -256,8 +351,15 @@ describe('Openid configuration form', () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
         {
-          ...retrievedOpenidConfiguration,
+          ...omit(['contact_group'], retrievedOpenidConfiguration),
+          authorization_rules: [
+            {
+              access_group_id: 1,
+              claim_value: 'Authorization relation',
+            },
+          ],
           base_url: 'http://localhost:8081/login',
+          contact_group_id: 1,
         },
         cancelTokenPutParams,
       );
@@ -282,7 +384,7 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(labelActivation)).toBeInTheDocument();
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
     });
 
     userEvent.type(
@@ -323,12 +425,10 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText(labelEmailAttributeToBind),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText(labelEmailAttribute)).toBeInTheDocument();
     });
 
-    userEvent.type(screen.getByLabelText(labelEmailAttributeToBind), '');
+    userEvent.type(screen.getByLabelText(labelEmailAttribute), '');
 
     await waitFor(() => {
       expect(screen.getByText(labelSave)).toBeDisabled();
@@ -341,60 +441,87 @@ describe('Openid configuration form', () => {
     });
   });
 
-  it('updates the contact template field when an contact template is selected from the retrieved options', async () => {
+  it.each([
+    [
+      'contact group',
+      retrievedContactGroups,
+      contactGroupsEndpoint,
+      labelContactGroup,
+      'Contact Group 2',
+    ],
+    [
+      'contact template',
+      retrievedContactTemplates,
+      contactTemplatesEndpoint,
+      labelContactTemplate,
+      'Contact Template 2',
+    ],
+    [
+      'access group',
+      retrievedAccessGroups,
+      accessGroupsEndpoint,
+      labelAccessGroup,
+      'Access Group 2',
+    ],
+  ])(
+    'updates the %p field when an option is selected from the retrieved options',
+    async (_, retrievedOptions, endpoint, label, value) => {
+      mockGetRequestsWithNoAuthorizationConfiguration();
+      renderOpenidConfigurationForm();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          authenticationProvidersEndpoint(Provider.Openid),
+          cancelTokenRequestParam,
+        );
+      });
+
+      mockResponseOnce({
+        data: retrievedOptions,
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(label)).toBeInTheDocument();
+      });
+
+      userEvent.click(screen.getByLabelText(label));
+
+      await waitFor(() => {
+        expect(getFetchCall(0)).toEqual(
+          `${endpoint}?page=1&sort_by=${encodeURIComponent(
+            '{"name":"ASC"}',
+          )}&search=${encodeURIComponent('{"$and":[]}')}`,
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(value)).toBeInTheDocument();
+      });
+
+      userEvent.click(screen.getByText(value));
+
+      await waitFor(() => {
+        expect(screen.getAllByLabelText(label)[0]).toHaveValue(value);
+      });
+    },
+  );
+
+  it('displays the "Contact group" field as required when the "Authorization value" field is filled', async () => {
+    mockGetRequestsWithNoAuthorizationConfiguration();
+
     renderOpenidConfigurationForm();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
-      );
+      expect(
+        screen.getByLabelText(labelAuthorizationValue),
+      ).toBeInTheDocument();
     });
 
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        meta: {
-          limit: 10,
-          page: 1,
-          total: 30,
-        },
-        result: [
-          {
-            id: 1,
-            name: 'Contact Template 1',
-          },
-          {
-            id: 2,
-            name: 'Contact Template 2',
-          },
-        ],
-      },
-    });
+    userEvent.type(screen.getByLabelText(labelAuthorizationValue), 'HW');
 
     await waitFor(() => {
-      expect(screen.getByText(labelContactTemplate)).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByLabelText(labelContactTemplate));
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${contactTemplatesEndpoint}?page=1&sort_by=${encodeURIComponent(
-          '{"name":"ASC"}',
-        )}&search=${encodeURIComponent('{"$and":[{"id":{"$ni":[1]}}]}')}`,
-        cancelTokenRequestParam,
-      );
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Contact Template 2')).toBeInTheDocument();
-    });
-
-    userEvent.click(screen.getByText('Contact Template 2'));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelContactTemplate)).toHaveValue(
-        'Contact Template 2',
+      expect(screen.getByLabelText(labelContactGroup)).toHaveAttribute(
+        'required',
       );
     });
   });

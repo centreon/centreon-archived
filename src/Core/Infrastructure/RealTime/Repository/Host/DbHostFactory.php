@@ -32,23 +32,35 @@ class DbHostFactory
     use DbFactoryUtilitiesTrait;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,int|string|null> $data
      * @return Host
      */
     public static function createFromRecord(array $data): Host
     {
         $host = new Host(
             (int) $data['host_id'],
-            $data['name'],
-            $data['address'],
-            $data['monitoring_server_name'],
+            (string) $data['name'],
+            (string) $data['address'],
+            (string) $data['monitoring_server_name'],
             DbHostStatusFactory::createFromRecord($data)
         );
 
-        $host->setTimezone($data['timezone'])
-            ->setPerformanceData($data['performance_data'])
-            ->setOutput($data['output'])
-            ->setCommandLine($data['command_line'])
+        /** @var string|null */
+        $timezone = $data['timezone'];
+
+        /** @var string|null */
+        $performanceData = $data['performance_data'];
+
+        /** @var string|null */
+        $output = $data['output'];
+
+        /** @var string|null */
+        $commandLine = $data['command_line'];
+
+        $host->setTimezone($timezone)
+            ->setPerformanceData($performanceData)
+            ->setOutput($output)
+            ->setCommandLine($commandLine)
             ->setIsFlapping((int) $data['flapping'] === 1)
             ->setIsAcknowledged((int) $data['acknowledged'] === 1)
             ->setIsInDowntime((int) $data['in_downtime'] === 1)
@@ -57,7 +69,6 @@ class DbHostFactory
             ->setLatency(self::getFloatOrNull($data['latency']))
             ->setExecutionTime(self::getFloatOrNull($data['execution_time']))
             ->setStatusChangePercentage(self::getFloatOrNull($data['status_change_percentage']))
-            ->setSeverityLevel(self::getIntOrNull($data['severity_level']))
             ->setNotificationEnabled((int) $data['notify'] === 1)
             ->setNotificationNumber(self::getIntOrNull($data['notification_number']))
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $data['last_status_change']))
@@ -65,7 +76,8 @@ class DbHostFactory
             ->setLastCheck(self::createDateTimeFromTimestamp((int) $data['last_check']))
             ->setLastTimeUp(self::createDateTimeFromTimestamp((int) $data['last_time_up']))
             ->setMaxCheckAttempts(self::getIntOrNull($data['max_check_attempts']))
-            ->setCheckAttempts(self::getIntOrNull($data['check_attempt']));
+            ->setCheckAttempts(self::getIntOrNull($data['check_attempt']))
+            ->setAlias($data['alias']);
 
         $nextCheck = self::createDateTimeFromTimestamp(
             (int) $data['active_checks'] === 1 ? (int) $data['next_check'] : null

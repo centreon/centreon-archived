@@ -36,6 +36,9 @@
 
 class Broker extends AbstractObjectJSON
 {
+    private const STREAM_BBDO_SERVER = 'bbdo_server';
+    private const STREAM_BBDO_CLIENT = 'bbdo_client';
+
     protected $engine = null;
     protected $broker = null;
     protected $generate_filename = null;
@@ -337,6 +340,7 @@ class Broker extends AbstractObjectJSON
                 'port' => 51000 + (int) $row['config_id']
             ];
 
+            $object = $this->cleanBbdoStreams($object);
 
             // Generate file
             $this->generateFile($object);
@@ -352,6 +356,51 @@ class Broker extends AbstractObjectJSON
         $this->generate_filename = 'watchdog.json';
         $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
+    }
+
+    /**
+     * Remove unnecessary element form inputs and output for stream types bbdo
+     *
+     * @param array<string,mixed> $config
+     * @return array<string,mixed>
+     */
+    private function cleanBbdoStreams(array $config): array
+    {
+        if (isset($config['input'])) {
+            foreach ($config['input'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === self::STREAM_BBDO_SERVER) {
+                    unset($config['input'][$key]['compression']);
+                    unset($config['input'][$key]['retention']);
+
+                    if ($config['input']['encrypt'] === 'no') {
+                        unset($config['input'][$key]['private_key']);
+                        unset($config['input'][$key]['certificate']);
+                    }
+                }
+                if ($inputCfg['type'] === self::STREAM_BBDO_CLIENT) {
+                    unset($config['input'][$key]['compression']);
+
+                    if ($config['input'][$key]['encrypt'] === 'no') {
+                        unset($config['input'][$key]['ca_certificate']);
+                        unset($config['input'][$key]['ca_name']);
+                    }
+                }
+            }
+        }
+        if (isset($config['output'])) {
+            foreach ($config['output'] as $key => $inputCfg) {
+                if ($inputCfg['type'] === self::STREAM_BBDO_SERVER && $config['output'][$key]['encrypt'] === 'no') {
+                    unset($config['output'][$key]['private_key']);
+                    unset($config['output'][$key]['certificate']);
+                }
+                if ($inputCfg['type'] === self::STREAM_BBDO_CLIENT && $config['output'][$key]['encrypt'] === 'no') {
+                    unset($config['output'][$key]['ca_certificate']);
+                    unset($config['output'][$key]['ca_name']);
+                }
+            }
+        }
+
+        return $config;
     }
 
     private function getEngineParameters($poller_id)
@@ -499,6 +548,23 @@ class Broker extends AbstractObjectJSON
     }
 
     /**
+     * Method retrieving the Centreon Platform UUID generated during web installation
+     *
+     * @return string|null
+     */
+    private function getCentreonPlatformUuid(): ?string
+    {
+        global $pearDB;
+        $result = $pearDB->query("SELECT `value` FROM informations WHERE `key` = 'uuid'");
+
+        if (! $record = $result->fetch(\PDO::FETCH_ASSOC)) {
+            return null;
+        };
+
+        return $record['value'];
+    }
+
+    /**
      * Generate complete proxy url
      *
      * @return array with lua parameters
@@ -562,6 +628,14 @@ class Broker extends AbstractObjectJSON
                 ];
             }
         }
+
+        $uuid = $this->getCentreonPlatformUuid();
+
+        $luaParameters[] = [
+            'type' => 'string',
+            'name' => 'centreon_platform_uuid',
+            'value' => $uuid
+        ];
 
         return $luaParameters;
     }

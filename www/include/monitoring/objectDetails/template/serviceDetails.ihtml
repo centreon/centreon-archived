@@ -135,8 +135,8 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_update}</td>
                                 <td class="ListColLeft ColPopup
-                                    {if !isset($service_data.last_update) || ($service_data.last_update == 0)}
-                                "> {else} isTimestamp">{$service_data.last_update} {/if}</td>
+                                    {if !isset($service_data.status_update_time) || ($service_data.status_update_time == 0)}
+                                "> {else} isTimestamp">{$service_data.status_update_time} {/if}</td>
                             </tr>
                             {if $service_data.command_line}
                             <tr class='list_one'>
@@ -152,31 +152,6 @@
                             </tr>
                             {/if}
                         </table>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        {if isset($tools)}
-                        <table class="ListTable">
-                            <tr class='ListHeader'>
-                                <td class="ListColHeaderLeft">{$m_mon_tools}</td>
-                            </tr>
-                            {if isset($tools)}
-                            {section name=tool loop=$tools}
-                            <tr class='list_one'>
-                                <td class="ListColLeft ColPopup">
-                                {if $tools[tool].popup == ""}
-                                <a href="{$tools[tool].url}" target="{$tools[tool].target}">
-                                {else}
-                                <a href="#tools" name="tools" onClick="window.open('{$tools[tool].url}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width={$tools[tool].width}, height={$tools[tool].height}');">
-                                {/if}
-                                &#9679;&nbsp;{$tools[tool].name}</a></td>
-                            </tr>
-                            {/section}
-                            {/if}
-                        </table>
-                        {/if}
                     </td>
                 </tr>
                 <tr>

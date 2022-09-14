@@ -1,3 +1,5 @@
+import { InputProps, InputType } from '@centreon/ui';
+
 import {
   labelBlacklistClientAddresses,
   labelMixed,
@@ -9,7 +11,6 @@ import {
   labelEnableWebSSOAuthentication,
   labelAuthenticationMode,
 } from '../translatedLabels';
-import { InputProps, InputType } from '../../FormInputs/models';
 import {
   labelActivation,
   labelClientAddresses,
@@ -18,57 +19,65 @@ import {
 
 export const inputs: Array<InputProps> = [
   {
-    category: labelActivation,
     fieldName: 'isActive',
+    group: labelActivation,
     label: labelEnableWebSSOAuthentication,
     type: InputType.Switch,
   },
   {
-    category: labelActivation,
     fieldName: 'isForced',
+    group: labelActivation,
     label: labelAuthenticationMode,
-    options: [
-      {
-        isChecked: (value: boolean): boolean => value,
-        label: labelWebSSOOnly,
-        value: true,
-      },
-      {
-        isChecked: (value: boolean): boolean => !value,
-        label: labelMixed,
-        value: false,
-      },
-    ],
+    radio: {
+      options: [
+        {
+          label: labelWebSSOOnly,
+          value: true,
+        },
+        {
+          label: labelMixed,
+          value: false,
+        },
+      ],
+    },
     type: InputType.Radio,
   },
   {
-    category: labelClientAddresses,
+    autocomplete: {
+      creatable: true,
+      options: [],
+    },
     fieldName: 'trustedClientAddresses',
+    group: labelClientAddresses,
     label: labelTrustedClientAddresses,
-    type: InputType.Multiple,
+    type: InputType.MultiAutocomplete,
   },
   {
-    category: labelClientAddresses,
+    autocomplete: {
+      creatable: true,
+      options: [],
+    },
     fieldName: 'blacklistClientAddresses',
+    group: labelClientAddresses,
     label: labelBlacklistClientAddresses,
-    type: InputType.Multiple,
+    type: InputType.MultiAutocomplete,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'loginHeaderAttribute',
+    group: labelIdentityProvider,
     label: labelLoginHeaderAttributeName,
     required: true,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'patternMatchingLogin',
+    group: labelIdentityProvider,
     label: labelPatternMatchLogin,
     type: InputType.Text,
   },
   {
-    category: labelIdentityProvider,
     fieldName: 'patternReplaceLogin',
+    group: labelIdentityProvider,
     label: labelPatternReplaceLogin,
     type: InputType.Text,
   },

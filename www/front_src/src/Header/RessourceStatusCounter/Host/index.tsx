@@ -1,22 +1,12 @@
-import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import HostIcon from '@mui/icons-material/Dns';
 
-import {
-  IconHeader,
-  IconToggleSubmenu,
-  SubmenuHeader,
-  SubmenuItem,
-  SubmenuItems,
-  SeverityCode,
-  StatusCounter,
-  SelectEntry,
-} from '@centreon/ui';
+import { SubmenuHeader, SeverityCode, SelectEntry } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { Criteria } from '../../../Resources/Filter/Criterias/models';
@@ -30,7 +20,7 @@ import {
   unhandledStateCriterias,
   hostCriterias,
 } from '../getResourcesUrl';
-import RessourceStatusCounter, { useStyles } from '..';
+import RessourceStatusCounter from '..';
 import getDefaultCriterias from '../../../Resources/Filter/Criterias/default';
 
 const hostStatusEndpoint =
@@ -75,7 +65,6 @@ interface SelectResourceProps {
 }
 
 const HostStatusCounter = (): JSX.Element => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const { t } = useTranslation();
@@ -148,159 +137,128 @@ const HostStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter<HostData>
       endpoint={hostStatusEndpoint}
-      loaderWidth={24}
+      loaderWidth={12}
       schema={statusSchema}
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
         <div>
-          <SubmenuHeader active={toggled}>
-            <IconHeader
-              Icon={HostIcon}
-              iconName={t('Hosts')}
-              pending={hasPending}
-              onClick={toggleDetailedView}
-            />
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Down"
-              to={unhandledDownHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledDownHostsCriterias,
-                link: unhandledDownHostsLink,
-              })}
-            >
-              <StatusCounter
-                count={data.down.unhandled}
-                severityCode={SeverityCode.High}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Unreachable"
-              to={unhandledUnreachableHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledUnreachableHostsCriterias,
-                link: unhandledUnreachableHostsLink,
-              })}
-            >
-              <StatusCounter
-                count={data.unreachable.unhandled}
-                severityCode={SeverityCode.Low}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Hosts Up"
-              to={upHostsLink}
-              onClick={changeFilterAndNavigate({
-                criterias: upHostsCriterias,
-                link: upHostsLink,
-              })}
-            >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
-            </Link>
-            <IconToggleSubmenu
-              data-testid="submenu-hosts"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
-            <div
-              className={clsx(classes.subMenuToggle, {
-                [classes.subMenuToggleActive]: toggled,
-              })}
-            >
-              <SubmenuItems>
-                <Link
-                  className={classes.link}
-                  to={hostsLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: hostsCriterias,
-                    link: hostsLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu hosts count all"
-                    submenuCount={numeral(data.total).format()}
-                    submenuTitle={t('All')}
-                    titleTestId="submenu hosts title all"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={unhandledDownHostsLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: unhandledDownHostsCriterias,
-                    link: unhandledDownHostsLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu hosts count down"
-                    dotColored="red"
-                    submenuCount={`${numeral(data.down.unhandled).format(
-                      '0a',
-                    )}/${numeral(data.down.total).format('0a')}`}
-                    submenuTitle={t('Down')}
-                    titleTestId="submenu hosts title down"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={unhandledUnreachableHostsLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: unhandledUnreachableHostsCriterias,
-                    link: unhandledUnreachableHostsLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu hosts count unreachable"
-                    dotColored="gray"
-                    submenuCount={`${numeral(data.unreachable.unhandled).format(
-                      '0a',
-                    )}/${numeral(data.unreachable.total).format('0a')}`}
-                    submenuTitle={t('Unreachable')}
-                    titleTestId="submenu hosts title unreachable"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={upHostsLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: upHostsCriterias,
-                    link: upHostsLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu hosts count ok"
-                    dotColored="green"
-                    submenuCount={numeral(data.ok).format()}
-                    submenuTitle={t('Up')}
-                    titleTestId="submenu hosts title ok"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={pendingHostsLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: pendingHostsCriterias,
-                    link: pendingHostsLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu hosts count pending"
-                    dotColored="blue"
-                    submenuCount={numeral(data.pending).format()}
-                    submenuTitle={t('Pending')}
-                    titleTestId="submenu hosts title pending"
-                  />
-                </Link>
-              </SubmenuItems>
-            </div>
-          </SubmenuHeader>
+          <SubmenuHeader
+            active={toggled}
+            counters={[
+              {
+                count: data.down.unhandled,
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledDownHostsCriterias,
+                  link: unhandledDownHostsLink,
+                }),
+                severityCode: SeverityCode.High,
+                testId: 'Hosts Down',
+                to: unhandledDownHostsLink,
+              },
+              {
+                count: data.unreachable.unhandled,
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledUnreachableHostsCriterias,
+                  link: unhandledUnreachableHostsLink,
+                }),
+                severityCode: SeverityCode.Low,
+                testId: 'Hosts Unreachable',
+                to: unhandledUnreachableHostsLink,
+              },
+              {
+                count: data.ok,
+                onClick: changeFilterAndNavigate({
+                  criterias: upHostsCriterias,
+                  link: upHostsLink,
+                }),
+                severityCode: SeverityCode.Ok,
+                testId: 'Hosts Up',
+                to: upHostsLink,
+              },
+            ]}
+            hasPending={hasPending}
+            iconHeader={{
+              Icon: HostIcon,
+              iconName: t('Hosts'),
+              onClick: toggleDetailedView,
+            }}
+            iconToggleSubmenu={{
+              onClick: toggleDetailedView,
+              rotate: toggled,
+              testid: 'submenu-hosts',
+            }}
+            submenuItems={[
+              {
+                countTestId: 'submenu hosts count all',
+                onClick: changeFilterAndNavigate({
+                  criterias: hostsCriterias,
+                  link: hostsLink,
+                  toggle: toggleDetailedView,
+                }),
+                submenuCount: numeral(data.total).format(),
+                submenuTitle: t('All'),
+                titleTestId: 'submenu hosts title all',
+                to: hostsLink,
+              },
+              {
+                countTestId: 'submenu hosts count down',
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledDownHostsCriterias,
+                  link: unhandledDownHostsLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.High,
+                submenuCount: `${numeral(data.down.unhandled).format(
+                  '0a',
+                )}/${numeral(data.down.total).format('0a')}`,
+                submenuTitle: t('Down'),
+                titleTestId: 'submenu hosts title down',
+                to: unhandledDownHostsLink,
+              },
+              {
+                countTestId: 'submenu hosts count unreachable',
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledUnreachableHostsCriterias,
+                  link: unhandledUnreachableHostsLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Low,
+                submenuCount: `${numeral(data.unreachable.unhandled).format(
+                  '0a',
+                )}/${numeral(data.unreachable.total).format('0a')}`,
+                submenuTitle: t('Unreachable'),
+                titleTestId: 'submenu hosts title unreachable',
+                to: unhandledUnreachableHostsLink,
+              },
+              {
+                countTestId: 'submenu hosts count ok',
+                onClick: changeFilterAndNavigate({
+                  criterias: upHostsCriterias,
+                  link: upHostsLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Ok,
+                submenuCount: numeral(data.ok).format(),
+                submenuTitle: t('Up'),
+                titleTestId: 'submenu hosts title ok',
+                to: upHostsLink,
+              },
+              {
+                countTestId: 'submenu hosts count pending',
+                onClick: changeFilterAndNavigate({
+                  criterias: pendingHostsCriterias,
+                  link: pendingHostsLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Pending,
+                submenuCount: numeral(data.pending).format(),
+                submenuTitle: t('Pending'),
+                titleTestId: 'submenu hosts title pending',
+                to: pendingHostsLink,
+              },
+            ]}
+            toggled={toggled}
+          />
         </div>
       )}
     </RessourceStatusCounter>

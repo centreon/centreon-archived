@@ -285,17 +285,17 @@ function deleteServerInDB(array $serverIds): void
 
         // Is a Remote Server?
         $statement = $pearDB->prepare(
-            'SELECT * FROM remote_servers WHERE ip = :ip'
+            'SELECT * FROM remote_servers WHERE server_id = :id'
         );
-        $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+        $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
         $statement->execute();
 
         if ($statement->rowCount() > 0) {
             // Delete entry from remote_servers
             $statement = $pearDB->prepare(
-                'DELETE FROM remote_servers WHERE ip = :ip'
+                'DELETE FROM remote_servers WHERE server_id = :id'
             );
-            $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+            $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
             $statement->execute();
             // Delete all relation between this Remote Server and pollers
             $pearDB->query(
@@ -437,6 +437,8 @@ function duplicateServer(array $server, array $nbrDup): void
                         $statement->bindValue(':poller_id', (int) $row['id'], \PDO::PARAM_INT);
                         $statement->bindValue(':b_poller_id', (int) $serverId, \PDO::PARAM_INT);
                         $statement->execute();
+
+                        duplicateRemoteServerInformation((int) $serverId, (int) $row['id']);
                     }
                 } catch (\PDOException $e) {
                     // Nothing to do
@@ -768,14 +770,14 @@ function addUserRessource(int $serverId): bool
  * Update Remote Server information
  *
  * @param array $data
- * @param string|null $oldIpAddress Old IP address of the server before the upgrade
+ * @param int $id remote server id
  */
-function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
+function updateRemoteServerInformation(array $data, int $id)
 {
     global $pearDB;
 
-    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE ip = :ip");
-    $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE server_id = :id");
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
     $statement->execute();
     $total = (int) $statement->fetch(\PDO::FETCH_ASSOC)['total'];
 
@@ -784,14 +786,14 @@ function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
             UPDATE remote_servers
             SET http_method = :http_method, http_port = :http_port,
                 no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
-            WHERE ip = :ip
+            WHERE server_id = :id
         ");
         $statement->bindValue(':http_method', $data["http_method"]);
         $statement->bindValue(':http_port', $data["http_port"] ?? null, \PDO::PARAM_INT);
         $statement->bindValue(':no_proxy', $data["no_proxy"]["no_proxy"]);
         $statement->bindValue(':no_check_certificate', $data["no_check_certificate"]["no_check_certificate"]);
         $statement->bindValue(':new_ip', $data["ns_ip_address"]);
-        $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
         $statement->execute();
     }
 }
@@ -1011,13 +1013,13 @@ function updateServer(int $id, array $data): void
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
+
+    updateRemoteServerInformation($data, $id);
     try {
         updateServerIntoPlatformTopology($retValue, $id);
     } catch (\Exception $e) {
         // catch exception but don't return anything to avoid blank pages on form
     }
-
-    updateRemoteServerInformation($data, $ipAddressBeforeChanges);
     additionnalRemoteServersByPollerId(
         $id,
         $data["remote_additional_id"] ?? null
@@ -1031,121 +1033,6 @@ function updateServer(int $id, array $data): void
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog("poller", $id, CentreonDB::escape($data["name"]), "c", $fields);
-}
-
-/**
- * Get poller state if a service or an host has changed.
- *
- * @param array $pollers Listing of pollers
- *
- * @return an array of id => boolean. True if the configuration has changed
- * @global array $conf_centreon Database configuration
- * @global CentreonDB $pearDBO DB connector for centreon_storage database
- */
-function getChangeState(array $pollers): array
-{
-    global $pearDBO, $conf_centreon, $pearDB;
-
-    $results = [];
-    $lastRestart = -1;
-    foreach ($pollers as $id => $pollerRestart) {
-        $results[$id] = false;
-        if (is_numeric($pollerRestart) && ($lastRestart === -1 || $lastRestart > $pollerRestart)) {
-            $lastRestart = $pollerRestart;
-        }
-    }
-    if ($lastRestart === -1) {
-        return $results;
-    }
-    $pollersSearch = implode(',', array_keys($pollers));
-
-    $query = <<<REQUEST
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT instance_id, host_id FROM hosts where instance_id IN ($pollersSearch)
-    ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.host_id
-WHERE log_action.object_type = 'host' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT nagios_server_id as instance_id, host_host_id as host_id FROM {$conf_centreon['db']}.ns_host_relation
-         WHERE nagios_server_id IN ($pollersSearch)
-    ) AS subtable ON log_action.object_id = subtable.host_id
-WHERE log_action.object_type = 'host' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT h.instance_id, s.service_id FROM hosts h, services s
-        WHERE h.host_id = s.host_id AND h.instance_id IN ($pollersSearch)
-    ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.service_id
-WHERE log_action.object_type = 'service' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT nagios_server_id as instance_id, service_service_id as service_id
-        FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
-        WHERE nagios_server_id IN ($pollersSearch)
-            AND hsr.host_host_id = nhr.host_host_id
-    ) AS subtable ON log_action.object_id = subtable.service_id
-WHERE log_action.object_type = 'service' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg
-        INNER JOIN hosts h ON h.host_id = sg.host_id AND h.instance_id IN ($pollersSearch)
-    ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.servicegroup_id
-WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT nhr.nagios_server_id as instance_id, servicegroup_sg_id as servicegroup_id
-        FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
-        WHERE nhr.nagios_server_id IN ($pollersSearch)
-            AND sgr.host_host_id = nhr.host_host_id
-    ) AS subtable ON log_action.object_id = subtable.servicegroup_id
-WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT h.instance_id, hostgroup_id FROM hosts_hostgroups hg
-        INNER JOIN hosts h ON h.host_id = hg.host_id AND h.instance_id IN ($pollersSearch)
-    ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.hostgroup_id
-WHERE log_action.object_type = 'hostgroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-UNION
-SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
-    INNER JOIN (
-        SELECT nhr.nagios_server_id as instance_id, hostgroup_hg_id as hostgroup_id
-        FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
-        WHERE nhr.nagios_server_id IN ($pollersSearch)
-            AND hr.host_host_id = nhr.host_host_id
-    ) AS subtable ON log_action.object_id = subtable.hostgroup_id
-WHERE log_action.object_type = 'hostgroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
-REQUEST;
-
-    $dbResult = $pearDBO->query($query);
-    while (($row = $dbResult->fetch())) {
-        if (
-            $row['num_logs'] == 0 ||
-            $row['action_log_date'] < $pollers[$row['instance_id']]
-        ) {
-            continue;
-        }
-
-        $results[$row['instance_id']] = true;
-    }
-
-    // also requires restart if flag updated is set to true
-    $dbResult = $pearDB->query("SELECT id, updated FROM nagios_server WHERE id IN (" . $pollersSearch . ")");
-    while (($row = $dbResult->fetch())) {
-        if ($row['updated']) {
-            $results[$row['id']] = true;
-        }
-    }
-
-    return $results;
 }
 
 /**
@@ -1178,7 +1065,7 @@ AND (
       )
       OR object_id IN (
         SELECT host_host_id
-        FROM {$conf_centreon['db']}.ns_host_relation
+        FROM `{$conf_centreon['db']}`.ns_host_relation`
         WHERE nagios_server_id = $poller_id
       )
     )
@@ -1196,7 +1083,7 @@ AND (
       )
       OR object_id IN (
         SELECT service_service_id
-        FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
+        FROM `{$conf_centreon['db']}`.ns_host_relation nhr, `{$conf_centreon['db']}`.host_service_relation hsr
         WHERE nagios_server_id = $poller_id
         AND hsr.host_host_id = nhr.host_host_id
       )
@@ -1216,7 +1103,7 @@ AND (
       )
       OR object_id IN (
         SELECT DISTINCT servicegroup_sg_id
-        FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.servicegroup_relation sgr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE sgr.host_host_id = nhr.host_host_id
         AND nhr.nagios_server_id = $poller_id
       )
@@ -1236,7 +1123,7 @@ AND (
       )
       OR object_id IN (
         SELECT DISTINCT hr.hostgroup_hg_id
-        FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
+        FROM `{$conf_centreon['db']}`.hostgroup_relation hr, `{$conf_centreon['db']}`.ns_host_relation nhr
         WHERE hr.host_host_id = nhr.host_host_id
         AND nhr.nagios_server_id = $poller_id
       )
@@ -1348,8 +1235,8 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
     /**
      * Check if we are updating a Remote Server
      */
-    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE ip = :address");
-    $statement->bindValue(':address', $pollerIp, \PDO::PARAM_STR);
+    $statement = $pearDB->prepare("SELECT 1 FROM remote_servers WHERE server_id = :id");
+    $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
     $statement->execute();
     $isRemote = $statement->fetch(\PDO::FETCH_ASSOC);
     if ($isRemote) {
@@ -1495,4 +1382,74 @@ function ipCanBeUpdated(array $options): bool
         return false;
     }
     return true;
+}
+
+/**
+ * Get Remote servers information
+ *
+ * @param integer $serverId
+ * @return array<string,string>
+ */
+function getRemoteServerInformation(int $serverId): array
+{
+    global $pearDB;
+
+    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE server_id = :id LIMIT 1");
+    $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
+    $statement->execute();
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        return $result;
+    }
+
+    return [];
+}
+
+/**
+ * Duplicate information for remote server
+ *
+ * @param int $duplicatedId
+ * @param int $newId
+ */
+function duplicateRemoteServerInformation(int $duplicatedId, int $newId): void
+{
+    global $pearDB;
+    $remoteServerInformation = getRemoteServerInformation($duplicatedId);
+    if (! empty($remoteServerInformation)) {
+        $insertRemoteServerStatement = $pearDB->prepare(
+            "INSERT INTO `remote_servers` (ip, `version`, is_connected,
+            centreon_path, http_method, http_port, no_check_certificate, no_proxy, server_id) VALUES
+            (:ip, :version, :isConnected, :centreonPath, :httpMethod, :httpPort,
+            :noCheckCertificate, :noProxy, :serverId)"
+        );
+        $insertRemoteServerStatement->bindValue(":ip", $remoteServerInformation["ip"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(":version", $remoteServerInformation["version"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(
+            ":isConnected",
+            (int) $remoteServerInformation["is_connected"],
+            \PDO::PARAM_INT
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":centreonPath",
+            $remoteServerInformation["centreon_path"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":httpMethod",
+            $remoteServerInformation["http_method"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":httpPort",
+            $remoteServerInformation["http_port"] !== null ? (int) $remoteServerInformation["http_port"] : null,
+            \PDO::PARAM_INT
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":noCheckCertificate",
+            $remoteServerInformation["no_check_certificate"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(":noProxy", $remoteServerInformation["no_proxy"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(":serverId", $newId, \PDO::PARAM_INT);
+        $insertRemoteServerStatement->execute();
+    }
 }

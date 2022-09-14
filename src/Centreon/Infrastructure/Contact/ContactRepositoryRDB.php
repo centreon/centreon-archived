@@ -421,10 +421,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
+            ->setTimezoneId((int) $contact['contact_location'])
             ->setLocale($contactLocale)
             ->setDefaultPage($page)
             ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1')
-            ->setOneClickExportEnabled($contact['enable_one_click_export'] === '1')
             ->setTheme($contact['contact_theme']);
 
         $this->addActionRules($contact);

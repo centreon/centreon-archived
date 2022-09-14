@@ -1,0 +1,15 @@
+includes:
+    - vendor/centreon/centreon-test-lib/src/PHPStan/phpstan.neon
+
+parameters:
+    level: max
+    paths:
+        - src/Core
+        - tests/php/Core
+    ignoreErrors:
+        -
+            message: '#^Undefined variable: \$this$#'
+            path: tests/php/Core
+        -
+            message: '#^Call to an undefined method Pest#'
+            path: tests/php/Core

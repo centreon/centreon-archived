@@ -23,31 +23,32 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Security\Domain\Authentication\Model\ProviderToken;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Security\Domain\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 interface OpenIdProviderInterface extends ProviderInterface
 {
     /**
-     * @return OpenIdConfiguration
+     * @return Configuration
      */
-    public function getConfiguration(): OpenIdConfiguration;
+    public function getConfiguration(): Configuration;
 
     /**
-     * @return ProviderToken
+     * @return NewProviderToken
      */
-    public function getProviderToken(): ProviderToken;
+    public function getProviderToken(): NewProviderToken;
 
     /**
-     * @return ProviderToken|null
+     * @return NewProviderToken|null
      */
-    public function getProviderRefreshToken(): ?ProviderToken;
+    public function getProviderRefreshToken(): ?NewProviderToken;
 
     /**
-     * @return ContactInterface|null
+     * Create user with informations from identity provider
+     * @throws \Throwable
      */
-    public function createUser(): ?ContactInterface;
+    public function createUser(): void;
 
      /**
      * Authenticate the user using OpenId Provider.
@@ -55,4 +56,18 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @param string|null $authorizationCode
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void;
+
+    /**
+     * Get User information gathered from IdP
+     *
+     * @return array<string,mixed>
+     */
+    public function getUserInformation(): array;
+
+    /**
+     * Get information store in id_token JWT Payload
+     *
+     * @return array<string,mixed>
+     */
+    public function getIdTokenPayload(): array;
 }

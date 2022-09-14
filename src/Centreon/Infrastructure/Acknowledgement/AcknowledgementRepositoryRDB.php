@@ -27,7 +27,7 @@ use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterfac
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;

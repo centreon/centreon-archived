@@ -24,7 +24,7 @@ namespace Centreon\Infrastructure\Repository;
 use JsonSchema\Validator;
 use Centreon\Domain\Log\LoggerTrait;
 use JsonSchema\Constraints\Constraint;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -48,8 +48,8 @@ class AbstractRepositoryDRB
     protected function translateDbName(string $request): string
     {
         return str_replace(
-            array(':dbstg', ':db'),
-            array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
+            [':dbstg', ':db'],
+            [$this->db->getStorageDbName(), $this->db->getCentreonDbName()],
             $request
         );
     }

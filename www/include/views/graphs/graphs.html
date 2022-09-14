@@ -94,7 +94,7 @@ var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}
 {literal}
 
 var charts = [];
-const templateGraph = ({ graphId, graphType, graphTitle }) => {
+const templateGraph = ({ graphId, graphType, graphTitle, hostId, serviceId }) => {
     var closeIcon = "{/literal}{$removeIcon}{literal}";
     var csvIcon = "{/literal}{$csvIcon}{literal}";
     var pictureIcon = "{/literal}{$pictureIcon}{literal}";
@@ -122,7 +122,7 @@ const templateGraph = ({ graphId, graphType, graphTitle }) => {
                         ${pictureIcon}
                     </span>
                 </a>
-                <a class="actions" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+                <a class="actions download_graph_csv" data-hostid="${hostId}" data-serviceid="${serviceId}">
                     <span class="ico-18 margin_right">
                         ${csvIcon}
                     </span>
@@ -211,7 +211,7 @@ function initRefresh() {
   });
 }
 
-function addChart(id, name, times) {
+function addChart(id, name, times, hostId, serviceId) {
     var refreshInterval;
     var parseInterval;
     var datepickerFormat = jQuery("#StartDate").datepicker("option", "dateFormat");
@@ -255,7 +255,9 @@ function addChart(id, name, times) {
             graphId: id,
             graphType: 'service',
             graphTitle: name,
-            status: true
+            status: true,
+            hostId: hostId,
+            serviceId: serviceId,
         })
     );
     jQuery('#graph-' + id).centreonGraph(times);
@@ -299,7 +301,7 @@ function loadChart(chart, callback) {
                     alert(tooManyChartMsg);
                     break;
                 }
-                addChart(data[i].id, data[i].title, times);
+                addChart(data[i].id, data[i].title, times, data[i].hostId, data[i].serviceId);
             }
             displayNav(end);
             if (typeof callback == 'function') {
@@ -396,45 +398,84 @@ jQuery(function () {
         }
     });
 
-    /* Add events on click on action download image/CSV */
-    jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
-        var $a = jQuery(this);
-        var baseUrl = $a.data('href');
-        var chartId = $a.parents('.graph').data('graphId');
-        var start;
-        var end;
+    function getGraphDates(periodValue, startDateValue, endDateValue) {
+        let start;
+        let end;
 
-        /* Get the period */
-        if (jQuery('select[name="period"]').val() === '') {
-            start = moment.tz(
-                jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val(),
-                timezone
-            );
-            end = moment.tz(
-                jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val(),
-                timezone
-            );
+        if (periodValue === '') {
+            start = moment.tz(startDateValue, timezone);
+            end = moment.tz(endDateValue, timezone);
             duration = moment.duration(end.diff(start));
         } else {
-            parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
-            duration = moment.duration(
-                parseInt(parseInterval[1], 10),
-                parseInterval[2]
-            );
+            parseInterval = periodValue.match(/(\d+)([a-z]+)/i);
+            duration = moment.duration(parseInt(parseInterval[1], 10), parseInterval[2]);
             start = moment().tz(timezone);
             end = moment().tz(timezone);
             start.subtract(parseInterval[1], parseInterval[2]);
         }
 
-        e.preventDefault();
+        return {'start': start, 'end': end};
+    }
+
+    function extractBaseUrlFromUrl(url) {
+        const scriptNamePos = url.indexOf('main.get.php');
+        if (scriptNamePos === -1) {
+            throw 'Unable to extract base url from URL';
+        }
+
+        const baseUrl = url.substring(0, scriptNamePos);
+        if (baseUrl.charAt(baseUrl.length - 1) !== '/') {
+            return baseUrl + '/';
+        }
+
+        return baseUrl;
+    }
+
+    function generateGraphCSVDownloadUrl(hostId, serviceId, startDate, endDate) {
+        const baseUrl = extractBaseUrlFromUrl(window.location.href);
+        let url = baseUrl + 'api/latest/monitoring';
+            url+= '/hosts/' + hostId;
+            url+= '/services/' + serviceId + '/metrics/performance/download?';
+            url+= 'start_date=' + startDate;
+            url+= '&end_date=' + endDate;
+
+        return url;
+    }
+
+    function generateChartActionURL(baseUrl, chartId, startDate, endDate) {
         if (baseUrl.indexOf('?') !== -1) {
             baseUrl += '&';
         } else {
             baseUrl += '?';
         }
 
-        baseUrl += 'chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
-        window.location = baseUrl;
+        return baseUrl + 'chartId=' + chartId + '&start=' + startDate + '&end=' + endDate;
+    }
+
+    function generateActionURL(elmnt) {
+        const period = jQuery('select[name="period"]').val();
+        const startDate = jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val();
+        const endDate = jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val();
+
+        const dates = getGraphDates(period, startDate, endDate);
+
+        if (elmnt.hasClass('download_graph_csv')) {
+            const hostId = elmnt.data('hostid');
+            const serviceId = elmnt.data('serviceid');
+
+            return generateGraphCSVDownloadUrl(hostId, serviceId, dates.start.toISOString(), dates.end.toISOString())
+        }
+
+        const baseUrl = elmnt.data('href');
+        const chartId = elmnt.parents('.graph').data('graphId');
+
+        return generateChartActionURL(baseUrl, chartId, dates.start.unix(), dates.end.unix());
+    }
+
+    /* Add events on click on action download image/CSV */
+    jQuery('.graphZone').delegate('a.actions,a.actions-simple', 'click', function (e) {
+        e.preventDefault();
+        window.location = generateActionURL(jQuery(this));
     });
 
     /* Remove a chart */

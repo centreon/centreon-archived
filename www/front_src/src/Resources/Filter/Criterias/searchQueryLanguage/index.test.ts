@@ -6,7 +6,7 @@ import { selectableResourceTypes, selectableStatuses } from '../models';
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers monitoring_server:Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers monitoring_server:Central host_category:Linux h.name:centreon';
 
 const parsedSearch = [
   {
@@ -57,10 +57,51 @@ const parsedSearch = [
     type: 'multi_select',
     value: [{ id: 0, name: 'Central' }],
   },
-  { name: 'search', object_type: null, type: 'text', value: 'h.name:centreon' },
+  {
+    name: 'host_categories',
+    object_type: 'host_categories',
+    type: 'multi_select',
+    value: [{ id: 0, name: 'Linux' }],
+  },
+  {
+    name: 'service_categories',
+    object_type: 'service_categories',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'host_severities',
+    object_type: 'host_severities',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'host_severity_levels',
+    object_type: 'host_severity_levels',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'service_severities',
+    object_type: 'service_severities',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'service_severity_levels',
+    object_type: 'service_severity_levels',
+    type: 'multi_select',
+    value: [],
+  },
+  {
+    name: 'search',
+    object_type: null,
+    type: 'text',
+    value: 'h.name:centreon',
+  },
 ];
 
-describe(parse, () => {
+describe('parse', () => {
   it('parses the given search string into a Search model', () => {
     const result = parse(search);
 
@@ -127,9 +168,19 @@ describe(getAutocompleteSuggestions, () => {
       inputSearch: 'host_group:',
     },
     {
-      cursorPosition: 19,
+      cursorPosition: 20,
       expectedResult: [],
       inputSearch: 'monitoring_server:',
+    },
+    {
+      cursorPosition: 18,
+      expectedResult: [],
+      inputSearch: 'service_categorie:',
+    },
+    {
+      cursorPosition: 15,
+      expectedResult: [],
+      inputSearch: 'host_categorie:',
     },
   ];
 

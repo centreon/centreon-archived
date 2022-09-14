@@ -22,17 +22,15 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\RealTime\UseCase\FindMetaService;
 
-use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Tests\Core\Domain\RealTime\Model\MetaServiceTest;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
+use Core\Infrastructure\RealTime\Hypermedia\HypermediaCreator;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaService;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServicePresenter;
@@ -42,313 +40,222 @@ use Tests\Core\Domain\Configuration\MetaServiceTest as MetaServiceConfigurationT
 use Core\Application\Configuration\MetaService\Repository\ReadMetaServiceRepositoryInterface as
     ReadMetaServiceConfigurationRepositoryInterface;
 
-class FindMetaServiceTest extends TestCase
-{
-    /**
-     * @var ReadMetaServiceRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $repository;
+beforeEach(function () {
+    $this->repository = $this->createMock(ReadMetaServiceRepositoryInterface::class);
+    $this->configurationRepository = $this->createMock(ReadMetaServiceConfigurationRepositoryInterface::class);
+    $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
+    $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
+    $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
+    $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
+    $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+    $this->contact = $this->createMock(ContactInterface::class);
+});
 
-    /**
-     * @var ReadMetaServiceConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $configurationRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $accessGroupRepository;
-
-    /**
-     * @var ReadDowntimeRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $downtimeRepository;
-
-    /**
-     * @var ReadAcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $acknowledgementRepository;
-
-    /**
-     * @var HypermediaCreator&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $hypermediaCreator;
-
-    /**
-     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $presenterFormatter;
-
-    protected function setUp(): void
-    {
-        $this->repository = $this->createMock(ReadMetaServiceRepositoryInterface::class);
-        $this->configurationRepository = $this->createMock(ReadMetaServiceConfigurationRepositoryInterface::class);
-        $this->accessGroupRepository = $this->createMock(ReadAccessGroupRepositoryInterface::class);
-        $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
-        $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
-        $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
-        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
-    }
-
-    /**
-     * test requested meta service configuration not found
-     */
-    public function testMetaServiceConfigurationNotFoundAsAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true);
-
-        $findMetaService = new FindMetaService(
-            $this->repository,
-            $this->configurationRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository
-        );
-
-        $this->configurationRepository
-            ->expects($this->once())
-            ->method('findMetaServiceById')
-            ->willReturn(null);
-
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
-        $findMetaService(1, $findMetaServicePresenter);
-
-        $this->assertEquals(
-            $findMetaServicePresenter->getResponseStatus(),
-            new NotFoundResponse('MetaService configuration')
-        );
-    }
-
-    /**
-     * test requested meta service configuration not found
-     */
-    public function testMetaServiceConfigurationNotFoundAsNonAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(2)
-            ->setName('user')
-            ->setAdmin(false);
-
-        $findMetaService = new FindMetaService(
-            $this->repository,
-            $this->configurationRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository
-        );
-
-        $this->configurationRepository
-            ->expects($this->once())
-            ->method('findMetaServiceByIdAndAccessGroupIds')
-            ->willReturn(null);
-
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
-        $findMetaService(1, $findMetaServicePresenter);
-
-        $this->assertEquals(
-            $findMetaServicePresenter->getResponseStatus(),
-            new NotFoundResponse('MetaService configuration')
-        );
-    }
-
-    /**
-     * test requested meta service not found
-     */
-    public function testMetaServiceNotFoundAsAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true);
-
-        $findMetaService = new FindMetaService(
-            $this->repository,
-            $this->configurationRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository
-        );
-
-        /**
-         * @var MetaServiceConfigurationTest
-         */
-        $configuration = MetaServiceConfigurationTest::createMetaServiceModel();
-
-        $this->configurationRepository
-            ->expects($this->once())
-            ->method('findMetaServiceById')
-            ->willReturn($configuration);
-
-        $this->repository
-            ->expects($this->once())
-            ->method('findMetaServiceById')
-            ->willReturn(null);
-
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
-        $findMetaService(1, $findMetaServicePresenter);
-
-        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));
-    }
-
-    /**
-     * test requested meta service configuration not found
-     */
-    public function testMetaServiceNotFoundAsNonAdmin(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(2)
-            ->setName('user')
-            ->setAdmin(false);
-
-        $findMetaService = new FindMetaService(
-            $this->repository,
-            $this->configurationRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository
-        );
-
-        $this->configurationRepository
-            ->expects($this->once())
-            ->method('findMetaServiceByIdAndAccessGroupIds')
-            ->willReturn(MetaServiceConfigurationTest::createMetaServiceModel());
-
-        $this->repository
-            ->expects($this->once())
-            ->method('findMetaServiceByIdAndAccessGroupIds')
-            ->willReturn(null);
-
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
-        $findMetaService(1, $findMetaServicePresenter);
-
-        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));
-    }
-
-    /**
-     * test requested meta service found
-     */
-    public function testMetaServiceFound(): void
-    {
-        /**
-         * @var ContactInterface
-         */
-        $contact = (new Contact())
-            ->setId(2)
-            ->setName('user')
-            ->setAdmin(false);
-
-        $metaServiceConfiguration = MetaServiceConfigurationTest::createMetaServiceModel();
-        $metaService = MetaServiceTest::createMetaServiceModel();
-
-        $downtimes[] = (new Downtime(1, 1, 10))
-            ->setCancelled(false);
-
-        $acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
-
-        $this->downtimeRepository
-            ->expects($this->once())
-            ->method('findOnGoingDowntimesByHostIdAndServiceId')
-            ->willReturn($downtimes);
-
+it('should present a NotFoundResponse if meta service configuration not found as admin', function () {
+    $findMetaService = new FindMetaService(
+        $this->repository,
+        $this->configurationRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
         $this->acknowledgementRepository
-            ->expects($this->once())
-            ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
-            ->willReturn($acknowledgement);
+    );
 
-        $findMetaService = new FindMetaService(
-            $this->repository,
-            $this->configurationRepository,
-            $contact,
-            $this->accessGroupRepository,
-            $this->downtimeRepository,
-            $this->acknowledgementRepository
-        );
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
 
-        $this->configurationRepository
-            ->expects($this->once())
-            ->method('findMetaServiceByIdAndAccessGroupIds')
-            ->willReturn($metaServiceConfiguration);
+    $this->configurationRepository
+        ->expects($this->once())
+        ->method('findMetaServiceById')
+        ->willReturn(null);
 
-        $this->repository
-            ->expects($this->once())
-            ->method('findMetaServiceByIdAndAccessGroupIds')
-            ->willReturn($metaService);
+    $presenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findMetaService(1, $presenter);
 
-        $findMetaServicePresenter = new FindMetaServicePresenterStub();
-        $findMetaService(1, $findMetaServicePresenter);
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'MetaService configuration not found'
+    );
+});
 
+it('should present a NotFoundResponse if meta service configuration not found as non-admin', function () {
+    $findMetaService = new FindMetaService(
+        $this->repository,
+        $this->configurationRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository
+    );
 
-        $this->assertEquals($findMetaServicePresenter->response->name, $metaService->getName());
-        $this->assertEquals($findMetaServicePresenter->response->id, $metaService->getId());
-        $this->assertEquals($findMetaServicePresenter->response->isFlapping, $metaService->isFlapping());
-        $this->assertEquals($findMetaServicePresenter->response->isAcknowledged, $metaService->isAcknowledged());
-        $this->assertEquals($findMetaServicePresenter->response->isInDowntime, $metaService->isInDowntime());
-        $this->assertEquals($findMetaServicePresenter->response->output, $metaService->getOutput());
-        $this->assertEquals($findMetaServicePresenter->response->commandLine, $metaService->getCommandLine());
-        $this->assertEquals($findMetaServicePresenter->response->performanceData, $metaService->getPerformanceData());
-        $this->assertEquals(
-            $findMetaServicePresenter->response->notificationNumber,
-            $metaService->getNotificationNumber()
-        );
-        $this->assertEquals($findMetaServicePresenter->response->latency, $metaService->getLatency());
-        $this->assertEquals($findMetaServicePresenter->response->executionTime, $metaService->getExecutionTime());
-        $this->assertEquals(
-            $findMetaServicePresenter->response->statusChangePercentage,
-            $metaService->getStatusChangePercentage()
-        );
-        $this->assertEquals($findMetaServicePresenter->response->hasActiveChecks, $metaService->hasActiveChecks());
-        $this->assertEquals($findMetaServicePresenter->response->hasPassiveChecks, $metaService->hasPassiveChecks());
-        $this->assertEquals($findMetaServicePresenter->response->checkAttempts, $metaService->getCheckAttempts());
-        $this->assertEquals($findMetaServicePresenter->response->maxCheckAttempts, $metaService->getMaxCheckAttempts());
-        $this->assertEquals($findMetaServicePresenter->response->lastTimeOk, $metaService->getLastTimeOk());
-        $this->assertEquals($findMetaServicePresenter->response->lastCheck, $metaService->getLastCheck());
-        $this->assertEquals($findMetaServicePresenter->response->nextCheck, $metaService->getNextCheck());
-        $this->assertEquals($findMetaServicePresenter->response->lastNotification, $metaService->getLastNotification());
-        $this->assertEquals($findMetaServicePresenter->response->lastStatusChange, $metaService->getLastStatusChange());
-        $this->assertEquals($findMetaServicePresenter->response->status['code'], $metaService->getStatus()->getCode());
-        $this->assertEquals($findMetaServicePresenter->response->status['name'], $metaService->getStatus()->getName());
-        $this->assertEquals($findMetaServicePresenter->response->status['type'], $metaService->getStatus()->getType());
-        $this->assertEquals(
-            $findMetaServicePresenter->response->status['severity_code'],
-            $metaService->getStatus()->getOrder()
-        );
-        $this->assertEquals($findMetaServicePresenter->response->downtimes[0]['id'], $downtimes[0]->getId());
-        $this->assertEquals(
-            $findMetaServicePresenter->response->downtimes[0]['service_id'],
-            $downtimes[0]->getServiceId()
-        );
-        $this->assertEquals($findMetaServicePresenter->response->downtimes[0]['host_id'], $downtimes[0]->getHostId());
-        $this->assertEquals($findMetaServicePresenter->response->acknowledgement['id'], $acknowledgement->getId());
-        $this->assertEquals(
-            $findMetaServicePresenter->response->acknowledgement['service_id'],
-            $acknowledgement->getServiceId()
-        );
-        $this->assertEquals(
-            $findMetaServicePresenter->response->acknowledgement['host_id'],
-            $acknowledgement->getHostId()
-        );
-        $this->assertEquals(
-            $findMetaServicePresenter->response->calculationType,
-            $metaServiceConfiguration->getCalculationType()
-        );
-    }
-}
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->configurationRepository
+        ->expects($this->once())
+        ->method('findMetaServiceByIdAndAccessGroupIds')
+        ->willReturn(null);
+
+    $presenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findMetaService(1, $presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'MetaService configuration not found'
+    );
+});
+
+it('should present a NotFoundResponse if metaservice requested is not found as admin', function () {
+    $findMetaService = new FindMetaService(
+        $this->repository,
+        $this->configurationRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository
+    );
+
+    $configuration = MetaServiceConfigurationTest::createMetaServiceModel();
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(true);
+
+    $this->configurationRepository
+        ->expects($this->once())
+        ->method('findMetaServiceById')
+        ->willReturn($configuration);
+
+    $this->repository
+        ->expects($this->once())
+        ->method('findMetaServiceById')
+        ->willReturn(null);
+
+    $presenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findMetaService(1, $presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'MetaService not found'
+    );
+});
+
+it('should present a NotFoundResponse if metaservice requested is not found as non-admin', function () {
+    $findMetaService = new FindMetaService(
+        $this->repository,
+        $this->configurationRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository
+    );
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->configurationRepository
+        ->expects($this->once())
+        ->method('findMetaServiceByIdAndAccessGroupIds')
+        ->willReturn(MetaServiceConfigurationTest::createMetaServiceModel());
+
+    $this->repository
+        ->expects($this->once())
+        ->method('findMetaServiceByIdAndAccessGroupIds')
+        ->willReturn(null);
+
+    $presenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
+    $findMetaService(1, $presenter);
+
+    expect($presenter->getResponseStatus())->toBeInstanceOf(NotFoundResponse::class);
+    expect($presenter->getResponseStatus()?->getMessage())->toBe(
+        'MetaService not found'
+    );
+});
+
+it('should find the metaservice as non-admin', function () {
+    $metaServiceConfiguration = MetaServiceConfigurationTest::createMetaServiceModel();
+    $metaService = MetaServiceTest::createMetaServiceModel();
+
+    $downtimes[] = (new Downtime(1, 1, 10))
+        ->setCancelled(false);
+
+    $acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
+
+    $this->contact
+        ->expects($this->any())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->downtimeRepository
+        ->expects($this->once())
+        ->method('findOnGoingDowntimesByHostIdAndServiceId')
+        ->willReturn($downtimes);
+
+    $this->acknowledgementRepository
+        ->expects($this->once())
+        ->method('findOnGoingAcknowledgementByHostIdAndServiceId')
+        ->willReturn($acknowledgement);
+
+    $findMetaService = new FindMetaService(
+        $this->repository,
+        $this->configurationRepository,
+        $this->contact,
+        $this->accessGroupRepository,
+        $this->downtimeRepository,
+        $this->acknowledgementRepository
+    );
+
+    $this->configurationRepository
+        ->expects($this->once())
+        ->method('findMetaServiceByIdAndAccessGroupIds')
+        ->willReturn($metaServiceConfiguration);
+
+    $this->repository
+        ->expects($this->once())
+        ->method('findMetaServiceByIdAndAccessGroupIds')
+        ->willReturn($metaService);
+
+    $presenter = new FindMetaServicePresenterStub();
+    $findMetaService(1, $presenter);
+
+    expect($presenter->response->name)->toBe($metaService->getName());
+    expect($presenter->response->metaId)->toBe($metaService->getId());
+    expect($presenter->response->isFlapping)->toBe($metaService->isFlapping());
+    expect($presenter->response->isAcknowledged)->toBe($metaService->isAcknowledged());
+    expect($presenter->response->isInDowntime)->toBe($metaService->isInDowntime());
+    expect($presenter->response->output)->toBe($metaService->getOutput());
+    expect($presenter->response->commandLine)->toBe($metaService->getCommandLine());
+    expect($presenter->response->performanceData)->toBe($metaService->getPerformanceData());
+    expect($presenter->response->notificationNumber)->toBe($metaService->getNotificationNumber());
+    expect($presenter->response->latency)->toBe($metaService->getLatency());
+    expect($presenter->response->executionTime)->toBe($metaService->getExecutionTime());
+    expect($presenter->response->statusChangePercentage)
+        ->toBe($metaService->getStatusChangePercentage());
+    expect($presenter->response->hasActiveChecks)->toBe($metaService->hasActiveChecks());
+    expect($presenter->response->hasPassiveChecks)->toBe($metaService->hasPassiveChecks());
+    expect($presenter->response->checkAttempts)->toBe($metaService->getCheckAttempts());
+    expect($presenter->response->maxCheckAttempts)->toBe($metaService->getMaxCheckAttempts());
+    expect($presenter->response->lastTimeOk)->toBe($metaService->getLastTimeOk());
+    expect($presenter->response->lastCheck)->toBe($metaService->getLastCheck());
+    expect($presenter->response->nextCheck)->toBe($metaService->getNextCheck());
+    expect($presenter->response->lastNotification)->toBe($metaService->getLastNotification());
+    expect($presenter->response->lastStatusChange, $metaService->getLastStatusChange());
+    expect($presenter->response->status['code'])->toBe($metaService->getStatus()->getCode());
+    expect($presenter->response->status['name'])->toBe($metaService->getStatus()->getName());
+    expect($presenter->response->status['type'])->toBe($metaService->getStatus()->getType());
+    expect($presenter->response->status['severity_code'])->toBe($metaService->getStatus()->getOrder());
+    expect($presenter->response->downtimes[0]['id'])->toBe($downtimes[0]->getId());
+    expect($presenter->response->downtimes[0]['service_id'])->toBe($downtimes[0]->getServiceId());
+    expect($presenter->response->downtimes[0]['host_id'])->toBe($downtimes[0]->getHostId());
+    expect($presenter->response->acknowledgement['id'])->toBe($acknowledgement->getId());
+    expect($presenter->response->acknowledgement['service_id'])->toBe($acknowledgement->getServiceId());
+    expect($presenter->response->acknowledgement['host_id'])->toBe($acknowledgement->getHostId());
+    expect($presenter->response->calculationType)->toBe($metaServiceConfiguration->getCalculationType());
+});

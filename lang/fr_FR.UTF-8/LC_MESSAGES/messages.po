@@ -2178,7 +2178,7 @@ msgstr "Groupe de contacts"
 
 #: centreon-web/www/install/smarty_translate.php:714
 msgid "Previous"
-msgstr "Précédant"
+msgstr "Précédent"
 
 #: centreon-web/www/install/smarty_translate.php:717
 msgid "Next"
@@ -4408,7 +4408,7 @@ msgstr "Sauvegarde du mot de passe LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:78
 msgid "Auto import users"
-msgstr "Import automatiques des utilisateurs"
+msgstr "Import automatique des utilisateurs"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:96
 msgid "Use service DNS"
@@ -5172,10 +5172,6 @@ msgstr "Informations sur Centreon"
 #: centreon-web/www/include/options/media/images/listImg.php:73
 msgid "Directory"
 msgstr "Répertoire"
-
-#: centreon-web/www/include/Administration/parameters/general/form.php:78
-msgid "Centreon Web Directory"
-msgstr "Répertoire Web de Centreon"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:80
 msgid "Sessions Expiration Time"
@@ -5977,7 +5973,7 @@ msgstr "Première page"
 #: centreon-web/www/include/common/pagination.php:166
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:150
 msgid "Previous page"
-msgstr "Page précédante"
+msgstr "Page précédente"
 
 #: centreon-web/www/include/common/pagination.php:167
 #: centreon-web/www/include/configuration/configKnowledge/pagination.php:151
@@ -9553,10 +9549,6 @@ msgstr "Contrôle si le service est en plage de maintenance"
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:343
 msgid "Preexec definition"
 msgstr "Définition de la commande PREEXEC"
-
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:360
-msgid "The same OID element already exists"
-msgstr "Le même OID existe déjà"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:368
 msgid "Advanced matching rules"
@@ -13653,11 +13645,11 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "No downtime scheduled for services"
 #~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
-#~ msgid "Host category"
-#~ msgstr "Catégorie d'hôtes"
+ msgid "Host category"
+ msgstr "Catégorie d'hôtes"
 
-#~ msgid "Service category"
-#~ msgstr "Catégories de service"
+ msgid "Service category"
+ msgstr "Catégorie de service"
 
 #~ msgid "Inclusion"
 #~ msgstr "Inclusion"
@@ -16182,17 +16174,8 @@ msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identif
 msgid "Unable to start Centreon legacy session"
 msgstr "Impossible de démarrer la session Centreon legacy"
 
-msgid "As displayed"
-msgstr "Comme affiché"
-
-msgid "Medium size"
-msgstr "Taille moyenne"
-
 msgid "Display the complete graph"
 msgstr "Afficher le graphe complet"
-
-msgid "Small size"
-msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
@@ -16722,17 +16705,11 @@ msgstr "Impossible d'obtenir les modèles de contact depuis le stockage de donn�
 msgid "Enable auto import"
 msgstr "Activer l'importation automatique"
 
-msgid "Email attribute to bind"
-msgstr "Attribut de mail à lier"
+msgid "Email attribute"
+msgstr "Attribut de mail"
 
-msgid "Alias attribute to bind"
-msgstr "Attribut d'alias à lier"
-
-msgid "Fullname attribute to bind"
-msgstr "Attribut de nom complet à lier"
-
-msgid "Auto import"
-msgstr "Importation automatique"
+msgid "Fullname attribute"
+msgstr "Attribut de nom complet"
 
 # msgid "You are not authorized to access the configuration"
 # msgstr "Vous n’êtes pas autorisé à accéder à la configuration"
@@ -16839,27 +16816,224 @@ msgstr "Le modèle de contact '%s' n'existe pas"
 msgid "Do not use configured proxy to connect to this server"
 msgstr "Ne pas utiliser le proxy configuré pour se connecter à ce serveur"
 
+msgid "At least one authorization relation is required"
+msgstr "Au moins une relation d'autorisation est requise"
+
+msgid "Authorization value"
+msgstr "Valeur d'autorisation"
+
+msgid "Access group"
+msgstr "Groupe d'accès"
+
+msgid "Define the relation between authorization value and access group"
+msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès"
+
+msgid "Delete the relation"
+msgstr "Supprimer la relation"
+
+msgid "Authorization key"
+msgstr "Clé d'autorisation"
+
+msgid "Authorizations"
+msgstr "Autorisations"
+
+msgid "You are not allowed to access contact groups"
+msgstr "Vous n'êtes pas autorisé à accéder aux groupes de contacts"
+
 msgid "Error while searching for the host template %d"
 msgstr "Erreur lors de la recherche du modèle d'hôte %d"
 
-#: www/include/Administration/parameters/DB-Func.php
-msgid "Could not change resource status mode."
-msgstr "Le mode pour Resource Status n'a pas pu être changé"
+msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+msgstr "Cette section vous permet de donner des autorisations afin de lier un utilisateur importé à un groupe d'accès."
 
-#: www/include/Administration/parameters/DB-Func.php
-msgid "Reason: error when updating PHP environment file"
-msgstr "Raison: erreur lors de la mise à jour du fichier PHP d'environnement"
+msgid "Contact group: Define a contact group for the imported user."
+msgstr "Groupe de contact : Définir un groupe de contact pour l'utilisateur importé."
 
-#: www/include/Administration/parameters/DB-Func.php
-msgid "Reason: PHP environment file is not writable"
-msgstr "Raison: le fichier PHP d'environnement n'est pas éditable"
+msgid "Authorization key: The key"
+msgstr "Clé d'autorisation : La clé"
 
-#: www/include/Administration/parameters/engine/form.php
-msgid "Resource Status mod"
-msgstr "Mode pour Resource Status"
+msgid "is defined by default. You can define another one."
+msgstr "est définie par défaut. Vous pouvez en définir une autre."
+
+msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+msgstr "Définir la relation entre la valeur d'autorisation et le groupe d'accès : Vous pouvez lier une valeur d'autorisation à un groupe d'accès."
+
+msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+msgstr "Si nous considérons l'exemple suivant dans le JSON reçu depuis le point d'accès d'autorisation, une relation est définie entre la valeur"
+
+msgid "and an access group:"
+msgstr "et un groupe d'accès :"
 
 msgid "License end date:"
 msgstr "Date de fin de licence :"
 
 msgid "License expired"
 msgstr "Licence expirée"
+
+msgid "The contact group id #%d doesn't exist"
+msgstr "L'id de groupe de contacts #%d n'existe pas"
+
+msgid "Parent alias"
+msgstr "Alias parent"
+
+msgid "The following bound attributes are missing: %s"
+msgstr "Les attributs liés suivants sont manquants : %s"
+
+msgid "An error occured while retrieving service categories"
+msgstr "Une erreur s'est produite lors de la récupération des catégories de services"
+
+msgid "An error occured while retrieving host categories"
+msgstr "Une erreur s'est produite lors de la récupération des catégories d'hôtes"
+
+msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+msgstr "Attention, taille maximale dépassée pour le champ '%s' (max: %d), il sera tronqué à l'enregistrement"
+
+msgid "Export to CSV"
+msgstr "Exporter en CSV"
+
+msgid "Update already in progress"
+msgstr "Une mise à jour est déjà en cours"
+
+msgid "An error occurred when retrieving the current version"
+msgstr "Une erreur s'est produite lors de la récupération de la version actuelle"
+
+msgid "Cannot retrieve the current version"
+msgstr "La version actuelle n'a pas pu être récupérée"
+
+msgid "An error occurred when retrieving available updates"
+msgstr "Une erreur s'est produite lors de la récupération des mises à jour disponibles"
+
+msgid "An error occurred when applying the update %s (%s)"
+msgstr "Une erreur s'est produite lors de l'application de la mise à jour %s (%s)"
+
+msgid "Error while locking the update process"
+msgstr "Erreur lors du verrouillage du processus de mise à jour"
+
+msgid "Error while unlocking the update process"
+msgstr "Erreur lors du déverrouillage du processus de mise à jour"
+
+msgid "An error occurred when applying post update actions"
+msgstr "Une erreur s'est produite lors de l'application des actions postérieures à la mise à jour"
+
+msgid "Updates not found"
+msgstr "Les mises à jour n'ont pas été trouvées"
+
+msgid "PHP version %s required (%s installed)"
+msgstr "La version %s de PHP est requise (%s installée)"
+
+msgid "PHP extension %s not loaded"
+msgstr "L'extension %s de PHP n'est pas chargée"
+
+msgid "Error when retrieving the database version"
+msgstr "Erreur lors de la récupération de la version de la base de données"
+
+msgid "Cannot retrieve the database version information"
+msgstr "Les informations de version de la base de données n'ont pas pu être récupérées"
+
+msgid "MariaDB version %s required (%s installed)"
+msgstr "La version %s de MariaDB est requise (%s installée)"
+
+msgid "Service severity"
+msgstr "Criticité du service"
+
+msgid "Service severity level"
+msgstr "Niveau de criticité du service"
+
+msgid "Host severity"
+msgstr "Criticité d'hôte"
+
+msgid "Host severity level"
+msgstr "Niveau de criticité de l'hôte"
+
+msgid "Resource type \"%s\" is not supported"
+msgstr "Type de ressource \"%s\" non supporté"
+
+msgid "Following modules need to be removed first: %s"
+msgstr "Les modules suivants doivent être supprimés : %s"
+
+msgid "Module \"%s\" is missing"
+msgstr "Le module \"%s\" est manquant"
+
+msgid "An error occured while retrieving details of module \"%s\""
+msgstr "Une erreur s'est produite lors de la récupération des informations détaillées du module \"%s\""
+
+msgid "Centreon database schema does not seem to be installed."
+msgstr "Le schema de base de données de Centreon ne semble pas installé."
+
+msgid "Centreon database schema version is \"%s\" (\"%s\" required)."
+msgstr "La version du schema de base de données de Centreon est \"%s\" (\"%s\" requise)."
+
+msgid "Please use Web UI to install Centreon."
+msgstr "Veuillez utiliser l'interface Web pour installer Centreon."
+
+msgid "Please use Web UI to update Centreon."
+msgstr "Veuillez utiliser l'interface Web pour mettre à jour Centreon."
+
+msgid "Listening address (optional)"
+msgstr "Adresse d'écoute (optionnel)"
+
+msgid "Listening port"
+msgstr "Port d'écoute"
+
+msgid "Transport protocol"
+msgstr "Protocole de transport"
+
+msgid "Authorization token (optional)"
+msgstr "Jeton d’autorisation (optionnel)"
+
+msgid "Private key path"
+msgstr "Chemin de la clé privée"
+
+msgid "Certificate path"
+msgstr "Chemin du certificat serveur"
+
+msgid "Compression"
+msgstr "Compression"
+
+msgid "Enable retention"
+msgstr "Activer la rétention"
+
+msgid "Filter on event categories"
+msgstr "Filtrage des évènements par catégories"
+
+msgid "Server address"
+msgstr "Adresse du serveur"
+
+msgid "Server port"
+msgstr "Port de connexion"
+
+msgid "Retry interval (in seconds)"
+msgstr "Intervalle entre deux tentatives (en secondes)"
+
+msgid "Trusted CA's certificate path (optional)"
+msgstr "Chemin du certificat de l’autorité de certification (optionnel)"
+
+msgid "Certificate Common Name (optional)"
+msgstr "\"Common Name\" du certificat du serveur (optionnel)"
+
+msgid "As displayed"
+msgstr "Image affichée"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Small size"
+msgstr "Petite taille"
+
+msgid "CSV"
+msgstr "CSV"
+
+msgid "User information cannot be updated"
+msgstr "Les informations de l'utilisateur ne peuvent pas être mises à jour"
+
+msgid "Poller Configuration Actions / Poller Management"
+msgstr "Actions de configuration des collecteurs / Gestion des collecteurs"
+
+msgid "Create and edit pollers"
+msgstr "Créer et modifier des collecteurs"
+
+msgid "Delete pollers"
+msgstr "Supprimer des collecteurs"
+
+msgid "Deploy configuration"
+msgstr "Déployer la configuration"

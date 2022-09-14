@@ -91,9 +91,7 @@ const LoadComponent = ({
 
   return (
     <Suspense
-      fallback={
-        isFederatedModule ? <MenuSkeleton width={29} /> : <PageSkeleton />
-      }
+      fallback={isFederatedModule ? <MenuSkeleton /> : <PageSkeleton />}
     >
       <Component {...props} />
     </Suspense>
@@ -124,7 +122,7 @@ export const Remote = ({
   });
 
   if (!ready) {
-    return isFederatedModule ? <MenuSkeleton width={27} /> : <PageSkeleton />;
+    return isFederatedModule ? <MenuSkeleton /> : <PageSkeleton />;
   }
 
   if (failed) {

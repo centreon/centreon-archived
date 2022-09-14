@@ -79,6 +79,7 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements ReadDown
         $statement->execute();
 
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /** @var array<string,int|string|null> $row */
             $downtimes[] = DbDowntimeFactory::createFromRecord($row);
         }
 

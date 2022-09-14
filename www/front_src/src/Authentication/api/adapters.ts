@@ -1,8 +1,12 @@
+import { map } from 'ramda';
+
 import {
   PasswordSecurityPolicy,
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
+  AuthorizationRule,
+  AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
 } from '../Openid/models';
@@ -66,6 +70,17 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   };
 };
 
+const adaptAuthorizationRelationsToAPI = (
+  authorizationRules: Array<AuthorizationRule>,
+): Array<AuthorizationRelationToAPI> =>
+  map(
+    ({ claimValue, accessGroup }: AuthorizationRule) => ({
+      access_group_id: accessGroup.id,
+      claim_value: claimValue,
+    }),
+    authorizationRules,
+  );
+
 export const adaptOpenidConfigurationToAPI = ({
   authenticationType,
   authorizationEndpoint,
@@ -86,18 +101,23 @@ export const adaptOpenidConfigurationToAPI = ({
   autoImport,
   contactTemplate,
   emailBindAttribute,
-  aliasBindAttribute,
   fullnameBindAttribute,
+  contactGroup,
+  claimName,
+  authorizationRules,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
-  alias_bind_attribute: aliasBindAttribute || null,
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
+  authorization_rules:
+    adaptAuthorizationRelationsToAPI(authorizationRules) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
   blacklist_client_addresses: blacklistClientAddresses,
+  claim_name: claimName || null,
   client_id: clientId || null,
   client_secret: clientSecret || null,
   connection_scopes: connectionScopes,
+  contact_group_id: contactGroup?.id || 0,
   contact_template: contactTemplate || null,
   email_bind_attribute: emailBindAttribute || null,
   endsession_endpoint: endSessionEndpoint || null,

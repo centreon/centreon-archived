@@ -77,8 +77,12 @@ ehthumbs_vista.db
 lighthouse/report
 lighthouse/build
 manifest.json
+cypress/results
 
 !config/packages/serializer/Centreon/
 config/packages/serializer/Centreon*
 config/packages/dev/Centreon*
 config/packages/prod/Centreon*
+
+# Php-CS-Fixer output file
+checkstyle.core.xml

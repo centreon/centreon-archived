@@ -44,6 +44,14 @@ class CentreonContactTemplate extends CentreonContact
         'TP'
     );
 
+    public const ORDER_NAME = 0;
+    public const ORDER_UNIQUENAME = 1;
+    public const ORDER_MAIL = 2;
+    public const ORDER_ADMIN = 3;
+    public const ORDER_ACCESS = 4;
+    public const ORDER_LANG = 5;
+    public const ORDER_AUTHTYPE = 6;
+
     /**
      * Constructor
      *
@@ -55,5 +63,36 @@ class CentreonContactTemplate extends CentreonContact
         $this->params['contact_register'] = 0;
         $this->register = 0;
         $this->action = "CONTACTTPL";
+        $this->insertParams = [
+            'contact_name',
+            'contact_alias',
+            'contact_email',
+            'contact_admin',
+            'contact_oreon',
+            'contact_lang',
+            'contact_auth_type'
+        ];
+        $this->nbOfCompulsoryParams = count($this->insertParams);
+    }
+
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
+    public function initInsertParameters($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < $this->nbOfCompulsoryParams) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $this->addParams = [];
+        $this->initUniqueField($params);
+        $this->initUserInformation($params);
+        $this->initUserAccess($params);
+        $this->initLang($params);
+        $this->initAuthenticationType($params);
+
+        $this->params = array_merge($this->params, $this->addParams);
+        $this->checkParameters();
     }
 }

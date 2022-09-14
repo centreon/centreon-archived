@@ -1,44 +1,47 @@
-import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
-import { Divider } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-
-import { useRequest, useSnackbar } from '@centreon/ui';
+import { Form, Group, useRequest, useSnackbar } from '@centreon/ui';
 
 import { PasswordSecurityPolicy } from '../models';
 import useValidationSchema from '../useValidationSchema';
-import { putPasswordPasswordSecurityPolicy } from '../../api';
 import {
   labelFailedToSavePasswordPasswordSecurityPolicy,
+  labelPasswordBlockingPolicy,
+  labelPasswordCasePolicy,
+  labelPasswordExpirationPolicy,
   labelPasswordPasswordSecurityPolicySaved,
 } from '../translatedLabels';
+import { putPasswordPasswordSecurityPolicy } from '../../api';
 import FormButtons from '../../FormButtons';
 
-import PasswordCasePolicy from './PasswordCasePolicy';
-import PasswordExpirationPolicy from './PasswordExpirationPolicy';
-import PasswordBlockingPolicy from './PasswordBlockingPolicy';
+import inputs from './inputs';
 
 interface Props {
   initialValues: PasswordSecurityPolicy;
-  loadPasswordPasswordSecurityPolicy: () => void;
+  isLoading: boolean;
+  loadPasswordSecurityPolicy: () => void;
 }
 
-const useStyles = makeStyles((theme) => ({
-  formContainer: {
-    margin: theme.spacing(2, 0, 0),
+const groups: Array<Group> = [
+  {
+    name: labelPasswordCasePolicy,
+    order: 1,
   },
-  formGroup: {
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
+  {
+    name: labelPasswordExpirationPolicy,
+    order: 2,
   },
-}));
+  {
+    name: labelPasswordBlockingPolicy,
+    order: 3,
+  },
+];
 
-const Form = ({
+const PasswordSecurityPolicyForm = ({
   initialValues,
-  loadPasswordPasswordSecurityPolicy,
+  isLoading,
+  loadPasswordSecurityPolicy,
 }: Props): JSX.Element => {
-  const classes = useStyles();
   const validationSchema = useValidationSchema();
   const { showSuccessMessage } = useSnackbar();
   const { t } = useTranslation();
@@ -54,41 +57,22 @@ const Form = ({
   ): Promise<void> =>
     sendRequest(values)
       .then(() => {
-        loadPasswordPasswordSecurityPolicy();
+        loadPasswordSecurityPolicy();
         showSuccessMessage(t(labelPasswordPasswordSecurityPolicySaved));
       })
       .finally(() => setSubmitting(false));
 
   return (
-    <Formik<PasswordSecurityPolicy>
-      enableReinitialize
-      validateOnBlur
-      validateOnMount
+    <Form<PasswordSecurityPolicy>
+      Buttons={FormButtons}
+      groups={groups}
       initialValues={initialValues}
+      inputs={inputs}
+      isLoading={isLoading}
+      submit={submit}
       validationSchema={validationSchema}
-      onSubmit={submit}
-    >
-      {(): JSX.Element => (
-        <div className={classes.formContainer}>
-          <div className={classes.formGroup}>
-            <PasswordCasePolicy />
-          </div>
-          <Divider />
-          <div className={classes.formGroup}>
-            <PasswordExpirationPolicy />
-          </div>
-          <Divider />
-          <div className={classes.formGroup}>
-            <PasswordBlockingPolicy />
-          </div>
-          <Divider />
-          <div>
-            <FormButtons />
-          </div>
-        </div>
-      )}
-    </Formik>
+    />
   );
 };
 
-export default Form;
+export default PasswordSecurityPolicyForm;

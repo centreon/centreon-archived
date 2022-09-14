@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
 /**
- * @package Tests\Centreon\Application\Controller\Configuration
+ * @package Tests\Centreon\Application\Controller\Provider
  */
 class HostGroupControllerTest extends TestCase
 {

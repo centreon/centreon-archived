@@ -49,10 +49,7 @@ include "./include/common/autoNumLimit.php";
 
 $o = "";
 
-$search = filter_var(
-    $_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '',
-    FILTER_SANITIZE_STRING
-);
+$search =  htmlspecialchars($_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '');
 
 $displayLocked = filter_var(
     $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
@@ -80,22 +77,22 @@ $lockedFilter = $displayLocked ? "" : "AND sv.service_locked = 0 ";
 
 //Service Template Model list
 if ($search) {
-    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
-        "sv.service_activate, sv.service_template_model_stm_id " .
-        "FROM service sv " .
-        "WHERE (sv.service_description LIKE '%" . $search . "%' OR sv.service_alias LIKE '%" . $search . "%') " .
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description," .
+        " sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv " .
+        "WHERE (sv.service_description LIKE :search OR sv.service_alias LIKE :search) " .
         "AND sv.service_register = '0' " .
         $lockedFilter .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
+        "ORDER BY service_description LIMIT :scope, :limit");
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 } else {
-    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
-        "sv.service_activate, sv.service_template_model_stm_id " .
-        "FROM service sv " .
-        "WHERE sv.service_register = '0' " .
-        $lockedFilter .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
+    $statement = $pearDB->prepare("SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description," .
+        " sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv " .
+        "WHERE sv.service_register = '0' " . $lockedFilter .
+        "ORDER BY service_description LIMIT :scope, :limit");
 }
-$dbResult = $pearDB->query($query);
+$statement->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+$statement->bindValue(':scope', (int) $num * (int) $limit, \PDO::PARAM_INT);
+$statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include "./include/common/checkPagination.php";
@@ -140,7 +137,7 @@ $search = str_replace('#BS#', "\\", $search);
 
 $centreonToken = createCSRFToken();
 
-for ($i = 0; $service = $dbResult->fetch(); $i++) {
+for ($i = 0; $service = $statement->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $service['service_id'] . "]");
     if (isset($lockedElements[$service['service_id']])) {
@@ -179,7 +176,8 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);
-            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
+            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>"
+            . htmlentities($value) . "</a>";
         }
     }
 
@@ -233,11 +231,11 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_desc" => CentreonUtils::escapeSecure($service["service_description"]),
-        "RowMenu_alias" => CentreonUtils::escapeSecure($service["service_alias"]),
-        "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
+        "RowMenu_desc" => htmlentities($service["service_description"]),
+        "RowMenu_alias" => htmlentities($service["service_alias"]),
+        "RowMenu_parent" => $tplStr,
         "RowMenu_icon" => $svc_icon,
-        "RowMenu_retry" => CentreonUtils::escapeSecure(
+        "RowMenu_retry" => htmlentities(
             "$normal_check_interval $normal_units / $retry_check_interval $retry_units"
         ),
         "RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),

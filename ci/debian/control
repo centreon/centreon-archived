@@ -89,6 +89,8 @@ Depends:
     php8.0-ldap,
     php8.0-readline,
     php8.0-sqlite3,
+    php8.0-grpc,
+    php8.0-protobuf,
     php-pear,
     ntp,
     rrdtool,
@@ -120,7 +122,7 @@ Description: Base package for all Centreon installations.
 Package: centreon-database
 Architecture: all
 Depends: 
-    centreon-web (>= ${centreon:version}~),
+    centreon-common (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
 Description: Install a database server optimized for use with Centreon.
@@ -140,6 +142,7 @@ Package: centreon-trap
 Architecture: all
 Depends: 
     centreon-common (>= ${centreon:version}~),
+    snmptrapd,
     snmpd,
     ${misc:Depends}
 Description: This package contains Centreon Trap engine
@@ -151,11 +154,16 @@ Depends:
     centreon-engine (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
     centreon-trap (>= ${centreon:version}~),
+    centreon-plugin-applications-databases-mysql,
     centreon-plugin-applications-monitoring-centreon-central,
+    centreon-plugin-applications-monitoring-centreon-database,
+    centreon-plugin-applications-jvm-actuator,
     centreon-plugin-applications-monitoring-centreon-poller,
     centreon-plugin-applications-protocol-dns,
+    centreon-plugin-applications-protocol-ftp,
     centreon-plugin-applications-protocol-ldap,
     centreon-plugin-hardware-printers-generic-snmp,
+    centreon-plugin-hardware-ups-standard-rfc1628-snmp,
     centreon-plugin-network-cisco-standard-snmp,
     centreon-plugin-operatingsystems-linux-snmp,
     centreon-plugin-operatingsystems-windows-snmp,

@@ -86,9 +86,12 @@ describe('Web SSOconfiguration form', () => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByLabelText(labelEnableWebSSOAuthentication),
-    ).toBeChecked();
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableWebSSOAuthentication),
+      ).toBeChecked();
+    });
+
     expect(screen.getByLabelText(labelWebSSOOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
@@ -117,6 +120,12 @@ describe('Web SSOconfiguration form', () => {
 
     await waitFor(() => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableWebSSOAuthentication),
+      ).toBeChecked();
     });
 
     userEvent.type(
@@ -181,6 +190,12 @@ describe('Web SSOconfiguration form', () => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
     });
 
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableWebSSOAuthentication),
+      ).toBeChecked();
+    });
+
     userEvent.type(
       screen.getByLabelText(labelLoginHeaderAttributeName),
       'admin',
@@ -224,6 +239,12 @@ describe('Web SSOconfiguration form', () => {
 
     await waitFor(() => {
       expect(screen.getByText(labelActivation)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(labelEnableWebSSOAuthentication),
+      ).toBeChecked();
     });
 
     userEvent.type(

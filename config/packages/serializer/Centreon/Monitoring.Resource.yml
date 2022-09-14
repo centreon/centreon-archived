@@ -91,10 +91,6 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        severityLevel:
-            type: int
-            groups:
-                - 'resource_main'
         chartUrl:
             type: string
             groups:
@@ -121,5 +117,9 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
         notificationEnabled:
             type: bool
+            groups:
+                - 'resource_main'
+        severity:
+            type: Core\Severity\RealTime\Domain\Model\Severity
             groups:
                 - 'resource_main'

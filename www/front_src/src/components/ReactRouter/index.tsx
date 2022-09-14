@@ -19,7 +19,7 @@ const NotAllowedPage = lazy(() => import('../../FallbackPages/NotAllowedPage'));
 const NotFoundPage = lazy(() => import('../../FallbackPages/NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
-  background: theme.palette.background.default,
+  background: theme.palette.background.paper,
   display: 'grid',
   gridTemplateRows: 'auto 1fr',
   height: '100%',

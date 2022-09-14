@@ -28,9 +28,9 @@ import {
   clearSelectedResourceDerivedAtom,
   detailsAtom,
   selectedResourceDetailsEndpointDerivedAtom,
-  selectedResourceIdAtom,
   selectedResourceUuidAtom,
   sendingDetailsAtom,
+  selectedResourcesDetailsAtom,
 } from '../../Details/detailsAtoms';
 import {
   enabledAutorefreshAtom,
@@ -44,7 +44,6 @@ import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../../translatedLabels';
-import ApiNotFoundMessage from '../ApiNotFoundMessage';
 import { ResourceDetails } from '../../Details/models';
 import {
   appliedFilterAtom,
@@ -65,7 +64,7 @@ const useLoadResources = (): LoadResources => {
   const { sendRequest, sending } = useRequest<ResourceListing>({
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
+      always(t(labelNoResourceFound)),
       pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
     ),
     request: listResources,
@@ -84,13 +83,13 @@ const useLoadResources = (): LoadResources => {
   const [page, setPage] = useAtom(pageAtom);
   const [details, setDetails] = useAtom(detailsAtom);
   const refreshInterval = useAtomValue(refreshIntervalAtom);
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const limit = useAtomValue(limitAtom);
   const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
   const selectedResourceDetailsEndpoint = useAtomValue(
     selectedResourceDetailsEndpointDerivedAtom,
   );
+  const selectedResourceDetails = useAtomValue(selectedResourcesDetailsAtom);
   const customFilters = useAtomValue(customFiltersAtom);
   const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const appliedFilter = useAtomValue(appliedFilterAtom);
@@ -98,7 +97,6 @@ const useLoadResources = (): LoadResources => {
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
-
   const refreshIntervalRef = useRef<number>();
 
   const refreshIntervalMs = refreshInterval * 1000;
@@ -122,7 +120,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
+    if (isNil(selectedResourceDetails?.resourceId)) {
       return;
     }
 
@@ -164,18 +162,34 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('name')) as Array<string>;
     };
 
+    const getCriteriaLevels = (name: string): Array<number> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      const results = criteriaValue?.map(prop('name'));
+
+      return results?.map((item) => Number(item)) as Array<number>;
+    };
+
     if (getUrlQueryParameters().fromTopCounter) {
       return;
     }
 
     sendRequest({
+      hostCategories: getCriteriaNames('host_categories'),
       hostGroups: getCriteriaNames('host_groups'),
+      hostSeverities: getCriteriaNames('host_severities'),
+      hostSeverityLevels: getCriteriaLevels('host_severity_levels'),
       limit,
       monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
+      serviceCategories: getCriteriaNames('service_categories'),
       serviceGroups: getCriteriaNames('service_groups'),
+      serviceSeverities: getCriteriaNames('service_severities'),
+      serviceSeverityLevels: getCriteriaLevels('service_severity_levels'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statusTypes: getCriteriaIds('status_types'),
@@ -212,7 +226,7 @@ const useLoadResources = (): LoadResources => {
 
   useEffect(() => {
     initAutorefresh();
-  }, [enabledAutorefresh, selectedResourceId]);
+  }, [enabledAutorefresh, selectedResourceDetails?.resourceId]);
 
   useEffect(() => {
     return (): void => {
@@ -255,7 +269,11 @@ const useLoadResources = (): LoadResources => {
   useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceUuid]);
+  }, [
+    selectedResourceUuid,
+    selectedResourceDetails?.parentResourceId,
+    selectedResourceDetails?.resourceId,
+  ]);
 
   return { initAutorefreshAndLoad };
 };

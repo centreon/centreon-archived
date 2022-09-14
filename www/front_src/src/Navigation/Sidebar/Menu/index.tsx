@@ -1,12 +1,12 @@
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 
-import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { equals, flatten, isEmpty, isNil, length } from 'ramda';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import { ListItem, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     '&.MuiList-root': {
       padding: theme.spacing(0, 0, 0, 0),
     },
+    marginTop: theme.spacing(0.5),
   },
 }));
 
@@ -48,6 +49,7 @@ const NavigationMenu = ({
   const classes = useStyles();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const theme = useTheme();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
@@ -57,7 +59,9 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const [isDoubleClickedFromRoot, setIsDoubleClickedFromRoot] = useState(false);
   const timeoutRef = useRef<null | NodeJS.Timeout>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -72,6 +76,7 @@ const NavigationMenu = ({
 
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
+  const dismissMenuDuration = theme.transitions.duration.complex;
 
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -83,10 +88,9 @@ const NavigationMenu = ({
   };
 
   const discardTimeout = (): void => {
-    if (isNil(timeoutRef.current)) {
-      return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    clearTimeout(timeoutRef.current);
   };
 
   const handleLeave = (): void => {
@@ -94,13 +98,15 @@ const NavigationMenu = ({
     timeoutRef.current = setTimeout((): void => {
       setHoveredIndex(null);
       setHoveredNavigationItems(null);
-    }, 500);
+    }, dismissMenuDuration);
   };
 
   const handleClickItem = (currentPage: Page): void => {
     if (isNil(searchUrlFromEntry(currentPage))) {
       return;
     }
+    setIsDoubleClickedFromRoot(true);
+    setHoveredIndex(null);
     navigate(searchUrlFromEntry(currentPage) as string);
   };
 
@@ -214,7 +220,15 @@ const NavigationMenu = ({
     });
   };
 
-  useEffect(() => {
+  const collapseMenu = (): void => {
+    setHoveredIndex(null);
+  };
+
+  const leaveMenuItem = (): void => {
+    setIsDoubleClickedFromRoot(false);
+  };
+
+  const setDefaultItems = (): void => {
     navigationData?.forEach((item) => {
       const searchedItems = searchItemsHoveredByDefault(item);
       const filteredResult = flatten(searchedItems || []).filter(Boolean);
@@ -225,19 +239,45 @@ const NavigationMenu = ({
 
       addSelectedNavigationItemsByDefault(filteredResult);
     });
+  };
+
+  const closeMenu = (event): void => {
+    const mouseOver = menuRef?.current?.contains(event.target);
+    if (!mouseOver) {
+      handleLeave();
+    }
+  };
+
+  const visibilitychange = (): void => {
+    if (equals(document.visibilityState, 'visible')) {
+      setDefaultItems();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('visibilitychange', visibilitychange);
+
+    return () => {
+      window.removeEventListener('visibilitychange', visibilitychange);
+    };
   }, []);
 
   useEffect(() => {
-    navigationData?.forEach((item) => {
-      const searchedItems = searchItemsHoveredByDefault(item);
-      const filteredResult = flatten(searchedItems || []).filter(Boolean);
+    setDefaultItems();
 
-      if (isEmpty(filteredResult)) {
-        return;
-      }
+    const isLegacyRoute = pathname.includes('main.php');
+    const iframe = document.getElementById('main-content') as HTMLIFrameElement;
 
-      addSelectedNavigationItemsByDefault(filteredResult);
-    });
+    if (isLegacyRoute) {
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow?.document?.addEventListener(
+          'mousemove',
+          closeMenu,
+        );
+      });
+    } else {
+      window.addEventListener('mousemove', closeMenu);
+    }
   }, [pathname, search]);
 
   const props = {
@@ -258,6 +298,7 @@ const NavigationMenu = ({
     Component: (
       <List
         className={classes.list}
+        ref={menuRef}
         onMouseEnter={discardTimeout}
         onMouseLeave={handleLeave}
       >
@@ -277,9 +318,11 @@ const NavigationMenu = ({
                 data={item}
                 hover={hover}
                 icon={<MenuIcon className={classes.icon} />}
+                isDoubleClickedFromRoot={isDoubleClickedFromRoot}
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
+                onLeaveMenuItem={leaveMenuItem}
                 onMouseEnter={(e: MouseEvent<HTMLElement>): void =>
                   hoverItem({ currentPage: item, e, index })
                 }
@@ -290,9 +333,9 @@ const NavigationMenu = ({
                 item.children.length > 0 && (
                   <CollapsibleItems
                     {...props}
+                    collapseMenu={collapseMenu}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}
-                    onLeave={handleLeave}
                   />
                 )}
             </ListItem>
@@ -302,6 +345,7 @@ const NavigationMenu = ({
     ),
     memoProps: [
       isDrawerOpen,
+      isDoubleClickedFromRoot,
       hoveredIndex,
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,

@@ -22,17 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Core\Resources\Application\Repository\ReadResourceRepositoryInterface;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -41,54 +41,10 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
  */
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
-    /**
-     * @var ResourceRepositoryInterface
-     */
-    private $resourceRepository;
-
-    /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-
-    /**
-     * @var ReadAccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
-     * @param MonitoringRepositoryInterface $monitoringRepository ,
-     * @param ReadAccessGroupRepositoryInterface $accessGroupRepository
-     * @param ResourceRepositoryInterface $resourceRepository
-     */
     public function __construct(
-        MonitoringRepositoryInterface $monitoringRepository,
-        ReadAccessGroupRepositoryInterface $accessGroupRepository,
-        ResourceRepositoryInterface $resourceRepository
+        private ReadAccessGroupRepositoryInterface $accessGroupRepository,
+        private ReadResourceRepositoryInterface $resourceRepository
     ) {
-        $this->monitoringRepository = $monitoringRepository;
-        $this->accessGroupRepository = $accessGroupRepository;
-        $this->resourceRepository = $resourceRepository;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function filterByContact($contact): self
-    {
-        parent::filterByContact($contact);
-
-        $accessGroups = $this->accessGroupRepository->findByContact($contact);
-
-        $this->resourceRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        $this->monitoringRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        return $this;
     }
 
     /**
@@ -106,18 +62,43 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
-            $list = $this->resourceRepository->findResources($filter);
+            $list = $this->getResources($filter);
             // replace macros in external links
             foreach ($list as $resource) {
                 $this->replaceMacrosInExternalLinks($resource);
             }
-        } catch (RepositoryException $ex) {
-            throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         }
 
         return $list;
+    }
+
+    /**
+     * @return \Centreon\Domain\Monitoring\Resource[]
+     */
+    private function getResources(ResourceFilter $filter): array
+    {
+        if (!$this->contact instanceof ContactInterface) {
+            return [];
+        }
+
+        if ($this->contact->isAdmin()) {
+            return $this->resourceRepository->findResources($filter);
+        }
+
+        $accessGroupIds = array_map(
+            function (AccessGroup $accessGroup) {
+                return $accessGroup->getId();
+            },
+            $this->accessGroupRepository->findByContact($this->contact)
+        );
+
+        if (!empty($accessGroupIds)) {
+            return $this->resourceRepository->findResourcesByAccessGroupIds($filter, $accessGroupIds);
+        }
+
+        return [];
     }
 
     /**

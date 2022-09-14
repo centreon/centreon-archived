@@ -12,6 +12,7 @@ import {
   ResourceType,
   ResourceUris,
   Status,
+  Severity,
 } from './models';
 
 const statusDecoder = JsonDecoder.object<Status>(
@@ -22,6 +23,26 @@ const statusDecoder = JsonDecoder.object<Status>(
   'Status',
 );
 
+const severityIcon = JsonDecoder.object<Icon>(
+  {
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
+    url: JsonDecoder.string,
+  },
+  'SeverityIcon',
+);
+
+const severityDecoder = JsonDecoder.object<Severity>(
+  {
+    icon: severityIcon,
+    id: JsonDecoder.number,
+    level: JsonDecoder.number,
+    name: JsonDecoder.string,
+    type: JsonDecoder.string,
+  },
+  'Severity',
+);
+
 const commonDecoders = {
   acknowledged: JsonDecoder.optional(JsonDecoder.boolean),
   active_checks: JsonDecoder.optional(JsonDecoder.boolean),
@@ -29,6 +50,7 @@ const commonDecoders = {
   icon: JsonDecoder.optional(
     JsonDecoder.object<Icon>(
       {
+        id: JsonDecoder.optional(JsonDecoder.number),
         name: JsonDecoder.string,
         url: JsonDecoder.string,
       },
@@ -85,6 +107,7 @@ const commonDecoders = {
   name: JsonDecoder.string,
   notification_enabled: JsonDecoder.optional(JsonDecoder.boolean),
   passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  severity: JsonDecoder.optional(severityDecoder),
   severity_level: JsonDecoder.optional(JsonDecoder.number),
   short_type: JsonDecoder.oneOf<ResourceShortType>(
     [

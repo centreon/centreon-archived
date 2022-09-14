@@ -1,0 +1,25 @@
+Core\Severity\RealTime\Domain\Model\Severity:
+    virtual_properties:
+        getTypeAsString:
+            name: getTypeAsString
+            serialized_name: type
+            type: string
+            groups:
+                - 'severity_main'
+    properties:
+        id:
+            type: integer
+            groups:
+                - 'severity_main'
+        name:
+            type: string
+            groups:
+                - 'severity_main'
+        level:
+            type: integer
+            groups:
+                - 'severity_main'
+        icon:
+            type: Core\Domain\RealTime\Model\Icon
+            groups:
+                - 'severity_main'

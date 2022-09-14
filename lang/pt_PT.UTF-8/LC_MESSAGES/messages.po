@@ -6552,10 +6552,6 @@ msgstr "Diretório de backup para particionamento"
 msgid "Centreon information"
 msgstr "IInformações Centreon"
 
-#: centreon-web/www/include/Administration/parameters/general/form.php:79
-msgid "Centreon Web Directory"
-msgstr "Diretorio Centreon Web"
-
 #: centreon-web/www/include/Administration/parameters/general/form.php:81
 msgid "Sessions Expiration Time"
 msgstr "Duração  do tempo de sessão"
@@ -10238,10 +10234,6 @@ msgstr "Checagem de Manutenção"
 msgid "Preexec definition"
 msgstr "Definição de pré-execução"
 
-#: centreon-web/www/include/configuration/configObject/traps/formTraps.php:376
-msgid "The same OID element already exists"
-msgstr "O mesmo OID já existe"
-
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:384
 msgid "Advanced matching rules"
 msgstr "Regras de correspondencia avançada"
@@ -11785,7 +11777,7 @@ msgstr "Grupo de traps SNMP"
 
 #: centreon-web/www/install/smarty_translate.php:387
 msgid "Host category"
-msgstr "Categoria do Host"
+msgstr "Categoria de Host"
 
 #: centreon-web/www/install/smarty_translate.php:393
 msgid "Informations"
@@ -15459,16 +15451,10 @@ msgstr ""
 # msgid "Enable auto import"
 # msgstr ""
 
-# msgid "Email attribute to bind"
+# msgid "Email attribute"
 # msgstr ""
 
-# msgid "Alias attribute to bind"
-# msgstr ""
-
-# msgid "Fullname attribute to bind"
-# msgstr ""
-
-# msgid "Auto import"
+# msgid "Fullname attribute"
 # msgstr ""
 
 # msgid "You are not authorized to access the configuration"
@@ -15558,11 +15544,146 @@ msgstr ""
 # msgid "Do not use configured proxy to connect to this server"
 # msgstr ""
 
+# msgid "At least one authorization relation is required"
+# msgstr ""
+
+# msgid "Authorization value"
+# msgstr ""
+
+# msgid "Access group"
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group"
+# msgstr ""
+
+# msgid "Delete the relation"
+# msgstr ""
+
+# msgid "Authorization key"
+# msgstr ""
+
+# msgid "Authorizations"
+# msgstr ""
+
 #  msgid "Error while searching for the host template %d"
 #  msgstr ""
+
+# msgid "This section allows you to give authorizations in order to link an imported user to an access group."
+# msgstr ""
+
+# msgid "Contact group: Define a contact group for the imported user."
+# msgstr ""
+
+# msgid "Authorization key: The key"
+# msgstr ""
+
+# msgid "key is defined by default. You can define another one."
+# msgstr ""
+
+# msgid "Define the relation between authorization value and access group: You can link an authorization value to an access group."
+# msgstr ""
+
+# msgid "If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value"
+# msgstr ""
+
+# msgid "and an access group:"
+# msgstr ""
 
 # msgid "License end date:"
 # msgstr ""
 
 # msgid "License expired"
 # msgstr ""
+
+# msgid "Parent alias
+# msgstr ""
+
+msgid "An error occured while retrieving service categories"
+msgstr "Ocorreu um erro durante a recuperação das categorias de serviços"
+
+msgid "An error occured while retrieving host categories"
+msgstr "Se ha producido un error al recuperar los categorías de hosts"
+
+#  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
+#  msgstr ""
+
+# msgid "Export to CSV"
+# msgstr ""
+
+msgid "Service severity"
+msgstr "Severidade de serviço"
+
+msgid "Service severity level"
+msgstr "Nível de Severidade de serviço"
+
+msgid "Host severity"
+msgstr "Severidade de host"
+
+msgid "Host severity level"
+msgstr "Nível de Severidade de host"
+
+#  msgid "Listening address (optional)"
+#  msgstr ""
+
+#  msgid "Listening port"
+#  msgstr ""
+
+#  msgid "Transport protocol"
+#  msgstr ""
+
+#  msgid "Authorization token (optional)"
+#  msgstr ""
+
+#  msgid "Private key path"
+#  msgstr ""
+
+#  msgid "Certificate path"
+#  msgstr ""
+
+#  msgid "Compression"
+#  msgstr ""
+
+#  msgid "Enable retention"
+#  msgstr ""
+
+#  msgid "Filter on event categories"
+#  msgstr ""
+
+#  msgid "Server address"
+#  msgstr ""
+
+#  msgid "Server port"
+#  msgstr ""
+
+#  msgid "Retry interval (in seconds)"
+#  msgstr ""
+
+#  msgid "Trusted CA's certificate path (optional)"
+#  msgstr ""
+
+#  msgid "Certificate Common Name (optional)"
+#  msgstr ""
+
+# msgid "As displayed"
+# msgstr ""
+
+# msgid "Medium size"
+# msgstr ""
+
+# msgid "Small size"
+# msgstr ""
+
+# msgid "CSV"
+# msgstr ""
+
+#  msgid "Poller Configuration Actions / Poller Management"
+#  msgstr ""
+
+#  msgid "Create and edit pollers"
+#  msgstr ""
+
+#  msgid "Delete pollers"
+#  msgstr ""
+
+#  msgid "Deploy configuration"
+#  msgstr ""

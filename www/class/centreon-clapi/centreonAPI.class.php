@@ -460,8 +460,8 @@ class CentreonAPI
         /**
          * Default class needed
          */
-        require_once _CLAPI_CLASS_ . "/centreonTimePeriod.class.php";
-        require_once _CLAPI_CLASS_ . "/centreonACLResources.class.php";
+        require_once __DIR__ . "/centreonTimePeriod.class.php";
+        require_once __DIR__ . "/centreonACLResources.class.php";
     }
 
     /**
@@ -594,7 +594,7 @@ class CentreonAPI
                     $row,
                     $row['ar_id']
                 );
-                if ($centreonAuth->checkPassword() == 1) {
+                if ($centreonAuth->checkPassword() == \CentreonAuth::PASSWORD_VALID) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 }

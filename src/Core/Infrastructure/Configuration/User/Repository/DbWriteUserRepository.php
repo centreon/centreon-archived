@@ -26,6 +26,7 @@ namespace Core\Infrastructure\Configuration\User\Repository;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Configuration\User\Model\NewUser;
 use Core\Domain\Configuration\User\Model\User;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
@@ -60,6 +61,30 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
         $statement->bindValue(':is_admin', $user->isAdmin() ? '1' : '0', \PDO::PARAM_STR);
         $statement->bindValue(':theme', $user->getTheme(), \PDO::PARAM_STR);
         $statement->bindValue(':id', $user->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create(NewUser $user): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'INSERT INTO `:db`.contact
+                    (contact_name, contact_alias, contact_email, contact_template_id,
+                    contact_admin, contact_theme, contact_activate)
+                    VALUES (:contactName, :contactAlias, :contactEmail, :contactTemplateId,
+                    :isAdmin, :contactTheme, :isActivate)'
+            )
+        );
+        $statement->bindValue(':contactName', $user->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':contactAlias', $user->getAlias(), \PDO::PARAM_STR);
+        $statement->bindValue(':contactEmail', $user->getEmail(), \PDO::PARAM_STR);
+        $statement->bindValue(':contactTemplateId', $user->getContactTemplate()?->getId(), \PDO::PARAM_INT);
+        $statement->bindValue(':isAdmin', $user->isAdmin() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':contactTheme', $user->getTheme(), \PDO::PARAM_STR);
+        $statement->bindValue(':isActivate', $user->isActivate() ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
     }
 }

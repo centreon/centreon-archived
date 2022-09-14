@@ -22,6 +22,8 @@ parameters:
     media_path: "img/media"
     redirect_default_page: "/monitoring/resources"
     session_expiration_delay: 120
+    required_php_version: "%env(_CENTREON_PHP_VERSION_)%"
+    required_mariadb_min_version: "%env(_CENTREON_MARIA_DB_MIN_VERSION_)%"
 
 services:
     # Default configuration for services in *this* file
@@ -66,6 +68,9 @@ services:
         decorates: router
         arguments: ['@.inner']
 
+    Symfony\Component\Finder\Finder:
+        shared: false
+
 
     # Security
     Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface:
@@ -75,18 +80,26 @@ services:
         class: Security\Domain\Authentication\AuthenticationService
         public: true
 
-    Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface:
-        class: Security\Infrastructure\Repository\ProviderRepository
-
     Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
         class: Security\Infrastructure\Repository\SessionRepository
-
-    Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
-        class: Security\Domain\Authentication\ProviderService
-        public: true
 
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ "%session_expiration_delay%" ]
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Core\Resources\Infrastructure\Repository\DbReadResourceRepository:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $sqlRequestTranslator: '@sqlRequestTranslator'
+            $resourceACLProviders: !tagged_iterator 'monitoring.resource.acl'
+
+    Centreon\Application\Controller\MonitoringResourceController:
+        arguments:
+            $resourceTypes: !tagged_iterator 'monitoring.resource.type'
+            $hyperMediaProviders: !tagged_iterator 'realtime.hypermedia'
+
+    Core\Security\Authentication\Application\UseCase\Login\Login:
+        arguments:
+            $defaultRedirectUri: '/monitoring/resources'

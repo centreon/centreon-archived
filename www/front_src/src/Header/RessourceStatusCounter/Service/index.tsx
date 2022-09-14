@@ -1,22 +1,12 @@
-import clsx from 'clsx';
 import * as yup from 'yup';
 import numeral from 'numeral';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import ServiceIcon from '@mui/icons-material/Grain';
 
-import {
-  IconHeader,
-  IconToggleSubmenu,
-  SubmenuHeader,
-  SubmenuItem,
-  SubmenuItems,
-  SeverityCode,
-  StatusCounter,
-  SelectEntry,
-} from '@centreon/ui';
+import { SubmenuHeader, SeverityCode, SelectEntry } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import getDefaultCriterias from '../../../Resources/Filter/Criterias/default';
@@ -31,7 +21,7 @@ import {
   unhandledStateCriterias,
   serviceCriteria,
 } from '../getResourcesUrl';
-import RessourceStatusCounter, { useStyles } from '..';
+import RessourceStatusCounter from '..';
 import { Criteria } from '../../../Resources/Filter/Criterias/models';
 
 const serviceStatusEndpoint =
@@ -65,7 +55,6 @@ interface SelectResourceProps {
 }
 
 const ServiceStatusCounter = (): JSX.Element => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const { t } = useTranslation();
@@ -148,191 +137,155 @@ const ServiceStatusCounter = (): JSX.Element => {
   return (
     <RessourceStatusCounter
       endpoint={serviceStatusEndpoint}
-      loaderWidth={29.5}
+      loaderWidth={14}
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
         <div>
-          <SubmenuHeader active={toggled}>
-            <IconHeader
-              Icon={ServiceIcon}
-              iconName={t('Services')}
-              pending={hasPending}
-              onClick={toggleDetailedView}
-            />
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Critical"
-              to={unhandledCriticalServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledCriticalServicesCriterias,
-                link: unhandledCriticalServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.critical.unhandled}
-                severityCode={SeverityCode.High}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Warning"
-              to={unhandledWarningServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledWarningServicesCriterias,
-                link: unhandledWarningServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.warning.unhandled}
-                severityCode={SeverityCode.Medium}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Unknown"
-              to={unhandledUnknownServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: unhandledUnknownServicesCriterias,
-                link: unhandledUnknownServicesLink,
-              })}
-            >
-              <StatusCounter
-                count={data.unknown.unhandled}
-                severityCode={SeverityCode.Low}
-              />
-            </Link>
-            <Link
-              className={clsx(classes.link, classes.wrapMiddleIcon)}
-              data-testid="Services Ok"
-              to={okServicesLink}
-              onClick={changeFilterAndNavigate({
-                criterias: okServicesCriterias,
-                link: okServicesLink,
-              })}
-            >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
-            </Link>
-            <IconToggleSubmenu
-              data-testid="submenu-service"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
-            <div
-              className={clsx(classes.subMenuToggle, {
-                [classes.subMenuToggleActive]: toggled,
-              })}
-            >
-              <SubmenuItems>
-                <Link
-                  className={classes.link}
-                  data-testid="Services Warning"
-                  to={servicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: servicesCriterias,
-                    link: servicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu services count all"
-                    submenuCount={numeral(data.total).format()}
-                    submenuTitle={t('All')}
-                    titleTestId="submenu services title all"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={unhandledCriticalServicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: unhandledCriticalServicesCriterias,
-                    link: unhandledCriticalServicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu services count critical"
-                    dotColored="red"
-                    submenuCount={`${numeral(
-                      data.critical.unhandled,
-                    ).format()}/${numeral(data.critical.total).format()}`}
-                    submenuTitle={t('Critical')}
-                    titleTestId="submenu services title critical"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={unhandledWarningServicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: unhandledWarningServicesCriterias,
-                    link: unhandledWarningServicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu services count warning"
-                    dotColored="orange"
-                    submenuCount={`${numeral(
-                      data.warning.unhandled,
-                    ).format()}/${numeral(data.warning.total).format()}`}
-                    submenuTitle={t('Warning')}
-                    titleTestId="submenu services title warning"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={unhandledUnknownServicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: unhandledUnknownServicesCriterias,
-                    link: unhandledUnknownServicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu services count unknown"
-                    dotColored="gray"
-                    submenuCount={`${numeral(
-                      data.unknown.unhandled,
-                    ).format()}/${numeral(data.unknown.total).format()}`}
-                    submenuTitle={t('Unknown')}
-                    titleTestId="submenu services title unknown"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={okServicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: okServicesCriterias,
-                    link: okServicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    countTestId="submenu services count ok"
-                    dotColored="green"
-                    submenuCount={numeral(data.ok).format()}
-                    submenuTitle={t('Ok')}
-                    titleTestId="submenu services title ok"
-                  />
-                </Link>
-                <Link
-                  className={classes.link}
-                  to={pendingServicesLink}
-                  onClick={changeFilterAndNavigate({
-                    criterias: pendingServicesCriterias,
-                    link: pendingServicesLink,
-                    toggle: toggleDetailedView,
-                  })}
-                >
-                  <SubmenuItem
-                    dotColored="blue"
-                    submenuCount={numeral(data.pending).format()}
-                    submenuTitle={t('Pending')}
-                  />
-                </Link>
-              </SubmenuItems>
-            </div>
-          </SubmenuHeader>
+          <SubmenuHeader
+            active={toggled}
+            counterRightTranslation={1}
+            counters={[
+              {
+                count: data.critical.unhandled,
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledCriticalServicesCriterias,
+                  link: unhandledCriticalServicesLink,
+                }),
+                severityCode: SeverityCode.High,
+                testId: 'Services Critical',
+                to: unhandledCriticalServicesLink,
+              },
+
+              {
+                count: data.warning.unhandled,
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledWarningServicesCriterias,
+                  link: unhandledWarningServicesLink,
+                }),
+                severityCode: SeverityCode.Medium,
+                testId: 'Services Warning',
+                to: unhandledWarningServicesLink,
+              },
+
+              {
+                count: data.unknown.unhandled,
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledUnknownServicesCriterias,
+                  link: unhandledUnknownServicesLink,
+                }),
+                severityCode: SeverityCode.Low,
+                testId: 'Services Unknown',
+                to: unhandledUnknownServicesLink,
+              },
+
+              {
+                count: data.ok,
+                onClick: changeFilterAndNavigate({
+                  criterias: okServicesCriterias,
+                  link: okServicesLink,
+                }),
+                severityCode: SeverityCode.Ok,
+                testId: 'Services Ok',
+                to: okServicesLink,
+              },
+            ]}
+            hasPending={hasPending}
+            iconHeader={{
+              Icon: ServiceIcon,
+              iconName: t('Services'),
+              onClick: toggleDetailedView,
+            }}
+            iconToggleSubmenu={{
+              onClick: toggleDetailedView,
+              rotate: toggled,
+              testid: 'submenu-service',
+            }}
+            submenuItems={[
+              {
+                countTestId: 'submenu services count all',
+                onClick: changeFilterAndNavigate({
+                  criterias: servicesCriterias,
+                  link: servicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                submenuCount: numeral(data.total).format(),
+                submenuTitle: t('All'),
+                titleTestId: 'submenu hosts title all',
+                to: servicesLink,
+              },
+              {
+                countTestId: 'submenu services count critical',
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledCriticalServicesCriterias,
+                  link: unhandledCriticalServicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.High,
+                submenuCount: `${numeral(
+                  data.critical.unhandled,
+                ).format()}/${numeral(data.critical.total).format()}`,
+                submenuTitle: t('Critical'),
+                titleTestId: 'submenu services title critical',
+                to: unhandledCriticalServicesLink,
+              },
+              {
+                countTestId: 'submenu services count warning',
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledWarningServicesCriterias,
+                  link: unhandledWarningServicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Medium,
+                submenuCount: `${numeral(
+                  data.warning.unhandled,
+                ).format()}/${numeral(data.warning.total).format()}`,
+                submenuTitle: t('Warning'),
+                titleTestId: 'submenu services title warning',
+                to: unhandledWarningServicesLink,
+              },
+              {
+                countTestId: 'submenu services count unknown',
+                onClick: changeFilterAndNavigate({
+                  criterias: unhandledUnknownServicesCriterias,
+                  link: unhandledUnknownServicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Low,
+                submenuCount: `${numeral(
+                  data.unknown.unhandled,
+                ).format()}/${numeral(data.unknown.total).format()}`,
+                submenuTitle: t('Unknown'),
+                titleTestId: 'submenu services title unknown',
+                to: unhandledUnknownServicesLink,
+              },
+              {
+                countTestId: 'submenu services count ok',
+                onClick: changeFilterAndNavigate({
+                  criterias: okServicesCriterias,
+                  link: okServicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Ok,
+                submenuCount: numeral(data.ok).format(),
+                submenuTitle: t('Ok'),
+                titleTestId: 'submenu services title ok',
+                to: okServicesLink,
+              },
+              {
+                onClick: changeFilterAndNavigate({
+                  criterias: pendingServicesCriterias,
+                  link: pendingServicesLink,
+                  toggle: toggleDetailedView,
+                }),
+                severityCode: SeverityCode.Pending,
+                submenuCount: numeral(data.pending).format(),
+                submenuTitle: t('Pending'),
+                to: pendingServicesLink,
+              },
+            ]}
+            toggled={toggled}
+          />
         </div>
       )}
     </RessourceStatusCounter>

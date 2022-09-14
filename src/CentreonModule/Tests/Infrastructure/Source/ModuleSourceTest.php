@@ -46,6 +46,7 @@ use Vfs\Node\File;
 use Centreon\Test\Mock;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\ModuleSource;
+use CentreonModule\Infrastructure\Source\ModuleException;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
@@ -122,9 +123,6 @@ class ModuleSourceTest extends TestCase
         $this->fs->get('/modules')->add(static::$moduleName, new Directory([]));
         $this->fs->get('/modules/' . static::$moduleName)
             ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
-        $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::LICENSE_FILE, new File(''))
         ;
 
         // provide services
@@ -225,8 +223,10 @@ class ModuleSourceTest extends TestCase
         try {
             $this->assertNull($this->source->update(static::$moduleNameMissing));
         } catch (\Exception $ex) {
-            $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
-            $this->assertEquals(1, $ex->getCode()); // check moduleId
+            $this->assertEquals(
+                ModuleException::moduleIsMissing(static::$moduleNameMissing)->getMessage(),
+                $ex->getMessage()
+            );
         }
 
         $this->source->update(static::$moduleName);

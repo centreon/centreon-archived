@@ -1,33 +1,19 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give CENTREON
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
  *
@@ -36,9 +22,15 @@
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
-require_once "Centreon/Object/Acl/Group.php";
-require_once "Centreon/Object/Acl/Action.php";
-require_once "Centreon/Object/Relation/Acl/Group/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Group.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Acl/Action.php";
+require_once __DIR__ . "/../../../lib/Centreon/Object/Relation/Acl/Group/Action.php";
+require_once __DIR__ . "/Repository/AclGroupRepository.php";
+require_once __DIR__ . "/Repository/SessionRepository.php";
+
+use CentreonClapi\Repository\SessionRepository;
+use CentreonClapi\Repository\AclGroupRepository;
+use Core\Application\Common\Session\Repository\ReadSessionRepositoryInterface;
 
 /**
  * Class for managing ACL Actions
@@ -55,6 +47,16 @@ class CentreonACLAction extends CentreonObject
     protected $availableActions;
 
     /**
+     * @var AclGroupRepository
+     */
+    private AclGroupRepository $aclGroupRepository;
+
+    /**
+     * @var SessionRepository
+     */
+    private SessionRepository $sessionRepository;
+
+    /**
      * Constructor
      *
      * @return void
@@ -62,6 +64,9 @@ class CentreonACLAction extends CentreonObject
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
+        $db = $dependencyInjector["configuration_db"];
+        $this->aclGroupRepository = new AclGroupRepository($db);
+        $this->sessionRepository = new SessionRepository($db);
         $this->object = new \Centreon_Object_Acl_Action($dependencyInjector);
         $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
         $this->relObject = new \Centreon_Object_Relation_Acl_Group_Action($dependencyInjector);
@@ -253,6 +258,7 @@ class CentreonACLAction extends CentreonObject
             }
             unset($res);
         }
+        $this->updateAclActionsForAuthentifiedUsers($aclActionId);
     }
 
     /**
@@ -281,6 +287,7 @@ class CentreonACLAction extends CentreonObject
                 );
             }
         }
+        $this->updateAclActionsForAuthentifiedUsers($aclActionId);
     }
 
     /**
@@ -349,5 +356,109 @@ class CentreonACLAction extends CentreonObject
         }
 
         return $grantActions;
+    }
+
+    /**
+     * Del Action
+     *
+     * @param string $objectName
+     * @throws CentreonClapiException
+     */
+    public function del($objectName): void
+    {
+        // $ids will always be an array of 1 or 0 elements as we cannot delete multiple action acl at the same time.
+        $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($objectName));
+
+        if (empty($ids)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
+        }
+
+        $id = (int) $ids[0];
+        $this->updateAclActionsForAuthentifiedUsers($id);
+        $this->object->delete($id);
+        $this->addAuditLog('d', $id, $objectName);
+        $aclObj = new CentreonACL($this->dependencyInjector);
+        $aclObj->reload(true);
+    }
+
+    /**
+     * @param array $parameters
+     * @throws CentreonClapiException
+     */
+    public function setparam($parameters = array()): void
+    {
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
+        }
+
+        if (!empty($params)) {
+            $uniqueLabel = $this->object->getUniqueLabelField();
+            $objectId = $params['objectId'];
+            unset($params['objectId']);
+            if (
+                isset($params[$uniqueLabel])
+                && $this->objectExists($params[$uniqueLabel], $objectId) == true
+            ) {
+                throw new CentreonClapiException(self::NAMEALREADYINUSE);
+            }
+
+            $this->object->update($objectId, $params);
+            if (array_key_exists("acl_action_activate", $params)) {
+                $this->updateAclActionsForAuthentifiedUsers((int) $objectId);
+            }
+            $p = $this->object->getParameters($objectId, $uniqueLabel);
+
+            if (isset($p[$uniqueLabel])) {
+                $this->addAuditLog(
+                    'c',
+                    $objectId,
+                    $p[$uniqueLabel],
+                    $params
+                );
+            }
+        }
+    }
+
+    /**
+     * Updates ACL actions for an authentified user from ACL Action ID
+     *
+     * @param integer $aclActionId
+     */
+    private function updateAclActionsForAuthentifiedUsers(int $aclActionId): void
+    {
+        $aclGroupIds = $this->aclGroupRepository->getAclGroupIdsByActionId($aclActionId);
+        $this->flagUpdatedAclForAuthentifiedUsers($aclGroupIds);
+    }
+
+    /**
+     * This method flags updated ACL for authentified users.
+     *
+     * @param int[] $aclGroupIds
+     */
+    private function flagUpdatedAclForAuthentifiedUsers(array $aclGroupIds): void
+    {
+        $userIds = $this->aclGroupRepository->getUsersIdsByAclGroupIds($aclGroupIds);
+        $readSessionRepository = $this->getReadSessionRepository();
+        foreach ($userIds as $userId) {
+            $sessionIds = $readSessionRepository->findSessionIdsByUserId($userId);
+            $this->sessionRepository->flagUpdateAclBySessionIds($sessionIds);
+        }
+    }
+
+    /**
+     * This method gets SessionRepository from Service container
+     *
+     * @return ReadSessionRepositoryInterface
+     */
+    private function getReadSessionRepository(): ReadSessionRepositoryInterface
+    {
+        $kernel = \App\Kernel::createForWeb();
+        $readSessionRepository = $kernel->getContainer()->get(
+            ReadSessionRepositoryInterface::class
+        );
+
+        return $readSessionRepository;
     }
 }

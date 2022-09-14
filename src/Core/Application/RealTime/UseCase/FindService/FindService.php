@@ -26,22 +26,26 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Service;
+use Core\Tag\RealTime\Domain\Model\Tag;
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
 use Core\Domain\RealTime\Model\Acknowledgement;
-use Core\Application\Common\UseCase\NotFoundResponse;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
+use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Service as LegacyService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface;
+use Core\Tag\RealTime\Application\Repository\ReadTagRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
+use Core\Severity\RealTime\Application\Repository\ReadSeverityRepositoryInterface;
 
 class FindService
 {
@@ -56,6 +60,7 @@ class FindService
      * @param ReadDowntimeRepositoryInterface $downtimeRepository
      * @param ReadAcknowledgementRepositoryInterface $acknowledgementRepository
      * @param MonitoringServiceInterface $monitoringService
+     * @param ReadTagRepositoryInterface $tagRepository
      */
     public function __construct(
         private ReadServiceRepositoryInterface $repository,
@@ -65,7 +70,9 @@ class FindService
         private ReadAccessGroupRepositoryInterface $accessGroupRepository,
         private ReadDowntimeRepositoryInterface $downtimeRepository,
         private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
-        private MonitoringServiceInterface $monitoringService
+        private MonitoringServiceInterface $monitoringService,
+        private ReadTagRepositoryInterface $tagRepository,
+        private ReadSeverityRepositoryInterface $severityRepository
     ) {
     }
 
@@ -80,6 +87,7 @@ class FindService
         FindServicePresenterInterface $presenter
     ): void {
         $servicegroups = [];
+        $serviceCategories = [];
 
         $this->info(
             "Searching details for service",
@@ -132,9 +140,32 @@ class FindService
             );
         }
 
-        foreach ($servicegroups as $servicegroup) {
-            $service->addServicegroup($servicegroup);
-        }
+        $service->setGroups($servicegroups);
+
+        $serviceCategories = $this->tagRepository->findAllByResourceAndTypeId(
+            $serviceId,
+            $hostId,
+            Tag::SERVICE_CATEGORY_TYPE_ID
+        );
+
+        $service->setCategories($serviceCategories);
+
+        $this->info(
+            'Fetching severity from the database for service',
+            [
+                'hostId' => $hostId,
+                'serviceId' => $serviceId,
+                'typeId' => Severity::SERVICE_SEVERITY_TYPE_ID
+            ]
+        );
+
+        $severity = $this->severityRepository->findByResourceAndTypeId(
+            $serviceId,
+            $hostId,
+            Severity::SERVICE_SEVERITY_TYPE_ID
+        );
+
+        $service->setSeverity($severity);
 
         /**
          * Obfuscate the passwords in Service commandLine
@@ -209,10 +240,12 @@ class FindService
             $service->getName(),
             $service->getStatus(),
             $service->getIcon(),
-            $service->getServicegroups(),
+            $service->getGroups(),
             $downtimes,
             $acknowledgement,
-            $host
+            $host,
+            $service->getCategories(),
+            $service->getSeverity()
         );
 
         $findServiceResponse->isFlapping = $service->isFlapping();
@@ -232,7 +265,6 @@ class FindService
         $findServiceResponse->hasPassiveChecks = $service->hasPassiveChecks();
         $findServiceResponse->hasActiveChecks = $service->hasActiveChecks();
         $findServiceResponse->lastTimeOk = $service->getLastTimeOk();
-        $findServiceResponse->severityLevel = $service->getSeverityLevel();
         $findServiceResponse->checkAttempts = $service->getCheckAttempts();
         $findServiceResponse->maxCheckAttempts = $service->getMaxCheckAttempts();
         $findServiceResponse->hasGraphData = $service->hasGraphData();

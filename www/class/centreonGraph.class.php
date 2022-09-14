@@ -665,8 +665,7 @@ class CentreonGraph
                         ) {
                             $this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
                             if (!isset($ds_data["ds_color_area_warn"]) || empty($ds_data["ds_color_area_warn"])) {
-                                $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] =
-                                    $this->generalOpt["color_warning"];
+                                $this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = "#ff9a13";
                             }
                         }
                         if (
@@ -677,8 +676,7 @@ class CentreonGraph
                         ) {
                             $this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
                             if (!isset($ds_data["ds_color_area_crit"]) || empty($ds_data["ds_color_area_crit"])) {
-                                $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] =
-                                    $this->generalOpt["color_critical"];
+                                $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = "#e00b3d";
                             }
                         }
                     }
@@ -1076,16 +1074,18 @@ class CentreonGraph
             return;
         } else {
             $command_id = getMyServiceField($this->indexData["service_id"], "command_command_id");
-            $DBRESULT = $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '" . $command_id . "'");
-            if ($DBRESULT->rowCount()) {
-                $data = $DBRESULT->fetch();
+            $statement = $this->DB->prepare("SELECT graph_id FROM command WHERE `command_id` = :command_id");
+            $statement->bindValue(':command_id', (int) $command_id, \PDO::PARAM_INT);
+            $statement->execute();
+            if ($statement->rowCount()) {
+                $data = $statement->fetch();
                 if ($data["graph_id"] != 0) {
                     $this->templateId = $data["graph_id"];
                     unset($data);
                     return;
                 }
             }
-            $DBRESULT->closeCursor();
+            $statement->closeCursor();
             unset($command_id);
         }
         $DBRESULT = $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
@@ -1119,25 +1119,27 @@ class CentreonGraph
                 /*
                  * Graph is based on a module check point
                  */
-                $DBRESULT_meta = $this->DB->query(
-                    "SELECT graph_id
+                $statement = $this->DB->prepare("SELECT graph_id
                         FROM meta_service
-                        WHERE `meta_name` = '" . $this->indexData["service_description"] . "'"
-                );
-                $meta = $DBRESULT_meta->fetch();
+                        WHERE `meta_name` = :service_desc");
+                $statement->bindValue(':service_desc', $this->indexData["service_description"], PDO::PARAM_STR);
+                $statement->execute();
+                $meta = $statement->fetch();
                 $this->templateId = $meta["graph_id"];
                 unset($meta);
             }
         } else {
             $this->templateId = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8");
         }
-        $DBRESULT = $this->DB->query(
+        $statement = $this->DB->prepare(
             "SELECT *
                 FROM giv_graphs_template
-                WHERE graph_id = '" . $this->templateId . "' LIMIT 1"
+                WHERE graph_id = :graph_id LIMIT 1"
         );
-        $this->templateInformations = $DBRESULT->fetch();
-        $DBRESULT->closeCursor();
+        $statement->bindValue(':graph_id', (int) $this->templateId, \PDO::PARAM_INT);
+        $statement->execute();
+        $this->templateInformations = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
     }
 
     /**
@@ -1149,14 +1151,14 @@ class CentreonGraph
         $service_id = $this->indexData["service_id"];
 
         $tab = array();
-        while (1) {
-            $DBRESULT = $this->DB->query(
-                "SELECT esi.graph_id, service_template_model_stm_id
+        $statement = $this->DB->prepare("SELECT esi.graph_id, service_template_model_stm_id
                     FROM service
                     LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id
-                    WHERE service_id = '" . $service_id . "' LIMIT 1"
-            );
-            $row = $DBRESULT->fetch();
+                    WHERE service_id = :service_id LIMIT 1");
+        while (1) {
+            $statement->bindValue(':service_id', (int) $service_id, \PDO::PARAM_INT);
+            $statement->execute();
+            $row = $statement->fetch();
             if ($row["graph_id"]) {
                 $this->graphID = $row["graph_id"];
                 return $this->graphID;
