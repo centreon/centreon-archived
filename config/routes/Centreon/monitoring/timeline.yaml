@@ -37,6 +37,6 @@ centreon_application_monitoring_download_timeline_by_metaservice:
     methods: GET
     path: /monitoring/metaservice/{metaId}/timeline/download
     requirements:
-        hostId: '\d+'
+        metaId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::downloadMetaserviceTimeline'
     condition: "request.attributes.get('version') >= 22.10"
