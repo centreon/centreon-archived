@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\UpdateOpenIdConfiguration;
 
 use Centreon\Domain\Contact\Contact;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -124,7 +126,14 @@ it('should execute the usecase properly', function () {
             'fullname_bind_attribute' => null,
             'contact_group_id' => 1,
             'claim_name' => "groups",
-            'authorization_rules' => []
+            'authorization_rules' => [],
+            'roles_mapping' => (new ACLConditions(
+                false,
+                false,
+                '',
+                new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+                []
+            ))->toArray()
         ]);
 
         $this->request

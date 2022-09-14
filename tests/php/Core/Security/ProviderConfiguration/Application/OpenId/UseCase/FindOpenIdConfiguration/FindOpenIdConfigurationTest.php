@@ -31,7 +31,9 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInte
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
@@ -74,6 +76,13 @@ it('should present a provider configuration', function () {
         'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
+        'roles_mapping' => new ACLConditions(
+            false,
+            false,
+            '',
+            new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+            []
+        )
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 

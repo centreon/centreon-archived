@@ -40,8 +40,10 @@ use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenI
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 
 class UpdateOpenIdConfiguration
 {
@@ -89,6 +91,7 @@ class UpdateOpenIdConfiguration
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
             $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
+            $requestArray['roles_mapping'] = $this->createACLConditions($request->rolesMapping);
             $requestArray["is_active"] = $request->isActive;
 
             $configuration->setCustomConfiguration(new CustomConfiguration($requestArray));
@@ -183,6 +186,25 @@ class UpdateOpenIdConfiguration
 
         return $authorizationRules;
     }
+
+    /**
+     * @param array $roles_mapping
+     * @return ACLConditions
+     * @throws \Throwable
+     */
+    private function createAclConditions(array $roles_mapping): ACLConditions
+    {
+        $rules = $this->createAuthorizationRules($roles_mapping['relations']);
+
+        return new ACLConditions(
+            $roles_mapping['is_enabled'],
+            $roles_mapping['apply_only_first_role'],
+            $roles_mapping['attribute_path'],
+            new EndpointCondition($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            $rules
+        );
+    }
+
 
     /**
      * Add log for all the non existent access groups

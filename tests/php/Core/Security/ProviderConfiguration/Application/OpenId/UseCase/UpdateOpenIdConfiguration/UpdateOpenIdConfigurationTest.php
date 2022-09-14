@@ -35,6 +35,8 @@ use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryIn
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
@@ -76,6 +78,13 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        []
+    ))->toArray();
 
     $this->contactGroupRepository
         ->expects($this->once())
@@ -127,6 +136,13 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        []
+    ))->toArray();
 
     $this->contactGroupRepository
         ->expects($this->once())
@@ -180,6 +196,13 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->isAutoImportEnabled = true;
     $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        []
+    ))->toArray();
 
     $missingParameters = [
         'contact_template',

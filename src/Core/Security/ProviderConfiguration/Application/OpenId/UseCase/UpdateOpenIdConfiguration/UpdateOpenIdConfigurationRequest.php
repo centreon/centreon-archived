@@ -141,6 +141,11 @@ class UpdateOpenIdConfigurationRequest
     public array $authorizationRules = [];
 
     /**
+     * @var array
+     */
+    public array $rolesMapping = [];
+
+    /**
      * @return array<string,mixed>
      */
     public function toArray(): array

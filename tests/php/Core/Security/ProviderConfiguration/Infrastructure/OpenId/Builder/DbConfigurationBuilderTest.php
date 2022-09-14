@@ -27,8 +27,10 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
 
 beforeEach(function () {
     $this->customConfiguration = [
@@ -54,6 +56,13 @@ beforeEach(function () {
         'contact_group' => 1,
         'claim_name' => 'groups',
         'authorization_rules' => [],
+        'roles_mapping' => new ACLConditions(
+            false,
+            false,
+            '',
+            new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+            []
+        )
     ];
 });
 

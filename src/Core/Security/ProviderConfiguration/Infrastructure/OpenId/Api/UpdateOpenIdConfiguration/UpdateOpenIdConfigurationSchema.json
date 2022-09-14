@@ -26,7 +26,7 @@
         "fullname_bind_attribute",
         "contact_group_id",
         "claim_name",
-        "authorization_rules"
+        "roles_mapping"
     ],
     "properties": {
       "is_active": {
@@ -122,6 +122,58 @@
             },
             "access_group_id": {
               "type": "integer"
+            }
+          }
+        }
+      },
+      "roles_mapping":{
+        "type": ["object", "null"],
+        "required": [
+          "is_enabled",
+          "apply_only_first_role",
+          "attribute_path",
+          "endpoint",
+          "relations"
+        ],
+        "properties": {
+          "is_enabled": {
+            "type": "boolean"
+          },
+          "apply_only_first_role": {
+            "type": "boolean"
+          },
+          "attribute_path": {
+            "type": ["string", "null"]
+          },
+          "endpoint": {
+            "type": ["object", "null"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "introspection_endpoint",
+                  "user_information_endpoint",
+                  "custom_endpoint"
+                ]
+              },
+              "custom_endpoint": {
+                "type": [ "string", "null"]
+              }
+            }
+          },
+          "relations": {
+            "type": "array",
+            "minLength": 0,
+            "items": {
+              "type": "object",
+              "properties": {
+                "claim_value": {
+                  "type": "string"
+                },
+                "access_group_id": {
+                  "type": "integer"
+                }
+              }
             }
           }
         }

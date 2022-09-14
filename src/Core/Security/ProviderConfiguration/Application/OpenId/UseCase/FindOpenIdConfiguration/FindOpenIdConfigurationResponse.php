@@ -145,6 +145,11 @@ class FindOpenIdConfigurationResponse
     public array $authorizationRules = [];
 
     /**
+     * @var array
+     */
+    public array $aclConditions = [];
+
+    /**
      * @param ContactTemplate $contactTemplate
      * @return array<string,int|string>
      */

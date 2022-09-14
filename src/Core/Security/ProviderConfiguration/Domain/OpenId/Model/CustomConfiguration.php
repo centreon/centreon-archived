@@ -142,6 +142,11 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ?ContactGroup $contactGroup = null;
 
     /**
+     * @var ACLConditions
+     */
+    private ACLConditions $aclConditions;
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
@@ -308,6 +313,14 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     public function getContactGroup(): ?ContactGroup
     {
         return $this->contactGroup;
+    }
+
+    /**
+     * @return ACLConditions
+     */
+    public function getACLConditions(): ACLConditions
+    {
+        return $this->aclConditions;
     }
 
     /**
@@ -663,6 +676,18 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         if (array_key_exists('authorization_rules', $json)) {
             $this->setAuthorizationRules($json['authorization_rules']);
         }
+        $this->setACLConditions($json['roles_mapping']);
+    }
+
+    /**
+     * @param ACLConditions $aclConditions
+     * @return CustomConfiguration
+     */
+    private function setACLConditions(ACLConditions $aclConditions): self
+    {
+        $this->aclConditions = $aclConditions;
+
+        return $this;
     }
 
     /**
