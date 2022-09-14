@@ -180,7 +180,7 @@ class CommandLineTraitTest extends TestCase
             . $this->replacementValue . ' -f extra options';
 
         $this->expectException(MonitoringServiceException::class);
-        $this->expectExceptionMessage('Macro passwords cannot be detected');
+        $this->expectExceptionMessage('Configuration has changed');
 
         $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
