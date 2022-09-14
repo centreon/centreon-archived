@@ -35,8 +35,6 @@
 
 namespace CentreonClapi;
 
-use Centreon\Test\Mock\CentreonDB;
-
 require_once "centreonObject.class.php";
 require_once "centreonContact.class.php";
 require_once "Centreon/Object/Ldap/ConfigurationLdap.php";
@@ -50,9 +48,6 @@ require_once "Centreon/Object/Ldap/ServerLdap.php";
  */
 class CentreonLDAP extends CentreonObject
 {
-    /**
-     * @var CentreonDB $db
-     */
     protected $db;
     protected $baseParams;
     const NB_ADD_PARAM = 2;
