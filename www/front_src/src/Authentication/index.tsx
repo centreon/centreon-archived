@@ -15,7 +15,10 @@ import { Group } from '@centreon/ui';
 import { Provider } from './models';
 import LocalAuthentication from './Local';
 import { labelPasswordSecurityPolicy } from './Local/translatedLabels';
-import { labelOpenIDConnectConfiguration } from './Openid/translatedLabels';
+import {
+  labelOpenIDConnectConfiguration,
+  labelRolesMapping,
+} from './Openid/translatedLabels';
 import OpenidConfiguration from './Openid';
 import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
@@ -23,7 +26,7 @@ import {
   labelActivation,
   labelAuthorizations,
   labelAutoImportUsers,
-  labelClientAddresses,
+  labelAuthentificationConditions,
   labelIdentityProvider,
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
@@ -62,18 +65,22 @@ export const groups: Array<Group> = [
     order: 2,
   },
   {
-    name: labelClientAddresses,
+    name: labelAuthentificationConditions,
     order: 3,
   },
   {
     name: labelAutoImportUsers,
-    order: 3,
+    order: 4,
+  },
+  {
+    name: labelRolesMapping,
+    order: 5,
   },
   {
     EndIcon: HelpOutlineIcon,
     TooltipContent: Description,
     name: labelAuthorizations,
-    order: 4,
+    order: 6,
   },
 ];
 
