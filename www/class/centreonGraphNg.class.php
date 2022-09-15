@@ -985,7 +985,10 @@ class CentreonGraphNg
             $this->indexData = $row;
         }
 
-        if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)) {
+        if (
+            ! empty($this->indexData["service_description"])
+            && preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)
+        ) {
             $stmt = $this->db->prepare("SELECT meta_name FROM meta_service WHERE `meta_id` = :meta_id");
             $stmt->bindParam(':meta_id', $matches[1], PDO::PARAM_INT);
             $stmt->execute();
