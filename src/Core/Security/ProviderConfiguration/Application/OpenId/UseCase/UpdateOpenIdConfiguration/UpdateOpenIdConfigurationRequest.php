@@ -139,7 +139,11 @@ class UpdateOpenIdConfigurationRequest
         "endpoint" => "",
         "authorized_values" => [],
         "trusted_client_addresses" => [],
-        "blacklist_client_addresses" => []
+        "blacklist_client_addresses" => [],
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
     ];
 
     /**

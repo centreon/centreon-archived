@@ -39,6 +39,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdCon
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 
 beforeEach(function () {
@@ -72,7 +73,7 @@ it('should present a provider configuration', function () {
         'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
-        'authentication_conditions' => new AuthenticationConditions(false, '', '', [])
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 

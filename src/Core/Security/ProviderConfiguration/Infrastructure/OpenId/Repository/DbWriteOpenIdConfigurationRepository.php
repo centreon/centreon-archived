@@ -173,7 +173,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         return [
             "is_enabled" => $authenticationConditions->isEnabled(),
             "attribute_path" => $authenticationConditions->getAttributePath(),
-            "endpoint" => $authenticationConditions->getEndpoint(),
+            "endpoint" => $authenticationConditions->getEndpoint()->toArray(),
             "authorized_values" => $authenticationConditions->getAuthorizedValues(),
             "trusted_client_addresses" => $authenticationConditions->getTrustedClientAddresses(),
             "blacklist_client_addresses" => $authenticationConditions->getBlacklistClientAddresses(),
