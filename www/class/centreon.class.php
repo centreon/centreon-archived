@@ -162,15 +162,11 @@ class Centreon
             $this->modules[$result["name"]] = array(
                 "name" => $result["name"],
                 "gen" => false,
-                "restart" => false,
                 "license" => false
             );
 
             if (is_dir("./modules/" . $result["name"] . "/generate_files/")) {
                 $this->modules[$result["name"]]["gen"] = true;
-            }
-            if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
-                $this->modules[$result["name"]]["restart"] = true;
             }
             if (is_dir("./modules/" . $result["name"] . "/restart_pollers/")) {
                 $this->modules[$result["name"]]["restart"] = true;
