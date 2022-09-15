@@ -1375,6 +1375,13 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret = $cfg;
     }
 
+    if (!isset($ret["contact_additive_inheritance"])) {
+        $ret["contact_additive_inheritance"] = "0";
+    }
+    if (!isset($ret["cg_additive_inheritance"])) {
+        $ret["cg_additive_inheritance"] = "0";
+    }
+
     isset($ret["nagios_server_id"])
         ? $server_id = $ret["nagios_server_id"]
         : $server_id = $form->getSubmitValue("nagios_server_id");
@@ -2646,8 +2653,8 @@ function sanitizeFormHostParameters(array $ret): array
                     $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
@@ -2687,38 +2694,34 @@ function sanitizeFormHostParameters(array $ret): array
                     $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_notification_options'] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
             case 'contact_additive_inheritance':
             case 'cg_additive_inheritance':
-                $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                $bindParams[':' . $inputName] = [\PDO::PARAM_INT => $inputValue];
                 break;
             case 'mc_contact_additive_inheritance':
             case 'mc_cg_additive_inheritance':
-                $bindParams[':' . str_replace('mc_', '', $inputName)] = [
-                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
-                ];
+                if (in_array($inputValue[$inputName], ['0', '1'])) {
+                    $bindParams[':' . str_replace('mc_', '', $inputName)] = [
+                        \PDO::PARAM_INT => $inputValue[$inputName]
+                    ];
+                }
                 break;
             case 'host_stalOpts':
                 if (!empty($inputValue)) {
                     $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_stalking_options'] = [
-                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
-                        ? null
-                        : $inputValue
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false) ? null : $inputValue
                     ];
                 }
                 break;
             case 'host_register':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
-                        ? $inputValue
-                        : null
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3']) ? $inputValue : null
                 ];
                 break;
             case 'host_activate':
