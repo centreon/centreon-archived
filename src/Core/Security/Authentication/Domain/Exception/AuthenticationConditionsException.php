@@ -21,39 +21,17 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Application\UseCase\Login;
+namespace Core\Security\Authentication\Domain\Exception;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Exception;
-
-final class LoginResponse implements ResponseStatusInterface
+class AuthenticationConditionsException extends \Exception
 {
-    /**
-     * @param string $redirectUri
-     * @param Exception|null $exception
-     */
-    public function __construct(private string $redirectUri, private ?Exception $exception = null)
+    public static function invalidAuthenticationConditions(): self
     {
+        return new self(_("Invalid Provider authentication conditions"));
     }
 
-    /**
-     * @return string
-     */
-    public function getRedirectUri(): string
+    public static function conditionsNotFound(): self
     {
-        return $this->redirectUri;
-    }
-
-    /**
-     * @return Exception|null
-     */
-    public function getException(): ?Exception
-    {
-        return $this->exception;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->redirectUri;
+        return new self(_("Authorized conditions not found in provider conditions"));
     }
 }
