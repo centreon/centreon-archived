@@ -107,7 +107,7 @@ class UpdateOpenIdConfiguration
             return;
         } catch (\Throwable $ex) {
             $this->error('Error during Opend ID Provider Update', ['trace' => $ex->getTraceAsString()]);
-                $presenter->setResponseStatus(new UpdateOpenIdConfigurationErrorResponse());
+            $presenter->setResponseStatus(new UpdateOpenIdConfigurationErrorResponse());
             return;
         }
 
