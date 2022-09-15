@@ -86,15 +86,7 @@ class FindService
         int $serviceId,
         FindServicePresenterInterface $presenter
     ): void {
-        $servicegroups = [];
-        $serviceCategories = [];
-
-        $this->info(
-            "Searching details for service",
-            [
-                "id" => $serviceId
-            ]
-        );
+        $this->info('Searching details for service', ['id' => $serviceId]);
 
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHostById($hostId);
