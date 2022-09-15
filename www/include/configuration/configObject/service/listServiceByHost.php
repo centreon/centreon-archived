@@ -250,7 +250,7 @@ $statement = $pearDB->prepare(
 );
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     //Get Number of Hosts linked to this one.
-    $statement->bindValue(':service_id', (int) $service["service_id"], \PDO::PARAM_INT);
+    $statement->bindValue(':service_id', $service["service_id"], \PDO::PARAM_INT);
     $statement->execute();
     $data = $statement->fetch(\PDO::FETCH_ASSOC);
     $service["nbr"] = $data["COUNT(*)"];
