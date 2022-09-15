@@ -121,6 +121,11 @@ class TimelineController extends AbstractController
         )->setContext($context);
     }
 
+    /**
+     * @param int $hostId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     */
     public function downloadHostTimeline(int $hostId, RequestParametersInterface $requestParameters): StreamedResponse
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
@@ -130,6 +135,13 @@ class TimelineController extends AbstractController
         return $this->streamTimeLines($timeLines);
     }
 
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     * @throws EntityNotFoundException
+     */
     public function downloadServiceTimeline(
         int $hostId,
         int $serviceId,
@@ -142,6 +154,10 @@ class TimelineController extends AbstractController
         return $this->streamTimeLines($timeLines);
     }
 
+    /**
+     * @param RequestParametersInterface $requestParameters
+     * @return void
+     */
     private function addDownloadParametersInRequestParameters(RequestParametersInterface $requestParameters): void
     {
         $requestParameters->setPage(1);
@@ -234,6 +250,12 @@ class TimelineController extends AbstractController
         )->setContext($context);
     }
 
+    /**
+     * @param int $metaId
+     * @param RequestParametersInterface $requestParameters
+     * @return StreamedResponse
+     * @throws EntityNotFoundException
+     */
     public function downloadMetaserviceTimeline(
         int $metaId,
         RequestParametersInterface $requestParameters
@@ -277,6 +299,11 @@ class TimelineController extends AbstractController
         return $this->timelineService->findTimelineEventsByService($service);
     }
 
+    /**
+     * @param int $hostId
+     * @return Host
+     * @throws EntityNotFoundException
+     */
     private function getHostById(int $hostId): Host
     {
         $user = $this->getUser();
