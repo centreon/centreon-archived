@@ -13,7 +13,7 @@ import {
 } from '../translatedLabels';
 import {
   labelActivation,
-  labelClientAddresses,
+  labelAuthentificationConditions,
   labelIdentityProvider,
 } from '../../translatedLabels';
 
@@ -48,7 +48,7 @@ export const inputs: Array<InputProps> = [
       options: [],
     },
     fieldName: 'trustedClientAddresses',
-    group: labelClientAddresses,
+    group: labelAuthentificationConditions,
     label: labelTrustedClientAddresses,
     type: InputType.MultiAutocomplete,
   },
@@ -58,7 +58,7 @@ export const inputs: Array<InputProps> = [
       options: [],
     },
     fieldName: 'blacklistClientAddresses',
-    group: labelClientAddresses,
+    group: labelAuthentificationConditions,
     label: labelBlacklistClientAddresses,
     type: InputType.MultiAutocomplete,
   },
