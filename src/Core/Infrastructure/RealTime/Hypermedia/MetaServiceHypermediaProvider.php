@@ -25,8 +25,6 @@ namespace Core\Infrastructure\RealTime\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\RequestParameters\RequestParameters;
 use Core\Domain\RealTime\Model\ResourceTypes\MetaServiceResourceType;
 
 class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
@@ -34,25 +32,16 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     use HttpUrlTrait;
 
     public const ENDPOINT_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
+                 ENDPOINT_TIMELINE_DOWNLOAD = 'centreon_application_monitoring_download_timeline_by_metaservice',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getMetaServicePerformanceMetrics',
                  ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getMetaServiceStatusMetrics',
                  ENDPOINT_METRIC_LIST = 'centreon_application_find_meta_service_metrics',
                  ENDPOINT_DETAILS = 'centreon_application_monitoring_resource_details_meta_service',
-                 ENDPOINT_DOWNTIME = 'monitoring.downtime.addMetaServiceDowntime',
+                 ENDPOINT_SERVICE_DOWNTIME = 'monitoring.downtime.addMetaServiceDowntime',
                  ENDPOINT_ACKNOWLEDGEMENT = 'centreon_application_acknowledgement_addmetaserviceacknowledgement',
                  ENDPOINT_NOTIFICATION_POLICY = 'configuration.metaservice.notification-policy',
                  URI_CONFIGURATION = '/main.php?p=60204&o=c&meta_id={metaId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}';
-
-    /**
-     * @param ContactInterface $contact
-     * @param UriGenerator $uriGenerator
-     */
-    public function __construct(
-        private ContactInterface $contact,
-        private UriGenerator $uriGenerator
-    ) {
-    }
 
     /**
      * @inheritDoc
@@ -63,10 +52,7 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     }
 
     /**
-     * Create configuration redirection uri for Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForConfiguration(array $parameters): ?string
     {
@@ -79,17 +65,11 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
             return null;
         }
 
-        return $this->uriGenerator->generateUri(
-            self::URI_CONFIGURATION,
-            ['{metaId}' => $parameters['internalId']]
-        );
+        return $this->generateUri(self::URI_CONFIGURATION, ['{metaId}' => $parameters['internalId']]);
     }
 
     /**
-     * Create reporting redirection uri for Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForReporting(array $parameters): ?string
     {
@@ -97,61 +77,13 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     }
 
     /**
-     * Create event logs redirection uri for Meta Service resource
-     *
-     * @param array<string, int> $parameters
-     * @return string|null
+     * @inheritDoc
      */
     public function createForEventLog(array $parameters): ?string
     {
-        if (! $this->canContactAccessPages($this->contact, [Contact::ROLE_MONITORING_EVENT_LOGS])) {
-            return null;
-        }
+        $urlParams = ['{hostId}' => $parameters['hostId'], '{serviceId}' => $parameters['serviceId']];
 
-        return $this->uriGenerator->generateUri(
-            self::URI_EVENT_LOGS,
-            [
-                '{hostId}' => $parameters['hostId'],
-                '{serviceId}' => $parameters['serviceId']
-            ]
-        );
-    }
-
-    /**
-     * @param array<string, int> $parameters
-     * @return string
-     */
-    private function generateDowntimeEndpoint(array $parameters): string
-    {
-        $downtimeFilter = [
-            'search' => json_encode([
-                RequestParameters::AGGREGATE_OPERATOR_AND => [
-                    [
-                        'start_time' => [
-                            RequestParameters::OPERATOR_LESS_THAN => time(),
-                        ],
-                        'end_time' => [
-                            RequestParameters::OPERATOR_GREATER_THAN => time(),
-                        ],
-                        [
-                            RequestParameters::AGGREGATE_OPERATOR_OR => [
-                                'is_cancelled' => [
-                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
-                                ],
-                                'deletion_time' => [
-                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
-                                ],
-                            ],
-                        ]
-                    ]
-                ]
-            ])
-        ];
-
-        return $this->uriGenerator->generateEndpoint(
-            self::ENDPOINT_DOWNTIME,
-            array_merge($parameters, $downtimeFilter)
-        );
+        return $this->createUrlForEventLog($urlParams);
     }
 
     /**
@@ -162,7 +94,7 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
     {
         $acknowledgementFilter = ['limit' => 1];
 
-        return $this->uriGenerator->generateEndpoint(
+        return $this->generateEndpoint(
             self::ENDPOINT_ACKNOWLEDGEMENT,
             array_merge($parameters, $acknowledgementFilter)
         );
@@ -173,36 +105,20 @@ class MetaServiceHypermediaProvider extends AbstractHypermediaProvider implement
      */
     public function createEndpoints(array $parameters): array
     {
-        $parametersId = [
-            'metaId' => $parameters['internalId']
-        ];
+        $urlParams = ['metaId' => $parameters['internalId']];
 
         return [
-            'details' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_DETAILS, $parametersId),
-            'acknowledgement' => $this->generateAcknowledgementEndpoint($parametersId),
-            'downtime' => $this->generateDowntimeEndpoint($parametersId),
-            'timeline' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_TIMELINE, $parametersId),
-            'status_graph' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $parametersId),
-            'metrics' => $this->uriGenerator->generateEndpoint(self::ENDPOINT_METRIC_LIST, $parametersId),
+            'details' => $this->generateEndpoint(self::ENDPOINT_DETAILS, $urlParams),
+            'acknowledgement' => $this->generateAcknowledgementEndpoint($urlParams),
+            'downtime' => $this->generateDowntimeEndpoint($urlParams),
+            'timeline' => $this->generateEndpoint(self::ENDPOINT_TIMELINE, $urlParams),
+            'timeline_download' => $this->generateEndpoint(self::ENDPOINT_TIMELINE_DOWNLOAD, $urlParams),
+            'status_graph' => $this->generateEndpoint(self::ENDPOINT_STATUS_GRAPH, $urlParams),
+            'metrics' => $this->generateEndpoint(self::ENDPOINT_METRIC_LIST, $urlParams),
             'performance_graph' => $parameters['hasGraphData']
-                ? $this->uriGenerator->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $parametersId)
+                ? $this->generateEndpoint(self::ENDPOINT_PERFORMANCE_GRAPH, $urlParams)
                 : null,
-            'notification_policy' => $this->uriGenerator->generateEndpoint(
-                self::ENDPOINT_NOTIFICATION_POLICY,
-                $parametersId
-            ),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createInternalUris(array $parameters): array
-    {
-        return [
-            'configuration' => $this->createForConfiguration($parameters),
-            'logs' => $this->createForEventLog($parameters),
-            'reporting' => $this->createForReporting($parameters),
+            'notification_policy' => $this->generateEndpoint(self::ENDPOINT_NOTIFICATION_POLICY, $urlParams),
         ];
     }
 
