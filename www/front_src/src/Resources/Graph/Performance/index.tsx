@@ -38,6 +38,7 @@ import {
   useRequest,
 } from '@centreon/ui';
 
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource, ResourceType } from '../../models';
 import { CommentParameters } from '../../Actions/api';
@@ -74,7 +75,7 @@ interface Props {
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
-  getPerformanceGraphRef: (
+  getPerformanceGraphRef?: (
     value: MutableRefObject<HTMLDivElement | null>,
   ) => void;
   graphActions?: ReactNode;
@@ -259,6 +260,9 @@ const PerformanceGraph = ({
   }, [isInViewport, lineData]);
 
   useEffect(() => {
+    if (!getPerformanceGraphRef) {
+      return;
+    }
     getPerformanceGraphRef(performanceGraphRef);
   }, [performanceGraphRef]);
 
