@@ -13,6 +13,43 @@ export interface AuthorizationRelationToAPI {
   claim_value: string;
 }
 
+export interface Relations {
+  accessGroup: NamedEntity;
+  claimValue: string;
+}
+
+export interface RelationsToAPI {
+  access_group_id: number;
+  claim_value: string;
+}
+
+export interface EndpointToAPI {
+  custom_endpoint: string | null;
+  type: string;
+}
+
+export interface Endpoint {
+  customEndpoint: string | null;
+  type: string;
+}
+
+export interface RolesMapping {
+  apply_only_first_role: boolean | null;
+  attribute_path: string;
+  authorization_rules: Array<AuthorizationRelationToAPI> | null;
+  endpoint: EndpointToAPI;
+  is_enabled: boolean | null;
+}
+
+export interface AuthConditions {
+  attribute_path: string;
+  authorized_values: Array<string> | null;
+  blacklist_client_addresses: Array<string>;
+  endpoint: EndpointToAPI;
+  is_enabled: boolean | null;
+  trusted_client_addresses: Array<string>;
+}
+
 export interface OpenidConfiguration {
   authenticationType: string | null;
   authorizationEndpoint: string | null;
@@ -20,19 +57,27 @@ export interface OpenidConfiguration {
   autoImport: boolean;
   baseUrl: string | null;
   blacklistClientAddresses: Array<string>;
-  claimName?: string | null;
   clientId: string | null;
   clientSecret: string | null;
+  conditionsAttributePath: string;
+  conditionsAuthorizedValues: Array<string> | null;
   connectionScopes: Array<string>;
   contactGroup: NamedEntity | null;
   contactTemplate: NamedEntity | null;
   emailBindAttribute?: string | null;
+  enableConditionsOnIdentityProvider: boolean | null;
   endSessionEndpoint?: string | null;
+  endpointTheConditionsAttributePathComeFrom: Endpoint;
   fullnameBindAttribute?: string | null;
   introspectionTokenEndpoint?: string | null;
   isActive: boolean;
   isForced: boolean;
   loginClaim?: string | null;
+  rolesApplyOnlyFirstRole: boolean | null;
+  rolesAttributePath: string;
+  rolesEndpoint: Endpoint;
+  rolesIsEnabled: boolean | null;
+  rolesRelations: Array<AuthorizationRule>;
   tokenEndpoint: string | null;
   trustedClientAddresses: Array<string>;
   userinfoEndpoint?: string | null;
@@ -40,13 +85,12 @@ export interface OpenidConfiguration {
 }
 
 export interface OpenidConfigurationToAPI {
+  authentication_conditions: AuthConditions;
   authentication_type: string | null;
   authorization_endpoint: string | null;
   authorization_rules: Array<AuthorizationRelationToAPI>;
   auto_import: boolean;
   base_url: string | null;
-  blacklist_client_addresses: Array<string>;
-  claim_name: string | null;
   client_id: string | null;
   client_secret: string | null;
   connection_scopes: Array<string>;
@@ -59,8 +103,8 @@ export interface OpenidConfigurationToAPI {
   is_active: boolean;
   is_forced: boolean;
   login_claim?: string | null;
+  roles_mapping: RolesMapping; // pour l'instant
   token_endpoint: string | null;
-  trusted_client_addresses: Array<string>;
   userinfo_endpoint?: string | null;
   verify_peer: boolean;
 }
