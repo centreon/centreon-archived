@@ -202,7 +202,6 @@ class AuthenticationConditions
      *
      * @param boolean $isEnabled
      * @param string $attributePath
-     * @param string $endpoint
      * @param string[] $authorizedValues
      * @throws OpenIdConfigurationException
      */

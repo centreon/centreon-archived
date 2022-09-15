@@ -78,7 +78,7 @@ class Endpoint
     }
 
     /**
-     * @return array
+     * @return array<string,string|null>
      */
     public function toArray(): array
     {
@@ -104,12 +104,13 @@ class Endpoint
      */
     private function guardUrl(): void
     {
-        if ($this->type === self::CUSTOM &&
+        if (
+            $this->type === self::CUSTOM &&
             (
                 !str_starts_with($this->url, '/') &&
                 filter_var($this->url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) === false
             )
-        ){
+        ) {
             throw InvalidEndpointException::invalidUrl();
         }
     }
