@@ -37,6 +37,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
 use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
@@ -267,10 +268,15 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
     public function createAuthenticationConditionsFromRecord(
         array $authenticationConditionsRecord
     ): AuthenticationConditions {
+        $endpoint = new Endpoint(
+            $authenticationConditionsRecord["endpoint"]["type"],
+            $authenticationConditionsRecord["endpoint"]["custom_endpoint"]
+        );
+
         $authenticationConditions = new AuthenticationConditions(
             $authenticationConditionsRecord["is_enabled"],
             $authenticationConditionsRecord["attribute_path"],
-            $authenticationConditionsRecord["endpoint"],
+            $endpoint,
             $authenticationConditionsRecord["authorized_values"]
         );
         $authenticationConditions->setTrustedClientAddresses(

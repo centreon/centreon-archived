@@ -149,7 +149,19 @@
           "type": "string"
         },
         "endpoint": {
-          "type": "string"
+          "type": "object",
+          "required": [
+            "type",
+            "custom_endpoint"
+          ],
+          "properties": {
+            "type": {
+              "enum": ["introspection_endpoint", "user_information_endpoint", "custom_endpoint"]
+            },
+            "custom_endpoint": {
+              "type": ["string", "null"]
+            }
+          }
         },
         "authorized_values": {
           "type": "array",

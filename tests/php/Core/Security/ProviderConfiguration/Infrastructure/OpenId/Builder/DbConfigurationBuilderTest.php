@@ -30,6 +30,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 
 beforeEach(function () {
     $this->customConfiguration = [
@@ -123,7 +124,7 @@ it('should return a Provider when all mandatory parameters are present', functio
     $this->customConfiguration['authentication_conditions'] = new AuthenticationConditions(
         true,
         "info.groups",
-        "http://127.0.0.1/info",
+        new Endpoint(),
         ["groupA", "groupB"]
     );
 
