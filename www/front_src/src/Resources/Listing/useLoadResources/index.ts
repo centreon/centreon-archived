@@ -127,15 +127,7 @@ const useLoadResources = (): LoadResources => {
     sendLoadDetailsRequest({
       endpoint: selectedResourceDetailsEndpoint,
     })
-      .then((data) => {
-        if (!equals(data?.id, 26)) {
-          setDetails(data);
-
-          return;
-        }
-        const mockedResultsDetail = { ...data, type: 'anomalydetection' };
-        setDetails(mockedResultsDetail as ResourceDetails);
-      })
+      .then(setDetails)
       .catch(() => {
         clearSelectedResource();
       });
