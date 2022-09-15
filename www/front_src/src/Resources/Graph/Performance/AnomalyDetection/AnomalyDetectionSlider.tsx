@@ -13,6 +13,8 @@ import Button from '@mui/material/Button';
 
 import { IconButton } from '@centreon/ui';
 
+import { ResourceDetails } from '../../../Details/models';
+
 import { CustomFactorsData } from './models';
 
 const useStyles = makeStyles((theme) => ({
@@ -74,26 +76,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
+  details?: ResourceDetails;
   getFactors: (data: CustomFactorsData) => void;
 }
 
-const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
+const AnomalyDetectionSlider = ({
+  getFactors,
+  details,
+}: Props): JSX.Element => {
   const classes = useStyles();
+  // const data = details?.sensitivity;
   const dataSlider = {
-    currentValue: 0.8,
-    defaultValue: 2,
+    current_value: 0.8,
+    default_value: 2,
   };
   const maxSlider = 5;
   const minSlider = 0;
   const step = 0.1;
-  const [currentValue, setCurrentValue] = useState(dataSlider.currentValue);
+  const [currentValue, setCurrentValue] = useState(dataSlider.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
 
   const marks = [
     {
       label: 'Default',
-      value: dataSlider.defaultValue,
+      value: dataSlider.default_value,
     },
   ];
 
@@ -132,9 +139,9 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
   };
 
   const cancelResizingEnvelope = (): void => {
-    setCurrentValue(dataSlider.currentValue);
+    setCurrentValue(dataSlider.current_value);
     setIsResizing(false);
-    if (equals(dataSlider.currentValue, dataSlider.defaultValue)) {
+    if (equals(dataSlider.current_value, dataSlider.default_value)) {
       return;
     }
     setIsDefaultValue(false);
@@ -142,17 +149,17 @@ const AnomalyDetectionSlider = ({ getFactors }: Props): JSX.Element => {
 
   useEffect(() => {
     if (isDefaultValue) {
-      setCurrentValue(dataSlider.defaultValue);
+      setCurrentValue(dataSlider.default_value);
     }
   }, [isDefaultValue]);
 
   useEffect(() => {
-    if (equals(currentValue, dataSlider.defaultValue) && isResizing) {
+    if (equals(currentValue, dataSlider.default_value) && isResizing) {
       setIsDefaultValue(true);
     }
 
     getFactors({
-      currentFactor: dataSlider.currentValue,
+      currentFactor: dataSlider.current_value,
       isResizing,
       simulatedFactor: currentValue,
     });

@@ -9,6 +9,7 @@ import TimePeriodButtonGroup from '../TimePeriods';
 
 import { CustomFactorsData } from './models';
 import AnomalyDetectionSlider from './AnomalyDetectionSlider';
+import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -41,8 +42,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface PropsChildren {
+  factorsData?: CustomFactorsData | null;
+  getFactors?: (data: CustomFactorsData) => void;
+}
+
 interface Props {
-  children?: (args: { factorsData: CustomFactorsData }) => ReactNode;
+  children: (args: PropsChildren) => ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -62,7 +68,7 @@ const EditAnomalyDetectionDataDialog = ({
     setIsOpen(false);
   };
 
-  const getFactors = (data): void => {
+  const getFactors = (data: CustomFactorsData): void => {
     setFactorsData(data);
   };
 
@@ -73,14 +79,14 @@ const EditAnomalyDetectionDataDialog = ({
           <TimePeriodButtonGroup />
         </div>
         <div className={classes.spacing}>
-          {children && factorsData && children({ factorsData })}
+          {children && children({ factorsData })}
         </div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            <AnomalyDetectionSlider getFactors={getFactors} />
+            {children && children({ getFactors })}
           </Paper>
           <Paper className={classes.exclusionPeriod}>
-            Exclusion of periods
+            <EditAnomalyDetectionDataDialog.ExclusionPeriod />
           </Paper>
         </div>
         <div className={classes.close}>
@@ -90,5 +96,9 @@ const EditAnomalyDetectionDataDialog = ({
     </Dialog>
   );
 };
+
+EditAnomalyDetectionDataDialog.Slider = AnomalyDetectionSlider;
+EditAnomalyDetectionDataDialog.ExclusionPeriod =
+  AnomalyDetectionExclusionPeriod;
 
 export default EditAnomalyDetectionDataDialog;

@@ -225,13 +225,23 @@ const ExportablePerformanceGraphWithTimeline = ({
                 isOpen={isOpenModalAD}
                 setIsOpen={setIsOpenModalAD}
               >
-                {({ factorsData }): JSX.Element => (
-                  <ExportablePerformanceGraphWithTimeline
-                    isEditAnomalyDetectionDataDialogOpen
-                    graphHeight={180}
-                    resizeEnvelopeData={factorsData}
-                    resource={resource}
-                  />
+                {({ factorsData, getFactors }): JSX.Element => (
+                  <>
+                    {factorsData && (
+                      <ExportablePerformanceGraphWithTimeline
+                        isEditAnomalyDetectionDataDialogOpen
+                        graphHeight={180}
+                        resizeEnvelopeData={factorsData}
+                        resource={resource}
+                      />
+                    )}
+                    {getFactors && (
+                      <EditAnomalyDetectionDataDialog.Slider
+                        details={details}
+                        getFactors={getFactors}
+                      />
+                    )}
+                  </>
                 )}
               </EditAnomalyDetectionDataDialog>
             )
