@@ -20,7 +20,7 @@ export const labelIntrospectionTokenEndpoint = 'Introspection token endpoint';
 export const labelUserInformationEndpoint = 'User information endpoint';
 export const labelEndSessionEndpoint = 'End session endpoint';
 export const labelScopes = 'Scopes';
-export const labelLoginClaimValue = 'Login claim value';
+export const labelLoginAttributePath = 'Login attribute path';
 export const labelClientID = 'Client ID';
 export const labelClientSecret = 'Client secret';
 export const labelUseBasicAuthenticatonForTokenEndpointAuthentication =
@@ -30,8 +30,8 @@ export const labelOpenIDConnectOnly = 'OpenID Connect only';
 export const labelMixed = 'Mixed';
 export const labelEnableAutoImport = 'Enable auto import';
 export const labelContactTemplate = 'Contact template';
-export const labelEmailAttribute = 'Email attribute';
-export const labelFullnameAttribute = 'Fullname attribute';
+export const labelEmailAttributePath = 'Email attribute path';
+export const labelFullnameAttributePath = 'Fullname attribute path';
 export const labelAtLeastOneOfTheTwoFollowingFieldsMustBeFilled =
   'At least one of the two following fields must be filled';
 export const labelContactGroup = 'Contact group';
@@ -55,3 +55,27 @@ export const labelIfWeConsiderTheFollowingExample =
   'If we consider the following example in the JSON received from the authorization endpoint, a relation is defined between the value';
 export const labelTechnical = 'technical';
 export const labelAndAnAccessGroup = 'and an access group:';
+export const labelEnableConditionsOnIdentityProvider =
+  'Enable conditions on identity provider';
+export const labelConditionsAttributePath = 'Conditions attribute path';
+export const labelWhichendpointtheConditionsAttributePathComeFrom =
+  'Which endpoint does the conditions attribute path come from?';
+export const labelIntrospectionToken = 'Introspection token';
+export const labelUserIformation = 'User information';
+export const labelOther = 'Other';
+export const labelDefineAuthorizedConditionsValues =
+  'Define authorized conditions values';
+export const labelConditionValue = 'Condition value';
+// roles mapping
+
+export const labelRolesMapping = 'Roles mapping';
+export const labelWhichendpointtheRolesAttributePathComeFrom =
+  'Which endpoint does the roles attribute path come from?';
+export const labelEnableAutoManagement = 'Enable automatic management';
+export const labelApplyOnlyFirtsRole = 'Apply only first role';
+export const labelRolesAttributePath = 'Roles attribute path';
+export const labelDefineRelationBetweenRolesAndAcl =
+  'Define the relation between roles and ACL access groups';
+export const labelRoleValue = 'Role value';
+export const labelAclAccessGroup = 'ACL access group';
+export const labelDefineYourEndpoint = 'define your endpoint';
