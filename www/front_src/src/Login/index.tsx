@@ -83,6 +83,8 @@ const LoginPage = (): JSX.Element => {
     return <MainLoaderWithoutTranslation />;
   }
 
+  const hasProvidersConfiguration = !isNil(providersConfiguration);
+
   return (
     <div>
       <Suspense fallback={<LoadingSkeleton />}>
@@ -119,15 +121,17 @@ const LoginPage = (): JSX.Element => {
                 <LoginForm />
               </Suspense>
             </Formik>
-            <Suspense
-              fallback={
-                <LoadingSkeleton height={45} variant="text" width={250} />
-              }
-            >
-              <ExternalProviders
-                providersConfiguration={providersConfiguration}
-              />
-            </Suspense>
+            {hasProvidersConfiguration && (
+              <Suspense
+                fallback={
+                  <LoadingSkeleton height={45} variant="text" width={250} />
+                }
+              >
+                <ExternalProviders
+                  providersConfiguration={providersConfiguration}
+                />
+              </Suspense>
+            )}
           </div>
           <div className={classes.copyrightAndVersion}>
             <Suspense
