@@ -23,10 +23,11 @@ declare(strict_types=1);
 namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenRepositoryInterface;
 
@@ -204,24 +205,24 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $expirationDate = $result['provider_token_expiration_date'] !== null
-                ? (new \DateTime())->setTimestamp((int) $result['provider_token_expiration_date'])
+                ? (new \DateTimeImmutable())->setTimestamp((int) $result['provider_token_expiration_date'])
                 : null;
             $providerToken = new ProviderToken(
                 (int) $result['pt_id'],
                 $result['provider_token'],
-                (new \Datetime())->setTimestamp((int) $result['provider_token_creation_date']),
+                (new \DateTimeImmutable())->setTimestamp((int) $result['provider_token_creation_date']),
                 $expirationDate
             );
 
             $providerRefreshToken = null;
             if ($result['refresh_token'] !== null) {
                 $expirationDate = $result['refresh_token_expiration_date'] !== null
-                    ? (new \DateTime())->setTimestamp((int) $result['refresh_token_expiration_date'])
+                    ? (new \DateTimeImmutable())->setTimestamp((int) $result['refresh_token_expiration_date'])
                     : null;
                 $providerRefreshToken = new ProviderToken(
                     (int) $result['rt_id'],
                     $result['refresh_token'],
-                    (new \Datetime())->setTimestamp((int) $result['refresh_token_creation_date']),
+                    (new \DateTimeImmutable())->setTimestamp((int) $result['refresh_token_creation_date']),
                     $expirationDate
                 );
             }
@@ -262,24 +263,22 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $expirationDate = $result['provider_token_expiration_date'] !== null
-                ? (new \DateTime())->setTimestamp((int) $result['provider_token_expiration_date'])
+                ? (new \DateTimeImmutable())->setTimestamp((int) $result['provider_token_expiration_date'])
                 : null;
-            $providerToken = new ProviderToken(
-                null,
+            $providerToken = new NewProviderToken(
                 $result['provider_token'],
-                (new \Datetime())->setTimestamp((int) $result['provider_token_creation_date']),
+                (new \DateTimeImmutable())->setTimestamp((int) $result['provider_token_creation_date']),
                 $expirationDate
             );
 
             $providerRefreshToken = null;
             if ($result['refresh_token'] !== null) {
                 $expirationDate = $result['refresh_token_expiration_date'] !== null
-                    ? (new \DateTime())->setTimestamp((int) $result['refresh_token_expiration_date'])
+                    ? (new \DateTimeImmutable())->setTimestamp((int) $result['refresh_token_expiration_date'])
                     : null;
-                $providerRefreshToken = new ProviderToken(
-                    null,
+                $providerRefreshToken = new NewProviderToken(
                     $result['refresh_token'],
-                    (new \Datetime())->setTimestamp((int) $result['refresh_token_creation_date']),
+                    (new \DateTimeImmutable())->setTimestamp((int) $result['refresh_token_creation_date']),
                     $expirationDate
                 );
             }
@@ -301,7 +300,10 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
+        /** @var ProviderToken $providerToken */
         $providerToken = $authenticationTokens->getProviderToken();
+
+        /** @var ProviderToken $providerRefreshToken */
         $providerRefreshToken = $authenticationTokens->getProviderRefreshToken();
         $updateTokenStatement = $this->db->prepare(
             $this->translateDbName(
@@ -343,7 +345,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function updateProviderToken(ProviderToken $providerToken): void
+    public function updateProviderToken(NewProviderToken $providerToken): void
     {
         $updateStatement = $this->db->prepare(
             $this->translateDbName(

@@ -695,8 +695,16 @@ function updateContact_MC($contact_id = null)
         return;
     }
 
-    $ret = array();
     $ret = $form->getSubmitValues();
+
+    // Remove all parameters that have an empty value in order to keep
+    // the contact properties that have not been modified
+    foreach ($ret as $name => $value) {
+        if (is_string($value) && empty($value)) {
+            unset($ret[$name]);
+        }
+    }
+
     $bindParams = sanitizeFormContactParameters($ret);
     $rq = "UPDATE contact SET ";
     foreach (array_keys($bindParams) as $token) {
@@ -1292,14 +1300,12 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (
-                    $inputValue = filter_var(
+                    ($inputValue = filter_var(
                         $inputValue ?? "",
                         FILTER_SANITIZE_SPECIAL_CHARS
-                    )
+                    )) !== false
                 ) {
-                    if (!empty($inputValue)) {
-                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
-                    }
+                    $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                 }
                 break;
         }

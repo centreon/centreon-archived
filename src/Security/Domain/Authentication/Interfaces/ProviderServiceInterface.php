@@ -22,29 +22,34 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 
+/**
+ * @deprecated
+ */
 interface ProviderServiceInterface
 {
     /**
      * Find a provider by configuration id.
      *
      * @param int $providerConfigurationId
-     * @return ProviderInterface|null
+     * @return ProviderAuthenticationInterface|null
      * @throws ProviderException
      */
-    public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface;
+    public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderAuthenticationInterface;
 
     /**
-     * Find a provider by the configuration name.
+     * Find a provider by the provider name.
      *
-     * @param string $providerConfigurationName
-     * @return ProviderInterface|null
+     * @param string $providerAuthenticationName
+     * @return ProviderAuthenticationInterface|null
      * @throws ProviderException
      */
-    public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface;
+    public function findProviderByConfigurationName(
+        string $providerAuthenticationName
+    ): ?ProviderAuthenticationInterface;
 
     /**
      * @param string $providerConfigurationName
@@ -57,8 +62,8 @@ interface ProviderServiceInterface
 
     /**
      * @param string $sessionToken
-     * @return ProviderInterface|null
+     * @return ProviderAuthenticationInterface|null
      * @throws ProviderException
      */
-    public function findProviderBySession(string $sessionToken): ?ProviderInterface;
+    public function findProviderBySession(string $sessionToken): ?ProviderAuthenticationInterface;
 }

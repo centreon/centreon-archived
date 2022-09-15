@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\Exception;
 
-use Core\Security\Domain\Authentication\AuthenticationException as CoreAuthenticationException;
+use Core\Security\Authentication\Domain\Exception\AuthenticationException as CoreAuthenticationException;
 
 /**
  * This class is designed to contain all exceptions for the context of the authentication process.
@@ -62,6 +62,14 @@ class AuthenticationException extends CoreAuthenticationException
     public static function userNotFoundAndCannotBeCreated(): self
     {
         return new self(_('User not found and cannot be created'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function userInformationCannotBeUpdated(): self
+    {
+        return new self(_('User information cannot be updated'));
     }
 
     /**

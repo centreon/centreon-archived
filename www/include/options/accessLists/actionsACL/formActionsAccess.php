@@ -44,7 +44,7 @@ $serverIsMaster = $informationsService->serverIsMaster();
 /*
  * Database retrieve information for Modify a present "Action Access"
  */
-if (($o === "c") && $aclActionId) {
+if (($o === ACL_ACTION_MODIFY) && $aclActionId) {
     // 1. Get "Actions Rule" id selected by user
     $statement = $pearDB->prepare(
         "SELECT * FROM acl_actions WHERE acl_action_id = :aclActionId LIMIT 1"
@@ -102,11 +102,11 @@ $eTemplate = "<table style='border:0px;'><tr><td>{unselected}</td><td align='cen
 
 // Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o === ACL_ACTION_ADD) {
     $form->addElement('header', 'title', _("Add an Action"));
-} elseif ($o == "c") {
+} elseif ($o === ACL_ACTION_MODIFY) {
     $form->addElement('header', 'title', _("Modify an Action"));
-} elseif ($o == "w") {
+} elseif ($o === ACL_ACTION_WATCH) {
     $form->addElement('header', 'title', _("View an Action"));
 }
 
@@ -175,7 +175,7 @@ $form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
 // Configuration Actions
 $form->addElement('checkbox', 'create_edit_poller_cfg', _("Create and edit pollers"));
 $form->addElement('checkbox', 'delete_poller_cfg', _("Delete pollers"));
-$form->addElement('checkbox', 'generate_cfg', _("Deploy configuration Files"));
+$form->addElement('checkbox', 'generate_cfg', _("Deploy configuration"));
 $form->addElement('checkbox', 'generate_trap', _("Generate SNMP Trap configuration"));
 
 $form->addElement('checkbox', 'all_service', "");
@@ -235,12 +235,12 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl(__DIR__, $tpl);
 
 // Modify an Action Group
-if ($o == "c" && isset($selected_actions) && isset($action_infos)) {
+if ($o === ACL_ACTION_MODIFY && isset($selected_actions) && isset($action_infos)) {
     $form->setDefaults($selected_actions);
     $form->setDefaults($action_infos);
 }
 // Add an Action Group
-if ($o == "a") {
+if ($o === ACL_ACTION_ADD) {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } else {

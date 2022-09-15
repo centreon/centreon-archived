@@ -30,7 +30,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Core\Domain\RealTime\ResourceTypeInterface;
 use Core\Severity\RealTime\Domain\Model\Severity;
 use Centreon\Domain\Repository\RepositoryException;
-use Core\Security\Domain\AccessGroup\Model\AccessGroup;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;

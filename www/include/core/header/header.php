@@ -184,6 +184,8 @@ $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
 
+$centreon->user->access->getActions();
+
 /**
  * Initialize features flipping
  */

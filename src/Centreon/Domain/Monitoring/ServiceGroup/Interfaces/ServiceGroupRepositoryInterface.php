@@ -52,7 +52,7 @@ interface ServiceGroupRepositoryInterface
     /**
      * Sets the access groups that will be used to filter.
      *
-     * @param \Core\Security\Domain\AccessGroup\Model\AccessGroup[]|null $accessGroups
+     * @param \Core\Security\AccessGroup\Domain\Model\AccessGroup[]|null $accessGroups
      * @return ServiceGroupRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): ServiceGroupRepositoryInterface;

@@ -25,7 +25,7 @@ namespace Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface;
-use Core\Security\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 
 final class HostGroupService extends AbstractCentreonService implements HostGroupServiceInterface
 {
