@@ -4918,7 +4918,7 @@ components:
             roles_mapping:
               type: object
               properties:
-                authorization_rules:
+                relations:
                   type: array
                   items:
                     type: object
