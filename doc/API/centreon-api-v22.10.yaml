@@ -4795,9 +4795,16 @@ components:
               type: boolean
             attribute_path:
               type: string
-              example: info.items[0].prop1
+              example: info.items.prop1
             endpoint:
-              type: string
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [introspection_endpoint, user_information_endpoint, custom_endpoint]
+                custom_endpoint:
+                  type: string
+                  nullable: true
             authorized_values:
               type: array
               items:
@@ -4815,7 +4822,7 @@ components:
             attribute_path:
               type: string
               nullable: false
-              example: info.items[0].groups
+              example: info.items.groups
             endpoint:
               type: object
               properties:
@@ -4849,7 +4856,7 @@ components:
               type: boolean
             attribute_path:
               type: string
-              example: info.items[0].role
+              example: info.items.role
             endpoint:
               type: object
               properties:
