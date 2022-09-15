@@ -26,7 +26,7 @@ namespace Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions;
 class InvalidEndpointException extends OpenIdConfigurationException
 {
     /**
-     * @return static
+     * @return self
      */
     public static function invalidType(): self
     {
@@ -34,7 +34,7 @@ class InvalidEndpointException extends OpenIdConfigurationException
     }
 
     /**
-     * @return static
+     * @return self
      */
     public static function invalidUrl(): self
     {

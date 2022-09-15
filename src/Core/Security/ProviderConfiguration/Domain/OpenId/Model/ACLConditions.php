@@ -43,8 +43,7 @@ class ACLConditions
         private string $attributePath,
         private EndpointCondition $endpoint,
         private array $relations = []
-    )
-    {
+    ) {
         $this->guard();
     }
 
