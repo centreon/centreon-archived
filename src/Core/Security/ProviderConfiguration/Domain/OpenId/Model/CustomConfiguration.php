@@ -599,7 +599,7 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
             $this->setAuthorizationRules($json['authorization_rules']);
         }
         $this->setAuthenticationConditions($json['authentication_conditions']);
-        $this->setACLConditions($json['roles_mapping']);     
+        $this->setACLConditions($json['roles_mapping']);
     }
 
     /**

@@ -131,10 +131,10 @@ class UpdateOpenIdConfigurationRequest
     public array $authorizationRules = [];
 
     /**
-     * @var array
+     * @var array<string,bool|string|string[]>
      */
     public array $rolesMapping = [];
-    
+
     /**
      * @var array<string,bool|string|string[]>
      */
@@ -157,7 +157,6 @@ class UpdateOpenIdConfigurationRequest
             'is_active' => $this->isActive,
             'contact_group_id' => $this->contactGroupId,
             'contact_template' => $this->contactTemplate,
-            'authorization_rules' => $this->authorizationRules,
             'auto_import' => $this->isAutoImportEnabled,
             'client_id' => $this->clientId,
             'authentication_type' => $this->authenticationType,

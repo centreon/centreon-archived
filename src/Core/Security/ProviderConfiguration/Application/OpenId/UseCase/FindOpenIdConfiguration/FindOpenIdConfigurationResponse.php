@@ -136,7 +136,7 @@ class FindOpenIdConfigurationResponse
     public array $authorizationRules = [];
 
     /**
-     * @var array
+     * @var array<string,bool|string|string[]>
      */
     public array $aclConditions = [];
 

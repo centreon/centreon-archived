@@ -36,7 +36,7 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFact
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
@@ -60,8 +60,6 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -82,7 +80,7 @@ it('should present a NoContentResponse when the use case is executed correctly',
         false,
         false,
         '',
-        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        new Endpoint(Endpoint::INTROSPECTION, ''),
         []
     ))->toArray();
 
@@ -138,7 +136,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
         false,
         false,
         '',
-        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        new Endpoint(Endpoint::INTROSPECTION, ''),
         []
     ))->toArray();
     $request->authenticationConditions = [
@@ -185,8 +183,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect2';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -206,7 +202,7 @@ it('should present an Error Response when auto import is enable and mandatory pa
         false,
         false,
         '',
-        new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+        new Endpoint(Endpoint::INTROSPECTION, ''),
         []
     ))->toArray();
 
@@ -247,8 +243,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';

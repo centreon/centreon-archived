@@ -33,15 +33,15 @@ class ACLConditions
      * @param bool $isEnabled
      * @param bool $applyOnlyFirstRole
      * @param string $attributePath
-     * @param EndpointCondition $endpoint
-     * @param array $relations
+     * @param Endpoint $endpoint
+     * @param AuthorizationRule[] $relations
      * @throws ACLConditionsException
      */
     public function __construct(
         private bool $isEnabled,
         private bool $applyOnlyFirstRole,
         private string $attributePath,
-        private EndpointCondition $endpoint,
+        private Endpoint $endpoint,
         private array $relations = []
     ) {
         $this->guard();
@@ -58,7 +58,7 @@ class ACLConditions
     /**
      * @return bool
      */
-    public function isApplyOnlyFirstRole(): bool
+    public function onlyFirstRoleIsApplied(): bool
     {
         return $this->applyOnlyFirstRole;
     }
@@ -72,9 +72,9 @@ class ACLConditions
     }
 
     /**
-     * @return EndpointCondition
+     * @return Endpoint
      */
-    public function getEndpoint(): EndpointCondition
+    public function getEndpoint(): Endpoint
     {
         return $this->endpoint;
     }
@@ -88,7 +88,7 @@ class ACLConditions
     }
 
     /**
-     * @return array
+     * @return array<string, array<array<string,int|string>|string>|bool|string>
      */
     public function toArray(): array
     {

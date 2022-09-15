@@ -25,7 +25,6 @@
     "contact_group_id",
     "claim_name",
     "roles_mapping",
-    "authorization_rules",
     "authentication_conditions"
   ],
   "properties": {
@@ -144,20 +143,6 @@
         "string",
         "null"
       ]
-    },
-    "authorization_rules": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "claim_value": {
-            "type": "string"
-          },
-          "access_group_id": {
-            "type": "integer"
-          }
-        }
-      }
     },
     "authentication_conditions": {
       "type": "object",

@@ -34,11 +34,13 @@ use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration a
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\ACLConditionsException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
@@ -168,8 +170,10 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
 
     /**
      * @param int $configurationId
-     * @param array $roles_mapping
+     * @param array<string,bool|string|string[]> $roles_mapping
      * @return ACLConditions
+     * @throws ACLConditionsException
+     * @throws InvalidEndpointException
      */
     private function createAclConditions(int $configurationId, array $roles_mapping): ACLConditions
     {
@@ -179,7 +183,7 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             $roles_mapping['is_enabled'],
             $roles_mapping['apply_only_first_role'],
             $roles_mapping['attribute_path'],
-            new EndpointCondition($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
             $rules
         );
     }

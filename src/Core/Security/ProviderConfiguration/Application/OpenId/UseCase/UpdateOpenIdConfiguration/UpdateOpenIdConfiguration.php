@@ -44,7 +44,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 
 class UpdateOpenIdConfiguration
 {
@@ -91,8 +91,7 @@ class UpdateOpenIdConfiguration
             $requestArray['contact_group'] = $request->contactGroupId !== null
                 ? $this->getContactGroupOrFail($request->contactGroupId)
                 : null;
-            $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
-            $requestArray['roles_mapping'] = $this->createACLConditions($request->rolesMapping);
+            $requestArray['roles_mapping'] = $this->createAclConditions($request->rolesMapping);
             $requestArray["authentication_conditions"] = $this->createAuthenticationConditions(
                 $request->authenticationConditions
             );
@@ -192,7 +191,7 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * @param array $roles_mapping
+     * @param array<string,bool|string|string[]|array<array{claim_value: string, access_group_id: int}>> $roles_mapping
      * @return ACLConditions
      * @throws \Throwable
      */
@@ -204,7 +203,7 @@ class UpdateOpenIdConfiguration
             $roles_mapping['is_enabled'],
             $roles_mapping['apply_only_first_role'],
             $roles_mapping['attribute_path'],
-            new EndpointCondition($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
             $rules
         );
     }

@@ -52,7 +52,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationCondit
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Pimple\Container;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
@@ -136,12 +136,11 @@ beforeEach(function () {
         'verify_peer' => false,
         'contact_group' => new ContactGroup(3, 'contact_group'),
         'claim_name' => 'groups',
-        'authorization_rules' => [],
         'roles_mapping' => new ACLConditions(
             false,
             false,
             '',
-            new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+            new Endpoint(Endpoint::INTROSPECTION, ''),
             []
         ),
         'authentication_conditions' => new AuthenticationConditions(false, '', '', [])

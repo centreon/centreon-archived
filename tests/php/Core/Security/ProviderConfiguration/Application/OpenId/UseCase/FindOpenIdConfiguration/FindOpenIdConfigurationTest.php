@@ -33,7 +33,7 @@ use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
@@ -73,12 +73,11 @@ it('should present a provider configuration', function () {
         'verify_peer' => false,
         'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
-        'authorization_rules' => [],
         'roles_mapping' => new ACLConditions(
             false,
             false,
             '',
-            new EndpointCondition(EndpointCondition::INTROSPECTION, ''),
+            new Endpoint(Endpoint::INTROSPECTION, ''),
             []
         ),
         'authentication_conditions' => new AuthenticationConditions(false, '', '', [])

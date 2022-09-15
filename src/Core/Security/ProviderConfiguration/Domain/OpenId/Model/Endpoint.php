@@ -24,7 +24,7 @@ namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
 
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
 
-class EndpointCondition
+class Endpoint
 {
     public const INTROSPECTION = 'introspection_endpoint';
     public const USER_INFORMATION = 'user_information_endpoint';
@@ -41,12 +41,12 @@ class EndpointCondition
 
     /**
      * @param string $type
-     * @param string $url
+     * @param string|null $url
      * @throws InvalidEndpointException
      */
     public function __construct(
         private string $type = self::INTROSPECTION,
-        private string $url = '',
+        private ?string $url = null,
     ) {
         $this->guardType();
         $this->guardUrl();
@@ -61,19 +61,19 @@ class EndpointCondition
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         if ($this->type !== self::CUSTOM) {
-            return  '';
+            return null;
         }
 
         return $this->url;
     }
 
     /**
-     * @return array
+     * @return array<string,string>
      */
     public function toArray(): array
     {
@@ -99,12 +99,16 @@ class EndpointCondition
      */
     private function guardUrl(): void
     {
-        if ($this->type === self::CUSTOM &&
+        if (
+            $this->type === self::CUSTOM &&
             (
-                !str_starts_with($this->url, '/') &&
-                filter_var($this->url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) === false
+                $this->url === null ||
+                (
+                    !str_starts_with($this->url, '/') &&
+                    filter_var($this->url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) === false
+                )
             )
-        ){
+        ) {
             throw InvalidEndpointException::invalidUrl();
         }
     }

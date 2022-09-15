@@ -27,7 +27,7 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\WebSSOConfiguration;
 use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\WebSSO\UseCase\FindWebSSOConfiguration\{
@@ -40,28 +40,36 @@ beforeEach(function () {
     $this->custom_url = 'https://domain.com/info';
 });
 
-it('it should throw an exception with a bad endpoint type', function () {
-    (new EndpointCondition('bad_type', $this->custom_relative_url));
+it('should throw an exception with a bad endpoint type', function () {
+    (new Endpoint('bad_type', $this->custom_relative_url));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidType()->getMessage());
 
-it('it should throw an exception with a bad relative url', function () {
-    (new EndpointCondition(EndpointCondition::CUSTOM, 'bad_relative_url'));
+it('should throw an exception with a bad relative url', function () {
+    (new Endpoint(Endpoint::CUSTOM, 'bad_relative_url'));
 })->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
 
-it('it should return an EndpointCondition instance with a correct relative url', function () {
-    $endpointCondition = new EndpointCondition(EndpointCondition::CUSTOM, $this->custom_relative_url);
+it('should return an EndpointCondition instance with a correct relative url', function () {
+    $endpointCondition = new Endpoint(Endpoint::CUSTOM, $this->custom_relative_url);
     expect($endpointCondition->getUrl())->toBe($this->custom_relative_url);
 });
 
-it('it should return an EndpointCondition instance with a correct url', function () {
-    $endpointCondition = new EndpointCondition(EndpointCondition::CUSTOM, $this->custom_url);
+it('should return an EndpointCondition instance with a correct url', function () {
+    $endpointCondition = new Endpoint(Endpoint::CUSTOM, $this->custom_url);
     expect($endpointCondition->getUrl())->toBe($this->custom_url);
 });
 
-it('it should return an EndpointCondition instance with an empty url if type is not custom', function () {
-    $endpointCondition = new EndpointCondition(EndpointCondition::INTROSPECTION, $this->custom_url);
-    expect($endpointCondition->getUrl())->toHaveLength(0);
+it('should return an EndpointCondition instance with an empty url if type is not custom', function () {
+    $endpointCondition = new Endpoint(Endpoint::INTROSPECTION, $this->custom_url);
+    expect($endpointCondition->getUrl())->toBeNull();
 
-    $endpointCondition = new EndpointCondition(EndpointCondition::USER_INFORMATION, $this->custom_url);
-    expect($endpointCondition->getUrl())->toHaveLength(0);
+    $endpointCondition = new Endpoint(Endpoint::USER_INFORMATION, $this->custom_url);
+    expect($endpointCondition->getUrl())->toBeNull();
 });
+
+it('should throw an exception with a null url and a custom type', function () {
+    (new Endpoint(Endpoint::CUSTOM, null));
+})->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());
+
+it('should throw an exception with a empty url and a custom type', function () {
+    (new Endpoint(Endpoint::CUSTOM, ''));
+})->throws(InvalidEndpointException::class, InvalidEndpointException::invalidUrl()->getMessage());

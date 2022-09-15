@@ -259,8 +259,15 @@
               "claim_value": {
                 "type": "string"
               },
-              "access_group_id": {
-                "type": "integer"
+              "access_group": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }

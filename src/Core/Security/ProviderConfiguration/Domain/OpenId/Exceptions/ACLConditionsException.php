@@ -26,8 +26,8 @@ namespace Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions;
 class ACLConditionsException extends OpenIdConfigurationException
 {
     /**
-     * @param array $fields
-     * @return static
+     * @param array<string> $fields
+     * @return self
      */
     public static function missingFields(array $fields): self
     {

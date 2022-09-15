@@ -29,7 +29,7 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\ACLConditionsException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\EndpointCondition;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\WebSSOConfiguration;
 use Core\Security\ProviderConfiguration\Application\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\WebSSO\UseCase\FindWebSSOConfiguration\{
@@ -42,28 +42,30 @@ beforeEach(function () {
     $this->custom_url = 'https://domain.com/info';
 });
 
-it('it should return a default ACLConditions instance', function () {
+it('should return a default ACLConditions instance', function () {
     $aclConditions = new ACLConditions(
         false,
         false,
         '',
-        new EndpointCondition(),
-        []);
+        new Endpoint(),
+        []
+    );
 
     expect($aclConditions->isEnabled())->toBe(false)
-        ->and($aclConditions->isApplyOnlyFirstRole())->toBe(false)
+        ->and($aclConditions->onlyFirstRoleIsApplied())->toBe(false)
         ->and($aclConditions->getAttributePath())->toHaveLength(0)
-        ->and($aclConditions->getEndpoint())->toBeInstanceOf(EndpointCondition::class)
+        ->and($aclConditions->getEndpoint())->toBeInstanceOf(Endpoint::class)
         ->and($aclConditions->getRelations())->toBeArray()->toHaveLength(0);
 });
 
-it('it should throw an exception for missing parameter attribute_path', function () {
+it('should throw an exception for missing parameter attribute_path', function () {
     (new ACLConditions(
         true,
         false,
         '',
-        new EndpointCondition(),
-        []));
+        new Endpoint(),
+        []
+    ));
 })->throws(
     ACLConditionsException::class,
     ACLConditionsException::missingFields(['attribute_path'])->getMessage()
@@ -74,8 +76,9 @@ it('it should throw an exception for missing parameter endpoint', function () {
         true,
         false,
         '',
-        new EndpointCondition(),
-        []));
+        new Endpoint(),
+        []
+    ));
 })->throws(
     ACLConditionsException::class,
     ACLConditionsException::missingFields(['attribute_path'])->getMessage()
@@ -88,24 +91,24 @@ it(
             true,
             true,
             'info.path.role',
-            new EndpointCondition(),
-            []));
-    })->throws(
+            new Endpoint(),
+            []
+        ));
+    }
+)->throws(
     ACLConditionsException::class,
     ACLConditionsException::missingFields(['relations'])->getMessage()
 );
 
-it(
-    'it should throw an exception for all missing parameters',
-    function () {
-        (new ACLConditions(
-            true,
-            true,
-            '',
-            new EndpointCondition(),
-            []));
-    })->throws(
+it('it should throw an exception for all missing parameters', function () {
+    (new ACLConditions(
+        true,
+        true,
+        '',
+        new Endpoint(),
+        []
+    ));
+})->throws(
     ACLConditionsException::class,
     ACLConditionsException::missingFields(['attribute_path', 'relations'])->getMessage()
 );
-
