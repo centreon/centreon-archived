@@ -215,18 +215,18 @@ const PerformanceGraph = ({
         newLineData = getLineData(graphData);
 
         if (equals(type, ResourceType.anomalydetection)) {
-          const isModalAD = endpoint.includes('15');
+          // const isModalAD = endpoint.includes('15');
           setTimeSeries(getTimeSeries(mockedResultGraph));
           setBase(mockedResultGraph.global.base);
           setTitle(mockedResultGraph.global.title);
           newLineData = getLineData(mockedResultGraph);
 
-          if (isModalAD) {
-            setTimeSeries(getTimeSeries(mockedResultModalGraph));
-            setBase(mockedResultModalGraph.global.base);
-            setTitle(mockedResultModalGraph.global.title);
-            newLineData = getLineData(mockedResultModalGraph);
-          }
+          // if (isModalAD) {
+          //   setTimeSeries(getTimeSeries(mockedResultModalGraph));
+          //   setBase(mockedResultModalGraph.global.base);
+          //   setTitle(mockedResultModalGraph.global.title);
+          //   newLineData = getLineData(mockedResultModalGraph);
+          // }
         }
 
         if (lineData) {
