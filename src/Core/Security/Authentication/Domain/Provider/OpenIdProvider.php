@@ -571,7 +571,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function sendRequestForUserInformationEndpoint(): array
     {
-        $this->info('Send Request for User Information...');
+        $this->info('Sending Request for User Information...');
 
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
@@ -623,7 +623,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function verifyThatClientIsAllowedToConnectOrFail(string $clientIp): void
     {
-        $this->info('Check Client IP from blacklist/whitelist addresses');
+        $this->info('Check Client IP against blacklist/whitelist addresses');
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         $authenticationConditions = $customConfiguration->getAuthenticationConditions();
@@ -828,7 +828,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             CentreonUserLog::TYPE_LOGIN,
             "[Openid] [Debug] $message " . json_encode($content)
         );
-        $this->debug('Authentication informations : ', $content);
+        $this->debug('Authentication information : ', $content);
     }
 
     /**
@@ -915,7 +915,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     private function sendRequestForCustomAuthenticationConditionEndpoint(string $customEndpoint): array
     {
-        $this->info('Send Request for authentication conditions...');
+        $this->info('Sending Request for authentication conditions...');
 
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
