@@ -1054,6 +1054,6 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Conditions found", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Conditions found", $*);
+        $this->logAuthenticationInfo("Conditions found", $$conditionMatches);
     }
 }
