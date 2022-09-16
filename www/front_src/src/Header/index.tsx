@@ -19,6 +19,8 @@ export const isDarkMode = (theme: Theme): boolean =>
 
 export const headerHeight = 6;
 
+export const paddingBottomHeader = 0.5;
+
 const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'flex-end',
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(headerHeight),
-    paddingBottom: theme.spacing(0.5),
+    paddingBottom: theme.spacing(paddingBottomHeader),
     width: '100%',
   },
   item: {

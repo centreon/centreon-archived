@@ -14,7 +14,6 @@ import {
 import { retrievedFederatedModule } from '../../federatedModules/mocks';
 import { federatedModulesAtom } from '../../federatedModules/atoms';
 import { labelYouAreNotAllowedToSeeThisPage } from '../../FallbackPages/NotAllowedPage/translatedLabels';
-import { labelCentreonLogo } from '../../Login/translatedLabels';
 
 import ReactRouter from '.';
 
@@ -71,7 +70,10 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByText('404')).toBeInTheDocument();
+    expect(
+      screen.getByText('This page could not be found'),
+    ).toBeInTheDocument();
   });
 
   it('displays the fallback page with an error message when the user is not allowed', async () => {
@@ -85,6 +87,9 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByText('Lost in space?')).toBeInTheDocument();
+    expect(
+      screen.getByText('You are not allowed to see this page'),
+    ).toBeInTheDocument();
   });
 });

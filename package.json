@@ -130,10 +130,6 @@
     "use-deep-compare-effect": "^1.8.1",
     "yup": "^0.32.11"
   },
-  "jest": {
-    "testResultsProcessor": "jest-junit",
-    "testURL": "http://localhost/"
-  },
   "jest-junit": {
     "suiteName": "jest tests",
     "output": "./jest-test-results.xml"
