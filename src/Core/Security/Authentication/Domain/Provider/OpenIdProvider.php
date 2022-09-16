@@ -835,7 +835,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string,string> $content
+     * @param array<string|int,string> $content
      */
     private function logAuthenticationInfo(string $message, array $content): void
     {
@@ -1054,6 +1054,6 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Conditions found", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Conditions found", $conditionMatches);
+        $this->logAuthenticationInfo("Conditions found", $*);
     }
 }
