@@ -992,7 +992,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Undocumented function
+     * Validate Authentication Condition Attribute
      *
      * @param array<mixed> $providerAuthenticationConditions
      * @param string[] $configuredAuthorizedValues
