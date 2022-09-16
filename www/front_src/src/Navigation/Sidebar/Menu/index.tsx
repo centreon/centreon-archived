@@ -30,15 +30,14 @@ interface Props {
   navigationData?: Array<Page>;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   icon: {
     fontSize: 26,
   },
   list: {
     '&.MuiList-root': {
-      padding: theme.spacing(0, 0, 0, 0),
+      padding: 0,
     },
-    marginTop: theme.spacing(0.5),
   },
 }));
 
