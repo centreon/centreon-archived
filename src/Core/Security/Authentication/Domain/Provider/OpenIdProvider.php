@@ -49,6 +49,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -335,7 +336,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationInfo('Token Access Information:', $content);
+        $this->logAuthenticationDebug('Token Access Information:', $content);
         $creationDate = new \DateTimeImmutable();
         $providerTokenExpiration =
             (new \DateTimeImmutable())->add(new DateInterval('PT' . $content ['expires_in'] . 'S'));
@@ -448,7 +449,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationInfo('Token Access Information:', $content);
+        $this->logAuthenticationDebug('Token Access Information:', $content);
         $this->connectionTokenResponseContent = $content;
     }
 
@@ -549,7 +550,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationInfo('Token Introspection Information: ', $content);
+        $this->logAuthenticationDebug('Token Introspection Information: ', $content);
 
         return $content;
     }
@@ -608,7 +609,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationInfo('User Information: ', $content);
+        $this->logAuthenticationDebug('User Information: ', $content);
 
         return $content;
     }
@@ -642,7 +643,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             }
         }
 
-        $this->validateAuthenticationConditionsOrFail($customConfiguration, $authenticationConditions);
+        $this->validateAuthenticationConditionsOrFail($authenticationConditions);
     }
 
     /**
@@ -805,7 +806,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @param string $message
      * @param array<string,string> $content
      */
-    private function logAuthenticationInfo(string $message, array $content): void
+    private function logAuthenticationDebug(string $message, array $content): void
     {
         if (isset($content['jti'])) {
             $content['jti'] = substr($content['jti'], -10);
@@ -829,6 +830,15 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->debug('Authentication informations : ', $content);
     }
 
+    private function logAuthenticationInfo(string $message, array $content): void
+    {
+        $this->centreonLog->insertLog(
+            CentreonUserLog::TYPE_LOGIN,
+            "[Openid] [INFO] $message : " . json_encode($content)
+        );
+        $this->info("$message : ", $content);
+    }
+
     /**
      * Log Exception in login.log file
      *
@@ -850,18 +860,16 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Validate Authentication Conditions or throw an exception.
      *
-     * @param CustomConfiguration $customConfiguration
      * @param AuthenticationConditions $authenticationConditions
      * @throws OpenIdConfigurationException
      * @throws AuthenticationException
      * @throws AuthenticationConditionsException
      */
     private function validateAuthenticationConditionsOrFail(
-        CustomConfiguration $customConfiguration,
         AuthenticationConditions $authenticationConditions
     ): void {
         if ($authenticationConditions->isEnabled()) {
-            $conditions = $this->getConditionsFromProvider($customConfiguration, $authenticationConditions);
+            $conditions = $this->getConditionsFromProvider($authenticationConditions);
             $this->validateAuthenticationConditions($conditions, $authenticationConditions);
         }
     }
@@ -869,24 +877,22 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Get authentication conditions from Provider.
      *
-     * @param CustomConfiguration $customConfiguration
      * @param AuthenticationConditions $authenticationConditions
      * @return array<string,mixed>
      */
     private function getConditionsFromProvider(
-        CustomConfiguration $customConfiguration,
         AuthenticationConditions $authenticationConditions
     ): array {
         $conditionsEndpoint = $authenticationConditions->getEndpoint();
-        switch($conditionsEndpoint) {
-            case $customConfiguration->getIntrospectionTokenEndpoint():
+        switch($conditionsEndpoint->getType()) {
+            case Endpoint::INTROSPECTION:
                 $conditions = $this->sendRequestForIntrospectionEndpoint();
                 break;
-            case $customConfiguration->getUserInformationEndpoint():
+            case Endpoint::USER_INFORMATION:
                 $conditions = $this->sendRequestForUserInformationEndpoint();
                 break;
             default:
-                $conditions = $this->sendRequestForCustomAuthenticationConditionEndpoint($conditionsEndpoint);
+                $conditions = $this->sendRequestForCustomAuthenticationConditionEndpoint($conditionsEndpoint->getUrl());
                 break;
         }
 
@@ -939,7 +945,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationInfo('Authentication conditions: ', $content);
+        $this->logAuthenticationDebug('Authentication conditions: ', $content);
 
         return $content;
     }
@@ -997,11 +1003,27 @@ class OpenIdProvider implements OpenIdProviderInterface
             }
         }
         if (array_is_list($providerAuthenticationConditions) === false) {
+            $errorMessage = "Invalid Authentication conditions format, array of string expected";
+            $this->error($errorMessage, [
+                "authentication_condition_from_provider" => $providerAuthenticationConditions
+            ]);
+            $this->logExceptionInLoginLogFile(
+                $errorMessage,
+                AuthenticationConditionsException::invalidAuthenticationConditions()
+            );
             throw AuthenticationConditionsException::invalidAuthenticationConditions();
         }
 
-        if (empty (array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues))) {
+        $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
+        if (empty ($conditionMatches)) {
+            $errorMessage = "Configured attribute path not found in conditions endpoint";
+            $this->error($errorMessage, [
+                "configured_authorized_values" => $configuredAuthorizedValues
+            ]);
+            $this->logExceptionInLoginLogFile($errorMessage, AuthenticationConditionsException::conditionsNotFound());
             throw AuthenticationConditionsException::conditionsNotFound();
         }
+        $this->info("Conditions found", ["conditions" => $conditionMatches]);
+        $this->logAuthenticationInfo("Conditions found", $conditionMatches);
     }
 }
