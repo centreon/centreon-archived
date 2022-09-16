@@ -1040,7 +1040,6 @@ class OpenIdProvider implements OpenIdProviderInterface
 
         $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
         if (empty($conditionMatches)) {
-            $errorMessage = "Configured attribute path not found in conditions endpoint";
             $this->error(
                 "Configured attribute path not found in conditions endpoint",
                 [
@@ -1054,6 +1053,6 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Conditions found", ["conditions" => $conditionMatches]);
-        $this->logAuthenticationInfo("Conditions found", $$conditionMatches);
+        $this->logAuthenticationInfo("Conditions found", $conditionMatches);
     }
 }
