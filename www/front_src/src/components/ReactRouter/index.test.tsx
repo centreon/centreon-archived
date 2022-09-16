@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Provider } from 'jotai';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -18,8 +16,6 @@ import { labelYouAreNotAllowedToSeeThisPage } from '../../FallbackPages/NotAllow
 import ReactRouter from '.';
 
 const labelResourceStatus = 'Resource Status page';
-
-jest.mock('../../img/centreon.png');
 
 jest.mock('../../Resources', () => {
   const Resources = (): JSX.Element => <p>{labelResourceStatus}</p>;
