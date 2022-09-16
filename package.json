@@ -110,7 +110,7 @@
     "install": "^0.13.0",
     "jotai": "^1.6.3",
     "json-loader": "^0.5.7",
-    "npm": "^8.12.1",
+    "npm": "^8.19.1",
     "numeral": "^2.0.6",
     "pluralize": "^8.0.0",
     "prop-types": "^15.8.1",
