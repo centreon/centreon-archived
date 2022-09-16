@@ -1024,7 +1024,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             }
         }
         if (array_is_list($providerAuthenticationConditions) === false) {
-            $errorMessage = "Invalid Authentication conditions format, array of string expected";
+            $errorMessage = "Invalid Authentication conditions format, array of strings expected";
             $this->error(
                 $errorMessage,
                 [
