@@ -78,6 +78,7 @@ export interface ResourceEndpoints {
   downtime?: string;
   metrics?: string;
   performance_graph?: string;
+  sensitivity?: string;
   status_graph?: string;
   timeline?: string;
   timeline_download?: string;

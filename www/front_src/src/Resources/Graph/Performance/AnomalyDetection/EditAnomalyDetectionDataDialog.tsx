@@ -1,15 +1,16 @@
-import { Dispatch, SetStateAction, ReactNode, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
 import Button from '@mui/material/Button';
-import makeStyles from '@mui/styles/makeStyles';
-import Paper from '@mui/material/Paper';
 import Dialog from '@mui/material/Dialog';
+import Paper from '@mui/material/Paper';
+import makeStyles from '@mui/styles/makeStyles';
 
 import TimePeriodButtonGroup from '../TimePeriods';
 
-import { CustomFactorsData } from './models';
-import AnomalyDetectionSlider from './AnomalyDetectionSlider';
 import AnomalyDetectionExclusionPeriod from './AnomalyDetectionExclusionPeriod';
+import AnomalyDetectionModalConfirmation from './AnomalyDetectionModalConfirmation';
+import AnomalyDetectionSlider from './AnomalyDetectionSlider';
+import { CustomFactorsData } from './models';
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -45,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
 interface PropsChildren {
   factorsData?: CustomFactorsData | null;
   getFactors?: (data: CustomFactorsData) => void;
+  isCanceledResizeEnvelope?: boolean;
+  isResizeEnvelope?: boolean;
+  openModalConfirmation?: (value: boolean) => void;
 }
 
 interface Props {
@@ -63,6 +67,13 @@ const EditAnomalyDetectionDataDialog = ({
   const [factorsData, setFactorsData] = useState<null | CustomFactorsData>(
     null,
   );
+  const [isModalConfirmationOpened, setIsModalConfirmationOpened] =
+    useState(false);
+
+  const [isCanceledResizeEnvelope, setIsCanceledResizeEnvelope] =
+    useState(false);
+
+  const [isResizeEnvelope, setIsResizeEnvelope] = useState(false);
 
   const handleClose = (): void => {
     setIsOpen(false);
@@ -70,6 +81,18 @@ const EditAnomalyDetectionDataDialog = ({
 
   const getFactors = (data: CustomFactorsData): void => {
     setFactorsData(data);
+  };
+
+  const openModalConfirmation = (value: boolean): void => {
+    setIsModalConfirmationOpened(value);
+    setIsCanceledResizeEnvelope(false);
+  };
+  const cancelResizeEnvelope = (value: boolean): void => {
+    setIsCanceledResizeEnvelope(value);
+  };
+
+  const resizeEnvelope = (value: boolean): void => {
+    setIsResizeEnvelope(value);
   };
 
   return (
@@ -83,12 +106,24 @@ const EditAnomalyDetectionDataDialog = ({
         </div>
         <div className={classes.editEnvelopeSize}>
           <Paper className={classes.envelopeSize}>
-            {children && children({ getFactors })}
+            {children &&
+              children({
+                getFactors,
+                isCanceledResizeEnvelope,
+                isResizeEnvelope,
+                openModalConfirmation,
+              })}
           </Paper>
           <Paper className={classes.exclusionPeriod}>
             <EditAnomalyDetectionDataDialog.ExclusionPeriod />
           </Paper>
         </div>
+        <EditAnomalyDetectionDataDialog.ModalConfirmation
+          open={isModalConfirmationOpened}
+          sendCancel={cancelResizeEnvelope}
+          sendConfirm={resizeEnvelope}
+          setOpen={setIsModalConfirmationOpened}
+        />
         <div className={classes.close}>
           <Button onClick={handleClose}>Close</Button>
         </div>
@@ -100,5 +135,7 @@ const EditAnomalyDetectionDataDialog = ({
 EditAnomalyDetectionDataDialog.Slider = AnomalyDetectionSlider;
 EditAnomalyDetectionDataDialog.ExclusionPeriod =
   AnomalyDetectionExclusionPeriod;
+EditAnomalyDetectionDataDialog.ModalConfirmation =
+  AnomalyDetectionModalConfirmation;
 
 export default EditAnomalyDetectionDataDialog;

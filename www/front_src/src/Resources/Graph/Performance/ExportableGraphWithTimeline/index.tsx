@@ -225,7 +225,13 @@ const ExportablePerformanceGraphWithTimeline = ({
                 isOpen={isOpenModalAD}
                 setIsOpen={setIsOpenModalAD}
               >
-                {({ factorsData, getFactors }): JSX.Element => (
+                {({
+                  factorsData,
+                  getFactors,
+                  openModalConfirmation,
+                  isCanceledResizeEnvelope,
+                  isResizeEnvelope,
+                }): JSX.Element => (
                   <>
                     {factorsData && (
                       <ExportablePerformanceGraphWithTimeline
@@ -235,10 +241,14 @@ const ExportablePerformanceGraphWithTimeline = ({
                         resource={resource}
                       />
                     )}
-                    {getFactors && (
+                    {getFactors && details && details?.sensitivity && (
                       <EditAnomalyDetectionDataDialog.Slider
                         details={details}
                         getFactors={getFactors}
+                        isCanceledResizeEnvelope={isCanceledResizeEnvelope}
+                        isResizeEnvelope={isResizeEnvelope}
+                        openModalConfirmation={openModalConfirmation}
+                        sensitivity={details.sensitivity}
                       />
                     )}
                   </>

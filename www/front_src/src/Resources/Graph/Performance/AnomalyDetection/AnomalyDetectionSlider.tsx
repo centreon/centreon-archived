@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { equals } from 'ramda';
+import { equals, path } from 'ramda';
 
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,9 +11,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 
-import { IconButton } from '@centreon/ui';
+import { IconButton, useRequest, putData } from '@centreon/ui';
 
-import { ResourceDetails } from '../../../Details/models';
+import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
 import { CustomFactorsData } from './models';
 
@@ -76,33 +76,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  details?: ResourceDetails;
+  details: ResourceDetails;
   getFactors: (data: CustomFactorsData) => void;
+  isCanceledResizeEnvelope?: boolean;
+  isResizeEnvelope?: boolean;
+  openModalConfirmation?: (value: boolean) => void;
+  sensitivity: Sensitivity;
 }
 
 const AnomalyDetectionSlider = ({
   getFactors,
+  sensitivity,
   details,
+  openModalConfirmation,
+  isCanceledResizeEnvelope,
+  isResizeEnvelope,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  // const data = details?.sensitivity;
-  const dataSlider = {
-    current_value: 0.8,
-    default_value: 2,
-  };
-  const maxSlider = 5;
-  const minSlider = 0;
-  const step = 0.1;
-  const [currentValue, setCurrentValue] = useState(dataSlider.current_value);
+
+  const [currentValue, setCurrentValue] = useState(sensitivity.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+
+  const step = 0.1;
+  const sensitivityEndPoint = path<string>(
+    ['links', 'endpoints', 'sensitivity'],
+    details,
+  );
 
   const marks = [
     {
       label: 'Default',
-      value: dataSlider.default_value,
+      value: sensitivity.default_value,
     },
   ];
+
+  const { sendRequest, sending } = useRequest({
+    request: putData,
+  });
 
   const enableUpdatingSlider = (): void => {
     setIsDefaultValue(false);
@@ -131,39 +142,58 @@ const AnomalyDetectionSlider = ({
     if (isDefaultValue) {
       return;
     }
-    setIsDefaultValue(event?.target.checked);
+    setIsDefaultValue(event.target.checked);
+  };
+
+  const confirm = (): void => {
+    if (!openModalConfirmation) {
+      return;
+    }
+    openModalConfirmation(true);
   };
 
   const resizeEnvelope = (): void => {
-    // console.log('confirm');
+    sendRequest({
+      data: { sensitivity: currentValue },
+      endpoint: sensitivityEndPoint,
+    });
+
+    // get new Data
   };
 
   const cancelResizingEnvelope = (): void => {
-    setCurrentValue(dataSlider.current_value);
+    setCurrentValue(sensitivity.current_value);
     setIsResizing(false);
-    if (equals(dataSlider.current_value, dataSlider.default_value)) {
-      return;
-    }
     setIsDefaultValue(false);
   };
 
   useEffect(() => {
     if (isDefaultValue) {
-      setCurrentValue(dataSlider.default_value);
+      setCurrentValue(sensitivity.default_value);
     }
   }, [isDefaultValue]);
 
   useEffect(() => {
-    if (equals(currentValue, dataSlider.default_value) && isResizing) {
+    if (equals(currentValue, sensitivity.default_value) && isResizing) {
       setIsDefaultValue(true);
     }
 
     getFactors({
-      currentFactor: dataSlider.current_value,
+      currentFactor: sensitivity.current_value,
       isResizing,
       simulatedFactor: currentValue,
     });
   }, [currentValue, isResizing]);
+
+  useEffect(() => {
+    if (isCanceledResizeEnvelope) {
+      cancelResizingEnvelope();
+    }
+  }, [isCanceledResizeEnvelope]);
+
+  useEffect(() => {
+    resizeEnvelope();
+  }, [isResizeEnvelope]);
 
   return (
     <div className={classes.container}>
@@ -179,7 +209,9 @@ const AnomalyDetectionSlider = ({
           <IconButton data-testid="add" size="small" onClick={handleRemove}>
             <div className={classes.icon}>
               <RemoveIcon fontSize="small" />
-              <Typography variant="subtitle2">{minSlider}</Typography>
+              <Typography variant="subtitle2">
+                {sensitivity.minimum_value}
+              </Typography>
             </div>
           </IconButton>
 
@@ -187,8 +219,8 @@ const AnomalyDetectionSlider = ({
             aria-label="Small"
             className={classes.slider}
             marks={marks}
-            max={maxSlider}
-            min={minSlider}
+            max={sensitivity.maximum_value}
+            min={sensitivity.minimum_value}
             size="small"
             step={step}
             value={currentValue}
@@ -198,7 +230,9 @@ const AnomalyDetectionSlider = ({
           <IconButton data-testid="remove" size="small" onClick={handleAdd}>
             <div className={classes.icon}>
               <AddIcon fontSize="small" />
-              <Typography variant="subtitle2">{maxSlider}</Typography>
+              <Typography variant="subtitle2">
+                {sensitivity.maximum_value}
+              </Typography>
             </div>
           </IconButton>
         </div>
@@ -221,7 +255,7 @@ const AnomalyDetectionSlider = ({
           className={classes.confirmButton}
           size="small"
           variant="contained"
-          onClick={resizeEnvelope}
+          onClick={confirm}
         >
           Confirm
         </Button>
