@@ -141,152 +141,150 @@ const ServiceStatusCounter = (): JSX.Element => {
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
-        <div>
-          <SubmenuHeader
-            active={toggled}
-            counterRightTranslation={1}
-            counters={[
-              {
-                count: data.critical.unhandled,
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledCriticalServicesCriterias,
-                  link: unhandledCriticalServicesLink,
-                }),
-                severityCode: SeverityCode.High,
-                testId: 'Services Critical',
-                to: unhandledCriticalServicesLink,
-              },
+        <SubmenuHeader
+          active={toggled}
+          counterRightTranslation={1}
+          counters={[
+            {
+              count: data.critical.unhandled,
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledCriticalServicesCriterias,
+                link: unhandledCriticalServicesLink,
+              }),
+              severityCode: SeverityCode.High,
+              testId: 'Services Critical',
+              to: unhandledCriticalServicesLink,
+            },
 
-              {
-                count: data.warning.unhandled,
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledWarningServicesCriterias,
-                  link: unhandledWarningServicesLink,
-                }),
-                severityCode: SeverityCode.Medium,
-                testId: 'Services Warning',
-                to: unhandledWarningServicesLink,
-              },
+            {
+              count: data.warning.unhandled,
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledWarningServicesCriterias,
+                link: unhandledWarningServicesLink,
+              }),
+              severityCode: SeverityCode.Medium,
+              testId: 'Services Warning',
+              to: unhandledWarningServicesLink,
+            },
 
-              {
-                count: data.unknown.unhandled,
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledUnknownServicesCriterias,
-                  link: unhandledUnknownServicesLink,
-                }),
-                severityCode: SeverityCode.Low,
-                testId: 'Services Unknown',
-                to: unhandledUnknownServicesLink,
-              },
+            {
+              count: data.unknown.unhandled,
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledUnknownServicesCriterias,
+                link: unhandledUnknownServicesLink,
+              }),
+              severityCode: SeverityCode.Low,
+              testId: 'Services Unknown',
+              to: unhandledUnknownServicesLink,
+            },
 
-              {
-                count: data.ok,
-                onClick: changeFilterAndNavigate({
-                  criterias: okServicesCriterias,
-                  link: okServicesLink,
-                }),
-                severityCode: SeverityCode.Ok,
-                testId: 'Services Ok',
-                to: okServicesLink,
-              },
-            ]}
-            hasPending={hasPending}
-            iconHeader={{
-              Icon: ServiceIcon,
-              iconName: t('Services'),
-              onClick: toggleDetailedView,
-            }}
-            iconToggleSubmenu={{
-              onClick: toggleDetailedView,
-              rotate: toggled,
-              testid: 'submenu-service',
-            }}
-            submenuItems={[
-              {
-                countTestId: 'submenu services count all',
-                onClick: changeFilterAndNavigate({
-                  criterias: servicesCriterias,
-                  link: servicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                submenuCount: numeral(data.total).format(),
-                submenuTitle: t('All'),
-                titleTestId: 'submenu hosts title all',
-                to: servicesLink,
-              },
-              {
-                countTestId: 'submenu services count critical',
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledCriticalServicesCriterias,
-                  link: unhandledCriticalServicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                severityCode: SeverityCode.High,
-                submenuCount: `${numeral(
-                  data.critical.unhandled,
-                ).format()}/${numeral(data.critical.total).format()}`,
-                submenuTitle: t('Critical'),
-                titleTestId: 'submenu services title critical',
-                to: unhandledCriticalServicesLink,
-              },
-              {
-                countTestId: 'submenu services count warning',
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledWarningServicesCriterias,
-                  link: unhandledWarningServicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                severityCode: SeverityCode.Medium,
-                submenuCount: `${numeral(
-                  data.warning.unhandled,
-                ).format()}/${numeral(data.warning.total).format()}`,
-                submenuTitle: t('Warning'),
-                titleTestId: 'submenu services title warning',
-                to: unhandledWarningServicesLink,
-              },
-              {
-                countTestId: 'submenu services count unknown',
-                onClick: changeFilterAndNavigate({
-                  criterias: unhandledUnknownServicesCriterias,
-                  link: unhandledUnknownServicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                severityCode: SeverityCode.Low,
-                submenuCount: `${numeral(
-                  data.unknown.unhandled,
-                ).format()}/${numeral(data.unknown.total).format()}`,
-                submenuTitle: t('Unknown'),
-                titleTestId: 'submenu services title unknown',
-                to: unhandledUnknownServicesLink,
-              },
-              {
-                countTestId: 'submenu services count ok',
-                onClick: changeFilterAndNavigate({
-                  criterias: okServicesCriterias,
-                  link: okServicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                severityCode: SeverityCode.Ok,
-                submenuCount: numeral(data.ok).format(),
-                submenuTitle: t('Ok'),
-                titleTestId: 'submenu services title ok',
-                to: okServicesLink,
-              },
-              {
-                onClick: changeFilterAndNavigate({
-                  criterias: pendingServicesCriterias,
-                  link: pendingServicesLink,
-                  toggle: toggleDetailedView,
-                }),
-                severityCode: SeverityCode.Pending,
-                submenuCount: numeral(data.pending).format(),
-                submenuTitle: t('Pending'),
-                to: pendingServicesLink,
-              },
-            ]}
-            toggled={toggled}
-          />
-        </div>
+            {
+              count: data.ok,
+              onClick: changeFilterAndNavigate({
+                criterias: okServicesCriterias,
+                link: okServicesLink,
+              }),
+              severityCode: SeverityCode.Ok,
+              testId: 'Services Ok',
+              to: okServicesLink,
+            },
+          ]}
+          hasPending={hasPending}
+          iconHeader={{
+            Icon: ServiceIcon,
+            iconName: t('Services'),
+            onClick: toggleDetailedView,
+          }}
+          iconToggleSubmenu={{
+            onClick: toggleDetailedView,
+            rotate: toggled,
+            testid: 'submenu-service',
+          }}
+          submenuItems={[
+            {
+              countTestId: 'submenu services count all',
+              onClick: changeFilterAndNavigate({
+                criterias: servicesCriterias,
+                link: servicesLink,
+                toggle: toggleDetailedView,
+              }),
+              submenuCount: numeral(data.total).format(),
+              submenuTitle: t('All'),
+              titleTestId: 'submenu hosts title all',
+              to: servicesLink,
+            },
+            {
+              countTestId: 'submenu services count critical',
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledCriticalServicesCriterias,
+                link: unhandledCriticalServicesLink,
+                toggle: toggleDetailedView,
+              }),
+              severityCode: SeverityCode.High,
+              submenuCount: `${numeral(
+                data.critical.unhandled,
+              ).format()}/${numeral(data.critical.total).format()}`,
+              submenuTitle: t('Critical'),
+              titleTestId: 'submenu services title critical',
+              to: unhandledCriticalServicesLink,
+            },
+            {
+              countTestId: 'submenu services count warning',
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledWarningServicesCriterias,
+                link: unhandledWarningServicesLink,
+                toggle: toggleDetailedView,
+              }),
+              severityCode: SeverityCode.Medium,
+              submenuCount: `${numeral(
+                data.warning.unhandled,
+              ).format()}/${numeral(data.warning.total).format()}`,
+              submenuTitle: t('Warning'),
+              titleTestId: 'submenu services title warning',
+              to: unhandledWarningServicesLink,
+            },
+            {
+              countTestId: 'submenu services count unknown',
+              onClick: changeFilterAndNavigate({
+                criterias: unhandledUnknownServicesCriterias,
+                link: unhandledUnknownServicesLink,
+                toggle: toggleDetailedView,
+              }),
+              severityCode: SeverityCode.Low,
+              submenuCount: `${numeral(
+                data.unknown.unhandled,
+              ).format()}/${numeral(data.unknown.total).format()}`,
+              submenuTitle: t('Unknown'),
+              titleTestId: 'submenu services title unknown',
+              to: unhandledUnknownServicesLink,
+            },
+            {
+              countTestId: 'submenu services count ok',
+              onClick: changeFilterAndNavigate({
+                criterias: okServicesCriterias,
+                link: okServicesLink,
+                toggle: toggleDetailedView,
+              }),
+              severityCode: SeverityCode.Ok,
+              submenuCount: numeral(data.ok).format(),
+              submenuTitle: t('Ok'),
+              titleTestId: 'submenu services title ok',
+              to: okServicesLink,
+            },
+            {
+              onClick: changeFilterAndNavigate({
+                criterias: pendingServicesCriterias,
+                link: pendingServicesLink,
+                toggle: toggleDetailedView,
+              }),
+              severityCode: SeverityCode.Pending,
+              submenuCount: numeral(data.pending).format(),
+              submenuTitle: t('Pending'),
+              to: pendingServicesLink,
+            },
+          ]}
+          toggled={toggled}
+        />
       )}
     </RessourceStatusCounter>
   );
