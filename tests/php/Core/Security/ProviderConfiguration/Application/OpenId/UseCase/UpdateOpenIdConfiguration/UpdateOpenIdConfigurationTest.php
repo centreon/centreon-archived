@@ -58,8 +58,6 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -169,8 +167,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect2';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';
@@ -224,8 +220,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request = new UpdateOpenIdConfigurationRequest();
     $request->isActive = true;
     $request->isForced = true;
-    $request->trustedClientAddresses = [];
-    $request->blacklistClientAddresses = [];
     $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
     $request->authorizationEndpoint = '/authorization';
     $request->tokenEndpoint = '/token';

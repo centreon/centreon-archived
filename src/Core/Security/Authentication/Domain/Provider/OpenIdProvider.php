@@ -801,7 +801,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Log Authentication informations
+     * Log Authentication debug
      *
      * @param string $message
      * @param array<string,string> $content
@@ -830,6 +830,12 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->debug('Authentication informations : ', $content);
     }
 
+    /**
+     * Log Authentication information
+     *
+     * @param string $message
+     * @param array<string,string> $content
+     */
     private function logAuthenticationInfo(string $message, array $content): void
     {
         $this->centreonLog->insertLog(
@@ -953,8 +959,8 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Validate Authentication conditions or throw an exception.
      *
-     * @param array<string,mixed> $conditions
-     * @param string $attributePath
+     * @param array $conditions
+     * @param AuthenticationConditions $authenticationConditions
      */
     private function validateAuthenticationConditions(
         array $conditions,
@@ -991,6 +997,14 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         //@TODO: Remove this polyfill when php 8.1 is supported
         if (!function_exists("array_is_list")) {
+            /**
+             * Polyfill for array_is_list
+             *
+             * https://www.php.net/manual/en/function.array-is-list.php
+             *
+             * @param mixed[] $array
+             * @return bool
+             */
             function array_is_list(array $array): bool
             {
                 $i = 0;
