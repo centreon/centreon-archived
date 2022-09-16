@@ -53,9 +53,14 @@ class DowntimeController extends AbstractController
     public const SERIALIZER_GROUPS_HOST = ['downtime_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['downtime_service'];
 
-    private const VALIDATION_SCHEME_FOR_A_DOWNTIME = 'config/json_validator/latest/Centreon/Downtime/Downtime.json';
+    private const VALIDATION_SCHEME_FOR_A_DOWNTIME =
+        __DIR__ . '/../../../../config/json_validator/latest/Centreon/Downtime/Downtime.json';
+
     private const VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES =
-        'config/json_validator/latest/Centreon/Downtime/Downtimes.json';
+        __DIR__ . '/../../../../config/json_validator/latest/Centreon/Downtime/Downtimes.json';
+
+    private const DOWNTIME_ON_RESOURCES_PAYLOAD_VALIDATION_FILE =
+        __DIR__ . '/../../../../config/json_validator/latest/Centreon/Downtime/DowntimeResources.json';
 
     /**
      * @var DowntimeServiceInterface
@@ -104,7 +109,7 @@ class DowntimeController extends AbstractController
         /*
         * Validate the content of the request against the JSON schema validator
         */
-        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
+        $this->validateDataSent($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
         /**
          * @var Downtime[] $downtimes
          */
@@ -155,7 +160,7 @@ class DowntimeController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
+        $this->validateDataSent($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
 
         $this->monitoringService->filterByContact($contact);
         $this->downtimeService->filterByContact($contact);
@@ -171,10 +176,14 @@ class DowntimeController extends AbstractController
 
         foreach ($downtimes as $downtime) {
             try {
-                $service = $this->monitoringService->findOneService(
-                    $downtime->getParentResourceId(),
-                    $downtime->getResourceId()
-                );
+                $serviceId = $downtime->getResourceId();
+                $hostId = $downtime->getParentResourceId();
+
+                if ($hostId === null) {
+                    throw new \InvalidArgumentException('Parent resource Id can not be null');
+                }
+                $service = $this->monitoringService->findOneService($hostId, $serviceId);
+
                 if ($service === null) {
                     throw new EntityNotFoundException(
                         sprintf(
@@ -185,7 +194,7 @@ class DowntimeController extends AbstractController
                     );
                 }
 
-                $host = $this->monitoringService->findOneHost($downtime->getParentResourceId());
+                $host = $this->monitoringService->findOneHost($hostId);
                 $service->setHost($host);
 
                 $this->downtimeService->addServiceDowntime($downtime, $service);
@@ -221,7 +230,7 @@ class DowntimeController extends AbstractController
         /*
         * Validate the content of the request against the JSON schema validator
         */
-        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
+        $this->validateDataSent($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
 
         /**
          * @var Downtime $downtime
@@ -274,7 +283,7 @@ class DowntimeController extends AbstractController
         /*
         * Validate the content of the request against the JSON schema validator
         */
-        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
+        $this->validateDataSent($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
 
         /**
          * @var Downtime $downtime
@@ -320,7 +329,7 @@ class DowntimeController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
+        $this->validateDataSent($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
 
         /**
          * @var Downtime $downtime
@@ -339,9 +348,16 @@ class DowntimeController extends AbstractController
             );
         }
 
-        $host = $this->monitoringService->findOneHost($service->getHost()->getId());
+        $hostId = $service->getHost()?->getId();
+        if ($hostId === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host meta for meta %d not found'), $metaId)
+            );
+        }
 
-        if (is_null($host)) {
+        $host = $this->monitoringService->findOneHost($hostId);
+
+        if ($host === null) {
             throw new EntityNotFoundException(
                 sprintf(_('Host meta for meta %d not found'), $metaId)
             );
@@ -631,14 +647,12 @@ class DowntimeController extends AbstractController
     /**
      * Entry point to bulk set downtime for resources (hosts and services)
      * @param Request $request
-     * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
      * @return View
      * @throws \Exception
      */
     public function massDowntimeResources(
         Request $request,
-        EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
@@ -649,76 +663,31 @@ class DowntimeController extends AbstractController
         $contact = $this->getUser();
 
         /**
-         * @var DowntimeRequest $dtRequest
+         * Validate POST data for downtime on resources
          */
-        $dtRequest = $serializer->deserialize(
-            (string)$request->getContent(),
+        $this->validateDataSent($request, self::DOWNTIME_ON_RESOURCES_PAYLOAD_VALIDATION_FILE);
+
+        /**
+         * @var DowntimeRequest $downtimeRequest
+         */
+        $downtimeRequest = $serializer->deserialize(
+            (string) $request->getContent(),
             DowntimeRequest::class,
             'json'
         );
 
         $this->downtimeService->filterByContact($contact);
 
-        //validate input
-        $errorList = new ConstraintViolationList();
+        $downtime = $downtimeRequest->getDowntime();
 
-        //validate resources
-        $resources = $dtRequest->getResources();
-
-        foreach ($resources as $resource) {
-            switch ($resource->getType()) {
-                case ResourceEntity::TYPE_HOST:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
-                    ));
-                    break;
-                case ResourceEntity::TYPE_SERVICE:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
-                    ));
-                    break;
-                case ResourceEntity::TYPE_META:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
-                    ));
-                    break;
-                default:
-                    throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
-            }
-        }
-
-        // validate downtime
-        $downtime = $dtRequest->getDowntime();
-        $errorList->addAll(
-            $entityValidator->validate(
-                $downtime,
-                null,
-                Downtime::VALIDATION_GROUP_DT_RESOURCE
-            )
-        );
-
-        if ($errorList->count() > 0) {
-            throw new ValidationFailedException($errorList);
-        }
-
-        foreach ($resources as $resource) {
+        foreach ($downtimeRequest->getResources() as $resource) {
             //start applying downtime process
             try {
                 if ($this->hasDtRightsForResource($contact, $resource)) {
                     if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
                         $downtime->setWithServices(false);
                     }
-
-                    $this->downtimeService->addResourceDowntime(
-                        $resource,
-                        $downtime
-                    );
+                    $this->downtimeService->addResourceDowntime($resource, $downtime);
                 }
             } catch (\Exception $e) {
                 throw $e;
@@ -746,40 +715,5 @@ class DowntimeController extends AbstractController
         }
 
         return $hasRights;
-    }
-
-    /**
-     * This function will ensure that the POST data is valid regarding validation constraints defined.
-     *
-     * @param Request $request
-     * @param string $jsonValidatorFile
-     * @throws \InvalidArgumentException
-     */
-    private function validateOrFail(Request $request, string $jsonValidatorFile): void
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
-        }
-        $centreonPath = $this->getParameter('centreon_path');
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . $centreonPath . $jsonValidatorFile;
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException($message);
-        }
     }
 }

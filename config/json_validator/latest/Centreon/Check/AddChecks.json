@@ -3,6 +3,7 @@
     "title": "Schedule checks on resources",
     "type": "object",
     "required": ["resources"],
+    "additionalProperties": false,
     "properties": {
         "resources": {
             "type": "array",
@@ -13,14 +14,10 @@
                     "id",
                     "parent"
                 ],
+                "additionalProperties": false,
                 "properties": {
                     "type": {
-                        "type": "string",
-                        "enum": [
-                            "service",
-                            "host",
-                            "metaservice"
-                        ]
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer"
@@ -30,6 +27,8 @@
                             "object",
                             "null"
                         ],
+                        "additionalProperties": false,
+                        "required": ["id"],
                         "properties": {
                             "id": {
                                 "type": "integer"

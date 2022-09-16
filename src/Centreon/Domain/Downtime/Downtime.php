@@ -301,7 +301,7 @@ class Downtime implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getParentResourceId(): ?int
     {
