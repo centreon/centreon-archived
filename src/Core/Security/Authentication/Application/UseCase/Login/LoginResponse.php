@@ -52,6 +52,9 @@ final class LoginResponse implements ResponseStatusInterface
         return $this->exception;
     }
 
+    /**
+     * @return string
+     */
     public function getMessage(): string
     {
         return $this->redirectUri;
