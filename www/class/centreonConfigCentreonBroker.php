@@ -790,13 +790,15 @@ class CentreonConfigCentreonBroker
         /*
          * Get the ID
          */
-        $query = "SELECT config_id FROM cfg_centreonbroker WHERE config_name = '" . $values['name'] . "'";
+        $query = "SELECT config_id FROM cfg_centreonbroker WHERE config_name = :config_name";
         try {
-            $res = $this->db->query($query);
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
+            $statement->execute();
         } catch (\PDOException $e) {
             return false;
         }
-        $row = $res->fetch();
+        $row = $statement->fetch(\PDO::FETCH_ASSOC);
         $id = $row['config_id'];
 
         /*
