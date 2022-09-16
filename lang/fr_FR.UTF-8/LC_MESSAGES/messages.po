@@ -17037,3 +17037,9 @@ msgstr "Supprimer des collecteurs"
 
 msgid "Deploy configuration"
 msgstr "Déployer la configuration"
+
+msgid "Invalid endpoint type specified"
+msgstr "Type d'endpoint spécifié invalide"
+
+msgid "Invalid endpoint URL specified"
+msgstr "URL d'endpoint spécifié invalide"

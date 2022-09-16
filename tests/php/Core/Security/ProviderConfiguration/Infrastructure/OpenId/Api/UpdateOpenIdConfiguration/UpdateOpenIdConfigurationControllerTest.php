@@ -126,7 +126,10 @@ it('should execute the usecase properly', function () {
             "authentication_conditions" => [
                 "is_enabled" => false,
                 "attribute_path" => "",
-                "endpoint" => "",
+                "endpoint" => [
+                    "type" => "introspection_endpoint",
+                    "custom_endpoint" => null
+                ],
                 "authorized_values" => [],
                 "trusted_client_addresses" => [],
                 "blacklist_client_addresses" => []

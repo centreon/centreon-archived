@@ -131,15 +131,18 @@ class UpdateOpenIdConfigurationRequest
     public array $authorizationRules = [];
 
     /**
-     * @var array<string,bool|string|string[]>
+     * @var array<string, array<int|string, string|null>|string|bool>
      */
     public array $authenticationConditions = [
         "is_enabled" => false,
         "attribute_path" => "",
-        "endpoint" => "",
         "authorized_values" => [],
         "trusted_client_addresses" => [],
-        "blacklist_client_addresses" => []
+        "blacklist_client_addresses" => [],
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
     ];
 
     /**
