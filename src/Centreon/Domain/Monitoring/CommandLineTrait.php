@@ -43,6 +43,9 @@ trait CommandLineTrait
         array $macros,
         string $replacementValue
     ): string {
+        // if the command line contains $$ after a macro (so $$$), delete one of them to match with
+        // the command executed by centreon-engine
+        $configurationCommand = str_replace('$$$', '$$', $configurationCommand);
         $macroPasswordNames = [];
         foreach ($macros as $macro) {
             if ($macro->isPassword()) {

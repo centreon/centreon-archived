@@ -4,11 +4,28 @@ centreon_application_monitoring_gettimelinebyhost:
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getHostTimeline'
     condition: "request.attributes.get('version') >= 21.10"
 
+centreon_application_monitoring_download_timeline_by_host:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/timeline/download
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::downloadHostTimeline'
+    condition: "request.attributes.get('version') >= 22.10"
+
 centreon_application_monitoring_gettimelinebyhostandservice:
     methods: GET
     path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getServiceTimeline'
     condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_download_timeline_by_host_and_service:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline/download
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::downloadServiceTimeline'
+    condition: "request.attributes.get('version') >= 22.10"
 
 centreon_application_monitoring_gettimelinebymetaservices:
     methods: GET
@@ -16,8 +33,10 @@ centreon_application_monitoring_gettimelinebymetaservices:
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getMetaServiceTimeline'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_gettimelinebyhostandservice_download:
+centreon_application_monitoring_download_timeline_by_metaservice:
     methods: GET
-    path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline/download
-    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::downloadServiceTimeline'
+    path: /monitoring/metaservice/{metaId}/timeline/download
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::downloadMetaserviceTimeline'
     condition: "request.attributes.get('version') >= 22.10"
