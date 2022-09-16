@@ -951,7 +951,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
-        $this->logAuthenticationDebug('Authentication conditions: ', $content);
+        $this->logAuthenticationInfo('Authentication conditions', $content);
 
         return $content;
     }
@@ -967,6 +967,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         AuthenticationConditions $authenticationConditions
     ): void {
         $authenticationAttributePath = explode(".", $authenticationConditions->getAttributePath());
+        $this->logAuthenticationInfo("Configured Attribute path found", $authenticationAttributePath);
+        $this->logAuthenticationInfo("Configured Authorized values", $authenticationConditions->getAuthorizedValues());
         foreach($authenticationAttributePath as $attribute) {
             $providerAuthenticationConditions = [];
             if (array_key_exists($attribute, $conditions)) {
@@ -1018,9 +1020,11 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
         if (array_is_list($providerAuthenticationConditions) === false) {
             $errorMessage = "Invalid Authentication conditions format, array of string expected";
-            $this->error($errorMessage, [
+            $this->error($errorMessage,
+                [
                 "authentication_condition_from_provider" => $providerAuthenticationConditions
-            ]);
+                ]
+            );
             $this->logExceptionInLoginLogFile(
                 $errorMessage,
                 AuthenticationConditionsException::invalidAuthenticationConditions()
@@ -1031,10 +1035,15 @@ class OpenIdProvider implements OpenIdProviderInterface
         $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
         if (empty ($conditionMatches)) {
             $errorMessage = "Configured attribute path not found in conditions endpoint";
-            $this->error($errorMessage, [
-                "configured_authorized_values" => $configuredAuthorizedValues
-            ]);
-            $this->logExceptionInLoginLogFile($errorMessage, AuthenticationConditionsException::conditionsNotFound());
+            $this->error("Configured attribute path not found in conditions endpoint",
+                [
+                    "configured_authorized_values" => $configuredAuthorizedValues
+                ]
+            );
+            $this->logExceptionInLoginLogFile(
+                "Configured attribute path not found in conditions endpoint: %s, message: %s",
+                AuthenticationConditionsException::conditionsNotFound()
+            );
             throw AuthenticationConditionsException::conditionsNotFound();
         }
         $this->info("Conditions found", ["conditions" => $conditionMatches]);
