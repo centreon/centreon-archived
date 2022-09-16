@@ -82,7 +82,12 @@ $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['d
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
 $sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
-$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => 'host_name']]);
+$sort_type = filter_input(
+    INPUT_GET,
+    'sort_type',
+    FILTER_SANITIZE_SPECIAL_CHARS,
+    ['options' => ['default' => 'host_name']]
+);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $kernel = \App\Kernel::createForWeb();
