@@ -11,7 +11,7 @@ import { labelCentreonIsLoading } from './translatedLabels';
 const useStyles = makeStyles((theme) => ({
   loader: {
     alignItems: 'center',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
