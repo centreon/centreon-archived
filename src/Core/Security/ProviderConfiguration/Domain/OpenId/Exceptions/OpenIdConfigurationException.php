@@ -112,7 +112,7 @@ class OpenIdConfigurationException extends \Exception
         return new self(_(sprintf(
             'The authentication conditions endpoint should match your introspection or user information endpoints:'
                 . '%s given',
-            git $endpoint
+            $endpoint
         )));
     }
 }
