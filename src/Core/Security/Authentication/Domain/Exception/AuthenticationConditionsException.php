@@ -25,11 +25,21 @@ namespace Core\Security\Authentication\Domain\Exception;
 
 class AuthenticationConditionsException extends \Exception
 {
+    /**
+     * Exceptions thrown when authentication conditions are invalid.
+     *
+     * @return self
+     */
     public static function invalidAuthenticationConditions(): self
     {
         return new self(_("Invalid Provider authentication conditions"));
     }
 
+    /**
+     * Exceptions thrown when authentication are not found.
+     *
+     * @return self
+     */
     public static function conditionsNotFound(): self
     {
         return new self(_("Authorized conditions not found in provider conditions"));

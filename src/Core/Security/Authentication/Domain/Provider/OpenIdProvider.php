@@ -619,6 +619,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @param string $clientIp
      * @throws SSOAuthenticationException
+     * @throws AuthenticationConditionsException
      */
     private function verifyThatClientIsAllowedToConnectOrFail(string $clientIp): void
     {
@@ -910,6 +911,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @param string $customEndpoint
      * @return array<string,mixed>
+     * @throws SSOAuthenticationException
      */
     private function sendRequestForCustomAuthenticationConditionEndpoint(string $customEndpoint): array
     {
@@ -961,6 +963,7 @@ class OpenIdProvider implements OpenIdProviderInterface
      *
      * @param array<string,mixed> $conditions
      * @param AuthenticationConditions $authenticationConditions
+     * @throws AuthenticationConditionsException
      */
     private function validateAuthenticationConditions(
         array $conditions,
