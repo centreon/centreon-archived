@@ -890,7 +890,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         AuthenticationConditions $authenticationConditions
     ): array {
         $conditionsEndpoint = $authenticationConditions->getEndpoint();
-        switch($conditionsEndpoint->getType()) {
+        switch ($conditionsEndpoint->getType()) {
             case Endpoint::INTROSPECTION:
                 $conditions = $this->sendRequestForIntrospectionEndpoint();
                 break;
@@ -959,7 +959,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Validate Authentication conditions or throw an exception.
      *
-     * @param array $conditions
+     * @param array<string,mixed> $conditions
      * @param AuthenticationConditions $authenticationConditions
      */
     private function validateAuthenticationConditions(
@@ -969,7 +969,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $authenticationAttributePath = explode(".", $authenticationConditions->getAttributePath());
         $this->logAuthenticationInfo("Configured Attribute path found", $authenticationAttributePath);
         $this->logAuthenticationInfo("Configured Authorized values", $authenticationConditions->getAuthorizedValues());
-        foreach($authenticationAttributePath as $attribute) {
+        foreach ($authenticationAttributePath as $attribute) {
             $providerAuthenticationConditions = [];
             if (array_key_exists($attribute, $conditions)) {
                 $providerAuthenticationConditions = $conditions[$attribute];
@@ -995,8 +995,10 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @param string[] $configuredAuthorizedValues
      * @throws AuthenticationConditionsException
      */
-    private function validateAttributeOrFail(array $providerAuthenticationConditions, array $configuredAuthorizedValues): void
-    {
+    private function validateAttributeOrFail(
+        array $providerAuthenticationConditions,
+        array $configuredAuthorizedValues
+    ): void {
         //@TODO: Remove this polyfill when php 8.1 is supported
         if (!function_exists("array_is_list")) {
             /**
@@ -1020,7 +1022,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
         if (array_is_list($providerAuthenticationConditions) === false) {
             $errorMessage = "Invalid Authentication conditions format, array of string expected";
-            $this->error($errorMessage,
+            $this->error(
+                $errorMessage,
                 [
                 "authentication_condition_from_provider" => $providerAuthenticationConditions
                 ]
@@ -1033,9 +1036,10 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
 
         $conditionMatches = array_intersect($providerAuthenticationConditions, $configuredAuthorizedValues);
-        if (empty ($conditionMatches)) {
+        if (empty($conditionMatches)) {
             $errorMessage = "Configured attribute path not found in conditions endpoint";
-            $this->error("Configured attribute path not found in conditions endpoint",
+            $this->error(
+                "Configured attribute path not found in conditions endpoint",
                 [
                     "configured_authorized_values" => $configuredAuthorizedValues
                 ]

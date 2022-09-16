@@ -62,7 +62,7 @@ class LoginController extends AbstractController
 
         $useCase($request, $presenter);
 
-        switch(true) {
+        switch (true) {
             case is_a($presenter->getResponseStatus(), PasswordExpiredResponse::class)
                 || is_a($presenter->getResponseStatus(), UnauthorizedResponse::class):
                 return View::createRedirect(
@@ -72,7 +72,7 @@ class LoginController extends AbstractController
                 return View::createRedirect(
                     $this->getBaseUrl() . '/authentication-denied'
                 );
-            case is_a($presenter->getResponseStatus(), LoginResponse::class):
+            default:
                 /**
                  * @var LoginResponse
                  */
