@@ -34,12 +34,12 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1500,
   },
   mainContent: {
-    backgroundColor: theme.palette.background.paper,
     height: `calc(100vh - ${theme.spacing(headerHeight)})`,
     width: '100%',
   },
   wrapper: {
     alignItems: 'stretch',
+    backgroundColor: theme.palette.background.default,
     display: 'flex',
     height: '100%',
     overflow: 'hidden',
