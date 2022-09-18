@@ -19,31 +19,48 @@ export interface Relations {
 }
 
 export interface RelationsToAPI {
-  access_group_id: number;
+  access_group: NamedEntity;
   claim_value: string;
 }
 
 export interface EndpointToAPI {
-  custom_endpoint: string | null;
+  custom_endpoint: string;
   type: string;
 }
 
 export interface Endpoint {
-  customEndpoint: string | null;
+  customEndpoint: string;
   type: string;
 }
 
 export interface RolesMapping {
-  apply_only_first_role: boolean;
-  attribute_path: string;
-  relations: Array<AuthorizationRelationToAPI> ;
-  endpoint: EndpointToAPI;
-  is_enabled: boolean;
+  rolesApplyOnlyFirstRole: boolean;
+  rolesAttributePath: string;
+  rolesEndpoint: Endpoint;
+  rolesIsEnabled: boolean;
+  rolesRelations: Array<Relations>;
 }
 
 export interface AuthConditions {
+  blacklistClientAddresses: Array<string>;
+  conditionsAttributePath: string;
+  conditionsAuthorizedValues: Array<string>;
+  enableConditionsOnIdentityProvider: boolean;
+  endpointTheConditionsAttributePathComeFrom: Endpoint;
+  trustedClientAddresses: Array<string>;
+}
+
+export interface RolesMappingToApi {
+  apply_only_first_role: boolean;
   attribute_path: string;
-  authorized_values: Array<string> ;
+  endpoint: EndpointToAPI;
+  is_enabled: boolean;
+  relations: Array<RelationsToAPI>;
+}
+
+export interface AuthConditionsToApi {
+  attribute_path: string;
+  authorized_values: Array<string>;
   blacklist_client_addresses: Array<string>;
   endpoint: EndpointToAPI;
   is_enabled: boolean;
@@ -52,40 +69,31 @@ export interface AuthConditions {
 
 export interface OpenidConfiguration {
   authenticationType: string | null;
+  authentificationConditions: AuthConditions;
   authorizationEndpoint: string | null;
   authorizationRules: Array<AuthorizationRule>;
   autoImport: boolean;
   baseUrl: string | null;
-  blacklistClientAddresses: Array<string>;
   clientId: string | null;
   clientSecret: string | null;
-  conditionsAttributePath: string;
-  conditionsAuthorizedValues: Array<string> | null;
   connectionScopes: Array<string>;
   contactGroup: NamedEntity | null;
   contactTemplate: NamedEntity | null;
   emailBindAttribute?: string | null;
-  enableConditionsOnIdentityProvider: boolean | null;
   endSessionEndpoint?: string | null;
-  endpointTheConditionsAttributePathComeFrom: Endpoint;
   fullnameBindAttribute?: string | null;
   introspectionTokenEndpoint?: string | null;
   isActive: boolean;
   isForced: boolean;
   loginClaim?: string | null;
-  rolesApplyOnlyFirstRole: boolean | null;
-  rolesAttributePath: string;
-  rolesEndpoint: Endpoint;
-  rolesIsEnabled: boolean | null;
-  rolesRelations: Array<AuthorizationRule>;
+  rolesMapping: RolesMapping;
   tokenEndpoint: string | null;
-  trustedClientAddresses: Array<string>;
   userinfoEndpoint?: string | null;
   verifyPeer: boolean;
 }
 
 export interface OpenidConfigurationToAPI {
-  authentication_conditions: AuthConditions;
+  authentication_conditions: AuthConditionsToApi;
   authentication_type: string | null;
   authorization_endpoint: string | null;
   authorization_rules: Array<AuthorizationRelationToAPI>;
@@ -103,7 +111,7 @@ export interface OpenidConfigurationToAPI {
   is_active: boolean;
   is_forced: boolean;
   login_claim?: string | null;
-  roles_mapping: RolesMapping; 
+  roles_mapping: RolesMappingToApi;
   token_endpoint: string | null;
   userinfo_endpoint?: string | null;
   verify_peer: boolean;
