@@ -28,14 +28,12 @@ const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
 
 interface UseAppState {
-  dataLoaded: boolean;
   hasMinArgument: () => boolean;
 }
 
 const useApp = (): UseAppState => {
   const { t } = useTranslation();
 
-  const [dataLoaded, setDataLoaded] = useState(false);
   const keepAliveIntervalRef = useRef<NodeJS.Timer | null>(null);
   usePendo();
 
@@ -113,8 +111,6 @@ const useApp = (): UseAppState => {
           with_services:
             retrievedParameters.monitoring_default_acknowledgement_with_services,
         });
-
-        setDataLoaded(true);
       })
       .catch((error) => {
         if (pathEq(['response', 'status'], 401)(error)) {
@@ -149,7 +145,6 @@ const useApp = (): UseAppState => {
   }, []);
 
   return {
-    dataLoaded,
     hasMinArgument,
   };
 };

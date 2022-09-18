@@ -66,12 +66,8 @@ const useMain = (): void => {
   }, []);
 
   useEffect((): void => {
-    if (isNil(platformInstallationStatus)) {
-      return;
-    }
-
     loadUser();
-  }, [platformInstallationStatus]);
+  }, []);
 
   useEffect((): void => {
     if (not(areUserParametersLoaded)) {
