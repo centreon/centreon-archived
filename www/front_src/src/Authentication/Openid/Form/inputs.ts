@@ -153,15 +153,7 @@ export const inputs: Array<InputProps> = [
       ],
     },
     type: InputType.Radio,
-  },
-  {
-    fieldName: 'defineYourEndpointForCondition',
-
-    group: labelAuthentificationConditions,
-
-    label: labelDefineYourEndpoint,
-    // required: true,
-    type: InputType.Text,
+    extraTextLabel : labelDefineYourEndpoint
   },
   {
     fieldName: 'conditionsAuthorizedValues',
@@ -399,14 +391,7 @@ export const inputs: Array<InputProps> = [
       ],
     },
     type: InputType.Radio,
-  },
-  {
-    fieldName: 'defineYourEndpointRoles',
-
-    group: labelRolesMapping,
-
-    label: labelDefineYourEndpoint,
-    type: InputType.Text,
+    extraTextLabel : labelDefineYourEndpoint
   },
   {
     fieldName: 'rolesRelations',
