@@ -28,6 +28,7 @@ import {
   labelAutoImportUsers,
   labelAuthentificationConditions,
   labelIdentityProvider,
+  labelClientAddresses
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
@@ -66,6 +67,10 @@ export const groups: Array<Group> = [
   },
   {
     name: labelAuthentificationConditions,
+    order: 3,
+  },
+  {
+    name: labelClientAddresses,
     order: 3,
   },
   {
