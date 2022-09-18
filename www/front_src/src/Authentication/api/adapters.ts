@@ -9,6 +9,14 @@ import {
   AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
+  AuthConditions,
+  AuthConditionsToApi,
+  RolesMappingToApi,
+  RolesMapping,
+  Relations,
+  RelationsToAPI,
+  EndpointToAPI,
+  Endpoint,
 } from '../Openid/models';
 import {
   WebSSOConfiguration,
@@ -81,11 +89,62 @@ const adaptAuthorizationRelationsToAPI = (
     authorizationRules,
   );
 
+const adaptEndpoint = ({ customEndpoint, type }: Endpoint): EndpointToAPI => {
+  return {
+    custom_endpoint: customEndpoint,
+    type,
+  };
+};
+
+const adaptAuthentificationConditions = ({
+  trustedClientAddresses,
+  blacklistClientAddresses,
+  conditionsAttributePath,
+  endpointTheConditionsAttributePathComeFrom,
+  enableConditionsOnIdentityProvider,
+  conditionsAuthorizedValues,
+}: AuthConditions): AuthConditionsToApi => {
+  return {
+    attribute_path: conditionsAttributePath,
+    authorized_values: conditionsAuthorizedValues,
+    blacklist_client_addresses: blacklistClientAddresses,
+    endpoint: adaptEndpoint(endpointTheConditionsAttributePathComeFrom),
+    is_enabled: enableConditionsOnIdentityProvider,
+    trusted_client_addresses: trustedClientAddresses,
+  };
+};
+
+const adaptRelationsToAPI = (
+  relations: Array<Relations>,
+): Array<RelationsToAPI> =>
+  map(
+    ({ claimValue, accessGroup }: AuthorizationRule) => ({
+      access_group: accessGroup,
+      claim_value: claimValue,
+    }),
+    relations,
+  );
+
+const adaptRolesMapping = ({
+  rolesApplyOnlyFirstRole,
+  rolesAttributePath,
+  rolesEndpoint,
+  rolesIsEnabled,
+  rolesRelations,
+}: RolesMapping): RolesMappingToApi => {
+  return {
+    apply_only_first_role: rolesApplyOnlyFirstRole,
+    attribute_path: rolesAttributePath,
+    endpoint: adaptEndpoint(rolesEndpoint),
+    is_enabled: rolesIsEnabled,
+    relations: adaptRelationsToAPI(rolesRelations),
+  };
+};
+
 export const adaptOpenidConfigurationToAPI = ({
   authenticationType,
   authorizationEndpoint,
   baseUrl,
-  blacklistClientAddresses,
   clientId,
   clientSecret,
   connectionScopes,
@@ -95,7 +154,6 @@ export const adaptOpenidConfigurationToAPI = ({
   isForced,
   loginClaim,
   tokenEndpoint,
-  trustedClientAddresses,
   userinfoEndpoint,
   verifyPeer,
   autoImport,
@@ -103,17 +161,18 @@ export const adaptOpenidConfigurationToAPI = ({
   emailBindAttribute,
   fullnameBindAttribute,
   contactGroup,
-  claimName,
   authorizationRules,
+  authentificationConditions,
+  rolesMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
+  authentication_conditions:
+    adaptAuthentificationConditions(authentificationConditions) || [],
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
   authorization_rules:
     adaptAuthorizationRelationsToAPI(authorizationRules) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
-  blacklist_client_addresses: blacklistClientAddresses,
-  claim_name: claimName || null,
   client_id: clientId || null,
   client_secret: clientSecret || null,
   connection_scopes: connectionScopes,
@@ -126,8 +185,8 @@ export const adaptOpenidConfigurationToAPI = ({
   is_active: isActive,
   is_forced: isForced,
   login_claim: loginClaim || null,
+  roles_mapping: adaptRolesMapping(rolesMapping) || [],
   token_endpoint: tokenEndpoint || null,
-  trusted_client_addresses: trustedClientAddresses,
   userinfo_endpoint: userinfoEndpoint || null,
   verify_peer: verifyPeer,
 });
