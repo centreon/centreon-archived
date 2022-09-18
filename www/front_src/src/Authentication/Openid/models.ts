@@ -34,19 +34,19 @@ export interface Endpoint {
 }
 
 export interface RolesMapping {
-  apply_only_first_role: boolean | null;
+  apply_only_first_role: boolean;
   attribute_path: string;
-  authorization_rules: Array<AuthorizationRelationToAPI> | null;
+  relations: Array<AuthorizationRelationToAPI> ;
   endpoint: EndpointToAPI;
-  is_enabled: boolean | null;
+  is_enabled: boolean;
 }
 
 export interface AuthConditions {
   attribute_path: string;
-  authorized_values: Array<string> | null;
+  authorized_values: Array<string> ;
   blacklist_client_addresses: Array<string>;
   endpoint: EndpointToAPI;
-  is_enabled: boolean | null;
+  is_enabled: boolean;
   trusted_client_addresses: Array<string>;
 }
 
@@ -103,7 +103,7 @@ export interface OpenidConfigurationToAPI {
   is_active: boolean;
   is_forced: boolean;
   login_claim?: string | null;
-  roles_mapping: RolesMapping; // pour l'instant
+  roles_mapping: RolesMapping; 
   token_endpoint: string | null;
   userinfo_endpoint?: string | null;
   verify_peer: boolean;
