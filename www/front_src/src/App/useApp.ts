@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 import { useUpdateAtom } from 'jotai/utils';
 import { equals, not, pathEq } from 'ramda';
