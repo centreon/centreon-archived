@@ -472,6 +472,7 @@ function updateLdapConfigData($gopt_id = null)
 {
     global $form, $pearDB, $centreon;
 
+    $ret = array();
     $ret = $form->getSubmitValues();
 
     updateOption(

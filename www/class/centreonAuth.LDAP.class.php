@@ -33,8 +33,7 @@
  *
  */
 
-require_once __DIR__ . '/centreonAuth.class.php';
-require_once __DIR__ . '/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 
 /**
  * Class for Ldap authentication
@@ -92,6 +91,8 @@ class CentreonAuthLDAP
      */
     private function getLogFlag()
     {
+        global $pearDB;
+
         $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
         $data = $res->fetch();
         if (isset($data["value"])) {
@@ -106,39 +107,34 @@ class CentreonAuthLDAP
      */
     public function checkPassword()
     {
-        if (empty(trim($this->contactInfos['contact_ldap_dn']))) {
+        if (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '') {
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
+
+        /* Validate if user exists in this resource */
         } elseif (
-            ($userDn = $this->ldap->findUserDn($this->contactInfos['contact_alias']))
-            && $userDn !== $this->contactInfos['contact_ldap_dn']
-        ) { // validate if user exists in this resource
-            if (! $userDn) {
+            isset($this->contactInfos['contact_ldap_dn'])
+            && $this->contactInfos['contact_ldap_dn'] != ''
+            && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']
+        ) {
+            if ($this->ldap->connect()) {
                 //User resource error
-                return CentreonAuth::PASSWORD_INVALID;
+                return 0;
             } else {
                 //LDAP fallback
-                return CentreonAuth::PASSWORD_CANNOT_BE_VERIFIED;
+                return 2;
             }
         }
 
-        if (empty(trim($this->contactInfos['contact_ldap_dn']))) {
-            return CentreonAuth::PASSWORD_CANNOT_BE_VERIFIED;
+        /*
+         * LDAP BIND
+         */
+        if (!isset($this->contactInfos['contact_ldap_dn']) || trim($this->contactInfos['contact_ldap_dn']) == '') {
+            return 2;
         }
-
-        if ($this->debug) {
-            $this->CentreonLog->insertLog(
-                3,
-                'LDAP AUTH : ' . $this->contactInfos['contact_ldap_dn'] . ' :: Authentication in progress'
-            );
-        }
-
         @ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
-
-        if (empty($this->ds)) {
-            if ($this->debug) {
-                $this->CentreonLog->insertLog(3, "DS empty");
-            }
-            return CentreonAuth::PASSWORD_CANNOT_BE_VERIFIED;
+        if ($this->debug) {
+            $this->CentreonLog->insertLog(3, "Connexion = " . $this->contactInfos['contact_ldap_dn'] . " :: " .
+                                          ldap_error($this->ds));
         }
 
         /*
@@ -150,29 +146,54 @@ class CentreonAuthLDAP
          * 52 : Server is unavailable => Fallback
          * 81 : Can't contact LDAP server (php5) => Fallback
          */
-        switch (ldap_errno($this->ds)) {
-            case 0:
-                if ($this->debug) {
-                    $this->CentreonLog->insertLog(3, "LDAP AUTH : Success");
-                }
-                if (false == $this->updateUserDn()) {
-                    return CentreonAuth::PASSWORD_INVALID;
-                }
-                return CentreonAuth::PASSWORD_VALID;
-            case -1:
-            case 2: // protocol error
-            case 51: // busy
-            case 52: // unavailable
-            case 81: // server down
-                if ($this->debug) {
-                    $this->CentreonLog->insertLog(3, "LDAP AUTH : " . ldap_error($this->ds));
-                }
-                return CentreonAuth::PASSWORD_CANNOT_BE_VERIFIED;
-            default:
-                if ($this->debug) {
-                    $this->CentreonLog->insertLog(3, "LDAP AUTH : " . ldap_error($this->ds));
-                }
-                return CentreonAuth::PASSWORD_INVALID;
+        if (isset($this->ds) && $this->ds) {
+            switch (ldap_errno($this->ds)) {
+                case 0:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
+                    }
+                    if (false == $this->updateUserDn()) {
+                        return 0;
+                    }
+                    return 1;
+                    break;
+                case 2:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : Protocol Error ");
+                    }
+                    return 2;
+                    break;
+                case -1:
+                case 51:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
+                    }
+                    return -1;
+                    break;
+                case 52:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
+                    }
+                    return -1;
+                    break;
+                case 81:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Fallback to Local AUTH");
+                    }
+                    return 2;
+                    break;
+                default:
+                    if ($this->debug) {
+                        $this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
+                    }
+                    return 0;
+                    break;
+            }
+        } else {
+            if ($this->debug) {
+                $this->CentreonLog->insertLog(3, "DS empty");
+            }
+            return 0; /* 2 ?? */
         }
     }
 
@@ -239,26 +260,24 @@ class CentreonAuthLDAP
              * Searching if the user already exist in the DB and updating OR adding him
              */
             if (isset($this->contactInfos['contact_id'])) {
+                $stmt = $this->pearDB->prepare(
+                    'UPDATE contact SET
+                    contact_ldap_dn = :userDn,
+                    contact_name = :userDisplay,
+                    contact_email = :userEmail,
+                    contact_pager = :userPager,
+                    ar_id = :arId
+                    WHERE contact_id = :contactId'
+                );
                 try {
                     // checking if the LDAP synchronization on login is enabled or needed
-                    if (!$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])) {
+                    if (
+                        !$this->ldap->isSyncNeededAtLogin($this->arId, $this->contactInfos['contact_id'])
+                    ) {
                         // skipping the update
                         return true;
                     }
-
-                    $this->CentreonLog->insertLog(
-                        3,
-                        'LDAP AUTH : Updating user DN of ' . $userDisplay
-                    );
-                    $stmt = $this->pearDB->prepare(
-                        'UPDATE contact SET
-                        contact_ldap_dn = :userDn,
-                        contact_name = :userDisplay,
-                        contact_email = :userEmail,
-                        contact_pager = :userPager,
-                        ar_id = :arId
-                        WHERE contact_id = :contactId'
-                    );
+                    // Updating the user DN and extended information
                     $stmt->bindValue(':userDn', $userDn, \PDO::PARAM_STR);
                     $stmt->bindValue(':userDisplay', $userDisplay, \PDO::PARAM_STR);
                     $stmt->bindValue(':userEmail', $userEmail, \PDO::PARAM_STR);
