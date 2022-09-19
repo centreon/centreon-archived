@@ -323,6 +323,9 @@ class CentreonLDAP
         $this->setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($group), $this->groupSearchInfo['filter']);
         $result = ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
+        if ($result === false) {
+            return false;
+        }
         $entries = ldap_get_entries($this->ds, $result);
         restore_error_handler();
         if ($entries['count'] === 0) {
