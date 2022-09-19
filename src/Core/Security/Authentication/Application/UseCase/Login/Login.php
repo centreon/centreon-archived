@@ -37,6 +37,7 @@ use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInter
 use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Authentication\Domain\Exception\AclConditionsException;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
@@ -124,7 +125,14 @@ final class Login
         } catch (AuthenticationException $e) {
             $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
             throw $e;
+        } catch (AclConditionsException $e) {
+            $presenter->setResponseStatus(new ErrorAclConditionsResponse($e->getMessage()));
+            return;
         }
+
+        $presenter->setResponseStatus(
+            new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
+        );
 
         $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
     }

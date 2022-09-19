@@ -33,7 +33,7 @@ class Endpoint
     /**
      * @var string[]
      */
-    private static array $allowedTypes = [
+    private array $allowedTypes = [
         self::INTROSPECTION,
         self::USER_INFORMATION,
         self::CUSTOM
@@ -88,7 +88,7 @@ class Endpoint
      */
     private function guardType(): void
     {
-        if (!in_array($this->type, self::$allowedTypes)) {
+        if (!in_array($this->type, $this->allowedTypes)) {
             throw InvalidEndpointException::invalidType();
         }
     }

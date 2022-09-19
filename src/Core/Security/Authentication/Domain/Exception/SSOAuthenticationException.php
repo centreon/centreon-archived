@@ -177,4 +177,12 @@ class SSOAuthenticationException extends \Exception
     {
         return new self(_("An error occured while decoding Identity Provider ID Token"));
     }
+
+    /**
+     * @return SSOAuthenticationException
+     */
+    public static function requestForCustomACLConditionsEndpointFail(): self
+    {
+        return new self(_('Request for ACL conditions custom endpoint has failed'));
+    }
 }

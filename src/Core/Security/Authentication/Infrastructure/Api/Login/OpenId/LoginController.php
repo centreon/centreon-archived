@@ -24,9 +24,14 @@ declare(strict_types=1);
 namespace Core\Security\Authentication\Infrastructure\Api\Login\OpenId;
 
 use Centreon\Application\Controller\AbstractController;
+use Core\Application\Common\UseCase\ErrorAuthenticationConditionsResponse;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Security\Authentication\Application\UseCase\Login\ErrorAclConditionsResponse;
 use Core\Security\Authentication\Application\UseCase\Login\Login;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
+use Core\Security\Authentication\Application\UseCase\Login\LoginResponse;
+use Core\Security\Authentication\Application\UseCase\Login\PasswordExpiredResponse;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
@@ -60,17 +65,23 @@ class LoginController extends AbstractController
 
         $useCase($request, $presenter);
 
-        $response = $presenter->getPresentedData();
-        if ($response->getException() !== null) {
-            return View::createRedirect(
-                $this->getBaseUrl() . '/login?authenticationError=' . $response->getError()->getMessage()
-            );
+        switch (true) {
+            case is_a($presenter->getResponseStatus(), PasswordExpiredResponse::class)
+                || is_a($presenter->getResponseStatus(), UnauthorizedResponse::class):
+                return View::createRedirect(
+                    $this->getBaseUrl() . '/login?authenticationError=' . $presenter->getResponseStatus()->getMessage()
+                );
+            case is_a($presenter->getResponseStatus(), ErrorAclConditionsResponse::class):
+                return View::createRedirect(
+                    $this->getBaseUrl() . '/authentication-denied'
+                );
+            default:
+                $response = $presenter->getResponseStatus();
+                return View::createRedirect(
+                    $this->getBaseUrl() . $response->getRedirectUri(),
+                    Response::HTTP_FOUND,
+                    ['Set-Cookie' => 'PHPSESSID=' . $session->getId()]
+                );
         }
-
-        return View::createRedirect(
-            $this->getBaseUrl() . $response->getRedirectUri(),
-            Response::HTTP_FOUND,
-            ['Set-Cookie' => 'PHPSESSID=' . $session->getId()]
-        );
     }
 }

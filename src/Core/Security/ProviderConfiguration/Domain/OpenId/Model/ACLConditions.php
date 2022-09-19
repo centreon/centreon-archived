@@ -43,7 +43,8 @@ class ACLConditions
         private string $attributePath,
         private Endpoint $endpoint,
         private array $relations = []
-    ) {
+    )
+    {
         $this->guard();
     }
 
@@ -85,6 +86,16 @@ class ACLConditions
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getClaimValues(): array
+    {
+        return array_map(function ($relation) {
+            return $relation->getClaimValue();
+        }, $this->relations);
     }
 
     /**

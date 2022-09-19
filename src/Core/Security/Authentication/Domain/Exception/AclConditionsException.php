@@ -21,42 +21,27 @@
 
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Application\UseCase\Login;
+namespace Core\Security\Authentication\Domain\Exception;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Exception;
-
-final class LoginResponse  implements ResponseStatusInterface
+class AclConditionsException extends \Exception
 {
     /**
-     * @param string $redirectUri
-     * @param Exception|null $exception
+     * Exceptions thrown when authentication conditions are invalid.
+     *
+     * @return self
      */
-    public function __construct(private string $redirectUri, private ?Exception $exception = null)
+    public static function invalidAclConditions(): self
     {
+        return new self(_("Invalid Provider acl conditions"));
     }
 
     /**
-     * @return string
+     * Exceptions thrown when authentication are not found.
+     *
+     * @return self
      */
-    public function getRedirectUri(): string
+    public static function conditionsNotFound(): self
     {
-        return $this->redirectUri;
-    }
-
-    /**
-     * @return Exception|null
-     */
-    public function getException(): ?Exception
-    {
-        return $this->exception;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->redirectUri;
+        return new self(_("Acl conditions not found in provider"));
     }
 }

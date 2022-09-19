@@ -30,19 +30,27 @@ use Centreon\Domain\Log\LoggerTrait;
 use CentreonUserLog;
 use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
 use Core\Domain\Configuration\User\Model\NewUser;
+use Core\Security\Authentication\Domain\Exception\AclConditionsException;
 use Core\Security\Authentication\Domain\Exception\SSOAuthenticationException;
 use Core\Security\Authentication\Domain\Model\AuthenticationTokens;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
 use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use DateInterval;
 use Exception;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Throwable;
@@ -115,7 +123,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         private ContactServiceInterface $contactService,
         private Container $dependencyInjector,
         private WriteUserRepositoryInterface $userRepository,
-    ) {
+    )
+    {
         $pearDB = $this->dependencyInjector['configuration_db'];
         $this->centreonLog = new CentreonUserLog(-1, $pearDB);
     }
@@ -258,15 +267,14 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw OpenIdConfigurationException::missingInformationEndpoint();
         }
 
-        $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
-
         $this->sendRequestForConnectionTokenOrFail($authorizationCode);
         $this->createAuthenticationTokens();
+        $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
             throw SSOAuthenticationException::tokensExpired($this->configuration->getName());
         }
         if ($customConfiguration->getIntrospectionTokenEndpoint() !== null) {
-            $this->sendRequestForIntrospectionTokenOrFail();
+            $this->getUserInformationFromIntrospectionEndpoint();
         }
 
         if (array_key_exists("id_token", $this->connectionTokenResponseContent)) {
@@ -339,8 +347,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             (new \DateTimeImmutable())->add(new DateInterval('PT' . $content ['expires_in'] . 'S'));
 
         /** @var ProviderToken $providerToken */
-        $providerToken =  $authenticationTokens->getProviderToken();
-        $this->providerToken =  new ProviderToken(
+        $providerToken = $authenticationTokens->getProviderToken();
+        $this->providerToken = new ProviderToken(
             $providerToken->getId(),
             $content['access_token'],
             $creationDate,
@@ -462,7 +470,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $providerTokenExpiration = (new \DateTimeImmutable())->add(
             new DateInterval('PT' . $expirationDelay . 'S')
         );
-        $this->providerToken =  new NewProviderToken(
+        $this->providerToken = new NewProviderToken(
             $this->connectionTokenResponseContent['access_token'],
             $creationDate,
             $providerTokenExpiration
@@ -484,9 +492,14 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get introspection token information.
+     * @return array
      * @throws SSOAuthenticationException
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
-    private function sendRequestForIntrospectionTokenOrFail(): void
+    private function sendRequestForIntrospectionEndpoint(): array
     {
         $this->info('Sending request for introspection token information');
 
@@ -537,22 +550,42 @@ class OpenIdProvider implements OpenIdProviderInterface
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
+
         $this->logAuthenticationInfo('Token Introspection Information: ', $content);
-        $this->userInformations = $content;
+
+        return $content;
     }
 
     /**
      * Send a request to get user information.
      * @throws SSOAuthenticationException
      */
-    private function sendRequestForUserInformationOrFail(): void
+    private function getUserInformationFromIntrospectionEndpoint(): void
+    {
+        $this->userInformations = $this->sendRequestForIntrospectionEndpoint();
+    }
+
+    /**
+     * Send a request to get user information.
+     * @throws SSOAuthenticationException
+     */
+    private function getUserInformationFromUserInfoEndpoint(): void
+    {
+        $this->userInformations = $this->sendRequestForUserInformationEndpoint();
+    }
+
+    /**
+     * Send a request to get user information.
+     * @throws SSOAuthenticationException
+     */
+    private function sendRequestForUserInformationEndpoint(): array
     {
         $this->info('Send Request for User Information...');
 
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
         ];
-        /** @var CustomConfiguration $customConfiguration */
+         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         $url = str_starts_with($customConfiguration->getUserInformationEndpoint(), '/')
             ? $customConfiguration->getBaseUrl() . $customConfiguration->getUserInformationEndpoint()
@@ -586,7 +619,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
         }
         $this->logAuthenticationInfo('User Information: ', $content);
-        $this->userInformations = $content;
+
+        return $content;
     }
 
     /**
@@ -621,6 +655,8 @@ class OpenIdProvider implements OpenIdProviderInterface
                 throw SSOAuthenticationException::notWhiteListedClient();
             }
         }
+
+        $this->validateAclConditions($customConfiguration);
     }
 
     /**
@@ -633,14 +669,14 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
-        $loginClaim = ! empty($customConfiguration->getLoginClaim())
+        $loginClaim = !empty($customConfiguration->getLoginClaim())
             ? $customConfiguration->getLoginClaim()
             : CustomConfiguration::DEFAULT_LOGIN_CLAIM;
         if (
             !array_key_exists($loginClaim, $this->userInformations)
             && $customConfiguration->getUserInformationEndpoint() !== null
         ) {
-            $this->sendRequestForUserInformationOrFail();
+            $this->getUserInformationFromUserInfoEndpoint();
         }
         if (!array_key_exists($loginClaim, $this->userInformations)) {
             $this->centreonLog->insertLog(
@@ -669,8 +705,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         $customConfiguration = $this->configuration->getCustomConfiguration();
         if ($customConfiguration->getAuthenticationType() === CustomConfiguration::AUTHENTICATION_BASIC) {
             $headers['Authorization'] = "Basic " . base64_encode(
-                $customConfiguration->getClientId() . ":" . $customConfiguration->getClientSecret()
-            );
+                    $customConfiguration->getClientId() . ":" . $customConfiguration->getClientSecret()
+                );
         } else {
             $data["client_id"] = $customConfiguration->getClientId();
             $data["client_secret"] = $customConfiguration->getClientSecret();
@@ -713,14 +749,14 @@ class OpenIdProvider implements OpenIdProviderInterface
         $missingAttributes = [];
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
-        if (! array_key_exists($customConfiguration->getEmailBindAttribute(), $this->userInformations)) {
+        if (!array_key_exists($customConfiguration->getEmailBindAttribute(), $this->userInformations)) {
             $missingAttributes[] = $customConfiguration->getEmailBindAttribute();
         }
-        if (! array_key_exists($customConfiguration->getUserNameBindAttribute(), $this->userInformations)) {
+        if (!array_key_exists($customConfiguration->getUserNameBindAttribute(), $this->userInformations)) {
             $missingAttributes[] = $customConfiguration->getUserNameBindAttribute();
         }
 
-        if (! empty($missingAttributes)) {
+        if (!empty($missingAttributes)) {
             $ex = SSOAuthenticationException::autoImportBindAttributeNotFound($missingAttributes);
             $this->logExceptionInLoginLogFile(
                 "Some bind attributes can't be found in user information: %s, message: %s",
@@ -823,5 +859,166 @@ class OpenIdProvider implements OpenIdProviderInterface
                 $e->getMessage()
             )
         );
+    }
+
+    /**
+     * Send Request to get conditions for conditions custom endpoint.
+     *
+     * @param string $customEndpoint
+     * @return array<string,mixed>
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws SSOAuthenticationException
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    private function sendRequestForCustomAclConditionEndpoint(string $customEndpoint): array
+    {
+        $this->info('Send Request for authentication conditions...');
+
+        $headers = [
+            'Authorization' => "Bearer " . trim($this->providerToken->getToken())
+        ];
+        /** @var CustomConfiguration $customConfiguration */
+        $customConfiguration = $this->configuration->getCustomConfiguration();
+        $url = str_starts_with($customEndpoint, '/')
+            ? $customConfiguration->getBaseUrl() . $customEndpoint
+            : $customEndpoint;
+        try {
+            $response = $this->client->request(
+                'GET',
+                $url,
+                [
+                    'headers' => $headers,
+                    'verify_peer' => $customConfiguration->verifyPeer()
+                ]
+            );
+        } catch (Exception $ex) {
+            throw SSOAuthenticationException::requestForUserInformationFail();
+        }
+
+        $statusCode = $response->getStatusCode();
+        if ($statusCode !== Response::HTTP_OK) {
+            $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            $this->logExceptionInLoginLogFile(
+                "Unable to get authentication conditions: %s, message: %s",
+                SSOAuthenticationException::requestForCustomACLConditionsEndpointFail()
+            );
+            throw SSOAuthenticationException::requestForCustomACLConditionsEndpointFail();
+        }
+        $content = json_decode($response->getContent(false), true);
+
+        if (empty($content) || array_key_exists('error', $content)) {
+            $this->logErrorInLoginLogFile('Authentication Conditions Info: ', $content);
+            $this->logErrorFromExternalProvider($content);
+            throw SSOAuthenticationException::errorFromExternalProvider($this->configuration->getName());
+        }
+        $this->logAuthenticationInfo('Authentication conditions: ', $content);
+
+        return $content;
+    }
+
+    /**
+     * Validate ACL conditions (roles mapping) or throw an exception.
+     *
+     * @param CustomConfiguration $customConfiguration
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws SSOAuthenticationException
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    private function validateAclConditions(CustomConfiguration $customConfiguration): void
+    {
+
+        $aclConditions = $customConfiguration->getACLConditions();
+
+        if (!$aclConditions->isEnabled()) {
+            return;
+        }
+
+        $conditions = $this->getAclConditionsFromProvider($customConfiguration);
+
+        $attributePath = explode(".", $aclConditions->getAttributePath());
+        foreach ($attributePath as $attribute) {
+            $providerConditions = [];
+            if (array_key_exists($attribute, $conditions)) {
+                $providerConditions = $conditions[$attribute];
+            } else {
+                break;
+            }
+        }
+
+        if ($aclConditions->onlyFirstRoleIsApplied()) {
+            $providerConditions = [$providerConditions[0]];
+        }
+
+        if (is_string($providerConditions)) {
+            $providerConditions = explode(",", $providerConditions);
+        }
+
+        $this->validateAttributeOrFail($providerConditions, $aclConditions->getClaimValues());
+    }
+
+    /**
+     * Compare the user's roles with those of the provider
+     *
+     * @param array $providerConditions
+     * @param string[] $configuredAuthorizedValues
+     * @throws Exception
+     */
+    private function validateAttributeOrFail(array $providerConditions, array $configuredAuthorizedValues): void
+    {
+        //@TODO: Remove this polyfill when php 8.1 is supported
+        if (!function_exists("array_is_list")) {
+            function array_is_list(array $array): bool
+            {
+                $i = 0;
+                foreach ($array as $k => $v) {
+                    if ($k !== $i++) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        if (array_is_list($providerConditions) === false) {
+            throw AclConditionsException::invalidAclConditions();
+        }
+
+        if (empty (array_intersect($providerConditions, $configuredAuthorizedValues))) {
+            throw AclConditionsException::conditionsNotFound();
+        }
+    }
+
+    /**
+     * Get Acl conditions from Provider.
+     *
+     * @param CustomConfiguration $customConfiguration
+     * @return array<string,mixed>
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws SSOAuthenticationException
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    private function getAclConditionsFromProvider(CustomConfiguration $customConfiguration): array
+    {
+        $aclConditions = $customConfiguration->getACLConditions();
+        $endpoint = $customConfiguration->getACLConditions()->getEndpoint();
+        switch ($aclConditions->getEndpoint()->getType()) {
+            case Endpoint::INTROSPECTION:
+                $conditions = $this->sendRequestForIntrospectionEndpoint();
+                break;
+            case Endpoint::USER_INFORMATION:
+                $conditions = $this->sendRequestForUserInformationEndpoint();
+                break;
+            default:
+                $conditions = $this->sendRequestForCustomAclConditionEndpoint($endpoint->getUrl());
+                break;
+        }
+
+        return $conditions;
     }
 }
