@@ -34,19 +34,19 @@ export interface Endpoint {
 }
 
 export interface RolesMapping {
-  rolesApplyOnlyFirstRole: boolean;
-  rolesAttributePath: string;
-  rolesEndpoint: Endpoint;
-  rolesIsEnabled: boolean;
-  rolesRelations: Array<Relations>;
+  applyOnlyFirstRole: boolean;
+  attributePath: string;
+  endpoint: Endpoint;
+  isEnabled: boolean;
+  relations: Array<Relations>;
 }
 
 export interface AuthConditions {
+  attributePath: string;
+  authorizedValues: Array<string>;
   blacklistClientAddresses: Array<string>;
-  conditionsAttributePath: string;
-  conditionsAuthorizedValues: Array<string>;
-  enableConditionsOnIdentityProvider: boolean;
-  endpointTheConditionsAttributePathComeFrom: Endpoint;
+  endpoint: Endpoint;
+  isEnabled: boolean;
   trustedClientAddresses: Array<string>;
 }
 
@@ -68,8 +68,8 @@ export interface AuthConditionsToApi {
 }
 
 export interface OpenidConfiguration {
+  authenticationConditions: AuthConditions;
   authenticationType: string | null;
-  authentificationConditions: AuthConditions;
   authorizationEndpoint: string | null;
   authorizationRules: Array<AuthorizationRule>;
   autoImport: boolean;

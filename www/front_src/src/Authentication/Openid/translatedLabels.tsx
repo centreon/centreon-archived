@@ -58,7 +58,7 @@ export const labelAndAnAccessGroup = 'and an access group:';
 export const labelEnableConditionsOnIdentityProvider =
   'Enable conditions on identity provider';
 export const labelConditionsAttributePath = 'Conditions attribute path';
-export const labelWhichendpointtheConditionsAttributePathComeFrom =
+export const labelWhichEndpointTheConditionsAttributePathComeFrom =
   'Which endpoint does the conditions attribute path come from?';
 export const labelIntrospectionToken = 'Introspection token';
 export const labelUserIformation = 'User information';

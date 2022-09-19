@@ -1,4 +1,4 @@
-import { equals, includes, isEmpty, not, prop } from 'ramda';
+import { equals, isEmpty, not, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import { InputProps, InputType } from '@centreon/ui';
@@ -35,7 +35,7 @@ import {
   labelAuthorizationKey,
   labelEnableConditionsOnIdentityProvider,
   labelConditionsAttributePath,
-  labelWhichendpointtheConditionsAttributePathComeFrom,
+  labelWhichEndpointTheConditionsAttributePathComeFrom,
   labelOther,
   labelUserIformation,
   labelIntrospectionToken,
@@ -56,7 +56,7 @@ import {
   labelActivation,
   labelAuthorizations,
   labelAutoImportUsers,
-  labelAuthentificationConditions,
+  labelAuthenticationConditions,
   labelIdentityProvider,
 } from '../../translatedLabels';
 import {
@@ -76,7 +76,7 @@ const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
 
 export const inputs: Array<InputProps> = [
   {
-    fieldName: 'isEnabled',
+    fieldName: 'isActive',
     group: labelActivation,
     label: labelEnableOpenIDConnectAuthentication,
     type: InputType.Switch,
@@ -105,7 +105,7 @@ export const inputs: Array<InputProps> = [
       options: [],
     },
     fieldName: 'trustedClientAddresses',
-    group: labelAuthentificationConditions,
+    group: labelAuthenticationConditions,
     label: labelTrustedClientAddresses,
     type: InputType.MultiAutocomplete,
   },
@@ -115,27 +115,27 @@ export const inputs: Array<InputProps> = [
       options: [],
     },
     fieldName: 'blacklistClientAddresses',
-    group: labelAuthentificationConditions,
+    group: labelAuthenticationConditions,
     label: labelBlacklistClientAddresses,
     type: InputType.MultiAutocomplete,
   },
   {
-    fieldName: 'enableConditionsOnIdentityProvider',
-    group: labelAuthentificationConditions,
+    fieldName: 'authenticationConditions.isEnabled',
+    group: labelAuthenticationConditions,
     label: labelEnableConditionsOnIdentityProvider,
     type: InputType.Switch,
   },
   {
-    fieldName: 'conditionsAttributePath',
-    group: labelAuthentificationConditions,
+    fieldName: 'authenticationConditions.attributePath',
+    group: labelAuthenticationConditions,
     label: labelConditionsAttributePath,
-    // required: true,
     type: InputType.Text,
   },
   {
-    fieldName: 'endpointTheConditionsAttributePathComeFrom',
-    group: labelAuthentificationConditions,
-    label: labelWhichendpointtheConditionsAttributePathComeFrom,
+    extraTextLabel: labelDefineYourEndpoint,
+    fieldName: 'authenticationConditions.endpoint',
+    group: labelAuthenticationConditions,
+    label: labelWhichEndpointTheConditionsAttributePathComeFrom,
     radio: {
       options: [
         {
@@ -152,13 +152,14 @@ export const inputs: Array<InputProps> = [
         },
       ],
     },
+    radioName: 'type',
+    radioTextName: 'customEndpoint',
+
     type: InputType.Radio,
-    extraTextLabel : labelDefineYourEndpoint
   },
   {
-    fieldName: 'conditionsAuthorizedValues',
+    fieldName: 'authenticationConditions.authorizedValues',
     fieldsTable: {
-      additionalFieldsToMemoize: ['contactGroup'],
       columns: [
         {
           fieldName: 'conditionValue',
@@ -167,12 +168,11 @@ export const inputs: Array<InputProps> = [
         },
       ],
       defaultRowValue: {
-        accessGroup: null,
-        claimValue: '',
+        conditionValue: '',
       },
       deleteLabel: labelDeleteRelation,
     },
-    group: labelAuthentificationConditions,
+    group: labelAuthenticationConditions,
     label: labelDefineAuthorizedConditionsValues,
     type: InputType.FieldsTable,
   },
@@ -325,7 +325,6 @@ export const inputs: Array<InputProps> = [
   {
     fieldName: 'authorizationRules',
     fieldsTable: {
-      additionalFieldsToMemoize: ['contactGroup'],
       columns: [
         {
           fieldName: 'claimValue',
@@ -353,25 +352,27 @@ export const inputs: Array<InputProps> = [
     type: InputType.FieldsTable,
   },
   {
-    fieldName: 'rolesIsEnabled',
+    fieldName: 'rolesMapping.isEnabled',
     group: labelRolesMapping,
     label: labelEnableAutoManagement,
     type: InputType.Switch,
   },
   {
-    fieldName: 'rolesApplyOnlyFirstRole',
+    fieldName: 'rolesMapping.applyOnlyFirstRole',
     group: labelRolesMapping,
     label: labelApplyOnlyFirtsRole,
     type: InputType.Switch,
   },
   {
-    fieldName: 'rolesAttributePath',
+    fieldName: 'rolesMapping.attributePath',
     group: labelRolesMapping,
     label: labelRolesAttributePath,
+
     type: InputType.Text,
   },
   {
-    fieldName: 'rolesEndpoint',
+    extraTextLabel: labelDefineYourEndpoint,
+    fieldName: 'rolesMapping.endpoint',
     group: labelRolesMapping,
     label: labelWhichendpointtheRolesAttributePathComeFrom,
     radio: {
@@ -390,16 +391,17 @@ export const inputs: Array<InputProps> = [
         },
       ],
     },
+    radioName: 'type',
+    radioTextName: 'customEndpoint',
+
     type: InputType.Radio,
-    extraTextLabel : labelDefineYourEndpoint
   },
   {
-    fieldName: 'rolesRelations',
+    fieldName: 'rolesMapping.relations',
     fieldsTable: {
-      additionalFieldsToMemoize: ['contactGroup'],
       columns: [
         {
-          fieldName: 'roleValue',
+          fieldName: 'claimValue',
           label: labelRoleValue,
           type: InputType.Text,
         },

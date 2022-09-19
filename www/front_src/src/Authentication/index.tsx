@@ -26,9 +26,9 @@ import {
   labelActivation,
   labelAuthorizations,
   labelAutoImportUsers,
-  labelAuthentificationConditions,
+  labelAuthenticationConditions,
   labelIdentityProvider,
-  labelClientAddresses
+  labelClientAddresses,
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
@@ -66,7 +66,7 @@ export const groups: Array<Group> = [
     order: 2,
   },
   {
-    name: labelAuthentificationConditions,
+    name: labelAuthenticationConditions,
     order: 3,
   },
   {

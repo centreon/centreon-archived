@@ -89,48 +89,48 @@ const relation = JsonDecoder.object<AuthorizationRule>(
 
 const authConditions = JsonDecoder.object<AuthConditions>(
   {
+    attributePath: JsonDecoder.string,
+    authorizedValues: JsonDecoder.array(
+      JsonDecoder.string,
+      'condition authorized value',
+    ),
     blacklistClientAddresses: JsonDecoder.array(
       JsonDecoder.string,
       'blacklist client addresses',
     ),
-    conditionsAttributePath: JsonDecoder.string,
-    conditionsAuthorizedValues: JsonDecoder.array(
-      JsonDecoder.string,
-      'condition authorized value',
-    ),
-    enableConditionsOnIdentityProvider: JsonDecoder.boolean,
-    endpointTheConditionsAttributePathComeFrom: endpoint,
+    endpoint,
+    isEnabled: JsonDecoder.boolean,
     trustedClientAddresses: JsonDecoder.array(
       JsonDecoder.string,
       'trusted client addresses',
     ),
   },
-  'Authentification conditions',
+  'Authentication conditions',
   {
+    attributePath: 'attribute_path',
+    authorizedValues: 'authorized_values',
     blacklistClientAddresses: 'blacklist_client_addresses',
-    conditionsAttributePath: 'attribute_path',
-    conditionsAuthorizedValues: 'authorized_values',
-    enableConditionsOnIdentityProvider: 'is_enabled',
-    endpointTheConditionsAttributePathComeFrom: 'endpoint',
+    endpoint: 'endpoint',
+    isEnabled: 'is_enabled',
     trustedClientAddresses: 'trusted_client_addresses',
   },
 );
 
 const rolesMapping = JsonDecoder.object<RolesMapping>(
   {
-    rolesApplyOnlyFirstRole: JsonDecoder.boolean,
-    rolesAttributePath: JsonDecoder.string,
-    rolesEndpoint: endpoint,
-    rolesIsEnabled: JsonDecoder.boolean,
-    rolesRelations: JsonDecoder.array(relation, 'Roles relation'),
+    applyOnlyFirstRole: JsonDecoder.boolean,
+    attributePath: JsonDecoder.string,
+    endpoint,
+    isEnabled: JsonDecoder.boolean,
+    relations: JsonDecoder.array(relation, 'Roles relation'),
   },
   'Roles mapping',
   {
-    rolesApplyOnlyFirstRole: 'apply_only_first_role',
-    rolesAttributePath: 'attribute_path',
-    rolesEndpoint: 'endpoint',
-    rolesIsEnabled: 'is_enabled',
-    rolesRelations: 'relations',
+    applyOnlyFirstRole: 'apply_only_first_role',
+    attributePath: 'attribute_path',
+    endpoint: 'endpoint',
+    isEnabled: 'is_enabled',
+    relations: 'relations',
   },
 );
 
@@ -149,8 +149,8 @@ const authorization = JsonDecoder.object<AuthorizationRule>(
 export const openidConfigurationDecoder =
   JsonDecoder.object<OpenidConfiguration>(
     {
+      authenticationConditions: authConditions,
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
-      authentificationConditions: authConditions,
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       authorizationRules: JsonDecoder.array(
         authorization,
@@ -159,11 +159,6 @@ export const openidConfigurationDecoder =
       autoImport: JsonDecoder.boolean,
 
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
-      // blacklistClientAddresses: JsonDecoder.array(
-      //   JsonDecoder.string,
-      //   'blacklist client addresses',
-      // ),
-      // claimName: JsonDecoder.nullable(JsonDecoder.string),
       clientId: JsonDecoder.nullable(JsonDecoder.string),
       clientSecret: JsonDecoder.nullable(JsonDecoder.string),
       connectionScopes: JsonDecoder.array(
@@ -184,44 +179,21 @@ export const openidConfigurationDecoder =
       isForced: JsonDecoder.boolean,
 
       loginClaim: JsonDecoder.nullable(JsonDecoder.string),
-
-      // rolesApplyOnlyFirstRole: JsonDecoder.boolean,
-      // rolesAttributePath: JsonDecoder.nullable(JsonDecoder.string),
-      // rolesEndpoint: endpoint,
-      // rolesIsEnabled: JsonDecoder.boolean,
-      // rolesRelations: JsonDecoder.array(
-      //   relation ,
-      //   "Roles relation"
-      // ),
-      // conditionsAttributePath: JsonDecoder.nullable(JsonDecoder.string),
-      // conditionsAuthorizedValues: JsonDecoder.array(
-      //   JsonDecoder.string,
-      //   'condition authorized value',
-      // ),
-      // endpointTheConditionsAttributePathComeFrom: endpoint,
-      // enableConditionsOnIdentityProvider : JsonDecoder.boolean
       rolesMapping,
 
       tokenEndpoint: JsonDecoder.nullable(JsonDecoder.string),
 
-      // trustedClientAddresses: JsonDecoder.array(
-      //   JsonDecoder.string,
-      //   'trusted client addresses',
-      // ),
       userinfoEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       verifyPeer: JsonDecoder.boolean,
     },
     'Open ID Configuration',
     {
+      authenticationConditions: 'authentication_conditions',
       authenticationType: 'authentication_type',
-      authentificationConditions: 'authentication_conditions',
       authorizationEndpoint: 'authorization_endpoint',
       authorizationRules: 'authorization_rules',
       autoImport: 'auto_import',
-
       baseUrl: 'base_url',
-      // blacklistClientAddresses: 'blacklist_client_addresses',
-      // claimName: 'claim_name',
       clientId: 'client_id',
       clientSecret: 'client_secret',
       connectionScopes: 'connection_scopes',
@@ -238,7 +210,6 @@ export const openidConfigurationDecoder =
       rolesMapping: 'roles_mapping',
 
       tokenEndpoint: 'token_endpoint',
-      // trustedClientAddresses: 'trusted_client_addresses',
       userinfoEndpoint: 'userinfo_endpoint',
       verifyPeer: 'verify_peer',
     },
