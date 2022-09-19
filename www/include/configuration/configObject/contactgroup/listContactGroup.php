@@ -42,9 +42,8 @@ include_once "./include/common/autoNumLimit.php";
 
 $SearchSTR = "";
 
-$search = filter_var(
-    $_POST['searchCG'] ?? $_GET['searchCG'] ?? null,
-    FILTER_SANITIZE_SPECIAL_CHARS
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchCG'] ?? $_GET['searchCG'] ?? null
 );
 
 if (isset($_POST['searchCG']) || isset($_GET['searchCG'])) {

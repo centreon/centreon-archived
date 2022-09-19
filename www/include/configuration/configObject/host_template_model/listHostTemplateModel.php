@@ -54,9 +54,8 @@ while ($ehi = $DBRESULT->fetch()) {
 }
 $DBRESULT->closeCursor();
 
-$search = filter_var(
-    $_POST['searchHT'] ?? $_GET['searchHT'] ?? $centreon->historySearch[$url]['search'] ?? '',
-    FILTER_SANITIZE_SPECIAL_CHARS
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchHT'] ?? $_GET['searchHT'] ?? $centreon->historySearch[$url]['search'] ?? ''
 );
 
 $displayLocked = filter_var(

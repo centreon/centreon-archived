@@ -48,9 +48,8 @@ if (!$oreon->user->admin) {
     $aclCond = " AND hostgroup_hg_id IN ($hgstring) ";
 }
 
-$search = filter_var(
-    $_POST['searchHGD'] ?? $_GET['searchHGD'] ?? null,
-    FILTER_SANITIZE_SPECIAL_CHARS
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchHGD'] ?? $_GET['searchHGD'] ?? null
 );
 
 if (isset($_POST['searchHGD']) || isset($_GET['searchHGD'])) {

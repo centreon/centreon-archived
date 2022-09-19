@@ -59,7 +59,7 @@ function testHostCategorieExistence($name = null)
 {
     global $pearDB, $form;
 
-    $name = filter_var($name, FILTER_SANITIZE_SPECIAL_CHARS);
+    $name = \HtmlAnalyzer::sanitizeAndRemoveTags($name);
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('hc_id');
@@ -177,16 +177,16 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
             foreach ($row as $key2 => $value2) {
                 switch ($key2) {
                     case 'hc_name':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
+                        $value2 = \HtmlAnalyzer::sanitizeAndRemoveTags($value2);
                         $hc_name = $value2 = $value2 . "_" . $i;
                         $bindParams[':hc_name'] = [\PDO::PARAM_STR => $value2];
                         break;
                     case 'hc_alias':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
+                        $value2 = \HtmlAnalyzer::sanitizeAndRemoveTags($value2);
                         $bindParams[':hc_alias'] = [\PDO::PARAM_STR => $value2];
                         break;
                     case 'level':
-                        $value2 = filter_var($value2, FILTER_VALIDATE_INT);
+                        $value2 = \HtmlAnalyzer::sanitizeAndRemoveTags($value2);
                         if ($value2) {
                             $bindParams[':level'] = [\PDO::PARAM_INT => $value2];
                             $level = true;
@@ -201,7 +201,7 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
                             : $bindParams[':icon_id'] = [\PDO::PARAM_NULL => null];
                         break;
                     case 'hc_comment':
-                        $value2 = filter_var($value2, FILTER_SANITIZE_SPECIAL_CHARS);
+                        $value2 = \HtmlAnalyzer::sanitizeAndRemoveTags($value2);
                         $value2
                             ? $bindParams[':hc_comment'] = [\PDO::PARAM_STR => $value2]
                             : $bindParams[':hc_comment'] = [\PDO::PARAM_NULL => null];
@@ -305,11 +305,11 @@ function insertHostCategories($ret = [])
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'hc_name':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $bindParams[':hc_name'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'hc_alias':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $bindParams[':hc_alias'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'hc_severity_level':
@@ -325,7 +325,7 @@ function insertHostCategories($ret = [])
                     : $bindParams[':icon_id'] = [\PDO::PARAM_NULL => null];
                 break;
             case 'hc_comment':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $value
                     ? $bindParams[':hc_comment'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':hc_comment'] = [\PDO::PARAM_NULL => null];
@@ -387,11 +387,11 @@ function updateHostCategories($hcId)
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'hc_name':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $bindParams[':hc_name'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'hc_alias':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $bindParams[':hc_alias'] = [\PDO::PARAM_STR => $value];
                 break;
             case 'hc_severity_level':
@@ -407,7 +407,7 @@ function updateHostCategories($hcId)
                     : $bindParams[':icon_id'] = [\PDO::PARAM_NULL => null];
                 break;
             case 'hc_comment':
-                $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                $value = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
                 $value
                     ? $bindParams[':hc_comment'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':hc_comment'] = [\PDO::PARAM_NULL => null];

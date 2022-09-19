@@ -43,10 +43,7 @@ function DeleteComment($type = null, $hosts = [])
         return;
     }
     global $pearDB;
-    $type = filter_var(
-        $type ?? '',
-        FILTER_SANITIZE_SPECIAL_CHARS
-    );
+    $type = \HtmlAnalyzer::sanitizeAndRemoveTags($type ?? '');
 
     foreach ($hosts as $key => $value) {
         $res = preg_split("/\;/", $key);

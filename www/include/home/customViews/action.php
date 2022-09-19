@@ -166,7 +166,7 @@ if (!empty($_POST['unlockedUsergroups'])) {
 $positions = [];
 if (!empty($_POST['positions'])) {
     foreach ($_POST['positions'] as $position) {
-        if (filter_var($position, FILTER_SANITIZE_SPECIAL_CHARS) !== false) {
+        if (\HtmlAnalyzer::sanitizeAndRemoveTags($position) !== false) {
             $positions[] = $position;
         }
     }
@@ -178,10 +178,8 @@ if (!empty($_POST['create_load']['create_load'])) {
 }
 
 
-$postInputs['layout'] = filter_var(
-    $_POST['layout']['layout'] ?? '',
-    FILTER_SANITIZE_SPECIAL_CHARS,
-    $postFilter['layout']
+$postInputs['layout'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['layout']['layout'] ?? ''
 );
 
 $viewObj = new CentreonCustomView($centreon, $db);

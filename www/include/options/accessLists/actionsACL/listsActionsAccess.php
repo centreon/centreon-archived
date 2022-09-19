@@ -44,10 +44,10 @@ $SearchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLA'])) {
-    $search = filter_var($_POST['searchACLA'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchACLA']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLA'])) {
-    $search = filter_var($_GET['searchACLA'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchACLA']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];

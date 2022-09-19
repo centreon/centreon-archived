@@ -44,18 +44,15 @@ include("./include/common/autoNumLimit.php");
 
 
 //initializing filters values
-$searchService = filter_var(
-    $_POST["searchService"] ?? $_GET["searchService"] ?? '',
-    FILTER_SANITIZE_SPECIAL_CHARS,
+$searchService = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST["searchService"] ?? $_GET["searchService"] ?? ''
 );
 
-$searchHost = filter_var(
-    $_POST["searchHost"] ?? $_GET["searchHost"] ?? '',
-    FILTER_SANITIZE_SPECIAL_CHARS
+$searchHost = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST["searchHost"] ?? $_GET["searchHost"] ?? ''
 );
-$searchOutput = filter_var(
-    $_POST["searchOutput"] ?? $_GET["searchOutput"] ?? '',
-    FILTER_SANITIZE_SPECIAL_CHARS
+$searchOutput = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST["searchOutput"] ?? $_GET["searchOutput"] ?? ''
 );
 
 if (isset($_POST['search']) || isset($_GET['search'])) {

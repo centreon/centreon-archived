@@ -282,18 +282,12 @@ function updateServiceGroupDependency($depId = null): void
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['dep_name'] = filter_var(
-        $resources['dep_name'],
-        FILTER_SANITIZE_SPECIAL_CHARS
-    );
+    $sanitizedParameters['dep_name'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_name']);
     if (empty($sanitizedParameters['dep_name'])) {
         throw new InvalidArgumentException(_("Dependency name can't be empty"));
     }
 
-    $sanitizedParameters['dep_description'] = filter_var(
-        $resources['dep_description'],
-        FILTER_SANITIZE_SPECIAL_CHARS
-    );
+    $sanitizedParameters['dep_description'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_description']);
     if (empty($sanitizedParameters['dep_description'])) {
         throw new InvalidArgumentException(_("Dependency description can't be empty"));
     }
@@ -302,25 +296,21 @@ function sanitizeResourceParameters(array $resources): array
         ? $sanitizedParameters["inherits_parent"] = '1'
         : $sanitizedParameters["inherits_parent"] = '0';
 
-    $sanitizedParameters['execution_failure_criteria'] = filter_var(
+    $sanitizedParameters['execution_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
         implode(
             ",",
             array_keys($resources["execution_failure_criteria"])
-        ),
-        FILTER_SANITIZE_SPECIAL_CHARS
+        )
     );
 
-    $sanitizedParameters['notification_failure_criteria'] = filter_var(
+    $sanitizedParameters['notification_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
         implode(
             ",",
             array_keys($resources["notification_failure_criteria"])
-        ),
-        FILTER_SANITIZE_SPECIAL_CHARS
+        )
     );
-    $sanitizedParameters['dep_comment'] = filter_var(
-        $resources['dep_comment'],
-        FILTER_SANITIZE_SPECIAL_CHARS
-    );
+    $sanitizedParameters['dep_comment'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_comment']);
+
     return $sanitizedParameters;
 }
 

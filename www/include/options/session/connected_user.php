@@ -46,10 +46,7 @@ $path = "./include/options/session/";
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
-$action = filter_var(
-    $_GET["o"] ?? null,
-    FILTER_SANITIZE_SPECIAL_CHARS
-);
+$action = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["o"] ?? null);
 
 $selectedUserId = filter_var(
     $_GET['user'] ?? null,

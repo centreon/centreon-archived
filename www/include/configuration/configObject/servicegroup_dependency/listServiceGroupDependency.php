@@ -48,9 +48,8 @@ if (!$centreon->user->admin) {
     $aclCond = " AND servicegroup_sg_id IN ($sgstring) ";
 }
 
-$search = filter_var(
-    $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null,
-    FILTER_SANITIZE_SPECIAL_CHARS
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null
 );
 if (isset($_POST['searchSGD']) || isset($_GET['searchSGD'])) {
     //saving filters values
