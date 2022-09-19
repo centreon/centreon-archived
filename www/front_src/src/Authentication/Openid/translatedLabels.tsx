@@ -60,14 +60,12 @@ export const labelEnableConditionsOnIdentityProvider =
 export const labelConditionsAttributePath = 'Conditions attribute path';
 export const labelWhichEndpointTheConditionsAttributePathComeFrom =
   'Which endpoint does the conditions attribute path come from?';
-export const labelIntrospectionToken = 'Introspection token';
+export const labelIntrospectionEndpoint = 'Introspection endpoint';
 export const labelUserIformation = 'User information';
 export const labelOther = 'Other';
 export const labelDefineAuthorizedConditionsValues =
   'Define authorized conditions values';
 export const labelConditionValue = 'Condition value';
-// roles mapping
-
 export const labelRolesMapping = 'Roles mapping';
 export const labelWhichendpointtheRolesAttributePathComeFrom =
   'Which endpoint does the roles attribute path come from?';

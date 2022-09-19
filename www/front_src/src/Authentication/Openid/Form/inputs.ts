@@ -33,7 +33,7 @@ import {
   labelWhichEndpointTheConditionsAttributePathComeFrom,
   labelOther,
   labelUserIformation,
-  labelIntrospectionToken,
+  labelIntrospectionEndpoint,
   labelDefineAuthorizedConditionsValues,
   labelConditionValue,
   labelRolesMapping,
@@ -137,7 +137,7 @@ export const inputs: Array<InputProps> = [
     radio: {
       options: [
         {
-          label: labelIntrospectionToken,
+          label: labelIntrospectionEndpoint,
           value: EndpointType.IntrospectionEndpoint,
         },
         {
@@ -333,7 +333,7 @@ export const inputs: Array<InputProps> = [
     radio: {
       options: [
         {
-          label: labelIntrospectionToken,
+          label: labelIntrospectionEndpoint,
           value: EndpointType.IntrospectionEndpoint,
         },
         {

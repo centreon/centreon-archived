@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { omit } from 'ramda';
+import { head, last } from 'ramda';
 
 import {
   getFetchCall,
@@ -17,7 +17,6 @@ import { Provider } from '../models';
 import {
   accessGroupsEndpoint,
   authenticationProvidersEndpoint,
-  contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../api/endpoints';
 import {
@@ -29,29 +28,35 @@ import {
 import { labelActivation } from '../translatedLabels';
 
 import {
-  labelAccessGroup,
+  labelAclAccessGroup,
+  labelApplyOnlyFirtsRole,
   labelAuthorizationEndpoint,
-  labelAuthorizationKey,
-  labelAuthorizationValue,
   labelBaseUrl,
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
-  labelContactGroup,
+  labelConditionsAttributePath,
+  labelConditionValue,
   labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
+  labelDefineYourEndpoint,
   labelDisableVerifyPeer,
-  labelEmailAttribute,
+  labelEmailAttributePath,
   labelEnableAutoImport,
+  labelEnableAutoManagement,
+  labelEnableConditionsOnIdentityProvider,
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
-  labelFullnameAttribute,
+  labelFullnameAttributePath,
+  labelIntrospectionEndpoint,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
   labelInvalidURL,
-  labelLoginClaimValue,
+  labelLoginAttributePath,
   labelMixed,
   labelOpenIDConnectOnly,
+  labelOther,
+  labelRolesAttributePath,
   labelScopes,
   labelTokenEndpoint,
   labelTrustedClientAddresses,
@@ -82,57 +87,24 @@ const renderOpenidConfigurationForm = (): RenderResult =>
   );
 
 const retrievedOpenidConfiguration = {
-  authentication_type: 'client_secret_post',
-  authorization_endpoint: '/authorize',
-  authorization_rules: [
-    {
-      access_group: {
-        id: 1,
-        name: 'Access group',
-      },
-      claim_value: 'Authorization relation',
+  authentication_conditions: {
+    attribute_path: 'auth attribute path',
+    authorized_values: ['authorized'],
+    blacklist_client_addresses: ['127.0.0.1'],
+    endpoint: {
+      custom_endpoint: null,
+      type: 'introspection_endpoint',
     },
-  ],
-  auto_import: true,
-  base_url: 'https://localhost:8080',
-  blacklist_client_addresses: ['127.0.0.1'],
-  claim_name: 'groups',
-  client_id: 'client_id',
-  client_secret: 'client_secret',
-  connection_scopes: ['openid'],
-  contact_group: {
-    id: 1,
-    name: 'Contact group',
+    is_enabled: false,
+    trusted_client_addresses: ['127.0.0.1'],
   },
-  contact_template: {
-    id: 1,
-    name: 'Contant template',
-  },
-  email_bind_attribute: 'email',
-  endsession_endpoint: '/logout',
-  fullname_bind_attribute: 'lastname',
-  introspection_token_endpoint: '/introspect',
-  is_active: true,
-  is_forced: false,
-  login_claim: 'sub',
-  token_endpoint: '/token',
-  trusted_client_addresses: ['127.0.0.1'],
-  userinfo_endpoint: '/userinfo',
-  verify_peer: false,
-};
-
-const retrievedOpenidConfigurationWithEmptyAuthorization = {
   authentication_type: 'client_secret_post',
   authorization_endpoint: '/authorize',
-  authorization_rules: [],
-  auto_import: true,
+  auto_import: false,
   base_url: 'https://localhost:8080',
-  blacklist_client_addresses: ['127.0.0.1'],
-  claim_name: null,
   client_id: 'client_id',
   client_secret: 'client_secret',
   connection_scopes: ['openid'],
-  contact_group: null,
   contact_template: null,
   email_bind_attribute: 'email',
   endsession_endpoint: '/logout',
@@ -141,8 +113,17 @@ const retrievedOpenidConfigurationWithEmptyAuthorization = {
   is_active: true,
   is_forced: false,
   login_claim: 'sub',
+  roles_mapping: {
+    apply_only_first_role: true,
+    attribute_path: 'role attribute path',
+    endpoint: {
+      custom_endpoint: '/role/endpoint',
+      type: 'custom_endpoint',
+    },
+    is_enabled: false,
+    relations: [],
+  },
   token_endpoint: '/token',
-  trusted_client_addresses: ['127.0.0.1'],
   userinfo_endpoint: '/userinfo',
   verify_peer: false,
 };
@@ -165,22 +146,14 @@ const getRetrievedEntities = (label: string): unknown => ({
   ],
 });
 
-const retrievedContactTemplates = getRetrievedEntities('Contact Template');
-const retrievedContactGroups = getRetrievedEntities('Contact Group');
 const retrievedAccessGroups = getRetrievedEntities('Access Group');
+const retrievedContactTemplates = getRetrievedEntities('Contact Template');
 
 const mockGetBasicRequests = (): void => {
   resetMocks();
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
     data: retrievedOpenidConfiguration,
-  });
-};
-
-const mockGetRequestsWithNoAuthorizationConfiguration = (): void => {
-  mockedAxios.get.mockReset();
-  mockedAxios.get.mockResolvedValueOnce({
-    data: retrievedOpenidConfigurationWithEmptyAuthorization,
   });
 };
 
@@ -245,7 +218,7 @@ describe('Openid configuration form', () => {
     );
     expect(screen.getByLabelText(`${labelScopes}`)).toBeInTheDocument();
     expect(screen.getByText('openid')).toBeInTheDocument();
-    expect(screen.getByLabelText(labelLoginClaimValue)).toHaveValue('sub');
+    expect(screen.getByLabelText(labelLoginAttributePath)).toHaveValue('sub');
     expect(screen.getByLabelText(labelClientID)).toHaveValue('client_id');
     expect(screen.getByLabelText(labelClientSecret)).toHaveValue(
       'client_secret',
@@ -256,16 +229,31 @@ describe('Openid configuration form', () => {
       ),
     ).not.toBeChecked();
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
-    expect(screen.getByLabelText(labelEnableAutoImport)).toBeChecked();
-    expect(screen.getByLabelText(labelEmailAttribute)).toHaveValue('email');
-    expect(screen.getByLabelText(labelFullnameAttribute)).toHaveValue(
+    expect(screen.getByLabelText(labelEnableAutoImport)).not.toBeChecked();
+    expect(screen.getByLabelText(labelEmailAttributePath)).toHaveValue('email');
+    expect(screen.getByLabelText(labelFullnameAttributePath)).toHaveValue(
       'lastname',
     );
-    expect(screen.getByText('Contact group')).toBeInTheDocument();
-    expect(screen.getByLabelText(labelAuthorizationKey)).toHaveValue('groups');
-    expect(screen.getAllByLabelText(labelAuthorizationValue)).toHaveLength(2);
-    expect(screen.getAllByLabelText(labelAuthorizationValue)[0]).toHaveValue(
-      'Authorization relation',
+    expect(
+      screen.getByLabelText(labelEnableConditionsOnIdentityProvider),
+    ).not.toBeChecked();
+    expect(screen.getByLabelText(labelConditionsAttributePath)).toHaveValue(
+      'auth attribute path',
+    );
+    expect(
+      head(screen.getAllByLabelText(labelIntrospectionEndpoint)),
+    ).toBeChecked();
+    expect(head(screen.getAllByLabelText(labelConditionValue))).toHaveValue(
+      'authorized',
+    );
+    expect(screen.getByLabelText(labelEnableAutoManagement)).not.toBeChecked();
+    expect(screen.getByLabelText(labelApplyOnlyFirtsRole)).toBeChecked();
+    expect(screen.getByLabelText(labelRolesAttributePath)).toHaveValue(
+      'role attribute path',
+    );
+    expect(last(screen.getAllByLabelText(labelOther))).toBeChecked();
+    expect(screen.getByLabelText(labelDefineYourEndpoint)).toHaveValue(
+      '/role/endpoint',
     );
   });
 
@@ -351,15 +339,8 @@ describe('Openid configuration form', () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
         {
-          ...omit(['contact_group'], retrievedOpenidConfiguration),
-          authorization_rules: [
-            {
-              access_group_id: 1,
-              claim_value: 'Authorization relation',
-            },
-          ],
+          ...retrievedOpenidConfiguration,
           base_url: 'http://localhost:8081/login',
-          contact_group_id: 1,
         },
         cancelTokenPutParams,
       );
@@ -425,10 +406,12 @@ describe('Openid configuration form', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelEmailAttribute)).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(labelEmailAttributePath),
+      ).toBeInTheDocument();
     });
 
-    userEvent.type(screen.getByLabelText(labelEmailAttribute), '');
+    userEvent.type(screen.getByLabelText(labelEmailAttributePath), '');
 
     await waitFor(() => {
       expect(screen.getByText(labelSave)).toBeDisabled();
@@ -443,13 +426,6 @@ describe('Openid configuration form', () => {
 
   it.each([
     [
-      'contact group',
-      retrievedContactGroups,
-      contactGroupsEndpoint,
-      labelContactGroup,
-      'Contact Group 2',
-    ],
-    [
       'contact template',
       retrievedContactTemplates,
       contactTemplatesEndpoint,
@@ -460,14 +436,18 @@ describe('Openid configuration form', () => {
       'access group',
       retrievedAccessGroups,
       accessGroupsEndpoint,
-      labelAccessGroup,
+      labelAclAccessGroup,
       'Access Group 2',
     ],
   ])(
     'updates the %p field when an option is selected from the retrieved options',
     async (_, retrievedOptions, endpoint, label, value) => {
-      mockGetRequestsWithNoAuthorizationConfiguration();
+      mockGetBasicRequests();
       renderOpenidConfigurationForm();
+
+      mockResponseOnce({
+        data: retrievedOptions,
+      });
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -476,13 +456,11 @@ describe('Openid configuration form', () => {
         );
       });
 
-      mockResponseOnce({
-        data: retrievedOptions,
+      await waitFor(() => {
+        expect(screen.getByLabelText(label)).toBeInTheDocument();
       });
 
-      await waitFor(() => {
-        expect(screen.getByText(label)).toBeInTheDocument();
-      });
+      userEvent.click(screen.getByLabelText(labelEnableAutoImport));
 
       userEvent.click(screen.getByLabelText(label));
 
@@ -505,24 +483,4 @@ describe('Openid configuration form', () => {
       });
     },
   );
-
-  it('displays the "Contact group" field as required when the "Authorization value" field is filled', async () => {
-    mockGetRequestsWithNoAuthorizationConfiguration();
-
-    renderOpenidConfigurationForm();
-
-    await waitFor(() => {
-      expect(
-        screen.getByLabelText(labelAuthorizationValue),
-      ).toBeInTheDocument();
-    });
-
-    userEvent.type(screen.getByLabelText(labelAuthorizationValue), 'HW');
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(labelContactGroup)).toHaveAttribute(
-        'required',
-      );
-    });
-  });
 });

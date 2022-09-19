@@ -7,7 +7,6 @@ import { useUpdateAtom } from 'jotai/utils';
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { userAtom } from '@centreon/ui-context';
 import { Group } from '@centreon/ui';
@@ -24,7 +23,6 @@ import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
 import {
   labelActivation,
-  labelAuthorizations,
   labelAutoImportUsers,
   labelAuthenticationConditions,
   labelIdentityProvider,
@@ -33,7 +31,6 @@ import {
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
 import providerPadlockLogo from './logos/providerPadlock.svg';
-import Description from './Openid/Description';
 
 const panels = [
   {
