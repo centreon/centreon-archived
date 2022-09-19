@@ -36,11 +36,13 @@ class HtmlAnalyzer
     {
         $stringToSanitize = (string) $stringToSanitize;
 
-        $html = new self($stringToSanitize);
+        $html = new self(
+        	str_replace(["'", '"'], ['&#39;', '&#34;'], $stringToSanitize)
+        );
 
         $newString = $html->removeHtmlTag();
 
-        return str_replace(["'", '"'], ['&#39;', '&#34;'], $newString);
+        return $newString;
     }
 
     /**
