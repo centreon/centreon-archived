@@ -71,12 +71,10 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         $customConfiguration = $configuration->getCustomConfiguration();
         $authorizationRules = $customConfiguration->getAuthorizationRules();
 
-        if (!empty($authorizationRules)) {
-            $this->info('Removing existing Authorization Rules');
-            $this->deleteAuthorizationRules();
-            $this->info('Inserting new Authorization Rules');
-            $this->insertAuthorizationRules($authorizationRules);
-        }
+        $this->info('Removing existing Authorization Rules');
+        $this->deleteAuthorizationRules();
+        $this->info('Inserting new Authorization Rules');
+        $this->insertAuthorizationRules($authorizationRules);
     }
 
     /**
