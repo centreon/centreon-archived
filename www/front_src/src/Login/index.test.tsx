@@ -192,7 +192,9 @@ describe('Login Page', () => {
       );
     });
 
-    expect(screen.getByTestId('centreon-wallpaper')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('centreon-wallpaper')).toBeInTheDocument();
+    });
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();

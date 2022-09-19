@@ -6,8 +6,9 @@ import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 
+import { ThemeMode } from '@centreon/ui-context';
+
 import { Page } from '../models';
-import { isDarkMode } from '../../Header';
 
 import Logo from './Logo';
 import MiniLogo from './Logo/LogoMini';
@@ -15,6 +16,9 @@ import NavigationMenu from './Menu';
 
 export const openedDrawerWidth = 165;
 export const closedDrawerWidth = 6;
+
+const isDarkMode = (theme: Theme): boolean =>
+  equals(theme.palette.mode, ThemeMode.dark);
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
