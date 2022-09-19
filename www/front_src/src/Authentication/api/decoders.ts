@@ -3,10 +3,10 @@ import { JsonDecoder } from 'ts.data.json';
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 import {
   AuthConditions,
-  AuthorizationRule,
   Endpoint,
   NamedEntity,
   OpenidConfiguration,
+  Relations,
   RolesMapping,
 } from '../Openid/models';
 import { WebSSOConfiguration } from '../WebSSO/models';
@@ -73,7 +73,7 @@ const endpoint = JsonDecoder.object<Endpoint>(
   },
 );
 
-const relation = JsonDecoder.object<AuthorizationRule>(
+const relation = JsonDecoder.object<Relations>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
     claimValue: JsonDecoder.string,
@@ -84,8 +84,6 @@ const relation = JsonDecoder.object<AuthorizationRule>(
     claimValue: 'claim_value',
   },
 );
-
-// auth conditions
 
 const authConditions = JsonDecoder.object<AuthConditions>(
   {
@@ -134,28 +132,12 @@ const rolesMapping = JsonDecoder.object<RolesMapping>(
   },
 );
 
-const authorization = JsonDecoder.object<AuthorizationRule>(
-  {
-    accessGroup: getNamedEntityDecoder('Access group'),
-    claimValue: JsonDecoder.string,
-  },
-  'Authorization',
-  {
-    accessGroup: 'access_group',
-    claimValue: 'claim_value',
-  },
-);
-
 export const openidConfigurationDecoder =
   JsonDecoder.object<OpenidConfiguration>(
     {
       authenticationConditions: authConditions,
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-      authorizationRules: JsonDecoder.array(
-        authorization,
-        'Authorization relations',
-      ),
       autoImport: JsonDecoder.boolean,
 
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
@@ -191,7 +173,6 @@ export const openidConfigurationDecoder =
       authenticationConditions: 'authentication_conditions',
       authenticationType: 'authentication_type',
       authorizationEndpoint: 'authorization_endpoint',
-      authorizationRules: 'authorization_rules',
       autoImport: 'auto_import',
       baseUrl: 'base_url',
       clientId: 'client_id',

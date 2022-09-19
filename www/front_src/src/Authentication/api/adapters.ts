@@ -5,8 +5,6 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
-  AuthorizationRule,
-  AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
   AuthConditions,
@@ -78,17 +76,6 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   };
 };
 
-const adaptAuthorizationRelationsToAPI = (
-  authorizationRules: Array<AuthorizationRule>,
-): Array<AuthorizationRelationToAPI> =>
-  map(
-    ({ claimValue, accessGroup }: AuthorizationRule) => ({
-      access_group_id: accessGroup.id,
-      claim_value: claimValue,
-    }),
-    authorizationRules,
-  );
-
 const adaptEndpoint = ({ customEndpoint, type }: Endpoint): EndpointToAPI => {
   return {
     custom_endpoint: customEndpoint,
@@ -118,7 +105,7 @@ const adaptRelationsToAPI = (
   relations: Array<Relations>,
 ): Array<RelationsToAPI> =>
   map(
-    ({ claimValue, accessGroup }: AuthorizationRule) => ({
+    ({ claimValue, accessGroup }: Relations) => ({
       access_group: accessGroup,
       claim_value: claimValue,
     }),
@@ -161,7 +148,6 @@ export const adaptOpenidConfigurationToAPI = ({
   emailBindAttribute,
   fullnameBindAttribute,
   contactGroup,
-  authorizationRules,
   authenticationConditions,
   rolesMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
@@ -169,8 +155,6 @@ export const adaptOpenidConfigurationToAPI = ({
     adaptAuthentificationConditions(authenticationConditions) || [],
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
-  authorization_rules:
-    adaptAuthorizationRelationsToAPI(authorizationRules) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
   client_id: clientId || null,

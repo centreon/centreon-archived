@@ -3,16 +3,6 @@ export interface NamedEntity {
   name: string;
 }
 
-export interface AuthorizationRule {
-  accessGroup: NamedEntity;
-  claimValue: string;
-}
-
-export interface AuthorizationRelationToAPI {
-  access_group_id: number;
-  claim_value: string;
-}
-
 export interface Relations {
   accessGroup: NamedEntity;
   claimValue: string;
@@ -71,7 +61,6 @@ export interface OpenidConfiguration {
   authenticationConditions: AuthConditions;
   authenticationType: string | null;
   authorizationEndpoint: string | null;
-  authorizationRules: Array<AuthorizationRule>;
   autoImport: boolean;
   baseUrl: string | null;
   clientId: string | null;
@@ -96,7 +85,6 @@ export interface OpenidConfigurationToAPI {
   authentication_conditions: AuthConditionsToApi;
   authentication_type: string | null;
   authorization_endpoint: string | null;
-  authorization_rules: Array<AuthorizationRelationToAPI>;
   auto_import: boolean;
   base_url: string | null;
   client_id: string | null;
