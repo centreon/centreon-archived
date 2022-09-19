@@ -34,6 +34,8 @@
  *
  */
 
+require_once __DIR__ . "/../bootstrap.php";
+
 // Set logging options
 if (defined("E_DEPRECATED")) {
     ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
@@ -44,34 +46,33 @@ if (defined("E_DEPRECATED")) {
 /*
  * Purge Values
  */
-if (function_exists('filter_var')) {
-    foreach ($_GET as $key => $value) {
-        if (!is_array($value)) {
-            $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
+foreach ($_GET as $key => $value) {
+    if (!is_array($value)) {
+        $_GET[$key] = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
     }
 }
 
-$inputArguments = array(
-    'p' => FILTER_SANITIZE_NUMBER_INT,
-    'o' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'min' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'type' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'limit' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'num' => FILTER_SANITIZE_NUMBER_INT
-);
-$inputGet = filter_input_array(
-    INPUT_GET,
-    $inputArguments
-);
-$inputPost = filter_input_array(
-    INPUT_POST,
-    $inputArguments
-);
+$inputGet = [
+    'p' => filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT),
+    'num' => filter_input(INPUT_GET, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o'] ?? ''),
+    'min' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['min'] ?? ''),
+    'type' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['type'] ?? ''),
+    'search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search'] ?? ''),
+    'limit' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['limit'] ?? '')
+];
+$inputPost = [
+    'p' => filter_input(INPUT_POST, 'p', FILTER_SANITIZE_NUMBER_INT),
+    'num' => filter_input(INPUT_POST, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o'] ?? ''),
+    'min' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['min'] ?? ''),
+    'type' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['type'] ?? ''),
+    'search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search'] ?? ''),
+    'limit' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['limit'] ?? '')
+];
 
 $inputs = [];
-foreach ($inputArguments as $argumentName => $argumentValue) {
+foreach ($inputGet as $argumentName => $argumentValue) {
     if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
     } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
@@ -97,8 +98,6 @@ $num = $inputs["num"];
  */
 include_once "./include/common/common-Func.php";
 include_once "./include/core/header/header.php";
-
-require_once _CENTREON_PATH_ . "/bootstrap.php";
 
 $centreon->user->setCurrentPage($p);
 

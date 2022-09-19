@@ -38,17 +38,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-$gopt_id = filter_input(
-    INPUT_GET,
-    'gopt_id',
-    FILTER_SANITIZE_SPECIAL_CHARS
-);
+$gopt_id = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['gopt_id'] ?? null);
 if ((!isset($cg) || is_null($cg))) {
-    $gopt_id = filter_input(
-        INPUT_POST,
-        'gopt_id',
-        FILTER_SANITIZE_SPECIAL_CHARS
-    );
+    $gopt_id = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['gopt_id'] ?? null);
 }
 
 /*
