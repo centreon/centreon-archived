@@ -4943,11 +4943,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/AuthenticationOpenIdProvider'
         - properties:
-            contact_group_id:
-              type: integer
-              description: "Contact group ID"
-              example: 1
-              nullable: true
             groups_mapping:
               type: object
               properties:
