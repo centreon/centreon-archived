@@ -78,4 +78,4 @@ export const labelDefineRelationBetweenRolesAndAcl =
   'Define the relation between roles and ACL access groups';
 export const labelRoleValue = 'Role value';
 export const labelAclAccessGroup = 'ACL access group';
-export const labelDefineYourEndpoint = 'define your endpoint';
+export const labelDefineYourEndpoint = 'Define your endpoint';

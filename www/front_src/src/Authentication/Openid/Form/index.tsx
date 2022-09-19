@@ -82,6 +82,7 @@ const OpenidForm = ({
 
   return (
     <Form<OpenidConfiguration>
+      isCollapsible
       Buttons={FormButtons}
       groups={groups}
       initialValues={initialValues}
