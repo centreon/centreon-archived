@@ -131,7 +131,7 @@ it('should return a Provider when all mandatory parameters are present', functio
     $this->customConfiguration['authentication_conditions'] = new AuthenticationConditions(
         true,
         "info.groups",
-        "http://127.0.0.1/info",
+        new Endpoint(),
         ["groupA", "groupB"]
     );
 

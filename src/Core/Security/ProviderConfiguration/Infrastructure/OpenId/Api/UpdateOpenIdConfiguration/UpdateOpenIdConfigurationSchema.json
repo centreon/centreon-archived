@@ -24,7 +24,6 @@
     "fullname_bind_attribute",
     "contact_group_id",
     "claim_name",
-    "roles_mapping",
     "authentication_conditions"
   ],
   "properties": {
@@ -35,40 +34,22 @@
       "type": "boolean"
     },
     "base_url": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "authorization_endpoint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "token_endpoint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "introspection_token_endpoint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "userinfo_endpoint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "endsession_endpoint": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "connection_scopes": {
       "type": "array",
@@ -77,28 +58,16 @@
       }
     },
     "login_claim": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "client_id": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "client_secret": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "authentication_type": {
-      "enum": [
-        "client_secret_post",
-        "client_secret_basic"
-      ]
+      "enum": ["client_secret_post", "client_secret_basic"]
     },
     "verify_peer": {
       "type": "boolean"
@@ -107,10 +76,7 @@
       "type": "boolean"
     },
     "contact_template": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": ["object", "null"],
       "properties": {
         "id": {
           "type": "number"
@@ -121,28 +87,16 @@
       }
     },
     "email_bind_attribute": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "fullname_bind_attribute": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "contact_group_id": {
-      "type": [
-        "integer",
-        "null"
-      ]
+      "type": ["integer", "null"]
     },
     "claim_name": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "authentication_conditions": {
       "type": "object",
@@ -162,7 +116,19 @@
           "type": "string"
         },
         "endpoint": {
-          "type": "string"
+          "type": "object",
+          "required": [
+            "type",
+            "custom_endpoint"
+          ],
+          "properties": {
+            "type": {
+              "enum": ["introspection_endpoint", "user_information_endpoint", "custom_endpoint"]
+            },
+            "custom_endpoint": {
+              "type": ["string", "null"]
+            }
+          }
         },
         "authorized_values": {
           "type": "array",

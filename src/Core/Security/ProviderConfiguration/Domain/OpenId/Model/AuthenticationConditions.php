@@ -58,20 +58,19 @@ class AuthenticationConditions
     /**
      * @param boolean $isEnabled
      * @param string $attributePath
-     * @param string $endpoint
+     * @param Endpoint $endpoint
      * @param string[] $authorizedValues
      * @throws OpenIdConfigurationException
      */
     public function __construct(
         private bool $isEnabled,
         private string $attributePath,
-        private string $endpoint,
+        private Endpoint $endpoint,
         private array $authorizedValues
     ) {
         $this->validateMandatoryParametersForEnabledCondition(
             $isEnabled,
             $attributePath,
-            $endpoint,
             $authorizedValues
         );
     }
@@ -93,9 +92,9 @@ class AuthenticationConditions
     }
 
     /**
-     * @return string
+     * @return Endpoint
      */
-    public function getEndpoint(): string
+    public function getEndpoint(): Endpoint
     {
         return $this->endpoint;
     }
@@ -203,23 +202,18 @@ class AuthenticationConditions
      *
      * @param boolean $isEnabled
      * @param string $attributePath
-     * @param string $endpoint
      * @param string[] $authorizedValues
      * @throws OpenIdConfigurationException
      */
     private function validateMandatoryParametersForEnabledCondition(
         bool $isEnabled,
         string $attributePath,
-        string $endpoint,
         array $authorizedValues
     ): void {
         if ($isEnabled) {
             $mandatoryParameters = [];
             if (empty($attributePath)) {
                 $mandatoryParameters[] = "attribute_path";
-            }
-            if (empty($endpoint)) {
-                $mandatoryParameters[] = "endpoint";
             }
             if (empty($authorizedValues)) {
                 $mandatoryParameters[] = "authorized_values";

@@ -183,6 +183,16 @@ class SSOAuthenticationException extends \Exception
      */
     public static function requestForCustomACLConditionsEndpointFail(): self
     {
-        return new self(_('Request for ACL conditions custom endpoint has failed'));
+        return new self(_('The request for roles mapping on custom endpoint has failed'));
+    }
+
+    /**
+     * Exception thrown when the request to authentication condition fail
+     *
+     * @return self
+     */
+    public static function requestForCustomAuthenticationConditionsEndpointFail(): self
+    {
+        return new self(_('Request for authentication conditions custom endpoint has failed'));
     }
 }

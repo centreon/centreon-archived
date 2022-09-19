@@ -73,7 +73,7 @@ class Endpoint
     }
 
     /**
-     * @return array<string,string>
+     * @return array<string,string|null>
      */
     public function toArray(): array
     {

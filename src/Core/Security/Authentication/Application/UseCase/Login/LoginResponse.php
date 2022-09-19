@@ -26,7 +26,7 @@ namespace Core\Security\Authentication\Application\UseCase\Login;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Exception;
 
-final class LoginResponse  implements ResponseStatusInterface
+final class LoginResponse implements ResponseStatusInterface
 {
     /**
      * @param string $redirectUri

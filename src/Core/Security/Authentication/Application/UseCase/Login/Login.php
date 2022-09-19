@@ -23,13 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Application\UseCase\Login;
 
-use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Centreon\Domain\Menu\Model\Page;
-use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Security\Domain\Authentication\Model\Session;
 use Core\Application\Common\UseCase\PresenterInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
@@ -38,14 +37,16 @@ use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryIn
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Core\Security\Authentication\Domain\Exception\AclConditionsException;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Core\Security\Authentication\Domain\Model\NewProviderToken;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Core\Application\Common\UseCase\ErrorAuthenticationConditionsResponse;
 use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
-use Core\Security\Authentication\Domain\Model\NewProviderToken;
-use Core\Security\Authentication\Domain\Model\ProviderToken;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Security\Domain\Authentication\Model\Session;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
 final class Login
 {
@@ -127,6 +128,8 @@ final class Login
             throw $e;
         } catch (AclConditionsException $e) {
             $presenter->setResponseStatus(new ErrorAclConditionsResponse($e->getMessage()));
+        } catch (AuthenticationConditionsException $ex) {
+            $presenter->setResponseStatus(new ErrorAuthenticationConditionsResponse($ex->getMessage()));
             return;
         }
 

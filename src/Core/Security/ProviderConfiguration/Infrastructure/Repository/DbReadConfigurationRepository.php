@@ -296,10 +296,15 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
     public function createAuthenticationConditionsFromRecord(
         array $authenticationConditionsRecord
     ): AuthenticationConditions {
+        $endpoint = new Endpoint(
+            $authenticationConditionsRecord["endpoint"]["type"],
+            $authenticationConditionsRecord["endpoint"]["custom_endpoint"]
+        );
+
         $authenticationConditions = new AuthenticationConditions(
             $authenticationConditionsRecord["is_enabled"],
             $authenticationConditionsRecord["attribute_path"],
-            $authenticationConditionsRecord["endpoint"],
+            $endpoint,
             $authenticationConditionsRecord["authorized_values"]
         );
         $authenticationConditions->setTrustedClientAddresses(

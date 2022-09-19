@@ -72,10 +72,14 @@ class LoginController extends AbstractController
                     $this->getBaseUrl() . '/login?authenticationError=' . $presenter->getResponseStatus()->getMessage()
                 );
             case is_a($presenter->getResponseStatus(), ErrorAclConditionsResponse::class):
+            case is_a($presenter->getResponseStatus(), ErrorAuthenticationConditionsResponse::class):
                 return View::createRedirect(
                     $this->getBaseUrl() . '/authentication-denied'
                 );
             default:
+                /**
+                 * @var LoginResponse
+                 */
                 $response = $presenter->getResponseStatus();
                 return View::createRedirect(
                     $this->getBaseUrl() . $response->getRedirectUri(),

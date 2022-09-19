@@ -80,7 +80,7 @@ it('should present a provider configuration', function () {
             new Endpoint(Endpoint::INTROSPECTION, ''),
             []
         ),
-        'authentication_conditions' => new AuthenticationConditions(false, '', '', [])
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 
