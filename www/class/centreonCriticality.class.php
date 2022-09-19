@@ -358,5 +358,4 @@ class CentreonCriticality
         }
         return 0;
     }
-
 }
