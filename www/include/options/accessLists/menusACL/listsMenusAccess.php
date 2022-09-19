@@ -116,10 +116,6 @@ for ($i = 0; $topo = $dbResult->fetchRow(); $i++) {
         "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $topo['acl_topo_id'] . "]' />";
     /* Contacts */
-    $ctNbr = array();
-    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '" . $topo['acl_topo_id'] . "'";
-    $dbResult2 = $pearDB->query($rq2);
-    $ctNbr = $dbResult2->fetchRow();
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
