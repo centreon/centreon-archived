@@ -7,7 +7,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { LoadingSkeleton } from '@centreon/ui';
 
 import PageLoader from '../components/PageLoader';
-import { headerHeight, paddingBottomHeader } from '../Header';
+import { headerHeight, headerPadding } from '../Header';
 
 import useApp from './useApp';
 
@@ -35,13 +35,9 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContent: {
     backgroundColor: theme.palette.background.paper,
-    height: `calc(100vh - ${theme.spacing(
-      headerHeight + paddingBottomHeader,
-    )})`,
-    width: '100%',
+    height: `calc(100vh - ${theme.spacing(headerHeight + headerPadding)})`,
   },
   wrapper: {
-    alignItems: 'stretch',
     display: 'flex',
     height: '100%',
     overflow: 'hidden',
@@ -54,11 +50,7 @@ const Navigation = lazy(() => import('../Navigation'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
-  const { dataLoaded, hasMinArgument } = useApp();
-
-  if (!dataLoaded) {
-    return <PageLoader />;
-  }
+  const { hasMinArgument } = useApp();
 
   const min = hasMinArgument();
 

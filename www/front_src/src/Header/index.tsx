@@ -18,8 +18,7 @@ export const isDarkMode = (theme: Theme): boolean =>
   equals(theme.palette.mode, ThemeMode.dark);
 
 export const headerHeight = 6;
-
-export const paddingBottomHeader = 0.5;
+export const headerPadding = 0.5;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
       : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(headerHeight),
-    paddingBottom: theme.spacing(paddingBottomHeader),
+    paddingBottom: theme.spacing(headerPadding),
     width: '100%',
   },
   item: {
