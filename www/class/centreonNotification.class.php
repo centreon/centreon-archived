@@ -35,6 +35,9 @@
 
 class CentreonNotification
 {
+    /**
+     * @var CentreonDB $db
+     */
     protected $db;
     protected $svcTpl;
     protected $svcNotifType;
@@ -342,10 +345,12 @@ class CentreonNotification
         		FROM host_template_relation htr
         		LEFT JOIN contact_host_relation ctr ON htr.host_host_id = ctr.host_host_id
         		LEFT JOIN contactgroup_host_relation ctr2 ON htr.host_host_id = ctr2.host_host_id
-        		WHERE htr.host_host_id = " . $hostId . "
+        		WHERE htr.host_host_id = :host_id 
         		ORDER BY `order`";
-        $res = $this->db->query($sql);
-        while ($row = $res->fetchRow()) {
+        $statement = $this->db->prepare($sql);
+        $statement->bindValue(':host_id', (int) $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             if ($row['contact_id']) {
                 $this->hostBreak[1] = true;
             }
