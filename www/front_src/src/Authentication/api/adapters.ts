@@ -5,18 +5,16 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import {
-  AuthorizationRule,
-  AuthorizationRelationToAPI,
   OpenidConfiguration,
   OpenidConfigurationToAPI,
   AuthConditions,
   AuthConditionsToApi,
   RolesMappingToApi,
   RolesMapping,
-  Relations,
-  RelationsToAPI,
-  EndpointToAPI,
+  RolesRelation,
+  RolesRelationToAPI,
   Endpoint,
+  EndpointToAPI,
 } from '../Openid/models';
 import {
   WebSSOConfiguration,
@@ -78,17 +76,6 @@ export const adaptPasswordSecurityPolicyToAPI = ({
   };
 };
 
-const adaptAuthorizationRelationsToAPI = (
-  authorizationRules: Array<AuthorizationRule>,
-): Array<AuthorizationRelationToAPI> =>
-  map(
-    ({ claimValue, accessGroup }: AuthorizationRule) => ({
-      access_group_id: accessGroup.id,
-      claim_value: claimValue,
-    }),
-    authorizationRules,
-  );
-
 const adaptEndpoint = ({ customEndpoint, type }: Endpoint): EndpointToAPI => {
   return {
     custom_endpoint: customEndpoint,
@@ -114,12 +101,12 @@ const adaptAuthentificationConditions = ({
   };
 };
 
-const adaptRelationsToAPI = (
-  relations: Array<Relations>,
-): Array<RelationsToAPI> =>
+const adaptRolesRelationsToAPI = (
+  relations: Array<RolesRelation>,
+): Array<RolesRelationToAPI> =>
   map(
-    ({ claimValue, accessGroup }: AuthorizationRule) => ({
-      access_group: accessGroup,
+    ({ claimValue, accessGroup }) => ({
+      access_group_id: accessGroup.id,
       claim_value: claimValue,
     }),
     relations,
@@ -137,7 +124,7 @@ const adaptRolesMapping = ({
     attribute_path: attributePath,
     endpoint: adaptEndpoint(endpoint),
     is_enabled: isEnabled,
-    relations: adaptRelationsToAPI(relations),
+    relations: adaptRolesRelationsToAPI(relations),
   };
 };
 
@@ -161,16 +148,14 @@ export const adaptOpenidConfigurationToAPI = ({
   emailBindAttribute,
   fullnameBindAttribute,
   contactGroup,
-  authorizationRules,
   authenticationConditions,
   rolesMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
-  authentication_conditions:
-    adaptAuthentificationConditions(authenticationConditions) || [],
+  authentication_conditions: adaptAuthentificationConditions(
+    authenticationConditions,
+  ),
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
-  authorization_rules:
-    adaptAuthorizationRelationsToAPI(authorizationRules) || [],
   auto_import: autoImport,
   base_url: baseUrl || null,
   client_id: clientId || null,
@@ -185,7 +170,7 @@ export const adaptOpenidConfigurationToAPI = ({
   is_active: isActive,
   is_forced: isForced,
   login_claim: loginClaim || null,
-  roles_mapping: adaptRolesMapping(rolesMapping) || [],
+  roles_mapping: adaptRolesMapping(rolesMapping),
   token_endpoint: tokenEndpoint || null,
   userinfo_endpoint: userinfoEndpoint || null,
   verify_peer: verifyPeer,

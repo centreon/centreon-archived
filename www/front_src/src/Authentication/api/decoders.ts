@@ -3,11 +3,12 @@ import { JsonDecoder } from 'ts.data.json';
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 import {
   AuthConditions,
-  AuthorizationRule,
   Endpoint,
+  EndpointType,
   NamedEntity,
   OpenidConfiguration,
   RolesMapping,
+  RolesRelation,
 } from '../Openid/models';
 import { WebSSOConfiguration } from '../WebSSO/models';
 
@@ -61,31 +62,28 @@ const getNamedEntityDecoder = (
     title,
   );
 
-const endpoint = JsonDecoder.object<Endpoint>(
+const endpointDecoder = JsonDecoder.object<Endpoint>(
   {
-    customEndpoint: JsonDecoder.string,
-    type: JsonDecoder.string,
+    customEndpoint: JsonDecoder.nullable(JsonDecoder.string),
+    type: JsonDecoder.enumeration(EndpointType, 'type'),
   },
   'Endpoint',
   {
     customEndpoint: 'custom_endpoint',
-    type: 'type',
   },
 );
 
-const relation = JsonDecoder.object<AuthorizationRule>(
+const relation = JsonDecoder.object<RolesRelation>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
     claimValue: JsonDecoder.string,
   },
-  'Relation',
+  'Role Relation',
   {
     accessGroup: 'access_group',
     claimValue: 'claim_value',
   },
 );
-
-// auth conditions
 
 const authConditions = JsonDecoder.object<AuthConditions>(
   {
@@ -98,7 +96,7 @@ const authConditions = JsonDecoder.object<AuthConditions>(
       JsonDecoder.string,
       'blacklist client addresses',
     ),
-    endpoint,
+    endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
     trustedClientAddresses: JsonDecoder.array(
       JsonDecoder.string,
@@ -110,7 +108,6 @@ const authConditions = JsonDecoder.object<AuthConditions>(
     attributePath: 'attribute_path',
     authorizedValues: 'authorized_values',
     blacklistClientAddresses: 'blacklist_client_addresses',
-    endpoint: 'endpoint',
     isEnabled: 'is_enabled',
     trustedClientAddresses: 'trusted_client_addresses',
   },
@@ -120,7 +117,7 @@ const rolesMapping = JsonDecoder.object<RolesMapping>(
   {
     applyOnlyFirstRole: JsonDecoder.boolean,
     attributePath: JsonDecoder.string,
-    endpoint,
+    endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
     relations: JsonDecoder.array(relation, 'Roles relation'),
   },
@@ -128,21 +125,8 @@ const rolesMapping = JsonDecoder.object<RolesMapping>(
   {
     applyOnlyFirstRole: 'apply_only_first_role',
     attributePath: 'attribute_path',
-    endpoint: 'endpoint',
     isEnabled: 'is_enabled',
     relations: 'relations',
-  },
-);
-
-const authorization = JsonDecoder.object<AuthorizationRule>(
-  {
-    accessGroup: getNamedEntityDecoder('Access group'),
-    claimValue: JsonDecoder.string,
-  },
-  'Authorization',
-  {
-    accessGroup: 'access_group',
-    claimValue: 'claim_value',
   },
 );
 
@@ -152,10 +136,6 @@ export const openidConfigurationDecoder =
       authenticationConditions: authConditions,
       authenticationType: JsonDecoder.nullable(JsonDecoder.string),
       authorizationEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-      authorizationRules: JsonDecoder.array(
-        authorization,
-        'Authorization relations',
-      ),
       autoImport: JsonDecoder.boolean,
 
       baseUrl: JsonDecoder.nullable(JsonDecoder.string),
@@ -191,7 +171,6 @@ export const openidConfigurationDecoder =
       authenticationConditions: 'authentication_conditions',
       authenticationType: 'authentication_type',
       authorizationEndpoint: 'authorization_endpoint',
-      authorizationRules: 'authorization_rules',
       autoImport: 'auto_import',
       baseUrl: 'base_url',
       clientId: 'client_id',
@@ -206,9 +185,7 @@ export const openidConfigurationDecoder =
       isActive: 'is_active',
       isForced: 'is_forced',
       loginClaim: 'login_claim',
-
       rolesMapping: 'roles_mapping',
-
       tokenEndpoint: 'token_endpoint',
       userinfoEndpoint: 'userinfo_endpoint',
       verifyPeer: 'verify_peer',

@@ -49,7 +49,6 @@ import {
   labelDefineRelationBetweenRolesAndAcl,
   labelRoleValue,
   labelAclAccessGroup,
-  labelDefineYourEndpoint,
 } from '../translatedLabels';
 import { AuthenticationType } from '../models';
 import {
@@ -132,7 +131,6 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
-    extraTextLabel: labelDefineYourEndpoint,
     fieldName: 'authenticationConditions.endpoint',
     group: labelAuthenticationConditions,
     label: labelWhichEndpointTheConditionsAttributePathComeFrom,
@@ -152,9 +150,6 @@ export const inputs: Array<InputProps> = [
         },
       ],
     },
-    radioName: 'type',
-    radioTextName: 'customEndpoint',
-
     type: InputType.Radio,
   },
   {
@@ -371,7 +366,6 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
   {
-    extraTextLabel: labelDefineYourEndpoint,
     fieldName: 'rolesMapping.endpoint',
     group: labelRolesMapping,
     label: labelWhichendpointtheRolesAttributePathComeFrom,
@@ -391,9 +385,6 @@ export const inputs: Array<InputProps> = [
         },
       ],
     },
-    radioName: 'type',
-    radioTextName: 'customEndpoint',
-
     type: InputType.Radio,
   },
   {

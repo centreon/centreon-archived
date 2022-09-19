@@ -1,36 +1,32 @@
+export enum EndpointType {
+  CustomEndpoint = 'custom_endpoint',
+  IntrospectionEndpoint = 'introspection_endpoint',
+  UserInformationEndpoint = 'user_information_endpoint',
+}
+
 export interface NamedEntity {
   id: number;
   name: string;
 }
 
-export interface AuthorizationRule {
+export interface RolesRelation {
   accessGroup: NamedEntity;
   claimValue: string;
 }
 
-export interface AuthorizationRelationToAPI {
+export interface RolesRelationToAPI {
   access_group_id: number;
   claim_value: string;
 }
 
-export interface Relations {
-  accessGroup: NamedEntity;
-  claimValue: string;
-}
-
-export interface RelationsToAPI {
-  access_group: NamedEntity;
-  claim_value: string;
-}
-
 export interface EndpointToAPI {
-  custom_endpoint: string;
-  type: string;
+  custom_endpoint: string | null;
+  type: EndpointType;
 }
 
 export interface Endpoint {
-  customEndpoint: string;
-  type: string;
+  customEndpoint: string | null;
+  type: EndpointType;
 }
 
 export interface RolesMapping {
@@ -38,7 +34,7 @@ export interface RolesMapping {
   attributePath: string;
   endpoint: Endpoint;
   isEnabled: boolean;
-  relations: Array<Relations>;
+  relations: Array<RolesRelation>;
 }
 
 export interface AuthConditions {
@@ -55,7 +51,7 @@ export interface RolesMappingToApi {
   attribute_path: string;
   endpoint: EndpointToAPI;
   is_enabled: boolean;
-  relations: Array<RelationsToAPI>;
+  relations: Array<RolesRelationToAPI>;
 }
 
 export interface AuthConditionsToApi {
@@ -71,7 +67,6 @@ export interface OpenidConfiguration {
   authenticationConditions: AuthConditions;
   authenticationType: string | null;
   authorizationEndpoint: string | null;
-  authorizationRules: Array<AuthorizationRule>;
   autoImport: boolean;
   baseUrl: string | null;
   clientId: string | null;
@@ -96,7 +91,6 @@ export interface OpenidConfigurationToAPI {
   authentication_conditions: AuthConditionsToApi;
   authentication_type: string | null;
   authorization_endpoint: string | null;
-  authorization_rules: Array<AuthorizationRelationToAPI>;
   auto_import: boolean;
   base_url: string | null;
   client_id: string | null;
