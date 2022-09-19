@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
+  getIsReload?: (value: boolean) => void;
   graphHeight: number;
   isEditAnomalyDetectionDataDialogOpen: boolean;
   limitLegendRows?: boolean;
@@ -60,9 +61,9 @@ const ExportablePerformanceGraphWithTimeline = ({
   limitLegendRows,
   isEditAnomalyDetectionDataDialogOpen,
   resizeEnvelopeData,
+  getIsReload,
 }: Props): JSX.Element => {
   const classes = useStyles();
-
   const [timeline, setTimeline] = useState<Array<TimelineEvent>>();
   const [performanceGraphRef, setPerformanceGraphRef] =
     useState<HTMLDivElement | null>(null);
@@ -185,6 +186,13 @@ const ExportablePerformanceGraphWithTimeline = ({
     setPerformanceGraphRef(ref);
   };
 
+  const sendReloadGraphPerformance = (value: boolean): void => {
+    if (!getIsReload) {
+      return;
+    }
+    getIsReload(value);
+  };
+
   return (
     <Paper className={classes.graphContainer}>
       <div
@@ -231,6 +239,7 @@ const ExportablePerformanceGraphWithTimeline = ({
                   openModalConfirmation,
                   isCanceledResizeEnvelope,
                   isResizeEnvelope,
+                  setIsResizeEnvelope,
                 }): JSX.Element => (
                   <>
                     {factorsData && (
@@ -244,11 +253,13 @@ const ExportablePerformanceGraphWithTimeline = ({
                     {getFactors && details && details?.sensitivity && (
                       <EditAnomalyDetectionDataDialog.Slider
                         details={details}
-                        getFactors={getFactors}
                         isCanceledResizeEnvelope={isCanceledResizeEnvelope}
                         isResizeEnvelope={isResizeEnvelope}
                         openModalConfirmation={openModalConfirmation}
+                        sendFactors={getFactors}
+                        sendReloadGraphPerformance={sendReloadGraphPerformance}
                         sensitivity={details.sensitivity}
+                        setIsResizeEnvelope={setIsResizeEnvelope}
                       />
                     )}
                   </>

@@ -8,6 +8,7 @@ import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import memoizeComponent from '../../../memoizedComponent';
+import useLoadResources from '../../../Listing/useLoadResources/index';
 
 import HostGraph from './HostGraph';
 
@@ -42,10 +43,18 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const equalsMetaService = equals(ResourceType.metaservice);
   const equalsAnomalyDetection = equals(ResourceType.anomalydetection);
 
+  const { initAutorefreshAndLoad } = useLoadResources();
+
   const isService =
     equalsService(type) ||
     equalsMetaService(type) ||
     equalsAnomalyDetection(type);
+
+  const getIsReload = (value: boolean): void => {
+    if (value) {
+      initAutorefreshAndLoad();
+    }
+  };
 
   return (
     <div className={classes.container}>
@@ -53,6 +62,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
         <>
           <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
+            getIsReload={getIsReload}
             graphHeight={280}
             isEditAnomalyDetectionDataDialogOpen={false}
             resource={details}

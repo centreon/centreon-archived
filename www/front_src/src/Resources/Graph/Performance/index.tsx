@@ -58,7 +58,6 @@ import {
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
-import { mockedResultGraph } from './mockedResultGraph/mockedResultGraph';
 import { mockedResultModalGraph } from './mockedResultGraph/mockedResultModalGraph';
 import {
   AdjustTimePeriodProps,
@@ -215,18 +214,10 @@ const PerformanceGraph = ({
         newLineData = getLineData(graphData);
 
         if (equals(type, ResourceType.anomalydetection)) {
-          // const isModalAD = endpoint.includes('15');
-          setTimeSeries(getTimeSeries(mockedResultGraph));
-          setBase(mockedResultGraph.global.base);
-          setTitle(mockedResultGraph.global.title);
-          newLineData = getLineData(mockedResultGraph);
-
-          // if (isModalAD) {
-          //   setTimeSeries(getTimeSeries(mockedResultModalGraph));
-          //   setBase(mockedResultModalGraph.global.base);
-          //   setTitle(mockedResultModalGraph.global.title);
-          //   newLineData = getLineData(mockedResultModalGraph);
-          // }
+          setTimeSeries(getTimeSeries(mockedResultModalGraph));
+          setBase(mockedResultModalGraph.global.base);
+          setTitle(mockedResultModalGraph.global.title);
+          newLineData = getLineData(mockedResultModalGraph);
         }
 
         if (lineData) {
@@ -240,6 +231,7 @@ const PerformanceGraph = ({
 
           return;
         }
+
         setLineData(newLineData);
       })
       .catch(() => undefined);

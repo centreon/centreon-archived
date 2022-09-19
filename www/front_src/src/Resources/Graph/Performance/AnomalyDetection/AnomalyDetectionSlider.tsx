@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { equals, path } from 'ramda';
 
@@ -77,20 +77,24 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   details: ResourceDetails;
-  getFactors: (data: CustomFactorsData) => void;
   isCanceledResizeEnvelope?: boolean;
   isResizeEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
+  sendFactors: (data: CustomFactorsData) => void;
+  sendReloadGraphPerformance: (value: boolean) => void;
   sensitivity: Sensitivity;
+  setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
 }
 
 const AnomalyDetectionSlider = ({
-  getFactors,
+  sendFactors,
   sensitivity,
   details,
   openModalConfirmation,
   isCanceledResizeEnvelope,
   isResizeEnvelope,
+  sendReloadGraphPerformance,
+  setIsResizeEnvelope,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -111,7 +115,7 @@ const AnomalyDetectionSlider = ({
     },
   ];
 
-  const { sendRequest, sending } = useRequest({
+  const { sendRequest } = useRequest({
     request: putData,
   });
 
@@ -158,7 +162,8 @@ const AnomalyDetectionSlider = ({
       endpoint: sensitivityEndPoint,
     });
 
-    // get new Data
+    sendReloadGraphPerformance(true);
+    setIsResizing(false);
   };
 
   const cancelResizingEnvelope = (): void => {
@@ -177,8 +182,12 @@ const AnomalyDetectionSlider = ({
     if (equals(currentValue, sensitivity.default_value) && isResizing) {
       setIsDefaultValue(true);
     }
+    if (isResizeEnvelope && setIsResizeEnvelope) {
+      setIsResizeEnvelope(false);
+      sendReloadGraphPerformance(false);
+    }
 
-    getFactors({
+    sendFactors({
       currentFactor: sensitivity.current_value,
       isResizing,
       simulatedFactor: currentValue,
@@ -192,7 +201,9 @@ const AnomalyDetectionSlider = ({
   }, [isCanceledResizeEnvelope]);
 
   useEffect(() => {
-    resizeEnvelope();
+    if (isResizeEnvelope) {
+      resizeEnvelope();
+    }
   }, [isResizeEnvelope]);
 
   return (
@@ -253,6 +264,7 @@ const AnomalyDetectionSlider = ({
         </Button>
         <Button
           className={classes.confirmButton}
+          disabled={!isResizing}
           size="small"
           variant="contained"
           onClick={confirm}

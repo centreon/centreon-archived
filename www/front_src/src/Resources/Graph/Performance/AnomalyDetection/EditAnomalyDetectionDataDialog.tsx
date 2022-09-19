@@ -49,6 +49,7 @@ interface PropsChildren {
   isCanceledResizeEnvelope?: boolean;
   isResizeEnvelope?: boolean;
   openModalConfirmation?: (value: boolean) => void;
+  setIsResizeEnvelope?: Dispatch<SetStateAction<boolean>>;
 }
 
 interface Props {
@@ -93,6 +94,7 @@ const EditAnomalyDetectionDataDialog = ({
 
   const resizeEnvelope = (value: boolean): void => {
     setIsResizeEnvelope(value);
+    setIsModalConfirmationOpened(false);
   };
 
   return (
@@ -112,6 +114,7 @@ const EditAnomalyDetectionDataDialog = ({
                 isCanceledResizeEnvelope,
                 isResizeEnvelope,
                 openModalConfirmation,
+                setIsResizeEnvelope,
               })}
           </Paper>
           <Paper className={classes.exclusionPeriod}>
