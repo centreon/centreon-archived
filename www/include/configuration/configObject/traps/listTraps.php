@@ -200,9 +200,11 @@ for ($i = 0; $trap = $stmt->fetch(); $i++) {
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" .
         "\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $trap['traps_id'] . "]' />";
-    $dbResult2 = $pearDB->query("select alias from traps_vendor where id='" . $trap['manufacturer_id'] . "' LIMIT 1");
-    $mnftr = $dbResult2->fetch();
-    $dbResult2->closeCursor();
+    $statement = $pearDB->prepare("select alias from traps_vendor where id= :trap LIMIT 1");
+    $statement->bindValue(':trap', (int) $trap['manufacturer_id'], \PDO::PARAM_INT);
+    $statement->execute();
+    $mnftr = $statement->fetch();
+    $statement->closeCursor();
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
