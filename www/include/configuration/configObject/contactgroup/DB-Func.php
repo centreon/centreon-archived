@@ -200,10 +200,10 @@ function insertContactGroup($ret)
     }
 
     $cgName = $centreon->checkIllegalChar(
-        filter_var($ret["cg_name"], FILTER_SANITIZE_SPECIAL_CHARS)
+        \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_name"])
     );
-    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_SPECIAL_CHARS);
-    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_SPECIAL_CHARS);
+    $cgAlias = \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_alias"]);
+    $cgComment = \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_comment"]);
     $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1';//enum
 
     $stmt = $pearDB->prepare(
@@ -261,13 +261,10 @@ function updateContactGroup($cgId = null, $params = array())
     }
 
     $cgName = $centreon->checkIllegalChar(
-        filter_var(
-            $ret["cg_name"],
-            FILTER_SANITIZE_SPECIAL_CHARS
-        )
+        \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_name"])
     );
-    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_SPECIAL_CHARS);
-    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_SPECIAL_CHARS);
+    $cgAlias = \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_alias"]);
+    $cgComment = \HtmlAnalyzer::sanitizeAndRemoveTags($ret["cg_comment"]);
     $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1';//enum
 
     $stmt = $pearDB->prepare(

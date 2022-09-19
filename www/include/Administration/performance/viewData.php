@@ -71,30 +71,35 @@ const UNLOCK_SERVICE = "nlk";
 /*
  * Prepare search engine
  */
-$inputArguments = array(
-    'Search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'searchH' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'num' => FILTER_SANITIZE_NUMBER_INT,
-    'limit' => FILTER_SANITIZE_NUMBER_INT,
-    'searchS' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'searchP' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'o' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'o1' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'o2' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'select' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'id' => FILTER_SANITIZE_SPECIAL_CHARS,
+$inputGet = array(
+    'Search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['Search'] ?? ''),
+    'searchH' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchH'] ?? ''),
+    'num' => filter_input(INPUT_GET, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'limit' => filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_INT),
+    'searchS' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchS'] ?? ''),
+    'searchP' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchP'] ?? ''),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o'] ?? ''),
+    'o1' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o1'] ?? ''),
+    'o2' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o2'] ?? ''),
+    'select' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['select'] ?? ''),
+    'id' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['id'] ?? ''),
 );
-$inputGet = filter_input_array(
-    INPUT_GET,
-    $inputArguments
-);
-$inputPost = filter_input_array(
-    INPUT_POST,
-    $inputArguments
+$inputPost = array(
+    'Search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['Search'] ?? ''),
+    'searchH' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchH'] ?? ''),
+    'num' => filter_input(INPUT_POST, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'limit' => filter_input(INPUT_POST, 'limit', FILTER_SANITIZE_NUMBER_INT),
+    'searchS' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchS'] ?? ''),
+    'searchP' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchP'] ?? ''),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o'] ?? ''),
+    'o1' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o1'] ?? ''),
+    'o2' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o2'] ?? ''),
+    'select' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['select'] ?? ''),
+    'id' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['id'] ?? ''),
 );
 
 $inputs = array();
-foreach ($inputArguments as $argumentName => $argumentValue) {
+foreach ($inputGet as $argumentName => $argumentValue) {
     if (
         !empty($inputPost[$argumentName]) && (
             (is_array($inputPost[$argumentName]) && $inputPost[$argumentName]) ||
