@@ -177,4 +177,14 @@ class SSOAuthenticationException extends \Exception
     {
         return new self(_("An error occured while decoding Identity Provider ID Token"));
     }
+
+    /**
+     * Exception thrown when the request to authentication condition fail
+     *
+     * @return self
+     */
+    public static function requestForCustomAuthenticationConditionsEndpointFail(): self
+    {
+        return new self(_('Request for authentication conditions custom endpoint has failed'));
+    }
 }

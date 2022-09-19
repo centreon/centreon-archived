@@ -17043,3 +17043,9 @@ msgstr "Type d'endpoint spécifié invalide"
 
 msgid "Invalid endpoint URL specified"
 msgstr "URL d'endpoint spécifié invalide"
+
+msgid "Request for authentication conditions custom endpoint has failed"
+msgstr "La demande de conditions d'authentification de l'endpoint personnalisé a échoué"
+
+msgid "Authorized conditions not found in provider conditions"
+msgstr "Les conditions autorisées ne figurent pas dans les conditions du provider"

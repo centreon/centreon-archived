@@ -20,22 +20,10 @@
  */
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
+namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
+use Core\Application\Common\UseCase\ForbiddenResponse;
 
-class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class ErrorAuthenticationConditionsResponse extends ForbiddenResponse
 {
-    /**
-     * @param mixed $response
-     */
-    public function present(mixed $response): void
-    {
-        $presenterResponse = [
-            'redirect_uri' => $this->responseStatus->getMessage()
-        ];
-
-        parent::present($presenterResponse);
-    }
 }
