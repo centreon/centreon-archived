@@ -7,6 +7,7 @@ import {
   EndpointType,
   NamedEntity,
   OpenidConfiguration,
+  Relations,
   RolesMapping,
   RolesRelation,
 } from '../Openid/models';
