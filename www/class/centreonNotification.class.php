@@ -35,9 +35,6 @@
 
 class CentreonNotification
 {
-    /**
-     * @var CentreonDB $db
-     */
     protected $db;
     protected $svcTpl;
     protected $svcNotifType;
