@@ -81,12 +81,6 @@ export const groups: Array<Group> = [
     name: labelRolesMapping,
     order: 5,
   },
-  {
-    EndIcon: HelpOutlineIcon,
-    TooltipContent: Description,
-    name: labelAuthorizations,
-    order: 6,
-  },
 ];
 
 const useStyles = makeStyles((theme) => ({

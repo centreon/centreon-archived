@@ -20,25 +20,25 @@ export interface RolesRelationToAPI {
 }
 
 export interface EndpointToAPI {
-  custom_endpoint: string | null;
+  custom_endpoint?: string | null;
   type: EndpointType;
 }
 
 export interface Endpoint {
-  customEndpoint: string | null;
+  customEndpoint?: string | null;
   type: EndpointType;
 }
 
 export interface RolesMapping {
   applyOnlyFirstRole: boolean;
-  attributePath: string;
+  attributePath?: string | null;
   endpoint: Endpoint;
   isEnabled: boolean;
   relations: Array<RolesRelation>;
 }
 
 export interface AuthConditions {
-  attributePath: string;
+  attributePath?: string | null;
   authorizedValues: Array<string>;
   blacklistClientAddresses: Array<string>;
   endpoint: Endpoint;
@@ -48,14 +48,14 @@ export interface AuthConditions {
 
 export interface RolesMappingToApi {
   apply_only_first_role: boolean;
-  attribute_path: string;
+  attribute_path?: string | null;
   endpoint: EndpointToAPI;
   is_enabled: boolean;
   relations: Array<RolesRelationToAPI>;
 }
 
 export interface AuthConditionsToApi {
-  attribute_path: string;
+  attribute_path?: string | null;
   authorized_values: Array<string>;
   blacklist_client_addresses: Array<string>;
   endpoint: EndpointToAPI;
@@ -72,7 +72,6 @@ export interface OpenidConfiguration {
   clientId: string | null;
   clientSecret: string | null;
   connectionScopes: Array<string>;
-  contactGroup: NamedEntity | null;
   contactTemplate: NamedEntity | null;
   emailBindAttribute?: string | null;
   endSessionEndpoint?: string | null;
@@ -96,7 +95,6 @@ export interface OpenidConfigurationToAPI {
   client_id: string | null;
   client_secret: string | null;
   connection_scopes: Array<string>;
-  contact_group_id: number;
   contact_template: NamedEntity | null;
   email_bind_attribute: string | null;
   endsession_endpoint?: string | null;

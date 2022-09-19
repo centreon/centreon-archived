@@ -147,7 +147,6 @@ export const adaptOpenidConfigurationToAPI = ({
   contactTemplate,
   emailBindAttribute,
   fullnameBindAttribute,
-  contactGroup,
   authenticationConditions,
   rolesMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
@@ -161,7 +160,6 @@ export const adaptOpenidConfigurationToAPI = ({
   client_id: clientId || null,
   client_secret: clientSecret || null,
   connection_scopes: connectionScopes,
-  contact_group_id: contactGroup?.id || 0,
   contact_template: contactTemplate || null,
   email_bind_attribute: emailBindAttribute || null,
   endsession_endpoint: endSessionEndpoint || null,

@@ -7,7 +7,6 @@ import {
   EndpointType,
   NamedEntity,
   OpenidConfiguration,
-  Relations,
   RolesMapping,
   RolesRelation,
 } from '../Openid/models';
@@ -146,9 +145,6 @@ export const openidConfigurationDecoder =
         JsonDecoder.string,
         'connectionScopes',
       ),
-      contactGroup: JsonDecoder.nullable(
-        getNamedEntityDecoder('Contact group'),
-      ),
       contactTemplate: JsonDecoder.nullable(
         getNamedEntityDecoder('Contact template'),
       ),
@@ -177,7 +173,6 @@ export const openidConfigurationDecoder =
       clientId: 'client_id',
       clientSecret: 'client_secret',
       connectionScopes: 'connection_scopes',
-      contactGroup: 'contact_group',
       contactTemplate: 'contact_template',
       emailBindAttribute: 'email_bind_attribute',
       endSessionEndpoint: 'endsession_endpoint',

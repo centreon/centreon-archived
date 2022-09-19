@@ -43,17 +43,8 @@ const FormButtons = (): JSX.Element => {
   const [submitted, setSubmitted] = useState(false);
   const [askingBeforeReset, setAskingBeforeReset] = useState(false);
 
-  const {
-    isSubmitting,
-    dirty,
-    isValid,
-    submitForm,
-    resetForm,
-    values,
-    errors,
-  } = useFormikContext<FormikValues>();
-
-  console.log(values, errors);
+  const { isSubmitting, dirty, isValid, submitForm, resetForm } =
+    useFormikContext<FormikValues>();
 
   const [unsavedDialogOpened, setUnsavedDialogOpened] = useState(false);
 

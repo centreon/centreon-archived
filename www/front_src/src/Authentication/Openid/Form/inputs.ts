@@ -1,4 +1,4 @@
-import { equals, isEmpty, not, pathEq, prop } from 'ramda';
+import { equals, not, pathEq, prop } from 'ramda';
 import { FormikValues } from 'formik';
 
 import { InputProps, InputType } from '@centreon/ui';
@@ -11,7 +11,6 @@ import {
   labelBlacklistClientAddresses,
   labelClientID,
   labelClientSecret,
-  labelContactGroup,
   labelContactTemplate,
   labelDisableVerifyPeer,
   labelEmailAttributePath,
@@ -29,7 +28,6 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
   labelDeleteRelation,
-  labelAuthorizationKey,
   labelEnableConditionsOnIdentityProvider,
   labelConditionsAttributePath,
   labelWhichEndpointTheConditionsAttributePathComeFrom,
@@ -51,14 +49,12 @@ import {
 import { AuthenticationType, EndpointType } from '../models';
 import {
   labelActivation,
-  labelAuthorizations,
   labelAutoImportUsers,
   labelAuthenticationConditions,
   labelIdentityProvider,
 } from '../../translatedLabels';
 import {
   accessGroupsEndpoint,
-  contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../../api/endpoints';
 
@@ -67,9 +63,6 @@ const isAutoImportDisabled = (values: FormikValues): boolean =>
 
 const isAutoImportEnabled = (values: FormikValues): boolean =>
   prop('autoImport', values);
-
-const isAuthorizationRelationsFilled = (values: FormikValues): boolean =>
-  not(isEmpty(prop('authorizationRules', values)));
 
 const hideCustomEndpoint =
   (rootObject: string) =>
@@ -312,23 +305,6 @@ export const inputs: Array<InputProps> = [
     getRequired: isAutoImportEnabled,
     group: labelAutoImportUsers,
     label: labelFullnameAttributePath,
-    type: InputType.Text,
-  },
-  {
-    connectedAutocomplete: {
-      additionalConditionParameters: [],
-      endpoint: contactGroupsEndpoint,
-    },
-    fieldName: 'contactGroup',
-    getRequired: isAuthorizationRelationsFilled,
-    group: labelAuthorizations,
-    label: labelContactGroup,
-    type: InputType.SingleConnectedAutocomplete,
-  },
-  {
-    fieldName: 'claimName',
-    group: labelAuthorizations,
-    label: labelAuthorizationKey,
     type: InputType.Text,
   },
   {
