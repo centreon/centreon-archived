@@ -100,18 +100,19 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query(
-            "SELECT hgr.host_host_id " .
+        $statement = $this->DB->prepare("SELECT hgr.host_host_id " .
             "FROM hostgroup_relation hgr, host h " .
-            "WHERE hgr.hostgroup_hg_id = '" . $this->DB->escape($hg_id) . "' " .
+            "WHERE hgr.hostgroup_hg_id = :hgId " .
             "AND h.host_id = hgr.host_host_id " .
-            "ORDER by h.host_name"
-        );
-        while ($elem = $DBRESULT->fetchRow()) {
+            "ORDER by h.host_name");
+        $statement->bindValue(':hgId', (int) $hg_id, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while ($elem = $statement->fetchRow()) {
             $ref[$elem["host_host_id"]] = $elem["host_host_id"];
             $hosts[] = $elem["host_host_id"];
         }
-        $DBRESULT->closeCursor();
+        $statement->closeCursor();
         unset($elem);
 
         if (isset($hostgroups) && count($hostgroups)) {

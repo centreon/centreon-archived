@@ -413,14 +413,12 @@ class CentreonMedia
             $imageId = $row['img_id'];
 
             // Insert relation between directory and image
-            $query = 'INSERT INTO view_img_dir_relation '
-                . '(dir_dir_parent_id, img_img_id) '
-                . 'VALUES ('
-                . $directoryId . ', '
-                . $imageId . ' '
-                . ') ';
+            $statement = $this->db->prepare("INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) " .
+                "VALUES (:dirId, :imgId) ");
+            $statement->bindValue(':dirId', (int) $directoryId, \PDO::PARAM_INT);
+            $statement->bindValue(':imgId', (int) $imageId, \PDO::PARAM_INT);
             try {
-                $this->db->query($query);
+                $statement->execute();
             } catch (\PDOException $e) {
                 throw new \Exception('Error while inserting relation between' . $imageName . ' and ' . $directoryName);
             }

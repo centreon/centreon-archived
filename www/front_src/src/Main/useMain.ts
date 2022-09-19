@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { and, includes, isEmpty, isNil, not, or } from 'ramda';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -30,7 +30,7 @@ const useMain = (): void => {
   const { getBrowserLocale, getInternalTranslation, i18next } =
     useInitializeTranslation();
 
-  const [platformInstallationStatus, setPlatformInstallationStatus] = useAtom(
+  const setPlatformInstallationStatus = useSetAtom(
     platformInstallationStatusAtom,
   );
   const user = useAtomValue(userAtom);
@@ -66,12 +66,8 @@ const useMain = (): void => {
   }, []);
 
   useEffect((): void => {
-    if (isNil(platformInstallationStatus)) {
-      return;
-    }
-
     loadUser();
-  }, [platformInstallationStatus]);
+  }, []);
 
   useEffect((): void => {
     if (not(areUserParametersLoaded)) {
