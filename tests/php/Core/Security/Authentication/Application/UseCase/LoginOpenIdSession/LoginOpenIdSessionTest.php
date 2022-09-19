@@ -23,44 +23,45 @@ declare(strict_types=1);
 
 namespace Tests\Core\Security\Authentication\Application\UseCase\LoginOpenIdSession;
 
+use CentreonDB;
+use Pimple\Container;
 use Centreon\Domain\Contact\Contact;
+use Core\Contact\Domain\Model\ContactGroup;
+use Symfony\Component\HttpFoundation\Request;
+use Core\Contact\Domain\Model\ContactTemplate;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Core\Infrastructure\Common\Presenter\JsonPresenter;
+use Core\Security\AccessGroup\Domain\Model\AccessGroup;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
-use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use CentreonDB;
-use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
-use Core\Contact\Domain\Model\ContactGroup;
-use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Infrastructure\Common\Presenter\JsonPresenter;
-use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
-use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
-use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
-use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
-use Core\Security\Authentication\Application\UseCase\Login\Login;
-use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
-use Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginPresenter;
-use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
-use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Provider;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
-use Pimple\Container;
 use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Core\Security\Authentication\Application\UseCase\Login\Login;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
+use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
+use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginPresenter;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
+use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
+use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -134,7 +135,7 @@ beforeEach(function () {
         'contact_group' => new ContactGroup(3, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
-
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
     $this->validOpenIdConfiguration = $configuration;

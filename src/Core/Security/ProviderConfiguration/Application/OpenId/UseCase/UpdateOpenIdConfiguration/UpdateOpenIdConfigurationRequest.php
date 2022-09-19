@@ -41,16 +41,6 @@ class UpdateOpenIdConfigurationRequest
     public bool $isForced = false;
 
     /**
-     * @var string[]
-     */
-    public array $trustedClientAddresses = [];
-
-    /**
-     * @var string[]
-     */
-    public array $blacklistClientAddresses = [];
-
-    /**
      * @var string|null
      */
     public ?string $baseUrl = null;
@@ -141,6 +131,21 @@ class UpdateOpenIdConfigurationRequest
     public array $authorizationRules = [];
 
     /**
+     * @var array<string, array<int|string, string|null>|string|bool>
+     */
+    public array $authenticationConditions = [
+        "is_enabled" => false,
+        "attribute_path" => "",
+        "authorized_values" => [],
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
+    ];
+
+    /**
      * @return array<string,mixed>
      */
     public function toArray(): array
@@ -156,7 +161,6 @@ class UpdateOpenIdConfigurationRequest
             'authentication_type' => $this->authenticationType,
             'authorization_endpoint' => $this->authorizationEndpoint,
             'base_url' => $this->baseUrl,
-            'blacklist_client_addresses' => $this->blacklistClientAddresses,
             'claim_name' => $this->claimName,
             'client_secret' => $this->clientSecret,
             'connection_scopes' => $this->connectionScopes,
@@ -165,10 +169,10 @@ class UpdateOpenIdConfigurationRequest
             'introspection_token_endpoint' => $this->introspectionTokenEndpoint,
             'login_claim' => $this->loginClaim,
             'token_endpoint' => $this->tokenEndpoint,
-            'trusted_client_addresses' => $this->trustedClientAddresses,
             'userinfo_endpoint' => $this->userInformationEndpoint,
             'fullname_bind_attribute' => $this->userNameBindAttribute,
-            'verify_peer' => $this->verifyPeer
+            'verify_peer' => $this->verifyPeer,
+            'authentication_conditions' => $this->authenticationConditions
         ];
     }
 }

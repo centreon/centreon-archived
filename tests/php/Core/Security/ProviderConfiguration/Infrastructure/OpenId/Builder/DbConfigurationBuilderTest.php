@@ -27,8 +27,10 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 
 beforeEach(function () {
     $this->customConfiguration = [
@@ -119,6 +121,12 @@ it('should return a Provider when all mandatory parameters are present', functio
     // Note: contact_template and contact_group are overridden
     $this->customConfiguration['contact_template'] = new ContactTemplate(1, 'contact_template');
     $this->customConfiguration['contact_group'] = new ContactGroup(1, 'contact_group');
+    $this->customConfiguration['authentication_conditions'] = new AuthenticationConditions(
+        true,
+        "info.groups",
+        new Endpoint(),
+        ["groupA", "groupB"]
+    );
 
     $configuration = new Configuration(
         2,

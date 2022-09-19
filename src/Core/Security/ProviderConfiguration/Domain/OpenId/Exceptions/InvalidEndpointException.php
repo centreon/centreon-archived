@@ -18,24 +18,26 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Security\Authentication\Infrastructure\Api\Login\Local;
+namespace Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Security\Authentication\Application\UseCase\Login\LoginPresenterInterface;
-
-class LoginPresenter extends AbstractPresenter implements LoginPresenterInterface
+class InvalidEndpointException extends OpenIdConfigurationException
 {
     /**
-     * @param mixed $response
+     * @return self
      */
-    public function present(mixed $response): void
+    public static function invalidType(): self
     {
-        $presenterResponse = [
-            'redirect_uri' => $this->responseStatus->getMessage()
-        ];
+        return new self(_('Invalid endpoint type specified'));
+    }
 
-        parent::present($presenterResponse);
+    /**
+     * @return self
+     */
+    public static function invalidUrl(): self
+    {
+        return new self(_('Invalid endpoint URL specified'));
     }
 }

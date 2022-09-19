@@ -24,13 +24,13 @@ declare(strict_types=1);
 namespace Tests\Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration;
 
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
@@ -39,6 +39,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdCon
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 
 beforeEach(function () {
@@ -64,8 +65,6 @@ it('should present a provider configuration', function () {
         'contact_template' => new ContactTemplate(1, 'contact_template'),
         'email_bind_attribute' => null,
         'fullname_bind_attribute' => null,
-        'trusted_client_addresses' => [],
-        'blacklist_client_addresses' => [],
         'endsession_endpoint' => '/logout',
         'connection_scopes' => [],
         'login_claim' => 'preferred_username',
@@ -74,6 +73,7 @@ it('should present a provider configuration', function () {
         'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 
@@ -96,10 +96,6 @@ it('should present a provider configuration', function () {
     expect($presenter->response->isActive)->toBeTrue();
     expect($presenter->response->isForced)->toBeTrue();
     expect($presenter->response->verifyPeer)->toBeFalse();
-    expect($presenter->response->trustedClientAddresses)->toBeEmpty();
-    expect($presenter->response->trustedClientAddresses)->toBeArray();
-    expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
-    expect($presenter->response->blacklistClientAddresses)->toBeArray();
     expect($presenter->response->baseUrl)->toBe('http://127.0.0.1/auth/openid-connect');
     expect($presenter->response->authorizationEndpoint)->toBe('/authorization');
     expect($presenter->response->tokenEndpoint)->toBe('/token');

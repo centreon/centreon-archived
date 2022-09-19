@@ -29,17 +29,6 @@ use Core\Contact\Domain\Model\ContactTemplate;
 interface OpenIdCustomConfigurationInterface
 {
     /**
-     * @return string[]
-     */
-    public function getTrustedClientAddresses(): array;
-
-
-    /**
-     * @return string[]
-     */
-    public function getBlacklistClientAddresses(): array;
-
-    /**
      * @return string|null
      */
     public function getEndSessionEndpoint(): ?string;
@@ -133,4 +122,9 @@ interface OpenIdCustomConfigurationInterface
      * @return ?string
      */
     public function getClaimName(): ?string;
+
+    /**
+     * @return AuthenticationConditions
+     */
+    public function getAuthenticationConditions(): AuthenticationConditions;
 }

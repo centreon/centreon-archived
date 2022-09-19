@@ -35,7 +35,9 @@ use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
@@ -135,6 +137,9 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
                         $configuration->getId()
                     );
+                $jsonDecoded['authentication_conditions'] = $this->createAuthenticationConditionsFromRecord(
+                    $jsonDecoded['authentication_conditions']
+                );
 
                 return new OpenIdCustomConfiguration($jsonDecoded);
             case Provider::WEB_SSO:
@@ -252,5 +257,35 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         }
 
         return $excludedUsers;
+    }
+
+    /**
+     * Create Authentication Conditions from record.
+     *
+     * @param array<string,bool|string|string[]> $authenticationConditionsRecord
+     * @return AuthenticationConditions
+     */
+    public function createAuthenticationConditionsFromRecord(
+        array $authenticationConditionsRecord
+    ): AuthenticationConditions {
+        $endpoint = new Endpoint(
+            $authenticationConditionsRecord["endpoint"]["type"],
+            $authenticationConditionsRecord["endpoint"]["custom_endpoint"]
+        );
+
+        $authenticationConditions = new AuthenticationConditions(
+            $authenticationConditionsRecord["is_enabled"],
+            $authenticationConditionsRecord["attribute_path"],
+            $endpoint,
+            $authenticationConditionsRecord["authorized_values"]
+        );
+        $authenticationConditions->setTrustedClientAddresses(
+            $authenticationConditionsRecord["trusted_client_addresses"]
+        );
+        $authenticationConditions->setBlacklistClientAddresses(
+            $authenticationConditionsRecord["blacklist_client_addresses"]
+        );
+
+        return $authenticationConditions;
     }
 }
