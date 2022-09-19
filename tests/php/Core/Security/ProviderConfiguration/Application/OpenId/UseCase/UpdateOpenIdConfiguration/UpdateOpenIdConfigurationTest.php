@@ -142,7 +142,7 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->authenticationConditions = [
         "is_enabled" => true,
         "attribute_path" => "info.groups",
-        "endpoint" => "http://127.0.0.1/information",
+        "endpoint" => ["type" => "introspection_endpoint", "custom_endpoint" => null],
         "authorized_values" => ["groupsA"],
         "trusted_client_addresses" => ['abcd_.@'],
         "blacklist_client_addresses" => []

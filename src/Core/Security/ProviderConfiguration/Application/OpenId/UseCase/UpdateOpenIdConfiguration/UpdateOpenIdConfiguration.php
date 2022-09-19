@@ -24,27 +24,31 @@ declare(strict_types=1);
 namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration;
 
 use Assert\AssertionFailedException;
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
-use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Security\AccessGroup\Domain\Model\AccessGroup;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
+use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 
 class UpdateOpenIdConfiguration
 {
@@ -301,7 +305,10 @@ class UpdateOpenIdConfiguration
         $authenticationConditions = new AuthenticationConditions(
             $authenticationConditionsParameters["is_enabled"],
             $authenticationConditionsParameters["attribute_path"],
-            $authenticationConditionsParameters["endpoint"],
+            new Endpoint(
+                $authenticationConditionsParameters['endpoint']['type'],
+                $authenticationConditionsParameters['endpoint']['custom_endpoint']
+            ),
             $authenticationConditionsParameters["authorized_values"],
         );
         $authenticationConditions->setTrustedClientAddresses(
