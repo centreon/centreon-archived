@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     alignItems: 'center',
     backgroundColor: isDarkMode(theme)
-      ? theme.palette.background.default
+      ? theme.palette.background.paper
       : theme.palette.primary.main,
     display: 'flex',
     height: theme.spacing(headerHeight),
