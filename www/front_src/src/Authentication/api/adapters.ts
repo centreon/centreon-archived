@@ -99,17 +99,17 @@ const adaptEndpoint = ({ customEndpoint, type }: Endpoint): EndpointToAPI => {
 const adaptAuthentificationConditions = ({
   trustedClientAddresses,
   blacklistClientAddresses,
-  conditionsAttributePath,
-  endpointTheConditionsAttributePathComeFrom,
-  enableConditionsOnIdentityProvider,
-  conditionsAuthorizedValues,
+  attributePath,
+  endpoint,
+  isEnabled,
+  authorizedValues,
 }: AuthConditions): AuthConditionsToApi => {
   return {
-    attribute_path: conditionsAttributePath,
-    authorized_values: conditionsAuthorizedValues,
+    attribute_path: attributePath,
+    authorized_values: authorizedValues,
     blacklist_client_addresses: blacklistClientAddresses,
-    endpoint: adaptEndpoint(endpointTheConditionsAttributePathComeFrom),
-    is_enabled: enableConditionsOnIdentityProvider,
+    endpoint: adaptEndpoint(endpoint),
+    is_enabled: isEnabled,
     trusted_client_addresses: trustedClientAddresses,
   };
 };
@@ -126,18 +126,18 @@ const adaptRelationsToAPI = (
   );
 
 const adaptRolesMapping = ({
-  rolesApplyOnlyFirstRole,
-  rolesAttributePath,
-  rolesEndpoint,
-  rolesIsEnabled,
-  rolesRelations,
+  applyOnlyFirstRole,
+  attributePath,
+  endpoint,
+  isEnabled,
+  relations,
 }: RolesMapping): RolesMappingToApi => {
   return {
-    apply_only_first_role: rolesApplyOnlyFirstRole,
-    attribute_path: rolesAttributePath,
-    endpoint: adaptEndpoint(rolesEndpoint),
-    is_enabled: rolesIsEnabled,
-    relations: adaptRelationsToAPI(rolesRelations),
+    apply_only_first_role: applyOnlyFirstRole,
+    attribute_path: attributePath,
+    endpoint: adaptEndpoint(endpoint),
+    is_enabled: isEnabled,
+    relations: adaptRelationsToAPI(relations),
   };
 };
 
@@ -162,11 +162,11 @@ export const adaptOpenidConfigurationToAPI = ({
   fullnameBindAttribute,
   contactGroup,
   authorizationRules,
-  authentificationConditions,
+  authenticationConditions,
   rolesMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   authentication_conditions:
-    adaptAuthentificationConditions(authentificationConditions) || [],
+    adaptAuthentificationConditions(authenticationConditions) || [],
   authentication_type: authenticationType || null,
   authorization_endpoint: authorizationEndpoint || null,
   authorization_rules:
