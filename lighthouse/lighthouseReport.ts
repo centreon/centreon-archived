@@ -20,6 +20,7 @@ const createReportFile = (report): void => {
 
 const captureReport = async (): Promise<void> => {
   const browser = await puppeteer.launch({
+    args: ['--lang=en-US,en'],
     headless: true,
   });
   const page = await browser.newPage();
