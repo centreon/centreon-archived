@@ -92,7 +92,7 @@ class Bulk implements JsonSerializable
     /**
      * JSON serialization of several lists
      *
-     * @return mixed
+     * @return mixed[]
      */
     public function jsonSerialize(): mixed
     {

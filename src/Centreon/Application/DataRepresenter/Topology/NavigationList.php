@@ -74,7 +74,7 @@ class NavigationList implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return mixed
+     * @return mixed[]
      */
     public function jsonSerialize(): mixed
     {

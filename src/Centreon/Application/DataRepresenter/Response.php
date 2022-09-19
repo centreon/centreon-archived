@@ -69,7 +69,7 @@ class Response implements JsonSerializable
     /**
      * JSON serialization of response
      *
-     * @return mixed
+     * @return array{status: bool, result: mixed}
      */
     public function jsonSerialize(): mixed
     {

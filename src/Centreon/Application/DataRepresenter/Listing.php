@@ -106,7 +106,7 @@ class Listing implements JsonSerializable
     /**
      * JSON serialization of list
      *
-     * @return mixed
+     * @return array<string,mixed>
      */
     public function jsonSerialize(): mixed
     {
