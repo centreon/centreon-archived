@@ -1670,7 +1670,7 @@ class CentreonService extends CentreonObject
         $i = 0;
         if ($serviceId) {
             $statement = $this->db->prepare("SELECT svc_macro_name, svc_macro_value, is_password, description " .
-                "FROM on_demand_macro_service" .
+                "FROM on_demand_macro_service " .
                 "WHERE svc_svc_id = :serviceId ORDER BY macro_order ASC");
             $statement->bindValue(':serviceId', (int) $serviceId, \PDO::PARAM_INT);
             $statement->execute();
