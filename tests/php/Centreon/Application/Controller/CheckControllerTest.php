@@ -21,29 +21,32 @@
 
 namespace Tests\Centreon\Application\Controller;
 
-use Centreon\Domain\Contact\Contact;
 use Centreon\Application\Controller\CheckController;
 use Centreon\Application\Request\CheckRequest;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Check\CheckException;
-use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Resource;
+use DateTime;
+use DateTimeZone;
+use FOS\RestBundle\View\View;
+use InvalidArgumentException;
+use JMS\Serializer\SerializerInterface;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\Request;
-use JMS\Serializer\SerializerInterface;
-use FOS\RestBundle\View\View;
-use Psr\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CheckControllerTest extends TestCase
 {
-    protected $adminContact;
+    protected Contact $adminContact;
 
     protected $goodJsonCheck;
     protected $badJsonCheck;
-    protected $checkRequest;
+    protected CheckRequest $checkRequest;
     protected $check;
     protected $hostResource;
     protected $serviceResource;
@@ -55,9 +58,10 @@ class CheckControllerTest extends TestCase
     protected $request;
     protected $serializer;
 
+
     protected function setUp(): void
     {
-        $timezone = new \DateTimeZone('Europe/Paris');
+        $timezone = new DateTimeZone('Europe/Paris');
 
         $this->adminContact = (new Contact())
             ->setId(1)
@@ -92,7 +96,7 @@ class CheckControllerTest extends TestCase
         $this->goodJsonCheck = json_encode($goodJsonCheck);
 
         $this->check = (new Check())
-            ->setCheckTime(new \DateTime());
+            ->setCheckTime(new DateTime());
         $this->checkRequest = (new CheckRequest())
             ->setResources([$this->hostResource, $this->serviceResource])
             ->setCheck($this->check);
@@ -153,7 +157,7 @@ class CheckControllerTest extends TestCase
         $this->request->expects($this->once())
             ->method('getContent')
             ->willReturn('[}');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Error when decoding sent data');
         $checkController->checkResources($this->request, $this->serializer);
     }
