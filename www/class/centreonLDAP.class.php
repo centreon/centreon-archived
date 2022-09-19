@@ -65,8 +65,8 @@ class CentreonLDAP
         /* Check if use service form DNS */
         $use_dns_srv = 0;
         $dbResult = $this->db->query(
-            "SELECT `ari_value`  
-            FROM `auth_ressource_info` 
+            "SELECT `ari_value`
+            FROM `auth_ressource_info`
             WHERE `ari_name` = 'ldap_srv_dns' AND ar_id = " . (int) $arId
         );
         $row = $dbResult->fetch();
@@ -76,9 +76,9 @@ class CentreonLDAP
         }
 
         $dbResult = $this->db->query(
-            "SELECT `key`, `value` 
-            FROM `options` 
-            WHERE `key` 
+            "SELECT `key`, `value`
+            FROM `options`
+            WHERE `key`
             IN ('debug_ldap_import', 'debug_path')"
         );
         while ($row = $dbResult->fetch()) {
@@ -110,9 +110,9 @@ class CentreonLDAP
         if ($use_dns_srv != "0") {
             $dns_query = '_ldap._tcp';
             $dbResult = $this->db->query(
-                "SELECT `ari_value` 
-                FROM auth_ressource_info 
-                WHERE `ari_name` = 'ldap_dns_use_domain' 
+                "SELECT `ari_value`
+                FROM auth_ressource_info
+                WHERE `ari_name` = 'ldap_dns_use_domain'
                 AND ar_id = " . (int) $arId
             );
             $row = $dbResult->fetch();
@@ -122,11 +122,12 @@ class CentreonLDAP
             }
             $list = dns_get_record($dns_query, DNS_SRV);
             foreach ($list as $entry) {
-                $ldap = array();
-                $ldap['host'] = $entry['target'];
-                $ldap['id'] = $arId;
-                $ldap['search_timeout'] = $searchTimeout;
-                $ldap['info'] = $this->getInfoUseDnsConnect();
+                $ldap = [
+                    'host' => $entry['target'],
+                    'id' => $arId,
+                    'search_timeout' => $searchTimeout,
+                    'info' => $this->getInfoUseDnsConnect(),
+                ];
                 $ldap['info']['port'] = $entry['port'];
                 $ldap['info'] = array_merge($ldap['info'], $this->getBindInfo((int) $arId));
                 $this->ldapHosts[] = $ldap;
@@ -138,10 +139,12 @@ class CentreonLDAP
                 WHERE auth_ressource_id = ' . (int) $arId . ' ORDER BY host_order'
             );
             while ($row = $dbResult->fetch()) {
-                $ldap = array();
-                $ldap['host'] = $row['host_address'];
-                $ldap['id'] = $arId;
-                $ldap['search_timeout'] = $searchTimeout;
+                $ldap = [
+                    'host' => $row['host_address'],
+                    'id' => $arId,
+                    'search_timeout' => $searchTimeout,
+                    'info' => $this->getInfoUseDnsConnect(),
+                ];
                 $ldap['info'] = $this->getInfoConnect($row['ldap_host_id']);
                 $ldap['info'] = array_merge($ldap['info'], $this->getBindInfo((int) $arId));
                 $this->ldapHosts[] = $ldap;
