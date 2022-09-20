@@ -616,39 +616,44 @@ describe('Openid configuration form', () => {
     expect(screen.getAllByLabelText(labelContactGroup)).toHaveLength(2);
   });
 
-  it('display "define your endpoint" field if the option "other" in the radio button is selected', async () => {
+  it('displays the "custom endpoint" field if the option "Other" in the radio button is selected', async () => {
     renderOpenidConfigurationForm();
 
     await waitFor(() => {
-      expect(screen.getAllByLabelText(labelDefineYourEndpoint)).toHaveLength(1);
-      userEvent.click(screen.getAllByLabelText(labelOther)[0]);
       expect(screen.getAllByLabelText(labelDefineYourEndpoint)).toHaveLength(2);
     });
+
+    userEvent.click(screen.getAllByLabelText(labelOther)[0]);
+
+    expect(screen.getAllByLabelText(labelDefineYourEndpoint)).toHaveLength(3);
   });
 
-  it('display new input field if a user type a text in the latest element of the field "condition value" ', async () => {
+  it('displays new input field if a user type a text in the latest element of the field "condition value" ', async () => {
     renderOpenidConfigurationForm();
+
     await waitFor(() => {
       expect(screen.getAllByLabelText(labelConditionValue)).toHaveLength(2);
-
-      userEvent.type(
-        screen.getAllByLabelText(labelConditionValue)[1],
-        'some text',
-      );
-      expect(screen.getAllByLabelText(labelConditionValue)).toHaveLength(3);
     });
+
+    userEvent.type(
+      screen.getAllByLabelText(labelConditionValue)[1],
+      'some text',
+    );
+
+    expect(screen.getAllByLabelText(labelConditionValue)).toHaveLength(3);
   });
 
-  it('display new delete icon  if a user type a text in the latest element of the field "condition value" ', async () => {
+  it('displays a new delete icon if a user type a text in the latest element of the field "condition value" ', async () => {
     renderOpenidConfigurationForm();
     await waitFor(() => {
       expect(screen.getAllByLabelText(labelDeleteRelation)).toHaveLength(1);
-
-      userEvent.type(
-        screen.getAllByLabelText(labelConditionValue)[1],
-        'some text',
-      );
-      expect(screen.getAllByLabelText(labelDeleteRelation)).toHaveLength(2);
     });
+
+    userEvent.type(
+      screen.getAllByLabelText(labelConditionValue)[1],
+      'some text',
+    );
+
+    expect(screen.getAllByLabelText(labelDeleteRelation)).toHaveLength(2);
   });
 });
