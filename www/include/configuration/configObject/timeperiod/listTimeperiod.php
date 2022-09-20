@@ -39,9 +39,8 @@ if (!isset($centreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$search = filter_var(
-    $_POST['searchTP'] ?? $_GET['searchTP'] ?? null,
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchTP'] ?? $_GET['searchTP'] ?? null
 );
 if (isset($_POST['searchTP']) || isset($_GET['searchTP'])) {
     //saving filters values

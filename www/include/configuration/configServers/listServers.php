@@ -45,9 +45,8 @@ $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
 
-$search = filter_var(
-    $_POST['searchP'] ?? $_GET['searchP'] ?? null,
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchP'] ?? $_GET['searchP'] ?? null
 );
 
 if (isset($_POST['searchP']) || isset($_GET['searchP'])) {

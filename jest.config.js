@@ -11,6 +11,10 @@ module.exports = mergeDeepRight(
       '@testing-library/jest-dom/extend-expect',
       '<rootDir>/setupTest.js',
     ],
+    testEnvironmentOptions: {
+      url: 'http://localhost/',
+    },
     testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(test).[jt]s?(x)'],
+    testResultsProcessor: 'jest-junit',
   },
 );

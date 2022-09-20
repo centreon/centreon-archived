@@ -414,13 +414,11 @@ if (
         }
 
         /* concatenating the chosen dates before sending them to ext_cmd */
-        $concatenatedStart = filter_var(
-            $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'],
-            FILTER_SANITIZE_STRING
+        $concatenatedStart = \HtmlAnalyzer::sanitizeAndRemoveTags(
+            $_POST["alternativeDateStart"] . ' ' . $_POST['start_time']
         );
-        $concatenatedEnd = filter_var(
-            $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'],
-            FILTER_SANITIZE_STRING
+        $concatenatedEnd = \HtmlAnalyzer::sanitizeAndRemoveTags(
+            $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time']
         );
 
         if (

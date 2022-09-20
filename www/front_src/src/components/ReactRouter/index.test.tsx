@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { Provider } from 'jotai';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -14,13 +12,10 @@ import {
 import { retrievedFederatedModule } from '../../federatedModules/mocks';
 import { federatedModulesAtom } from '../../federatedModules/atoms';
 import { labelYouAreNotAllowedToSeeThisPage } from '../../FallbackPages/NotAllowedPage/translatedLabels';
-import { labelCentreonLogo } from '../../Login/translatedLabels';
 
 import ReactRouter from '.';
 
 const labelResourceStatus = 'Resource Status page';
-
-jest.mock('../../img/centreon.png');
 
 jest.mock('../../Resources', () => {
   const Resources = (): JSX.Element => <p>{labelResourceStatus}</p>;
@@ -60,7 +55,7 @@ describe('React Router', () => {
     });
   });
 
-  it('displays an error message when the page is not found', async () => {
+  it('displays the fallback page with an error message when the page is not found', async () => {
     window.history.pushState({}, '', '/not-found');
 
     renderReactRouter();
@@ -71,10 +66,13 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByAltText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByText('404')).toBeInTheDocument();
+    expect(
+      screen.getByText('This page could not be found'),
+    ).toBeInTheDocument();
   });
 
-  it('displays an error message when the user is not allowed', async () => {
+  it('displays the fallback page with an error message when the user is not allowed', async () => {
     window.history.pushState({}, '', '/monitoring/resources');
 
     renderReactRouter(retrievedNavigationWithAnEmptySet);
@@ -85,6 +83,9 @@ describe('React Router', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByAltText(labelCentreonLogo)).toBeInTheDocument();
+    expect(screen.getByText('Lost in space?')).toBeInTheDocument();
+    expect(
+      screen.getByText('You are not allowed to see this page'),
+    ).toBeInTheDocument();
   });
 });
