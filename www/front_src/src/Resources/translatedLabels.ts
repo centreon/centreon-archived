@@ -265,3 +265,8 @@ export const labelAsSmallSize = 'Small size';
 export const labelEditAnomalyDetectionData = 'Edit anomaly detection data';
 export const labelAnomalyDetection = 'Anomaly detection';
 export const labelPerformanceGraphAD = 'Edit anomaly detection data';
+export const labelEditAnomalyDetectionConfirmation =
+  'Are you sure you want to change the size of the envelope? The new envelope size will be applied immediately.';
+export const LabelMenageEnvelope = 'Manage envelop size';
+export const LabelMenageEnvelopeSubTitle =
+  'Changes to the envelope size will be applied immediately';

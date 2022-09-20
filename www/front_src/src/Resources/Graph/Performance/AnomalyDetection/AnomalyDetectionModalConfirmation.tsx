@@ -1,6 +1,13 @@
+import { useTranslation } from 'react-i18next';
+
 import { Typography } from '@mui/material';
 
 import { Dialog } from '@centreon/ui';
+
+import {
+  labelEditAnomalyDetectionConfirmation,
+  LabelMenageEnvelope,
+} from '../../../translatedLabels';
 
 interface Props {
   open: boolean;
@@ -15,6 +22,8 @@ const AnomalyDetectionModalConfirmation = ({
   sendCancel,
   sendConfirm,
 }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
   const cancel = (): void => {
     sendCancel(true);
     setOpen(false);
@@ -22,16 +31,13 @@ const AnomalyDetectionModalConfirmation = ({
 
   return (
     <Dialog
-      labelTitle="Menage envelope size"
+      labelTitle={t(LabelMenageEnvelope)}
       open={open}
       onCancel={cancel}
       onClose={(): void => setOpen(false)}
       onConfirm={(): void => sendConfirm(true)}
     >
-      <Typography>
-        Are you sure you want to change the size of the envelope? The new
-        envelope size will be applied immediately.
-      </Typography>
+      <Typography>{t(labelEditAnomalyDetectionConfirmation)}</Typography>
     </Dialog>
   );
 };

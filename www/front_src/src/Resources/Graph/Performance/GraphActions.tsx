@@ -170,7 +170,6 @@ const GraphActions = ({
               disableTouchRipple
               ariaLabel={t(labelPerformanceGraphAD)}
               data-testid={labelPerformanceGraphAD}
-              disabled={isNil(timeline)}
               size="small"
               title={t(labelPerformanceGraphAD)}
               onClick={openModalAnomalyDetection}

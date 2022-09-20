@@ -1,5 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { equals, path } from 'ramda';
 
 import Typography from '@mui/material/Typography';
@@ -13,6 +14,10 @@ import Button from '@mui/material/Button';
 
 import { IconButton, useRequest, putData } from '@centreon/ui';
 
+import {
+  LabelMenageEnvelope,
+  LabelMenageEnvelopeSubTitle,
+} from '../../../translatedLabels';
 import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
 import { CustomFactorsData } from './models';
@@ -97,6 +102,7 @@ const AnomalyDetectionSlider = ({
   setIsResizeEnvelope,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const [currentValue, setCurrentValue] = useState(sensitivity.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
@@ -209,9 +215,9 @@ const AnomalyDetectionSlider = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Typography variant="h6">Manage envelop size</Typography>
+        <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
         <Typography variant="caption">
-          Changes to the envelope size will be applied immediately
+          {t(LabelMenageEnvelopeSubTitle)}
         </Typography>
       </div>
 
