@@ -62,7 +62,7 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => 0]]);
+$svcId = isset($_GET['svc_id']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['svc_id']) : 0;
 
 // splitting the host/service combination
 if (!empty($svcId)) {

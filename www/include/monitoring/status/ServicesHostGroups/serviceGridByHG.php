@@ -38,9 +38,9 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => 'alias']]);
-$hgSearch = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
+$sort_type = isset($_GET['sort_type']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sort_type']) : 'alias';
+$hgSearch = isset($_GET['hg_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hg_search']) : '';
+$search = isset($_GET['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search']) : '';
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);

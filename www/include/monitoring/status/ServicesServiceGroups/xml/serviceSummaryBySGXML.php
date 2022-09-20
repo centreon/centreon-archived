@@ -74,20 +74,15 @@ $useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 /*
  * Check Arguments From GET tab
  */
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => 'h']]);
+$o = isset($_GET['o']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o']) : 'h';
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
-$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_SPECIAL_CHARS, ['options' => ['default' => '']]);
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_SPECIAL_CHARS,
-    ['options' => ['default' => 'host_name']]
-);
+$hSearch = isset($_GET['host_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['host_search']) : '';
+$sgSearch = isset($_GET['sg_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sg_search']) : '';
+$sort_type = isset($_GET['sort_type']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sort_type']) : 'host_name';
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $kernel = \App\Kernel::createForWeb();
