@@ -37,28 +37,73 @@ if (!isset($centreon)) {
     exit();
 }
 
-$filterParameters = array(
-    'host_search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'output_search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'hg' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'sg' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'monitoring_default_hostgroups' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'monitoring_default_servicegroups' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'hostgroup' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'sort_type' => FILTER_SANITIZE_NUMBER_INT,
-    'host_name' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'global_sort_type' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'global_sort_order' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'order' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'monitoring_service_status_filter' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'monitoring_service_status' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
-    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
-);
+$myinputsGet = [
+    'host_search' => isset($_GET['host_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['host_search']) : null,
+    'search' => isset($_GET['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search']) : null,
+    'output_search' => isset($_GET['output_search'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['output_search'])
+        : null,
+    'hg' => isset($_GET['hg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hg']) : null,
+    'sg' => isset($_GET['sg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sg']) : null,
+    'monitoring_default_hostgroups' => isset($_GET['monitoring_default_hostgroups'])
+         ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['monitoring_default_hostgroups'])
+         : null,
+    'monitoring_default_servicegroups' => isset($_GET['monitoring_default_servicegroups'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['monitoring_default_servicegroups'])
+        : null,
+    'hostgroup' => isset($_GET['hostgroup']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hostgroup']) : null,
+    'sort_type' => filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT),
+    'host_name' => isset($_GET['host_name']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['host_name']) : null,
+    'global_sort_type' => isset($_GET['global_sort_type'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['global_sort_type'])
+        : null,
+    'global_sort_order' => isset($_GET['global_sort_order'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['global_sort_order'])
+        : null,
+    'order' => isset($_GET['order']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['order']) : null,
+    'monitoring_service_status_filter' => isset($_GET['monitoring_service_status_filter'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['lang'])
+        : null,
+    'monitoring_service_status' => isset($_GET['monitoring_service_status'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['monitoring_service_status'])
+        : null,
+    'criticality_id' => filter_input(INPUT_GET, 'criticality_id', FILTER_VALIDATE_INT),
+    'reset_filter' => filter_input(INPUT_GET, 'reset_filter', FILTER_VALIDATE_INT),
+];
 
-$myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
-$myinputsPost = filter_input_array(INPUT_POST, $filterParameters);
+$myinputsPost = [
+    'host_search' => isset($_POST['host_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['host_search']) : null,
+    'search' => isset($_POST['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search']) : null,
+    'output_search' => isset($_POST['output_search'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['output_search'])
+        : null,
+    'hg' => isset($_POST['hg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['hg']) : null,
+    'sg' => isset($_POST['sg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['sg']) : null,
+    'monitoring_default_hostgroups' => isset($_POST['monitoring_default_hostgroups'])
+         ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['monitoring_default_hostgroups'])
+         : null,
+    'monitoring_default_servicegroups' => isset($_POST['monitoring_default_servicegroups'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['monitoring_default_servicegroups'])
+        : null,
+    'hostgroup' => isset($_POST['hostgroup']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['hostgroup']) : null,
+    'sort_type' => filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT),
+    'host_name' => isset($_POST['host_name']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['host_name']) : null,
+    'global_sort_type' => isset($_POST['global_sort_type'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['global_sort_type'])
+        : null,
+    'global_sort_order' => isset($_POST['global_sort_order'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['global_sort_order'])
+        : null,
+    'order' => isset($_POST['order']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['order']) : null,
+    'monitoring_service_status_filter' => isset($_POST['monitoring_service_status_filter'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['lang'])
+        : null,
+    'monitoring_service_status' => isset($_POST['monitoring_service_status'])
+        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['monitoring_service_status'])
+        : null,
+    'criticality_id' => filter_input(INPUT_POST, 'criticality_id', FILTER_VALIDATE_INT),
+    'reset_filter' => filter_input(INPUT_POST, 'reset_filter', FILTER_VALIDATE_INT),
+];
 
 $resetFilter = (isset($myinputsGet['reset_filter']) && $myinputsGet['reset_filter'] == 1) ? true : false;
 
