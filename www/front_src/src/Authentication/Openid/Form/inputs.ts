@@ -49,6 +49,7 @@ import {
   labelContactGroup,
   labelGroupValue,
   labelDefinedTheRelationBetweenGroupsAndContactGroups,
+  labelGroupsAttributePath,
 } from '../translatedLabels';
 import { AuthenticationType, EndpointType } from '../models';
 import {
@@ -60,6 +61,7 @@ import {
 } from '../../translatedLabels';
 import {
   accessGroupsEndpoint,
+  contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../../api/endpoints';
 
@@ -252,7 +254,7 @@ const groupsMapping: Array<InputProps> = [
   {
     fieldName: 'groupsMapping.attributePath',
     group: labelGroupsMapping,
-    label: labelRolesAttributePath,
+    label: labelGroupsAttributePath,
     type: InputType.Text,
   },
   {
@@ -296,7 +298,7 @@ const groupsMapping: Array<InputProps> = [
         {
           connectedAutocomplete: {
             additionalConditionParameters: [],
-            endpoint: accessGroupsEndpoint,
+            endpoint: contactGroupsEndpoint,
           },
           fieldName: 'contactGroup',
           label: labelContactGroup,
@@ -304,8 +306,8 @@ const groupsMapping: Array<InputProps> = [
         },
       ],
       defaultRowValue: {
-        accessGroup: null,
-        claimValue: '',
+        contactGroup: null,
+        groupValue: '',
       },
       deleteLabel: labelDeleteRelation,
     },

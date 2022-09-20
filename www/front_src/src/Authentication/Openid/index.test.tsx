@@ -17,6 +17,7 @@ import { Provider } from '../models';
 import {
   accessGroupsEndpoint,
   authenticationProvidersEndpoint,
+  contactGroupsEndpoint,
   contactTemplatesEndpoint,
 } from '../api/endpoints';
 import {
@@ -37,6 +38,7 @@ import {
   labelClientSecret,
   labelConditionsAttributePath,
   labelConditionValue,
+  labelContactGroup,
   labelContactTemplate,
   labelDefineOpenIDConnectConfiguration,
   labelDefineYourEndpoint,
@@ -48,6 +50,8 @@ import {
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
   labelFullnameAttributePath,
+  labelGroupsAttributePath,
+  labelGroupValue,
   labelIntrospectionEndpoint,
   labelIntrospectionTokenEndpoint,
   labelInvalidIPAddress,
@@ -109,6 +113,15 @@ const retrievedOpenidConfiguration = {
   email_bind_attribute: 'email',
   endsession_endpoint: '/logout',
   fullname_bind_attribute: 'lastname',
+  groups_mapping: {
+    attribute_path: 'group attribute path',
+    endpoint: {
+      custom_endpoint: '/group/endpoint',
+      type: 'custom_endpoint',
+    },
+    is_enabled: true,
+    relations: [],
+  },
   introspection_token_endpoint: '/introspect',
   is_active: true,
   is_forced: false,
@@ -148,6 +161,7 @@ const getRetrievedEntities = (label: string): unknown => ({
 
 const retrievedAccessGroups = getRetrievedEntities('Access Group');
 const retrievedContactTemplates = getRetrievedEntities('Contact Template');
+const retrievedContactGroups = getRetrievedEntities('Contact Group');
 
 const mockGetBasicRequests = (): void => {
   resetMocks();
@@ -246,14 +260,26 @@ describe('Openid configuration form', () => {
     expect(head(screen.getAllByLabelText(labelConditionValue))).toHaveValue(
       'authorized',
     );
-    expect(screen.getByLabelText(labelEnableAutoManagement)).not.toBeChecked();
+    expect(
+      head(screen.getAllByLabelText(labelEnableAutoManagement)),
+    ).not.toBeChecked();
     expect(screen.getByLabelText(labelApplyOnlyFirtsRole)).toBeChecked();
     expect(screen.getByLabelText(labelRolesAttributePath)).toHaveValue(
       'role attribute path',
     );
-    expect(last(screen.getAllByLabelText(labelOther))).toBeChecked();
-    expect(screen.getByLabelText(labelDefineYourEndpoint)).toHaveValue(
+    expect(screen.getAllByLabelText(labelOther).at(1)).toBeChecked();
+    expect(head(screen.getAllByLabelText(labelDefineYourEndpoint))).toHaveValue(
       '/role/endpoint',
+    );
+    expect(
+      last(screen.getAllByLabelText(labelEnableAutoManagement)),
+    ).toBeChecked();
+    expect(screen.getByLabelText(labelGroupsAttributePath)).toHaveValue(
+      'group attribute path',
+    );
+    expect(last(screen.getAllByLabelText(labelOther))).toBeChecked();
+    expect(last(screen.getAllByLabelText(labelDefineYourEndpoint))).toHaveValue(
+      '/group/endpoint',
     );
   });
 
@@ -312,6 +338,10 @@ describe('Openid configuration form', () => {
   it('saves the openid configuration when a field is modified and the "Save" button is clicked', async () => {
     renderOpenidConfigurationForm();
 
+    mockResponseOnce({
+      data: retrievedContactGroups,
+    });
+
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         authenticationProvidersEndpoint(Provider.Openid),
@@ -333,6 +363,19 @@ describe('Openid configuration form', () => {
       expect(screen.getByText(labelSave)).not.toBeDisabled();
     });
 
+    userEvent.click(screen.getByLabelText(labelContactGroup));
+
+    await waitFor(() => {
+      expect(screen.getByText('Contact Group 2')).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByText('Contact Group 2'));
+
+    userEvent.type(
+      head(screen.getAllByLabelText(labelGroupValue)) as HTMLElement,
+      'groupValue',
+    );
+
     userEvent.click(screen.getByText(labelSave));
 
     await waitFor(() => {
@@ -341,6 +384,10 @@ describe('Openid configuration form', () => {
         {
           ...retrievedOpenidConfiguration,
           base_url: 'http://localhost:8081/login',
+          groups_mapping: {
+            ...retrievedOpenidConfiguration.groups_mapping,
+            relations: [{ contact_group_id: 2, group_value: 'groupValue' }],
+          },
         },
         cancelTokenPutParams,
       );
@@ -439,6 +486,13 @@ describe('Openid configuration form', () => {
       labelAclAccessGroup,
       'Access Group 2',
     ],
+    [
+      'contact group',
+      retrievedContactGroups,
+      contactGroupsEndpoint,
+      labelContactGroup,
+      'Contact Group 2',
+    ],
   ])(
     'updates the %p field when an option is selected from the retrieved options',
     async (_, retrievedOptions, endpoint, label, value) => {
@@ -483,4 +537,81 @@ describe('Openid configuration form', () => {
       });
     },
   );
+
+  it('disables the save button when the "Groups mapping" custom endpoint field is cleared', async () => {
+    renderOpenidConfigurationForm();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelBaseUrl)).toBeInTheDocument();
+    });
+
+    userEvent.type(
+      screen.getByLabelText(labelBaseUrl),
+      '{selectall}{backspace}http://localhost:8081/login',
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
+    });
+
+    userEvent.type(
+      last(screen.getAllByLabelText(labelDefineYourEndpoint)) as HTMLElement,
+      '{selectall}{backspace}',
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(labelSave)).toBeDisabled();
+    });
+  });
+
+  it('adds a new contact group relation row when the first relation row is valid', async () => {
+    renderOpenidConfigurationForm();
+
+    mockResponseOnce({
+      data: retrievedContactGroups,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        authenticationProvidersEndpoint(Provider.Openid),
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelContactGroup)).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByLabelText(labelContactGroup));
+
+    await waitFor(() => {
+      expect(getFetchCall(0)).toEqual(
+        `${contactGroupsEndpoint}?page=1&sort_by=${encodeURIComponent(
+          '{"name":"ASC"}',
+        )}&search=${encodeURIComponent('{"$and":[]}')}`,
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Contact Group 2')).toBeInTheDocument();
+    });
+
+    userEvent.click(screen.getByText('Contact Group 2'));
+
+    await waitFor(() => {
+      expect(screen.getAllByLabelText(labelContactGroup)[0]).toHaveValue(
+        'Contact Group 2',
+      );
+    });
+
+    expect(screen.getAllByLabelText(labelGroupValue)).toHaveLength(2);
+    expect(screen.getAllByLabelText(labelContactGroup)).toHaveLength(2);
+  });
 });
