@@ -61,7 +61,7 @@ if (CentreonSession::checkSession(session_id(), $db) === false) {
 
 $action = $_POST['action'];
 
-$postFilter = array(
+$postFilter = [
     'widget_id' => [
         'filter' => FILTER_VALIDATE_INT,
         'options' => [
@@ -98,12 +98,6 @@ $postFilter = array(
             'default' => false
         ]
     ],
-    'name' => [
-        'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
-        'options' => [
-            'default' => ''
-        ]
-    ],
     'layout' => [
         'options' => [
             'default' => ''
@@ -121,15 +115,17 @@ $postFilter = array(
             'default' => false
         ]
     ],
-    'widget_title' => [
-        'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
-        'options' => [
-            'default' => ''
-        ]
-    ]
-);
+];
 
 $postInputs = filter_input_array(INPUT_POST, $postFilter);
+
+$postInputs['name'] = isset($_POST['name'])
+    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['name'])
+    : null;
+
+$postInputs['widget_title'] = isset($_POST['widget_title'])
+    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['widget_title'])
+    : null;
 
 $lockedUsers = [];
 if (!empty($_POST['lockedUsers'])) {
@@ -179,9 +175,9 @@ if (!empty($_POST['create_load']['create_load'])) {
 }
 
 
-$postInputs['layout'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['layout']['layout'] ?? ''
-);
+$postInputs['layout'] = isset($_POST['layout']['layout'])
+    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['layout']['layout'])
+    : null;
 
 $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);
