@@ -22,6 +22,12 @@ const inputs: Array<InputProps> = [
       alignItems: 'center',
       columns: [
         {
+          data: [
+            {
+              name: 'testid',
+              value: 'local_passwordMinLength',
+            },
+          ],
           fieldName: 'passwordMinLength',
           label: labelMinimumPasswordLength,
           text: {
