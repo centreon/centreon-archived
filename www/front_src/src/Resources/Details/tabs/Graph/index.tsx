@@ -8,7 +8,7 @@ import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import memoizeComponent from '../../../memoizedComponent';
-import useLoadResources from '../../../Listing/useLoadResources/index';
+import useLoadDetails from '../../../Listing/useLoadResources/useLoadDetails';
 
 import HostGraph from './HostGraph';
 
@@ -43,7 +43,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const equalsMetaService = equals(ResourceType.metaservice);
   const equalsAnomalyDetection = equals(ResourceType.anomalydetection);
 
-  const { initAutorefreshAndLoad } = useLoadResources();
+  const { loadDetails } = useLoadDetails();
 
   const isService =
     equalsService(type) ||
@@ -52,7 +52,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
 
   const getIsReload = (value: boolean): void => {
     if (value) {
-      initAutorefreshAndLoad();
+      loadDetails();
     }
   };
 
