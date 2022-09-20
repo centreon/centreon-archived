@@ -48,7 +48,7 @@ function getPeriodToReport(?string $alternate = null): array
     $end_date = '';
 
     if (isset($_POST['period'])) {
-        $period = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['period'] );
+        $period = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['period']);
     } elseif (isset($_GET['period'])) {
         $period = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['period']);
     }

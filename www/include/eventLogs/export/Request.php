@@ -584,7 +584,7 @@ class Request
             'StartTime' => isset($_GET['StartTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['StartTime']) : null,
             'EndTime' => isset($_GET['EndTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['EndTime']) : null,
             'period' => filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT),
-            'engine' =>isset( $_GET['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['engine']) : null,
+            'engine' => isset($_GET['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['engine']) : null,
             'up' => isset($_GET['up']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['up']) : null,
             'down' => isset($_GET['down']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['down']) : null,
             'unreachable' => isset($_GET['unreachable'])
@@ -617,12 +617,16 @@ class Request
             'id' => isset($_POST['lang']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['lang']) : null,
             'num' => filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT, ['options' => [ 'default' => 0]]),
             'limit' => filter_input(INPUT_POST, 'limit', FILTER_VALIDATE_INT, ['options' => [ 'default' => 30]]),
-            'StartDate' => isset($_POST['StartDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartDate']) : null,
+            'StartDate' => isset($_POST['StartDate'])
+                ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartDate'])
+                : null,
             'EndDate' => isset($_POST['EndDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['EndDate']) : null,
-            'StartTime' => isset($_POST['StartTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartTime']) : null,
+            'StartTime' => isset($_POST['StartTime'])
+                ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartTime'])
+                : null,
             'EndTime' => isset($_POST['EndTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['EndTime']) : null,
             'period' => filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT),
-            'engine' =>isset( $_POST['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['engine']) : null,
+            'engine' => isset($_POST['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['engine']) : null,
             'up' => isset($_POST['up']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['up']) : null,
             'down' => isset($_POST['down']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['down']) : null,
             'unreachable' => isset($_POST['unreachable'])

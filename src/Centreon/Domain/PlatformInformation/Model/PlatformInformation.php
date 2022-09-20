@@ -124,7 +124,7 @@ class PlatformInformation
      */
     public function setPlatformName(?string $name): self
     {
-        $this->platformName = htmlspecialchars($name);
+        $this->platformName = \HtmlAnalyzer::sanitizeAndRemoveTags($name);
         if (empty($this->platformName)) {
             throw new \InvalidArgumentException(_("Platform name can't be empty"));
         }
@@ -299,7 +299,7 @@ class PlatformInformation
     public function setApiPath(?string $path): self
     {
         if ($path !== null) {
-            $path = trim(htmlspecialchars($path), '/');
+            $path = trim(\HtmlAnalyzer::sanitizeAndRemoveTags($path), '/');
             if (empty($path)) {
                 throw PlatformInformationException::inconsistentDataException();
             }
