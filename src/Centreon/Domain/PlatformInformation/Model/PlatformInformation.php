@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
+require_once __DIR__ . '/../../../../../www/class/HtmlAnalyzer.php';
+
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 /**
@@ -124,7 +126,7 @@ class PlatformInformation
      */
     public function setPlatformName(?string $name): self
     {
-        $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
+        $this->platformName = \HtmlAnalyzer::sanitizeAndRemoveTags($name);
         if (empty($this->platformName)) {
             throw new \InvalidArgumentException(_("Platform name can't be empty"));
         }
@@ -299,7 +301,7 @@ class PlatformInformation
     public function setApiPath(?string $path): self
     {
         if ($path !== null) {
-            $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
+            $path = trim(\HtmlAnalyzer::sanitizeAndRemoveTags($path), '/');
             if (empty($path)) {
                 throw PlatformInformationException::inconsistentDataException();
             }

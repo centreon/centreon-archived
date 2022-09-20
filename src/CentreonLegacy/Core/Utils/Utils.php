@@ -134,6 +134,7 @@ class Utils
         }
 
         foreach ($macros as $name => $value) {
+            $value = $value ?? '';
             $content = str_replace('@' . $name . '@', $value, $content);
         }
 

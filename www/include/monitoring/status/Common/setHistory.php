@@ -34,6 +34,7 @@
  *
  */
 
+require_once __DIR__ . '/../../../../../bootstrap.php';
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
 $path = _CENTREON_PATH_ . "/www";
@@ -55,29 +56,21 @@ if (isset($_POST["url"])) {
     $url = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL);
     if (!empty($url)) {
         if (isset($_POST["search"])) {
-            $search = filter_input(
-                INPUT_POST,
-                'search',
-                FILTER_SANITIZE_STRING
-            );
+            $search = isset($_POST['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search']) : null;
             $centreon->historySearchService[$url] = $search;
         }
 
         if (isset($_POST["search_host"])) {
-            $searchHost = filter_input(
-                INPUT_POST,
-                'seach_host',
-                FILTER_SANITIZE_STRING
-            );
+            $searchHost = isset($_POST['seach_host'])
+                ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['seach_host'])
+                : null;
             $centreon->historySearch[$url] = $searchHost;
         }
 
         if (isset($_POST["search_output"])) {
-            $searchOutput = filter_input(
-                INPUT_POST,
-                'search_output',
-                FILTER_SANITIZE_STRING
-            );
+            $searchOutput = isset($_POST['search_output'])
+                ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_output'])
+                : null;
             $centreon->historySearchOutput[$url] = $searchOutput;
         }
 
