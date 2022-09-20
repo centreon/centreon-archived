@@ -41,26 +41,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-function getMyHostRow($host_id = null, $rowdata)
-{
-    global $pearDB;
-    if (!$host_id) {
-        exit();
-    }
-    while (1) {
-        $DBRESULT = $pearDB->query("SELECT host_" . $rowdata .
-            ", host_template_model_htm_id FROM host WHERE host_id = '" . CentreonDB::escape($host_id) . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        if ($row["host_" . $rowdata]) {
-            return $row["host_$rowdata"];
-        } elseif ($row["host_template_model_htm_id"]) {
-            $host_id = $row["host_template_model_htm_id"];
-        } else {
-            break;
-        }
-    }
-}
-
 function get_user_param($user_id, $pearDB)
 {
     $list_param = array(

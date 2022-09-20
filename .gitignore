@@ -20,6 +20,7 @@ www/front_src/src/App.css
 www/service-worker.js
 www/include/core/menu/templates/*.js
 www/include/core/menu/templates/*.tpl
+junit.xml
 
 #sample files
 !www/img/media/.keep
