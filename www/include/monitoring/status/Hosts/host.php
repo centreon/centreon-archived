@@ -37,19 +37,27 @@ if (!isset($centreon)) {
     exit();
 }
 
-$filterParameters = array(
-    'sort_types' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'order' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'num' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'host_search' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'sort_type' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'hostgroups' => FILTER_SANITIZE_SPECIAL_CHARS,
-    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
-    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
-);
+$myinputsGet = [
+    'sort_types' => isset($_GET['sort_types']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sort_types']) : null,
+    'order' => isset($_GET['order']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['order']) : null,
+    'num' => isset($_GET['num']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['num']) : null,
+    'host_search' => isset($_GET['host_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['host_search']) : null,
+    'sort_type' => isset($_GET['sort_types']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sort_type']) : null,
+    'hostgroups' => isset($_GET['hostgroups']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hostgroups']) : null,
+    'criticality_id' => filter_input(INPUT_GET, 'criticality_id', FILTER_SANITIZE_NUMBER_INT),
+    'reset_filter' => filter_input(INPUT_GET, 'reset_filter', FILTER_SANITIZE_NUMBER_INT),
+];
 
-$myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
-$myinputsPost = filter_input_array(INPUT_POST, $filterParameters);
+$myinputsPost = [
+    'sort_types' => isset($_POST['sort_types']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['sort_types']) : null,
+    'order' => isset($_POST['order']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['order']) : null,
+    'num' => isset($_POST['num']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['num']) : null,
+    'host_search' => isset($_POST['host_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['host_search']) : null,
+    'sort_type' => isset($_POST['sort_types']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['sort_type']) : null,
+    'hostgroups' => isset($_POST['hostgroups']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['hostgroups']) : null,
+    'criticality_id' => filter_input(INPUT_GET, 'criticality_id', FILTER_SANITIZE_NUMBER_INT),
+    'reset_filter' => filter_input(INPUT_GET, 'reset_filter', FILTER_SANITIZE_NUMBER_INT),
+];
 
 $resetFilter = (isset($myinputsGet['reset_filter']) && $myinputsGet['reset_filter'] == 1) ? true : false;
 

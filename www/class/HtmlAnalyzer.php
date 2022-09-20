@@ -36,13 +36,11 @@ class HtmlAnalyzer
     {
         $stringToSanitize = (string) $stringToSanitize;
 
-        $html = new self(
-        	str_replace(["'", '"'], ['&#39;', '&#34;'], $stringToSanitize)
-        );
+        $html = new self($stringToSanitize);
 
         $newString = $html->removeHtmlTag();
 
-        return $newString;
+        return str_replace(["'", '"'], ['&#39;', '&#34;'], $newString);
     }
 
     /**
@@ -87,7 +85,7 @@ class HtmlAnalyzer
      */
     private function getNextToken(): ?string
     {
-        if (mb_strlen($this->stringToSanitize) > ($this->index + 1)) {
+        if (mb_strlen($this->stringToSanitize) > $this->index) {
             return $this->stringToSanitize[++$this->index];
         }
 
