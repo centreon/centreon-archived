@@ -34,6 +34,7 @@
  *
  */
 
+require_once __DIR__ . '/../../../../../bootstrap.php';
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
 $path = _CENTREON_PATH_ . "/www";
