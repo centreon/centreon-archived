@@ -85,8 +85,9 @@ class HtmlAnalyzer
      */
     private function getNextToken(): ?string
     {
+        $this->index++;
         if (mb_strlen($this->stringToSanitize) > $this->index) {
-            return $this->stringToSanitize[++$this->index];
+            return $this->stringToSanitize[$this->index];
         }
 
         return null;
