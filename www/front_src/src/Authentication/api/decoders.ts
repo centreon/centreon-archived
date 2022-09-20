@@ -150,7 +150,7 @@ const groupsMappingDecoder = JsonDecoder.object<GroupsMapping>(
     isEnabled: JsonDecoder.boolean,
     relations: JsonDecoder.array(groupsRelationDecoder, 'Groups relation'),
   },
-  'Roles mapping',
+  'Groups mapping',
   {
     attributePath: 'attribute_path',
     isEnabled: 'is_enabled',
