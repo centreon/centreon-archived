@@ -87,7 +87,7 @@ class HtmlAnalyzer
     {
         $this->index++;
         if (mb_strlen($this->stringToSanitize) > $this->index) {
-            return $this->stringToSanitize[$this->index];
+            return mb_substr($this->stringToSanitize, $this->index, 1);
         }
 
         return null;
