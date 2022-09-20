@@ -27,6 +27,7 @@ import {
   labelAuthenticationConditions,
   labelIdentityProvider,
   labelClientAddresses,
+  labelGroupsMapping,
 } from './translatedLabels';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
 import passwordPadlockLogo from './logos/passwordPadlock.svg';
@@ -68,15 +69,19 @@ export const groups: Array<Group> = [
   },
   {
     name: labelClientAddresses,
-    order: 3,
-  },
-  {
-    name: labelAutoImportUsers,
     order: 4,
   },
   {
-    name: labelRolesMapping,
+    name: labelAutoImportUsers,
     order: 5,
+  },
+  {
+    name: labelRolesMapping,
+    order: 6,
+  },
+  {
+    name: labelGroupsMapping,
+    order: 7,
   },
 ];
 

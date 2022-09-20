@@ -5,6 +5,8 @@ import {
   AuthConditions,
   Endpoint,
   EndpointType,
+  GroupsMapping,
+  GroupsRelation,
   NamedEntity,
   OpenidConfiguration,
   RolesMapping,
@@ -73,7 +75,7 @@ const endpointDecoder = JsonDecoder.object<Endpoint>(
   },
 );
 
-const relation = JsonDecoder.object<RolesRelation>(
+const rolesRelation = JsonDecoder.object<RolesRelation>(
   {
     accessGroup: getNamedEntityDecoder('Access group'),
     claimValue: JsonDecoder.string,
@@ -82,6 +84,18 @@ const relation = JsonDecoder.object<RolesRelation>(
   {
     accessGroup: 'access_group',
     claimValue: 'claim_value',
+  },
+);
+
+const groupsRelationDecoder = JsonDecoder.object<GroupsRelation>(
+  {
+    contactGroup: getNamedEntityDecoder('Contact group'),
+    groupValue: JsonDecoder.string,
+  },
+  'Group Relation',
+  {
+    contactGroup: 'contact_group',
+    groupValue: 'group_value',
   },
 );
 
@@ -119,14 +133,27 @@ const rolesMapping = JsonDecoder.object<RolesMapping>(
     attributePath: JsonDecoder.string,
     endpoint: endpointDecoder,
     isEnabled: JsonDecoder.boolean,
-    relations: JsonDecoder.array(relation, 'Roles relation'),
+    relations: JsonDecoder.array(rolesRelation, 'Roles relation'),
   },
   'Roles mapping',
   {
     applyOnlyFirstRole: 'apply_only_first_role',
     attributePath: 'attribute_path',
     isEnabled: 'is_enabled',
-    relations: 'relations',
+  },
+);
+
+const groupsMappingDecoder = JsonDecoder.object<GroupsMapping>(
+  {
+    attributePath: JsonDecoder.string,
+    endpoint: endpointDecoder,
+    isEnabled: JsonDecoder.boolean,
+    relations: JsonDecoder.array(groupsRelationDecoder, 'Groups relation'),
+  },
+  'Roles mapping',
+  {
+    attributePath: 'attribute_path',
+    isEnabled: 'is_enabled',
   },
 );
 
@@ -151,15 +178,16 @@ export const openidConfigurationDecoder =
       emailBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
       endSessionEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       fullnameBindAttribute: JsonDecoder.nullable(JsonDecoder.string),
+      groupsMapping: groupsMappingDecoder,
       introspectionTokenEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       isActive: JsonDecoder.boolean,
-      isForced: JsonDecoder.boolean,
 
+      isForced: JsonDecoder.boolean,
       loginClaim: JsonDecoder.nullable(JsonDecoder.string),
+
       rolesMapping,
 
       tokenEndpoint: JsonDecoder.nullable(JsonDecoder.string),
-
       userinfoEndpoint: JsonDecoder.nullable(JsonDecoder.string),
       verifyPeer: JsonDecoder.boolean,
     },
@@ -177,6 +205,7 @@ export const openidConfigurationDecoder =
       emailBindAttribute: 'email_bind_attribute',
       endSessionEndpoint: 'endsession_endpoint',
       fullnameBindAttribute: 'fullname_bind_attribute',
+      groupsMapping: 'groups_mapping',
       introspectionTokenEndpoint: 'introspection_token_endpoint',
       isActive: 'is_active',
       isForced: 'is_forced',

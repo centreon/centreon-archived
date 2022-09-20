@@ -19,6 +19,16 @@ export interface RolesRelationToAPI {
   claim_value: string;
 }
 
+export interface GroupsRelation {
+  contactGroup: NamedEntity;
+  groupValue: string;
+}
+
+export interface GroupsRelationToAPI {
+  contact_group_id: number;
+  group_value: string;
+}
+
 export interface EndpointToAPI {
   custom_endpoint?: string | null;
   type: EndpointType;
@@ -54,6 +64,20 @@ export interface RolesMappingToApi {
   relations: Array<RolesRelationToAPI>;
 }
 
+export interface GroupsMapping {
+  attributePath?: string | null;
+  endpoint: Endpoint;
+  isEnabled: boolean;
+  relations: Array<GroupsRelation>;
+}
+
+export interface GroupsMappingToAPI {
+  attribute_path?: string | null;
+  endpoint: EndpointToAPI;
+  is_enabled: boolean;
+  relations: Array<GroupsRelationToAPI>;
+}
+
 export interface AuthConditionsToApi {
   attribute_path?: string | null;
   authorized_values: Array<string>;
@@ -76,6 +100,7 @@ export interface OpenidConfiguration {
   emailBindAttribute?: string | null;
   endSessionEndpoint?: string | null;
   fullnameBindAttribute?: string | null;
+  groupsMapping: GroupsMapping;
   introspectionTokenEndpoint?: string | null;
   isActive: boolean;
   isForced: boolean;
@@ -99,6 +124,7 @@ export interface OpenidConfigurationToAPI {
   email_bind_attribute: string | null;
   endsession_endpoint?: string | null;
   fullname_bind_attribute: string | null;
+  groups_mapping: GroupsMappingToAPI;
   introspection_token_endpoint?: string | null;
   is_active: boolean;
   is_forced: boolean;

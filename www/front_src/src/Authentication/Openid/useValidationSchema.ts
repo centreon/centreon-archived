@@ -20,9 +20,14 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     name: Yup.string().required(t(labelRequired)),
   });
 
-  const authorizationSchema = Yup.object({
+  const rolesRelationSchema = Yup.object({
     accessGroup: namedEntitySchema.nullable().required(t(labelRequired)),
     claimValue: Yup.string().required(t(labelRequired)),
+  });
+
+  const groupesRelationSchema = Yup.object({
+    contactGroup: namedEntitySchema.nullable().required(t(labelRequired)),
+    groupValue: Yup.string().required(t(labelRequired)),
   });
 
   const endpointTypeSchema = Yup.mixed<EndpointType>()
@@ -30,7 +35,11 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     .required(t(labelRequired));
   const switchSchema = Yup.boolean().required(t(labelRequired));
   const endpointSchema = Yup.object({
-    customEndpoint: Yup.string().nullable(),
+    customEndpoint: Yup.string().when('type', {
+      is: EndpointType.CustomEndpoint,
+      otherwise: (schema) => schema.nullable(),
+      then: (schema) => schema.required(t(labelRequired)),
+    }),
     type: endpointTypeSchema,
   });
 
@@ -86,6 +95,12 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
           : schema.nullable();
       },
     ),
+    groupsMapping: Yup.object({
+      attributePath: Yup.string(),
+      endpoint: endpointSchema,
+      isEnabled: switchSchema,
+      relations: Yup.array().of(groupesRelationSchema),
+    }),
     introspectionTokenEndpoint: Yup.string().nullable(),
     isActive: switchSchema,
     isForced: switchSchema,
@@ -95,7 +110,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       attributePath: Yup.string(),
       endpoint: endpointSchema,
       isEnabled: switchSchema,
-      relations: Yup.array().of(authorizationSchema),
+      relations: Yup.array().of(rolesRelationSchema),
     }),
     tokenEndpoint: Yup.string().nullable().required(t(labelRequired)),
     userinfoEndpoint: Yup.string().nullable(),

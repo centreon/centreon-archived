@@ -37,7 +37,7 @@ import {
   labelDefineAuthorizedConditionsValues,
   labelConditionValue,
   labelRolesMapping,
-  labelWhichendpointtheRolesAttributePathComeFrom,
+  labelWhichEndpointTheRolesAttributePathComeFrom,
   labelEnableAutoManagement,
   labelApplyOnlyFirtsRole,
   labelRolesAttributePath,
@@ -45,6 +45,10 @@ import {
   labelRoleValue,
   labelAclAccessGroup,
   labelDefineYourEndpoint,
+  labelWhichEndpointTheGroupsAttributePathComeFrom,
+  labelContactGroup,
+  labelGroupValue,
+  labelDefinedTheRelationBetweenGroupsAndContactGroups,
 } from '../translatedLabels';
 import { AuthenticationType, EndpointType } from '../models';
 import {
@@ -52,6 +56,7 @@ import {
   labelAutoImportUsers,
   labelAuthenticationConditions,
   labelIdentityProvider,
+  labelGroupsMapping,
 } from '../../translatedLabels';
 import {
   accessGroupsEndpoint,
@@ -73,31 +78,7 @@ const hideCustomEndpoint =
       values,
     );
 
-export const inputs: Array<InputProps> = [
-  {
-    fieldName: 'isActive',
-    group: labelActivation,
-    label: labelEnableOpenIDConnectAuthentication,
-    type: InputType.Switch,
-  },
-  {
-    fieldName: 'isForced',
-    group: labelActivation,
-    label: labelAuthenticationMode,
-    radio: {
-      options: [
-        {
-          label: labelOpenIDConnectOnly,
-          value: true,
-        },
-        {
-          label: labelMixed,
-          value: false,
-        },
-      ],
-    },
-    type: InputType.Radio,
-  },
+const authenticationConditions: Array<InputProps> = [
   {
     autocomplete: {
       creatable: true,
@@ -178,6 +159,186 @@ export const inputs: Array<InputProps> = [
     group: labelAuthenticationConditions,
     label: labelDefineAuthorizedConditionsValues,
     type: InputType.FieldsTable,
+  },
+];
+
+const rolesMapping: Array<InputProps> = [
+  {
+    fieldName: 'rolesMapping.isEnabled',
+    group: labelRolesMapping,
+    label: labelEnableAutoManagement,
+    type: InputType.Switch,
+  },
+  {
+    fieldName: 'rolesMapping.applyOnlyFirstRole',
+    group: labelRolesMapping,
+    label: labelApplyOnlyFirtsRole,
+    type: InputType.Switch,
+  },
+  {
+    fieldName: 'rolesMapping.attributePath',
+    group: labelRolesMapping,
+    label: labelRolesAttributePath,
+
+    type: InputType.Text,
+  },
+  {
+    fieldName: 'rolesMapping.endpoint.type',
+    group: labelRolesMapping,
+    label: labelWhichEndpointTheRolesAttributePathComeFrom,
+    radio: {
+      options: [
+        {
+          label: labelIntrospectionEndpoint,
+          value: EndpointType.IntrospectionEndpoint,
+        },
+        {
+          label: labelUserIformation,
+          value: EndpointType.UserInformationEndpoint,
+        },
+        {
+          label: labelOther,
+          value: EndpointType.CustomEndpoint,
+        },
+      ],
+    },
+    type: InputType.Radio,
+  },
+  {
+    fieldName: 'rolesMapping.endpoint.customEndpoint',
+    group: labelRolesMapping,
+    hideInput: hideCustomEndpoint('rolesMapping'),
+    label: labelDefineYourEndpoint,
+    type: InputType.Text,
+  },
+  {
+    fieldName: 'rolesMapping.relations',
+    fieldsTable: {
+      columns: [
+        {
+          fieldName: 'claimValue',
+          label: labelRoleValue,
+          type: InputType.Text,
+        },
+        {
+          connectedAutocomplete: {
+            additionalConditionParameters: [],
+            endpoint: accessGroupsEndpoint,
+          },
+          fieldName: 'accessGroup',
+          label: labelAclAccessGroup,
+          type: InputType.SingleConnectedAutocomplete,
+        },
+      ],
+      defaultRowValue: {
+        accessGroup: null,
+        claimValue: '',
+      },
+      deleteLabel: labelDeleteRelation,
+    },
+    group: labelRolesMapping,
+    label: labelDefineRelationBetweenRolesAndAcl,
+    type: InputType.FieldsTable,
+  },
+];
+
+const groupsMapping: Array<InputProps> = [
+  {
+    fieldName: 'groupsMapping.isEnabled',
+    group: labelGroupsMapping,
+    label: labelEnableAutoManagement,
+    type: InputType.Switch,
+  },
+  {
+    fieldName: 'groupsMapping.attributePath',
+    group: labelGroupsMapping,
+    label: labelRolesAttributePath,
+    type: InputType.Text,
+  },
+  {
+    fieldName: 'groupsMapping.endpoint.type',
+    group: labelGroupsMapping,
+    label: labelWhichEndpointTheGroupsAttributePathComeFrom,
+    radio: {
+      options: [
+        {
+          label: labelIntrospectionEndpoint,
+          value: EndpointType.IntrospectionEndpoint,
+        },
+        {
+          label: labelUserIformation,
+          value: EndpointType.UserInformationEndpoint,
+        },
+        {
+          label: labelOther,
+          value: EndpointType.CustomEndpoint,
+        },
+      ],
+    },
+    type: InputType.Radio,
+  },
+  {
+    fieldName: 'groupsMapping.endpoint.customEndpoint',
+    group: labelGroupsMapping,
+    hideInput: hideCustomEndpoint('groupsMapping'),
+    label: labelDefineYourEndpoint,
+    type: InputType.Text,
+  },
+  {
+    fieldName: 'groupsMapping.relations',
+    fieldsTable: {
+      columns: [
+        {
+          fieldName: 'groupValue',
+          label: labelGroupValue,
+          type: InputType.Text,
+        },
+        {
+          connectedAutocomplete: {
+            additionalConditionParameters: [],
+            endpoint: accessGroupsEndpoint,
+          },
+          fieldName: 'contactGroup',
+          label: labelContactGroup,
+          type: InputType.SingleConnectedAutocomplete,
+        },
+      ],
+      defaultRowValue: {
+        accessGroup: null,
+        claimValue: '',
+      },
+      deleteLabel: labelDeleteRelation,
+    },
+    group: labelGroupsMapping,
+    label: labelDefinedTheRelationBetweenGroupsAndContactGroups,
+    type: InputType.FieldsTable,
+  },
+];
+
+export const inputs: Array<InputProps> = [
+  {
+    fieldName: 'isActive',
+    group: labelActivation,
+    label: labelEnableOpenIDConnectAuthentication,
+    type: InputType.Switch,
+  },
+  {
+    fieldName: 'isForced',
+    group: labelActivation,
+    label: labelAuthenticationMode,
+    radio: {
+      options: [
+        {
+          label: labelOpenIDConnectOnly,
+          value: true,
+        },
+        {
+          label: labelMixed,
+          value: false,
+        },
+      ],
+    },
+    type: InputType.Radio,
   },
   {
     fieldName: 'baseUrl',
@@ -307,81 +468,7 @@ export const inputs: Array<InputProps> = [
     label: labelFullnameAttributePath,
     type: InputType.Text,
   },
-  {
-    fieldName: 'rolesMapping.isEnabled',
-    group: labelRolesMapping,
-    label: labelEnableAutoManagement,
-    type: InputType.Switch,
-  },
-  {
-    fieldName: 'rolesMapping.applyOnlyFirstRole',
-    group: labelRolesMapping,
-    label: labelApplyOnlyFirtsRole,
-    type: InputType.Switch,
-  },
-  {
-    fieldName: 'rolesMapping.attributePath',
-    group: labelRolesMapping,
-    label: labelRolesAttributePath,
-
-    type: InputType.Text,
-  },
-  {
-    fieldName: 'rolesMapping.endpoint.type',
-    group: labelRolesMapping,
-    label: labelWhichendpointtheRolesAttributePathComeFrom,
-    radio: {
-      options: [
-        {
-          label: labelIntrospectionEndpoint,
-          value: EndpointType.IntrospectionEndpoint,
-        },
-        {
-          label: labelUserIformation,
-          value: EndpointType.UserInformationEndpoint,
-        },
-        {
-          label: labelOther,
-          value: EndpointType.CustomEndpoint,
-        },
-      ],
-    },
-    type: InputType.Radio,
-  },
-  {
-    fieldName: 'rolesMapping.endpoint.customEndpoint',
-    group: labelRolesMapping,
-    hideInput: hideCustomEndpoint('rolesMapping'),
-    label: labelDefineYourEndpoint,
-    type: InputType.Text,
-  },
-  {
-    fieldName: 'rolesMapping.relations',
-    fieldsTable: {
-      columns: [
-        {
-          fieldName: 'claimValue',
-          label: labelRoleValue,
-          type: InputType.Text,
-        },
-        {
-          connectedAutocomplete: {
-            additionalConditionParameters: [],
-            endpoint: accessGroupsEndpoint,
-          },
-          fieldName: 'accessGroup',
-          label: labelAclAccessGroup,
-          type: InputType.SingleConnectedAutocomplete,
-        },
-      ],
-      defaultRowValue: {
-        accessGroup: null,
-        claimValue: '',
-      },
-      deleteLabel: labelDeleteRelation,
-    },
-    group: labelRolesMapping,
-    label: labelDefineRelationBetweenRolesAndAcl,
-    type: InputType.FieldsTable,
-  },
+  ...authenticationConditions,
+  ...rolesMapping,
+  ...groupsMapping,
 ];

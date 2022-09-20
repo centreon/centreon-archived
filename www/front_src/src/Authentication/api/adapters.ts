@@ -15,6 +15,10 @@ import {
   RolesRelationToAPI,
   Endpoint,
   EndpointToAPI,
+  GroupsMapping,
+  GroupsMappingToAPI,
+  GroupsRelation,
+  GroupsRelationToAPI,
 } from '../Openid/models';
 import {
   WebSSOConfiguration,
@@ -128,6 +132,31 @@ const adaptRolesMapping = ({
   };
 };
 
+const adaptGroupsRelationsToAPI = (
+  relations: Array<GroupsRelation>,
+): Array<GroupsRelationToAPI> =>
+  map(
+    ({ groupValue, contactGroup }) => ({
+      contact_group_id: contactGroup.id,
+      group_value: groupValue,
+    }),
+    relations,
+  );
+
+const adaptGroupsMapping = ({
+  attributePath,
+  endpoint,
+  isEnabled,
+  relations,
+}: GroupsMapping): GroupsMappingToAPI => {
+  return {
+    attribute_path: attributePath,
+    endpoint: adaptEndpoint(endpoint),
+    is_enabled: isEnabled,
+    relations: adaptGroupsRelationsToAPI(relations),
+  };
+};
+
 export const adaptOpenidConfigurationToAPI = ({
   authenticationType,
   authorizationEndpoint,
@@ -149,6 +178,7 @@ export const adaptOpenidConfigurationToAPI = ({
   fullnameBindAttribute,
   authenticationConditions,
   rolesMapping,
+  groupsMapping,
 }: OpenidConfiguration): OpenidConfigurationToAPI => ({
   authentication_conditions: adaptAuthentificationConditions(
     authenticationConditions,
@@ -164,6 +194,7 @@ export const adaptOpenidConfigurationToAPI = ({
   email_bind_attribute: emailBindAttribute || null,
   endsession_endpoint: endSessionEndpoint || null,
   fullname_bind_attribute: fullnameBindAttribute || null,
+  groups_mapping: adaptGroupsMapping(groupsMapping),
   introspection_token_endpoint: introspectionTokenEndpoint || null,
   is_active: isActive,
   is_forced: isForced,

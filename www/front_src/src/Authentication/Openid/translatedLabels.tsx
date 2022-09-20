@@ -67,7 +67,7 @@ export const labelDefineAuthorizedConditionsValues =
   'Define authorized conditions values';
 export const labelConditionValue = 'Condition value';
 export const labelRolesMapping = 'Roles mapping';
-export const labelWhichendpointtheRolesAttributePathComeFrom =
+export const labelWhichEndpointTheRolesAttributePathComeFrom =
   'Which endpoint does the roles attribute path come from?';
 export const labelEnableAutoManagement = 'Enable automatic management';
 export const labelApplyOnlyFirtsRole = 'Apply only first role';
@@ -77,3 +77,9 @@ export const labelDefineRelationBetweenRolesAndAcl =
 export const labelRoleValue = 'Role value';
 export const labelAclAccessGroup = 'ACL access group';
 export const labelDefineYourEndpoint = 'Define your endpoint';
+export const labelGroupsAttributePath = 'Groups attribute path';
+export const labelWhichEndpointTheGroupsAttributePathComeFrom =
+  'Which endpoint does the groups attribute path come from?';
+export const labelDefinedTheRelationBetweenGroupsAndContactGroups =
+  'Define the relation between groups and contact groups';
+export const labelGroupValue = 'Group value';
