@@ -11,7 +11,7 @@
     <div id="graphs" class="graph_content">
         <div class="graphZone">
           {foreach from=$periods item=period}
-          <div id="graph_wrapper_{$period.short}" data-graph-id="{$srv_id}" class="graph">
+          <div id="graph_wrapper_{$period.short}" data-graph-id="{$svc_id}" data-graph-period="{$period.short}" class="graph">
             <div class="title">
               <img class="remove ico-14 margin_right" src="./img/icons/circle-cross.png">
               <span>{$srv_name} during {$period.long}</span>
@@ -54,36 +54,21 @@ jQuery(function () {
 
   /* Add events on click on action download image/CSV */
   jQuery('.graphZone').delegate('a.actions', 'click', function (e) {
-    var $a = jQuery(this);
-    var baseUrl = $a.data('href');
-    var chartId = $a.parents('.graph').data('graphId');
-    var start;
-    var end;
-    var timezone = localStorage.getItem('realTimezone')
+    let $a = jQuery(this);
+    let baseUrl = $a.data('href');
+    let chartId = $a.parents('.graph').data('graphId');
+    let start;
+    let end;
+    let timezone = localStorage.getItem('realTimezone')
         ? localStorage.getItem('realTimezone')
         : moment.tz.guess();
 
-    /* Get the period */
-    if (jQuery('select[name="period"]').val() === '') {
-      start = moment.tz(
-          jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
-          timezone
-      );
-      end = moment.tz(
-          jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val(),
-          timezone
-      );
-      duration = moment.duration(end.diff(start));
-    } else {
-      parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
-      duration = moment.duration(
-        parseInt(parseInterval[1], 10),
-        parseInterval[2]
-      );
-      start = moment().tz(timezone);
-      end = moment().tz(timezone);
-      start.subtract(parseInterval[1], parseInterval[2]);
-    }
+    //Defining the period
+    let graphPeriod = $a.parents('.graph').data('graphPeriod');
+    let parseInterval = graphPeriod.match(/(\d+)([a-z]+)/i);
+    start = moment().tz(timezone);
+    end = moment().tz(timezone);
+    start.subtract(parseInterval[1], parseInterval[2]);
 
     e.preventDefault();
     baseUrl += '?chartId=' + chartId + '&start=' + start.unix() + '&end=' + end.unix();
