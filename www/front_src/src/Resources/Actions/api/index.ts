@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
+import { pick } from 'ramda';
 
 import { ResourceCategory, Resource } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
