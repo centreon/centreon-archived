@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
+require_once __DIR__ . '/../../../../../www/class/HtmlAnalyzer.php';
+
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 /**
