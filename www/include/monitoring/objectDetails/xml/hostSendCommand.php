@@ -59,10 +59,7 @@ $hostId = filter_var(
 
 $pollerId = $hostObj->getHostPollerId($hostId);
 
-$cmd = filter_var(
-    $_POST['cmd'] ?? '',
-    FILTER_SANITIZE_STRING
-);
+$cmd = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['cmd'] ?? '');
 
 $cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 

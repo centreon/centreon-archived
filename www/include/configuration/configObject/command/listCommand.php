@@ -46,9 +46,8 @@ $type = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$search = filter_var(
-    $_POST['searchC'] ?? $_GET['searchC'] ?? $centreon->historySearch[$url]['search' . $type] ?? '',
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchC'] ?? $_GET['searchC'] ?? $centreon->historySearch[$url]['search' . $type] ?? ''
 );
 
 $displayLocked = filter_var(

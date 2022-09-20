@@ -40,11 +40,8 @@ const isDefined = pipe(isNil, not);
 const propExists = <T>(property: string): ((obj: T) => boolean) =>
   pipe(prop(property) as (obj: T) => unknown, isDefined);
 
-const getAllowedPages = ({
-  page,
-  newAccumulator,
-}): ((...a: Array<Page>) => Array<string>) =>
-  cond<Page, Array<string>>([
+const getAllowedPages = ({ page, newAccumulator }): Array<string> => {
+  return cond([
     [
       propEq('is_react', true) as (obj: Page) => boolean,
       always(append<string>(page.url as string, newAccumulator)),
@@ -54,7 +51,8 @@ const getAllowedPages = ({
       always(append<string>(page.page as string, newAccumulator)),
     ],
     [T, always(newAccumulator)],
-  ]);
+  ])(page);
+};
 
 const useNavigation = (): UseNavigationState => {
   const { sendRequest } = useRequest<Navigation>({
@@ -83,7 +81,7 @@ const useNavigation = (): UseNavigationState => {
 
       const newAccumulator = [...acc, ...flatten(children)];
 
-      return getAllowedPages({ newAccumulator, page })(page);
+      return getAllowedPages({ newAccumulator, page });
     },
     [],
   );

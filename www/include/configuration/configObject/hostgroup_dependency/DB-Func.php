@@ -103,6 +103,7 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "dep_name" ? ($dep_name = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
@@ -294,12 +295,12 @@ function updateHostGroupDependency($depId = null): void
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['dep_name'] = filter_var($resources['dep_name'], FILTER_SANITIZE_STRING);
+    $sanitizedParameters['dep_name'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_name']);
     if (empty($sanitizedParameters['dep_name'])) {
         throw new InvalidArgumentException(_("Dependency name can't be empty"));
     }
 
-    $sanitizedParameters['dep_description'] = filter_var($resources['dep_description'], FILTER_SANITIZE_STRING);
+    $sanitizedParameters['dep_description'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_description']);
     if (empty($sanitizedParameters['dep_description'])) {
         throw new InvalidArgumentException(_("Dependency description can't be empty"));
     }
@@ -310,26 +311,25 @@ function sanitizeResourceParameters(array $resources): array
 
 
     if (isset($resources["execution_failure_criteria"]) && is_array($resources["execution_failure_criteria"])) {
-        $sanitizedParameters['execution_failure_criteria'] = filter_var(
+        $sanitizedParameters['execution_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
             implode(
                 ",",
                 array_keys($resources["execution_failure_criteria"])
-            ),
-            FILTER_SANITIZE_STRING
+            )
         );
     }
 
     if (isset($resources["notification_failure_criteria"]) && is_array($resources["notification_failure_criteria"])) {
-        $sanitizedParameters['notification_failure_criteria'] = filter_var(
+        $sanitizedParameters['notification_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
             implode(
                 ",",
                 array_keys($resources["notification_failure_criteria"])
-            ),
-            FILTER_SANITIZE_STRING
+            )
         );
     }
 
-    $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
+    $sanitizedParameters['dep_comment'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_comment']);
+
     return $sanitizedParameters;
 }
 
