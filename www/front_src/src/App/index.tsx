@@ -52,11 +52,7 @@ const Navigation = lazy(() => import('../Navigation'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
-  const { dataLoaded, hasMinArgument } = useApp();
-
-  if (!dataLoaded) {
-    return <PageLoader />;
-  }
+  const { hasMinArgument } = useApp();
 
   const min = hasMinArgument();
 

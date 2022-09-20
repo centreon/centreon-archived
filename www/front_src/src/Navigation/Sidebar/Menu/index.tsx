@@ -351,6 +351,7 @@ const NavigationMenu = ({
       selectedNavigationItems,
       user,
       hoveredNavigationItems,
+      navigationData,
     ],
   });
 };

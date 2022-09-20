@@ -63,7 +63,7 @@ const getExternalPageRoutes = ({
 };
 
 interface Props {
-  allowedPages: Array<string | Array<string>>;
+  allowedPages?: Array<string | Array<string>>;
   externalPagesFetched: boolean;
   federatedModules: Array<FederatedModule>;
 }
@@ -80,7 +80,7 @@ const ReactRouterContent = ({
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
               element={
-                allowedPages.includes(path) ? (
+                isNil(allowedPages) || allowedPages.includes(path) ? (
                   <PageContainer>
                     <BreadcrumbTrail path={path} />
                     <Comp />
@@ -110,10 +110,6 @@ const ReactRouter = (): JSX.Element => {
   const { allowedPages } = useNavigation();
 
   const externalPagesFetched = not(isNil(federatedModules));
-
-  if (!externalPagesFetched || !allowedPages) {
-    return <PageSkeleton />;
-  }
 
   return (
     <ReactRouterContent
