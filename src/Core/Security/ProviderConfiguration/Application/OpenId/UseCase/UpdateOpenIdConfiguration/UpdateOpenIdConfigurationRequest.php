@@ -126,17 +126,12 @@ class UpdateOpenIdConfigurationRequest
     public ?string $claimName = null;
 
     /**
-     * @var array<array{claim_value: string, access_group_id: int}>
-     */
-    public array $authorizationRules = [];
-
-    /**
      * @var array<string, array<int|string, string|null>|string|bool>
      */
     public array $rolesMapping = [];
 
     /**
-     * @var array<string,bool|string|string[]>
+     * @var array<string,array<int|string,string|null>|string|bool>
      */
     public array $authenticationConditions = [
         "is_enabled" => false,

@@ -126,8 +126,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         private ContactServiceInterface $contactService,
         private Container $dependencyInjector,
         private WriteUserRepositoryInterface $userRepository,
-    )
-    {
+    ) {
         $pearDB = $this->dependencyInjector['configuration_db'];
         $this->centreonLog = new CentreonUserLog(-1, $pearDB);
     }
@@ -495,12 +494,8 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get introspection token information.
-     * @return array
+     * @return void
      * @throws SSOAuthenticationException
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
      */
     private function getUserInformationFromIntrospectionEndpoint(): void
     {
@@ -571,8 +566,11 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get user information.
-     * @return array<string,mixed>
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
      * @throws SSOAuthenticationException
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     private function getUserInformationFromUserInfoEndpoint(): void
     {
@@ -581,7 +579,12 @@ class OpenIdProvider implements OpenIdProviderInterface
 
     /**
      * Send a request to get user information.
+     * @return array<string,mixed>
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
      * @throws SSOAuthenticationException
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     private function sendRequestForUserInformationEndpoint(): array
     {
@@ -713,8 +716,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         $customConfiguration = $this->configuration->getCustomConfiguration();
         if ($customConfiguration->getAuthenticationType() === CustomConfiguration::AUTHENTICATION_BASIC) {
             $headers['Authorization'] = "Basic " . base64_encode(
-                    $customConfiguration->getClientId() . ":" . $customConfiguration->getClientSecret()
-                );
+                $customConfiguration->getClientId() . ":" . $customConfiguration->getClientSecret()
+            );
         } else {
             $data["client_id"] = $customConfiguration->getClientId();
             $data["client_secret"] = $customConfiguration->getClientSecret();
@@ -1033,7 +1036,7 @@ class OpenIdProvider implements OpenIdProviderInterface
              *
              * https://www.php.net/manual/en/function.array-is-list.php
              *
-             * @param mixed[] $array
+             * @param array<mixed> $array
              * @return bool
              */
             function array_is_list(array $array): bool

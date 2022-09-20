@@ -116,6 +116,13 @@ final class Login
                     );
                 }
             }
+
+            $presenter->setResponseStatus(
+                new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
+            );
+
+            $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
+
         } catch (PasswordExpiredException $e) {
             $response = new PasswordExpiredResponse($e->getMessage());
             $response->setBody([
@@ -132,12 +139,6 @@ final class Login
             $presenter->setResponseStatus(new ErrorAuthenticationConditionsResponse($ex->getMessage()));
             return;
         }
-
-        $presenter->setResponseStatus(
-            new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
-        );
-
-        $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
     }
 
     /**
