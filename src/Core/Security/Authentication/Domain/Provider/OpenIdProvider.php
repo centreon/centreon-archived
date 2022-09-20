@@ -58,6 +58,28 @@ use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 
+//@TODO: Remove this polyfill when php 8.1 is supported
+if (!function_exists("array_is_list")) {
+    /**
+     * Polyfill for array_is_list
+     *
+     * https://www.php.net/manual/en/function.array-is-list.php
+     *
+     * @param array<mixed> $array
+     * @return bool
+     */
+    function array_is_list(array $array): bool
+    {
+        $i = 0;
+        foreach ($array as $k => $v) {
+            if ($k !== $i++) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 class OpenIdProvider implements OpenIdProviderInterface
 {
     use LoggerTrait;
@@ -1012,7 +1034,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $providerAuthenticationConditions = explode(",", $providerAuthenticationConditions);
         }
 
-        $this->validateAttributeOrFail(
+        $this->validateAuthenticationAttributeOrFail(
             $providerAuthenticationConditions,
             $authenticationConditions->getAuthorizedValues()
         );
@@ -1025,31 +1047,10 @@ class OpenIdProvider implements OpenIdProviderInterface
      * @param string[] $configuredAuthorizedValues
      * @throws AuthenticationConditionsException
      */
-    private function validateAttributeOrFail(
+    private function validateAuthenticationAttributeOrFail(
         array $providerAuthenticationConditions,
         array $configuredAuthorizedValues
     ): void {
-        //@TODO: Remove this polyfill when php 8.1 is supported
-        if (!function_exists("array_is_list")) {
-            /**
-             * Polyfill for array_is_list
-             *
-             * https://www.php.net/manual/en/function.array-is-list.php
-             *
-             * @param array<mixed> $array
-             * @return bool
-             */
-            function array_is_list(array $array): bool
-            {
-                $i = 0;
-                foreach ($array as $k => $v) {
-                    if ($k !== $i++) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
         if (array_is_list($providerAuthenticationConditions) === false) {
             $errorMessage = "Invalid Authentication conditions format, array of strings expected";
             $this->error(
@@ -1177,7 +1178,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             $providerConditions = explode(",", $providerConditions);
         }
 
-        $this->validateAttributeOrFail($providerConditions, $aclConditions->getClaimValues());
+        $this->validateAclAttributeOrFail($providerConditions, $aclConditions->getClaimValues());
     }
 
     /**
@@ -1200,5 +1201,44 @@ class OpenIdProvider implements OpenIdProviderInterface
             Endpoint::USER_INFORMATION => $this->sendRequestForUserInformationEndpoint(),
             default => $this->sendRequestForCustomAclConditionEndpoint($endpoint->getUrl()),
         };
+    }
+
+    /**
+     * Validate roles mapping (Acl) Condition Attribute
+     *
+     * @param array<mixed> $conditions
+     * @param string[] $configuredAuthorizedValues
+     * @throws AclConditionsException
+     */
+    private function validateAclAttributeOrFail(array $conditions, array $configuredAuthorizedValues): void
+    {
+        if (array_is_list($conditions) === false) {
+            $errorMessage = "Invalid roles mapping (ACL) conditions format, array of strings expected";
+            $this->error($errorMessage, [
+                    "authentication_condition_from_provider" => $conditions
+            ]);
+            $this->logExceptionInLoginLogFile(
+                $errorMessage,
+                AclConditionsException::invalidAclConditions()
+            );
+            throw AclConditionsException::invalidAclConditions();
+        }
+
+        $conditionMatches = array_intersect($conditions, $configuredAuthorizedValues);
+        if (empty($conditionMatches)) {
+            $this->error(
+                "Configured roles do not match",
+                [
+                    "configured_authorized_values" => $configuredAuthorizedValues
+                ]
+            );
+            $this->logExceptionInLoginLogFile(
+                "Configured roles do not match",
+                AclConditionsException::conditionsNotFound()
+            );
+            throw AclConditionsException::conditionsNotFound();
+        }
+        $this->info("Role mapping found (ACL)", ["conditions" => $conditionMatches]);
+        $this->logAuthenticationInfo("Role mapping found (ACL)", $conditionMatches);
     }
 }

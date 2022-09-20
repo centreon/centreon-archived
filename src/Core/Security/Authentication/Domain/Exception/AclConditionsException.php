@@ -32,7 +32,7 @@ class AclConditionsException extends \Exception
      */
     public static function invalidAclConditions(): self
     {
-        return new self(_("Invalid Provider acl conditions"));
+        return new self(_("Invalid roles mapping fetched from provider"));
     }
 
     /**
@@ -42,6 +42,6 @@ class AclConditionsException extends \Exception
      */
     public static function conditionsNotFound(): self
     {
-        return new self(_("Acl conditions not found in provider"));
+        return new self(_("Role mapping conditions do not match"));
     }
 }

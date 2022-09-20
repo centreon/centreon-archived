@@ -191,19 +191,19 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * @param array<string,bool|string|string[]|array<array{claim_value: string, access_group_id: int}>> $roles_mapping
+     * @param array<string,bool|string|string[]|array<array{claim_value: string, access_group_id: int}>> $rolesMapping
      * @return ACLConditions
      * @throws \Throwable
      */
-    private function createAclConditions(array $roles_mapping): ACLConditions
+    private function createAclConditions(array $rolesMapping): ACLConditions
     {
-        $rules = $this->createAuthorizationRules($roles_mapping['relations']);
+        $rules = $this->createAuthorizationRules($rolesMapping['relations']);
 
         return new ACLConditions(
-            $roles_mapping['is_enabled'],
-            $roles_mapping['apply_only_first_role'],
-            $roles_mapping['attribute_path'],
-            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            $rolesMapping['is_enabled'],
+            $rolesMapping['apply_only_first_role'],
+            $rolesMapping['attribute_path'],
+            new Endpoint($rolesMapping['endpoint']['type'], $rolesMapping['endpoint']['custom_endpoint']),
             $rules
         );
     }

@@ -121,8 +121,9 @@ final class Login
                 new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
             );
 
-            $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
-
+            $presenter->present(
+                new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
+            );
         } catch (PasswordExpiredException $e) {
             $response = new PasswordExpiredResponse($e->getMessage());
             $response->setBody([
