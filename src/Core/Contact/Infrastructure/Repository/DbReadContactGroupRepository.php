@@ -184,4 +184,35 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         );
         return $contactGroup;
     }
+
+    public function findByIds(array $contactGroupIds): array
+    {
+        $this->debug('Getting Contact Group by Ids', [
+            "ids" => implode(", ", $contactGroupIds)
+        ]);
+        $queryBindValues = [];
+        foreach ($contactGroupIds as $contactGroupId) {
+            $queryBindValues[':contact_group_' . $contactGroupId] = $contactGroupId;
+        }
+
+        if (empty($queryBindValues)) {
+            return [];
+        }
+        $contactGroups = [];
+        $boundIds = implode(', ', array_keys($queryBindValues));
+        $statement = $this->db->prepare(
+            "SELECT cg_id,cg_name FROM contactgroup WHERE cg_id IN ($boundIds)"
+        );
+        foreach ($queryBindValues as $bindKey => $contactGroupId) {
+            $statement->bindValue($bindKey, $contactGroupId, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+
+        while ($statement !== false && is_array($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $contactGroups[] = DbContactGroupFactory::createFromRecord($result);
+        }
+        $this->debug('Contact Group found: ' . count($contactGroups));
+
+        return $contactGroups;
+    }
 }

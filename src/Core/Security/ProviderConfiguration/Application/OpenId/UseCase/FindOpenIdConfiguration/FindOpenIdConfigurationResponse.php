@@ -25,8 +25,10 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpe
 
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 
 class FindOpenIdConfigurationResponse
 {
@@ -136,9 +138,38 @@ class FindOpenIdConfigurationResponse
     public array $authorizationRules = [];
 
     /**
-     * @var array<string,bool|string|string[]>
+     * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  },
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[]
+     * }
      */
     public array $authenticationConditions = [];
+
+    /**
+     * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint": string|null
+     *  },
+     *  "relations": array<array{
+     *      "group_value": string,
+     *      "contact_group": array{
+     *          "id": int,
+     *          "name": string
+     *      }
+     *  }>
+     * }
+     */
+    public array $groupsMapping = [];
 
     /**
      * @param ContactTemplate $contactTemplate
@@ -183,7 +214,17 @@ class FindOpenIdConfigurationResponse
 
     /**
      * @param AuthenticationConditions $authenticationConditions
-     * @return array<string,bool|string|string[]>
+     * @return array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  },
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[]
+     * }
      */
     public static function authenticationConditionsToArray(AuthenticationConditions $authenticationConditions): array
     {
@@ -195,5 +236,58 @@ class FindOpenIdConfigurationResponse
             "trusted_client_addresses" => $authenticationConditions->getTrustedClientAddresses(),
             "blacklist_client_addresses" => $authenticationConditions->getBlacklistClientAddresses()
         ];
+    }
+
+    /**
+     * @param GroupsMapping $groupsMapping
+     * @return array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint": string|null
+     *  },
+     *  "relations": array<array{
+     *      "group_value": string,
+     *      "contact_group": array{
+     *          "id": int,
+     *          "name": string
+     *      }
+     *  }>
+     * }
+     */
+    public static function groupsMappingToArray(GroupsMapping $groupsMapping): array
+    {
+        $relations =  self::contactGroupRelationsToArray($groupsMapping->getContactGroupRelations());
+        return [
+            "is_enabled" => $groupsMapping->isEnabled(),
+            "attribute_path" => $groupsMapping->getAttributePath(),
+            "endpoint" => $groupsMapping->getEndpoint()->toArray(),
+            "relations" => $relations
+        ];
+    }
+
+    /**
+     * @param ContactGroupRelation[] $contactGroupRelations
+     * @return array<array{
+     *   "group_value": string,
+     *   "contact_group": array{
+     *      "id": int,
+     *      "name": string
+     *   }
+     * }>
+     */
+    public static function contactGroupRelationsToArray(array $contactGroupRelations): array
+    {
+        return array_map(
+            fn (ContactGroupRelation $contactGroupRelation) => [
+                'group_value' => $contactGroupRelation->getClaimValue(),
+                'contact_group' => [
+                    'id' => $contactGroupRelation->getContactGroup()->getId(),
+                    'name' => $contactGroupRelation->getContactGroup()->getName()
+                ]
+            ],
+            $contactGroupRelations
+        );
     }
 }

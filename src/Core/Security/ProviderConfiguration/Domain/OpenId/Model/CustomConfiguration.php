@@ -137,6 +137,11 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private AuthenticationConditions $authenticationConditions;
 
     /**
+     * @var GroupsMapping
+     */
+    private GroupsMapping $groupsMapping;
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
@@ -554,6 +559,24 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     }
 
     /**
+     * @param GroupsMapping $groupsMapping
+     * @return self
+     */
+    public function setGroupsMapping(GroupsMapping $groupsMapping): self
+    {
+        $this->groupsMapping = $groupsMapping;
+        return $this;
+    }
+
+    /**
+     * @return GroupsMapping
+     */
+    public function getGroupsMapping(): GroupsMapping
+    {
+        return $this->groupsMapping;
+    }
+
+    /**
      * @param array<string,mixed> $json
      * @throws OpenIdConfigurationException
      */
@@ -579,12 +602,12 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
         $this->setLoginClaim($json['login_claim']);
         $this->setAuthenticationType($json['authentication_type']);
         $this->setVerifyPeer($json['verify_peer']);
-        $this->setContactGroup($json['contact_group']);
         $this->setClaimName($json['claim_name']);
         if (array_key_exists('authorization_rules', $json)) {
             $this->setAuthorizationRules($json['authorization_rules']);
         }
         $this->setAuthenticationConditions($json['authentication_conditions']);
+        $this->setGroupsMapping($json['groups_mapping']);
     }
 
     /**
@@ -600,7 +623,6 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
             'base_url',
             'authorization_endpoint',
             'token_endpoint',
-            'contact_group'
         ];
 
         $emptyParameters = [];
