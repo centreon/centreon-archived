@@ -60,7 +60,8 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'claim_name' => $response->claimName,
             'authorization_rules' => $response->authorizationRules,
             'roles_mapping' => $response->aclConditions,
-            'authentication_conditions' => $response->authenticationConditions
+            'authentication_conditions' => $response->authenticationConditions,
+            'groups_mapping' => $response->groupsMapping
         ];
 
         $this->presenterFormatter->present($presenterResponse);

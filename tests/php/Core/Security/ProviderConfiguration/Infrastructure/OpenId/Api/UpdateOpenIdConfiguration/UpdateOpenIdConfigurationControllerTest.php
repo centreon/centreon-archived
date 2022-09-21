@@ -122,7 +122,6 @@ it('should execute the usecase properly', function () {
             'contact_template' => null,
             'email_bind_attribute' => null,
             'fullname_bind_attribute' => null,
-            'contact_group_id' => 1,
             'claim_name' => "groups",
             'roles_mapping' => (new ACLConditions(
                 false,
@@ -141,6 +140,15 @@ it('should execute the usecase properly', function () {
                 "authorized_values" => [],
                 "trusted_client_addresses" => [],
                 "blacklist_client_addresses" => []
+            ],
+            "groups_mapping" => [
+                "is_enabled" => false,
+                "attribute_path" => "",
+                "endpoint" => [
+                    "type" => "introspection_endpoint",
+                    "custom_endpoint" => null
+                ],
+                "relations" => []
             ]
         ]);
 

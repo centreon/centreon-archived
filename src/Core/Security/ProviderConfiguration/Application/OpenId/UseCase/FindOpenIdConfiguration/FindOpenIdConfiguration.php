@@ -101,6 +101,9 @@ class FindOpenIdConfiguration
             $findOpenIdConfigurationResponse::authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()
             );
+        $findOpenIdConfigurationResponse->groupsMapping = $findOpenIdConfigurationResponse::groupsMappingToArray(
+            $customConfiguration->getGroupsMapping()
+        );
 
         return $findOpenIdConfigurationResponse;
     }

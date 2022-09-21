@@ -578,6 +578,7 @@ function multipleServiceInDB(
 
             // Create a sentence which contains all the value
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 if ($key2 == "service_description" && $descKey) {
                     $service_description = $value2 = $value2 . "_" . $i;
                 } elseif ($key2 == "service_description") {
@@ -806,6 +807,7 @@ function multipleServiceInDB(
                             $esi["service_service_id"] = $maxId["MAX(service_id)"];
                             $esi["esi_id"] = null;
                             foreach ($esi as $key2 => $value2) {
+                                $value2 = is_int($value2) ? (string) $value2 : $value2;
                                 $val ? $val .=
                                     (
                                         $value2 != null

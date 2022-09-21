@@ -119,12 +119,6 @@
         "null"
       ]
     },
-    "contact_group_id": {
-      "type": [
-        "number",
-        "null"
-      ]
-    },
     "claim_name": {
       "type": [
         "string",
@@ -281,6 +275,37 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "groups_mapping": {
+      "type": "object",
+      "required": [
+        "is_enabled",
+        "attribute_path",
+        "endpoint"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "object",
+          "required": [
+            "type",
+            "custom_endpoint"
+          ],
+          "properties": {
+            "type": {
+              "enum": ["introspection_endpoint", "user_information_endpoint", "custom_endpoint"]
+            },
+            "custom_endpoint": {
+              "type": ["string", "null"]
             }
           }
         }

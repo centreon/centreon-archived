@@ -32,6 +32,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationCondit
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 
 beforeEach(function () {
     $this->customConfiguration = [
@@ -54,7 +55,6 @@ beforeEach(function () {
         'login_claim' => 'preferred_username',
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
-        'contact_group' => 1,
         'claim_name' => 'groups',
         'roles_mapping' => new ACLConditions(
             false,
@@ -62,7 +62,8 @@ beforeEach(function () {
             '',
             new Endpoint(Endpoint::INTROSPECTION, ''),
             []
-        )
+        ),
+        "groups_mapping" => new GroupsMapping(false, "", new Endpoint(), [])
     ];
 });
 

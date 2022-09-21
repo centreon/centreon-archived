@@ -22,9 +22,9 @@
     "contact_template",
     "email_bind_attribute",
     "fullname_bind_attribute",
-    "contact_group_id",
     "claim_name",
-    "authentication_conditions"
+    "authentication_conditions",
+    "groups_mapping"
   ],
   "properties": {
     "is_active": {
@@ -92,9 +92,6 @@
     "fullname_bind_attribute": {
       "type": ["string", "null"]
     },
-    "contact_group_id": {
-      "type": ["integer", "null"]
-    },
     "claim_name": {
       "type": ["string", "null"]
     },
@@ -146,6 +143,56 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "groups_mapping": {
+      "type": "object",
+      "required": [
+        "is_enabled",
+        "attribute_path",
+        "endpoint",
+        "relations"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "object",
+          "required": [
+            "type",
+            "custom_endpoint"
+          ],
+          "properties": {
+            "type": {
+              "enum": ["introspection_endpoint", "user_information_endpoint", "custom_endpoint"]
+            },
+            "custom_endpoint": {
+              "type": ["string", "null"]
+            }
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "group_value",
+              "contact_group_id"
+            ],
+            "properties": {
+              "group_value": {
+                "type": "string"
+              },
+              "contact_group_id": {
+                "type": "integer"
+              }
+            }
           }
         }
       }

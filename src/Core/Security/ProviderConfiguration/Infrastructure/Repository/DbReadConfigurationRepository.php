@@ -41,6 +41,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Security\ProviderConfiguration\Domain\WebSSO\Model\CustomConfiguration as WebSSOCustomConfiguration;
 
 final class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
@@ -133,9 +134,6 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 $jsonDecoded['contact_template'] = $jsonDecoded['contact_template_id'] !== null
                     ? $this->readOpenIdConfigurationRepository->getContactTemplate($jsonDecoded['contact_template_id'])
                     : null;
-                $jsonDecoded['contact_group'] = $jsonDecoded['contact_group_id'] !== null
-                    ? $this->readOpenIdConfigurationRepository->getContactGroup($jsonDecoded['contact_group_id'])
-                    : null;
                 $jsonDecoded['authorization_rules'] =
                     $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
                         $configuration->getId()
@@ -147,6 +145,10 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 );
                 $jsonDecoded['authentication_conditions'] = $this->createAuthenticationConditionsFromRecord(
                     $jsonDecoded['authentication_conditions']
+                );
+                $jsonDecoded['groups_mapping'] = $this->createGroupsMappingFromRecord(
+                    $jsonDecoded['groups_mapping'],
+                    $configuration->getId()
                 );
 
                 return new OpenIdCustomConfiguration($jsonDecoded);
@@ -290,10 +292,20 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
     /**
      * Create Authentication Conditions from record.
      *
-     * @param array<string,bool|string|string[]> $authenticationConditionsRecord
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[],
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * } $authenticationConditionsRecord
      * @return AuthenticationConditions
      */
-    public function createAuthenticationConditionsFromRecord(
+    private function createAuthenticationConditionsFromRecord(
         array $authenticationConditionsRecord
     ): AuthenticationConditions {
         $endpoint = new Endpoint(
@@ -315,5 +327,38 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
         );
 
         return $authenticationConditions;
+    }
+
+    /**
+     * Create Groups Mapping From Record.
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * } $groupsMappingRecord
+     * @param int $configurationId
+     * @return GroupsMapping
+     */
+    private function createGroupsMappingFromRecord(array $groupsMappingRecord, int $configurationId): GroupsMapping
+    {
+        $endpoint = new Endpoint(
+            $groupsMappingRecord["endpoint"]["type"],
+            $groupsMappingRecord["endpoint"]["custom_endpoint"]
+        );
+
+        $contactGroupRelations = $this->readOpenIdConfigurationRepository->getContactGroupRelationsByConfigurationId(
+            $configurationId
+        );
+        $groupsMapping = new GroupsMapping(
+            $groupsMappingRecord['is_enabled'],
+            $groupsMappingRecord['attribute_path'],
+            $endpoint,
+            $contactGroupRelations
+        );
+
+        return $groupsMapping;
     }
 }

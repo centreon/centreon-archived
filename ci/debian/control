@@ -4,18 +4,18 @@ Priority: optional
 Maintainer: Luiz Costa <me@luizgustavo.pro.br>
 Standards-Version: 4.5.0
 Homepage: https://www.centreon.com
-Build-Depends: 
+Build-Depends:
     debhelper-compat (=12),
-    php8.0-curl,
-    php8.0-intl,
-    php8.0-xml,
+    php8.1-curl,
+    php8.1-intl,
+    php8.1-xml,
     php-pear,
     composer,
     npm
 
 Package: centreon
 Architecture: all
-Depends: 
+Depends:
     centreon-central (>= ${centreon:version}~),
     centreon-database (>= ${centreon:version}~),
     sudo
@@ -62,35 +62,35 @@ Description: The package contains base configuration for Centreon Engine and Cen
 
 Package: centreon-web-common
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     centreon-perl-libs (>= ${centreon:version}~),
-    php8.0,
-    php8.0-cli
+    php8.1,
+    php8.1-cli
 Description: Centreon installation entry point.
 
 Package: centreon-web
 Architecture: all
-Depends: 
+Depends:
     ${misc:Depends},
     lsb-release,
     centreon-web-common (>= ${centreon:version}~),
     centreon-gorgone (>= ${centreon:version}~),
-    php8.0-curl,
-    php8.0-intl,
-    php8.0-xml,
-    php8.0-dom,
-    php8.0-gd,
-    php8.0-mbstring,
-    php8.0-xml,
-    php8.0-mysql,
-    php8.0-zip,
-    php8.0-snmp,
-    php8.0-ldap,
-    php8.0-readline,
-    php8.0-sqlite3,
-    php8.0-grpc,
-    php8.0-protobuf,
+    php8.1-curl,
+    php8.1-intl,
+    php8.1-xml,
+    php8.1-dom,
+    php8.1-gd,
+    php8.1-mbstring,
+    php8.1-xml,
+    php8.1-mysql,
+    php8.1-zip,
+    php8.1-snmp,
+    php8.1-ldap,
+    php8.1-readline,
+    php8.1-sqlite3,
+    php8.1-grpc,
+    php8.1-protobuf,
     php-pear,
     ntp,
     rrdtool,
@@ -100,7 +100,7 @@ Depends:
 Description: This package contains WebUI files.
 
 Package: centreon-perl-libs
-Depends:    
+Depends:
     ${misc:Depends},
     centreon-common (>= ${centreon:version}~),
     libconfig-inifiles-perl,
@@ -121,7 +121,7 @@ Description: Base package for all Centreon installations.
 
 Package: centreon-database
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     mariadb-server,
     ${misc:Depends}
@@ -129,9 +129,9 @@ Description: Install a database server optimized for use with Centreon.
 
 Package: centreon-web-apache
 Architecture: all
-Depends: 
+Depends:
     apache2,
-    php8.0-fpm,
+    php8.1-fpm,
     centreon-web (>= ${centreon:version}~),
     ${misc:Depends}
 Description: Centreon is a network, system, applicative supervision and monitoring tool,
@@ -140,7 +140,7 @@ Description: Centreon is a network, system, applicative supervision and monitori
 
 Package: centreon-trap
 Architecture: all
-Depends: 
+Depends:
     centreon-common (>= ${centreon:version}~),
     snmptrapd,
     snmpd,

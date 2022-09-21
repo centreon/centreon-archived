@@ -26,11 +26,6 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateO
 class UpdateOpenIdConfigurationRequest
 {
     /**
-     * @var int|null
-     */
-    public ?int $contactGroupId = null;
-
-    /**
      * @var boolean
      */
     public bool $isActive = false;
@@ -131,7 +126,17 @@ class UpdateOpenIdConfigurationRequest
     public array $rolesMapping = [];
 
     /**
-     * @var array<string,array<int|string,string|null>|string|bool>
+     * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[],
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * }
      */
     public array $authenticationConditions = [
         "is_enabled" => false,
@@ -146,6 +151,30 @@ class UpdateOpenIdConfigurationRequest
     ];
 
     /**
+    * @var array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  },
+     *  "relations":array<array{
+     *      "group_value": string,
+     *      "contact_group_id": int
+     *  }>
+     * }
+     */
+    public array $groupsMapping = [
+        "is_enabled" => false,
+        "attribute_path" => "",
+        "endpoint" => [
+            "type" => "introspection_endpoint",
+            "custom_endpoint" => null,
+        ],
+        "relations" => []
+    ];
+
+    /**
      * @return array<string,mixed>
      */
     public function toArray(): array
@@ -153,7 +182,6 @@ class UpdateOpenIdConfigurationRequest
         return [
             'is_forced' => $this->isForced,
             'is_active' => $this->isActive,
-            'contact_group_id' => $this->contactGroupId,
             'contact_template' => $this->contactTemplate,
             'auto_import' => $this->isAutoImportEnabled,
             'client_id' => $this->clientId,
@@ -171,7 +199,8 @@ class UpdateOpenIdConfigurationRequest
             'userinfo_endpoint' => $this->userInformationEndpoint,
             'fullname_bind_attribute' => $this->userNameBindAttribute,
             'verify_peer' => $this->verifyPeer,
-            'authentication_conditions' => $this->authenticationConditions
+            'authentication_conditions' => $this->authenticationConditions,
+            'groups_mapping' => $this->groupsMapping
         ];
     }
 }

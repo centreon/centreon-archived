@@ -26,6 +26,7 @@ namespace Core\Security\ProviderConfiguration\Application\OpenId\Repository;
 use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
 
 interface ReadOpenIdConfigurationRepositoryInterface
 {
@@ -52,4 +53,12 @@ interface ReadOpenIdConfigurationRepositoryInterface
      * @throws \Throwable
      */
     public function getContactGroup(int $contactGroupId): ?ContactGroup;
+
+    /**
+     * Get Contact Group Relations by provider configuration id
+     *
+     * @param int $providerConfigurationId
+     * @return ContactGroupRelation[]
+     */
+    public function getContactGroupRelationsByConfigurationId(int $providerConfigurationId): array;
 }

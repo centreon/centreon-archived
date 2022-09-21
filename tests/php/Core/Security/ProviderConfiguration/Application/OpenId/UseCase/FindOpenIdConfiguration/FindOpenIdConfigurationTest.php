@@ -41,6 +41,7 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdCon
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 
 beforeEach(function () {
@@ -71,7 +72,6 @@ it('should present a provider configuration', function () {
         'login_claim' => 'preferred_username',
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
-        'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
         'roles_mapping' => new ACLConditions(
             false,
@@ -80,7 +80,8 @@ it('should present a provider configuration', function () {
             new Endpoint(Endpoint::INTROSPECTION, ''),
             []
         ),
-        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), []),
+        "groups_mapping" => new GroupsMapping(false, "", new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 
@@ -119,7 +120,8 @@ it('should present a provider configuration', function () {
     expect($presenter->response->isAutoImportEnabled)->toBeFalse();
     expect($presenter->response->emailBindAttribute)->toBeNull();
     expect($presenter->response->userNameBindAttribute)->toBeNull();
-    expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
+    expect($presenter->response->authenticationConditions)->toBeArray();
+    expect($presenter->response->groupsMapping)->toBeArray();
 });
 
 it('should present an ErrorResponse when an error occured during the process', function () {

@@ -94,7 +94,6 @@ function NameHsrTestExistence($name = null)
 {
     global $pearDB, $form;
     $formValues = [];
-    $bindParams = [];
 
     if (isset($form)) {
         $formValues = $form->getSubmitValues();
@@ -190,7 +189,7 @@ function noDefaultOreonGraph()
 {
     global $pearDB;
     $rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 }
 
 function multipleComponentTemplateInDB($compos = [], $nbrDup = [])
@@ -208,13 +207,14 @@ function multipleComponentTemplateInDB($compos = [], $nbrDup = [])
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
+                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
                 $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             if (NameHsrTestExistence($name)) {
                 $val ? $rq = "INSERT INTO giv_components_template VALUES (" . $val . ")" : $rq = null;
-                $dbResult2 = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         }
     }
@@ -373,7 +373,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'comment':
             case 'ds_transparency':
                 if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR, null];
                     } else {

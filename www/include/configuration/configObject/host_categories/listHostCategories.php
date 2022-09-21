@@ -43,9 +43,8 @@ include "./include/common/autoNumLimit.php";
 
 //Search
 $SearchTool = null;
-$search = filter_var(
-    $_POST['searchH'] ?? $_GET['searchH'] ?? null,
-    FILTER_SANITIZE_STRING
+$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchH'] ?? $_GET['searchH'] ?? null
 );
 
 if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
@@ -141,16 +140,16 @@ for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
         $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
-    $DBRESULT2 = $pearDB->query(
-        "SELECT h.host_id, h.host_activate " .
+    $hcStatement = $pearDB->prepare("SELECT h.host_id, h.host_activate " .
         "FROM hostcategories_relation hcr, host h " . $aclFrom .
-        " WHERE hostcategories_hc_id = '" . $hc['hc_id'] . "'" .
+        " WHERE hostcategories_hc_id = :hcId" .
         " AND h.host_id = hcr.host_host_id " . $aclCond .
-        " AND h.host_register = '1' "
-    );
+        " AND h.host_register = '1' ");
+    $hcStatement->bindValue(':hcId', (int) $hc['hc_id'], \PDO::PARAM_INT);
+    $hcStatement->execute();
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
-    while ($row = $DBRESULT2->fetch()) {
+    while ($row = $hcStatement->fetch()) {
         if ($row['host_activate']) {
             $nbrhostActArr[$row['host_id']] = true;
         } else {

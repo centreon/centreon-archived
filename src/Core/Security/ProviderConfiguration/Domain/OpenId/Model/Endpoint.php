@@ -73,7 +73,7 @@ class Endpoint
     }
 
     /**
-     * @return array<string,string|null>
+     * @return array{"type": string, "custom_endpoint":string|null}
      */
     public function toArray(): array
     {

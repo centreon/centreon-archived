@@ -351,6 +351,7 @@
     --date-font-color: var(--color-ghost);
     --detail-chart-title-background-color:var(--color-periwinkle-gray);
     --header-text-font-color: var(--body-color);
+    --chart-legend-color: var(--color-black);
 
     /* ------ START : info box variables -----*/
     --info-box-border-color: var(--color-iron);
