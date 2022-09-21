@@ -50,7 +50,7 @@ class GroupsMapping
      * @param boolean $isEnabled
      * @param string $attributePath
      * @param Endpoint $endpoint
-     * @param array $contactGroupRelations
+     * @param ContactGroupRelation[] $contactGroupRelations
      */
     public function __construct(
         private bool $isEnabled,
@@ -58,7 +58,7 @@ class GroupsMapping
         private Endpoint $endpoint,
         private array $contactGroupRelations
     ) {
-        $this->validateMandatoryParametersForEnabledCondition(
+        $this->validateMandatoryParametersForEnabledGroupsMapping(
             $isEnabled,
             $attributePath,
             $contactGroupRelations
@@ -108,14 +108,14 @@ class GroupsMapping
     }
 
     /**
-     * Validate that all mandatory parameters are correctly set when conditions are enabled
+     * Validate that all mandatory parameters are correctly set when groups mapping are enabled
      *
      * @param boolean $isEnabled
      * @param string $attributePath
-     * @param string[] $authorizedValues
+     * @param ContactGroupRelation[] $contactGroupRelations
      * @throws OpenIdConfigurationException
      */
-    private function validateMandatoryParametersForEnabledCondition(
+    private function validateMandatoryParametersForEnabledGroupsMapping(
         bool $isEnabled,
         string $attributePath,
         array $contactGroupRelations
