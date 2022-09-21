@@ -105,14 +105,15 @@ class TopologyRepository extends ServiceEntityRepository
                 if ($DBRESULT->rowCount()) {
                     $topology = array();
                     $tmp_topo_page = array();
+                    $statement = $this->db->prepare("SELECT topology_topology_id, acl_topology_relations.access_right "
+                        . "FROM acl_topology_relations, acl_topology "
+                        . "WHERE acl_topology.acl_topo_activate = '1' "
+                        . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
+                        . "AND acl_topology_relations.acl_topo_id = :acl_topo_id");
                     while ($topo_group = $DBRESULT->fetchRow()) {
-                        $query2 = "SELECT topology_topology_id, acl_topology_relations.access_right "
-                            . "FROM acl_topology_relations, acl_topology "
-                            . "WHERE acl_topology.acl_topo_activate = '1' "
-                            . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                            . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
-                        $DBRESULT2 = $this->db->query($query2);
-                        while ($topo_page = $DBRESULT2->fetchRow()) {
+                        $statement->bindValue(':acl_topo_id', (int) $topo_group["acl_topology_id"], \PDO::PARAM_INT);
+                        $statement->execute();
+                        while ($topo_page = $statement->fetchRow()) {
                             $topology[] = (int)$topo_page["topology_topology_id"];
                             if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
@@ -127,7 +128,7 @@ class TopologyRepository extends ServiceEntityRepository
                                 }
                             }
                         }
-                        $DBRESULT2->closeCursor();
+                        $statement->closeCursor();
                     }
                     $DBRESULT->closeCursor();
 
