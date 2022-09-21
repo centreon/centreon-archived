@@ -207,4 +207,9 @@ interface ContactInterface
      * @return static
      */
     public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
+
+    /**
+     * @return string|null
+     */
+    public function getTheme(): ?string;
 }
