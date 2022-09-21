@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
 
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+
 /**
  * This class is designed to represent The mapping between OpenID Claims and Centreon Contact Groups.
  * Claims are gathered from the Response (attribute path) of an endpoint defined by the user.
@@ -43,16 +45,24 @@ namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
  */
 class GroupsMapping
 {
-    /**
-     * @var ContactGroupRelation[]
-     */
-    private array $contactGroupRelations;
 
+    /**
+     * @param boolean $isEnabled
+     * @param string $attributePath
+     * @param Endpoint $endpoint
+     * @param array $contactGroupRelations
+     */
     public function __construct(
         private bool $isEnabled,
         private string $attributePath,
         private Endpoint $endpoint,
+        private array $contactGroupRelations
     ) {
+        $this->validateMandatoryParametersForEnabledCondition(
+            $isEnabled,
+            $attributePath,
+            $contactGroupRelations
+        );
     }
 
     /**
@@ -95,5 +105,32 @@ class GroupsMapping
     public function getEndpoint(): Endpoint
     {
         return $this->endpoint;
+    }
+
+    /**
+     * Validate that all mandatory parameters are correctly set when conditions are enabled
+     *
+     * @param boolean $isEnabled
+     * @param string $attributePath
+     * @param string[] $authorizedValues
+     * @throws OpenIdConfigurationException
+     */
+    private function validateMandatoryParametersForEnabledCondition(
+        bool $isEnabled,
+        string $attributePath,
+        array $contactGroupRelations
+    ): void {
+        if ($isEnabled) {
+            $mandatoryParameters = [];
+            if (empty($attributePath)) {
+                $mandatoryParameters[] = "attribute_path";
+            }
+            if (empty($contactGroupRelations)) {
+                $mandatoryParameters[] = "relations";
+            }
+            if (! empty($mandatoryParameters)) {
+                throw OpenIdConfigurationException::missingMandatoryParameters($mandatoryParameters);
+            }
+        }
     }
 }

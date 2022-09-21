@@ -321,15 +321,15 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             $groupsMappingRecord["endpoint"]["custom_endpoint"]
         );
 
-        $groupsMapping = new GroupsMapping(
-            $groupsMappingRecord['is_enabled'],
-            $groupsMappingRecord['attribute_path'],
-            $endpoint
-        );
         $contactGroupRelations = $this->readOpenIdConfigurationRepository->getContactGroupRelationsByConfigurationId(
             $configurationId
         );
-        $groupsMapping->setContactGroupRelations($contactGroupRelations);
+        $groupsMapping = new GroupsMapping(
+            $groupsMappingRecord['is_enabled'],
+            $groupsMappingRecord['attribute_path'],
+            $endpoint,
+            $contactGroupRelations
+        );
 
         return $groupsMapping;
     }

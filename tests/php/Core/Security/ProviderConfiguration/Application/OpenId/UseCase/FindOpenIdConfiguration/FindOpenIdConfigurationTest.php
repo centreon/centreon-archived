@@ -40,6 +40,7 @@ use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 
 beforeEach(function () {
@@ -70,10 +71,10 @@ it('should present a provider configuration', function () {
         'login_claim' => 'preferred_username',
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
-        'contact_group' => new ContactGroup(1, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
-        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), []),
+        "groups_mapping" => new GroupsMapping(false, "", new Endpoint(), [])
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
 

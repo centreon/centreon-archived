@@ -302,14 +302,6 @@ class UpdateOpenIdConfiguration
      */
     private function createGroupsMapping(array $groupsMappingParameters): GroupsMapping
     {
-        $groupsMapping = new GroupsMapping(
-            $groupsMappingParameters["is_enabled"],
-            $groupsMappingParameters["attribute_path"],
-            new Endpoint(
-                $groupsMappingParameters['endpoint']['type'],
-                $groupsMappingParameters['endpoint']['custom_endpoint']
-            )
-        );
         $contactGroupIds = $this->getContactGroupIds($groupsMappingParameters["relations"]);
         $foundContactGroups = $this->contactGroupRepository->findByIds($contactGroupIds);
         $this->logNonExistentContactGroupsIds($contactGroupIds, $foundContactGroups);
@@ -326,8 +318,16 @@ class UpdateOpenIdConfiguration
                 );
             }
         }
-
-        $groupsMapping->setContactGroupRelations($contactGroupRelations);
+        $endpoint = new Endpoint(
+            $groupsMappingParameters['endpoint']['type'],
+            $groupsMappingParameters['endpoint']['custom_endpoint']
+        );
+        $groupsMapping = new GroupsMapping(
+            $groupsMappingParameters["is_enabled"],
+            $groupsMappingParameters["attribute_path"],
+            $endpoint,
+            $contactGroupRelations
+        );
 
         return $groupsMapping;
     }
