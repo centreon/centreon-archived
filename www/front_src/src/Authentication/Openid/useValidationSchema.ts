@@ -25,7 +25,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     claimValue: Yup.string().required(t(labelRequired)),
   });
 
-  const groupesRelationSchema = Yup.object({
+  const groupsRelationSchema = Yup.object({
     contactGroup: namedEntitySchema.nullable().required(t(labelRequired)),
     groupValue: Yup.string().required(t(labelRequired)),
   });
