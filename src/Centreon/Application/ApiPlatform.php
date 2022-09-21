@@ -28,16 +28,16 @@ namespace Centreon\Application;
 class ApiPlatform
 {
     /**
-     * @var float
+     * @var string
      */
     private $version;
 
     /**
      * Get the API version
      *
-     * @return float
+     * @return string
      */
-    public function getVersion(): float
+    public function getVersion(): string
     {
         return $this->version;
     }
@@ -45,10 +45,10 @@ class ApiPlatform
     /**
      * Set the API version
      *
-     * @param float $version
+     * @param string $version
      * @return $this
      */
-    public function setVersion(float $version): self
+    public function setVersion(string $version): self
     {
         $this->version = $version;
         return $this;
