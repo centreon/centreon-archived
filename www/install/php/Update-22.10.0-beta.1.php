@@ -625,6 +625,13 @@ function updateOpenIdCustomConfiguration(CentreonDB $pearDB): void
             'trusted_client_addresses' => $trustedClientAddresses,
             'blacklist_client_addresses' => $blacklistClientAddresses
         ];
+        $customConfiguration['roles_mapping'] = [
+            'is_enabled' => false,
+            'apply_only_first_role' => false,
+            'attribute_path' => '',
+            'endpoint' => ['type' => 'introspection_endpoint', 'custom_endpoint' => ''],
+            'relations' => []
+        ];
 
         $encodedConfiguration = json_encode($customConfiguration);
 

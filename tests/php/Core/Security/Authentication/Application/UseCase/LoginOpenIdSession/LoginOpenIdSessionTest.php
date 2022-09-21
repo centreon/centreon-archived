@@ -48,20 +48,22 @@ use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Contact\Application\Repository\WriteContactGroupRepositoryInterface;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
+use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
+use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Security\Authentication\Infrastructure\Api\Login\OpenId\LoginPresenter;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Core\Security\Authentication\Infrastructure\Repository\WriteSessionRepository;
 use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
 use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
 use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
-use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 
 beforeEach(function () {
@@ -134,7 +136,13 @@ beforeEach(function () {
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
         'claim_name' => 'groups',
-        'authorization_rules' => [],
+        'roles_mapping' => new ACLConditions(
+            false,
+            false,
+            '',
+            new Endpoint(Endpoint::INTROSPECTION, ''),
+            []
+        ),
         'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), []),
         'groups_mapping' => (new GroupsMapping(false, "", new Endpoint(), []))
     ]);

@@ -150,6 +150,11 @@ class FindOpenIdConfigurationResponse
      *  "blacklist_client_addresses": string[]
      * }
      */
+    public array $aclConditions = [];
+
+    /**
+     * @var array<string,bool|string|string[]>
+     */
     public array $authenticationConditions = [];
 
     /**

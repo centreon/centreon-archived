@@ -33,7 +33,7 @@ class Endpoint
     /**
      * @var string[]
      */
-    private static array $allowedTypes = [
+    private const ALLOWED_TYPES = [
         self::INTROSPECTION,
         self::USER_INFORMATION,
         self::CUSTOM
@@ -48,13 +48,8 @@ class Endpoint
         private string $type = self::INTROSPECTION,
         private ?string $url = null,
     ) {
-        if ($type === self::CUSTOM && $url === null) {
-            throw InvalidEndpointException::invalidUrl();
-        }
         $this->guardType();
-        if ($url !== null) {
-            $this->guardUrl();
-        }
+        $this->guardUrl();
     }
 
     /**
@@ -66,7 +61,7 @@ class Endpoint
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUrl(): ?string
     {
@@ -93,7 +88,7 @@ class Endpoint
      */
     private function guardType(): void
     {
-        if (!in_array($this->type, self::$allowedTypes)) {
+        if (!in_array($this->type, self::ALLOWED_TYPES)) {
             throw InvalidEndpointException::invalidType();
         }
     }
@@ -107,8 +102,11 @@ class Endpoint
         if (
             $this->type === self::CUSTOM &&
             (
-                !str_starts_with($this->url, '/') &&
-                filter_var($this->url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) === false
+                $this->url === null ||
+                (
+                    !str_starts_with($this->url, '/') &&
+                    filter_var($this->url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) === false
+                )
             )
         ) {
             throw InvalidEndpointException::invalidUrl();

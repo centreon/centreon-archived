@@ -27,14 +27,17 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\CustomConfigurationInterface;
+use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\Local\Model\SecurityPolicy;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\ACLConditionsException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\InvalidEndpointException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
-use Core\Security\ProviderConfiguration\Domain\Local\Model\CustomConfiguration as LocalCustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration as OpenIdCustomConfiguration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
@@ -135,6 +138,11 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                     $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
                         $configuration->getId()
                     );
+
+                $jsonDecoded['roles_mapping'] = $this->createAclConditions(
+                    $configuration->getId(),
+                    $jsonDecoded['roles_mapping']
+                );
                 $jsonDecoded['authentication_conditions'] = $this->createAuthenticationConditionsFromRecord(
                     $jsonDecoded['authentication_conditions']
                 );
@@ -160,6 +168,26 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
             default:
                 throw new \Exception("Unknown provider configuration name, can't load custom configuration");
         }
+    }
+
+    /**
+     * @param int $configurationId
+     * @param array<string,bool|string|string[]> $roles_mapping
+     * @return ACLConditions
+     * @throws ACLConditionsException
+     * @throws InvalidEndpointException
+     */
+    private function createAclConditions(int $configurationId, array $roles_mapping): ACLConditions
+    {
+        $rules = $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId($configurationId);
+
+        return new ACLConditions(
+            $roles_mapping['is_enabled'],
+            $roles_mapping['apply_only_first_role'],
+            $roles_mapping['attribute_path'],
+            new Endpoint($roles_mapping['endpoint']['type'], $roles_mapping['endpoint']['custom_endpoint']),
+            $rules
+        );
     }
 
     /**

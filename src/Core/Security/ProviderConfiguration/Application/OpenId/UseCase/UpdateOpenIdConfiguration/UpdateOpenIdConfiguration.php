@@ -45,6 +45,7 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationCondit
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 
 class UpdateOpenIdConfiguration
@@ -89,7 +90,7 @@ class UpdateOpenIdConfiguration
             array_key_exists('id', $request->contactTemplate) !== null
                 ? $this->getContactTemplateOrFail($request->contactTemplate)
                 : null;
-            $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
+            $requestArray['roles_mapping'] = $this->createAclConditions($request->rolesMapping);
             $requestArray["authentication_conditions"] = $this->createAuthenticationConditions(
                 $request->authenticationConditions
             );
@@ -168,6 +169,25 @@ class UpdateOpenIdConfiguration
 
         return $authorizationRules;
     }
+
+    /**
+     * @param array<string,bool|string|string[]|array<array{claim_value: string, access_group_id: int}>> $rolesMapping
+     * @return ACLConditions
+     * @throws \Throwable
+     */
+    private function createAclConditions(array $rolesMapping): ACLConditions
+    {
+        $rules = $this->createAuthorizationRules($rolesMapping['relations']);
+
+        return new ACLConditions(
+            $rolesMapping['is_enabled'],
+            $rolesMapping['apply_only_first_role'],
+            $rolesMapping['attribute_path'],
+            new Endpoint($rolesMapping['endpoint']['type'], $rolesMapping['endpoint']['custom_endpoint']),
+            $rules
+        );
+    }
+
 
     /**
      * Add log for all the non existent access groups

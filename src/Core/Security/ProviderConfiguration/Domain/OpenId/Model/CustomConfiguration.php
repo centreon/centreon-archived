@@ -132,6 +132,11 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     private ?ContactGroup $contactGroup = null;
 
     /**
+     * @var ACLConditions
+     */
+    private ACLConditions $aclConditions;
+
+    /**
      * @var AuthenticationConditions
      */
     private AuthenticationConditions $authenticationConditions;
@@ -293,6 +298,15 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
     {
         return $this->contactGroup;
     }
+
+    /**
+     * @return ACLConditions
+     */
+    public function getACLConditions(): ACLConditions
+    {
+        return $this->aclConditions;
+    }
+
 
     /**
      * @param string|null $baseUrl
@@ -607,7 +621,19 @@ final class CustomConfiguration implements CustomConfigurationInterface, OpenIdC
             $this->setAuthorizationRules($json['authorization_rules']);
         }
         $this->setAuthenticationConditions($json['authentication_conditions']);
+        $this->setACLConditions($json['roles_mapping']);
         $this->setGroupsMapping($json['groups_mapping']);
+    }
+
+    /**
+     * @param ACLConditions $aclConditions
+     * @return CustomConfiguration
+     */
+    private function setACLConditions(ACLConditions $aclConditions): self
+    {
+        $this->aclConditions = $aclConditions;
+
+        return $this;
     }
 
     /**

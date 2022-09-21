@@ -30,8 +30,10 @@ use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInte
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\Repository\ReadConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfiguration,
     FindOpenIdConfigurationResponse
@@ -39,7 +41,6 @@ use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\FindOpenIdCon
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 
@@ -72,7 +73,13 @@ it('should present a provider configuration', function () {
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
         'claim_name' => 'groups',
-        'authorization_rules' => [],
+        'roles_mapping' => new ACLConditions(
+            false,
+            false,
+            '',
+            new Endpoint(Endpoint::INTROSPECTION, ''),
+            []
+        ),
         'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), []),
         "groups_mapping" => new GroupsMapping(false, "", new Endpoint(), [])
     ]);

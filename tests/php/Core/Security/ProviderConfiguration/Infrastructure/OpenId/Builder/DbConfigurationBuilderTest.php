@@ -27,6 +27,7 @@ use Core\Contact\Domain\Model\ContactGroup;
 use Core\Contact\Domain\Model\ContactTemplate;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
@@ -55,7 +56,13 @@ beforeEach(function () {
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
         'claim_name' => 'groups',
-        'authorization_rules' => [],
+        'roles_mapping' => new ACLConditions(
+            false,
+            false,
+            '',
+            new Endpoint(Endpoint::INTROSPECTION, ''),
+            []
+        ),
         "groups_mapping" => new GroupsMapping(false, "", new Endpoint(), [])
     ];
 });

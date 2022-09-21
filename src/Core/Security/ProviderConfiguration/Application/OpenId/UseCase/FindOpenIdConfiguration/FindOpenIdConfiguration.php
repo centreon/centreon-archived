@@ -96,6 +96,7 @@ class FindOpenIdConfiguration
             empty($customConfiguration->getAuthorizationRules()) ? []
             :
             $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
+        $findOpenIdConfigurationResponse->aclConditions = $customConfiguration->getACLConditions()->toArray();
         $findOpenIdConfigurationResponse->authenticationConditions =
             $findOpenIdConfigurationResponse::authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()

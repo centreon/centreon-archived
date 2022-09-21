@@ -121,9 +121,9 @@ class UpdateOpenIdConfigurationRequest
     public ?string $claimName = null;
 
     /**
-     * @var array<array{claim_value: string, access_group_id: int}>
+     * @var array<string, array<int|string, string|null>|string|bool>
      */
-    public array $authorizationRules = [];
+    public array $rolesMapping = [];
 
     /**
      * @var array{
@@ -183,7 +183,6 @@ class UpdateOpenIdConfigurationRequest
             'is_forced' => $this->isForced,
             'is_active' => $this->isActive,
             'contact_template' => $this->contactTemplate,
-            'authorization_rules' => $this->authorizationRules,
             'auto_import' => $this->isAutoImportEnabled,
             'client_id' => $this->clientId,
             'authentication_type' => $this->authenticationType,

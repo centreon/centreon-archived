@@ -71,7 +71,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
 
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $configuration->getCustomConfiguration();
-        $authorizationRules = $customConfiguration->getAuthorizationRules();
+        $authorizationRules = $customConfiguration->getACLConditions()->getRelations();
 
         if (!empty($authorizationRules)) {
             $this->info('Removing existing Authorization Rules');
@@ -120,6 +120,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'email_bind_attribute' => $customConfiguration->getEmailBindAttribute(),
             'fullname_bind_attribute' => $customConfiguration->getUserNameBindAttribute(),
             'claim_name' => $customConfiguration->getClaimName(),
+            'roles_mapping' => $customConfiguration->getACLConditions()->toArray(),
             "authentication_conditions" => $this->authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()
             ),
