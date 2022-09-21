@@ -615,7 +615,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $headers = [
             'Authorization' => "Bearer " . trim($this->providerToken->getToken())
         ];
-         /** @var CustomConfiguration $customConfiguration */
+        /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->configuration->getCustomConfiguration();
         $url = str_starts_with($customConfiguration->getUserInformationEndpoint(), '/')
             ? $customConfiguration->getBaseUrl() . $customConfiguration->getUserInformationEndpoint()
