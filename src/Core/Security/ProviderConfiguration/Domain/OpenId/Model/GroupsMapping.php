@@ -45,7 +45,6 @@ use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigura
  */
 class GroupsMapping
 {
-
     /**
      * @param boolean $isEnabled
      * @param string $attributePath
