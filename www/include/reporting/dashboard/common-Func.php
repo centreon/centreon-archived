@@ -48,34 +48,34 @@ function getPeriodToReport(?string $alternate = null): array
     $end_date = '';
 
     if (isset($_POST['period'])) {
-        $period = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['period']);
+        $period = filter_var($_POST['period'], FILTER_SANITIZE_STRING);
     } elseif (isset($_GET['period'])) {
-        $period = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['period']);
+        $period = filter_var($_GET['period'], FILTER_SANITIZE_STRING);
     }
 
     if (isset($_POST['period_choice'])) {
-        $period_choice = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['period_choice']);
+        $period_choice = filter_var($_POST['period_choice'], FILTER_SANITIZE_STRING);
     }
 
     if (null != $alternate) {
         if (isset($_POST['alternativeDateStartDate'])) {
-            $start_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['alternativeDateStartDate']);
+            $start_date = filter_var($_POST['alternativeDateStartDate'], FILTER_SANITIZE_STRING);
         }
 
         if (isset($_POST['alternativeDateEndDate'])) {
-            $end_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['alternativeDateEndDate']);
+            $end_date = filter_var($_POST['alternativeDateEndDate'], FILTER_SANITIZE_STRING);
         }
     } else {
         if (isset($_POST['StartDate'])) {
-            $start_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartDate']);
+            $start_date = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
         } elseif (isset($_GET['StartDate'])) {
-            $start_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['StartDate']);
+            $start_date = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
         }
 
         if (isset($_POST['EndDate'])) {
-            $end_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['EndDate']);
+            $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
         } elseif (isset($_GET['EndDate'])) {
-            $end_date = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['EndDate']);
+            $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
         }
     }
 

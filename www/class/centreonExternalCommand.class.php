@@ -448,22 +448,22 @@ class CentreonExternalCommand
 
         // Summer to winter dst
         $dateTime3 = clone $dateTime;
-        $dateTime3->sub(new \DateInterval('PT1H'));
-        if ($dateTime3->format('H:m') === $dateTime->format('H:m')) {
+        $dateTime3 = $dateTime3->setTimestamp($dateTime3->getTimestamp() - 3600);
+        if ($dateTime3->getTimestamp() == $dateTime->getTimestamp()) {
             if ($start) {
-                return $dateTime->getTimestamp() - 3600;
+                return $dateTime3->getTimestamp() - 3600;
             } else {
-                return $dateTime->getTimestamp();
+                return $dateTime3->getTimestamp();
             }
         }
 
         $dateTime4 = clone $dateTime;
-        $dateTime4->add(new \DateInterval('PT1H'));
-        if ($dateTime4->format('H:m') === $dateTime->format('H:m')) {
+        $dateTime4 = $dateTime3->setTimestamp($dateTime4->getTimestamp() + 3600);
+        if ($dateTime4->getTimestamp() == $dateTime->getTimestamp()) {
             if ($start) {
                 return $dateTime->getTimestamp();
             } else {
-                return $dateTime->getTimestamp() + 3600;
+                return $dateTime4->getTimestamp() + 3600;
             }
         }
 

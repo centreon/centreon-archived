@@ -62,8 +62,9 @@ $index = filter_var(
     $_GET['index'] ?? $_POST['index'] ?? false,
     FILTER_VALIDATE_INT
 );
-$period = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_GET['period'] ?? $_POST['period'] ?? 'today'
+$period = filter_var(
+    $_GET['period'] ?? $_POST['period'] ?? 'today',
+    FILTER_SANITIZE_STRING
 );
 $start = filter_var(
     $_GET['start'] ?? false,
@@ -73,8 +74,9 @@ $end = filter_var(
     $_GET['end'] ?? false,
     FILTER_VALIDATE_INT
 );
-$chartId = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_GET['chartId'] ?? null
+$chartId = filter_var(
+    $_GET['chartId'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (!empty($chartId)) {

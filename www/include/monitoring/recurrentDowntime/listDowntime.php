@@ -42,8 +42,9 @@ include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 
 //initializing filters values
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST["searchDT"] ?? $_GET["searchDT"] ?? ''
+$search = filter_var(
+    $_POST["searchDT"] ?? $_GET["searchDT"] ?? '',
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST["Search"])) {

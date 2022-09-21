@@ -417,7 +417,6 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "host_name" ? ($hostName = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
@@ -603,7 +602,6 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $ehi["host_host_id"] = $maxId["MAX(host_id)"];
                         $ehi["ehi_id"] = null;
                         foreach ($ehi as $key2 => $value2) {
-                            $value2 = is_int($value2) ? (string) $value2 : $value2;
                             $val
                                 ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
                                 : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
@@ -2416,7 +2414,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
                     "service_hPars" => array("0" => $hID),
                     "service_sgs" => $service_sgs
                 );
-                insertServiceInDB($service, array());
+                $service_id = insertServiceInDB($service, array());
             }
         }
         $antiLoop[$hID2] = 1;
@@ -2455,7 +2453,7 @@ function updateHostTemplateService($host_id = null)
     if ($row["host_register"] == 0) {
         $rq = "DELETE FROM host_service_relation ";
         $rq .= "WHERE host_host_id = '" . $host_id . "'";
-        $pearDB->query($rq);
+        $dbResult2 = $pearDB->query($rq);
         $ret = array();
         $ret = $form->getSubmitValue("host_svTpls");
         if ($ret) {
@@ -2465,7 +2463,7 @@ function updateHostTemplateService($host_id = null)
                     $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
                     $rq .= "VALUES ";
                     $rq .= "(NULL, '" . $host_id . "', NULL, '" . $ret[$i] . "')";
-                    $pearDB->query($rq);
+                    $dbResult2 = $pearDB->query($rq);
                 }
             }
         }
@@ -2524,11 +2522,9 @@ function updateHostTemplateUsed($useTpls = array())
     require_once "./include/common/common-Func.php";
 
     foreach ($useTpls as $key => $value) {
-        $pearDB->query(
-            "UPDATE host
-            SET host_template_model_htm_id = '" . getMyHostID($value) . "'
-            WHERE host_id = '" . $key . "'"
-        );
+        $dbResult = $pearDB->query("UPDATE host
+                                    SET host_template_model_htm_id = '" . getMyHostID($value) . "'
+                                    WHERE host_id = '" . $key . "'");
     }
 }
 
@@ -2548,14 +2544,14 @@ function updateNagiosServerRelation($host_id, $ret = array())
         : $ret = $form->getSubmitValue("nagios_server_id");
 
     if (isset($ret) && $ret != "" && $ret != 0) {
-        $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
+        $dbResult = $pearDB->query("DELETE FROM `ns_host_relation` WHERE `host_host_id` = '" . (int)$host_id . "'");
 
         $rq = "INSERT INTO `ns_host_relation` ";
         $rq .= "(`host_host_id`, `nagios_server_id`) ";
         $rq .= "VALUES ";
         $rq .= "('" . (int)$host_id . "', '" . $ret . "')";
 
-        $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -2654,7 +2650,7 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_name':
                 if (!empty($inputValue)) {
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                             ? null
@@ -2670,7 +2666,7 @@ function sanitizeFormHostParameters(array $ret): array
             case 'host_snmp_version':
             case 'host_comment':
             case 'geo_coords':
-                $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
+                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
@@ -2695,9 +2691,7 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_notifOpts':
                 if (!empty($inputValue)) {
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(
-                        implode(",", array_keys($inputValue))
-                    );
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_notification_options'] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                             ? null
@@ -2719,9 +2713,7 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_stalOpts':
                 if (!empty($inputValue)) {
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(
-                        implode(",", array_keys($inputValue))
-                    );
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_stalking_options'] = [
                         \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false) ? null : $inputValue
                     ];

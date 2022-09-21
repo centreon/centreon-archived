@@ -71,12 +71,14 @@ $p = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$searchContact = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchC'] ?? $_GET['searchC'] ?? null
+$searchContact = filter_var(
+    $_POST['searchC'] ?? $_GET['searchC'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['Search'] ?? $_GET['Search'] ?? null
+$search = filter_var(
+    $_POST['Search'] ?? $_GET['Search'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 $contactGroup = filter_var(

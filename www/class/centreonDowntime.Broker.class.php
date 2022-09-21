@@ -287,15 +287,18 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $datetime->getTimestamp();
     }
 
-    private function manageSummerToWinterTimestamp(\Datetime $dateTime)
+    private function manageSummerToWinterTimestamp($timestamp, $timezone)
     {
-        $datetimePlusOneHour = clone $dateTime;
-        $datetimePlusOneHour->sub(new \DateInterval('PT1H'));
-        if ($datetimePlusOneHour->format('H:m') === $dateTime->format('H:m')) {
-            return $dateTime->getTimestamp() - 3600;
+        $dstDate = new DateTime('now', $timezone);
+        $dstDate->setTimestamp($timestamp);
+        $dateTime2 = clone $dstDate;
+        $dateTime2->setTimestamp($timestamp - 3600);
+
+        if ($dateTime2->getTimestamp() == $dstDate->getTimestamp()) {
+            $timestamp = $timestamp - 3600;
         }
 
-        return $dateTime->getTimestamp();
+        return $timestamp;
     }
 
     public function getApproachingDowntimes($delay)
@@ -344,11 +347,10 @@ class CentreonDowntimeBroker extends CentreonDowntime
             }
 
             # check backward of one hour
-            $startTimestamp = $this->manageSummerToWinterTimestamp($downtimeStartDate);
+            $startTimestamp = $this->manageSummerToWinterTimestamp($startTimestamp, $timezone);
 
             $approaching = false;
-            if (
-                preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+            if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
                 && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])
             ) {
                 $approaching = $this->isWeeklyApproachingDowntime(
@@ -364,8 +366,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
                     $downtime['dtp_day_of_month'],
                     $tomorrow
                 );
-            } elseif (
-                preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
+            } elseif (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])
                 && $downtime['dtp_month_cycle'] != 'none'
             ) {
                 $approaching = $this->isSpecificDateDowntime(

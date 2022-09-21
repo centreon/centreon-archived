@@ -69,9 +69,9 @@ class Response implements JsonSerializable
     /**
      * JSON serialization of response
      *
-     * @return array{status: bool, result: mixed}
+     * @return array
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         return [
             'status' => $this->status,

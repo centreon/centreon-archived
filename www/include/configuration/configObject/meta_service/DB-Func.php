@@ -154,7 +154,6 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
             $val = null;
             # Create a sentence which contains all the value
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "meta_name" ? ($meta_name = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
@@ -195,7 +194,6 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                         $val = null;
                         $metric["msr_id"] = null;
                         foreach ($metric as $key2 => $value2) {
-                            $value2 = is_int($value2) ? (string) $value2 : $value2;
                             $key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
                             $val
                                 ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
@@ -241,7 +239,6 @@ function multipleMetricInDB($metrics = array(), $nbrDup = array())
             $val = null;
             # Create a sentence which contains all the value
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $val
                     ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");

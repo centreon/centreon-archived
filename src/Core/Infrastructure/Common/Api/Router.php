@@ -74,11 +74,10 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      * @param string $name
      * @param array<string,mixed> $parameters
      * @param int $referenceType
-     * @return string
      *
      * @throws \Exception
      */
-    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH): string
+    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
         $parameters['base_uri'] = $this->getBaseUri();
         if (!empty($parameters['base_uri'])) {
@@ -111,7 +110,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * @inheritDoc
      */
-    public function getContext(): RequestContext
+    public function getContext()
     {
         return $this->router->getContext();
     }
@@ -129,7 +128,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      *
      * @return array<string,mixed>
      */
-    public function match(string $pathinfo): array
+    public function match(string $pathinfo)
     {
         return $this->router->match($pathinfo);
     }
@@ -139,7 +138,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      *
      * @return array<string,mixed>
      */
-    public function matchRequest(Request $request): array
+    public function matchRequest(Request $request)
     {
         return $this->requestMatcher->matchRequest($request);
     }

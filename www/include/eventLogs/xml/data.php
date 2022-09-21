@@ -104,87 +104,60 @@ $defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
 /**
  * Get input vars
  */
-$inputGet = [
-    'lang' => isset($_GET['lang']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['lang']) : null,
-    'id' => isset($_GET['lang']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['lang']) : null,
-    'num' => filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => [ 'default' => 0]]),
-    'limit' => filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => [ 'default' => $defaultLimit]]),
-    'StartDate' => isset($_GET['StartDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['StartDate']) : null,
-    'EndDate' => isset($_GET['EndDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['EndDate']) : null,
-    'StartTime' => isset($_GET['StartTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['StartTime']) : null,
-    'EndTime' => isset($_GET['EndTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['EndTime']) : null,
-    'period' => filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT),
-    'engine' => isset($_GET['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['engine']) : null,
-    'up' => isset($_GET['up']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['up']) : null,
-    'down' => isset($_GET['down']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['down']) : null,
-    'unreachable' => isset($_GET['unreachable'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['unreachable'])
-        : null,
-    'ok' => isset($_GET['ok']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['ok']) : null,
-    'warning' => isset($_GET['warning']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['warning']) : null,
-    'critical' => isset($_GET['critical']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['critical']) : null,
-    'unknown' => isset($_GET['unknown']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['unknown']) : null,
-    'notification' => isset($_GET['notification'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['notification'])
-        : null,
-    'alert' => isset($_GET['alert']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['alert']) : null,
-    'oh' => isset($_GET['oh']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['oh']) : null,
-    'error' => isset($_GET['error']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['error']) : null,
-    'output' => isset($_GET['output']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['output']) : null,
-    'search_H' => isset($_GET['search_H']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_H']) : null,
-    'search_S' => isset($_GET['search_S']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_S']) : null,
-    'search_host' => isset($_GET['search_host'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_host'])
-        : null,
-    'search_service' => isset($_GET['search_service'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_service'])
-        : null,
-    'export' => isset($_GET['export']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['export']) : null,
-];
-
-$inputPost = [
-    'lang' => isset($_POST['lang']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['lang']) : null,
-    'id' => isset($_POST['lang']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['lang']) : null,
-    'num' => filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT, ['options' => [ 'default' => 0]]),
-    'limit' => filter_input(INPUT_POST, 'limit', FILTER_VALIDATE_INT, ['options' => [ 'default' => $defaultLimit]]),
-    'StartDate' => isset($_POST['StartDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartDate']) : null,
-    'EndDate' => isset($_POST['EndDate']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['EndDate']) : null,
-    'StartTime' => isset($_POST['StartTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['StartTime']) : null,
-    'EndTime' => isset($_POST['EndTime']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['EndTime']) : null,
-    'period' => filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT),
-    'engine' => isset($_POST['engine']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['engine']) : null,
-    'up' => isset($_POST['up']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['up']) : null,
-    'down' => isset($_POST['down']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['down']) : null,
-    'unreachable' => isset($_POST['unreachable'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['unreachable'])
-        : null,
-    'ok' => isset($_POST['ok']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['ok']) : null,
-    'warning' => isset($_POST['warning']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['warning']) : null,
-    'critical' => isset($_POST['critical']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['critical']) : null,
-    'unknown' => isset($_POST['unknown']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['unknown']) : null,
-    'notification' => isset($_POST['notification'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['notification'])
-        : null,
-    'alert' => isset($_POST['alert']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['alert']) : null,
-    'oh' => isset($_POST['oh']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['oh']) : null,
-    'error' => isset($_POST['error']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['error']) : null,
-    'output' => isset($_POST['output']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['output']) : null,
-    'search_H' => isset($_POST['search_H']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_H']) : null,
-    'search_S' => isset($_POST['search_S']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_S']) : null,
-    'search_host' => isset($_POST['search_host'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_host'])
-        : null,
-    'search_service' => isset($_POST['search_service'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_service'])
-        : null,
-    'export' => isset($_POST['export']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['export']) : null,
-];
+$inputArguments = array(
+    'lang' => FILTER_SANITIZE_STRING,
+    'id' => FILTER_SANITIZE_STRING,
+    'num' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 0
+        ]
+    ],
+    'limit' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => $defaultLimit
+        ]
+    ],
+    'StartDate' => FILTER_SANITIZE_STRING,
+    'EndDate' => FILTER_SANITIZE_STRING,
+    'StartTime' => FILTER_SANITIZE_STRING,
+    'EndTime' => FILTER_SANITIZE_STRING,
+    'period' => FILTER_VALIDATE_INT,
+    'engine' => FILTER_SANITIZE_STRING,
+    'up' => FILTER_SANITIZE_STRING,
+    'down' => FILTER_SANITIZE_STRING,
+    'unreachable' => FILTER_SANITIZE_STRING,
+    'ok' => FILTER_SANITIZE_STRING,
+    'warning' => FILTER_SANITIZE_STRING,
+    'critical' => FILTER_SANITIZE_STRING,
+    'unknown' => FILTER_SANITIZE_STRING,
+    'notification' => FILTER_SANITIZE_STRING,
+    'alert' => FILTER_SANITIZE_STRING,
+    'oh' => FILTER_SANITIZE_STRING,
+    'error' => FILTER_SANITIZE_STRING,
+    'output' => FILTER_SANITIZE_STRING,
+    'search_H' => FILTER_SANITIZE_STRING,
+    'search_S' => FILTER_SANITIZE_STRING,
+    'search_host' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'export' => FILTER_SANITIZE_STRING,
+);
 
 // Saving bound values
 $queryValues = [];
 
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
 $inputs = array();
-foreach ($inputGet as $argumentName => $argumentValue) {
+foreach ($inputArguments as $argumentName => $argumentValue) {
     if (!empty($inputGet[$argumentName])) {
         $inputs[$argumentName] = $inputGet[$argumentName];
     } elseif ((!empty($inputPost[$argumentName]))) {
@@ -206,8 +179,14 @@ $buffer->startElement("root");
 /*
  * Security check
  */
-$lang_ = \HtmlAnalyzer::sanitizeAndRemoveTags($inputs["lang"] ?? "-1");
-$openid = \HtmlAnalyzer::sanitizeAndRemoveTags($inputs["id"] ?? "-1");
+$lang_ = filter_var(
+    $inputs["lang"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
+$openid = filter_var(
+    $inputs["id"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";
 

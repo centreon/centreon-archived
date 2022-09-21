@@ -45,8 +45,9 @@ $labels = array(
     'disabled' => _('Disabled')
 );
 
-$searchLdap = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null
+$searchLdap = filter_var(
+    $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 $ldapConf = new CentreonLdapAdmin($pearDB);

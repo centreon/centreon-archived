@@ -23,7 +23,9 @@ namespace CentreonRemote\Tests\Infrastructure\Export;
 
 use PHPUnit\Framework\TestCase;
 use CentreonRemote\Infrastructure\Export\ExportParserJson;
-use VirtualFileSystem\FileSystem;
+use Vfs\FileSystem;
+use Vfs\Node\Directory;
+use Vfs\Node\File;
 
 /**
  * @group CentreonRemote
@@ -43,13 +45,16 @@ class ExportParserJsonTest extends TestCase
     public function setUp(): void
     {
         // mount VFS
-        $this->fs = new FileSystem();
-        $this->fs->createDirectory('/tmp');
+        $this->fs = FileSystem::factory('vfs://');
+        $this->fs->mount();
+        $this->fs->get('/')->add('tmp', new Directory([]));
         $this->parser = new ExportParserJson();
     }
 
     public function tearDown(): void
     {
+        // unmount VFS
+        $this->fs->unmount();
     }
 
     /**
@@ -58,7 +63,7 @@ class ExportParserJsonTest extends TestCase
     public function testParse(): void
     {
         // non-existent file
-        $result = $this->parser->parse($this->fs->path('/tmp/test.json'));
+        $result = $this->parser->parse('vfs://tmp/test.json');
 
         $this->assertEquals([], $result);
     }
@@ -69,8 +74,9 @@ class ExportParserJsonTest extends TestCase
     public function testParse2(): void
     {
         // add file
-        $this->fs->createFile('/tmp/test1.json', '{"key":"val"}');
-        $result = $this->parser->parse($this->fs->path('/tmp/test1.json'));
+        $this->fs->get('/tmp')->add('test1.json', new File('{"key":"val"}'));
+
+        $result = $this->parser->parse('vfs://tmp/test1.json');
 
         $this->assertEquals(['key' => 'val'], $result);
     }
@@ -81,10 +87,10 @@ class ExportParserJsonTest extends TestCase
     public function testParse3(): void
     {
         // add file with macros
-        $this->fs->createFile('/tmp/test2.json', '{"key":"@val@"}');
+        $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}'));
 
         $result = $this->parser->parse(
-            $this->fs->path('/tmp/test2.json'),
+            'vfs://tmp/test2.json',
             function (&$result) {
                 $result = str_replace('@val@', 'val', $result);
             }
@@ -98,8 +104,18 @@ class ExportParserJsonTest extends TestCase
      */
     public function testDump(): void
     {
-        $this->parser->dump([], $this->fs->path('/tmp/test.json'));
+        $this->parser->dump([], 'vfs://tmp/test.json');
 
-        $this->assertFileDoesNotExist($this->fs->path('/tmp/test.json'));
+        $this->assertFileDoesNotExist('vfs://tmp/test.json');
+    }
+
+    /**
+     * @covers \CentreonRemote\Infrastructure\Export\ExportParserJson::dump
+     */
+    public function testDump2(): void
+    {
+        $this->parser->dump(['key' => 'val'], 'vfs://tmp/test.json');
+
+        $this->assertFileExists('vfs://tmp/test.json');
     }
 }

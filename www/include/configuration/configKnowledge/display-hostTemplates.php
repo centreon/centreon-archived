@@ -73,13 +73,13 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $postHostTemplate = !empty($_POST['searchHostTemplate'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchHostTemplate'])
+        ? filter_input(INPUT_POST, 'searchHostTemplate', FILTER_SANITIZE_STRING)
         : '';
     $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
         : '';
 
     $conf = getWikiConfig($pearDB);

@@ -432,12 +432,14 @@ if ($valid) {
 $vdef = 0; /* don't list VDEF in metrics list */
 
 if ($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) {
-    $host_service_id = \HtmlAnalyzer::sanitizeAndRemoveTags(
-        $_POST['host_service_id'] ?? ($compo["host_id"] . '-' . $compo['service_id'])
+    $host_service_id = filter_var(
+        $_POST['host_service_id'] ?? ($compo["host_id"] . '-' . $compo['service_id']),
+        FILTER_SANITIZE_STRING
     );
 } elseif ($o === ADD_COMPONENT_TEMPLATE) {
-    $host_service_id = \HtmlAnalyzer::sanitizeAndRemoveTags(
-        $_POST['host_service_id'] ?? null
+    $host_service_id = filter_var(
+        $_POST['host_service_id'] ?? null,
+        FILTER_SANITIZE_STRING
     );
 }
 ?>

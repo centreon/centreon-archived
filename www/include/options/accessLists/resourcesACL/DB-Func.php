@@ -45,7 +45,7 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('acl_res_id');
     }
-    $name = \HtmlAnalyzer::sanitizeAndRemoveTags($name);
+    $name = filter_var($name, FILTER_SANITIZE_STRING);
     $statement = $pearDB->prepare("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = :name");
     $statement->bindValue(':name', $name, \PDO::PARAM_STR);
     $statement->execute();
@@ -152,14 +152,11 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
         $row["acl_res_id"] = '';
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $values = [];
-
+            $val = null;
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "acl_res_name" ? ($acl_name = $value2 = $value2 . "_" . $i) : null;
-                $values[] = $value2 != null
-                    ? "'" . $value2 . "'"
-                    : 'NULL';
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "acl_res_id") {
                     $fields[$key2] = $value2;
                 }
@@ -169,9 +166,8 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
             }
 
             if (testExistence($acl_name)) {
-                if (! empty($values)) {
-                    $pearDB->query("INSERT INTO acl_resources VALUES (" . implode(',', $values) . ")");
-                }
+                $val ? $rq = "INSERT INTO acl_resources VALUES (" . $val . ")" : $rq = null;
+                $pearDB->query($rq);
 
                 $dbResult = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
                 $maxId = $dbResult->fetch();
@@ -707,14 +703,14 @@ function updateMetaServices($acl_id = null)
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['acl_res_name'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['acl_res_name']);
+    $sanitizedParameters['acl_res_name'] = filter_var($resources['acl_res_name'], FILTER_SANITIZE_STRING);
 
     if (empty($sanitizedParameters['acl_res_name'])) {
         throw new InvalidArgumentException(_("ACL Resource name can't be empty"));
     }
 
-    $sanitizedParameters['acl_res_alias'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['acl_res_alias']);
-    $sanitizedParameters['acl_res_comment'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['acl_res_comment']);
+    $sanitizedParameters['acl_res_alias'] = filter_var($resources['acl_res_alias'], FILTER_SANITIZE_STRING);
+    $sanitizedParameters['acl_res_comment'] = filter_var($resources['acl_res_comment'], FILTER_SANITIZE_STRING);
 
     // set default value for unconsistent FILTER_VALIDATE_INT
     $default = ["options" => ["default" => 0]];

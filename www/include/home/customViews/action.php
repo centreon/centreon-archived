@@ -34,7 +34,6 @@
  *
  */
 
-require_once __DIR__ . '/../../../../bootstrap.php';
 require_once realpath(__DIR__ . "/../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
@@ -61,7 +60,7 @@ if (CentreonSession::checkSession(session_id(), $db) === false) {
 
 $action = $_POST['action'];
 
-$postFilter = [
+$postFilter = array(
     'widget_id' => [
         'filter' => FILTER_VALIDATE_INT,
         'options' => [
@@ -98,6 +97,12 @@ $postFilter = [
             'default' => false
         ]
     ],
+    'name' => [
+        'filter' => FILTER_SANITIZE_STRING,
+        'options' => [
+            'default' => ''
+        ]
+    ],
     'layout' => [
         'options' => [
             'default' => ''
@@ -115,17 +120,15 @@ $postFilter = [
             'default' => false
         ]
     ],
-];
+    'widget_title' => [
+        'filter' => FILTER_SANITIZE_STRING,
+        'options' => [
+            'default' => ''
+        ]
+    ]
+);
 
 $postInputs = filter_input_array(INPUT_POST, $postFilter);
-
-$postInputs['name'] = isset($_POST['name'])
-    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['name'])
-    : null;
-
-$postInputs['widget_title'] = isset($_POST['widget_title'])
-    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['widget_title'])
-    : null;
 
 $lockedUsers = [];
 if (!empty($_POST['lockedUsers'])) {
@@ -163,7 +166,7 @@ if (!empty($_POST['unlockedUsergroups'])) {
 $positions = [];
 if (!empty($_POST['positions'])) {
     foreach ($_POST['positions'] as $position) {
-        if (\HtmlAnalyzer::sanitizeAndRemoveTags($position) !== false) {
+        if (filter_var($position, FILTER_SANITIZE_STRING) !== false) {
             $positions[] = $position;
         }
     }
@@ -175,9 +178,11 @@ if (!empty($_POST['create_load']['create_load'])) {
 }
 
 
-$postInputs['layout'] = isset($_POST['layout']['layout'])
-    ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['layout']['layout'])
-    : null;
+$postInputs['layout'] = filter_var(
+    $_POST['layout']['layout'] ?? '',
+    FILTER_SANITIZE_STRING,
+    $postFilter['layout']
+);
 
 $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);

@@ -71,7 +71,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
              * mark task as being worked on
              */
             $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_PROGRESS);
-            $serializedParams = htmlspecialchars($task->getParams());
+            $serializedParams = filter_var($task->getParams(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             if (empty($serializedParams)) {
                 throw new \Exception('Invalid Parameters');
             }
@@ -161,7 +161,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
         /**
          * create import task on remote
          */
-        $serializedParams = htmlspecialchars($task->getParams());
+        $serializedParams = filter_var($task->getParams(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         if (empty($serializedParams)) {
             throw new \Exception('Invalid Parameters');
         }

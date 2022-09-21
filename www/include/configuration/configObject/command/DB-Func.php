@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -121,7 +120,6 @@ function multipleCommandInDB($commands = array(), $nbrDup = array())
             $val = null;
 
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "command_name" ? ($command_name = $value2 = $value2 . "_" . $i) : null;
                 $val ? $val .= ($value2 != null ? (", '" . $pearDB->escape($value2) . "'")
                     : ", NULL") : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
@@ -327,7 +325,7 @@ function return_plugin($rep)
 
 function insertArgDesc($cmd_id, $ret = null)
 {
-    global $pearDB;
+    global $centreon, $pearDB;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
@@ -473,7 +471,7 @@ function insertMacrosDesc($cmd, $ret)
         foreach ($tab1 as $key => $value) {
             $tab2 = preg_split("/\ \:\ /", $value, 2);
             $str = trim(substr($tab2[0], 6));
-            $sDesc = trim(str_replace("\r", "", $tab2[1] ?? ''));
+            $sDesc = trim(str_replace("\r", "", $tab2[1]));
             $pos = strpos($str, ")");
             if ($pos > 0) {
                 $sType = substr($str, 1, $pos - 1);

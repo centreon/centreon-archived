@@ -70,7 +70,10 @@ $serviceId = filter_var(
 
 $pollerId = $hostObj->getHostPollerId($hostId);
 
-$cmd = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['cmd'] ?? '');
+$cmd = filter_var(
+    $_POST['cmd'] ?? '',
+    FILTER_SANITIZE_STRING
+);
 
 $cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 

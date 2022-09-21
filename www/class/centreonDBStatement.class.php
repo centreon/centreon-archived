@@ -74,13 +74,10 @@ class CentreonDBStatement extends \PDOStatement
      *
      * {@inheritDoc}
      */
-    public function fetch(
-        int $mode = \PDO::FETCH_DEFAULT,
-        int $cursorOrientation = \PDO::FETCH_ORI_NEXT,
-        int $cursorOffset = 0
-    ): mixed {
+    public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
+    {
         if (is_null($this->allFetched)) {
-            return parent::fetch($mode, $cursorOrientation, $cursorOffset);
+            return parent::fetch();
         } elseif (count($this->allFetched) <= 0) {
             return false;
         } else {

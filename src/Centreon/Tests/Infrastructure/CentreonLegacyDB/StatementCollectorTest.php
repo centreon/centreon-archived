@@ -53,8 +53,6 @@ class StatementCollectorTest extends TestCase
             $this->assertEquals($key, $_key);
             $this->assertEquals($value, $_value);
             $this->assertEquals($dataType, $_dataType);
-
-            return true;
         };
 
         $collector = new StatementCollector();

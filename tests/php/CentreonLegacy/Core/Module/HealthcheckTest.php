@@ -19,7 +19,9 @@ namespace CentreonLegacy\Core\Module;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Psr11\Container;
-use VirtualFileSystem\FileSystem;
+use Vfs\FileSystem;
+use Vfs\Node\Directory;
+use Vfs\Node\File;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use CentreonLegacy\Core\Module;
 use CentreonLegacy\ServiceProvider;
@@ -37,14 +39,20 @@ class HealthcheckTest extends TestCase
     public function setUp(): void
     {
         // mount VFS
-        $this->fs = new FileSystem();
-
-        $this->fs->createDirectory('/tmp');
-        $this->fs->createDirectory('/tmp/checklist');
-        $this->fs->createFile('/tmp/checklist/requirements.php', '');
-
-        $this->fs->createDirectory('/tmp1');
-        $this->fs->createDirectory('/tmp1/checklist');
+        $this->fs = FileSystem::factory('vfs://');
+        $this->fs->mount();
+        $this->fs->get('/')
+            ->add('tmp', new Directory([
+                    'checklist' => new Directory([
+                        'requirements.php' => new File(''),
+                        ]),
+                    ]
+        ));
+        $this->fs->get('/')
+            ->add('tmp1', new Directory([
+                    'checklist' => new Directory([]),
+                    ]
+        ));
 
         $this->container = new ServiceContainer();
         $this->container[ServiceProvider::CONFIGURATION] = $this
@@ -57,11 +65,9 @@ class HealthcheckTest extends TestCase
 
         $this->container[ServiceProvider::CONFIGURATION]
             ->method('getModulePath')
-            ->will(
-                $this->returnCallback(function () {
-                    return $this->fs->path('/');
-                })
-            );
+            ->will($this->returnCallback(function () {
+                    return 'vfs://';
+                }));
 
         $this->service = $this->getMockBuilder(Module\Healthcheck::class)
             ->setConstructorArgs([
@@ -77,6 +83,9 @@ class HealthcheckTest extends TestCase
 
     public function tearDown(): void
     {
+        // unmount VFS
+        $this->fs->unmount();
+
         $this->container->terminate();
         $this->container = null;
     }
@@ -91,12 +100,9 @@ class HealthcheckTest extends TestCase
      * @param int $licenseExpirationV
      */
     protected function setRequirementMockMethodValue(
-        $messageV = null,
-        $customActionV = null,
-        $warningV = false,
-        $criticalV = false,
-        $licenseExpirationV = null
-    ) {
+        $messageV = null, $customActionV = null, $warningV = false, $criticalV = false, $licenseExpirationV = null
+    )
+    {
         $this->service
             ->method('getRequirements')
             ->will($this->returnCallback(function (
@@ -307,6 +313,7 @@ class HealthcheckTest extends TestCase
 
     public function testReset()
     {
+        $module = 'mod';
         $value = '';
 
         $result = $this->service->reset();

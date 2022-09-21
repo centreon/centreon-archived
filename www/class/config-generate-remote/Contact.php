@@ -20,7 +20,7 @@
 
 namespace ConfigGenerateRemote;
 
-use PDO;
+use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Contact extends AbstractObject

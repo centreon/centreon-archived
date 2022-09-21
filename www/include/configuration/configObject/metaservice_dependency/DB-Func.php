@@ -100,7 +100,6 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 $key2 == "dep_name" ? ($dep_name = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
@@ -250,12 +249,12 @@ function updateMetaServiceDependency($depId = null): void
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-    $sanitizedParameters['dep_name'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_name']);
+    $sanitizedParameters['dep_name'] = filter_var($resources['dep_name'], FILTER_SANITIZE_STRING);
     if (empty($sanitizedParameters['dep_name'])) {
         throw new InvalidArgumentException(_("Dependency name can't be empty"));
     }
 
-    $sanitizedParameters['dep_description'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_description']);
+    $sanitizedParameters['dep_description'] = filter_var($resources['dep_description'], FILTER_SANITIZE_STRING);
     if (empty($sanitizedParameters['dep_description'])) {
         throw new InvalidArgumentException(_("Dependency description can't be empty"));
     }
@@ -264,21 +263,22 @@ function sanitizeResourceParameters(array $resources): array
         ? $sanitizedParameters["inherits_parent"] = '1'
         : $sanitizedParameters["inherits_parent"] = '0';
 
-    $sanitizedParameters['execution_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $sanitizedParameters['execution_failure_criteria'] = filter_var(
         implode(
             ",",
             array_keys($resources["execution_failure_criteria"])
-        )
+        ),
+        FILTER_SANITIZE_STRING
     );
 
-    $sanitizedParameters['notification_failure_criteria'] = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $sanitizedParameters['notification_failure_criteria'] = filter_var(
         implode(
             ",",
             array_keys($resources["notification_failure_criteria"])
-        )
+        ),
+        FILTER_SANITIZE_STRING
     );
-    $sanitizedParameters['dep_comment'] = \HtmlAnalyzer::sanitizeAndRemoveTags($resources['dep_comment']);
-
+    $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
     return $sanitizedParameters;
 }
 
@@ -291,7 +291,7 @@ function updateMetaServiceDependencyMetaServiceParents($dep_id = null)
     global $pearDB;
     $rq = "DELETE FROM dependency_metaserviceParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msParents');
     for ($i = 0; $i < count($ret); $i++) {
@@ -299,7 +299,7 @@ function updateMetaServiceDependencyMetaServiceParents($dep_id = null)
         $rq .= "(dependency_dep_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -312,7 +312,7 @@ function updateMetaServiceDependencyMetaServiceChilds($dep_id = null)
     global $pearDB;
     $rq = "DELETE FROM dependency_metaserviceChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msChilds');
     for ($i = 0; $i < count($ret); $i++) {
@@ -320,6 +320,6 @@ function updateMetaServiceDependencyMetaServiceChilds($dep_id = null)
         $rq .= "(dependency_dep_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }

@@ -60,9 +60,9 @@ class Entity implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return mixed[]
+     * @return array<mixed>
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         return is_object($this->entity) ? static::dismount($this->entity) : (array) $this->entity;
     }

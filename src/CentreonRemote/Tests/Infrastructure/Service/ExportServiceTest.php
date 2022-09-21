@@ -33,7 +33,9 @@ use CentreonRemote\Domain\Exporter\ConfigurationExporter;
 use CentreonClapi\CentreonACL;
 use Centreon\Test\Mock;
 use Centreon\Tests\Resources\CheckPoint;
-use VirtualFileSystem\FileSystem;
+use Vfs\FileSystem;
+use Vfs\Node\Directory;
+use Vfs\Node\File;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 use Centreon\ServiceProvider;
 
@@ -111,11 +113,39 @@ class ExportServiceTest extends TestCase
         $this->initDbDataSet();
 
         // mount VFS
-        $this->fs = new FileSystem();
-        $this->fs->createDirectory('/export');
+        $this->fs = FileSystem::factory('vfs://');
+        $this->fs->mount();
+        $this->fs->get('/')->add('export', new Directory());
 
         // Export
         $this->export = new ExportService(new ContainerWrap($this->container));
+    }
+
+    public function tearDown(): void
+    {
+        // unmount VFS
+        $this->fs->unmount();
+    }
+
+    /**
+     * @covers \CentreonRemote\Infrastructure\Service\ExportService::export
+     */
+    public function testExport(): void
+    {
+        $path = "vfs://export";
+
+        $this->fs->get('/export/')->add('test.txt', new File(''));
+
+        $commitment = new ExportCommitment(1, [2, 3], null, null, $path, [
+            ConfigurationExporter::class,
+        ]);
+
+        $this->export->export($commitment);
+
+        // @todo replace system('rm -rf vfs://...')
+        // $this->assertFileDoesNotExist("{$path}/test.txt");
+
+        $this->assertFileExists("{$path}/manifest.json");
     }
 
     /**
@@ -123,7 +153,7 @@ class ExportServiceTest extends TestCase
      */
     public function testImport(): void
     {
-        $path = $this->fs->path('/export');
+        $path = "vfs://export";
 
         // missing export path
         $this->assertNull($this->export->import(new ExportCommitment(null, null, null, null, "{$path}/not-found", [
@@ -138,7 +168,7 @@ class ExportServiceTest extends TestCase
     "version": "x.y"
 }';
 
-        $this->fs->createFile('/export/manifest.json', $manifest);
+        $this->fs->get('/export/')->add('manifest.json', new File($manifest));
         $points = new CheckPoint();
         $points->add('ConfigurationExporter::setCommitment');
         $points->add('ConfigurationExporter::import');

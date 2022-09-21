@@ -72,8 +72,9 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Centreon Broker config list
  */
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
+$search = filter_var(
     $_POST['searchCB'] ?? $_GET['searchCB'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchCB']) || isset($_GET['searchCB'])) {

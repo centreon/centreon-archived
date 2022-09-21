@@ -58,8 +58,9 @@ $tabStatusFilter = array(
     5 => _("Pending")
 );
 
-$searchTraps = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchT'] ?? $_GET['searchT'] ?? null
+$searchTraps = filter_var(
+    $_POST['searchT'] ?? $_GET['searchT'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 $searchStatus = null;

@@ -296,8 +296,8 @@ class MonitoringResourceController extends AbstractController
 
         $resource->getLinks()->getEndpoints()
             ->setDetails($endpoints['details'])
-            ->setPerformanceGraph($endpoints['performance_graph'] ?? null)
-            ->setStatusGraph($endpoints['status_graph'] ?? null)
+            ->setPerformanceGraph($endpoints['performance_graph'])
+            ->setStatusGraph($endpoints['status_graph'])
             ->setDowntime($endpoints['downtime'])
             ->setAcknowledgement($endpoints['acknowledgement'])
             ->setTimeline($endpoints['timeline']);

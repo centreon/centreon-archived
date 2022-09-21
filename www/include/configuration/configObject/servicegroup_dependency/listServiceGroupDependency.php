@@ -48,8 +48,9 @@ if (!$centreon->user->admin) {
     $aclCond = " AND servicegroup_sg_id IN ($sgstring) ";
 }
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null
+$search = filter_var(
+    $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 if (isset($_POST['searchSGD']) || isset($_GET['searchSGD'])) {
     //saving filters values
@@ -62,11 +63,11 @@ if (isset($_POST['searchSGD']) || isset($_GET['searchSGD'])) {
 
 //Dependencies list
 $rq = "SELECT SQL_CALC_FOUND_ROWS dep_id, dep_name, dep_description FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*)
-                    FROM dependency_servicegroupParent_relation dsgpr
-                    WHERE dsgpr.dependency_dep_id = dep.dep_id " . $aclCond . ") > 0
-             OR    (SELECT DISTINCT COUNT(*)
-                    FROM dependency_servicegroupChild_relation dsgpr
+$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
+                    FROM dependency_servicegroupParent_relation dsgpr 
+                    WHERE dsgpr.dependency_dep_id = dep.dep_id " . $aclCond . ") > 0 
+             OR    (SELECT DISTINCT COUNT(*) 
+                    FROM dependency_servicegroupChild_relation dsgpr 
                     WHERE dsgpr.dependency_dep_id = dep.dep_id " . $aclCond . ") > 0)";
 //Search Case
 if ($search) {

@@ -42,12 +42,14 @@ include_once "./class/centreonUtils.class.php";
 
 $mediaObj = new CentreonMedia($pearDB);
 
-$searchHG = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['hostgroups'] ?? $_GET['hostgroups'] ?? null
+$searchHG = filter_var(
+    $_POST['hostgroups'] ?? $_GET['hostgroups'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
-$searchS = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchS'] ?? $_GET['searchS'] ?? null
+$searchS = filter_var(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 $template = filter_var(

@@ -363,7 +363,6 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $value2 = is_int($value2) ? (string) $value2 : $value2;
                 if (in_array($key2, ['creation_date', 'password']) === false) {
                     $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
                     $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
@@ -1176,7 +1175,7 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_hostNotifOpts':
-                $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(implode(",", array_keys($inputValue)));
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
                     $bindParams[':contact_host_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
@@ -1184,9 +1183,7 @@ function sanitizeFormContactParameters(array $ret): array
                 }
                 break;
             case 'contact_svNotifOpts':
-                $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags(
-                    implode(",", array_keys($inputValue))
-                );
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
                     $bindParams[':contact_service_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
@@ -1245,7 +1242,7 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'browser'];
                     } else {
@@ -1255,7 +1252,7 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_auth_type':
                 if (!empty($inputValue)) {
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue);
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     if (empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'local'];
                     } else {
@@ -1266,7 +1263,11 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_alias':
             case 'contact_name':
                 if (
-                    $inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue ?? "")
+                    $inputValue = filter_var(
+                        $inputValue ?? "",
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    )
                 ) {
                     if (!empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
@@ -1287,7 +1288,11 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (
-                    ($inputValue = \HtmlAnalyzer::sanitizeAndRemoveTags($inputValue ?? "")) !== false
+                    ($inputValue = filter_var(
+                        $inputValue ?? "",
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    )) !== false
                 ) {
                     $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                 }

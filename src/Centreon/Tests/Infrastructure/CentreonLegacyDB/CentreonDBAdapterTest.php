@@ -41,7 +41,6 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Test\Mock\CentreonDBStatement;
 use Centreon\Test\Mock\CentreonDBManagerService;
 use Centreon\Tests\Resources\Mock;
 use Centreon\Tests\Resources\CheckPoint;
@@ -138,7 +137,7 @@ class CentreonDBAdapterTest extends TestCase
     {
         $db = $this->createMock(CentreonDB::class);
         $db->method('prepare')
-            ->willReturn(false);
+            ->willReturn(null);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Error at preparing the query.');
@@ -153,7 +152,7 @@ class CentreonDBAdapterTest extends TestCase
         $db
             ->method('prepare')
             ->will($this->returnCallback(function () {
-                $stmt = $this->createMock(CentreonDBStatement::class);
+                $stmt = $this->createMock(\PDOStatement::class);
                 $stmt
                     ->method('execute')
                     ->will($this->throwException(new \Exception('test exception')));
@@ -170,16 +169,16 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testQueryWithoutSelectQuery(): void
     {
-        $errorInfo = ['test info for DB error'];
+        $errorInfo = 'test info for DB error';
 
         $db = $this->createMock(CentreonDB::class);
         $db
             ->method('prepare')
             ->will($this->returnCallback(function () use ($errorInfo) {
-                $stmt = $this->createMock(CentreonDBStatement::class);
+                $stmt = $this->createMock(\PDOStatement::class);
                 $stmt
                     ->method('execute')
-                    ->willReturn(false);
+                    ->willReturn(null);
                 $stmt
                     ->method('errorInfo')
                     ->willReturn($errorInfo);
@@ -238,7 +237,7 @@ class CentreonDBAdapterTest extends TestCase
         $db
             ->method('prepare')
             ->will($this->returnCallback(function () {
-                $stmt = $this->createMock(CentreonDBStatement::class);
+                $stmt = $this->createMock(\PDOStatement::class);
                 $stmt
                     ->method('execute')
                     ->will($this->throwException(new \Exception('test exception')));
@@ -297,7 +296,7 @@ class CentreonDBAdapterTest extends TestCase
         $db
             ->method('prepare')
             ->will($this->returnCallback(function () {
-                $stmt = $this->createMock(CentreonDBStatement::class);
+                $stmt = $this->createMock(\PDOStatement::class);
                 $stmt
                     ->method('execute')
                     ->will($this->throwException(new \Exception('test exception')));
@@ -358,8 +357,6 @@ class CentreonDBAdapterTest extends TestCase
             ->method('rollBack')
             ->will($this->returnCallback(function () use ($checkPoint) {
                 $checkPoint->mark('rollBack');
-
-                return true;
             }));
 
         $dbAdapter = new CentreonDBAdapter($db, $this->manager);

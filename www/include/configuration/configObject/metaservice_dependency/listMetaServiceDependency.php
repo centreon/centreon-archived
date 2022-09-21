@@ -48,8 +48,9 @@ if (!$centreon->user->admin) {
     $aclCond = " AND meta_service_meta_id IN ($metastr) ";
 }
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchMSD'] ?? $_GET['searchMSD'] ?? null
+$search = filter_var(
+    $_POST['searchMSD'] ?? $_GET['searchMSD'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchMSD']) || isset($_GET['searchMSD'])) {

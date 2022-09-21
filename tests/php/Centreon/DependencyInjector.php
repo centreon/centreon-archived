@@ -49,10 +49,10 @@ class DependencyInjector implements ArrayAccess
     /**
      * Setter
      *
-     * @param mixed $offset
+     * @param string|int $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -62,18 +62,18 @@ class DependencyInjector implements ArrayAccess
     }
 
     /**
-     * @param mixed $offset
-     * @return bool
+     * @param string|int $offset
+     * @return mixed
      */
-    public function offsetExists($offset): bool
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
 
     /**
-     * @param mixed $offset
+     * @param string|int $offset
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
     }
@@ -81,10 +81,10 @@ class DependencyInjector implements ArrayAccess
     /**
      * Getter
      *
-     * @param mixed $offset
+     * @param string|int $offset
      * @return mixed
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }

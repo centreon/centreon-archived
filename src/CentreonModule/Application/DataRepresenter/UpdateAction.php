@@ -38,25 +38,24 @@ namespace CentreonModule\Application\DataRepresenter;
 
 use JsonSerializable;
 use CentreonModule\Infrastructure\Entity\Module;
-use CentreonModule\Application\DataRepresenter\ModuleEntity;
 
 class UpdateAction implements JsonSerializable
 {
 
     /**
-     * @var Module
+     * @var \CentreonModule\Infrastructure\Entity\Module
      */
     private $entity;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $message;
 
     /**
      * Construct
      *
-     * @param Module $entity
+     * @param \CentreonModule\Infrastructure\Entity\Module $entity
      * @param Module|null $entity
      * @param string $message
      */
@@ -75,9 +74,9 @@ class UpdateAction implements JsonSerializable
      *
      * JSON serialization of entity
      *
-     * @return array{entity:ModuleEntity|string|null, message:string|null}
+     * @return array<string,\CentreonModule\Application\DataRepresenter\ModuleEntity|string|null>
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         $entity = null;
 

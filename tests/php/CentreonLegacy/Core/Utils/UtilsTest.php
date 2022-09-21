@@ -19,7 +19,9 @@ namespace CentreonLegacy\Core\Utils;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Psr11\Container;
-use VirtualFileSystem\FileSystem;
+use Vfs\FileSystem;
+use Vfs\Node\Directory;
+use Vfs\Node\File;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use CentreonLegacy\Core\Utils;
 use CentreonLegacy\ServiceProvider;
@@ -35,8 +37,10 @@ class UtilsTest extends TestCase
     public function setUp(): void
     {
         // mount VFS
-        $this->fs = new FileSystem();
-        $this->fs->createDirectory('/tmp');
+        $this->fs = FileSystem::factory('vfs://');
+        $this->fs->mount();
+        $this->fs->get('/')
+            ->add('tmp', new Directory([]));
 
         $this->container = new ServiceContainer();
         $this->container[ServiceProvider::CONFIGURATION] = $this->createMock(Configuration::class);
@@ -48,6 +52,9 @@ class UtilsTest extends TestCase
 
     public function tearDown(): void
     {
+        // unmount VFS
+        $this->fs->unmount();
+
         $this->container->terminate();
         $this->container = null;
     }
@@ -101,6 +108,13 @@ class UtilsTest extends TestCase
         $this->assertEmpty($result);
     }
 
+//    /**
+//     * @ covers CentreonLegacy\Core\Utils\Utils::objectIntoArray
+//     */
+//    public function testExecutePhpFile()
+//    {
+//    }
+
     public function testBuildPath()
     {
         $endPath = '.';
@@ -127,7 +141,7 @@ class UtilsTest extends TestCase
      */
     public function testExecutePhpFileWithUnexistsFile()
     {
-        $fileName = $this->fs->path('/tmp/conf2.php');
+        $fileName = 'vfs://tmp/conf2.php';
         $result = null;
 
         try {
@@ -141,8 +155,9 @@ class UtilsTest extends TestCase
 
     public function testExecuteSqlFile()
     {
-        $this->fs->createFile('/tmp/conf.sql', "SELECT 'OK';");
-        $fileName = $this->fs->path('/tmp/conf.sql');
+        $this->fs->get('/tmp')
+            ->add('conf.sql', new File("SELECT 'OK';"));
+        $fileName = 'vfs://tmp/conf.sql';
 
         $result = $this->service->executeSqlFile($fileName);
 
@@ -151,7 +166,7 @@ class UtilsTest extends TestCase
 
     public function testExecuteSqlFileWithWithUnexistsFileAndRealtimeDb()
     {
-        $fileName = $this->fs->path('/tmp/conf2.sql');
+        $fileName = 'vfs://tmp/conf2.sql';
         $result = null;
 
         try {

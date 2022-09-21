@@ -589,9 +589,7 @@ class CentreonACL
      */
     public function getAccessGroupsString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $accessGroups = "";
         foreach ($this->accessGroups as $key => $value) {
@@ -637,9 +635,7 @@ class CentreonACL
      */
     public function getResourceGroupsString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $resourceGroups = "";
         foreach ($this->resourceGroups as $key => $value) {
@@ -675,7 +671,7 @@ class CentreonACL
     {
         $this->checkUpdateACL();
 
-        if ($flag !== null && strtoupper($flag) == "ALIAS") {
+        if (isset($flag) && strtoupper($flag) == "ALIAS") {
             return $this->hostGroupsAlias;
         }
         return $this->hostGroups;
@@ -698,9 +694,7 @@ class CentreonACL
      */
     public function getHostGroupsString($flag = null)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $hostgroups = "";
         foreach ($this->hostGroups as $key => $value) {
@@ -737,9 +731,7 @@ class CentreonACL
      */
     public function getPollerString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $pollers = "";
         $flagFirst = true;
@@ -792,9 +784,7 @@ class CentreonACL
      */
     public function getServiceGroupsString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $servicegroups = "";
         foreach ($this->serviceGroups as $key => $value) {
@@ -851,9 +841,7 @@ class CentreonACL
      */
     public function getServiceCategoriesString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $serviceCategories = "";
         foreach ($this->serviceCategories as $key => $value) {
@@ -891,9 +879,7 @@ class CentreonACL
      */
     public function getHostCategoriesString($flag = null, $escape = true)
     {
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
 
         $hostCategories = "";
         foreach ($this->hostCategories as $key => $value) {
@@ -960,9 +946,7 @@ class CentreonACL
             return "''";
         }
 
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
         switch ($flag) {
             case "NAME":
                 $query = "SELECT DISTINCT h.host_id, h.name "
@@ -1190,9 +1174,7 @@ class CentreonACL
             return "''";
         }
 
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
         switch ($flag) {
             case "NAME":
                 $query = "SELECT DISTINCT h.host_id, h.name "
@@ -1250,9 +1232,7 @@ class CentreonACL
             return "''";
         }
 
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
         switch ($flag) {
             case "NAME":
                 $query = "SELECT DISTINCT s.service_id, s.description "
@@ -1305,9 +1285,7 @@ class CentreonACL
             return "''";
         }
 
-        if ($flag !== null) {
-            $flag = strtoupper($flag);
-        }
+        $flag = strtoupper($flag);
         switch ($flag) {
             case "NAME":
                 $query = "SELECT DISTINCT s.service_id, s.description "

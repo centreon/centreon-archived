@@ -289,12 +289,12 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
+     * @return PDOStatement|null
      * @param string $queryString
      * @param mixed $parameters
      * @param mixed $parametersArgs
-     * @return PDOStatement|null
      */
-    public function query($queryString, $parameters = null, ...$parametersArgs): CentreonDBStatement|false
+    public function query($queryString, $parameters = null, ...$parametersArgs)
     {
         if (!is_null($parameters) && !is_array($parameters)) {
             $parameters = [$parameters];
@@ -463,8 +463,8 @@ class CentreonDB extends \PDO
             return -1;
         }
 
-        $table = \HtmlAnalyzer::sanitizeAndRemoveTags($table);
-        $column = \HtmlAnalyzer::sanitizeAndRemoveTags($column);
+        $table = filter_var($table, FILTER_SANITIZE_STRING);
+        $column = filter_var($column, FILTER_SANITIZE_STRING);
 
         $query = "SELECT COLUMN_NAME
             FROM INFORMATION_SCHEMA.COLUMNS

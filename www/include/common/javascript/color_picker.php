@@ -35,12 +35,12 @@
  * SVN : $Id$
  * 
  */
-
-$n = "";
-$name = "";
-$title = "";
-$hcolor = "000000";
-
+  
+    $n = "";
+    $name = "";
+    $title = "";
+    $hcolor = "000000";
+    
 function filter_get($str)
 {
     if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches)) {
@@ -48,13 +48,13 @@ function filter_get($str)
     }
     return null;
 }
-
+    
 if (function_exists("filter_var")) {
-    $n = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["n"]);
-    $name = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["name"]);
-    $title = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["title"]);
+    $n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
+    $name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+    $title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
     if (isset($_GET["hcolor"])) {
-        $hcolor = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET["hcolor"]);
+        $hcolor = filter_var($_GET["hcolor"], FILTER_SANITIZE_SPECIAL_CHARS);
     }
 } else {
     $n = filter_get($_GET["n"]);

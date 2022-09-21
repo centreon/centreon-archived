@@ -43,8 +43,9 @@ if (!isset($oreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchSC'] ?? $_GET['searchSC'] ?? null
+$search = filter_var(
+    $_POST['searchSC'] ?? $_GET['searchSC'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchSC']) || isset($_GET['searchSC'])) {

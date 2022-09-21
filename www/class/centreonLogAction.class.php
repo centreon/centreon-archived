@@ -251,7 +251,7 @@ class CentreonLogAction
         $ref = [];
         $i = 0;
 
-        $objectType = \HtmlAnalyzer::sanitizeAndRemoveTags($objectType);
+        $objectType = filter_var($objectType, FILTER_SANITIZE_STRING);
 
         $statement1 = $pearDBO->prepare("
             SELECT action_log_id, action_log_date, action_type FROM log_action

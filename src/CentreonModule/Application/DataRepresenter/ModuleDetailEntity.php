@@ -80,9 +80,9 @@ class ModuleDetailEntity implements JsonSerializable
      *
      * JSON serialization of entity
      *
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         $outdated = $this->entity->isInstalled() && !$this->entity->isUpdated() ?
             true :

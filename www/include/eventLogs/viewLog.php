@@ -68,27 +68,35 @@ $FlagSearchService = 1;
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-$getInputs = [
-    'engine' => filter_input(INPUT_GET, 'engine', FILTER_VALIDATE_BOOLEAN, ['options' => ['default' => false]]),
-    'id' => filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, ['options' => ['default' => 1]]),
-    'h' => isset($_GET['h']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['h']) : null,
-    'hg' => isset($_GET['hg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hg']) : null,
-    'poller' => isset($_GET['poller']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['poller']) : null,
-    'svc' => isset($_GET['svc']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['svc']) : null,
-    'svcg' => isset($_GET['svcg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['svcg']) : null,
-    'output' => isset($_GET['output']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['output']) : null,
+$filterParameters = [
+    'engine' => [
+        'filter' => FILTER_VALIDATE_BOOLEAN,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 1
+        ],
+    ],
+    'h' => FILTER_SANITIZE_STRING,
+    'hg' => FILTER_SANITIZE_STRING,
+    'poller' => FILTER_SANITIZE_STRING,
+    'svc' => FILTER_SANITIZE_STRING,
+    'svcg' => FILTER_SANITIZE_STRING,
+    'output' => FILTER_SANITIZE_STRING,
 ];
 
-$postInputs = [
-    'engine' => filter_input(INPUT_POST, 'engine', FILTER_VALIDATE_BOOLEAN, ['options' => ['default' => false]]),
-    'id' => filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT, ['options' => ['default' => 1]]),
-    'h' => isset($_POST['h']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['h']) : null,
-    'hg' => isset($_POST['hg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['hg']) : null,
-    'poller' => isset($_POST['poller']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['poller']) : null,
-    'svc' => isset($_POST['svc']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['svc']) : null,
-    'svcg' => isset($_POST['svcg']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['svcg']) : null,
-    'output' => isset($_POST['output']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['output']) : null,
-];
+$getInputs = filter_input_array(
+    INPUT_GET,
+    $filterParameters
+);
+$postInputs = filter_input_array(
+    INPUT_POST,
+    $filterParameters
+);
 
 $serviceGrpArray = array();
 $pollerArray = array();

@@ -51,8 +51,9 @@ $mediaObj = new CentreonMedia($pearDB);
 $searchFilterQuery = null;
 $mainQueryParameters = [];
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchHg'] ?? $_GET['searchHg'] ?? null
+$search = filter_var(
+    $_POST['searchHg'] ?? $_GET['searchHg'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchHg']) || isset($_GET['searchHg'])) {

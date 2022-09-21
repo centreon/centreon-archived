@@ -66,15 +66,15 @@ $useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 /*
  * Check Arguments From GET request
  */
-$o = isset($_GET['o']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o']) : 'svcSumHG_pb';
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'svcSumHG_pb']]);
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
 //if instance value is not set, displaying all active pollers' linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hostgroup = isset($_GET['hg_search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['hg_search']) : '';
-$search = isset($_GET['search']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search']) : '';
-$sort_type = isset($_GET['sort_type']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['sort_type']) : 'alias';
+$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'alias']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $grouplistStr = $obj->access->getAccessGroupsString();

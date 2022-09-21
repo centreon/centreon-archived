@@ -1506,10 +1506,6 @@ class CentreonConfigCentreonBroker
     {
         global $pearDBO;
 
-        if ($string === null) {
-            return false;
-        }
-
         if (isset($pearDBO)) {
             $monitoringDb = $pearDBO;
         } else {

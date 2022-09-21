@@ -44,8 +44,9 @@ include "./include/common/autoNumLimit.php";
 
 // Search engine
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchR'] ?? $_GET['searchR'] ?? null
+$search = filter_var(
+    $_POST['searchR'] ?? $_GET['searchR'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchR']) || isset($_GET['searchR'])) {

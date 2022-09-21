@@ -59,8 +59,9 @@ while ($data = $dbResult->fetch()) {
 unset($data);
 $dbResult->closeCursor();
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchCT'] ?? $_GET['searchCT'] ?? null
+$search = filter_var(
+    $_POST['searchCT'] ?? $_GET['searchCT'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchCT']) || isset($_GET['searchCT'])) {

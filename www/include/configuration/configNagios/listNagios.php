@@ -40,8 +40,9 @@ if (!isset($centreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST['searchN'] ?? $_GET['searchN'] ?? null
+$search = filter_var(
+    $_POST['searchN'] ?? $_GET['searchN'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 if (isset($_POST['searchN']) || isset($_GET['searchN'])) {

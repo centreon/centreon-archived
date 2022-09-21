@@ -92,9 +92,9 @@ class Bulk implements JsonSerializable
     /**
      * JSON serialization of several lists
      *
-     * @return mixed[]
+     * @return array
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         $result = [];
 

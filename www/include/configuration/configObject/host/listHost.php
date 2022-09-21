@@ -60,8 +60,9 @@ $dbResult->closeCursor();
 $mainQueryParameters = [];
 
 //initializing filters values
-$search = \HtmlAnalyzer::sanitizeAndRemoveTags(
-    $_POST["searchH"] ?? $_GET["searchH"] ?? null
+$search = filter_var(
+    $_POST["searchH"] ?? $_GET["searchH"] ?? null,
+    FILTER_SANITIZE_STRING
 );
 $poller = filter_var(
     $_POST["poller"] ?? $_GET["poller"] ?? 0,

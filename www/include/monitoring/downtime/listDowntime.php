@@ -50,21 +50,13 @@ $view_downtime_cycle = 0;
 
 if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = isset($_POST['search_service'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_service'])
-        : null;
+    $search_service = filter_input(INPUT_POST, 'search_service', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_service"] = $search_service;
-    $host_name = isset($_POST['search_host'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_host'])
-        : null;
+    $host_name = filter_input(INPUT_POST, 'search_host', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = isset($_POST['search_output'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_output'])
-        : null;
+    $search_output = filter_input(INPUT_POST, 'search_output', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = isset($_POST['search_author'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search_author'])
-        : null;
+    $search_author = filter_input(INPUT_POST, 'search_author', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
@@ -72,21 +64,13 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = isset($_GET['search_service'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_service'])
-        : null;
+    $search_service = filter_input(INPUT_GET, 'search_service', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]['search_service'] = $search_service;
-    $host_name = isset($_GET['search_host'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_host'])
-        : null;
+    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = isset($_GET['search_output'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_output'])
-        : null;
+    $search_output = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = isset($_GET['search_author'])
-        ? \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search_author'])
-        : null;
+    $search_author = filter_input(INPUT_GET, 'search_author', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
