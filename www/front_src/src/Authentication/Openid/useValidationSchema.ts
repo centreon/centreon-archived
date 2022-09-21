@@ -99,7 +99,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       attributePath: Yup.string(),
       endpoint: endpointSchema,
       isEnabled: switchSchema,
-      relations: Yup.array().of(groupesRelationSchema),
+      relations: Yup.array().of(groupsRelationSchema),
     }),
     introspectionTokenEndpoint: Yup.string().nullable(),
     isActive: switchSchema,
