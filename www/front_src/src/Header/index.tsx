@@ -17,7 +17,7 @@ import UserMenu from './userMenu';
 export const isDarkMode = (theme: Theme): boolean =>
   equals(theme.palette.mode, ThemeMode.dark);
 
-export const headerHeight = 8;
+export const headerHeight = 7;
 
 const useStyles = makeStyles((theme) => ({
   header: {

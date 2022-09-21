@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
   pollarHeaderRight: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(1),
     justifyContent: 'space-between',
     [theme.breakpoints.down(768)]: {
       flexDirection: 'row',
