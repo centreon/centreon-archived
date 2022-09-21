@@ -72,7 +72,6 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
 
     $this->contactGroupRepository
@@ -121,7 +120,6 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
     $request->authenticationConditions = [
         "is_enabled" => true,
@@ -180,7 +178,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = true;
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
 
     $missingParameters = [
@@ -236,7 +233,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
     $request->emailBindAttribute = 'email';
     $request->userNameBindAttribute = 'name';
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
 
     $this->contactTemplateRepository

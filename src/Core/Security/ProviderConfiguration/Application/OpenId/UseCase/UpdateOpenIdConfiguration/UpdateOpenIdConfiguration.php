@@ -320,7 +320,10 @@ class UpdateOpenIdConfiguration
                 $foundContactGroups
             );
             if ($contactGroup !== null) {
-                $contactGroupRelations[] = new ContactGroupRelation($contactGroupRelation["group_value"], $contactGroup);
+                $contactGroupRelations[] = new ContactGroupRelation(
+                    $contactGroupRelation["group_value"],
+                    $contactGroup
+                );
             }
         }
 
