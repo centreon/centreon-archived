@@ -14,7 +14,7 @@ centreon_application_monitoring_resource_details_host:
 
 centreon_application_monitoring_resource_details_service:
     methods: GET
-    path: /smonitoring/resources/hosts/{hostId}/services/{serviceId}
+    path: /monitoring/resources/hosts/{hostId}/services/{serviceId}
     controller: 'Core\Infrastructure\RealTime\Api\FindService\FindServiceController'
     requirements:
         hostId: '\d+'
