@@ -14,6 +14,7 @@ import {
   setUrlQueryParameters,
   getUrlQueryParameters,
   screen,
+  getSearchQueryParameterValue,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -257,6 +258,7 @@ const retrievedDetails = {
       notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
+      timeline_download: 'timeline/download',
     },
     externals: {
       action_url: undefined,
@@ -528,9 +530,34 @@ const retrievedFilters = {
   },
 };
 
-let context: ResourceContext;
-
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
+const start = '2020-01-20T06:00:00.000Z';
+
+const mockedParametersDataTimeLineDownload = {
+  conditions: [
+    {
+      field: 'date',
+      values: {
+        $gt: start,
+        $lt: currentDateIsoString,
+      },
+    },
+  ],
+  lists: [
+    {
+      field: 'type',
+      values: [
+        'event',
+        'notification',
+        'comment',
+        'acknowledgement',
+        'downtime',
+      ],
+    },
+  ],
+};
+
+let context: ResourceContext;
 
 const DetailsTest = (): JSX.Element => {
   const listingState = useListing();
@@ -1807,6 +1834,15 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
+    const timelineDownloadEndpoint = path(
+      ['links', 'endpoints', 'timeline_download'],
+      retrievedDetails,
+    );
+
+    const parameters = getSearchQueryParameterValue(
+      mockedParametersDataTimeLineDownload,
+    );
+
     const mockedOpen = jest.fn();
     window.open = mockedOpen;
 
@@ -1817,8 +1853,6 @@ describe(Details, () => {
       },
     ]);
 
-    const start = '2020-01-20T06:00:00.000Z';
-
     const { getByTestId } = renderDetails();
 
     await waitFor(() => {
@@ -1828,7 +1862,7 @@ describe(Details, () => {
     fireEvent.click(getByTestId(labelExportToCSV));
 
     expect(mockedOpen).toHaveBeenCalledWith(
-      `${retrievedDetails.links.endpoints.timeline}/download?start_date=${start}&end_date=${currentDateIsoString}`,
+      `${timelineDownloadEndpoint}?search=${JSON.stringify(parameters)}`,
       'noopener',
       'noreferrer',
     );

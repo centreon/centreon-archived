@@ -73,6 +73,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
         $customConfiguration = $configuration->getCustomConfiguration();
         $authorizationRules = $customConfiguration->getAuthorizationRules();
 
+<<<<<<< HEAD
         if (!empty($authorizationRules)) {
             $this->info('Removing existing Authorization Rules');
             $this->deleteAuthorizationRules();
@@ -87,6 +88,12 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             $this->info('Inserting new Authorization Rules');
             $this->insertContactGroupRelations($contactGroupRelations);
         }
+=======
+        $this->info('Removing existing Authorization Rules');
+        $this->deleteAuthorizationRules();
+        $this->info('Inserting new Authorization Rules');
+        $this->insertAuthorizationRules($authorizationRules);
+>>>>>>> MON-14870
     }
 
     /**

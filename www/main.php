@@ -33,6 +33,8 @@
  *
  */
 
+require_once __DIR__ . "/../bootstrap.php";
+
 use CentreonLegacy\Core\Menu\Menu;
 
 // Set logging options
@@ -45,34 +47,33 @@ if (defined("E_DEPRECATED")) {
 /*
  * Purge Values
  */
-if (function_exists('filter_var')) {
-    foreach ($_GET as $key => $value) {
-        if (!is_array($value)) {
-            $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
+foreach ($_GET as $key => $value) {
+    if (!is_array($value)) {
+        $_GET[$key] = \HtmlAnalyzer::sanitizeAndRemoveTags($value);
     }
 }
 
-$inputArguments = array(
-    'p' => FILTER_SANITIZE_NUMBER_INT,
-    'o' => FILTER_SANITIZE_STRING,
-    'min' => FILTER_SANITIZE_STRING,
-    'type' => FILTER_SANITIZE_STRING,
-    'search' => FILTER_SANITIZE_STRING,
-    'limit' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_NUMBER_INT
-);
-$inputGet = filter_input_array(
-    INPUT_GET,
-    $inputArguments
-);
-$inputPost = filter_input_array(
-    INPUT_POST,
-    $inputArguments
-);
+$inputGet = [
+    'p' => filter_input(INPUT_GET, 'p', FILTER_SANITIZE_NUMBER_INT),
+    'num' => filter_input(INPUT_GET, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['o'] ?? ''),
+    'min' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['min'] ?? ''),
+    'type' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['type'] ?? ''),
+    'search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['search'] ?? ''),
+    'limit' => \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['limit'] ?? '')
+];
+$inputPost = [
+    'p' => filter_input(INPUT_POST, 'p', FILTER_SANITIZE_NUMBER_INT),
+    'num' => filter_input(INPUT_POST, 'num', FILTER_SANITIZE_NUMBER_INT),
+    'o' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['o'] ?? ''),
+    'min' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['min'] ?? ''),
+    'type' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['type'] ?? ''),
+    'search' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['search'] ?? ''),
+    'limit' => \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['limit'] ?? '')
+];
 
 $inputs = array();
-foreach ($inputArguments as $argumentName => $argumentValue) {
+foreach ($inputGet as $argumentName => $argumentValue) {
     if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
     } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '') {
@@ -99,7 +100,6 @@ include_once("./include/core/header/header.php");
 $userAgent = $_SERVER['HTTP_USER_AGENT'];
 $isMobile = strpos($userAgent, 'Mobil') !== false;
 
-require_once _CENTREON_PATH_ . "/bootstrap.php";
 if ($isMobile) {
     $db = $dependencyInjector['configuration_db'];
     $menu = new Menu($db, $_SESSION['centreon']->user);

@@ -44,10 +44,10 @@ $searchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLR'])) {
-    $search = filter_var($_POST['searchACLR'], FILTER_SANITIZE_STRING);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['searchACLR']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLR'])) {
-    $search = filter_var($_GET['searchACLR'], FILTER_SANITIZE_STRING);
+    $search = \HtmlAnalyzer::sanitizeAndRemoveTags($_GET['searchACLR']);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
@@ -130,13 +130,6 @@ for ($i = 0; $resources = $statement->fetchRow(); $i++) {
         . $resources['acl_res_id'] . "]'></input>";
 
     /* Contacts */
-    $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr
-          FROM acl_resources_host_relations
-          WHERE acl_res_id = '" . $resources['acl_res_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
-    $ctNbr = $DBRESULT2->fetchRow();
-
     $allHostgroups = (isset($resources["all_hostgroups"]) && $resources["all_hostgroups"] == 1 ? _("Yes") : _("No"));
     $allServicegroups = (isset($resources["all_servicegroups"]) && $resources["all_servicegroups"] == 1 ?
         _("Yes") :

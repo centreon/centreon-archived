@@ -70,11 +70,7 @@ if (preg_match('/^title_(\d+)$/', $_POST['elementId'], $matches)) {
     $widgetId = $matches[1];
 }
 
-$newName = filter_input(
-    INPUT_POST,
-    'newName',
-    FILTER_SANITIZE_STRING
-);
+$newName = isset($_POST['newName']) ? \HtmlAnalyzer::sanitizeAndRemoveTags($_POST['newName']) : null;
 if ($newName === null) {
     echo 'missing newName argument';
     exit();

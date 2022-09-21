@@ -7,12 +7,12 @@ if [ "$1" = "configure" ] ; then
     a2enmod headers
     a2enmod proxy_fcgi setenvif proxy rewrite
     a2enmod alias proxy proxy_fcgi
-    a2enconf php8.0-fpm
-    a2dismod php8.0
+    a2enconf php8.1-fpm
+    a2dismod php8.1
     # Remove default Debian Apache configuration
     rm /etc/apache2/sites-enabled/000-default.conf
     # Restart apache2
-    systemctl restart apache2 php8.0-fpm
+    systemctl restart apache2 php8.1-fpm
   fi
 
   if [ "$(getent passwd www-data)" ]; then

@@ -244,24 +244,20 @@ $lcaSvcstr    = $centreon->user->access->getServicesString("ID", $pearDBO);
 /*
  * setting variables for link with services
  */
-$period_choice = filter_var(
-    $_POST["period_choice"] ?? "preset",
-    FILTER_SANITIZE_STRING
+$period_choice = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST["period_choice"] ?? "preset"
 );
 
-$period = filter_var(
-    $_POST['period'] ?? $_GET['period'] ?? '',
-    FILTER_SANITIZE_STRING
+$period = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['period'] ?? $_GET['period'] ?? ''
 );
 
-$get_date_start = filter_var(
-    $_GET['start'] ?? $_POST['StartDate'] ?? '',
-    FILTER_SANITIZE_STRING
+$get_date_start = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_GET['start'] ?? $_POST['StartDate'] ?? ''
 );
 
-$get_date_end = filter_var(
-    $_GET['end'] ?? $_POST['EndDate'] ?? '',
-    FILTER_SANITIZE_STRING
+$get_date_end = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_GET['end'] ?? $_POST['EndDate'] ?? ''
 );
 
 if ($get_date_start == "" && $get_date_end == "" && $period == "") {
