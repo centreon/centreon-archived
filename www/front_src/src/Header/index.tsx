@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   userMenuContainer: {
-    alignSelf: 'center',
     marginLeft: 'auto',
   },
 }));

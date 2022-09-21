@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
 
 import { ListItemText, Switch } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { patchData, useRequest } from '@centreon/ui';
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'white',
     },
     '& .MuiSwitch-track': {
-      backgroundColor: '#aab4be',
+      backgroundColor: grey[600],
       opacity: 1,
     },
     alignItems: 'center',
@@ -27,9 +28,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
   },
   containerSwitch: {
-    '& .MuiSwitch-switchBase': {
-      padding: theme.spacing(0.5, 0.5, 0.5, 0.75),
-    },
     '&.Mui-checked': {
       '&:hover': {
         backgroundColor: 'unset',
@@ -40,8 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   disabledMode: {
-    color: theme.palette.common.white,
-    opacity: 0.5,
+    opacity: '.5',
   },
   mode: {
     paddingLeft: theme.spacing(1),

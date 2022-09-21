@@ -10,7 +10,7 @@ import { grey } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
 import {
   Typography,
-  Paper,
+  Box,
   Badge,
   Tooltip,
   List,
@@ -76,43 +76,24 @@ interface UserData {
   username: string | null;
 }
 
-const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
-  '& .MuiSvgIcon-root': {
-    color: theme.palette.common.white,
-  },
-}));
-
 const useStyles = makeStyles((theme) => ({
   badge: {
     alignItems: 'center',
-    borderRadius: '50%',
+    borderRadius: theme.spacing(1.25),
     display: 'flex',
-    fontSize: '10px',
-    height: 15,
+    fontSize: theme.typography.body1.fontSize,
+    height: theme.spacing(2.5),
     justifyContent: 'spaceBetween',
-    minWidth: 15,
-  },
-  button: {
-    '&:hover': {
-      '&:after': {
-        backgroundColor: theme.palette.common.white,
-        content: '""',
-        height: '100%',
-        left: 0,
-        opacity: 0.08,
-        position: 'absolute',
-        right: 0,
-        top: 0,
-      },
-    },
+    minWidth: theme.spacing(2.5),
   },
   clock: {
-    [theme.breakpoints.down(648)]: {
-      display: 'none',
+    display: 'none',
+    [theme.breakpoints.up(648)]: {
+      display: 'block',
     },
   },
   containerList: {
-    padding: theme.spacing(0.5, 0, 0.5, 0),
+    padding: 0,
   },
   divider: {
     borderColor: grey[600],
@@ -131,26 +112,40 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(0),
   },
   icon: {
-    minWidth: theme.spacing(3.75),
+    marginRight: theme.spacing(1),
   },
   icons: {
     borderLeft: `1px solid ${theme.palette.common.white}`,
     paddingLeft: theme.spacing(3),
   },
+  listItem: {
+    '&:first-child': {
+      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+    },
+    '&:hover': {
+      background: theme.palette.primary.light,
+      color: theme.palette.primary.main,
+    },
+    '&:last-child': {
+      borderTop: `1px solid ${theme.palette.grey[300]}`,
+    },
+    padding: theme.spacing(1),
+  },
+  listItemButton: {
+    '&:hover': {
+      background: 'none',
+    },
+    padding: 0,
+  },
   menu: {
-    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
-      ? theme.palette.background.default
-      : theme.palette.primary.main,
+    // backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
+    //   ? theme.palette.background.default
+    //   : theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     border: 'none',
     borderRadius: 0,
-    color: theme.palette.common.white,
+    fontSize: '.75rem',
     minWidth: 190,
-  },
-  menuItem: {
-    padding: theme.spacing(0, 2, 0.25, 2),
-  },
-  nameContainer: {
-    padding: theme.spacing(0, 2, 0.25, 2.25),
   },
   passwordExpiration: {
     color: theme.palette.warning.main,
@@ -162,6 +157,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2, 0.25, 11 / 8),
   },
   text: {
+    lineHeight: 1,
+    margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -171,7 +168,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     fontSize: theme.spacing(4),
   },
-  wrapRightUserItems: {
+  wrapper: {
     alignItems: 'center',
     display: 'flex',
     gap: theme.spacing(3),
@@ -352,10 +349,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
   };
 
   return (
-    <div
-      className={classes.wrapRightUserItems}
-      ref={profile as RefObject<HTMLDivElement>}
-    >
+    <div className={classes.wrapper} ref={profile as RefObject<HTMLDivElement>}>
       <div className={classes.clock}>
         <Clock />
       </div>
@@ -403,7 +397,7 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
         >
           {({ TransitionProps }): JSX.Element => (
             <Fade {...TransitionProps} timeout={350}>
-              <Paper
+              <Box
                 className={classes.menu}
                 ref={userMenu as RefObject<HTMLDivElement>}
                 sx={{
@@ -411,51 +405,62 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
                 }}
               >
                 <List dense className={classes.containerList}>
-                  <ListItem className={classes.nameContainer}>
+                  <ListItem className={classes.listItem}>
                     <ListItemText
                       primaryTypographyProps={primaryTypographyProps}
                     >
                       {data.username}
                     </ListItemText>
                   </ListItem>
-                  <Divider className={classes.divider} />
 
                   {not(passwordIsNotYetAboutToExpire) && (
-                    <ListItem className={classes.menuItem}>
-                      <div className={classes.passwordExpiration}>
-                        <Typography variant="body2">
-                          {t(labelPasswordWillExpireIn)}:
-                        </Typography>
-                        <Typography variant="body2">
-                          {formattedPasswordRemainingTime}
-                        </Typography>
-                      </div>
+                    <ListItem
+                      className={`${classes.listItem} ${classes.passwordExpiration}`}
+                    >
+                      {`${t(labelPasswordWillExpireIn)}: `}
+                      {formattedPasswordRemainingTime}
                     </ListItem>
                   )}
                   {allowEditProfile && (
-                    <ListItem disableGutters disablePadding>
+                    <ListItem className={classes.listItem}>
                       <ListItemButton
-                        className={classes.button}
+                        className={classes.listItemButton}
                         onClick={navigateToUserSettingsAndCloseUserMenu}
                       >
-                        <ListItemIcon className={classes.icon}>
-                          <SettingsIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>{t(labelEditProfile)}</ListItemText>
+                        <SettingsIcon
+                          className={classes.icon}
+                          fontSize="small"
+                        />
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
+                        >
+                          {t(labelEditProfile)}
+                        </ListItemText>
                       </ListItemButton>
                     </ListItem>
                   )}
                   {data.autologinkey && (
-                    <ListItem disableGutters disablePadding>
-                      <ListItemButton onClick={onCopy}>
-                        <ListItemIcon className={classes.icon}>
-                          {copied ? (
-                            <CheckIcon fontSize="small" />
-                          ) : (
-                            <FileCopyIcon fontSize="small" />
-                          )}
-                        </ListItemIcon>
-                        <ListItemText>{t(labelCopyAutologinLink)}</ListItemText>
+                    <ListItem className={classes.listItem}>
+                      <ListItemButton
+                        className={classes.listItemButton}
+                        onClick={onCopy}
+                      >
+                        {copied ? (
+                          <CheckIcon
+                            className={classes.icon}
+                            fontSize="small"
+                          />
+                        ) : (
+                          <FileCopyIcon
+                            className={classes.icon}
+                            fontSize="small"
+                          />
+                        )}
+                        <ListItemText
+                          primaryTypographyProps={primaryTypographyProps}
+                        >
+                          {t(labelCopyAutologinLink)}
+                        </ListItemText>
                       </ListItemButton>
                       <textarea
                         readOnly
@@ -466,25 +471,25 @@ const UserMenu = ({ headerRef }: Props): JSX.Element => {
                       />
                     </ListItem>
                   )}
-                  <div className={classes.switchItem}>
+                  <ListItem className={classes.listItem}>
                     <SwitchMode />
-                  </div>
+                  </ListItem>
 
-                  <Divider className={classes.divider} />
-
-                  <ListItem disableGutters disablePadding>
+                  <ListItem className={classes.listItem}>
                     <ListItemButton
-                      className={classes.button}
+                      className={classes.listItemButton}
                       onClick={logoutFromSession}
                     >
-                      <ListItemIcon className={classes.icon}>
-                        <LogoutIcon fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText>{t(labelLogout)}</ListItemText>
+                      <LogoutIcon className={classes.icon} fontSize="small" />
+                      <ListItemText
+                        primaryTypographyProps={primaryTypographyProps}
+                      >
+                        {t(labelLogout)}
+                      </ListItemText>
                     </ListItemButton>
                   </ListItem>
                 </List>
-              </Paper>
+              </Box>
             </Fade>
           )}
         </Popper>
