@@ -113,7 +113,8 @@ it('should present a provider configuration', function () {
     expect($presenter->response->isAutoImportEnabled)->toBeFalse();
     expect($presenter->response->emailBindAttribute)->toBeNull();
     expect($presenter->response->userNameBindAttribute)->toBeNull();
-    expect($presenter->response->contactGroup)->toBe(['id' => 1, 'name' => 'contact_group']);
+    expect($presenter->response->authenticationConditions)->toBeArray();
+    expect($presenter->response->groupsMapping)->toBeArray();
 });
 
 it('should present an ErrorResponse when an error occured during the process', function () {

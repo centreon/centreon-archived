@@ -74,12 +74,6 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
     $request->claimName = 'groups';
 
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
-
     $this->contactTemplateRepository
         ->expects($this->once())
         ->method('find')
@@ -130,12 +124,6 @@ it('should present an ErrorResponse when an error occured during the use case ex
         "blacklist_client_addresses" => []
     ];
 
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
-
     $this->contactTemplateRepository
         ->expects($this->once())
         ->method('find')
@@ -185,14 +173,6 @@ it('should present an Error Response when auto import is enable and mandatory pa
         'email_bind_attribute',
         'fullname_bind_attribute',
     ];
-
-    $contactGroup = new ContactGroup(1, 'contact_group');
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($contactGroup);
 
     $this->presenter
         ->expects($this->once())
