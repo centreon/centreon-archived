@@ -58,28 +58,6 @@ use Core\Application\Configuration\User\Repository\WriteUserRepositoryInterface;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 
-//@TODO: Remove this polyfill when php 8.1 is supported
-if (!function_exists("array_is_list")) {
-    /**
-     * Polyfill for array_is_list
-     *
-     * https://www.php.net/manual/en/function.array-is-list.php
-     *
-     * @param array<mixed> $array
-     * @return bool
-     */
-    function array_is_list(array $array): bool
-    {
-        $i = 0;
-        foreach ($array as $k => $v) {
-            if ($k !== $i++) {
-                return false;
-            }
-        }
-        return true;
-    }
-}
-
 class OpenIdProvider implements OpenIdProviderInterface
 {
     use LoggerTrait;

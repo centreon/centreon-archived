@@ -17057,4 +17057,4 @@ msgid "Invalid roles mapping fetched from provider"
 msgstr "Les roles récupérés depuis le serveur d'identité sont incorrects"
 
 msgid "Role mapping conditions do not match"
-msgstr "Aucune correspondance trouvé pour le coupe roles / groupe d'accès"
+msgstr "Aucune correspondance trouvée pour le couple roles / groupe d'accès"
