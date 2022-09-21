@@ -441,7 +441,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         $tabOrder["output"] = " ORDER BY s.output $q, h.name, s.description";
         $tabOrder["default"] = " ORDER BY s.description $q, h.name";
 
-        if (preg_match("/^unhandled/", $this->viewType)) {
+        if ($this->viewType !== null && preg_match("/^unhandled/", $this->viewType)) {
             if (preg_match("/^unhandled_(warning|critical|unknown)\$/", $this->viewType, $matches)) {
                 if (isset($matches[1]) && $matches[1] == 'warning') {
                     $query .= " AND s.state = 1 ";
