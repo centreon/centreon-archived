@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'stretch',
     backgroundColor: theme.palette.background.default,
     display: 'flex',
+    fontFamily: theme.typography.fontFamily,
     height: '100%',
     overflow: 'hidden',
   },
