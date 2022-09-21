@@ -15257,3 +15257,18 @@ msgstr "puntos fuera del sobre"
 
 msgid "Edit anomaly detection data"
 msgstr "Editar datos de detección de anomalías"
+
+#  msgid "Enable/disable resource"
+#  msgstr ""
+
+#  msgid "Note"
+#  msgstr ""
+
+#  msgid "Note URL"
+#  msgstr ""
+
+#  msgid "Geographic coordinates"
+#  msgstr ""
+
+#  msgid "Members"
+#  msgstr ""

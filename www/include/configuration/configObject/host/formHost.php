@@ -355,7 +355,7 @@ if ($o !== HOST_MASSIVE_CHANGE) {
     $form->addElement(
         'text',
         'host_address',
-        _("IP Address / DNS"),
+        _("Address"),
         array_merge(array('id' => 'host_address'), $attrsText)
     );
     $form->addElement(
@@ -385,9 +385,9 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-$form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
+$form->addElement('select2', 'host_location', _("Timezone"), array(), $attrTimezones);
 
-$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
+$form->addElement('select', 'nagios_server_id', _("Monitoring server"), $nsServers);
 /*
  * Get default poller id
  */
@@ -792,7 +792,7 @@ $form->addGroup($hostStalOpt, 'host_stalOpts', _("Stalking Options"), '&nbsp;&nb
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Enabled"), '1');
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Disabled"), '0');
-$form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
+$form->addGroup($hostActivation, 'host_activate', _("Enable/disable resource"), '&nbsp;');
 if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_activate' => '1'));
 }
@@ -862,7 +862,7 @@ $attrHostgroup1 = array_merge(
     $attrHostgroups,
     array('defaultDatasetRoute' => $hostgDeRoute)
 );
-$form->addElement('select2', 'host_hgs', _("Parent Host Groups"), array(), $attrHostgroup1);
+$form->addElement('select2', 'host_hgs', _("Host Groups"), array(), $attrHostgroup1);
 
 if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hhc = array();
@@ -878,7 +878,7 @@ $attrHostcategory1 = array_merge(
     $attrHostcategories,
     array('defaultDatasetRoute' => $hostCatDeRoute)
 );
-$form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
+$form->addElement('select2', 'host_hcs', _("Host Categories"), array(), $attrHostcategory1);
 
 if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_nsid = array();
@@ -961,8 +961,8 @@ if ($o === HOST_ADD) {
 }
 
 $form->addElement('header', 'nagios', _("Monitoring engine"));
-$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
-$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
+$form->addElement('text', 'ehi_notes', _("Note"), $attrsText);
+$form->addElement('text', 'ehi_notes_url', _("Note URL"), $attrsText);
 $form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 $form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array(
     "id" => "ehi_icon_image",
@@ -977,7 +977,7 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 ));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
-$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geographic coordinates"), $attrsText);
 $form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 if (!$centreon->user->admin && $o === HOST_ADD) {
@@ -1003,7 +1003,7 @@ $criticalityIds = array(null => null);
 foreach ($critList as $critId => $critData) {
     $criticalityIds[$critId] = $critData['hc_name'] . ' (' . $critData['level'] . ')';
 }
-$form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
+$form->addElement('select', 'criticality_id', _('Host severity'), $criticalityIds);
 
 /*
  * Sort 5 - Macros - Nagios 3

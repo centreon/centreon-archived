@@ -352,7 +352,7 @@ if ($o == SERVICE_ADD) {
  * - May be ? #409
  */
 if ($o != SERVICE_MASSIVE_CHANGE) {
-    $form->addElement('text', 'service_description', _("Description"), $attrsText);
+    $form->addElement('text', 'service_description', _("Name"), $attrsText);
 }
 $form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 
@@ -757,7 +757,7 @@ $form->addGroup($serviceStalOpt, 'service_stalOpts', _("Stalking Options"), '&nb
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Enabled"), '1');
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Disabled"), '0');
-$form->addGroup($serviceActivation, 'service_activate', _("Status"), '&nbsp;');
+$form->addGroup($serviceActivation, 'service_activate', _("Enable/disable resource"), '&nbsp;');
 if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_activate' => '1'));
 }
@@ -795,7 +795,7 @@ if ($form_service_type == "BYHOST") {
         $attrHosts,
         array('defaultDatasetRoute' => $attrHostsRoute)
     );
-    $form->addElement('select2', 'service_hPars', _("Linked with Hosts"), array(), $attrHost1);
+    $form->addElement('select2', 'service_hPars', _("Hosts"), array(), $attrHost1);
     $serviceHParsFieldIsAdded = true;
 }
 
@@ -829,7 +829,7 @@ $attrServicegroup1 = array_merge(
     $attrServicegroups,
     array('defaultDatasetRoute' => $attrServicegroupsRoute)
 );
-$ams3 = $form->addElement('select2', 'service_sgs', _("Linked with Servicegroups"), array(), $attrServicegroup1);
+$ams3 = $form->addElement('select2', 'service_sgs', _("Service groups"), array(), $attrServicegroup1);
 if ($sgReadOnly === true) {
     $ams3->freeze();
 }
@@ -924,8 +924,8 @@ if ($o == SERVICE_ADD) {
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));
-$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
-$form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
+$form->addElement('text', 'esi_notes', _("Note"), $attrsText);
+$form->addElement('text', 'esi_notes_url', _("Note URL"), $attrsTextURL);
 $form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
     "id" => "esi_icon_image",
@@ -935,7 +935,7 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
 $form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
-$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addElement('text', 'geo_coords', _("Geographic coordinates"), $attrsText);
 $form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 /*
@@ -947,7 +947,7 @@ $criticalityIds = array(null => null);
 foreach ($critList as $critId => $critData) {
     $criticalityIds[$critId] = $critData['sc_name'] . ' (' . $critData['level'] . ')';
 }
-$form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
+$form->addElement('select', 'criticality_id', _('Service severity'), $criticalityIds);
 
 $form->addElement('header', 'oreon', _("Centreon"));
 
@@ -974,7 +974,7 @@ $attrServicecategory1 = array_merge(
     $attrServicecategories,
     array('defaultDatasetRoute' => $serviceCategorieRoute)
 );
-$form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
+$form->addElement('select2', 'service_categories', _("Service Categories"), array(), $attrServicecategory1);
 
 /*
  * Sort 5
