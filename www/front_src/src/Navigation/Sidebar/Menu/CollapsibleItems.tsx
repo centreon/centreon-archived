@@ -61,10 +61,11 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.background.paper,
     },
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.main,
     },
 
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.light,
   },
   label: {
     fontWeight: 'bold',
@@ -82,10 +83,12 @@ const useStyles = makeStyles((theme) => ({
     outline: 'none',
   },
   subHeader: {
+    backgroundColor: 'rgba(0,0,0,.05)',
     color: theme.palette.text.secondary,
     fontSize: theme.typography.caption.fontSize,
     fontWeight: 'bold',
-    lineHeight: theme.spacing(2.9),
+    lineHeight: 1,
+    padding: theme.spacing(1),
     textAlign: 'center',
   },
   toggled: {

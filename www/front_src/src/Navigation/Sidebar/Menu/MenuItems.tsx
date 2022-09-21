@@ -51,51 +51,51 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   activated: ({ isRoot }): CreateCSSProperties => ({
-    '& .MuiListItemText-root': {
-      '& .MuiTypography-root': {
-        color:
-          isDarkMode(theme) && isRoot
-            ? theme.palette.primary.main
-            : theme.palette.common.white,
-      },
-    },
-    '& .MuiSvgIcon-root': {
-      color:
-        isDarkMode(theme) && isRoot
-          ? theme.palette.primary.main
-          : theme.palette.common.white,
-    },
+    // '& .MuiListItemText-root': {
+    //   '& .MuiTypography-root': {
+    //     color:
+    //       isDarkMode(theme) && isRoot
+    //         ? theme.palette.primary.main
+    //         : theme.palette.common.white,
+    //   },
+    // },
+    // '& .MuiSvgIcon-root': {
+    //   color:
+    //     isDarkMode(theme) && isRoot
+    //       ? theme.palette.primary.main
+    //       : theme.palette.common.white,
+    // },
     '&:hover': {
       backgroundColor:
         isDarkMode(theme) && isRoot
           ? theme.palette.common.black
-          : theme.palette.primary.dark,
-      color: theme.palette.common.white,
+          : theme.palette.primary.light,
+      // color: theme.palette.common.white,
     },
 
-    backgroundColor:
-      isDarkMode(theme) && isRoot
-        ? theme.palette.common.black
-        : theme.palette.primary.dark,
+    // backgroundColor:
+    //   isDarkMode(theme) && isRoot
+    //     ? theme.palette.common.black
+    //     : theme.palette.primary.dark,
   }),
+  arrowIcon: {
+    color: theme.palette.common.white,
+  },
   containerIcon: {
     alignItems: 'center',
-    color: theme.palette.common.white,
+    // color: theme.palette.common.white,
     minWidth: theme.spacing(5.75),
   },
-  icon: {
-    color: theme.palette.common.white,
-  },
   label: {
-    '& .MuiTypography-root': {
-      fontSize: 11,
-    },
+    // '& .MuiTypography-root': {
+    //   fontSize: 11,
+    // },
     margin: theme.spacing(0),
   },
   listButton: {
     alignItems: 'center',
     height: theme.spacing(rootHeightItem / 8),
-    marginBottom: 0.8,
+    // marginBottom: 0.8,
   },
   rootLabel: {
     color: theme.palette.common.white,
@@ -162,7 +162,7 @@ const MenuItems = ({
                 Array.isArray(data?.children) &&
                 data.children.length > 0 && (
                   <ArrowIcon
-                    className={classes.icon}
+                    className={classes.arrowIcon}
                     isOpen={isOpen}
                     size="small"
                   />
