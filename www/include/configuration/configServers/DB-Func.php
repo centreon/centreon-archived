@@ -285,17 +285,17 @@ function deleteServerInDB(array $serverIds): void
 
         // Is a Remote Server?
         $statement = $pearDB->prepare(
-            'SELECT * FROM remote_servers WHERE ip = :ip'
+            'SELECT * FROM remote_servers WHERE server_id = :id'
         );
-        $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+        $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
         $statement->execute();
 
         if ($statement->rowCount() > 0) {
             // Delete entry from remote_servers
             $statement = $pearDB->prepare(
-                'DELETE FROM remote_servers WHERE ip = :ip'
+                'DELETE FROM remote_servers WHERE server_id = :id'
             );
-            $statement->bindValue(':ip', $row['ip'], \PDO::PARAM_STR);
+            $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
             $statement->execute();
             // Delete all relation between this Remote Server and pollers
             $pearDB->query(
@@ -437,6 +437,8 @@ function duplicateServer(array $server, array $nbrDup): void
                         $statement->bindValue(':poller_id', (int) $row['id'], \PDO::PARAM_INT);
                         $statement->bindValue(':b_poller_id', (int) $serverId, \PDO::PARAM_INT);
                         $statement->execute();
+
+                        duplicateRemoteServerInformation((int) $serverId, (int) $row['id']);
                     }
                 } catch (\PDOException $e) {
                     // Nothing to do
@@ -768,14 +770,14 @@ function addUserRessource(int $serverId): bool
  * Update Remote Server information
  *
  * @param array $data
- * @param string|null $oldIpAddress Old IP address of the server before the upgrade
+ * @param int $id remote server id
  */
-function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
+function updateRemoteServerInformation(array $data, int $id)
 {
     global $pearDB;
 
-    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE ip = :ip");
-    $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE server_id = :id");
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
     $statement->execute();
     $total = (int) $statement->fetch(\PDO::FETCH_ASSOC)['total'];
 
@@ -784,14 +786,14 @@ function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
             UPDATE remote_servers
             SET http_method = :http_method, http_port = :http_port,
                 no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
-            WHERE ip = :ip
+            WHERE server_id = :id
         ");
         $statement->bindValue(':http_method', $data["http_method"]);
         $statement->bindValue(':http_port', $data["http_port"] ?? null, \PDO::PARAM_INT);
         $statement->bindValue(':no_proxy', $data["no_proxy"]["no_proxy"]);
         $statement->bindValue(':no_check_certificate', $data["no_check_certificate"]["no_check_certificate"]);
         $statement->bindValue(':new_ip', $data["ns_ip_address"]);
-        $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
         $statement->execute();
     }
 }
@@ -1011,13 +1013,13 @@ function updateServer(int $id, array $data): void
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
+
+    updateRemoteServerInformation($data, $id);
     try {
         updateServerIntoPlatformTopology($retValue, $id);
     } catch (\Exception $e) {
         // catch exception but don't return anything to avoid blank pages on form
     }
-
-    updateRemoteServerInformation($data, $ipAddressBeforeChanges);
     additionnalRemoteServersByPollerId(
         $id,
         $data["remote_additional_id"] ?? null
@@ -1348,8 +1350,8 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
     /**
      * Check if we are updating a Remote Server
      */
-    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE ip = :address");
-    $statement->bindValue(':address', $pollerIp, \PDO::PARAM_STR);
+    $statement = $pearDB->prepare("SELECT 1 FROM remote_servers WHERE server_id = :id");
+    $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
     $statement->execute();
     $isRemote = $statement->fetch(\PDO::FETCH_ASSOC);
     if ($isRemote) {
@@ -1495,4 +1497,74 @@ function ipCanBeUpdated(array $options): bool
         return false;
     }
     return true;
+}
+
+/**
+ * Get Remote servers information
+ *
+ * @param integer $serverId
+ * @return array<string,string>
+ */
+function getRemoteServerInformation(int $serverId): array
+{
+    global $pearDB;
+
+    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE server_id = :id LIMIT 1");
+    $statement->bindValue(':id', $serverId, \PDO::PARAM_INT);
+    $statement->execute();
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        return $result;
+    }
+
+    return [];
+}
+
+/**
+ * Duplicate information for remote server
+ *
+ * @param int $duplicatedId
+ * @param int $newId
+ */
+function duplicateRemoteServerInformation(int $duplicatedId, int $newId): void
+{
+    global $pearDB;
+    $remoteServerInformation = getRemoteServerInformation($duplicatedId);
+    if (! empty($remoteServerInformation)) {
+        $insertRemoteServerStatement = $pearDB->prepare(
+            "INSERT INTO `remote_servers` (ip, `version`, is_connected,
+            centreon_path, http_method, http_port, no_check_certificate, no_proxy, server_id) VALUES
+            (:ip, :version, :isConnected, :centreonPath, :httpMethod, :httpPort,
+            :noCheckCertificate, :noProxy, :serverId)"
+        );
+        $insertRemoteServerStatement->bindValue(":ip", $remoteServerInformation["ip"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(":version", $remoteServerInformation["version"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(
+            ":isConnected",
+            (int) $remoteServerInformation["is_connected"],
+            \PDO::PARAM_INT
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":centreonPath",
+            $remoteServerInformation["centreon_path"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":httpMethod",
+            $remoteServerInformation["http_method"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":httpPort",
+            $remoteServerInformation["http_port"] !== null ? (int) $remoteServerInformation["http_port"] : null,
+            \PDO::PARAM_INT
+        );
+        $insertRemoteServerStatement->bindValue(
+            ":noCheckCertificate",
+            $remoteServerInformation["no_check_certificate"],
+            \PDO::PARAM_STR
+        );
+        $insertRemoteServerStatement->bindValue(":noProxy", $remoteServerInformation["no_proxy"], \PDO::PARAM_STR);
+        $insertRemoteServerStatement->bindValue(":serverId", $newId, \PDO::PARAM_INT);
+        $insertRemoteServerStatement->execute();
+    }
 }

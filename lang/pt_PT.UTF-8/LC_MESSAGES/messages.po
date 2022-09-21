@@ -11781,7 +11781,7 @@ msgstr "Grupo de traps SNMP"
 
 #: centreon-web/www/install/smarty_translate.php:387
 msgid "Host category"
-msgstr "Categoria do Host"
+msgstr "Categoria de Host"
 
 #: centreon-web/www/install/smarty_translate.php:393
 msgid "Informations"
@@ -15601,3 +15601,7 @@ msgstr ""
 
 #  msgid "Warning, maximum size exceeded for input '%s' (max: %d), it will be truncated upon saving"
 #  msgstr ""
+
+# msgid "Parent alias
+# msgstr ""
+
