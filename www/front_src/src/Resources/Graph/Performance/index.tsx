@@ -205,20 +205,10 @@ const PerformanceGraph = ({
       endpoint,
     })
       .then((graphData) => {
-        const type = resource?.type;
-        let newLineData;
-
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
         setTitle(graphData.global.title);
-        newLineData = getLineData(graphData);
-
-        if (equals(type, ResourceType.anomalydetection)) {
-          setTimeSeries(getTimeSeries(mockedResultModalGraph));
-          setBase(mockedResultModalGraph.global.base);
-          setTitle(mockedResultModalGraph.global.title);
-          newLineData = getLineData(mockedResultModalGraph);
-        }
+        const newLineData = getLineData(graphData);
 
         if (lineData) {
           setLineData(

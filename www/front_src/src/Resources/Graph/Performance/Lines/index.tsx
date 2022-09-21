@@ -190,14 +190,14 @@ const Lines = ({
                   lineColor={lineColor}
                   lines={lines}
                   metric={metric}
-                  shapeCircleAnomalyDetection={
-                    showCircle && (
-                      <AnomalyDetectionShapeCircle
-                        {...propsShapeCircle}
-                        yScale={yScale}
-                      />
-                    )
-                  }
+                  // shapeCircleAnomalyDetection={
+                  //   showCircle && (
+                  //     <AnomalyDetectionShapeCircle
+                  //       {...propsShapeCircle}
+                  //       yScale={yScale}
+                  //     />
+                  //   )
+                  // }
                   timeSeries={timeSeries}
                   transparency={transparency}
                   unit={unit}

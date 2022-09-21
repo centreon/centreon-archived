@@ -1,24 +1,29 @@
 import { Shape } from '@visx/visx';
 import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
-import { prop } from 'ramda';
+import { prop, isNil } from 'ramda';
 
 import { TimeValue } from '../models';
-import { getTime } from '../timeSeries';
 
 interface AnomalyDetectionShapeCircleProps {
+  pointXLower: any;
+  pointXOrigin: any;
+  pointXUpper: any;
+  pointYLower: any;
+  pointYUpper: any;
   timeSeries: Array<TimeValue>;
-  xScale: ScaleTime<number, number>;
   yScale: ScaleLinear<number, number>;
 }
 
 const AnomalyDetectionShapeCircle = ({
   timeSeries,
-  xScale,
   yScale,
+  pointXOrigin,
+  pointXLower,
+  pointYLower,
+  pointYUpper,
+  pointXUpper,
 }: AnomalyDetectionShapeCircleProps): JSX.Element => {
-  const metricPoint = 'connection';
-  const metricPoint1 = 'connection_lower_thresholds';
-  const metricPoint2 = 'connection_upper_thresholds';
+  const metricPoint = 'rta';
 
   interface IsOnline {
     maxDistance: number;
@@ -56,12 +61,12 @@ const AnomalyDetectionShapeCircle = ({
   return (
     <>
       {timeSeries.map((item, index) => {
-        const pointX = xScale(getTime(item));
-        const pointX1 = xScale(getTime(item));
-        const pointX2 = xScale(getTime(item));
+        const pointX = pointXOrigin(item);
+        const pointX1 = pointXLower(item);
+        const pointX2 = pointXUpper(item);
         const pointY = yScale(prop(metricPoint, item) as NumberValue);
-        const pointY1 = yScale(prop(metricPoint1, item) as NumberValue);
-        const pointY2 = yScale(prop(metricPoint2, item) as NumberValue);
+        const pointY1 = pointYLower(item);
+        const pointY2 = pointYUpper(item);
 
         const isPointBetweenPoint1Point2 = isOnLine({
           maxDistance: 0,
@@ -73,8 +78,17 @@ const AnomalyDetectionShapeCircle = ({
           pointY2,
         });
 
+        const isPointsDefined =
+          !isNil(pointX) &&
+          !isNil(pointY) &&
+          !isNil(pointX1) &&
+          !isNil(pointY1) &&
+          !isNil(pointX2) &&
+          !isNil(pointY2);
+
         return (
-          !isPointBetweenPoint1Point2 && (
+          !isPointBetweenPoint1Point2 &&
+          isPointsDefined && (
             <Shape.Circle
               cx={pointX}
               cy={pointY}

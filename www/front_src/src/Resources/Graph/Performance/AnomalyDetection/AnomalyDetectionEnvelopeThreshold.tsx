@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material/styles';
 import { TimeValue, Line } from '../models';
 import { getTime, getYScale } from '../timeSeries';
 
+import AnomalyDetectionShapeCircle from './AnomalyDetectionShapeCircle';
 import { CustomFactorsData } from './models';
 
 interface Props {
@@ -50,9 +51,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
       invert: invertY1,
       lineColor: lineColorY1,
     },
-  ] = regularLines.filter((item) =>
-    equals(item.metric, 'connection_upper_thresholds'),
-  );
+  ] = regularLines.filter((item) => equals(item.name, 'Upper Threshold'));
 
   const [
     {
@@ -61,9 +60,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
       invert: invertY0,
       lineColor: lineColorY0,
     },
-  ] = regularLines.filter((item) =>
-    equals(item.metric, 'connection_lower_thresholds'),
-  );
+  ] = regularLines.filter((item) => equals(item.name, 'Lower Threshold'));
 
   const y1Scale = getYScale({
     hasMoreThanTwoUnits: !isNil(thirdUnit),
@@ -156,6 +153,30 @@ const AnomalyDetectionEnvelopeThreshold = ({
         />
         <LinePath {...props} y={estimatedY0} />
         <LinePath {...props} y={estimatedY1} />
+        {regularLines.map(({ metric, unit, invert }) => {
+          const yScale = getYScale({
+            hasMoreThanTwoUnits: !isNil(thirdUnit),
+            invert,
+            leftScale,
+            rightScale,
+            secondUnit,
+            unit,
+          });
+
+          return (
+            <g key={metric}>
+              <AnomalyDetectionShapeCircle
+                pointXLower={getXPoint}
+                pointXOrigin={getXPoint}
+                pointXUpper={getXPoint}
+                pointYLower={estimatedY0}
+                pointYUpper={estimatedY1}
+                timeSeries={timeSeries}
+                yScale={yScale}
+              />
+            </g>
+          );
+        })}
       </>
     );
   }
