@@ -63,14 +63,12 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$searchH = filter_var(
-    $_POST['searchH'] ?? $_GET['search'] ?? null,
-    FILTER_SANITIZE_STRING
+$searchH = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchH'] ?? $_GET['search'] ?? null
 );
 
-$searchS = filter_var(
-    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
-    FILTER_SANITIZE_STRING
+$searchS = \HtmlAnalyzer::sanitizeAndRemoveTags(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null
 );
 
 $status = filter_var(
