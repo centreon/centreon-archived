@@ -109,7 +109,8 @@ class LoginOpenIdSession
                 'contact_location' => (string) $user->getTimezoneId(),
                 'show_deprecated_pages' => $user->isUsingDeprecatedPages(),
                 'reach_api' => $user->hasAccessToApiConfiguration() ? 1 : 0,
-                'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0
+                'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0,
+                'contact_theme' => $user->getTheme() ?? 'light'
             ];
             $this->provider->setLegacySession(new \Centreon($sessionUserInfos));
             $this->startLegacySession($this->provider->getLegacySession());
