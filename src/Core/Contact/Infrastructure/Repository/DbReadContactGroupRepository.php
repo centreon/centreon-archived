@@ -185,6 +185,9 @@ class DbReadContactGroupRepository extends AbstractRepositoryDRB implements Read
         return $contactGroup;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findByIds(array $contactGroupIds): array
     {
         $this->debug('Getting Contact Group by Ids', [
