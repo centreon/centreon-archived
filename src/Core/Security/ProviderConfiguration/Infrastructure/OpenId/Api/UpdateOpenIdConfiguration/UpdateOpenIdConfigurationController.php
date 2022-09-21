@@ -81,8 +81,8 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->userNameBindAttribute = $requestData['fullname_bind_attribute'];
         $updateOpenIdConfigurationRequest->claimName = $requestData['claim_name'];
         $updateOpenIdConfigurationRequest->authorizationRules = $requestData['authorization_rules'];
-        $updateOpenIdConfigurationRequest->contactGroupId = $requestData["contact_group_id"];
         $updateOpenIdConfigurationRequest->authenticationConditions = $requestData["authentication_conditions"];
+        $updateOpenIdConfigurationRequest->groupsMapping = $requestData["groups_mapping"];
 
         return $updateOpenIdConfigurationRequest;
     }

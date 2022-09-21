@@ -62,6 +62,7 @@ use Core\Security\AccessGroup\Application\Repository\WriteAccessGroupRepositoryI
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 
 beforeEach(function () {
     $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
@@ -132,10 +133,10 @@ beforeEach(function () {
         'login_claim' => 'preferred_username',
         'authentication_type' => 'client_secret_post',
         'verify_peer' => false,
-        'contact_group' => new ContactGroup(3, 'contact_group'),
         'claim_name' => 'groups',
         'authorization_rules' => [],
-        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), [])
+        'authentication_conditions' => new AuthenticationConditions(false, '', new Endpoint(), []),
+        'groups_mapping' => (new GroupsMapping(false, "", new Endpoint(), []))
     ]);
     $configuration->setCustomConfiguration($customConfiguration);
     $this->validOpenIdConfiguration = $configuration;
