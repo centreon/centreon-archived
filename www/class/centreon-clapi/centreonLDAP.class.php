@@ -184,10 +184,12 @@ class CentreonLDAP extends CentreonObject
         }
         $sql = "SELECT ldap_host_id, host_address, host_port, use_ssl, use_tls, host_order
                 FROM auth_ressource_host
-                WHERE auth_ressource_id = " . $arId . "
+                WHERE auth_ressource_id = :auth_ressource_id 
                 ORDER BY host_order";
-        $res = $this->db->query($sql);
-        $row = $res->fetchAll();
+        $statement = $this->db->prepare($sql);
+        $statement->bindValue(':auth_ressource_id', (int) $arId, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetchAll(\PDO::FETCH_ASSOC);
         echo "id;address;port;ssl;tls;order\n";
         foreach ($row as $srv) {
             echo $srv['ldap_host_id'] . $this->delim .
