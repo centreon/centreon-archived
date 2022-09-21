@@ -824,7 +824,7 @@ class CentreonLDAP
     private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
     {
         if ($this->ds  instanceof \LDAP\Connection) {
-            if ($errno === 2&& ldap_errno($this->ds) === 4) {
+            if ($errno === 2 && ldap_errno($this->ds) === 4) {
                 /*
                 Silencing : 'size limit exceeded' warnings in the logs
                 As the $searchLimit value needs to be consistent with the ldap server's configuration and
