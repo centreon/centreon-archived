@@ -51,39 +51,33 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   activated: ({ isRoot }): CreateCSSProperties => ({
-    // '& .MuiListItemText-root': {
-    //   '& .MuiTypography-root': {
-    //     color:
-    //       isDarkMode(theme) && isRoot
-    //         ? theme.palette.primary.main
-    //         : theme.palette.common.white,
-    //   },
-    // },
-    // '& .MuiSvgIcon-root': {
-    //   color:
-    //     isDarkMode(theme) && isRoot
-    //       ? theme.palette.primary.main
-    //       : theme.palette.common.white,
-    // },
+    '& .MuiListItemText-root': {
+      '& .MuiTypography-root': {
+        color: 'inherit',
+      },
+    },
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+    },
     '&:hover': {
       backgroundColor:
         isDarkMode(theme) && isRoot
           ? theme.palette.common.black
           : theme.palette.primary.light,
-      // color: theme.palette.common.white,
+      color: theme.palette.primary.main,
     },
-
-    // backgroundColor:
-    //   isDarkMode(theme) && isRoot
-    //     ? theme.palette.common.black
-    //     : theme.palette.primary.dark,
+    backgroundColor:
+      isDarkMode(theme) && isRoot
+        ? theme.palette.common.black
+        : theme.palette.primary.light,
+    color: theme.palette.primary.main,
   }),
   arrowIcon: {
     color: theme.palette.common.white,
   },
-  containerIcon: {
+  iconWrapper: {
     alignItems: 'center',
-    // color: theme.palette.common.white,
+    color: 'inherit',
     minWidth: theme.spacing(5.75),
   },
   label: {
@@ -94,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listButton: {
     alignItems: 'center',
+    color: theme.palette.common.white,
     height: theme.spacing(rootHeightItem / 8),
     // marginBottom: 0.8,
   },
@@ -156,7 +151,7 @@ const MenuItems = ({
       >
         {isRoot ? (
           <>
-            <ListItemIcon className={classes.containerIcon}>
+            <ListItemIcon className={classes.iconWrapper}>
               {icon}
               {isDrawerOpen &&
                 Array.isArray(data?.children) &&

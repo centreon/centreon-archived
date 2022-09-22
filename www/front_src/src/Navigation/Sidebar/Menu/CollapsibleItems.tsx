@@ -75,10 +75,10 @@ const useStyles = makeStyles((theme) => ({
       minWidth: theme.spacing(2.25),
       padding: theme.spacing(0, 0.25, 0, 0.1),
     },
-    '& .MuiTypography-root': {
-      color: theme.palette.text.primary,
-      fontSize: theme.typography.caption,
-    },
+    // '& .MuiTypography-root': {
+    //   color: theme.palette.text.primary,
+    //   fontSize: theme.typography.caption,
+    // },
     boxShadow: theme.shadows[3],
     outline: 'none',
   },
