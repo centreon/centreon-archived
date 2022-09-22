@@ -64,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
         isDarkMode(theme) && isRoot
           ? theme.palette.common.black
           : theme.palette.primary.light,
-      color: theme.palette.primary.main,
     },
     backgroundColor:
       isDarkMode(theme) && isRoot
