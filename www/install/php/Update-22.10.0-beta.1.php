@@ -30,6 +30,16 @@ try {
     $errorMessage = "Impossible to update 'cb_field' table";
     $pearDB->query("ALTER TABLE cb_field MODIFY description VARCHAR(510) DEFAULT NULL");
 
+    $errorMessage = "Impossible to update 'hosts' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('hosts', 'notification_number')), 'bigint')) {
+        $pearDBO->query("ALTER TABLE `hosts` MODIFY `notification_number` UNSIGNED BIGINT(20) DEFAULT NULL");
+    }
+
+    $errorMessage = "Impossible to update 'services' table";
+    if (! str_contains(strtolower($pearDBO->getColumnType('services', 'notification_number')), 'bigint')) {
+        $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` UNSIGNED BIGINT(20) DEFAULT NULL");
+    }
+
     $pearDB->beginTransaction();
 
     $errorMessage = "Unable to delete 'oreon_web_path' and color options from database";
