@@ -528,7 +528,6 @@ class CentreonDB extends \PDO
             $stmt->bindValue(':columnName', $columnName, \PDO::PARAM_STR);
             $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
             return $result['COLUMN_TYPE'];
         } catch (\PDOException $e) {
             $this->logSqlError($query, $e->getMessage());
