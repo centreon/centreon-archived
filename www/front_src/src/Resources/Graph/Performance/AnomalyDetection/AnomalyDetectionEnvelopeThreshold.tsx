@@ -125,7 +125,7 @@ const AnomalyDetectionEnvelopeThreshold = ({
     const props = {
       curve: curveBasis,
       data: timeSeries,
-      stroke: theme.palette.primary.main,
+      stroke: theme.palette.secondary.main,
       strokeDasharray: 5,
       strokeOpacity: 0.8,
       x: getXPoint,
@@ -162,18 +162,24 @@ const AnomalyDetectionEnvelopeThreshold = ({
             secondUnit,
             unit,
           });
+          const originMetric = metric.includes('_upper_thresholds')
+            ? metric.replace('_upper_thresholds', '')
+            : undefined;
 
           return (
             <g key={metric}>
-              <AnomalyDetectionShapeCircle
-                pointXLower={getXPoint}
-                pointXOrigin={getXPoint}
-                pointXUpper={getXPoint}
-                pointYLower={estimatedY0}
-                pointYUpper={estimatedY1}
-                timeSeries={timeSeries}
-                yScale={yScale}
-              />
+              {originMetric && (
+                <AnomalyDetectionShapeCircle
+                  originMetric={originMetric}
+                  pointXLower={getXPoint}
+                  pointXOrigin={getXPoint}
+                  pointXUpper={getXPoint}
+                  pointYLower={estimatedY0}
+                  pointYUpper={estimatedY1}
+                  timeSeries={timeSeries}
+                  yScale={yScale}
+                />
+              )}
             </g>
           );
         })}

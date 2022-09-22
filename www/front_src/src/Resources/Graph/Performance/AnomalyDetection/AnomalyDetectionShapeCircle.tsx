@@ -1,15 +1,16 @@
 import { Shape } from '@visx/visx';
-import { NumberValue, ScaleLinear, ScaleTime } from 'd3-scale';
+import { NumberValue, ScaleLinear } from 'd3-scale';
 import { prop, isNil } from 'ramda';
 
 import { TimeValue } from '../models';
 
 interface AnomalyDetectionShapeCircleProps {
-  pointXLower: any;
-  pointXOrigin: any;
-  pointXUpper: any;
-  pointYLower: any;
-  pointYUpper: any;
+  originMetric: string;
+  pointXLower: (item: TimeValue) => number;
+  pointXOrigin: (item: TimeValue) => number;
+  pointXUpper: (item: TimeValue) => number;
+  pointYLower: (item: TimeValue) => number;
+  pointYUpper: (item: TimeValue) => number;
   timeSeries: Array<TimeValue>;
   yScale: ScaleLinear<number, number>;
 }
@@ -22,9 +23,8 @@ const AnomalyDetectionShapeCircle = ({
   pointYLower,
   pointYUpper,
   pointXUpper,
+  originMetric,
 }: AnomalyDetectionShapeCircleProps): JSX.Element => {
-  const metricPoint = 'rta';
-
   interface IsOnline {
     maxDistance: number;
     pointX: number;
@@ -64,7 +64,7 @@ const AnomalyDetectionShapeCircle = ({
         const pointX = pointXOrigin(item);
         const pointX1 = pointXLower(item);
         const pointX2 = pointXUpper(item);
-        const pointY = yScale(prop(metricPoint, item) as NumberValue);
+        const pointY = yScale(prop(originMetric, item) as NumberValue);
         const pointY1 = pointYLower(item);
         const pointY2 = pointYUpper(item);
 
@@ -93,7 +93,7 @@ const AnomalyDetectionShapeCircle = ({
               cx={pointX}
               cy={pointY}
               fill="red"
-              fillOpacity="50%"
+              // fillOpacity="50%"
               key={index.toString()}
               r={2}
             />
