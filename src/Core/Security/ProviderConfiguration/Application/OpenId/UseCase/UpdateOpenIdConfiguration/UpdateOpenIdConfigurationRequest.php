@@ -116,11 +116,6 @@ class UpdateOpenIdConfigurationRequest
     public ?string $userNameBindAttribute = null;
 
     /**
-     * @var string|null
-     */
-    public ?string $claimName = null;
-
-    /**
      * @var array<string, array<int|string, string|null>|string|bool>
      */
     public array $rolesMapping = [];
@@ -188,7 +183,6 @@ class UpdateOpenIdConfigurationRequest
             'authentication_type' => $this->authenticationType,
             'authorization_endpoint' => $this->authorizationEndpoint,
             'base_url' => $this->baseUrl,
-            'claim_name' => $this->claimName,
             'client_secret' => $this->clientSecret,
             'connection_scopes' => $this->connectionScopes,
             'email_bind_attribute' => $this->emailBindAttribute,

@@ -122,7 +122,6 @@ it('should execute the usecase properly', function () {
             'contact_template' => null,
             'email_bind_attribute' => null,
             'fullname_bind_attribute' => null,
-            'claim_name' => "groups",
             'roles_mapping' => (new ACLConditions(
                 false,
                 false,

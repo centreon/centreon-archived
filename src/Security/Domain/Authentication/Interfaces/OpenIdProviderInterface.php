@@ -70,4 +70,9 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @return array<string,mixed>
      */
     public function getIdTokenPayload(): array;
+
+    /**
+     * @return array<string>
+     */
+    public function getRolesMappingFromProvider(): array;
 }

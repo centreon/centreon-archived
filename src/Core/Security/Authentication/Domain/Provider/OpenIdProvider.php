@@ -114,6 +114,11 @@ class OpenIdProvider implements OpenIdProviderInterface
     private array $connectionTokenResponseContent = [];
 
     /**
+     * @var array<string>
+     */
+    private array $rolesMappingFromProvider = [];
+
+    /**
      * @param HttpClientInterface $client
      * @param UrlGeneratorInterface $router
      * @param ContactServiceInterface $contactService
@@ -1143,14 +1148,17 @@ class OpenIdProvider implements OpenIdProviderInterface
             $providerConditions = [];
             if (array_key_exists($attribute, $conditions)) {
                 $providerConditions = $conditions[$attribute];
+                $conditions = $conditions[$attribute];
             } else {
                 break;
             }
         }
 
-        if ($aclConditions->onlyFirstRoleIsApplied()) {
+        if ($aclConditions->onlyFirstRoleIsApplied() && !empty($providerConditions)) {
             $providerConditions = [$providerConditions[0]];
         }
+
+        $this->rolesMappingFromProvider = $providerConditions;
 
         if (is_string($providerConditions)) {
             $providerConditions = explode(",", $providerConditions);
@@ -1218,5 +1226,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         }
         $this->info("Role mapping found (ACL)", ["conditions" => $conditionMatches]);
         $this->logAuthenticationInfo("Role mapping found (ACL)", $conditionMatches);
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getRolesMappingFromProvider(): array
+    {
+        return $this->rolesMappingFromProvider;
     }
 }
