@@ -7283,3 +7283,37 @@ msgstr "Si le \"Common Name\" (CN) du certificat est différent de la valeur du 
 
 msgid "Enable compression"
 msgstr "Activer la compression des données"
+
+
+
+
+
+msgid "Network address. Can be either IP or FQDN. If no DNS service is available, using a FQDN could raise false alarms."
+msgstr "Adresse réseau TCP/IPv4 ou FQDN. Si un FQDN est utilisé, cela peut aboutir à de fausses alertes en cas de panne DNS."
+
+msgid "This setting determines whether the host and its services must be monitored or not."
+msgstr "Ce paramètre permet de désactiver la supervision de l’hôte et de tous ses services."
+
+msgid "Central, remote server or poller that will monitor the host."
+msgstr "Central, serveur distant, ou collecteur chargé de superviser l’hôte."
+
+msgid "Timezone corresponding to the host's location. This will impact how the check period is applied to it."
+msgstr "Fuseau horaire où est situé l’hôte. Cela influera sur l’application de la période de supervision."
+
+msgid "Host groups linked to the host."
+msgstr "Groupes d’hôtes auxquels rattacher l’hôte."
+
+msgid "Host categories linked to the host."
+msgstr "Catégories d’hôtes auxquelles rattacher l’hôte."
+
+msgid "Host severity level. Can be used to sort alerts in the monitoring menus, including the Resources Status page."
+msgstr "Niveau de sévérité de l’hôte. Permet de trier les alertes dans les menus de supervision, notamment dans la page Statut des Ressources."
+
+msgid "Clickable URL displayed in the Notes column of the Resources Status page."
+msgstr "Lien cliquable affiché dans la colonne Notes de la page Statut des Ressources."
+
+msgid "Clickable URL displayed in the Action column of the Resources Status page. Intended as a shortcut for an action on the resource, such as opening a management console."
+msgstr "Lien cliquable affiché dans la colonne Action de la page Statut des Ressources. Ce lien est prévu pour permettre des actions sur l'équipement, comme l’ouverture d’une console de gestion."
+
+msgid "Geographic coordinates to allow Centreon MAP to plot the resource on a geographic view. Format: Latitude,Longitude. For example, Paris' coordinates are 48.51,2.20"
+msgstr "Coordonnées géographiques permettant à Centreon MAP de positionner les ressources sur une vue géographique. Format : Latitude,Longitude. Par exemple pour Paris, saisir : 48.51,2.20"

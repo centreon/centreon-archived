@@ -490,7 +490,7 @@
 			<h4>{$form.header.furtherInfos}</h4>
 		  </td>
 		</tr>
-		<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_activate"> {$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
