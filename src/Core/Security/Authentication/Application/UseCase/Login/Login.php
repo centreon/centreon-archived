@@ -30,6 +30,13 @@ use Core\Application\Common\UseCase\PresenterInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
+use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
+use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
+use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
+use Core\Security\Authentication\Domain\Exception\AclConditionsException;
 use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Core\Security\Authentication\Domain\Model\NewProviderToken;
@@ -39,12 +46,6 @@ use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Domain\Exception\PasswordExpiredException;
 use Core\Security\Authentication\Infrastructure\Provider\AclUpdaterInterface;
 use Core\Security\Authentication\Domain\Exception\AuthenticationConditionsException;
-use Core\Security\Authentication\Application\Repository\ReadTokenRepositoryInterface;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationInterface;
-use Core\Security\Authentication\Application\Repository\WriteTokenRepositoryInterface;
-use Core\Security\Authentication\Application\Repository\WriteSessionRepositoryInterface;
-use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
-use Core\Security\Authentication\Application\Repository\WriteSessionTokenRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
 final class Login
@@ -115,6 +116,14 @@ final class Login
                     );
                 }
             }
+
+            $presenter->setResponseStatus(
+                new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
+            );
+
+            $presenter->present(
+                new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
+            );
         } catch (PasswordExpiredException $e) {
             $response = new PasswordExpiredResponse($e->getMessage());
             $response->setBody([
@@ -125,16 +134,12 @@ final class Login
         } catch (AuthenticationException $e) {
             $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
             throw $e;
+        } catch (AclConditionsException $e) {
+            $presenter->setResponseStatus(new ErrorAclConditionsResponse($e->getMessage()));
         } catch (AuthenticationConditionsException $ex) {
             $presenter->setResponseStatus(new ErrorAuthenticationConditionsResponse($ex->getMessage()));
             return;
         }
-
-        $presenter->setResponseStatus(
-            new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters))
-        );
-        $presenter->present(new LoginResponse($this->getRedirectionUri($user, $loginRequest->refererQueryParameters)));
-        return;
     }
 
     /**

@@ -119,12 +119,6 @@
         "null"
       ]
     },
-    "contact_group_id": {
-      "type": [
-        "number",
-        "null"
-      ]
-    },
     "claim_name": {
       "type": [
         "string",
@@ -179,6 +173,140 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        }
+      },
+      "login_claim": {
+        "type": ["string", "null"]
+      },
+      "client_id": {
+        "type": ["string", "null"]
+      },
+      "client_secret": {
+        "type": ["string", "null"]
+      },
+      "authentication_type": {
+        "enum": ["client_secret_post", "client_secret_basic"]
+      },
+      "verify_peer": {
+        "type": "boolean"
+      },
+      "auto_import": {
+        "type": "boolean"
+      },
+      "contact_template_id": {
+        "type": ["number", "null"]
+      },
+      "email_bind_attribute": {
+        "type": ["string", "null"]
+      },
+      "fullname_bind_attribute": {
+        "type": ["string", "null"]
+      },
+      "contact_group_id": {
+        "type": ["number", "null"]
+      },
+      "claim_name": {
+        "type": ["string", "null"]
+      }
+    },
+    "roles_mapping": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "is_enabled",
+        "apply_only_first_role",
+        "attribute_path",
+        "endpoint",
+        "relations"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "apply_only_first_role": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "object"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "introspection_endpoint",
+                "user_information_endpoint",
+                "custom_endpoint"
+              ]
+            },
+            "custom_endpoint": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "relations": {
+          "type": "array",
+          "minLength": 0,
+          "items": {
+            "type": "object",
+            "properties": {
+              "claim_value": {
+                "type": "string"
+              },
+              "access_group": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "groups_mapping": {
+      "type": "object",
+      "required": [
+        "is_enabled",
+        "attribute_path",
+        "endpoint"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean"
+        },
+        "attribute_path": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "object",
+          "required": [
+            "type",
+            "custom_endpoint"
+          ],
+          "properties": {
+            "type": {
+              "enum": ["introspection_endpoint", "user_information_endpoint", "custom_endpoint"]
+            },
+            "custom_endpoint": {
+              "type": ["string", "null"]
+            }
           }
         }
       }

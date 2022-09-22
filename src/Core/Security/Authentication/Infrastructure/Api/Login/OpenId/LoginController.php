@@ -23,19 +23,22 @@ declare(strict_types=1);
 
 namespace Core\Security\Authentication\Infrastructure\Api\Login\OpenId;
 
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Centreon\Application\Controller\AbstractController;
+use Core\Application\Common\UseCase\ErrorAuthenticationConditionsResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Security\Authentication\Application\UseCase\Login\ErrorAclConditionsResponse;
 use Core\Security\Authentication\Application\UseCase\Login\Login;
 use Core\Security\Authentication\Application\UseCase\Login\LoginRequest;
 use Core\Security\Authentication\Application\UseCase\Login\LoginResponse;
-use Core\Application\Common\UseCase\ErrorAuthenticationConditionsResponse;
-use Core\Security\Authentication\Domain\Exception\AuthenticationException;
 use Core\Security\Authentication\Application\UseCase\Login\PasswordExpiredResponse;
+use Core\Security\Authentication\Domain\Exception\AuthenticationException;
+use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
+use Core\Security\ProviderConfiguration\Domain\Model\Provider;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LoginController extends AbstractController
 {
@@ -68,6 +71,7 @@ class LoginController extends AbstractController
                 return View::createRedirect(
                     $this->getBaseUrl() . '/login?authenticationError=' . $presenter->getResponseStatus()->getMessage()
                 );
+            case is_a($presenter->getResponseStatus(), ErrorAclConditionsResponse::class):
             case is_a($presenter->getResponseStatus(), ErrorAuthenticationConditionsResponse::class):
                 return View::createRedirect(
                     $this->getBaseUrl() . '/authentication-denied'

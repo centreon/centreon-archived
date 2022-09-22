@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Tests\Core\Security\ProviderConfiguration\Infrastructure\OpenId\Api\UpdateOpenIdConfiguration;
 
 use Centreon\Domain\Contact\Contact;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -120,9 +122,14 @@ it('should execute the usecase properly', function () {
             'contact_template' => null,
             'email_bind_attribute' => null,
             'fullname_bind_attribute' => null,
-            'contact_group_id' => 1,
             'claim_name' => "groups",
-            'authorization_rules' => [],
+            'roles_mapping' => (new ACLConditions(
+                false,
+                false,
+                '',
+                new Endpoint(Endpoint::INTROSPECTION, ''),
+                []
+            ))->toArray(),
             "authentication_conditions" => [
                 "is_enabled" => false,
                 "attribute_path" => "",
@@ -133,6 +140,15 @@ it('should execute the usecase properly', function () {
                 "authorized_values" => [],
                 "trusted_client_addresses" => [],
                 "blacklist_client_addresses" => []
+            ],
+            "groups_mapping" => [
+                "is_enabled" => false,
+                "attribute_path" => "",
+                "endpoint" => [
+                    "type" => "introspection_endpoint",
+                    "custom_endpoint" => null
+                ],
+                "relations" => []
             ]
         ]);
 

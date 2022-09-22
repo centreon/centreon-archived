@@ -17049,3 +17049,12 @@ msgstr "La demande de conditions d'authentification de l'endpoint personnalisé 
 
 msgid "Authorized conditions not found in provider conditions"
 msgstr "Les conditions autorisées ne figurent pas dans les conditions du provider"
+
+msgid "The request for roles mapping on custom endpoint has failed"
+msgstr "La demande d'association de rôles a échoué en interrogeant l'url personalisée"
+
+msgid "Invalid roles mapping fetched from provider"
+msgstr "Les roles récupérés depuis le serveur d'identité sont incorrects"
+
+msgid "Role mapping conditions do not match"
+msgstr "Aucune correspondance trouvée pour le couple roles / groupe d'accès"

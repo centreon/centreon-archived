@@ -35,6 +35,8 @@ use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryIn
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
 use Core\Security\ProviderConfiguration\Application\OpenId\UseCase\UpdateOpenIdConfiguration\{UpdateOpenIdConfiguration,
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
@@ -72,14 +74,14 @@ it('should present a NoContentResponse when the use case is executed correctly',
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new Endpoint(Endpoint::INTROSPECTION, ''),
+        []
+    ))->toArray();
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -121,8 +123,14 @@ it('should present an ErrorResponse when an error occured during the use case ex
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = false;
     $request->contactTemplate = ['id' => 1]; /** @phpstan-ignore-line */
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new Endpoint(Endpoint::INTROSPECTION, ''),
+        []
+    ))->toArray();
     $request->authenticationConditions = [
         "is_enabled" => true,
         "attribute_path" => "info.groups",
@@ -131,12 +139,6 @@ it('should present an ErrorResponse when an error occured during the use case ex
         "trusted_client_addresses" => ['abcd_.@'],
         "blacklist_client_addresses" => []
     ];
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($this->contactGroup);
 
     $this->contactTemplateRepository
         ->expects($this->once())
@@ -180,22 +182,20 @@ it('should present an Error Response when auto import is enable and mandatory pa
     $request->authenticationType = 'client_secret_post';
     $request->verifyPeer = false;
     $request->isAutoImportEnabled = true;
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
+    $request->rolesMapping = (new ACLConditions(
+        false,
+        false,
+        '',
+        new Endpoint(Endpoint::INTROSPECTION, ''),
+        []
+    ))->toArray();
 
     $missingParameters = [
         'contact_template',
         'email_bind_attribute',
         'fullname_bind_attribute',
     ];
-
-    $contactGroup = new ContactGroup(1, 'contact_group');
-
-    $this->contactGroupRepository
-        ->expects($this->once())
-        ->method('find')
-        ->with(1)
-        ->willReturn($contactGroup);
 
     $this->presenter
         ->expects($this->once())
@@ -236,7 +236,6 @@ it('should present an Error Response when auto import is enable and the contact 
     $request->contactTemplate = ['id' => 1, "name" => 'contact_template'];
     $request->emailBindAttribute = 'email';
     $request->userNameBindAttribute = 'name';
-    $request->contactGroupId = 1;
     $request->claimName = 'groups';
 
     $this->contactTemplateRepository

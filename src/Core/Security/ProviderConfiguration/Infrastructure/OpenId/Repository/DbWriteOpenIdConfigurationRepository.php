@@ -31,6 +31,8 @@ use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenI
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
 
 class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB implements WriteRepositoryInterface
 {
@@ -69,12 +71,22 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
 
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $configuration->getCustomConfiguration();
-        $authorizationRules = $customConfiguration->getAuthorizationRules();
+        $authorizationRules = $customConfiguration->getACLConditions()->getRelations();
 
-        $this->info('Removing existing Authorization Rules');
-        $this->deleteAuthorizationRules();
-        $this->info('Inserting new Authorization Rules');
-        $this->insertAuthorizationRules($authorizationRules);
+        if (!empty($authorizationRules)) {
+            $this->info('Removing existing Authorization Rules');
+            $this->deleteAuthorizationRules();
+            $this->info('Inserting new Authorization Rules');
+            $this->insertAuthorizationRules($authorizationRules);
+        }
+
+        $contactGroupRelations = $customConfiguration->getGroupsMapping()->getContactGroupRelations();
+        if (! empty($contactGroupRelations)) {
+            $this->info('Removing existing Authorization Rules');
+            $this->deleteContactGroupRelations();
+            $this->info('Inserting new Authorization Rules');
+            $this->insertContactGroupRelations($contactGroupRelations);
+        }
     }
 
     /**
@@ -108,9 +120,12 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'email_bind_attribute' => $customConfiguration->getEmailBindAttribute(),
             'fullname_bind_attribute' => $customConfiguration->getUserNameBindAttribute(),
             'claim_name' => $customConfiguration->getClaimName(),
-            'contact_group_id' => $customConfiguration->getContactGroup()?->getId(),
+            'roles_mapping' => $customConfiguration->getACLConditions()->toArray(),
             "authentication_conditions" => $this->authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()
+            ),
+            "groups_mapping" => $this->groupsMappingToArray(
+                $customConfiguration->getGroupsMapping()
             )
         ];
     }
@@ -163,8 +178,57 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
     }
 
     /**
+     * Delete Contact Group relations
+     */
+    private function deleteContactGroupRelations(): void
+    {
+        $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $providerConfigurationId = (int) $result['id'];
+            $deleteStatement = $this->db->prepare(
+                "DELETE FROM security_provider_contact_group_relation
+                    WHERE provider_configuration_id = :providerConfigurationId"
+            );
+            $deleteStatement->bindValue(':providerConfigurationId', $providerConfigurationId, \PDO::PARAM_INT);
+            $deleteStatement->execute();
+        }
+    }
+
+    /**
+     * Insert Contact Group Relations
+     *
+     * @param ContactGroupRelation[] $contactGroupRelations
+     */
+    private function insertContactGroupRelations(array $contactGroupRelations): void
+    {
+        $statement = $this->db->query("SELECT id FROM provider_configuration WHERE name='openid'");
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $providerConfigurationId = (int)$result['id'];
+            $insertStatement = $this->db->prepare(
+                "INSERT INTO security_provider_contact_group_relation
+                    (claim_value, contact_group_id, provider_configuration_id)
+                        VALUES (:claimValue, :contactGroupId, :providerConfigurationId)"
+            );
+            foreach ($contactGroupRelations as $contactGroupRelation) {
+                $insertStatement->bindValue(':claimValue', $contactGroupRelation->getClaimValue());
+                $insertStatement->bindValue(
+                    ':contactGroupId',
+                    $contactGroupRelation->getContactGroup()->getId(),
+                    \PDO::PARAM_INT
+                );
+                $insertStatement->bindValue(
+                    ':providerConfigurationId',
+                    $providerConfigurationId,
+                    \PDO::PARAM_INT
+                );
+                $insertStatement->execute();
+            }
+        }
+    }
+
+    /**
      * @param AuthenticationConditions $authenticationConditions
-     * @return array<string,bool|string|string[]>
+     * @return array<string,array<string|null>|bool|string>
      */
     private function authenticationConditionsToArray(AuthenticationConditions $authenticationConditions): array
     {
@@ -175,6 +239,19 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             "authorized_values" => $authenticationConditions->getAuthorizedValues(),
             "trusted_client_addresses" => $authenticationConditions->getTrustedClientAddresses(),
             "blacklist_client_addresses" => $authenticationConditions->getBlacklistClientAddresses(),
+        ];
+    }
+
+    /**
+     * @param GroupsMapping $groupsMapping
+     * @return array<string,bool|string|array<string,string|null>>
+     */
+    private function groupsMappingToArray(GroupsMapping $groupsMapping): array
+    {
+        return [
+            "is_enabled" => $groupsMapping->isEnabled(),
+            "attribute_path" => $groupsMapping->getAttributePath(),
+            "endpoint" => $groupsMapping->getEndpoint()->toArray(),
         ];
     }
 }

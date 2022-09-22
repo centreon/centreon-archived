@@ -96,10 +96,14 @@ class FindOpenIdConfiguration
             empty($customConfiguration->getAuthorizationRules()) ? []
             :
             $findOpenIdConfigurationResponse::authorizationRulesToArray($customConfiguration->getAuthorizationRules());
+        $findOpenIdConfigurationResponse->aclConditions = $customConfiguration->getACLConditions()->toArray();
         $findOpenIdConfigurationResponse->authenticationConditions =
             $findOpenIdConfigurationResponse::authenticationConditionsToArray(
                 $customConfiguration->getAuthenticationConditions()
             );
+        $findOpenIdConfigurationResponse->groupsMapping = $findOpenIdConfigurationResponse::groupsMappingToArray(
+            $customConfiguration->getGroupsMapping()
+        );
 
         return $findOpenIdConfigurationResponse;
     }

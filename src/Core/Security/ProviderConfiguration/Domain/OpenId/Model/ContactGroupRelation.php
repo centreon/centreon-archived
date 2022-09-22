@@ -19,19 +19,20 @@
  *
  */
 
-declare(strict_types=1);
-
 namespace Core\Security\ProviderConfiguration\Domain\OpenId\Model;
 
-use Core\Security\AccessGroup\Domain\Model\AccessGroup;
+use Core\Contact\Domain\Model\ContactGroup;
 
-class AuthorizationRule
+/**
+ * This class is designed to represent the relation between a Provider Claim and a contact Group.
+ */
+class ContactGroupRelation
 {
     /**
      * @param string $claimValue
-     * @param AccessGroup $accessGroup
+     * @param ContactGroup $contactGroup
      */
-    public function __construct(private string $claimValue, private AccessGroup $accessGroup)
+    public function __construct(private string $claimValue, private ContactGroup $contactGroup)
     {
     }
 
@@ -44,21 +45,10 @@ class AuthorizationRule
     }
 
     /**
-     * @return AccessGroup
+     * @return ContactGroup
      */
-    public function getAccessGroup(): AccessGroup
+    public function getContactGroup(): ContactGroup
     {
-        return $this->accessGroup;
-    }
-
-    /**
-     * @return array<string,string|int>
-     */
-    public function toArray(): array
-    {
-        return [
-            'claim_value' => $this->claimValue,
-            'access_group_id' => $this->accessGroup->getId()
-        ];
+        return $this->contactGroup;
     }
 }

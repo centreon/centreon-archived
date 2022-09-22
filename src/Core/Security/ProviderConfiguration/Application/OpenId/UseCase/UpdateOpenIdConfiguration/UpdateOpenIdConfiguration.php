@@ -35,14 +35,17 @@ use Core\Security\ProviderConfiguration\Domain\Model\Provider;
 use Core\Security\ProviderConfiguration\Domain\Model\Configuration;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\Endpoint;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\GroupsMapping;
 use Core\Contact\Application\Repository\ReadContactGroupRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthorizationRule;
 use Core\Contact\Application\Repository\ReadContactTemplateRepositoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\CustomConfiguration;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ContactGroupRelation;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Model\AuthenticationConditions;
 use Core\Security\AccessGroup\Application\Repository\ReadAccessGroupRepositoryInterface;
 use Core\Security\Authentication\Application\Provider\ProviderAuthenticationFactoryInterface;
 use Core\Security\ProviderConfiguration\Domain\OpenId\Exceptions\OpenIdConfigurationException;
+use Core\Security\ProviderConfiguration\Domain\OpenId\Model\ACLConditions;
 use Core\Security\ProviderConfiguration\Application\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 
 class UpdateOpenIdConfiguration
@@ -87,13 +90,11 @@ class UpdateOpenIdConfiguration
             array_key_exists('id', $request->contactTemplate) !== null
                 ? $this->getContactTemplateOrFail($request->contactTemplate)
                 : null;
-            $requestArray['contact_group'] = $request->contactGroupId !== null
-                ? $this->getContactGroupOrFail($request->contactGroupId)
-                : null;
-            $requestArray["authorization_rules"] = $this->createAuthorizationRules($request->authorizationRules);
+            $requestArray['roles_mapping'] = $this->createAclConditions($request->rolesMapping);
             $requestArray["authentication_conditions"] = $this->createAuthenticationConditions(
                 $request->authenticationConditions
             );
+            $requestArray["groups_mapping"] = $this->createGroupsMapping($request->groupsMapping);
             $requestArray["is_active"] = $request->isActive;
 
             $configuration->setCustomConfiguration(new CustomConfiguration($requestArray));
@@ -136,26 +137,6 @@ class UpdateOpenIdConfiguration
     }
 
     /**
-     * Get Contact Group or throw an Exception
-     *
-     * @param integer $contactGroupId
-     * @return ContactGroup
-     * @throws \Throwable|OpenIdConfigurationException
-     */
-    private function getContactGroupOrFail(int $contactGroupId): ContactGroup
-    {
-        $this->info('Getting Contact Group');
-        if (($contactGroup = $this->contactGroupRepository->find($contactGroupId)) === null) {
-            $this->error('An existing contact group is mandatory for OpenID Provider');
-            throw OpenIdConfigurationException::contactGroupNotFound(
-                $contactGroupId
-            );
-        }
-
-        return $contactGroup;
-    }
-
-    /**
      * Create Authorization Rules
      *
      * @param array<array{claim_value: string, access_group_id: int}> $authorizationRulesFromRequest
@@ -188,6 +169,25 @@ class UpdateOpenIdConfiguration
 
         return $authorizationRules;
     }
+
+    /**
+     * @param array<string,bool|string|string[]|array<array{claim_value: string, access_group_id: int}>> $rolesMapping
+     * @return ACLConditions
+     * @throws \Throwable
+     */
+    private function createAclConditions(array $rolesMapping): ACLConditions
+    {
+        $rules = $this->createAuthorizationRules($rolesMapping['relations']);
+
+        return new ACLConditions(
+            $rolesMapping['is_enabled'],
+            $rolesMapping['apply_only_first_role'],
+            $rolesMapping['attribute_path'],
+            new Endpoint($rolesMapping['endpoint']['type'], $rolesMapping['endpoint']['custom_endpoint']),
+            $rules
+        );
+    }
+
 
     /**
      * Add log for all the non existent access groups
@@ -272,7 +272,17 @@ class UpdateOpenIdConfiguration
     /**
      * Create Authentication Condition from request data.
      *
-     * @param array<string,bool|string|string[]> $authenticationConditionsParameters
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "authorized_values": string[],
+     *  "trusted_client_addresses": string[],
+     *  "blacklist_client_addresses": string[],
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  }
+     * } $authenticationConditionsParameters
      * @return AuthenticationConditions
      * @throws OpenIdConfigurationException
      */
@@ -295,5 +305,108 @@ class UpdateOpenIdConfiguration
         );
 
         return $authenticationConditions;
+    }
+
+    /**
+     * Create Groups Mapping from data send to the request
+     *
+     * @param array{
+     *  "is_enabled": bool,
+     *  "attribute_path": string,
+     *  "endpoint": array{
+     *      "type": string,
+     *      "custom_endpoint":string|null
+     *  },
+     *  "relations":array<array{
+     *      "group_value": string,
+     *      "contact_group_id": int
+     *  }>
+     * } $groupsMappingParameters
+     *
+     * @return GroupsMapping
+     */
+    private function createGroupsMapping(array $groupsMappingParameters): GroupsMapping
+    {
+        $contactGroupIds = $this->getContactGroupIds($groupsMappingParameters["relations"]);
+        $foundContactGroups = $this->contactGroupRepository->findByIds($contactGroupIds);
+        $this->logNonExistentContactGroupsIds($contactGroupIds, $foundContactGroups);
+        $contactGroupRelations = [];
+        foreach ($groupsMappingParameters["relations"] as $contactGroupRelation) {
+            $contactGroup = $this->findContactGroupFromFoundcontactGroups(
+                $contactGroupRelation["contact_group_id"],
+                $foundContactGroups
+            );
+            if ($contactGroup !== null) {
+                $contactGroupRelations[] = new ContactGroupRelation(
+                    $contactGroupRelation["group_value"],
+                    $contactGroup
+                );
+            }
+        }
+        $endpoint = new Endpoint(
+            $groupsMappingParameters['endpoint']['type'],
+            $groupsMappingParameters['endpoint']['custom_endpoint']
+        );
+        $groupsMapping = new GroupsMapping(
+            $groupsMappingParameters["is_enabled"],
+            $groupsMappingParameters["attribute_path"],
+            $endpoint,
+            $contactGroupRelations
+        );
+
+        return $groupsMapping;
+    }
+
+    /**
+     * @param array<array{"group_value": string, "contact_group_id": int}> $contactGroupParameters
+     * @return int[]
+     */
+    private function getContactGroupIds(array $contactGroupParameters): array
+    {
+        $contactGroupIds = [];
+        foreach ($contactGroupParameters as $groupsMapping) {
+            $contactGroupIds[] = $groupsMapping["contact_group_id"];
+        }
+
+        return array_unique($contactGroupIds);
+    }
+
+    /**
+     * Add log for all the non existent contact groups
+     *
+     * @param int[] $contactGroupIds
+     * @param ContactGroup[] $foundContactGroups
+     */
+    private function logNonExistentContactGroupsIds(array $contactGroupIds, array $foundContactGroups): void
+    {
+        $foundContactGroupsId = [];
+        foreach ($foundContactGroups as $foundAccessGroup) {
+            $foundContactGroupsId[] = $foundAccessGroup->getId();
+        }
+        $nonExistentAccessGroupsIds = array_diff($contactGroupIds, $foundContactGroupsId);
+        $this->error("Access Groups not found", [
+            "access_group_ids" => implode(', ', $nonExistentAccessGroupsIds)
+        ]);
+    }
+
+    /**
+     * Compare the contact group id sent in request with contact groups from database
+     * Return the contact group that have the same id than the contact group id from the request
+     *
+     * @param int $contactGroupIdFromRequest contact group id sent in the request
+     * @param ContactGroup[] $foundContactGroups contact groups found in data storage
+     * @return ContactGroup|null
+     */
+    private function findContactGroupFromFoundcontactGroups(
+        int $contactGroupIdFromRequest,
+        array $foundContactGroups
+    ): ?ContactGroup {
+        foreach ($foundContactGroups as $foundContactGroup) {
+            if ($contactGroupIdFromRequest === $foundContactGroup->getId()) {
+                return $foundContactGroup;
+            }
+        }
+
+        return null;
     }
 }
