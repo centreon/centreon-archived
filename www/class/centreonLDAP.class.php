@@ -198,7 +198,7 @@ class CentreonLDAP
             $this->debug('LDAP Connect : trying url : ' . $url);
             $this->setErrorHandler();
             $this->ds = ldap_connect($url);
-            if (!$this->ds  instanceof \LDAP\Connection) {
+            if (!$this->ds instanceof \LDAP\Connection) {
                 $this->debug('LDAP Connection failed to : ' . $url);
                 continue;
             }
@@ -823,7 +823,7 @@ class CentreonLDAP
      */
     private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
     {
-        if ($this->ds  instanceof \LDAP\Connection) {
+        if ($this->ds instanceof \LDAP\Connection) {
             if ($errno === 2 && ldap_errno($this->ds) === 4) {
                 /*
                 Silencing : 'size limit exceeded' warnings in the logs
