@@ -2,7 +2,9 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals, path } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
+import { Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -20,6 +22,7 @@ import {
 } from '../../../translatedLabels';
 import { ResourceDetails, Sensitivity } from '../../../Details/models';
 
+import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 import { CustomFactorsData } from './models';
 
 const useStyles = makeStyles((theme) => ({
@@ -107,6 +110,13 @@ const AnomalyDetectionSlider = ({
   const [currentValue, setCurrentValue] = useState(sensitivity.current_value);
   const [isDefaultValue, setIsDefaultValue] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [openTooltip, setOpenTooltip] = useState(false);
+  const { sendRequest } = useRequest({
+    request: putData,
+  });
+  const countedRedCircles = useAtomValue(countedRedCirclesAtom);
+
+  console.log('look', countedRedCircles);
 
   const step = 0.1;
   const sensitivityEndPoint = path<string>(
@@ -120,10 +130,6 @@ const AnomalyDetectionSlider = ({
       value: sensitivity.default_value,
     },
   ];
-
-  const { sendRequest } = useRequest({
-    request: putData,
-  });
 
   const enableUpdatingSlider = (): void => {
     setIsDefaultValue(false);
@@ -215,7 +221,9 @@ const AnomalyDetectionSlider = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
+        <Tooltip open placement="bottom" title={countedRedCircles}>
+          <Typography variant="h6">{t(LabelMenageEnvelope)}</Typography>
+        </Tooltip>
         <Typography variant="caption">
           {t(LabelMenageEnvelopeSubTitle)}
         </Typography>

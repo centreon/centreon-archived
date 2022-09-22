@@ -1,8 +1,13 @@
+import { useEffect, useRef } from 'react';
+
 import { Shape } from '@visx/visx';
 import { NumberValue, ScaleLinear } from 'd3-scale';
-import { prop, isNil } from 'ramda';
+import { isNil, prop } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { TimeValue } from '../models';
+
+import { countedRedCirclesAtom } from './anomalyDetectionAtom';
 
 interface AnomalyDetectionShapeCircleProps {
   originMetric: string;
@@ -25,6 +30,20 @@ const AnomalyDetectionShapeCircle = ({
   pointXUpper,
   originMetric,
 }: AnomalyDetectionShapeCircleProps): JSX.Element => {
+  const setCountedRedCircles = useUpdateAtom(countedRedCirclesAtom);
+
+  const countRedCircles = useRef(0);
+  let initCount = 0;
+
+  // setCountedRedCircles(countRedCircles.current);
+
+  console.log({ countRedCircles });
+
+  useEffect(() => {
+    console.log('aha', countRedCircles);
+    setCountedRedCircles(countRedCircles.current);
+  }, [countRedCircles.current]);
+
   interface IsOnline {
     maxDistance: number;
     pointX: number;
@@ -86,19 +105,26 @@ const AnomalyDetectionShapeCircle = ({
           !isNil(pointX2) &&
           !isNil(pointY2);
 
-        return (
-          !isPointBetweenPoint1Point2 &&
-          isPointsDefined && (
-            <Shape.Circle
-              cx={pointX}
-              cy={pointY}
-              fill="red"
-              // fillOpacity="50%"
-              key={index.toString()}
-              r={2}
-            />
-          )
-        );
+        if (!isPointBetweenPoint1Point2 && isPointsDefined) {
+          initCount += 1;
+          countRedCircles.current = initCount;
+
+          return (
+            !isPointBetweenPoint1Point2 &&
+            isPointsDefined && (
+              <Shape.Circle
+                cx={pointX}
+                cy={pointY}
+                fill="red"
+                key={index.toString()}
+                r={2}
+              />
+            )
+          );
+        }
+        countRedCircles.current = initCount;
+
+        return null;
       })}
     </>
   );
