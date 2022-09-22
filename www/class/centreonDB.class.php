@@ -530,7 +530,6 @@ class CentreonDB extends \PDO
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             return $result['COLUMN_TYPE'];
-
         } catch (\PDOException $e) {
             $this->logSqlError($query, $e->getMessage());
         }
