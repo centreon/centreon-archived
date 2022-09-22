@@ -575,7 +575,7 @@ p.description a, p.description a:visited {
 .host_down, .danger, .service_critical  {
     background-color: var(--host-down-danger-service-critical-background-color);
 }
-.host_unreachable, .unknown     {
+.host_unreachable, .unknown , .service_unknown {
     background-color: var(--host-unreachable-unknown-background-color);
 }
 .host_downtime      {
@@ -591,9 +591,6 @@ p.description a, p.description a:visited {
 }
 .pending    {
     background-color: var(--pending-background-color);
-}
-.service_unknown    {
-    background-color: var(--service-unknown-background-color);
 }
 .info {
     background-color: var(--info-background-color)
