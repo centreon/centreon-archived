@@ -95,8 +95,6 @@ if (!empty($userName) && !empty($token)) {
     } else {
         die('Invalid token');
     }
-} else {
-    throw new \Exception('Username and token query strings must be set.');
 }
 
 $index = filter_var(
