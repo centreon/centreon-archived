@@ -79,9 +79,6 @@ const useStyles = makeStyles((theme) => ({
       right: theme.spacing(0.5),
     },
   },
-  label: {
-    color: theme.palette.common.white,
-  },
   link: {
     textDecoration: 'none',
   },
@@ -95,9 +92,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   pollerDetailRow: {
-    borderBottomStyle: 'solid',
-    borderWidth: '1px',
-    color: theme.palette.common.white,
+    borderBottom: '1px solid',
     display: 'flex',
     justifyContent: 'space-between',
   },
