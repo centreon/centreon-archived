@@ -32,12 +32,12 @@ try {
 
     $errorMessage = "Impossible to update 'hosts' table";
     if (! str_contains(strtolower($pearDBO->getColumnType('hosts', 'notification_number')), 'bigint')) {
-        $pearDBO->query("ALTER TABLE `hosts` MODIFY `notification_number` UNSIGNED BIGINT(20) DEFAULT NULL");
+        $pearDBO->query("ALTER TABLE `hosts` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
     }
 
     $errorMessage = "Impossible to update 'services' table";
     if (! str_contains(strtolower($pearDBO->getColumnType('services', 'notification_number')), 'bigint')) {
-        $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` UNSIGNED BIGINT(20) DEFAULT NULL");
+        $pearDBO->query("ALTER TABLE `services` MODIFY `notification_number` BIGINT(20) UNSIGNED DEFAULT NULL");
     }
 
     $pearDB->beginTransaction();
