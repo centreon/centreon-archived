@@ -105,16 +105,14 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
-      ? theme.palette.background.default
-      : theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
     display: 'none',
     left: 0,
     padding: theme.spacing(1),
     position: 'absolute',
     textAlign: 'left',
-    top: 'calc(100% + 9px)',
+    top: `calc(100% + ${theme.spacing(1.25)})`,
     width: theme.spacing(20),
     zIndex: theme.zIndex.mobileStepper,
   },

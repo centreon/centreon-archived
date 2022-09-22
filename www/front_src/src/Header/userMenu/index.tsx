@@ -138,13 +138,10 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   menu: {
-    // backgroundColor: equals(theme.palette.mode, ThemeMode.dark)
-    //   ? theme.palette.background.default
-    //   : theme.palette.primary.main,
     backgroundColor: theme.palette.background.paper,
     border: 'none',
     borderRadius: 0,
-    fontSize: '.75rem',
+    fontSize: theme.typography.body2.fontSize,
     minWidth: 190,
   },
   passwordExpiration: {

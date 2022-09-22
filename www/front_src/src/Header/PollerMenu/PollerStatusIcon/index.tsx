@@ -66,8 +66,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
-      height: '14px',
-      width: '14px',
+      height: theme.spacing(1.75),
+      width: theme.spacing(1.75),
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),

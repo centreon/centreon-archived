@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   disabledMode: {
-    opacity: '.5',
+    opacity: 0.5,
   },
   mode: {
     paddingLeft: theme.spacing(1),
