@@ -1231,6 +1231,8 @@ class OpenIdProvider implements OpenIdProviderInterface
         if ($groupsMapping->isEnabled()) {
             $groups = $this->getGroupsFromProvider($groupsMapping->getEndpoint());
             $this->validateGroupsMapping($groups, $groupsMapping);
+        } else {
+            $this->logAuthenticationInfo("Groups Mapping disabled", []);
         }
     }
 
