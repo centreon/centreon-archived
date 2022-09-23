@@ -867,13 +867,13 @@ class OpenIdProvider implements OpenIdProviderInterface
      * Log Authentication information
      *
      * @param string $message
-     * @param array<string|int,string> $content
+     * @param array<string|int,string>|null $content
      */
-    private function logAuthenticationInfo(string $message, array $content): void
+    private function logAuthenticationInfo(string $message, ?array $content = null): void
     {
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
-            "[Openid] [INFO] $message : " . json_encode($content)
+            "[Openid] [INFO] $message : " . $content !== null ? json_encode($content) : ''
         );
         $this->info("$message : ", $content);
     }
