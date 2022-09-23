@@ -873,7 +873,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     {
         $this->centreonLog->insertLog(
             CentreonUserLog::TYPE_LOGIN,
-            "[Openid] [INFO] $message : " . $content !== null ? json_encode($content) : ''
+            "[Openid] [INFO] $message" . ($content !== null ? ' : ' . json_encode($content) : '')
         );
         $this->info("$message : ", $content);
     }
