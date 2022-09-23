@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../class/centreonLog.class.php';
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 22.04.5: ';
+$versionOfTheUpgrade = 'UPGRADE - 22.04.6: ';
 $errorMessage = '';
 
 try {
