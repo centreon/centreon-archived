@@ -60,6 +60,13 @@ class AclUpdater implements AclUpdaterInterface
     {
         $this->provider = $provider;
         if ($provider->isUpdateACLSupported()) {
+
+            /** @var CustomConfiguration $customConfiguration */
+            $customConfiguration = $provider->getConfiguration()->getCustomConfiguration();
+            if (!$customConfiguration->getACLConditions()->isEnabled()) {
+                return;
+            }
+
             /** @phpstan-ignore-next-line */
             $userClaims = $this->provider->getUserClaims();
             /** @phpstan-ignore-next-line */

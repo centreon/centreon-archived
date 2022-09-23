@@ -119,11 +119,6 @@ interface OpenIdCustomConfigurationInterface
     public function getContactGroup(): ?ContactGroup;
 
     /**
-     * @return ?string
-     */
-    public function getClaimName(): ?string;
-
-    /**
      * @return AuthenticationConditions
      */
     public function getAuthenticationConditions(): AuthenticationConditions;

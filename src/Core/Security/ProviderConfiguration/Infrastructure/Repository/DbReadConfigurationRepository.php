@@ -134,11 +134,6 @@ final class DbReadConfigurationRepository extends AbstractRepositoryDRB implemen
                 $jsonDecoded['contact_template'] = $jsonDecoded['contact_template_id'] !== null
                     ? $this->readOpenIdConfigurationRepository->getContactTemplate($jsonDecoded['contact_template_id'])
                     : null;
-                $jsonDecoded['authorization_rules'] =
-                    $this->readOpenIdConfigurationRepository->getAuthorizationRulesByConfigurationId(
-                        $configuration->getId()
-                    );
-
                 $jsonDecoded['roles_mapping'] = $this->createAclConditions(
                     $configuration->getId(),
                     $jsonDecoded['roles_mapping']

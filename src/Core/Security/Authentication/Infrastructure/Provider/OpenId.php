@@ -225,40 +225,7 @@ class OpenId implements ProviderAuthenticationInterface
      */
     public function getUserClaims(): array
     {
-        $userClaims = [];
-        $configuration = $this->provider->getConfiguration();
-        $idTokenPayload = $this->provider->getIdTokenPayload();
-        $userInformation = $this->provider->getUserInformation();
-        /** @var CustomConfiguration $customConfiguration */
-        $customConfiguration = $configuration->getCustomConfiguration();
-        $claimName = $customConfiguration->getClaimName();
-
-        if (array_key_exists($claimName, $idTokenPayload)) {
-            $userClaims = $idTokenPayload[$claimName];
-        } elseif (array_key_exists($claimName, $userInformation)) {
-            $userClaims = $userInformation[$claimName];
-        } else {
-            $this->info(
-                "configured claim name not found in user information or id_token, " .
-                "default contact group ACL will be applied",
-                ["claim_name" => $claimName]
-            );
-        }
-
-        /**
-         * Claims can sometime be listed as a string e.g: "claim1,claim2,claim3" so we explode
-         * them to handle only one format
-         */
-        if (is_string($userClaims)) {
-            $userClaims = explode(",", $userClaims);
-        }
-
-        $this->info("Claims found", [
-            "claims_value" => implode(", ", $userClaims),
-            "claim_name" => $claimName
-        ]);
-
-        return $userClaims;
+        return $this->provider->getRolesMappingFromProvider();
     }
 
     /**
@@ -270,11 +237,12 @@ class OpenId implements ProviderAuthenticationInterface
         $userAccessGroups = [];
         /** @var CustomConfiguration $customConfiguration */
         $customConfiguration = $this->provider->getConfiguration()->getCustomConfiguration();
-        foreach ($customConfiguration->getAuthorizationRules() as $authorizationRule) {
-            if (!in_array($authorizationRule->getClaimValue(), $claims)) {
+        foreach ($customConfiguration->getACLConditions()->getRelations() as $authorizationRule) {
+            $claimValue = $authorizationRule->getClaimValue();
+            if (!in_array($claimValue, $claims)) {
                 $this->info(
                     "Configured Claim Value not found in user claims",
-                    ["claim_value" => $authorizationRule->getClaimValue()]
+                    ["claim_value" => $claimValue]
                 );
 
                 continue;
