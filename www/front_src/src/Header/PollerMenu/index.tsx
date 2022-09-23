@@ -102,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
   subMenuToggle: {
     backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
+    color: theme.palette.text.primary,
     display: 'none',
     left: 0,
     padding: theme.spacing(1),
@@ -232,12 +233,12 @@ const PollerMenu = (): JSX.Element | null => {
               return (
                 <div className={classes.pollerDetailRow} key={key}>
                   <Typography
-                    className={clsx([classes.label, classes.pollerDetailTitle])}
+                    className={classes.pollerDetailTitle}
                     variant="body2"
                   >
                     <li>{t(pollerIssueKeyToMessage[key])}</li>
                   </Typography>
-                  <Typography className={classes.label} variant="body2">
+                  <Typography variant="body2">
                     {issue.total ? issue.total : ''}
                   </Typography>
                 </div>
@@ -245,12 +246,8 @@ const PollerMenu = (): JSX.Element | null => {
             })
           ) : (
             <div className={classes.pollerDetailRow}>
-              <Typography className={classes.label} variant="body2">
-                {t(labelAllPollers)}
-              </Typography>
-              <Typography className={classes.label} variant="body2">
-                {pollerCount as number}
-              </Typography>
+              <Typography variant="body2">{t(labelAllPollers)}</Typography>
+              <Typography variant="body2">{pollerCount as number}</Typography>
             </div>
           )}
           {allowPollerConfiguration && (

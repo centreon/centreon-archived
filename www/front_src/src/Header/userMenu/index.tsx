@@ -93,11 +93,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   containerList: {
+    color: theme.palette.text.primary,
     padding: 0,
-  },
-  divider: {
-    borderColor: grey[600],
-    margin: theme.spacing(0, 1.25, 0, 1.25),
   },
   fullname: {
     overflow: 'hidden',
@@ -120,14 +117,18 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     '&:first-child': {
-      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+      borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '&:hover': {
-      background: theme.palette.primary.light,
-      color: theme.palette.primary.main,
+      background: equals(theme.palette.mode, ThemeMode.dark)
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+      color: equals(theme.palette.mode, ThemeMode.dark)
+        ? theme.palette.common.white
+        : theme.palette.primary.main,
     },
     '&:last-child': {
-      borderTop: `1px solid ${theme.palette.grey[300]}`,
+      borderTop: `1px solid ${theme.palette.divider}`,
     },
     padding: theme.spacing(1),
   },
@@ -141,6 +142,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: 'none',
     borderRadius: 0,
+    boxShadow: theme.shadows[3],
     fontSize: theme.typography.body2.fontSize,
     minWidth: 190,
   },
@@ -154,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2, 0.25, 11 / 8),
   },
   text: {
-    lineHeight: 1,
     margin: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',

@@ -16,9 +16,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSwitch-thumb': {
       backgroundColor: 'white',
     },
-    '& .MuiSwitch-track': {
-      backgroundColor: grey[600],
-      opacity: 1,
+    '& .MuiSwitch-track, & .Mui-checked + .MuiSwitch-track': {
+      backgroundColor: theme.palette.text.primary,
+      opacity: 0.5,
     },
     alignItems: 'center',
     display: 'flex',
