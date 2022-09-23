@@ -57,7 +57,10 @@ beforeEach(function () {
     $this->severityRepository = $this->createMock(ReadSeverityRepositoryInterface::class);
 
     $this->acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('1991-09-10'));
-    $this->host = HostTest::createHostModel();
+    $this->host = (HostTest::createHostModel())
+        ->setIsInDowntime(true)
+        ->setIsAcknowledged(true);
+
     $this->contact = $this->createMock(ContactInterface::class);
 
     $this->hostgroup = new Hostgroup(10, 'ALL');

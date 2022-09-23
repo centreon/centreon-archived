@@ -88,7 +88,8 @@ class WebSSO implements ProviderAuthenticationInterface
             'contact_location' => $user->getLocale(),
             'show_deprecated_pages' => $user->isUsingDeprecatedPages(),
             'reach_api' => $user->hasAccessToApiConfiguration() ? 1 : 0,
-            'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0
+            'reach_api_rt' => $user->hasAccessToApiRealTime() ? 1 : 0,
+            'contact_theme' => $user->getTheme() ?? 'light'
         ];
 
         $this->provider->setLegacySession(new \Centreon($sessionUserInfos));

@@ -170,11 +170,11 @@ try {
             foreach ($tplArr as $key1 => $value1) {
                 if ($firstTpl) {
                     $tplStr .= "<a href='" . $WikiURL .
-                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template_:_" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template_:_" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                 }
             }
         }
